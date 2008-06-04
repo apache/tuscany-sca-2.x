@@ -1,0 +1,120 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package org.apache.tuscany.sca.interfacedef.java.jaxws;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
+
+/**
+ * A special data type that generate the class on demand
+ * @version $Rev$ $Date$
+ */
+public class GeneratedDataTypeImpl implements DataType<XMLType> {
+    private Class<?> physical;
+    private XMLType logical;
+
+    private Method m;
+    private String wrapperClassName;
+    private String wrapperNamespace;
+    private String wrapperName;
+    private boolean request;
+    private GeneratedClassLoader cl;
+
+    private Class<? extends Throwable> exceptionClass;
+
+    public GeneratedDataTypeImpl(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
+        super();
+        this.exceptionClass = exceptionClass;
+        this.cl = cl;
+        QName name = FaultBeanGenerator.getElementName(exceptionClass);
+        this.logical = new XMLType(name, name);
+    }
+
+    public GeneratedDataTypeImpl(Method m,
+                                 String wrapperClassName,
+                                 String wrapperNamespace,
+                                 String wrapperName,
+                                 boolean request,
+                                 GeneratedClassLoader cl) {
+        super();
+        this.m = m;
+        this.wrapperClassName = wrapperClassName;
+        this.wrapperNamespace = wrapperNamespace;
+        this.wrapperName = wrapperName;
+        this.cl = cl;
+        this.request = request;
+        QName name = new QName(wrapperNamespace, wrapperName);
+        this.logical = new XMLType(name, name);
+    }
+
+    public String getDataBinding() {
+        return JAXBDataBinding.NAME;
+    }
+
+    public Type getGenericType() {
+        return getPhysical();
+    }
+
+    public XMLType getLogical() {
+        return logical;
+    }
+
+    public synchronized Class<?> getPhysical() {
+        if (physical == null) {
+            if (m != null) {
+                WrapperBeanGenerator generator = new WrapperBeanGenerator();
+                physical =
+                    request ? generator.generateRequestWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl)
+                        : generator.generateResponseWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl);
+                ;
+            } else if (exceptionClass != null) {
+                physical = new FaultBeanGenerator().generate(exceptionClass, cl);
+            }
+        }
+        return physical;
+    }
+
+    public void setDataBinding(String dataBinding) {
+        // NOP
+    }
+
+    public void setGenericType(Type genericType) {
+        // NOP
+    }
+
+    public void setLogical(XMLType logical) {
+        this.logical = logical;
+    }
+
+    public void setPhysical(Class<?> cls) {
+        // NOP
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+}

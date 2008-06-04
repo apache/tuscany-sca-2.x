@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * @version $Rev$ $Date$
  */
-@XmlRootElement(name = "getGreetingsListResponse", namespace = "http://jaxb.databindings.itest.sca.tuscany.apache.org/")
+@XmlRootElement(name = "getGreetingsListResponse", namespace = "http://impl.jaxb.databindings.itest.sca.tuscany.apache.org/")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "getGreetingsListResponse", namespace = "http://jaxb.databindings.itest.sca.tuscany.apache.org/")
+@XmlType(name = "getGreetingsListResponse", namespace = "http://impl.jaxb.databindings.itest.sca.tuscany.apache.org/")
 public class GetGreetingsListResponse {
 
     @XmlElement(name = "return", namespace = "")

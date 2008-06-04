@@ -56,10 +56,12 @@ public interface WrapperHandler<T> {
      * @param context
      * @return
      */
+    
     boolean isInstance(Object wrapper,
                        ElementInfo element,
                        List<ElementInfo> childElements,
                        TransformationContext context);
+                       
 
     /**
      * Populate the wrapper element with the child objects

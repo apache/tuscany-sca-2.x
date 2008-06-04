@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jws.WebMethod;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
@@ -38,8 +39,6 @@ public interface HelloLocalServiceSimple {
      * @param names
      * @return
      */
-    @RequestWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsList")
-    @ResponseWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsListResponse")
     List<String> getGreetingsList(List<String> names);
     
     /**
@@ -52,7 +51,9 @@ public interface HelloLocalServiceSimple {
     @ResponseWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsListResponse")
     ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
     
+    @WebMethod(exclude=true)
     Map<String, String> getGreetingsMap(Map<String, String> namesMap);
     
+    @WebMethod(exclude=true)
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
 }

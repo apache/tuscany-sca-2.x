@@ -53,7 +53,9 @@ public class ExceptionsTestCase extends TestCase {
         assertNotSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
         assertNotNull(exceptionHandler.getTheUgly());
         assertEquals( UnChecked.class, exceptionHandler.getTheUgly().getClass());
-        assertNotSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
+        
+        // [rfeng] We're not in a position to copy non business exceptions
+        // assertNotSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
 
     }
 

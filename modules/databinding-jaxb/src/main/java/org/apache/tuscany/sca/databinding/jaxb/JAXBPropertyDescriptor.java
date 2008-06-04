@@ -45,18 +45,20 @@ import org.osoa.sca.ServiceRuntimeException;
  * @See XMLRootElementUtil.createPropertyDescriptorMap , which creates the PropertyDescriptorPlus
  * objects
  */
-public class JAXBPropertyDescriptor {
+public class JAXBPropertyDescriptor implements Comparable<JAXBPropertyDescriptor> {
     PropertyDescriptor descriptor;
     QName xmlName = null;
+    int index;
 
     /**
      * Package protected constructor.  Only created by XMLRootElementUtil.createPropertyDescriptorMap
-     *
-     * @param propertyName
      * @param descriptor
+     * @param index TODO
+     * @param propertyName
+     *
      * @see XMLRootElementUtil.createPropertyDescriptorMap
      */
-    JAXBPropertyDescriptor(PropertyDescriptor descriptor, QName xmlName) {
+    JAXBPropertyDescriptor(PropertyDescriptor descriptor, QName xmlName, int index) {
         super();
         this.descriptor = descriptor;
         this.xmlName = xmlName;
@@ -64,15 +66,20 @@ public class JAXBPropertyDescriptor {
 
     /**
      * Package protected constructor.  Only created by XMLRootElementUtil.createPropertyDescriptorMap
-     *
-     * @param propertyName
      * @param descriptor
+     * @param index TODO
+     * @param propertyName
+     *
      * @see XMLRootElementUtil.createPropertyDescriptorMap
      */
-    JAXBPropertyDescriptor(PropertyDescriptor descriptor, String xmlName) {
+    JAXBPropertyDescriptor(PropertyDescriptor descriptor, String xmlName, int index) {
         super();
         this.descriptor = descriptor;
         this.xmlName = new QName("", xmlName);
+    }
+
+    public int compareTo(JAXBPropertyDescriptor o) {
+        return index - o.index;
     }
 
     /** @return xmlname */

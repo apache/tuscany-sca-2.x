@@ -27,11 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBTypeHelper;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.junit.Test;
 
 /**
@@ -66,10 +64,9 @@ public class WrapperBeanGeneratorTestCase {
     public void testGenerateSchema() throws Exception {
         List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
         JAXBContext context = JAXBContext.newInstance(classes.toArray(new Class[0]));
-        Map<String, DOMResult> results = JAXBTypeHelper.generateSchema(context);
-        Node2String t = new Node2String();
-        for (DOMResult d : results.values()) {
-            System.out.println(t.transform(d.getNode(), null));
+        Map<String, String> results = JAXBTypeHelper.generateSchema(context);
+        for (String xsd : results.values()) {
+            System.out.println(xsd);
         }
     }
 }
