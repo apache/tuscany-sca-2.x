@@ -95,7 +95,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
     protected void declareField(ClassWriter cw, String propName, String propClassSignature, String propTypeSignature) {
         FieldVisitor fv;
         AnnotationVisitor av0;
-        fv = cw.visitField(ACC_PRIVATE, getFieldName(propName), propClassSignature, propTypeSignature, null);
+        fv = cw.visitField(ACC_PROTECTED, getFieldName(propName), propClassSignature, propTypeSignature, null);
 
         av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
         av0.visit("name", propName);
@@ -111,6 +111,9 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                  String propName,
                                  String propClassSignature,
                                  String propTypeSignature) {
+        if ("Ljava/util/List;".equals(propClassSignature)) {
+            return;
+        }
         MethodVisitor mv =
             cw.visitMethod(ACC_PUBLIC,
                            "set" + capitalize(propName),
@@ -143,6 +146,11 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                  String propName,
                                  String propClassSignature,
                                  String propTypeSignature) {
+        if ("Ljava/util/List;".equals(propClassSignature)) {
+            decalreListGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
+            return;
+        }
+
         String getterName = ("Z".equals(propClassSignature) ? "is" : "get") + capitalize(propName);
         MethodVisitor mv =
             cw.visitMethod(ACC_PUBLIC, getterName, "()" + propClassSignature, propTypeSignature == null ? null
@@ -158,6 +166,45 @@ public abstract class BaseBeanGenerator implements Opcodes {
         mv.visitLabel(l1);
         mv.visitLocalVariable("this", classSignature, null, l0, l1, 0);
         mv.visitMaxs(2, 1);
+        mv.visitEnd();
+    }
+
+    protected void decalreListGetter(ClassWriter cw,
+                                     String classDescriptor,
+                                     String classSignature,
+                                     String propName,
+                                     String propClassSignature,
+                                     String propTypeSignature) {
+        String getterName = "get" + capitalize(propName);
+        String fieldName = getFieldName(propName);
+        MethodVisitor mv =
+            cw.visitMethod(ACC_PUBLIC, getterName, "()" + propClassSignature, propTypeSignature == null ? null
+                : "()" + propTypeSignature, null);
+        mv.visitCode();
+        Label l0 = new Label();
+        mv.visitLabel(l0);
+        mv.visitLineNumber(63, l0);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, classDescriptor, fieldName, propClassSignature);
+        Label l1 = new Label();
+        mv.visitJumpInsn(IFNONNULL, l1);
+        Label l2 = new Label();
+        mv.visitLabel(l2);
+        mv.visitLineNumber(64, l2);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitTypeInsn(NEW, "java/util/ArrayList");
+        mv.visitInsn(DUP);
+        mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V");
+        mv.visitFieldInsn(PUTFIELD, classDescriptor, fieldName, propClassSignature);
+        mv.visitLabel(l1);
+        mv.visitLineNumber(66, l1);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, classDescriptor, fieldName, propClassSignature);
+        mv.visitInsn(ARETURN);
+        Label l3 = new Label();
+        mv.visitLabel(l3);
+        mv.visitLocalVariable("this", classSignature, null, l0, l3, 0);
+        mv.visitMaxs(3, 1);
         mv.visitEnd();
     }
 

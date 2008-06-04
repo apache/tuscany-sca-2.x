@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBTypeHelper;
@@ -39,6 +41,7 @@ public class WrapperBeanGeneratorTestCase {
     @Test
     public void testGenerate() throws Exception {
         List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
+        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
         for (Class<?> cls : classes) {
             for (Field f : cls.getDeclaredFields()) {
                 // System.out.println(f.getName());
@@ -53,17 +56,18 @@ public class WrapperBeanGeneratorTestCase {
                 }
             }
             Object obj = cls.newInstance();
-            JAXBContext context = JAXBContextHelper.createJAXBContext(cls);
             StringWriter sw = new StringWriter();
             context.createMarshaller().marshal(obj, sw);
-            System.out.println(sw.toString());
+            // System.out.println(sw.toString());
+            StringReader sr = new StringReader(sw.toString());
+            context.createUnmarshaller().unmarshal(new StreamSource(sr), cls);
         }
     }
 
     @Test
     public void testGenerateSchema() throws Exception {
         List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
-        JAXBContext context = JAXBContext.newInstance(classes.toArray(new Class[0]));
+        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
         Map<String, String> results = JAXBTypeHelper.generateSchema(context);
         for (String xsd : results.values()) {
             System.out.println(xsd);
