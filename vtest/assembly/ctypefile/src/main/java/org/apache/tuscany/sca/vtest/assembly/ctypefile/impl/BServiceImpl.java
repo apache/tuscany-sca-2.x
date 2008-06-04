@@ -20,13 +20,11 @@
 package org.apache.tuscany.sca.vtest.assembly.ctypefile.impl;
 
 import org.apache.tuscany.sca.vtest.assembly.ctypefile.BService;
-import org.osoa.sca.annotations.Service;
 
-//@Service(BService.class)
 public class BServiceImpl implements BService {
 
     public String getState() {
         return "SomeStateFromB";
     }
 
-}
+} 

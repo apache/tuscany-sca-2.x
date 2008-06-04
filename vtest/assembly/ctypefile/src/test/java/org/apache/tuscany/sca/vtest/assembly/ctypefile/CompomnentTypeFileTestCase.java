@@ -40,10 +40,10 @@ public class CompomnentTypeFileTestCase {
         try {
             System.out.println("Setting up");
             ServiceFinder.init(compositeName);
-            aService = ServiceFinder.getService(AService.class, "AComponent");
+            aService = ServiceFinder.getService(AService.class, "AComponent/AService");
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        } 
     }
 
     @AfterClass
@@ -56,7 +56,6 @@ public class CompomnentTypeFileTestCase {
 
     @Test
     public void typeFile1() throws Exception {
-        String thisState = "This State";
         Assert.assertSame("SomeStateFromB", aService.getState());
     }
 
