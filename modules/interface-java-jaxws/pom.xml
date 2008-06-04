@@ -164,9 +164,6 @@
                             <packageName>com.example.stock</packageName>
                             <wsdlDirectory>${basedir}/src/test/resources/wsdl</wsdlDirectory>
                             <wsdlFiles>
-                                <!-- 
-                                    <wsdlFile>StockQuotes.wsdl</wsdlFile>
-                                -->
                                 <wsdlFile>StockExceptionTest.wsdl</wsdlFile>
                             </wsdlFiles>
                             <sourceDestDir>${project.build.directory}/jaxws-source</sourceDestDir>
@@ -174,6 +171,7 @@
                             <xnocompile>true</xnocompile>
                         </configuration>
                     </execution>
+
                     <!-- 
                     <execution>
                         <id>wsgen</id>
@@ -191,7 +189,7 @@
                     </execution>
                     -->
                 </executions>
- 
+
                 <dependencies>
                     <dependency>
                         <groupId>com.sun</groupId>
@@ -201,9 +199,44 @@
                         <systemPath>${java.home}/../lib/tools.jar</systemPath>
                     </dependency>
                 </dependencies>
-                
+
             </plugin>
 
+            <!-- 
+            wsimport cannot handle WSDL files without a service/binding element.
+            CXF wsdl2java plugin does support that. I had to override the default 
+            value of wsdlRoot/testWsdlRoot to a non-existent file to avoid NPE -->
+            <!-- 
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+
+                        <configuration>
+                            <sourceRoot>${basedir}/target/jaxws-source</sourceRoot>
+                            <wsdlRoot>NONE</wsdlRoot>
+                            <testWsdlRoot>NONE</testWsdlRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/test/resources/wsdl/Stock.wsdl</wsdl>
+                                    <outputDir>${basedir}/target/jaxws-source</outputDir>
+                                    <packagenames>
+                                        <packagename>com.example.stock.cxf</packagename>
+                                    </packagenames>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
 
             <plugin>
                 <groupId>org.apache.felix</groupId>
