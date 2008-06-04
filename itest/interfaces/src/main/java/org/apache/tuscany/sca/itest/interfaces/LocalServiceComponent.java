@@ -19,12 +19,10 @@
 package org.apache.tuscany.sca.itest.interfaces;
 
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
 
 /**
- * Remote be-directional callBackService
+ * Local be-directional callBackService
  */
-@Remotable
 @Callback(LocalCallbackInterface.class)
 public interface LocalServiceComponent {
 
