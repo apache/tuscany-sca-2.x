@@ -20,6 +20,9 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -40,6 +43,9 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Node;
 
@@ -59,6 +65,12 @@ public class JAXBContextHelper {
     private JAXBContextHelper() {
     }
 
+    /**
+     * Create a JAXBContext for a given class
+     * @param cls
+     * @return
+     * @throws JAXBException
+     */
     public static JAXBContext createJAXBContext(Class<?> cls) throws JAXBException {
         return cache.getJAXBContext(cls);
     }
@@ -144,6 +156,63 @@ public class JAXBContextHelper {
             } else {
                 return value;
             }
+        }
+    }
+
+    /**
+     * Create a JAXContext for an array of classes
+     * @param classes
+     * @return
+     * @throws JAXBException
+     */
+    public static JAXBContext createJAXBContext(Class<?>[] classes) throws JAXBException {
+        return cache.getJAXBContext(classes);
+    }
+    
+    /**
+     * Create a JAXBContext for a given java interface
+     * @param intf
+     * @return
+     * @throws JAXBException
+     */
+    public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
+        synchronized (cache) {
+            Map<Object, JAXBContext> map = cache.getCache();
+            JAXBContext context = map.get(intf);
+            if (context != null) {
+                return context;
+            }
+            Set<Class<?>> classes = new HashSet<Class<?>>();
+            for (Operation op : intf.getOperations()) {
+                WrapperInfo wrapper = op.getWrapper();
+                if (wrapper != null) {
+                    DataType dt1 = wrapper.getInputWrapperType();
+                    if (dt1 != null) {
+                        classes.add(dt1.getPhysical());
+                    }
+                    DataType dt2 = wrapper.getOutputWrapperType();
+                    if (dt2 != null) {
+                        classes.add(dt2.getPhysical());
+                    }
+                } else {
+                    for (DataType dt1 : op.getInputType().getLogical()) {
+                        classes.add(dt1.getPhysical());
+                    }
+                    DataType dt2 = op.getOutputType();
+                    if (dt2 != null) {
+                        classes.add(dt2.getPhysical());
+                    }
+                    for (DataType<DataType> dt3 : op.getFaultTypes()) {
+                        DataType dt4 = dt3.getLogical();
+                        if (dt4 != null) {
+                            classes.add(dt4.getPhysical());
+                        }
+                    }
+                }
+            }
+
+            context = createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+            return context;
         }
     }
 

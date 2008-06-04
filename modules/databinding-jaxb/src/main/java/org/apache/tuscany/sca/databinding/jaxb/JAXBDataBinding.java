@@ -102,7 +102,7 @@ public class JAXBDataBinding extends BaseDataBinding {
             } else {
                 arg = new JAXBElement(ROOT_ELEMENT, Object.class, arg);
             }
-            JAXBContext context = JAXBContext.newInstance(cls);
+            JAXBContext context = JAXBContextHelper.createJAXBContext(cls);
             Document doc = DOMHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);
             JAXBElement<?> element = context.createUnmarshaller().unmarshal(doc, cls);

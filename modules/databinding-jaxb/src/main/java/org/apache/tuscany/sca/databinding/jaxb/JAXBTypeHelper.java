@@ -119,7 +119,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
                 XmlSchemaCollection collection = new XmlSchemaCollection();
                 Class[] typesArray = new Class[types.size()];
                 typesArray = types.toArray(typesArray);
-                JAXBContext context = JAXBContext.newInstance(typesArray);
+                JAXBContext context = JAXBContextHelper.createJAXBContext(typesArray);
                 Map<String, String> results = generateSchema(context);
                 collection.setSchemaResolver(new XSDResolver(results));
                 
