@@ -3,8 +3,6 @@ XML BigBank Demo
 
 This demo showcases the integration with XML technolgies in the service assembly.
 
-Note: To build the project with maven or other IDEs, please download the WSDL from http://www.swanandmokashi.com/HomePage/WebServices/StockQuotes.asmx?WSDL and save the file as src/main/resources/wsdl/StockQuotes.wsdl.
-
 Note: The live stock quote web service is not always running. Sometimes empty response is returned and the stock value is 0.
 
 To run the demo, type "ant run" and it will produce the following output.
