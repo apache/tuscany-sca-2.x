@@ -298,7 +298,7 @@ public class DefaultSCADomain extends SCADomain {
                 }
             });
         } catch (PrivilegedActionException e) {
-            throw (ServiceRuntimeException)e.getException();
+            throw new ServiceRuntimeException(e.getException());
         }
     }
 
