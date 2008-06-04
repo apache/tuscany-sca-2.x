@@ -43,7 +43,6 @@
                 <module>bigbank-stockquote</module>
                 <module>mortgage-creditcheck</module>
                 <module>mortgage-loanapproval</module>
-                <module>secure-bigbank</module>
                 <module>xml-bigbank</module>
             </modules>
         </profile>
