@@ -48,7 +48,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
 import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
-import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -84,9 +83,8 @@ class BaseWireBuilderImpl {
      * services/references to component services/references inside a composite.
      * 
      * @param composite
-     * @throws IncompatibleInterfaceContractException 
      */
-    protected void wireComponentReferences(Composite composite) throws IncompatibleInterfaceContractException {
+    protected void wireComponentReferences(Composite composite) {
 
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -215,11 +213,10 @@ class BaseWireBuilderImpl {
      * @param composite
      * @param componentServices
      * @param problems
-     * @throws IncompatibleInterfaceContractException 
      */
     private void connectCompositeServices(Composite composite,
                                           Map<String, Component> components,
-                                          Map<String, ComponentService> componentServices) throws IncompatibleInterfaceContractException {
+                                          Map<String, ComponentService> componentServices) {
     
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -268,9 +265,9 @@ class BaseWireBuilderImpl {
                         compositeService.setInterfaceContract(promotedServiceInterfaceContract);
                     } else if (promotedServiceInterfaceContract != null) {
                     	// Check the compositeServiceInterfaceContract and promotedServiceInterfaceContract
-                    	boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract,promotedServiceInterfaceContract);
+                    	boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract, promotedServiceInterfaceContract);
                     	if(!isCompatible){
-                    		throw new IncompatibleInterfaceContractException("Interface of composite service "+promotedServiceName +" must be subset of the interface declared by promoted component service.", compositeServiceInterfaceContract, promotedServiceInterfaceContract);
+                    	    warning("Interface of composite service "+promotedServiceName +" must be subset of the interface declared by promoted component service.", compositeService);
                     	}
                     }
     
@@ -288,9 +285,8 @@ class BaseWireBuilderImpl {
      * @param composite
      * @param componentReferences
      * @param problems
-     * @throws IncompatibleInterfaceContractException 
      */
-    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) throws IncompatibleInterfaceContractException {
+    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) {
     
         // Propagate interfaces from inner composite components' references to
         // their component references
@@ -333,8 +329,8 @@ class BaseWireBuilderImpl {
                         } else if (componentReferenceInterfaceContract != null) {
                         	// Check the compositeInterfaceContract and componentInterfaceContract
                         	boolean isCompatible = interfaceContractMapper.isCompatible(compositeReferenceInterfaceContract, componentReferenceInterfaceContract);
-                        	if(!isCompatible){
-                        		throw new IncompatibleInterfaceContractException("Interface of composite reference "+componentReferenceName +" must be compatible with the interface declared by promoted component reference.", componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
+                        	if (!isCompatible) {
+                        	    warning("Interface of composite reference "+componentReferenceName +" must be compatible with the interface declared by promoted component reference.", compositeReference);
                         	}
                         }
                     } else {

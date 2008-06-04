@@ -24,7 +24,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -40,10 +39,6 @@ public class ComponentReferenceWireBuilderImpl extends BaseWireBuilderImpl imple
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
-        try {
-            wireComponentReferences(composite);
-        } catch (IncompatibleInterfaceContractException e) {
-            throw new CompositeBuilderException(e);
-        }
+        wireComponentReferences(composite);
     }
 }
