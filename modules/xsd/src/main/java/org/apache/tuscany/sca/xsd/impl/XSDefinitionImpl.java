@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.xsd.impl;
 
 import java.net.URI;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -46,6 +47,7 @@ public class XSDefinitionImpl implements XSDefinition {
     private URI location;
     private Document document;
     private boolean unresolved;
+    private List<XSDefinition> definitions;
 
     public XSDefinitionImpl() {
     }
@@ -217,6 +219,14 @@ public class XSDefinitionImpl implements XSDefinition {
             return schemaCollection.getTypeByQName(name);
         }
         return null;
+    }
+ 
+    public List<XSDefinition> getAggregatedDefinitions() {
+        return definitions;
+    }
+
+    public void setAggregatedDefinitions(List<XSDefinition> definitions) {
+        this.definitions = definitions;
     }
 
 }
