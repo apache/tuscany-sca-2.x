@@ -82,7 +82,7 @@ public class BPELInvoker implements Invoker {
     
     private void initializeInvocation() {
       
-        if(__log.isDebugEnabled()){
+        if(true){
             __log.debug("Initializing BPELInvoker");
         }
         Interface interfaze = operation.getInterface();
@@ -121,8 +121,8 @@ public class BPELInvoker implements Invoker {
             throw new InvocationTargetException(null,"Unsupported service contract");
         }
         
-        if(__log.isDebugEnabled()) {
-            __log.debug("Invoking bpel component : " + bpelServiceName + "#" + bpelOperationName);
+        if(true) {
+            System.out.println("Invoking bpel component : " + bpelServiceName + "#" + bpelOperationName);
         }
         
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
@@ -134,12 +134,6 @@ public class BPELInvoker implements Invoker {
             mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
                                                                               bpelServiceName,
                                                                               bpelOperationName);
-            /*
-            if(__log.isDebugEnabled()) {
-                Element invocationRequest = mex.getRequest().getMessage();
-                __log.debug(">>>Request:\n" + DOMUtils.domToString(invocationRequest));
-                
-            }*/
             
             onhold = mex.invoke(createInvocationMessage(mex, args));
             
@@ -170,12 +164,13 @@ public class BPELInvoker implements Invoker {
             // be sure we have the "freshest" one.
             mex = (MyRoleMessageExchange)odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
 
-            if(__log.isDebugEnabled()) {
+            if(true) {
                 Status status = mex.getStatus();
                 Element invocationResponse = mex.getResponse().getMessage();
 
-                __log.debug(">>>Invocation status:" + status.name());
-                __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
+                System.out.println(">>>Invocation status:" + status.name());
+                System.out.println(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
+                System.out.println(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
             }
             //process the method invocation result
             response = processResponse(mex.getResponse().getMessage());
@@ -225,10 +220,10 @@ public class BPELInvoker implements Invoker {
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
-        if(__log.isDebugEnabled()) {
-            __log.debug("Creating invocation message:");
-            __log.debug(">> args.....: " + DOMUtils.domToString(payload));
-            __log.debug(">> message..:" + DOMUtils.domToString(dom.getDocumentElement()));
+        if(true) {
+            System.out.println("Creating invocation message:");
+            System.out.println(">> args.....: " + DOMUtils.domToString(payload));
+            System.out.println(">> message..:" + DOMUtils.domToString(dom.getDocumentElement()));
         }
 
         org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));

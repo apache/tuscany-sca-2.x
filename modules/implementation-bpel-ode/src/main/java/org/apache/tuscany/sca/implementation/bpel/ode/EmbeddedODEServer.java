@@ -76,8 +76,6 @@ public class EmbeddedODEServer {
 
     private BpelServerImpl _bpelServer;
 
-    protected ProcessStore store;
-
     private Scheduler _scheduler;
     
     protected ExecutorService _executorService;
@@ -91,8 +89,10 @@ public class EmbeddedODEServer {
     public void init() throws ODEInitializationException {
         Properties p = System.getProperties();
         p.put("derby.system.home", "target");
-        
-        _config = new OdeConfigProperties(new Properties(), "ode-sca");
+
+        Properties confProps = new Properties();
+        confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
+        _config = new OdeConfigProperties(confProps, "ode-sca");
 
         // Setting work root as the directory containing our database (wherever in the classpath)
         URL dbLocation = getClass().getClassLoader().getResource("jpadb");
@@ -166,21 +166,6 @@ public class EmbeddedODEServer {
             _bpelServer.setDehydrationPolicy(dehy);
         }
 
-        store = new ProcessStoreImpl(_db.getDataSource(), "jpa", true);
-        store.registerListener(new ProcessStoreListener() {
-            public void onProcessStoreEvent(ProcessStoreEvent event) {
-                // bounce the process
-                _bpelServer.unregister(event.pid);
-                if (event.type != ProcessStoreEvent.Type.UNDEPLOYED) {
-                    ProcessConf conf = (ProcessConf) store.getProcessConfiguration(event.pid);
-                    // Test processes always run with in-mem DAOs
-                    // conf.setTransient(true);  //FIXME: what should we use for ProcessConfImpl
-                    _bpelServer.register(conf);
-                    
-                } // end if
-            } // end onProcessStoreEvent
-        });
-
         _bpelServer.init();
     } // end InitBpelServer
 
@@ -202,16 +187,6 @@ public class EmbeddedODEServer {
                 _scheduler = null;
             } catch (Exception ex) {
                 __log.debug("Error stopping scheduler");
-            }
-        }
-        
-        if(store != null) {
-            try {
-                __log.debug("Stopping store");
-                ((ProcessStoreImpl)store).shutdown();
-                store = null;
-            } catch (Exception ex) {
-                __log.debug("Error stopping store");
             }
         }
         
@@ -270,28 +245,16 @@ public class EmbeddedODEServer {
 
     // Updated by Mike Edwards, 23/05/2008
     public void deploy(ODEDeployment d, BPELImplementation implementation) {
-    	
         try {
-        	// old code - using the ODE store
-        	// Generate the required ODE deploy.xml file "on the fly" - it is required by the ODE
-        	// store - this code avoids the need for the programmer to create this file manually.
-        	BPELODEDeployFile deployFile = new BPELODEDeployFile( implementation );
-        	deployFile.writeDeployfile();
-        	store.deploy(d.deployDir);
-        	//System.out.println("Completed calling old Process deployment code...");
-        	
-        	// Code for doing deployment directly from Tuscany without using the ODE store
-        	// - disabled for the present due to issues with the ODE engine when used in this
-        	// mode - Mike Edwards 29/05/2008
-        	//TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
-        	//_bpelServer.register(processConf);
-        	//System.out.println("Completed calling new Process deployment code...");
+        	TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
+        	_bpelServer.register(processConf);
+        	System.out.println("Completed calling new Process deployment code...");
         } catch (Exception ex) {
             String errMsg = ">>> DEPLOY: Unexpected exception: " + ex.getMessage();
             __log.debug(errMsg, ex);
             throw new ODEDeploymentException(errMsg,ex);
-        } // end try
-    } // end deploy
+        }
+    }
 
     public void undeploy(ODEDeployment d) {
         //TODO
