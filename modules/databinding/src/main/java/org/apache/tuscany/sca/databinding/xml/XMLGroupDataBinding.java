@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -33,6 +32,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.impl.GroupDataBinding;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -50,7 +50,7 @@ public class XMLGroupDataBinding extends GroupDataBinding {
     }
 
     @Override
-    protected Object getLogical(Class<?> markerType, Annotation[] annotations) {
+    protected Object getLogical(Class<?> markerType, Operation operation) {
         return null;
     }
 

@@ -32,8 +32,10 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -89,9 +91,11 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(ElementInfo element, Class<? extends Node> wrapperClass, TransformationContext context) {
+    public DataType getWrapperType(Operation operation, boolean input) {
+        WrapperInfo wrapper = operation.getWrapper();
+        ElementInfo element = input? wrapper.getInputWrapperElement(): wrapper.getOutputWrapperElement();
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(DOMDataBinding.NAME, Node.class, new XMLType(element));
         return wrapperType;

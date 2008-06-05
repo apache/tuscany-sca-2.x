@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBTypeHelper;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -67,6 +67,7 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
+import org.osoa.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -106,6 +107,51 @@ public class Interface2WSDLGenerator {
         this.xsdFactory = xsdFactory;
         this.factory = factory;
     }
+    
+    private void addDataType(Map<String, List<DataType>> map, DataType type) {
+        if (type == null) {
+            return;
+        }
+        String db = type.getDataBinding();
+        if (db == null) {
+            return;
+        }
+        if ("java:array".equals(db)) {
+            DataType dt = (DataType)type.getLogical();
+            db = dt.getDataBinding();
+        }
+        List<DataType> types = map.get(db);
+        if (types == null) {
+            types = new ArrayList<DataType>();
+            map.put(db, types);
+        }
+        types.add(type);
+    }
+    
+    private Map<String, List<DataType>> getDataTypes(Interface intf, boolean useWrapper) {
+        Map<String, List<DataType>> dataTypes = new HashMap<String, List<DataType>>();
+        for (Operation op : intf.getOperations()) {
+            WrapperInfo wrapper = op.getWrapper();
+            if (useWrapper && wrapper != null) {
+                DataType dt1 = wrapper.getInputWrapperType();
+                addDataType(dataTypes, dt1);
+                DataType dt2 = wrapper.getOutputWrapperType();
+                addDataType(dataTypes, dt2);
+            } else {
+                for (DataType dt1 : op.getInputType().getLogical()) {
+                    addDataType(dataTypes, dt1);
+                }
+                DataType dt2 = op.getOutputType();
+                addDataType(dataTypes, dt2);
+            }
+            for (DataType<DataType> dt3 : op.getFaultTypes()) {
+                DataType dt4 = dt3.getLogical();
+                addDataType(dataTypes, dt4);
+            }
+        }
+        return dataTypes;
+    }
+
 
     public Definition generate(Interface interfaze, WSDLDefinition wsdlDefinition) throws WSDLException {
         if (interfaze == null) {
@@ -153,9 +199,13 @@ public class Interface2WSDLGenerator {
 
         // call each helper in turn to populate the wsdl.types element
         XmlSchemaCollection schemaCollection = new XmlSchemaCollection(); 
-        int index = 0;
-        for (XMLTypeHelper helper: new HashSet<XMLTypeHelper>(helpers.values())) {
-            List<XSDefinition> xsDefinitions = helper.getSchemaDefinitions(xsdFactory, resolver);
+
+        for (Map.Entry<String, List<DataType>> en: getDataTypes(interfaze, false).entrySet()) {
+            XMLTypeHelper helper = helpers.get(en.getKey());
+            if (helper == null) {
+                continue;
+            }
+            List<XSDefinition> xsDefinitions = helper.getSchemaDefinitions(xsdFactory, resolver, en.getValue());
             for (XSDefinition xsDef: xsDefinitions) {
                 String nsURI = xsDef.getNamespace();
                 Document document = xsDef.getDocument();
@@ -504,19 +554,24 @@ public class Interface2WSDLGenerator {
         if (helper == null) {
             DataBinding dataBinding = dataBindings.getDataBinding(db);
             if (dataBinding == null) {
-                throw new RuntimeException("no data binding for " + db);
+                throw new ServiceRuntimeException("No data binding for " + db);
             }
 
             helper = dataBinding.getXMLTypeHelper();
             if (helper == null) {
-                helper = new JAXBTypeHelper();
+                // Default to JAXB
+                helper = helpers.get(JAXBDataBinding.NAME);
+                if (helper == null) {
+                    helper = dataBindings.getDataBinding(JAXBDataBinding.NAME).getXMLTypeHelper();
+                    helpers.put(JAXBDataBinding.NAME, helper);
+                }
             }
             helpers.put(db, helper);
         }
         TypeInfo typeInfo = helper.getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType,
                                                dataType.getLogical());
         ElementInfo element = new ElementInfo(name, typeInfo);
-        element.setMany(javaType.isArray());
+        element.setMany(byte[].class != javaType && javaType.isArray());
         element.setNillable(!javaType.isPrimitive());
         return element;
     }

@@ -94,6 +94,32 @@ public final class SDOContextHelper {
         return helperContext;
 
     }
+    
+    public static HelperContext getHelperContext(Operation op) {
+        if (op == null) {
+            return getDefaultHelperContext();
+        }
+
+        HelperContext helperContext = SDOUtil.createHelperContext();
+
+        boolean found = false;
+        if (op != null) {
+            found = register(helperContext, op.getInputType()) || found;
+            found = register(helperContext, op.getOutputType()) || found;
+            WrapperInfo wrapper = op.getWrapper();
+            if (wrapper != null) {
+                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
+                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
+            }
+        }
+        if (!found) {
+            helperContext = getDefaultHelperContext();
+        }
+
+        return helperContext;
+
+    }
+
 
     /**
      * @param helperContext

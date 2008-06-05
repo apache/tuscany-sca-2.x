@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
@@ -55,7 +56,8 @@ public class MediatorImpl implements Mediator {
     public Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<String, Object> metadata) {
         if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
             if (source != null) {
-                sourceDataType = dataBindings.introspectType(source);
+                Operation operation = (Operation) metadata.get("source.operation");
+                sourceDataType = dataBindings.introspectType(source, operation);
             }
         }
         if (sourceDataType == null || targetDataType == null) {
@@ -126,7 +128,8 @@ public class MediatorImpl implements Mediator {
             return;
         }
         if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
-            sourceDataType = dataBindings.introspectType(source);
+            Operation operation = (Operation) metadata.get("source.operation");
+            sourceDataType = dataBindings.introspectType(source, operation);
         }
         if (sourceDataType == null) {
             return;

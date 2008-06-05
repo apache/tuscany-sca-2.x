@@ -118,7 +118,7 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
             copiedArg = argDataBinding.copy(arg);
         } else {
             copiedArg = arg;
-            DataType<?> dataType = registry.introspectType(arg);
+            DataType<?> dataType = registry.introspectType(arg, operation);
             if (dataType != null) {
                 DataBinding binding = registry.getDataBinding(dataType.getDataBinding());
                 if (binding != null) {

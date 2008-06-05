@@ -32,10 +32,11 @@ public interface FaultExceptionMapper {
      * type
      * 
      * @param exceptionDataType The data type representing a java exception class
+     * @param operation TODO
      * @param generatingFaultBean If JAXWS Section 3.7 Fault Bean will be generated
      * @return true if the introspection can recognize the exception data type 
      */
-    boolean introspectFaultDataType(DataType<DataType> exceptionDataType, boolean generatingFaultBean);
+    boolean introspectFaultDataType(DataType<DataType> exceptionDataType, Operation operation, boolean generatingFaultBean);
     
     /**
      * Create a java exception to wrap the fault data
@@ -44,17 +45,18 @@ public interface FaultExceptionMapper {
      * @param message message for the exception
      * @param faultInfo The fault data
      * @param cause of the exception
+     * @param operation TODO
      * @return An instance of java exception to represent the fault
      */
-    Throwable wrapFaultInfo(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause);
+    Throwable wrapFaultInfo(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause, Operation operation);
 
     /**
      * Retrieve the fault info from a java exception
      * 
      * @param exception The java exception that represents the fault data
      * @param faultBeanClass
-     * 
+     * @param operation TODO
      * @return The fault data
      */
-    Object getFaultInfo(Throwable exception, Class<?> faultBeanClass);
+    Object getFaultInfo(Throwable exception, Class<?> faultBeanClass, Operation operation);
 }

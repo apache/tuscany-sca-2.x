@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Node;
 
@@ -59,7 +59,7 @@ public class DOMDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType type, Annotation[] annotations) {
+    public boolean introspect(DataType type, Operation operation) {
         if (Node.class.isAssignableFrom(type.getPhysical())) {
             if (type.getLogical() == null) {
                 type.setLogical(new XMLType(ROOT_ELEMENT, null));

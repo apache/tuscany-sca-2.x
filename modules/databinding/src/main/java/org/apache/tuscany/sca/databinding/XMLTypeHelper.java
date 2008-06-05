@@ -22,15 +22,18 @@ package org.apache.tuscany.sca.databinding;
 import java.util.List;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
-import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 
 /**
  * XML and schema helper for Java types
  */
 public interface XMLTypeHelper {
 
+    // FIXME: This method seems to require the XMLHelper instance to be stateful
     /**
      * Convert a Java type into XML type information 
      * @param javaType the physical Java class
@@ -43,6 +46,23 @@ public interface XMLTypeHelper {
      * Get schema definitions for the Java types known to this helper
      * @return A list of schema definitions
      */
-    List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver);
+    // List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver);
+    
+    /**
+     * Get a list of XML schemas for the given data types
+     * @param factory
+     * @param resolver
+     * @param dataTypes
+     * @return
+     */
+    List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, List<DataType> dataTypes);
+    /**
+     * Get a list of XML schemas for the given interface
+     * @param factory
+     * @param resolver
+     * @param intf
+     * @return
+     */
+    List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, Interface intf);
 
 }

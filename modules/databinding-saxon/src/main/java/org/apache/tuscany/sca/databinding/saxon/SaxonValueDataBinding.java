@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.sca.databinding.saxon;
 
-import java.lang.annotation.Annotation;
 
 import net.sf.saxon.value.Value;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Represents data binding for parameters of type Value.
@@ -42,8 +42,8 @@ public class SaxonValueDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType type, Annotation[] annotations) {
-        if (super.introspect(type, annotations)) {
+    public boolean introspect(DataType type, Operation operation) {
+        if (super.introspect(type, operation)) {
             // type.setLogical(XMLType.UNKNOWN);
             return true;
         } else {

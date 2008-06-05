@@ -158,7 +158,11 @@ public class SDOWSDLTestCase {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        try {
         domain = SCADomain.newInstance("SDOWSDLTest.composite");
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterClass

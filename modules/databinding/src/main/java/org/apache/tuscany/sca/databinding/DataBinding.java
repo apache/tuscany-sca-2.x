@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.databinding;
 
-import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * DataBinding represents a data representation, for example, SDO, JAXB and AXIOM
@@ -59,10 +59,10 @@ public interface DataBinding {
      * Introspect and populate information to a DataType model
      * 
      * @param dataType The data type to be introspected
-     * @param annotations The java annotations
+     * @param operation The operation
      * @return true if the databinding has recognized the given data type
      */
-    boolean introspect(DataType dataType, Annotation[] annotations);
+    boolean introspect(DataType dataType, Operation operation);
 
     /**
      * Introspect the data to figure out the corresponding data type

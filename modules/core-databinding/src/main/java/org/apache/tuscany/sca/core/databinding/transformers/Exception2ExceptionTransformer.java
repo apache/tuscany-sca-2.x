@@ -96,12 +96,12 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
 
         DataType<DataType> targetType = context.getTargetDataType();
 
-        Object sourceFaultInfo = faultExceptionMapper.getFaultInfo(source, sourceType.getLogical().getPhysical());
+        Object sourceFaultInfo = faultExceptionMapper.getFaultInfo(source, sourceType.getLogical().getPhysical(), context.getSourceOperation());
         Object targetFaultInfo =
             mediator.mediate(sourceFaultInfo, sourceType.getLogical(), targetType.getLogical(), context.getMetadata());
 
         Throwable targetException =
-            faultExceptionMapper.wrapFaultInfo(targetType, source.getMessage(), targetFaultInfo, source.getCause());
+            faultExceptionMapper.wrapFaultInfo(targetType, source.getMessage(), targetFaultInfo, source.getCause(), context.getTargetOperation());
 
         // FIXME
         return targetException == null ? source : targetException;

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.javabeans;
 
-import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
@@ -27,6 +26,7 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -48,7 +48,7 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType type, Annotation[] annotations) {
+    public boolean introspect(DataType type, Operation operation) {
         Class<?> cls = type.getPhysical();
         if (cls == Object.class) {
             return false;

@@ -41,8 +41,9 @@ public class PrimitivesDatabindingTestCase {
     public void setUp() throws Exception {
         try { 
             domain = SCADomain.newInstance("primitivesservice.composite");
-        } catch(Exception e) {
+        } catch(Throwable e) {
             e.printStackTrace();
+            Assert.fail();
         }
     }
 

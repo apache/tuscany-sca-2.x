@@ -165,14 +165,14 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
 
             // If the source can be wrapped, wrapped it first
             if (sourceWrapperHandler != null) {
-                Class<?> sourceWrapperClass =
-                    sourceOp.getWrapper() != null ? sourceOp.getWrapper().getInputWrapperClass() : null;
-                DataType sourceWrapperType =
-                    sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
+                WrapperInfo sourceWrapperInfo = sourceOp.getWrapper();
+                DataType sourceWrapperType = sourceWrapperInfo != null ? sourceWrapperInfo.getInputWrapperType() : null;
 
                 // We only do wrapper to wrapper transformation if the source has a wrapper and both sides
                 // match by XML structure
                 if (sourceWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
+                    Class<?> sourceWrapperClass = sourceWrapperType.getPhysical();
+
                     // Create the source wrapper
                     Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
 
@@ -215,11 +215,10 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                 // FIXME: This is a workaround for the wsdless support as it passes in child elements
                 // under the wrapper that only matches by position
                 if (sourceWrapperHandler.isInstance(sourceWrapper, wrapperElement, childElements, context)) {
-                    Class<?> targetWrapperClass =
-                        targetOp.getWrapper() != null ? targetOp.getWrapper().getInputWrapperClass() : null;
-
+           
+                    WrapperInfo targetWrapperInfo = targetOp.getWrapper();
                     DataType targetWrapperType =
-                        targetWrapperHandler.getWrapperType(wrapperElement, targetWrapperClass, context);
+                        targetWrapperInfo != null ? targetWrapperInfo.getInputWrapperType() : null;
                     if (targetWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
                         Object targetWrapper =
                             mediator.mediate(sourceWrapper, sourceType.getLogical().get(0), targetWrapperType, context

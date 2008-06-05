@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -32,6 +31,7 @@ import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Document;
 
@@ -57,7 +57,7 @@ public class JAXBDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType dataType, Annotation[] annotations) {
+    public boolean introspect(DataType dataType, Operation operation) {
         Class javaType = dataType.getPhysical();
         if (JAXBElement.class.isAssignableFrom(javaType)) {
             Type type = javaType.getGenericSuperclass();
