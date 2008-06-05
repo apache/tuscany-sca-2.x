@@ -20,8 +20,9 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -42,6 +43,7 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -168,7 +170,7 @@ public class JAXBContextHelper {
     public static JAXBContext createJAXBContext(Class<?>[] classes) throws JAXBException {
         return cache.getJAXBContext(classes);
     }
-    
+
     /**
      * Create a JAXBContext for a given java interface
      * @param intf
@@ -177,43 +179,53 @@ public class JAXBContextHelper {
      */
     public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
         synchronized (cache) {
-            Map<Object, JAXBContext> map = cache.getCache();
-            JAXBContext context = map.get(intf);
+            LRUCache<Object, JAXBContext> map = cache.getCache();
+            Integer key = new Integer(System.identityHashCode(intf));
+            JAXBContext context = map.get(key);
             if (context != null) {
                 return context;
             }
             Set<Class<?>> classes = new HashSet<Class<?>>();
-            for (Operation op : intf.getOperations()) {
-                WrapperInfo wrapper = op.getWrapper();
-                if (wrapper != null) {
-                    DataType dt1 = wrapper.getInputWrapperType();
-                    if (dt1 != null) {
-                        classes.add(dt1.getPhysical());
-                    }
-                    DataType dt2 = wrapper.getOutputWrapperType();
-                    if (dt2 != null) {
-                        classes.add(dt2.getPhysical());
-                    }
-                } else {
-                    for (DataType dt1 : op.getInputType().getLogical()) {
-                        classes.add(dt1.getPhysical());
-                    }
-                    DataType dt2 = op.getOutputType();
-                    if (dt2 != null) {
-                        classes.add(dt2.getPhysical());
-                    }
-                    for (DataType<DataType> dt3 : op.getFaultTypes()) {
-                        DataType dt4 = dt3.getLogical();
-                        if (dt4 != null) {
-                            classes.add(dt4.getPhysical());
-                        }
-                    }
-                }
+            for(DataType d: getDataTypes(intf)) {
+                classes.add(d.getPhysical());
             }
 
             context = createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+            map.put(key, context);
             return context;
         }
+    }
+
+    private static List<DataType> getDataTypes(Interface intf) {
+        List<DataType> dataTypes = new ArrayList<DataType>();
+        for (Operation op : intf.getOperations()) {
+            WrapperInfo wrapper = op.getWrapper();
+            if (wrapper != null) {
+                DataType dt1 = wrapper.getInputWrapperType();
+                if (dt1 != null) {
+                    dataTypes.add(dt1);
+                }
+                DataType dt2 = wrapper.getOutputWrapperType();
+                if (dt2 != null) {
+                    dataTypes.add(dt2);
+                }
+            } else {
+                for (DataType dt1 : op.getInputType().getLogical()) {
+                    dataTypes.add(dt1);
+                }
+                DataType dt2 = op.getOutputType();
+                if (dt2 != null) {
+                    dataTypes.add(dt2);
+                }
+                for (DataType<DataType> dt3 : op.getFaultTypes()) {
+                    DataType dt4 = dt3.getLogical();
+                    if (dt4 != null) {
+                        dataTypes.add(dt4);
+                    }
+                }
+            }
+        }
+        return dataTypes;
     }
 
     public static Class<?> getJavaType(DataType<?> dataType) {
