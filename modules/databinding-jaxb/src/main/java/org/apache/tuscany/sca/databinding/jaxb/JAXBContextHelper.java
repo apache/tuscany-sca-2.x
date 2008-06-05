@@ -43,6 +43,8 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -177,7 +179,7 @@ public class JAXBContextHelper {
      * @return
      * @throws JAXBException
      */
-    public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
+    public static JAXBContext createJAXBContext(Interface intf, boolean useWrapper) throws JAXBException {
         synchronized (cache) {
             LRUCache<Object, JAXBContext> map = cache.getCache();
             Integer key = new Integer(System.identityHashCode(intf));
@@ -185,22 +187,44 @@ public class JAXBContextHelper {
             if (context != null) {
                 return context;
             }
-            Set<Class<?>> classes = new HashSet<Class<?>>();
-            for(DataType d: getDataTypes(intf)) {
-                classes.add(d.getPhysical());
-            }
-
-            context = createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+            List<DataType> dataTypes = getDataTypes(intf, useWrapper);
+            context = createJAXBContext(dataTypes);
             map.put(key, context);
             return context;
         }
     }
 
-    private static List<DataType> getDataTypes(Interface intf) {
+    public static JAXBContext createJAXBContext(List<DataType> dataTypes) throws JAXBException {
+        JAXBContext context;
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        for (DataType d : dataTypes) {
+            if (JAXBDataBinding.NAME.equals(d.getDataBinding()) || JavaBeansDataBinding.NAME.equals(d
+                .getDataBinding())
+                || SimpleJavaDataBinding.NAME.equals(d.getDataBinding())) {
+                if (!d.getPhysical().isInterface()) {
+                    classes.add(d.getPhysical());
+                }
+            }
+        }
+
+        context = createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+        return context;
+    }
+
+    public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
+        return createJAXBContext(intf, true);
+    }
+
+    /**
+     * @param intf
+     * @param useWrapper Use wrapper classes?
+     * @return
+     */
+    private static List<DataType> getDataTypes(Interface intf, boolean useWrapper) {
         List<DataType> dataTypes = new ArrayList<DataType>();
         for (Operation op : intf.getOperations()) {
             WrapperInfo wrapper = op.getWrapper();
-            if (wrapper != null) {
+            if (useWrapper && wrapper != null) {
                 DataType dt1 = wrapper.getInputWrapperType();
                 if (dt1 != null) {
                     dataTypes.add(dt1);
@@ -217,11 +241,11 @@ public class JAXBContextHelper {
                 if (dt2 != null) {
                     dataTypes.add(dt2);
                 }
-                for (DataType<DataType> dt3 : op.getFaultTypes()) {
-                    DataType dt4 = dt3.getLogical();
-                    if (dt4 != null) {
-                        dataTypes.add(dt4);
-                    }
+            }
+            for (DataType<DataType> dt3 : op.getFaultTypes()) {
+                DataType dt4 = dt3.getLogical();
+                if (dt4 != null) {
+                    dataTypes.add(dt4);
                 }
             }
         }

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.sdo;
 
-import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -30,6 +29,7 @@ import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import commonj.sdo.DataObject;
@@ -61,7 +61,7 @@ public class SDODataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType dataType, Annotation[] annotations) {
+    public boolean introspect(DataType dataType, Operation operation) {
         Class javaType = dataType.getPhysical();
         // Allow privileged access to read system properties. Requires PropertyPermission
         // java.specification.version read in security policy.

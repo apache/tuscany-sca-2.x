@@ -34,9 +34,9 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * JAXB WrapperHandler implementation
@@ -128,16 +128,12 @@ public class JAXBWrapperHandler implements WrapperHandler<Object> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(ElementInfo element,
-                                   Class<? extends Object> wrapperClass,
-                                   TransformationContext context) {
-        if (wrapperClass == null) {
-            return null;
-        } else {
-            return new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, wrapperClass, new XMLType(element));
-        }
+    public DataType getWrapperType(Operation operation, boolean input) {
+        WrapperInfo wrapper = operation.getWrapper();
+        DataType dt = input ? wrapper.getInputWrapperType() : wrapper.getOutputWrapperType();
+        return dt;
     }
 
     /**

@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -52,28 +53,29 @@ public class JAXBDataBindingTestCase extends TestCase {
 
     /**
      * Test method for
-     * {@link org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, java.lang.annotation.Annotation)}.
+     * {@link org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, Operation)}.
      */
     public final void testIntrospect() {
         DataType dataType = new DataTypeImpl<Class>(JAXBElement.class, null);
-        boolean yes = binding.introspect(dataType, null);
+        Operation op = null;
+        boolean yes = binding.introspect(dataType, op);
         assertTrue(yes);
         assertTrue(dataType.getDataBinding().equals(binding.getName()));
         assertTrue(dataType.getPhysical() == JAXBElement.class && dataType.getLogical() == XMLType.UNKNOWN);
         dataType = new DataTypeImpl<Class>(MockJAXBElement.class, null);
-        yes = binding.introspect(dataType, null);
+        yes = binding.introspect(dataType, op);
         assertTrue(yes);
         assertEquals(MockJAXBElement.class, dataType.getPhysical());
         assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), ((XMLType)dataType.getLogical())
             .getTypeName());
         dataType = new DataTypeImpl<Class>(USAddress.class, null);
-        yes = binding.introspect(dataType, null);
+        yes = binding.introspect(dataType, op);
         assertTrue(yes);
         assertEquals(USAddress.class, dataType.getPhysical());
         assertEquals(new QName("http://www.example.com/IPO", "USAddress"), ((XMLType)dataType.getLogical())
             .getTypeName());
         dataType = new DataTypeImpl<Class>(USState.class, null);
-        yes = binding.introspect(dataType, null);
+        yes = binding.introspect(dataType, op);
         assertTrue(yes);
         assertTrue(dataType.getDataBinding().equals(binding.getName()));
         assertEquals(USState.class, dataType.getPhysical());

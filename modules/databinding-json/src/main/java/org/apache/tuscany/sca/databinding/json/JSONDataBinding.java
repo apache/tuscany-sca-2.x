@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.databinding.json;
 
-import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -44,7 +44,7 @@ public class JSONDataBinding extends BaseDataBinding {
         super(NAME, ALIASES, org.json.JSONObject.class);
     }
 
-    public boolean introspect(DataType type, Annotation[] annotations) {
+    public boolean introspect(DataType type, Operation operation) {
         assert type != null;
         Class cls = type.getPhysical();
         if (JSONObject.class.isAssignableFrom(cls) || org.json.JSONObject.class.isAssignableFrom(cls)) {

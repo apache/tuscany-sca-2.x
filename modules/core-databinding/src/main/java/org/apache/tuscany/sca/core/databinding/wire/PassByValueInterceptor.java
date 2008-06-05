@@ -126,11 +126,11 @@ public class PassByValueInterceptor implements Interceptor {
                 Throwable ex = (Throwable)fault;
                 DataType<DataType> exType =
                     new DataTypeImpl<DataType>(ex.getClass(), new DataTypeImpl<XMLType>(ex.getClass(), XMLType.UNKNOWN));
-                faultExceptionMapper.introspectFaultDataType(exType, false);
+                faultExceptionMapper.introspectFaultDataType(exType, operation, false);
                 DataType faultType = exType.getLogical();
-                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical());
+                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), operation);
                 faultInfo = copy(faultInfo, dataBindings.getDataBinding(faultType.getDataBinding()));
-                fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause());
+                fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause(), operation);
                 return fault;
             }
         }
@@ -180,7 +180,7 @@ public class PassByValueInterceptor implements Interceptor {
         // If no databinding was specified, introspect the given arg to
         // determine its databinding
         if (dataBinding == null) {
-            DataType<?> dataType = dataBindings.introspectType(data);
+            DataType<?> dataType = dataBindings.introspectType(data, operation);
             if (dataType != null) {
                 String db = dataType.getDataBinding();
                 dataBinding = dataBindings.getDataBinding(db);

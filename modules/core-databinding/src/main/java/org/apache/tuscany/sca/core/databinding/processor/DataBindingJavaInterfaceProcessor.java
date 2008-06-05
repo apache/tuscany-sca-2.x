@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
@@ -36,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces
@@ -114,7 +116,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         d.setDataBinding(value);
                     }
                 }
-                dataBindingRegistry.introspectType(d, method.getParameterAnnotations()[i]);
+                dataBindingRegistry.introspectType(d, operation);
                 i++;
             }
             if (operation.getOutputType() != null) {
@@ -127,14 +129,14 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 if (dt != null) {
                     d.setDataBinding(dt.value());
                 }
-                dataBindingRegistry.introspectType(d, method.getAnnotations());
+                dataBindingRegistry.introspectType(d, operation);
             }
             for (org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getFaultTypes()) {
                 if (d.getDataBinding() == null) {
                     d.setDataBinding(dataBindingId);
                 }
                 // TODO: Handle exceptions
-                dataBindingRegistry.introspectType(d, method.getAnnotations(), true);
+                dataBindingRegistry.introspectType(d, operation);
             }
 
             // JIRA: TUSCANY-842
@@ -143,8 +145,17 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 assignOperationDataBinding(operation);
             }
 
-            // FIXME: Do we want to heuristically check the wrapper style?
-            // introspectWrapperStyle(operation);
+            // Introspect the wrapper data type
+            if (operation.getWrapper() != null) {
+                org.apache.tuscany.sca.databinding.DataBinding dbObj =
+                    dataBindingRegistry.getDataBinding(operation.getDataBinding());
+                WrapperHandler handler = dbObj == null ? null : dbObj.getWrapperHandler();
+                if (handler != null) {
+                    WrapperInfo wrapper = operation.getWrapper();
+                    wrapper.setInputWrapperType(handler.getWrapperType(operation, true));
+                    wrapper.setOutputWrapperType(handler.getWrapperType(operation, false));
+                }
+            }
         }
     }
 
@@ -173,7 +184,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 String dataBinding = d.getDataBinding();
                 // Assumes JavaBeans DB is default
                 if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)
-                    && !dataBinding.equals(SimpleJavaDataBinding.NAME)) {
+                    && !dataBinding.equals(SimpleJavaDataBinding.NAME) && !dataBinding.startsWith("java:")) {
                     if (nonDefaultDataBindingName != null) {
                         if (!nonDefaultDataBindingName.equals(dataBinding)) {
                             // We've seen two different non-default DBs, e.g. SDO and JAXB

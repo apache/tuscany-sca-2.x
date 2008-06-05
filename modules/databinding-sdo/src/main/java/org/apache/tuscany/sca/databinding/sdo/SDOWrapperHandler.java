@@ -28,9 +28,11 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import commonj.sdo.DataObject;
@@ -53,7 +55,6 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#create(ElementInfo, Class, TransformationContext)
      */
     public Object create(ElementInfo element, Class<? extends Object> wrapperClass, TransformationContext context) {
-        DataObject wrapper = null;
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
@@ -121,12 +122,13 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(ElementInfo element,
-                                   Class<? extends Object> wrapperClass,
-                                   TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+    public DataType getWrapperType(Operation operation,
+                                   boolean input) {
+        WrapperInfo wrapper = operation.getWrapper();
+        ElementInfo element = input? wrapper.getInputWrapperElement(): wrapper.getOutputWrapperElement();
+        HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
             // Check if child elements matches

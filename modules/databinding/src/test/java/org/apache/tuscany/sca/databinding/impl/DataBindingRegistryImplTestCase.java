@@ -22,8 +22,6 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
-import java.lang.annotation.Annotation;
-
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -32,6 +30,7 @@ import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.easymock.EasyMock;
 import org.xml.sax.ContentHandler;
@@ -59,7 +58,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         expect(db1.getName()).andReturn(ContentHandler.class.getName()).anyTimes();
         DataType<Class> dataType1 = new DataTypeImpl<Class>(ContentHandler.class, ContentHandler.class);
         expect(db1.introspect(dataType1, null)).andReturn(true);
-        expect(db1.introspect(EasyMock.not(EasyMock.same(dataType1)), (Annotation[])EasyMock.isNull()))
+        expect(db1.introspect(EasyMock.not(EasyMock.same(dataType1)), (Operation) EasyMock.isNull()))
             .andReturn(false).anyTimes();
         replay(db1);
 
@@ -70,7 +69,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         expect(db2.getName()).andReturn(XMLStreamReader.class.getName()).anyTimes();
         DataType<Class> dataType2 = new DataTypeImpl<Class>(XMLStreamReader.class, XMLStreamReader.class);
         expect(db2.introspect(dataType2, null)).andReturn(true);
-        expect(db2.introspect(EasyMock.not(EasyMock.same(dataType2)), (Annotation[])EasyMock.isNull()))
+        expect(db2.introspect(EasyMock.not(EasyMock.same(dataType2)), (Operation) EasyMock.isNull()))
             .andReturn(false).anyTimes();
         replay(db2);
 

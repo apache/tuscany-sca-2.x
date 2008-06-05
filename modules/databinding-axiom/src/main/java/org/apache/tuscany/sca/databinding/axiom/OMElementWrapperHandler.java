@@ -34,9 +34,11 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -109,11 +111,12 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(ElementInfo element,
-                                   Class<? extends OMElement> wrapperClass,
-                                   TransformationContext context) {
+    public DataType getWrapperType(Operation operation,
+                                   boolean input) {
+        WrapperInfo wrapper = operation.getWrapper();
+        ElementInfo element = input? wrapper.getInputWrapperElement(): wrapper.getOutputWrapperElement();
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(AxiomDataBinding.NAME, OMElement.class, new XMLType(element));
         return wrapperType;

@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
-import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -77,7 +77,7 @@ public abstract class BaseDataBinding implements DataBinding {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean introspect(DataType type, Annotation[] annotations) {
+    public boolean introspect(DataType type, Operation operation) {
         assert type != null;
         Class cls = type.getPhysical();
         if (baseType != null && baseType.isAssignableFrom(cls)) {
@@ -95,7 +95,7 @@ public abstract class BaseDataBinding implements DataBinding {
             return null;
         } else {
             DataType<Class> dataType = new DataTypeImpl<Class>(value.getClass(), value.getClass());
-            if (introspect(dataType, null)) {
+            if (introspect(dataType, (Operation) null)) {
                 return dataType;
             } else {
                 return null;

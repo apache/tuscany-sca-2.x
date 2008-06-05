@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.databinding;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 /**
@@ -41,12 +42,11 @@ public interface WrapperHandler<T> {
 
     /**
      * Get the data type for the wrapper
-     * @param element The wrapper element
-     * @param wrapperClass Wrapper class
-     * @param context The transformation context
+     * @param operation The operation
+     * @param input Is it for input or output?
      * @return The data type of the wrapper, null if it's not a wrapper type
      */
-    DataType getWrapperType(ElementInfo element, Class<? extends T> wrapperClass, TransformationContext context);
+    DataType getWrapperType(Operation operation, boolean input);
 
     /**
      * Check if the given data is an instance of the wrapper

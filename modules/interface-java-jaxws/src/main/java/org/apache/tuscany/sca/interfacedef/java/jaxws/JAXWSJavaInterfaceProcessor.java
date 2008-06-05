@@ -106,7 +106,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         SOAPBinding soapBinding = clazz.getAnnotation(SOAPBinding.class);
 
         for (Iterator<Operation> it = contract.getOperations().iterator(); it.hasNext();) {
-            JavaOperation operation = (JavaOperation)it.next();
+            final JavaOperation operation = (JavaOperation)it.next();
             final Method method = operation.getJavaMethod();
             introspectFaultTypes(operation);
 
@@ -197,7 +197,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                             Class<?> wrapperClass = Class.forName(inputWrapperClassName, false, clazz.getClassLoader());
                             QName qname = new QName(inputNS, inputName);
                             DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
-                            dataBindingExtensionPoint.introspectType(dt, null);
+                            dataBindingExtensionPoint.introspectType(dt, operation);
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
@@ -232,7 +232,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                                 Class.forName(outputWrapperClassName, false, clazz.getClassLoader());
                             QName qname = new QName(inputNS, inputName);
                             DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
-                            dataBindingExtensionPoint.introspectType(dt, null);
+                            dataBindingExtensionPoint.introspectType(dt, operation);
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
@@ -293,7 +293,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private void introspectFaultTypes(Operation operation) {
         if (operation != null && operation.getFaultTypes() != null) {
             for (DataType exceptionType : operation.getFaultTypes()) {
-                faultExceptionMapper.introspectFaultDataType(exceptionType, true);
+                faultExceptionMapper.introspectFaultDataType(exceptionType, operation, true);
                 DataType faultType = (DataType)exceptionType.getLogical();
                 if (faultType.getDataBinding() == JavaExceptionDataBinding.NAME) {
                     // The exception class doesn't have an associated bean class, so
@@ -322,7 +322,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 if (dt != null) {
                     propDT.setDataBinding(dt.value());
                 }
-                dataBindingExtensionPoint.introspectType(propDT, aMethod.getAnnotations());
+                dataBindingExtensionPoint.introspectType(propDT, operation);
 
                 // sort the list lexicographically as specified in JAX-WS spec section 3.7
                 int i = 0;

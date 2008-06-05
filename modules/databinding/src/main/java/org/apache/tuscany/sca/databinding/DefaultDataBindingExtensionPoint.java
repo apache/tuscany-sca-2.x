@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.databinding;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +33,7 @@ import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
@@ -191,8 +191,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return getDataBinding().getWrapperHandler();
         }
 
-        public boolean introspect(DataType dataType, Annotation[] annotations) {
-            return getDataBinding().introspect(dataType, annotations);
+        public boolean introspect(DataType dataType, Operation operation) {
+            return getDataBinding().introspect(dataType, operation);
         }
 
         public DataType introspect(Object value) {
@@ -202,27 +202,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
     //FIXME The following methods should not be on the extension point
     // they should be on a separate class
-    public boolean introspectType(DataType dataType, Annotation[] annotations) {
-        return introspectType(dataType, annotations, false);
-    }
-
-    private boolean introspectArray(DataType dataType, Annotation[] annotations) {
-        Class physical = dataType.getPhysical();
-        if (!physical.isArray() || physical == byte[].class) {
-            return false;
-        }
-        Class componentType = physical.getComponentType();
-        DataType logical = new DataTypeImpl(componentType, dataType.getLogical());
-        introspectType(logical, annotations);
-        dataType.setDataBinding("java:array");
-        dataType.setLogical(logical);
-        return true;
-    }
-
-    //
-    // Leverage the DataBinding ExceptionHandler to calculate the DataType of an exception DataType
-    //
-    public boolean introspectType(DataType dataType, Annotation[] annotations, boolean isException) {
+    public boolean introspectType(DataType dataType, Operation operation) {
         loadDataBindings();
         for (DataBinding binding : databindings) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
@@ -230,26 +210,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             // which is java.lang.Object. Default to this only if no databinding
             // results
             if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
-                /*
-                if (isException) {
-                    // Next look to see if the DB's exceptionHandler handles this exception
-                    ExceptionHandler excHandler = binding.getExceptionHandler();
-                    if (excHandler != null) {
-                        // Asymmetric to have the introspect() methods set the DataBindings themselves
-                        // whereas we're setting it ourselves here.   
-                        DataType faultType = excHandler.getFaultType(dataType);
-                        if (faultType != null) {
-                            dataType.setDataBinding(binding.getName());
-                            dataType.setLogical(faultType);
-                            return true;
-                        }
-                    }
-                } else
-                */ 
-                {
-                    if (binding.introspect(dataType, annotations)) {
-                        return true;
-                    }
+                if (binding.introspect(dataType, operation)) {
+                    return true;
                 }
             }
         }
@@ -260,18 +222,30 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return false;
         }
         if (dataType.getPhysical().isArray()) {
-            introspectArray(dataType, annotations);
+            introspectArray(dataType, operation);
             return true;
-        } else if (isException) {
+        } else if (Throwable.class.isAssignableFrom(physical)) {
             dataType.setDataBinding(JavaExceptionDataBinding.NAME);
             return true;
         } else {
             dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;
+        }    }
+
+    private boolean introspectArray(DataType dataType, Operation operation) {
+        Class physical = dataType.getPhysical();
+        if (!physical.isArray() || physical == byte[].class) {
+            return false;
         }
+        Class componentType = physical.getComponentType();
+        DataType logical = new DataTypeImpl(componentType, dataType.getLogical());
+        introspectType(logical, operation);
+        dataType.setDataBinding("java:array");
+        dataType.setLogical(logical);
+        return true;
     }
 
-    public DataType introspectType(Object value) {
+    public DataType introspectType(Object value, Operation operation) {
         loadDataBindings();
         DataType dataType = null;
         for (DataBinding binding : databindings) {

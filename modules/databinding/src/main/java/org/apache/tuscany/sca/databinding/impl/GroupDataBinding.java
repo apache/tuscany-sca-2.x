@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.sca.databinding.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -46,7 +46,7 @@ public abstract class GroupDataBinding extends BaseDataBinding {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean introspect(DataType type, Annotation[] annotations) {
+    public boolean introspect(DataType type, Operation operation) {
         if (markerTypes == null) {
             return false;
         }
@@ -61,9 +61,9 @@ public abstract class GroupDataBinding extends BaseDataBinding {
         for (Class<?> c : markerTypes) {
             if (isTypeOf(c, cls)) {
                 type.setDataBinding(getDataBinding(c));
-                Object logical = getLogical(cls, annotations);
+                Object logical = getLogical(cls, null);
                 if (logical != null) {
-                    type.setLogical(getLogical(cls, annotations));
+                    type.setLogical(getLogical(cls, null));
                 } else {
                     type.setLogical(XMLType.UNKNOWN);
                 }
@@ -95,9 +95,9 @@ public abstract class GroupDataBinding extends BaseDataBinding {
     /**
      * Get the logical type
      * @param type The java type
-     * @param annotations
+     * @param operation TODO
      * @return
      */
-    protected abstract Object getLogical(Class<?> type, Annotation[] annotations);
+    protected abstract Object getLogical(Class<?> type, Operation operation);
 
 }

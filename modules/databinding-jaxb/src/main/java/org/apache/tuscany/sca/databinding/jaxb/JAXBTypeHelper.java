@@ -37,13 +37,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.osoa.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -52,7 +54,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
     private static final String ANYTYPE_NAME = "anyType";
     private static final QName ANYTYPE_QNAME = new QName(SCHEMA_NS, ANYTYPE_NAME);
 
-    private List<Class<?>> types = new ArrayList<Class<?>>();
+    // private List<Class<?>> types = new ArrayList<Class<?>>();
 
     public JAXBTypeHelper() {
         super();
@@ -65,7 +67,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
         } else if (javaType.isInterface()) {
             return new TypeInfo(ANYTYPE_QNAME, true, null);
         } else {
-            types.add(javaType);
+            // types.add(javaType);
             if (logical instanceof XMLType) {
                 xmlType = ((XMLType)logical).getTypeName();
             }
@@ -77,11 +79,13 @@ public class JAXBTypeHelper implements XMLTypeHelper {
         }
     }
 
+    /*
     public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver) {
         List<XSDefinition> definitions = new ArrayList<XSDefinition>();
         generateJAXBSchemas(definitions, factory);
         return definitions;
     }
+    */
 
     public static Map<String, String> generateSchema(JAXBContext context) throws IOException {
         StringResolverImpl resolver = new StringResolverImpl();
@@ -113,6 +117,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
 
     }
 
+    /*
     private void generateJAXBSchemas1(List<XSDefinition> definitions, XSDFactory factory) {
         if (types.size() > 0) {
             try {
@@ -122,12 +127,12 @@ public class JAXBTypeHelper implements XMLTypeHelper {
                 JAXBContext context = JAXBContextHelper.createJAXBContext(typesArray);
                 Map<String, String> results = generateSchema(context);
                 collection.setSchemaResolver(new XSDResolver(results));
-                
+
                 for (Map.Entry<String, String> entry : results.entrySet()) {
                     XSDefinition definition = factory.createXSDefinition();
                     int index = entry.getKey().lastIndexOf('#');
                     String ns = entry.getKey().substring(0, index);
-                    String file = entry.getKey().substring(index+1);
+                    String file = entry.getKey().substring(index + 1);
                     definition.setUnresolved(true);
                     definition.setNamespace(ns);
                     definition.setSchema(collection.read(new StringReader(entry.getValue()), null));
@@ -140,6 +145,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
             }
         }
     }
+    */
 
     private static class DOMResolverImpl extends SchemaOutputResolver {
         private Map<String, DOMResult> results = new HashMap<String, DOMResult>();
@@ -156,26 +162,33 @@ public class JAXBTypeHelper implements XMLTypeHelper {
             return results;
         }
     }
-    
+
+    /*
     private void generateJAXBSchemas(List<XSDefinition> definitions, XSDFactory factory) {
         if (types.size() > 0) {
             try {
                 Class<?>[] typesArray = new Class<?>[types.size()];
                 typesArray = types.toArray(typesArray);
                 JAXBContext context = JAXBContext.newInstance(typesArray);
-                DOMResolverImpl resolver = new DOMResolverImpl();
-                context.generateSchema(resolver);
-                Map<String, DOMResult> results = resolver.getResults();
-                for (Map.Entry<String, DOMResult> entry: results.entrySet()) {
-                    XSDefinition definition = factory.createXSDefinition();
-                    definition.setUnresolved(true);
-                    definition.setDocument((Document)entry.getValue().getNode());
-                    definition.setNamespace(entry.getKey());
-                    definitions.add(definition);
-                }
+                generateSchemas(definitions, factory, context);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+    */
+
+    private void generateSchemas(List<XSDefinition> definitions, XSDFactory factory, JAXBContext context)
+        throws IOException {
+        DOMResolverImpl resolver = new DOMResolverImpl();
+        context.generateSchema(resolver);
+        Map<String, DOMResult> results = resolver.getResults();
+        for (Map.Entry<String, DOMResult> entry : results.entrySet()) {
+            XSDefinition definition = factory.createXSDefinition();
+            definition.setUnresolved(true);
+            definition.setDocument((Document)entry.getValue().getNode());
+            definition.setNamespace(entry.getKey());
+            definitions.add(definition);
         }
     }
 
@@ -194,6 +207,29 @@ public class JAXBTypeHelper implements XMLTypeHelper {
 
         public Map<String, StreamResult> getResults() {
             return results;
+        }
+    }
+
+    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, Interface intf) {
+        try {
+            JAXBContext context = JAXBContextHelper.createJAXBContext(intf, false);
+            List<XSDefinition> definitions = new ArrayList<XSDefinition>();
+            generateSchemas(definitions, factory, context);
+            return definitions;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, List<DataType> dataTypes) {
+        try {
+
+            JAXBContext context = JAXBContextHelper.createJAXBContext(dataTypes);
+            List<XSDefinition> definitions = new ArrayList<XSDefinition>();
+            generateSchemas(definitions, factory, context);
+            return definitions;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
         }
     }
 

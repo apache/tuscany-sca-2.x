@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.databinding;
 
-import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * An extension point for data binding extensions.
@@ -56,29 +56,19 @@ public interface DataBindingExtensionPoint {
      * Introspect the java class to figure out what DataType supports it.
      * 
      * @param dataType The initial data type
-     * @param annotations The java annotations
+     * @param operation TODO
      * @return A DataType representing the java type or null if no databinding
      *         recognizes the java type
      */
-    boolean introspectType(DataType dataType, Annotation[] annotations);
-
-    /**
-     * Introspect the java class to figure out what DataType supports it.
-     * 
-     * @param dataType The initial data type
-     * @param annotations The java annotations
-     * @param isFaultType Should be set to true if DataType parameter represents an Exception
-     * @return A DataType representing the java type or null if no databinding
-     *         recognizes the java type
-     */
-    boolean introspectType(DataType dataType, Annotation[] annotations, boolean isFaultType);
+    boolean introspectType(DataType dataType, Operation operation);
 
     /**
      * Introspect the value to figure out the corresponding DataType
      * 
      * @param value The object value
+     * @param operation TODO
      * @return A DataType representing the value or null if no databinding
      *         recognizes the value
      */
-    DataType introspectType(Object value);
+    DataType introspectType(Object value, Operation operation);
 }

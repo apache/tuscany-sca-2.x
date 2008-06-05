@@ -33,6 +33,7 @@ import javax.xml.ws.WebFault;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -73,7 +74,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
      * </ul>
      */
     @SuppressWarnings("unchecked")
-    public Throwable wrapFaultInfo(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause) {
+    public Throwable wrapFaultInfo(DataType<DataType> exceptionType, String message, Object faultInfo, Throwable cause, Operation operation) {
         Class<?> exceptionClass = exceptionType.getPhysical();
         if (exceptionClass.isInstance(faultInfo)) {
             return (Throwable)faultInfo;
@@ -171,7 +172,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         }
     }
 
-    public Object getFaultInfo(Throwable exception, Class<?> faultBeanClass) {
+    public Object getFaultInfo(Throwable exception, Class<?> faultBeanClass, Operation operation) {
         if (exception == null) {
             return null;
         }
@@ -245,7 +246,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean introspectFaultDataType(DataType<DataType> exceptionType, final boolean generatingFaultBean) {
+    public boolean introspectFaultDataType(DataType<DataType> exceptionType, Operation operation, final boolean generatingFaultBean) {
         QName faultName = null;
         boolean result = false;
 
@@ -317,7 +318,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         if (faultType.getDataBinding() == null && dataBindingExtensionPoint != null) {
             faultBean = faultType.getPhysical();
             result =
-                dataBindingExtensionPoint.introspectType(faultType, null, Throwable.class.isAssignableFrom(faultBean));
+                dataBindingExtensionPoint.introspectType(faultType, operation);
         }
         ((DataType) exceptionType).setLogical(faultType);
 

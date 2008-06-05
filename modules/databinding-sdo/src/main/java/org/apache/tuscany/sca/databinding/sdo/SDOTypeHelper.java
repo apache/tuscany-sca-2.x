@@ -30,11 +30,16 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.osoa.sca.ServiceRuntimeException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -51,9 +56,9 @@ public class SDOTypeHelper implements XMLTypeHelper {
 
     private TypeHelper typeHelper;
     private XSDHelper xsdHelper;
-    private Map<String, List<Type>> xsdTypesMap = new HashMap<String, List<Type>>();
-    private Map<String, List<Type>> typesMap = new HashMap<String, List<Type>>();
-    
+    // private Map<String, List<Type>> xsdTypesMap = new HashMap<String, List<Type>>();
+    // private Map<String, List<Type>> typesMap = new HashMap<String, List<Type>>();
+
     public SDOTypeHelper() {
         super();
         typeHelper = SDOContextHelper.getDefaultHelperContext().getTypeHelper();
@@ -65,69 +70,84 @@ public class SDOTypeHelper implements XMLTypeHelper {
         if (xmlType != null) {
             return new TypeInfo(xmlType, true, null);
         } else {
-            Type type = typeHelper.getType(javaType);
-            if (xsdHelper.isXSD(type)) {
-                List<Type> xsdTypes = xsdTypesMap.get(type.getURI());
-                if (xsdTypes == null) {
-                    xsdTypes = new ArrayList<Type>();
-                    xsdTypesMap.put(type.getURI(), xsdTypes);
-                }
-                if (!xsdTypes.contains(type)) {
-                    xsdTypes.add(type);
-                }
-            } else {
-                List<Type> types = typesMap.get(type.getURI());
-                if (types == null) {
-                    types = new ArrayList<Type>();
-                    typesMap.put(type.getURI(), types);
-                }
-                if (!types.contains(type)) {
-                    types.add(type);
-                }
-            }
+            // introspect(javaType, xsdTypesMap, typesMap);
             if (logical instanceof XMLType) {
                 xmlType = ((XMLType)logical).getTypeName();
             }
             if (xmlType == null) {
-                xmlType = new QName(JavaXMLMapper.getNamespace(javaType),
-                                    Introspector.decapitalize(javaType.getSimpleName()));
+                xmlType =
+                    new QName(JavaXMLMapper.getNamespace(javaType), Introspector.decapitalize(javaType.getSimpleName()));
             }
             return new TypeInfo(xmlType, false, null);
         }
     }
 
-    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver) {
-        List<XSDefinition> definitions = new ArrayList<XSDefinition>();
-        generateSDOSchemas(definitions, factory);
-        addResolvedXSDs(definitions, factory, resolver);
-        return definitions;
-    }
-
-    private void generateSDOSchemas(List<XSDefinition> definitions, XSDFactory factory) {
-        for (Map.Entry<String, List<Type>> entry: typesMap.entrySet()) {
-            String schema = xsdHelper.generate(entry.getValue());
-            DOMImplementationRegistry registry = null;
-            try {
-                registry = DOMImplementationRegistry.newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            DOMImplementation impl = registry.getDOMImplementation("XML 3.0");
-            DOMImplementationLS ls = (DOMImplementationLS)impl.getFeature("LS", "3.0");
-            LSParser parser = ls.createLSParser(DOMImplementationLS.MODE_SYNCHRONOUS, SCHEMA_NS);
-            LSInput input = ls.createLSInput();
-            input.setCharacterStream(new StringReader(schema));
-            Document document = parser.parse(input);
-            XSDefinition definition = factory.createXSDefinition();
-            definition.setUnresolved(true);
-            definition.setDocument(document);
-            definition.setNamespace(entry.getKey());
-            definitions.add(definition);
+    private void introspect(Class javaType, Map<String, List<Type>> xsdTypesMap, Map<String, List<Type>> typesMap) {
+        Type type = typeHelper.getType(javaType);
+        if (type == null) {
+            return;
+        }
+        if (xsdHelper.isXSD(type)) {
+            addToMap(xsdTypesMap, type);
+        } else {
+            addToMap(typesMap, type);
         }
     }
 
-    private void addResolvedXSDs(List<XSDefinition> definitions, XSDFactory factory, ModelResolver resolver) {
-        for (Map.Entry<String, List<Type>> entry: xsdTypesMap.entrySet()) {
+    private void addToMap(Map<String, List<Type>> map, Type type) {
+        List<Type> types = map.get(type.getURI());
+        if (types == null) {
+            types = new ArrayList<Type>();
+            map.put(type.getURI(), types);
+        }
+        if (!types.contains(type)) {
+            types.add(type);
+        }
+    }
+
+    /*
+    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver) {
+        List<XSDefinition> definitions = new ArrayList<XSDefinition>();
+        generateSDOSchemas(definitions, factory, typesMap);
+        addResolvedXSDs(definitions, factory, resolver, xsdTypesMap);
+        return definitions;
+    }
+    */
+
+    private void generateSDOSchemas(List<XSDefinition> definitions, XSDFactory factory, Map<String, List<Type>> map) {
+        for (Map.Entry<String, List<Type>> entry : map.entrySet()) {
+            List<Type> types = entry.getValue();
+            String ns = entry.getKey();
+            generateSchema(definitions, factory, types, ns);
+        }
+    }
+
+    private void generateSchema(List<XSDefinition> definitions, XSDFactory factory, List<Type> types, String ns) {
+        String schema = xsdHelper.generate(types);
+        DOMImplementationRegistry registry = null;
+        try {
+            registry = DOMImplementationRegistry.newInstance();
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+        DOMImplementation impl = registry.getDOMImplementation("XML 3.0");
+        DOMImplementationLS ls = (DOMImplementationLS)impl.getFeature("LS", "3.0");
+        LSParser parser = ls.createLSParser(DOMImplementationLS.MODE_SYNCHRONOUS, SCHEMA_NS);
+        LSInput input = ls.createLSInput();
+        input.setCharacterStream(new StringReader(schema));
+        Document document = parser.parse(input);
+        XSDefinition definition = factory.createXSDefinition();
+        definition.setUnresolved(true);
+        definition.setDocument(document);
+        definition.setNamespace(ns);
+        definitions.add(definition);
+    }
+
+    private void addResolvedXSDs(List<XSDefinition> definitions,
+                                 XSDFactory factory,
+                                 ModelResolver resolver,
+                                 Map<String, List<Type>> map) {
+        for (Map.Entry<String, List<Type>> entry : map.entrySet()) {
             XSDefinition definition = factory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(entry.getKey());
@@ -138,7 +158,7 @@ public class SDOTypeHelper implements XMLTypeHelper {
                 throw new RuntimeException("No XSD found for namespace " + entry.getKey());
             }
             // make sure all the required types are defined in the resolved schema
-            for (Type type: entry.getValue()) {
+            for (Type type : entry.getValue()) {
                 QName typeName = new QName(type.getURI(), type.getName());
                 if (resolved.getXmlSchemaType(typeName) == null) {
                     //FIXME: create a checked exception and propagate it back up to the activator
@@ -147,6 +167,56 @@ public class SDOTypeHelper implements XMLTypeHelper {
             }
             definitions.add(resolved);
         }
+    }
+
+    private static List<DataType> getDataTypes(Interface intf) {
+        List<DataType> dataTypes = new ArrayList<DataType>();
+        for (Operation op : intf.getOperations()) {
+            WrapperInfo wrapper = op.getWrapper();
+            if (wrapper != null) {
+                DataType dt1 = wrapper.getInputWrapperType();
+                if (dt1 != null) {
+                    dataTypes.add(dt1);
+                }
+                DataType dt2 = wrapper.getOutputWrapperType();
+                if (dt2 != null) {
+                    dataTypes.add(dt2);
+                }
+            } else {
+                for (DataType dt1 : op.getInputType().getLogical()) {
+                    dataTypes.add(dt1);
+                }
+                DataType dt2 = op.getOutputType();
+                if (dt2 != null) {
+                    dataTypes.add(dt2);
+                }
+                for (DataType<DataType> dt3 : op.getFaultTypes()) {
+                    DataType dt4 = dt3.getLogical();
+                    if (dt4 != null) {
+                        dataTypes.add(dt4);
+                    }
+                }
+            }
+        }
+        return dataTypes;
+    }
+
+    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, Interface intf) {
+        return getSchemaDefinitions(factory, resolver, getDataTypes(intf));
+    }
+
+    public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, List<DataType> dataTypes) {
+        Map<String, List<Type>> xsdTypesMap = new HashMap<String, List<Type>>();
+        Map<String, List<Type>> typesMap = new HashMap<String, List<Type>>();
+        for (DataType d : dataTypes) {
+            if (SDODataBinding.NAME.equals(d.getDataBinding())) {
+                introspect(d.getPhysical(), xsdTypesMap, typesMap);
+            }
+        }
+        List<XSDefinition> definitions = new ArrayList<XSDefinition>();
+        generateSDOSchemas(definitions, factory, typesMap);
+        addResolvedXSDs(definitions, factory, resolver, xsdTypesMap);
+        return definitions;
     }
 
 }
