@@ -27,7 +27,7 @@ public class Provider {
 
     public static void main(String[] args) {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
         System.out.println("Provider.composite ready...");
 
         try {

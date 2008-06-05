@@ -23,7 +23,7 @@
 	   name="Consumer">
     
     <component name="CustomerClient">
-        <implementation.java class="org.apache.tuscany.sca.binding.feed.CustomerClientImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.atom.CustomerClientImpl"/>
         <reference name="resourceCollection">
         	<tuscany:binding.atom uri="http://localhost:8084/customer"/>
         </reference>

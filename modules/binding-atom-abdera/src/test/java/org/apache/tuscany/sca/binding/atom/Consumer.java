@@ -25,7 +25,7 @@ public class Consumer {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Consumer.composite");
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
 
         CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
         testService.testCustomerCollection();

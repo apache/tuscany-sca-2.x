@@ -28,7 +28,8 @@ import org.osoa.sca.annotations.Reference;
 
 public class CustomerClientImpl implements CustomerClient {
 
-	protected final Abdera abdera = new Abdera();
+    protected final Abdera abdera = new Abdera();
+    
     @Reference
     public Collection resourceCollection;
 

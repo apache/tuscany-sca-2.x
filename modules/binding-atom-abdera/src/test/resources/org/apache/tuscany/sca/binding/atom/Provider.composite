@@ -27,7 +27,7 @@
 	</service>
 	
     <component name="CustomerCollection">
-        <implementation.java class="org.apache.tuscany.sca.binding.feed.CustomerCollectionImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.atom.CustomerCollectionImpl"/>
     </component>
 
 </composite>
