@@ -134,6 +134,42 @@
                 </plugins>         
             </build>
         </profile>
+        
+        <profile>
+            <id>security</id>
+            <modules>
+                <!-- <module>demos</module> -->
+                <module>itest</module>
+                <module>vtest</module>
+            </modules>
+            <activation>
+                <property>
+                    <name>tuscany.policy.file</name>
+                </property>
+            </activation>
+            <properties>
+                <tuscany.policy.file>file:///${java.home}/lib/security/tuscany.policy</tuscany.policy.file>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.3.1</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*TestCase.java</include>
+                            </includes>
+                            <reportFormat>brief</reportFormat>
+                            <useFile>false</useFile>
+                            <forkMode>once</forkMode>
+                            <!-- Place tuscany.policy in your Java home security directory. Alternatively, hardcode the file location here. -->
+                            <argLine>-Djava.security.manager -Djava.security.policy=${tuscany.policy.file} -Dpolicy.allowSystemProperty=true -Djava.security.debug=policy</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>         
+            </build>
+        </profile>
     </profiles>
  
 
