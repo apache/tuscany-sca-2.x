@@ -199,8 +199,8 @@ public class JAXBContextCache {
         }
     }
 
-    public Map<Object, JAXBContext> getCache() {
-        return cache.getCache();
+    public LRUCache<Object, JAXBContext> getCache() {
+        return cache;
     }
 
     public JAXBContext getJAXBContext(Class<?> cls) throws JAXBException {
