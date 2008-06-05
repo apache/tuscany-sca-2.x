@@ -49,12 +49,12 @@
 
       <assign name="assign1">
           <copy>
-              <from variable="myVar" part="TestPart"/>
-              <to variable="tmpVar"/>
+              <from>$myVar.TestPart/test:message</from>
+              <to>$tmpVar</to>
           </copy>
           <copy>
               <from>concat($tmpVar,' World')</from>
-              <to variable="myVar" part="TestPart"/>
+              <to>$myVar.TestPart/test:message</to>
           </copy>
       </assign>
        <reply name="end"  
