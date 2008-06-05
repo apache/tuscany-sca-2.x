@@ -207,32 +207,7 @@ public class Interface2WSDLGenerator {
             }
             List<XSDefinition> xsDefinitions = helper.getSchemaDefinitions(xsdFactory, resolver, en.getValue());
             for (XSDefinition xsDef: xsDefinitions) {
-                String nsURI = xsDef.getNamespace();
-                Document document = xsDef.getDocument();
-                XmlSchema schemaDef = xsDef.getSchema();
-                if (document == null) {
-                    try {
-                        NamespaceMap prefixMap = new NamespaceMap();
-                        prefixMap.add("xs", SCHEMA_NS);
-                        prefixMap.add("tns", nsURI);
-                        schemaDef.setNamespaceContext(prefixMap);
-                        Document[] docs = schemaDef.getAllSchemas();
-                        document = docs[0];
-                        xsDef.setDocument(document);
-                        for (int i = 1; i < docs.length; i++) {
-                            Element schema = docs[i].getDocumentElement();
-                            Schema schemaExt = createSchemaExt(definition);
-                            schemaExt.setElement(schema);
-                        }
-                    } catch (XmlSchemaException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                loadXSD(schemaCollection, xsDef);
-                wsdlDefinition.getXmlSchemas().add(xsDef);
-                Element schema = document.getDocumentElement();
-                Schema schemaExt = createSchemaExt(definition);
-                schemaExt.setElement(schema);
+                addSchemaExtension(xsDef, schemaCollection, wsdlDefinition, definition);
             }
         }
 
@@ -329,6 +304,41 @@ public class Interface2WSDLGenerator {
         return definition;
     }
     
+    private void addSchemaExtension(XSDefinition xsDef,
+                                    XmlSchemaCollection schemaCollection,
+                                    WSDLDefinition wsdlDefinition,
+                                    Definition definition) throws WSDLException {
+        if (xsDef.getAggregatedDefinitions() != null) {
+            for (XSDefinition xsd: xsDef.getAggregatedDefinitions()) {
+                addSchemaExtension(xsd, schemaCollection, wsdlDefinition, definition);
+            }
+        } else {
+            String nsURI = xsDef.getNamespace();
+            Document document = xsDef.getDocument();
+            if (document == null) {
+                try {
+                    NamespaceMap prefixMap = new NamespaceMap();
+                    prefixMap.add("xs", SCHEMA_NS);
+                    prefixMap.add("tns", nsURI);
+                    XmlSchema schemaDef = xsDef.getSchema();
+                    schemaDef.setNamespaceContext(prefixMap);
+                    Document[] docs = schemaDef.getAllSchemas();
+                    document = docs[docs.length-1];
+                    document.setDocumentURI(xsDef.getLocation().toString());
+                    xsDef.setDocument(document);
+                } catch (XmlSchemaException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            loadXSD(schemaCollection, xsDef);
+            wsdlDefinition.getXmlSchemas().add(xsDef);
+            Element schema = document.getDocumentElement();
+            Schema schemaExt = createSchemaExt(definition);
+            schemaExt.setDocumentBaseURI(document.getDocumentURI());
+            schemaExt.setElement(schema);
+        }
+    }
+
     private static void loadXSD(XmlSchemaCollection schemaCollection, XSDefinition definition) {
         if (definition.getSchema() != null) {
             return;

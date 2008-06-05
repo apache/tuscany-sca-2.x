@@ -189,6 +189,7 @@ public class XSDModelResolver implements ModelResolver {
         aggregated.setUnresolved(true);
         aggregated.setSchema(facade);
         aggregated.setNamespace(ns);
+        aggregated.setAggregatedDefinitions(definitions);
         aggregated.setUnresolved(false);
 
         // FIXME: [rfeng] This is hacky

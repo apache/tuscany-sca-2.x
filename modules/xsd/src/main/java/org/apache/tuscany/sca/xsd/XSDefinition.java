@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.xsd;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -89,15 +90,28 @@ public interface XSDefinition extends Base {
     void setDocument(Document document);
 
     /**
-     * Get the XSD element by QName
-     * @param name
+     * Get an XSD element by QName
+     * @param name The element name
      * @return The XSD element
      */
     XmlSchemaElement getXmlSchemaElement(QName name);
 
     /**
-     * @param name Get the XSD type by QName
+     * Get an XSD type by QName
+     * @param name The type name
      * @return The XSD type
      */
     XmlSchemaType getXmlSchemaType(QName name);
+
+    /**
+     * Get the aggregated definitions for a facade XSDefinition
+     * @return The aggregated definitions, or null if not a facade
+     */
+    List<XSDefinition> getAggregatedDefinitions();
+
+    /**
+     * Set the aggregated definitions for a facade XSDefinition
+     * @param name The aggregated definitions
+     */
+    void setAggregatedDefinitions(List<XSDefinition> definitions);
 }
