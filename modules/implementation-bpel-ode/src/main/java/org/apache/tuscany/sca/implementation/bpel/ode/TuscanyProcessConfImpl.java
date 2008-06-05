@@ -338,7 +338,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      */
     public boolean isTransient() {
         //System.out.println("isTransient called");
-        return true;
+        return false;
     } // end isTransient
 
     /**
