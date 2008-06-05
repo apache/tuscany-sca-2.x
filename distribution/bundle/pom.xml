@@ -223,11 +223,11 @@
             <artifactId>tuscany-databinding-jaxb</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-databinding-sdo</artifactId>
             <version>${pom.version}</version>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-databinding-sdo-axiom</artifactId>
@@ -495,23 +495,48 @@
             <artifactId>tuscany-sca-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
+  <!-- dependencies to keep in the shaded pom.xml -->
+
         <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.1-incubating</version>
-            <exclusions>
-                <exclusion>
-                    <!-- sdo 1.0 uses 3.2.0 but sca uses 3.2.1 -->
-                    <groupId>org.codehaus.woodstox</groupId>
-                    <artifactId>wstx-asl</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-tools</artifactId>
-            <version>1.1-incubating</version>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.1</version>
+            <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-commonj_1.1_spec</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+<!-- 
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+            <version>1.0-MR1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.1_3</version>
+        </dependency>       
+-->
+ 
     </dependencies>
 
     <build>
@@ -527,162 +552,187 @@
         <plugins>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>shade-maven-plugin</artifactId>
-                <version>1.0-alpha-7</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
+
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <shadedGroupFilter>org.apache.tuscany</shadedGroupFilter>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <shadedGroupFilter>org.apache.tuscany.sca</shadedGroupFilter>
 
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.apache.tuscany.sdo:tuscany-sdo-impl</exclude>
-                                </excludes>
-                            </artifactSet>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createSourcesJar>${createSourcesJar}</createSourcesJar>
+                            <promoteTransitiveDependencies>false</promoteTransitiveDependencies>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <filters>
+              <filter>
+                <artifact>org.apache.tuscany.sca:tuscany-interface-java-jaxws</artifact>
+                <excludes>
+                   <exclude>com/example/**</exclude>
+                </excludes>
+              </filter>
+              <filter>
+                <artifact>org.apache.tuscany.sca:tuscany-databinding-jaxb</artifact>
+                <excludes>
+                   <exclude>com/example/**</exclude>
+                </excludes>
+              </filter>
+              <filter>
+                <artifact>org.apache.tuscany.sca:tuscany-databinding-sdo</artifact>
+                <excludes>
+                   <exclude>com/example/**</exclude>
+                </excludes>
+              </filter>
+                                <filter>
+                                    <artifact>${project.groupId}:${project.artifactId}</artifact>
+
+                                    <excludes>
+                                        <exclude>org/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
 
                             <transformers>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.assembly.AssemblyFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.assembly.SCABindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.AtomBindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.RSSBindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.atom.AtomBindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.rss.RSSBindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.http.HTTPResourceBindingFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.ContributionFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.java.JavaImportExportFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.ContributionPostProcessorExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.PackageProcessor</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.resolver.ModelResolver</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.service.ContributionListener</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.core.ModuleActivator</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.databinding.DataBinding</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.databinding.DataBindingExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.databinding.PullTransformer</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.databinding.PushTransformer</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.databinding.TransformerExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.extension.helper.BindingActivator</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.extension.helper.ImplementationActivator</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.host.http.ServletHostExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.implementation.java.JavaImplementationFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.implementation.resource.ResourceImplementationFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.BindingProviderFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.ImplementationProviderFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.spi.ImplementationActivator</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.work.WorkScheduler</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.policy.util.PolicyHandler</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.PolicyProviderFactory</resource>
                                 </transformer>
-                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.definitions.SCADefinitionsProvider</resource>
                                 </transformer>
                             </transformers>
