@@ -67,7 +67,6 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
-import org.osoa.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -79,6 +78,10 @@ public class Interface2WSDLGenerator {
     private static final String SCHEMA_NAME = "schema";
     private static final QName SCHEMA_QNAME = new QName(SCHEMA_NS, SCHEMA_NAME);
     private static final String XMLNS_NS = "http://www.w3.org/2000/xmlns/";
+    
+    private static final String ANYTYPE_NAME = "anyType";
+    private static final QName ANYTYPE_QNAME = new QName(SCHEMA_NS, ANYTYPE_NAME);
+
 
     private WSDLFactory factory;
     private DataBindingExtensionPoint dataBindings;
@@ -564,7 +567,15 @@ public class Interface2WSDLGenerator {
         if (helper == null) {
             DataBinding dataBinding = dataBindings.getDataBinding(db);
             if (dataBinding == null) {
-                throw new ServiceRuntimeException("No data binding for " + db);
+                QName element = name;
+                if (element == null || dataType.getLogical() instanceof XMLType) {
+                    XMLType xmlType = (XMLType)dataType.getLogical();
+                    if (xmlType.getElementName() != null) {
+                        element = xmlType.getElementName();
+                    }
+                }
+                return new ElementInfo(element, new TypeInfo(ANYTYPE_QNAME, false, null));
+                // throw new ServiceRuntimeException("No data binding for " + db);
             }
 
             helper = dataBinding.getXMLTypeHelper();
