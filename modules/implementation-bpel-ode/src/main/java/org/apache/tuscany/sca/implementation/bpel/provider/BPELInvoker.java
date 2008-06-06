@@ -245,6 +245,6 @@ public class BPELInvoker implements Invoker {
      * @return
      */
     private Element processResponse(Element response) {
-        return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
+        return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName())).getFirstChild();
     }
 }
