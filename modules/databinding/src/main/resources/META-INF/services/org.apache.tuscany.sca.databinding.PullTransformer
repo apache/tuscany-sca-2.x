@@ -35,3 +35,6 @@ org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;source=javax.xml.s
 # org.apache.tuscany.sca.databinding.xml.SimpleJavaType2Node;source=java:simpleType,target=org.w3c.dom.Node,weight=80000
 org.apache.tuscany.sca.databinding.xml.Source2NodeTransformer;source=javax.xml.transform.Source,target=org.w3c.dom.Node,weight=80
 org.apache.tuscany.sca.databinding.xml.Source2StringTransformer;source=javax.xml.transform.Source,target=java.lang.String,weight=80
+
+org.apache.tuscany.sca.databinding.xml.Node2SourceTransformer;source=org.w3c.dom.Node,target=javax.xml.transform.Source,weight=80
+org.apache.tuscany.sca.databinding.xml.String2SourceTransformer;source=java.lang.String,target=javax.xml.transform.Source,weight=80
