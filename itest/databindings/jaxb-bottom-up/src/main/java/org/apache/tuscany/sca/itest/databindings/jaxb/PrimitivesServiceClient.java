@@ -26,16 +26,23 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 public interface PrimitivesServiceClient {
     boolean negateBooleanForward(boolean flag);
     boolean[] negateBooleanArrayForward(boolean[] flags);
+    boolean passByValueBooleanArray();
     byte negateByteForward(byte b);
     byte[] negateByteArrayForward(byte[] ba);
+    boolean passByValueByteArray();
     short negateShortForward(short s);
     short[] negateShortArrayForward(short[] sa);
+    boolean passByValueShortArray();
     int negateIntForward(int i);
     int[] negateIntArrayForward(int[] ia);
+    boolean passByValueIntArray();
     long negateLongForward(long l);
     long[] negateLongArrayForward(long[] la);
+    boolean passByValueLongArray();
     float negateFloatForward(float f);
     float[] negateFloatArrayForward(float[] fa);
+    boolean passByValueFloatArray();
     double negateDoubleForward(double d);
     double[] negateDoubleArrayForward(double[] da);
+    boolean passByValueDoubleArray();
 }

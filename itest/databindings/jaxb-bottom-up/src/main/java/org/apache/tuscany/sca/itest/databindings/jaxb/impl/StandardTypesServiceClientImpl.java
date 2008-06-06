@@ -19,20 +19,20 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
 
-import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService;
-import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesServiceClient;
+import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService;
+import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesServiceClient;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 /**
- * An implementation of PrimitivesServiceClient.
+ * An implementation of StandardTypesServiceClient.
  * The client forwards the request to the service component and returns the response from the service component.
  */
-@Service(PrimitivesServiceClient.class)
-public class PrimitivesServiceClientImpl extends PrimitivesLocalServiceClientImpl {
+@Service(StandardTypesServiceClient.class)
+public class StandardTypesServiceClientImpl extends StandardTypesLocalServiceClientImpl {
 
     @Reference
-    public void setPrimitivesService(PrimitivesService service) {
-        super.setPrimitivesLocalService(service);
+    public void setStandardTypesService(StandardTypesService service) {
+        super.setStandardTypesLocalService(service);
     }
 }

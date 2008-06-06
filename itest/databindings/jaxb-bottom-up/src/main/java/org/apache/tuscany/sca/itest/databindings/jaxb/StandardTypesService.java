@@ -16,23 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
+import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService;
-import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesServiceClient;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+
 
 /**
- * An implementation of PrimitivesServiceClient.
- * The client forwards the request to the service component and returns the response from the service component.
+ * The interface for StandardTypesService.
  */
-@Service(PrimitivesServiceClient.class)
-public class PrimitivesServiceClientImpl extends PrimitivesLocalServiceClientImpl {
-
-    @Reference
-    public void setPrimitivesService(PrimitivesService service) {
-        super.setPrimitivesLocalService(service);
-    }
+@Remotable
+public interface StandardTypesService extends StandardTypesLocalService{
 }

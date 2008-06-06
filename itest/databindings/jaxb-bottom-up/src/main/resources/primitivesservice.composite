@@ -34,12 +34,21 @@
     <!-- A PrimitivesServiceClient component that uses SCA binding to invoke PrimitivesService service -->
     <component name="PrimitivesServiceClientSCAComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
-        <reference name="primitivesService" target="PrimitivesServiceComponent">
+        <reference name="primitivesService" target="PrimitivesServiceComponent/PrimitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
             <binding.sca/>
         </reference>
     </component>
     
+    <!-- A PrimitivesLocalServiceClient component that uses SCA binding to invoke PrimitivesLocalService service -->
+    <component name="PrimitivesLocalServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesLocalServiceClientImpl" />
+        <reference name="primitivesLocalService" target="PrimitivesServiceComponent/PrimitivesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>
+            <binding.sca/>
+        </reference>
+    </component>
+
     <!-- Components used to implement the services -->
     <!-- A PrimitivesService component. -->
     <component name="PrimitivesServiceComponent">
@@ -47,6 +56,10 @@
         <service name="PrimitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
             <binding.ws uri="http://localhost:8085/ps-ep"/>
+            <binding.sca/>
+        </service>
+        <service name="PrimitivesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>
             <binding.sca/>
         </service>
     </component>

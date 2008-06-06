@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,13 +32,13 @@ import org.junit.Test;
  */
 public class PrimitivesDatabindingTestCase {
 
-    private SCADomain domain;
+    private static SCADomain domain;
 
     /**
      * Runs before each test method
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         try { 
             domain = SCADomain.newInstance("primitivesservice.composite");
         } catch(Throwable e) {
@@ -50,8 +50,8 @@ public class PrimitivesDatabindingTestCase {
     /**
      * Runs after each test method
      */
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         domain.close();
     }
 
@@ -76,6 +76,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for boolean array.
+     */
+    @Test
+    public void testSCAPassByValueBooleanArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using SCA binding.
      * Service method invoked is negateByte.
      */
@@ -90,10 +100,20 @@ public class PrimitivesDatabindingTestCase {
      * Service method invoked is negateByteArray.
      */
     @Test
-    @Ignore("TUSCANY-2351")
     public void testSCANegateByteArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateByteArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for byte array.
+     */
+    @Test
+    @Ignore("TUSCANY-2351")
+    public void testSCAPassByValueByteArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
     /**
@@ -117,6 +137,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for short array.
+     */
+    @Test
+    public void testSCAPassByValueShortArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using SCA binding.
      * Service method invoked is negateInt.
      */
@@ -134,6 +164,16 @@ public class PrimitivesDatabindingTestCase {
     public void testSCANegateIntArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateIntArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for int array.
+     */
+    @Test
+    public void testSCAPassByValueIntArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
     /**
@@ -157,6 +197,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for long array.
+     */
+    @Test
+    public void testSCAPassByValueLongArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using SCA binding.
      * Service method invoked is negateFloat.
      */
@@ -174,6 +224,16 @@ public class PrimitivesDatabindingTestCase {
     public void testSCANegateFloatArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateFloatArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for float array.
+     */
+    @Test
+    public void testSCAPassByValueFloatArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
     /**
@@ -197,6 +257,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with SCA binding.
+     * Test for double array.
+     */
+    @Test
+    public void testSCAPassByValueDoubleArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using WS binding.
      * Service method invoked is negateBoolean.
      */
@@ -214,6 +284,16 @@ public class PrimitivesDatabindingTestCase {
     public void testWSNegateBooleanArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for boolean array.
+     */
+    @Test
+    public void testWSPassByValueBooleanArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
     /**
@@ -238,6 +318,17 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for byte array.
+     */
+    @Test
+    @Ignore("TUSCANY-2349")
+    public void testWSPassByValueByteArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using WS binding.
      * Service method invoked is negateShort.
      */
@@ -255,6 +346,16 @@ public class PrimitivesDatabindingTestCase {
     public void testWSNegateShortArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateShortArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for short array.
+     */
+    @Test
+    public void testWSPassByValueShortArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
     /**
@@ -278,6 +379,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for int array.
+     */
+    @Test
+    public void testWSPassByValueIntArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using WS binding.
      * Service method invoked is negateLong.
      */
@@ -295,6 +406,16 @@ public class PrimitivesDatabindingTestCase {
     public void testWSNegateLongArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateLongArray(primitivesServiceClient);
+    }
+
+    /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for long array.
+     */
+    @Test
+    public void testWSPassByValueLongArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
     /**
@@ -318,6 +439,16 @@ public class PrimitivesDatabindingTestCase {
     }
 
     /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for float array.
+     */
+    @Test
+    public void testWSPassByValueFloatArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
+    }
+
+    /**
      * Invokes the PrimitivesService service using WS binding.
      * Service method invoked is negateDouble.
      */
@@ -337,6 +468,156 @@ public class PrimitivesDatabindingTestCase {
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
+    /**
+     * Test the pass-by-value semantics of a remotable service with WS binding.
+     * Test for double array.
+     */
+    @Test
+    public void testWSPassByValueDoubleArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateBoolean.
+     */
+    @Test
+    public void testSCALocalNegateBoolean() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateBoolean(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateBooleanArray.
+     */
+    @Test
+    public void testSCALocalNegateBooleanArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateBooleanArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateByte.
+     */
+    @Test
+    public void testSCALocalNegateByte() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateByte(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateByteArray.
+     */
+    @Test
+    public void testSCALocalNegateByteArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateByteArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateShort.
+     */
+    @Test
+    public void testSCALocalNegateShort() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateShort(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateShortArray.
+     */
+    @Test
+    public void testSCALocalNegateShortArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateShortArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateInt.
+     */
+    @Test
+    public void testSCALocalNegateInt() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateInt(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateIntArray.
+     */
+    @Test
+    public void testSCALocalNegateIntArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateIntArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateLong.
+     */
+    @Test
+    public void testSCALocalNegateLong() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateLong(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateLongArray.
+     */
+    @Test
+    public void testSCALocalNegateLongArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateLongArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateFloat.
+     */
+    @Test
+    public void testSCALocalNegateFloat() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateFloat(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesService service using SCA binding.
+     * Service method invoked is negateFloatArray.
+     */
+    @Test
+    public void testSCALocalNegateFloatArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateFloatArray(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateDouble.
+     */
+    @Test
+    public void testSCALocalNegateDouble() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateDouble(primitivesServiceClient);
+    }
+
+    /**
+     * Invokes the PrimitivesLocalService service using SCA binding.
+     * Service method invoked is negateDoubleArray.
+     */
+    @Test
+    public void testSCALocalNegateDoubleArray() throws Exception {
+        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        performTestNegateDoubleArray(primitivesServiceClient);
+    }
+    
     private void performTestNegateBoolean(PrimitivesServiceClient primitivesServiceClient) {
         Assert.assertTrue(primitivesServiceClient.negateBooleanForward(false));
         Assert.assertFalse(primitivesServiceClient.negateBooleanForward(true));
