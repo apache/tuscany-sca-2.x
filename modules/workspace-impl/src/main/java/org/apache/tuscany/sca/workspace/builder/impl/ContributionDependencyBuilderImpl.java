@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
@@ -120,7 +121,9 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
                 
             } else {
                 // Record import resolution issue
-                warning("UnresolvedImport", import_, import_);
+                if (!(import_ instanceof DefaultImport)) {
+                    warning("UnresolvedImport", import_, import_);
+                }
             }
         }
     }
