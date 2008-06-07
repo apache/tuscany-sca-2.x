@@ -19,30 +19,32 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.provider.EndpointProvider;
-import org.apache.tuscany.sca.provider.EndpointProviderFactory;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
 
 /**
  * The factory for creating endpoint Binding providers
  * 
  * @version $Rev$ $Date$
  */
-public class TestEndpointProviderFactoryImpl implements EndpointProviderFactory<Endpoint> {
+public class BindingScaEndpointResolverFactoryImpl implements EndpointResolverFactory<SCABinding> {
     
     private ExtensionPointRegistry extensionPoints;
     
-    public TestEndpointProviderFactoryImpl(ExtensionPointRegistry extensionPoints) {
+    public BindingScaEndpointResolverFactoryImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;     
     } 
     
-    public EndpointProvider createEndpointProvider(Endpoint endpoint) {
+    public EndpointResolver createEndpointResolver(Endpoint endpoint, Binding binding) {
               
-        return  new TestEndpointProviderImpl(extensionPoints, endpoint);
+        return  new BindingScaEndpointResolverImpl(extensionPoints, endpoint, binding);
     }
 
-    public Class<Endpoint> getModelType() {
-        return Endpoint.class;
+    public Class<SCABinding> getModelType() {
+        return SCABinding.class;
     }
 }

@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
@@ -78,6 +79,7 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -131,6 +133,10 @@ public class ReallySmallRuntimeBuilder {
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories =
             registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        
+        // Create a endpoint resolver factory extension point
+        EndpointResolverFactoryExtensionPoint endpointResolverFactories =
+            registry.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);        
 
         JavaInterfaceFactory javaInterfaceFactory =
             registry.getExtensionPoint(ModelFactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
@@ -144,7 +150,7 @@ public class ReallySmallRuntimeBuilder {
         CompositeActivator compositeActivator =
             new CompositeActivatorImpl(assemblyFactory, messageFactory, javaInterfaceFactory, scaBindingFactory,
                                        mapper, scopeRegistry, workScheduler, wireProcessor, requestContextFactory,
-                                       proxyFactory, providerFactories, processors, conversationManager);
+                                       proxyFactory, providerFactories, endpointResolverFactories, processors, conversationManager);
 
         return compositeActivator;
     }

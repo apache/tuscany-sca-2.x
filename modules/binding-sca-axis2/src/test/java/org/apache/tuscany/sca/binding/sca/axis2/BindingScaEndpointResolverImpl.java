@@ -19,45 +19,51 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.endpoint.impl.EndpointProviderImpl;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 
 /** 
- * The endpoint binding provider allows unresolved endpoints to be plumbed into
+ * The endpoint resolver allows unresolved endpoints to be plumbed into
  * the runtime start and message send processing as a hook to late resolution
  * of target services
  * 
  * @version $Rev$ $Date$
  */
-public class TestEndpointProviderImpl extends EndpointProviderImpl {
+public class BindingScaEndpointResolverImpl implements EndpointResolver {
 
-    private static final Logger logger = Logger.getLogger(TestEndpointProviderImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(BindingScaEndpointResolverImpl.class.getName());
 
     private Endpoint endpoint;
-    private int startedCount = 0;
-    
-    public TestEndpointProviderImpl(ExtensionPointRegistry extensionPoints,
-                                    Endpoint endpoint) {
-        super(extensionPoints, endpoint);    
+    private SCABinding binding;
+
+    public BindingScaEndpointResolverImpl(ExtensionPointRegistry extensionPoints,
+                                          Endpoint endpoint, 
+                                          Binding binding) {
         this.endpoint = endpoint;
+        this.binding = (SCABinding)binding;
     }
-        
-    public void start() {
-        if (endpoint.isUnresolved()){
-            
-            if (startedCount == 1) {
-                // pretend to resolve the endpoint. In this test case to what we know 
-                // it should be
-                logger.info("Fixing up endpoint soure binding");
-                endpoint.setSourceBinding(endpoint.getCandidateBindings().get(0));
-                endpoint.getSourceBinding().setURI("http://localhost:8085/BHelloWorldServiceRemote");
-            } else {
-                startedCount++;
-            }
-        }
-    }   
+
+    public void start(){
+        // do nothing
+    } 
     
+    public void resolve() {
+        if (endpoint.isUnresolved()){
+            // pretend to resolve the endpoint. In this test case to what we know 
+            // it should be
+            logger.info("Fixing up endpoint soure binding");
+            endpoint.setSourceBinding(endpoint.getCandidateBindings().get(0));
+            endpoint.getSourceBinding().setURI("http://localhost:8085/BHelloWorldServiceRemote");
+        }
+    }
+    
+    public void stop(){
+        // do nothing
+    }    
 }

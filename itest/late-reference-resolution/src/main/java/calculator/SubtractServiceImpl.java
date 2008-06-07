@@ -16,26 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.provider;
-
-import org.apache.tuscany.sca.assembly.Endpoint;
+package calculator;
 
 /**
- * A factory for creating the runtime artifacts that represent endpoints.
- * 
- * @version $Rev$ $Date$
+ * An implementation of the subtract service.
  */
-public interface EndpointProviderFactory<M extends Endpoint> extends ProviderFactory<M> {
+public class SubtractServiceImpl implements SubtractService {
 
-    /**
-     * Creates a new endpoint provider for the given component and
-     * reference.
-     * 
-     * @param component The runtime component
-     * @param reference The reference on the runtime component
-     * @param enpoint The endpoint assembly model object
-     * @return The endpoint provider
-     */
-    EndpointProvider createEndpointProvider(M endpoint);
+    public double subtract(double n1, double n2) {
+        System.out.println("SubtractService - subtract " + n1 + " and " + n2);
+        return n1 - n2;
+    }
+
 }

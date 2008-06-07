@@ -52,13 +52,13 @@ import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.endpoint.impl.EndpointProviderFactoryImpl;
+import org.apache.tuscany.sca.endpoint.impl.EndpointResolverFactoryImpl;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.provider.EndpointProvider;
-import org.apache.tuscany.sca.provider.EndpointProviderFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -194,12 +194,13 @@ public class EndpointTestCase {
             
             Endpoint endpoint = ref.getEndpoints().get(0);
             
-            EndpointProviderFactory factory = new EndpointProviderFactoryImpl(extensionPoints);
+            EndpointResolverFactory<Endpoint> factory = new EndpointResolverFactoryImpl(extensionPoints);
             
-            EndpointProvider endpointProvider = factory.createEndpointProvider(endpoint);
+            EndpointResolver endpointResolver = factory.createEndpointResolver(endpoint, null);
             
-            Assert.assertNotNull(endpointProvider);
-              
+            Assert.assertNotNull(endpointResolver);
+            
+    
         } catch(Exception ex) {
             ex.printStackTrace();
             System.out.println(ex.toString());

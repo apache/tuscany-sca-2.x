@@ -111,7 +111,6 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         if (loaded)
             return;
 
-        loadProviderFactories(EndpointProviderFactory.class);
         loadProviderFactories(BindingProviderFactory.class);
         loadProviderFactories(ImplementationProviderFactory.class);
         loadProviderFactories(PolicyProviderFactory.class);
@@ -171,15 +170,6 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 PolicyProviderFactory factory =
                     new LazyPolicyProviderFactory(registry, modelTypeName, factoryDeclaration);
-                factoryExtensionPoint.addProviderFactory(factory);
-                factories.add(factory);
-            } else if (factoryClass == EndpointProviderFactory.class) {
-                // Load a policy provider factory
-                String modelTypeName = attributes.get("model");
-
-                // Create a provider factory wrapper and register it
-                EndpointProviderFactory factory =
-                    new LazyEndpointProviderFactory(registry, modelTypeName, factoryDeclaration);
                 factoryExtensionPoint.addProviderFactory(factory);
                 factories.add(factory);
             }
@@ -369,56 +359,5 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         }
 
     }
-    
-    /**
-     * A wrapper around an endpoint provider factory allowing lazy
-     * loading and initialization of endpoint providers.
-     */
-    private class LazyEndpointProviderFactory implements EndpointProviderFactory {
-        private ExtensionPointRegistry registry;
-        private String modelTypeName;
-        private ServiceDeclaration providerClass;
-        private EndpointProviderFactory factory;
-        private Class modelType;
-
-        private LazyEndpointProviderFactory(ExtensionPointRegistry registry,
-                                            String modelTypeName,
-                                            ServiceDeclaration providerClass) {
-            this.registry = registry;
-            this.modelTypeName = modelTypeName;
-            this.providerClass = providerClass;
-        }
-
-        @SuppressWarnings("unchecked")
-        private EndpointProviderFactory getFactory() {
-            if (factory == null) {
-                try {
-                    Class<EndpointProviderFactory> factoryClass = (Class<EndpointProviderFactory>)providerClass.loadClass();
-                    Constructor<EndpointProviderFactory> constructor =
-                        factoryClass.getConstructor(ExtensionPointRegistry.class);
-                    factory = constructor.newInstance(registry);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-            return factory;
-        }
-
-        public EndpointProvider createEndpointProvider(Endpoint endpoint) {
-            return getFactory().createEndpointProvider(endpoint);
-        }
-
-        public Class getModelType() {
-            if (modelType == null) {
-                try {
-                    modelType = providerClass.loadClass(modelTypeName);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-            return modelType;
-        }
-
-    }    
 
 }
