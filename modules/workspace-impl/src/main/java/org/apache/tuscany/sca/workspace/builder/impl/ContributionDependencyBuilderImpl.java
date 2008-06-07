@@ -89,6 +89,10 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
             // Go through all contribution candidates and their exports
             List<Export> matchingExports = new ArrayList<Export>();
             for (Contribution dependency: workspace.getContributions()) {
+                if (dependency == contribution) {
+                    // Do not self import
+                    continue;
+                }
                 for (Export export: dependency.getExports()) {
                     
                     // If an export from a contribution matches the import in hand

@@ -55,5 +55,19 @@ public interface ContributionFactory {
      * @return The new artifact model object
      */
     Artifact createArtifact();
+
+    /**
+     * Create a default import model object.
+     * 
+     * @return the new default import model object
+     */
+    DefaultImport createDefaultImport();
+
+    /**
+     * Create a default export model object.
+     * 
+     * @return the new default export model object
+     */
+    DefaultExport createDefaultExport();
     
 }

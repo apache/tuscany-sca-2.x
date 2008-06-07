@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
@@ -281,13 +282,22 @@ public class WSDLModelResolver implements ModelResolver {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
                 if (namespaceImport.getNamespace().equals(namespace)) {
 
-                    // Delegate the resolution to the import resolver
+                    // Delegate the resolution to the namespace import resolver
                     resolved =
                         namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
                                                                         (WSDLDefinition)unresolved);
                     if (!resolved.isUnresolved()) {
                         return modelClass.cast(resolved);
                     }
+                }
+            } else if (import_ instanceof DefaultImport) {
+                
+                // Delegate the resolution to the default import resolver
+                resolved =
+                    import_.getModelResolver().resolveModel(WSDLDefinition.class,
+                                                                    (WSDLDefinition)unresolved);
+                if (!resolved.isUnresolved()) {
+                    return modelClass.cast(resolved);
                 }
             }
         }

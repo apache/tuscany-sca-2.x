@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
+import org.apache.tuscany.sca.contribution.DefaultExport;
+import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -160,12 +162,20 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         
                         // Read each artifact
                         Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+                        
+                        // In the absence of more info, consider all composites as deployable
                         if (model instanceof Composite) {
                             contribution.getDeployables().add((Composite)model);
                         }
                     }
                 }
             }
+            
+            // Add default contribution import and export
+            DefaultImport defaultImport = contributionFactory.createDefaultImport();
+            contribution.getImports().add(defaultImport);
+            DefaultExport defaultExport = contributionFactory.createDefaultExport();
+            contribution.getExports().add(defaultExport);
         }
         
         return contribution;
@@ -180,7 +190,14 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         
         // Resolve imports and exports
         for (Export export: contribution.getExports()) {
-            extensionProcessor.resolve(export, contributionResolver);
+            if (export instanceof DefaultExport) {
+                
+                // Initialize the default export's resolver
+                export.setModelResolver(contributionResolver);
+                
+            } else {
+                extensionProcessor.resolve(export, contributionResolver);
+            }
         }
         for (Import import_: contribution.getImports()) {
             extensionProcessor.resolve(import_, contributionResolver);
