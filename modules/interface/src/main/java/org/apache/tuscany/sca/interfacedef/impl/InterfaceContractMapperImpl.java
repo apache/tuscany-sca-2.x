@@ -268,7 +268,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
     public boolean isCompatible(InterfaceContract source, InterfaceContract target) {
         try {
-            return checkCompatibility(source, target, false, true);
+            return checkCompatibility(source, target, false, false);
         } catch (IncompatibleInterfaceContractException e) {
             return false;
         }
