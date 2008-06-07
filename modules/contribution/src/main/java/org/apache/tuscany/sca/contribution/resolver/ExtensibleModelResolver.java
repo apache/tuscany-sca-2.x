@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 
@@ -40,6 +41,7 @@ public class ExtensibleModelResolver implements ModelResolver {
     private final Map<Class<?>, ModelResolver> resolversByModelType = new HashMap<Class<?>, ModelResolver>();
     private final Map<Class<?>, ModelResolver> resolversByImplementationClass = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
+    private Object lastUnresolved;
 
     /**
      * Constructs an extensible model resolver
@@ -152,9 +154,24 @@ public class ExtensibleModelResolver implements ModelResolver {
     }
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+        // Protect against dependency cycles causing infinite recursion
+        // Save the current unresolved object and check later if we are trying
+        // to resolve the same object again
+        if (unresolved.getClass().getName().contains(".WSDLDef")) {
+            System.out.println(unresolved.getClass().getName());
+        }
+        if (unresolved == lastUnresolved) {
+            return unresolved;
+        }
+        lastUnresolved = unresolved;
+        
         ModelResolver resolver = getModelResolverInstance(unresolved.getClass());
         if (resolver != null) {
-            return resolver.resolveModel(modelClass, unresolved);
+            Object resolved = resolver.resolveModel(modelClass, unresolved);
+            if (resolved != null && resolved != unresolved) {
+                lastUnresolved = null;
+                return modelClass.cast(resolved);
+            }
         } else {
             //FIXME Remove this default resolver, this is currently used to resolve policy declarations
             // but they should be handled by the contribution import/export mechanism instead of this
@@ -162,6 +179,7 @@ public class ExtensibleModelResolver implements ModelResolver {
             if (defaultResolver != null) {
                 Object resolved = defaultResolver.resolveModel(modelClass, unresolved);
                 if (resolved != null && resolved != unresolved) {
+                    lastUnresolved = null;
                     return modelClass.cast(resolved);
                 }
             }
@@ -169,6 +187,7 @@ public class ExtensibleModelResolver implements ModelResolver {
             Object resolved = map.get(unresolved);
             if (resolved != null) {
                 // Return the resolved object
+                lastUnresolved = null;
                 return modelClass.cast(resolved);
             }
         }
