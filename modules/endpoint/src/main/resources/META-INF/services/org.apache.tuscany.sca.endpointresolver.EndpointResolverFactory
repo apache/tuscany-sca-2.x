@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.runtime.tomcat.EndpointProviderFactoryImpl;model=org.apache.tuscany.sca.assembly.Endpoint
+org.apache.tuscany.sca.endpoint.impl.EndpointResolverFactoryImpl;model=org.apache.tuscany.sca.assembly.Endpoint

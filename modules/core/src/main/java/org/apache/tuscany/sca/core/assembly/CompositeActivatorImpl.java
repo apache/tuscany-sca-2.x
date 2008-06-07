@@ -49,13 +49,14 @@ import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.EndpointProvider;
-import org.apache.tuscany.sca.provider.EndpointProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -85,6 +86,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final WorkScheduler workScheduler;
     private final RuntimeWireProcessor wireProcessor;
     private final ProviderFactoryExtensionPoint providerFactories;
+    private final EndpointResolverFactoryExtensionPoint endpointResolverFactories;
 
     private final RequestContextFactory requestContextFactory;
     private final ProxyFactory proxyFactory;
@@ -114,6 +116,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                   RequestContextFactory requestContextFactory,
                                   ProxyFactory proxyFactory,
                                   ProviderFactoryExtensionPoint providerFactories,
+                                  EndpointResolverFactoryExtensionPoint endpointResolverFactories,
                                   StAXArtifactProcessorExtensionPoint processors,
                                   ConversationManager conversationManager) {
         this.assemblyFactory = assemblyFactory;
@@ -123,6 +126,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
         this.providerFactories = providerFactories;
+        this.endpointResolverFactories = endpointResolverFactories;
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.requestContextFactory = requestContextFactory;
         this.proxyFactory = proxyFactory;
@@ -147,7 +151,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             //        way the builder is written it's difficult to get at it
             endpoint.setSourceComponent(component);
             
-            addEndpointProvider(component, ref, endpoint);
+            addEndpointResolver(component, ref, endpoint);
         }
     }
 
@@ -202,37 +206,35 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param reference
      * @param binding
      */
-    private EndpointProvider addEndpointProvider(RuntimeComponent component,
+    private EndpointResolver addEndpointResolver(RuntimeComponent component,
                                                  RuntimeComponentReference reference,
                                                  Endpoint endpoint){
         
-        // only create provides for unresolved endpoint currently
+        // only create endpoint resolvers for unresolved endpoints currently
         // this will also prevent a wire from being created later
         if (!endpoint.isUnresolved()){
             return null;
         }
         
-        EndpointProviderFactory providerFactory =
-            (EndpointProviderFactory)providerFactories.getProviderFactory(endpoint.getClass());
+        // This souldn't happen as the endpoint resolver extension point is in core-spi but 
+        // just in case returning null here will mean that no wire is created and calling 
+        // the reference will fail with NPE
+        if (endpointResolverFactories == null){
+            return null;
+        }
         
-        if (providerFactory != null) {
+        EndpointResolverFactory<Endpoint> resolverFactory =
+            (EndpointResolverFactory<Endpoint>)endpointResolverFactories.getEndpointResolverFactory(endpoint.getClass());
+        
+        if (resolverFactory != null) {
             @SuppressWarnings("unchecked")
-            EndpointProvider endpointProvider =
-                providerFactory.createEndpointProvider(endpoint);
-            if (endpointProvider != null) {
-                ((RuntimeComponentReference)reference).setEndpointProvider(endpoint, endpointProvider);
+            EndpointResolver endpointResolver =
+                resolverFactory.createEndpointResolver(endpoint, null);
+            if (endpointResolver != null) {
+                ((RuntimeComponentReference)reference).setEndpointResolver(endpoint, endpointResolver);
             }
             
-            /* TODO - should this get done here for endpoints or in the endpoint itself?
-            for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
-                PolicyProvider policyProvider = f.createReferencePolicyProvider(component, reference, binding);
-                if (policyProvider != null) {
-                    reference.addPolicyProvider(binding, policyProvider);
-                }
-            }
-            */
-
-            return endpointProvider;
+            return endpointResolver;
         } else {
             // TODO - for the time being allow the lack of an endpoint provider to be the 
             //        switch to turn off endpoint processing
@@ -300,7 +302,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private void addReferenceEndpointWire(Component component, ComponentReference reference, Endpoint endpoint) {
         // only deal with unresolved endpoints as, to prevent breaking changes, targets that are resolved
         // at build time are still represented as bindings in the binding list
-        if (((RuntimeComponentReference)reference).getEndpointProvider(endpoint) == null){ 
+        if (((RuntimeComponentReference)reference).getEndpointResolver(endpoint) == null){ 
             // no endpoint provider has previously been created so don't create the 
             // wire
             return;
@@ -573,6 +575,20 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
             runtimeRef.setComponent(runtimeComponent);
+            
+            for (Endpoint endpoint : reference.getEndpoints()) {
+                final EndpointResolver endpointResolver = runtimeRef.getEndpointResolver(endpoint);
+                if (endpointResolver != null) {
+                    // Allow endpoint resolvers to do any startup reference manipulation
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            endpointResolver.start();
+                            return null;
+                          }
+                    });                       
+                }
+            }
+            
             for (Binding binding : reference.getBindings()) {
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
@@ -580,21 +596,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     AccessController.doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             bindingProvider.start();
-                            return null;
-                          }
-                    });                       
-                }
-            }
-            for (Endpoint endpoint : reference.getEndpoints()) {
-                final EndpointProvider endpointProvider = runtimeRef.getEndpointProvider(endpoint);
-                if (endpointProvider != null) {
-                    // Allow endpoints to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
-                    // TODO - do we need to allow this for endpoints. Leave as is for now
-                    //        doesn't seem to be done this way if a provider is started
-                    //        at wire creation time?
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        public Object run() {
-                            endpointProvider.start();
                             return null;
                           }
                     });                       
@@ -684,6 +685,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
+            
             for (Binding binding : reference.getBindings()) {
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
@@ -695,22 +697,20 @@ public class CompositeActivatorImpl implements CompositeActivator {
                           }
                     });                       
                 }
-            }
+            } 
+            
             for (Endpoint endpoint : reference.getEndpoints()) {
-                final EndpointProvider endpointProvider = runtimeRef.getEndpointProvider(endpoint);
-                if (endpointProvider != null) {
-                    // Allow endpoints to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
-                    // TODO - do we need to allow this for endpoints. Leave as is for now
-                    //        doesn't seem to be done this way if a provider is started
-                    //        at wire creation time?
+                final EndpointResolver endpointResolver = runtimeRef.getEndpointResolver(endpoint);
+                if (endpointResolver != null) {
+                    // Allow endpoint resolvers to do any shutdown reference manipulation
                     AccessController.doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
-                            endpointProvider.stop();
+                            endpointResolver.stop();
                             return null;
                           }
                     });                       
                 }
-            }            
+            }             
         }
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {

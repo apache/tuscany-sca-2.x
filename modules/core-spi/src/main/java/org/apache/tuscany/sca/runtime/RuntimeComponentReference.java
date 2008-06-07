@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
@@ -72,22 +72,22 @@ public interface RuntimeComponentReference extends ComponentReference {
     void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
     
     /**
-     * Returns the endpoint provider associated with this
+     * Returns the endpoint resolver associated with this
      * component reference and the given endpoint.
      * 
      * @param endpont The assembly model endpoint 
-     * @return The enpoint provider
+     * @return The enpoint resolver
      */
-    EndpointProvider getEndpointProvider(Endpoint endpoint);
+    EndpointResolver getEndpointResolver(Endpoint endpoint);
     
     /**
-     * Sets the endpoint provider associated with this
+     * Sets the endpoint resolver associated with this
      * component reference and the given endpoint.
      * 
      * @param binding The assembly model binding 
      * @param bindingProvider The runtime reference binding provider
      */
-    void setEndpointProvider(Endpoint endpoint, EndpointProvider endpointProvider);    
+    void setEndpointResolver(Endpoint endpoint, EndpointResolver endpointResolver);    
     
     /**
      * Add a policy provider for the given binding to the reference

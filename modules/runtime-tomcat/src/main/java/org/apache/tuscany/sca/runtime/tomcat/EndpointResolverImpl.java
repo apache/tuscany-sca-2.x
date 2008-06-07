@@ -19,37 +19,68 @@
 
 package org.apache.tuscany.sca.runtime.tomcat;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.catalina.core.StandardContext;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactoryExtensionPoint;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.provider.EndpointProvider;
+
 
 /** 
- * The endpoint binding provider allows unresolved endpoints to be plumbed into
+ * The endpoint resolver allows unresolved endpoints to be plumbed into
  * the runtime start and message send processing as a hook to late resolution
  * of target services
+ * 
+ * @version $Rev$ $Date$
  */
-public class EndpointProviderImpl implements EndpointProvider {
+public class EndpointResolverImpl implements EndpointResolver {
 
-    private static final Logger logger = Logger.getLogger(EndpointProviderImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(EndpointResolverImpl.class.getName());
 
     private Endpoint endpoint;
+    private List<EndpointResolver> endpointResolvers = new ArrayList<EndpointResolver>();    
 
-    public EndpointProviderImpl(ExtensionPointRegistry extensionPoints,
+    public EndpointResolverImpl(ExtensionPointRegistry extensionPoints,
                                 Endpoint endpoint) {
-        this.endpoint = endpoint;        
+        this.endpoint = endpoint;
+        
+        EndpointResolverFactoryExtensionPoint resolverFactories = 
+            extensionPoints.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);
+        
+        for (Binding binding : endpoint.getCandidateBindings()){
+            EndpointResolverFactory resolverFactory = resolverFactories.getEndpointResolverFactory(binding.getClass());
+            
+            // if the binding in question has a endpoint resolver factory they try and 
+            // create an endpoint resolver
+            if (resolverFactory != null){
+                EndpointResolver resolver = resolverFactory.createEndpointResolver(endpoint, binding);
+                
+                if (resolver != null){
+                    endpointResolvers.add(resolver);
+                }
+            }
+        }
     }
-
-    public void start() {
+    
+    public void start(){
+        // do nothing
+    }
+    
+    public void resolve() {
         if (endpoint.isUnresolved()){
             logger.info("resolving endpoint: " + endpoint.getTargetName());
 
@@ -96,4 +127,5 @@ public class EndpointProviderImpl implements EndpointProvider {
             // wires that have been added. 
         }
     }
+
 }

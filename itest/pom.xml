@@ -91,11 +91,13 @@
                 -->
                 <module>jms</module>
                 <module>large-sdo-ws</module>
+                <module>late-reference-resolution</module>
                 <module>oneway</module>
                 <module>operation-overloading</module>
                 <module>osgi-implementation</module>
                 <module>osgi-contribution</module>
 		<module>policy</module>
+                <!--module>policy-authorization</module-->
 		<module>policy-security</module>
                 <module>properties</module>
                 <module>recursive</module>

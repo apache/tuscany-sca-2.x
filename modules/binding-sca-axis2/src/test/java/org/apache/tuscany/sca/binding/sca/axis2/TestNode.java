@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -41,8 +40,6 @@ import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.provider.EndpointProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -87,14 +84,7 @@ public class TestNode  {
             nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);                     
 
             // add a contribution to the domain
-            ContributionService contributionService = nodeRuntime.getContributionService();
-            
-            // fix up the endpoint provider for testing purposes
-            logger.info("Fixing up endpoint provider factory");
-            ProviderFactoryExtensionPoint providerFactories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ProviderFactoryExtensionPoint.class);
-            EndpointProviderFactory providerFactory =(EndpointProviderFactory)providerFactories.getProviderFactory(Endpoint.class);            
-            providerFactories.removeProviderFactory(providerFactory);
-            providerFactories.addProviderFactory(new TestEndpointProviderFactoryImpl(nodeRuntime.getExtensionPointRegistry()));            
+            ContributionService contributionService = nodeRuntime.getContributionService();          
 
             // find the current directory as a URL. This is where our contribution 
             // will come from

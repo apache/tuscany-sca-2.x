@@ -16,29 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.provider;
+package calculator;
 
 
 /**
- * A reference binding implementation can options implement this
- * interface to tie into the Tuscany SCA runtime
- * 
- * @version $Rev$ $Date$
+ * The Calculator service interface.
  */
-public interface EndpointProvider {
+public interface CalculatorService {
 
-    /**
-     * This method will be invoked when the endpoint is
-     * activated. The provider will attempt to resolve the 
-     * endpoint against available services. 
-     */
-    void start();
+    double add(double n1, double n2);
 
-    /**
-     * This method will be invoked when the endpont is
-     * deactivated.
-     */
-    void stop();
+    double subtract(double n1, double n2);
+
+    double multiply(double n1, double n2);
+
+    double divide(double n1, double n2);
 
 }

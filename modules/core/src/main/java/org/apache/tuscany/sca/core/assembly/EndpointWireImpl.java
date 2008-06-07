@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -44,7 +44,7 @@ public class EndpointWireImpl implements RuntimeWire {
     private Endpoint endpoint;
     private CompositeActivatorImpl compositeActivator;
     
-    private EndpointProvider endpointProvider;
+    private EndpointResolver endpointResolver;
     private EndpointReference source;
     private RuntimeWire wire;
 
@@ -70,7 +70,7 @@ public class EndpointWireImpl implements RuntimeWire {
                                             sourceContract);
         
         RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)endpoint.getSourceComponentReference());
-        endpointProvider = runtimeRef.getEndpointProvider(endpoint);
+        endpointResolver = runtimeRef.getEndpointResolver(endpoint);
         
     }
 
@@ -81,7 +81,7 @@ public class EndpointWireImpl implements RuntimeWire {
             
             // this method should locate a viable target service and complete the 
             // endpoint configuration
-            endpointProvider.start();
+            endpointResolver.resolve();
             
             if (endpoint.isUnresolved()){
                 throw new ServiceUnavailableException("Unable to resolve service for component: " +
