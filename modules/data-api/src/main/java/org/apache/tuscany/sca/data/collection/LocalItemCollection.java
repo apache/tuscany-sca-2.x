@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.data.collection;
+package org.apache.tuscany.sca.data.collection;
 
 
 /**

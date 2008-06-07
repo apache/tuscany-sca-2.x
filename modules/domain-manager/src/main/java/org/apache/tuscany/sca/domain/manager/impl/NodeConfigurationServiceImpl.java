@@ -32,9 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.data.collection.LocalItemCollection;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;

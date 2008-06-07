@@ -16,30 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.implementation.data.collection;
 
+
 /**
- * Indicates that an item could not be found in a collection.
+ * Provides access to a collection of data items.
  * 
  * @version $Rev$ $Date$
  */
-public class NotFoundException extends Exception {
-    private static final long serialVersionUID = 6792367409396084646L;
-
-    public NotFoundException() {
-    }
-
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    public NotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public NotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+@Deprecated
+public interface LocalItemCollection extends Collection<String, Item> {
 }

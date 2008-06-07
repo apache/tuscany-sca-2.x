@@ -63,12 +63,12 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.data.collection.ItemCollection;
+import org.apache.tuscany.sca.data.collection.LocalItemCollection;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.apache.tuscany.sca.domain.manager.impl.ContributionCollectionImpl.Cache.ContributionCache;
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;

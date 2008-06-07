@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.data.collection.ItemCollection;
+import org.apache.tuscany.sca.data.collection.LocalItemCollection;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;

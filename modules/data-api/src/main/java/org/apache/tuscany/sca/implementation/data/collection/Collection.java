@@ -16,13 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.data.collection;
 
-package org.apache.tuscany.sca.implementation.data;
+import org.osoa.sca.annotations.Remotable;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.sca.data.collection.Collection;
-
-public interface DATACollection extends Collection<String, XMLStreamReader> {
-
+/**
+ * Provides access to a collection of data items.
+ * 
+ * @version $Rev$ $Date$
+ */
+@Remotable
+@Deprecated
+public interface Collection <K, D> extends org.apache.tuscany.sca.data.collection.Collection<K, D> {
 }

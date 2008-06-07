@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;

@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.data.collection;
 
-package org.apache.tuscany.sca.implementation.data;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.sca.data.collection.Collection;
-
-public interface DATACollection extends Collection<String, XMLStreamReader> {
-
+/**
+ * Represents a key/data pair in a data collection.
+ * 
+ * @version $Rev$ $Date$
+ */
+@Deprecated
+public class Entry <K, D> extends org.apache.tuscany.sca.data.collection.Entry<K, D> {
 }

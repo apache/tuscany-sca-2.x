@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.resource;
 
 import java.io.InputStream;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.data.collection.Collection;
 
 /**
  * The service interface of resource implementations. This is not an API for application

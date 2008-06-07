@@ -26,53 +26,6 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev$ $Date$
  */
 @Remotable
-public interface Collection <K, D> {
-
-    /**
-     * Get the whole collection.
-     * 
-     * @return the whole collection.
-     */
-    Entry<K, D>[] getAll();
-
-    /**
-     * Returns a collection resulting from a query.
-     * 
-     * @return the collection.
-     */
-    Entry<K, D>[] query(String queryString);
-
-    /**
-     * Creates a new item.
-     * 
-     * @param key
-     * @param item
-     * @return
-     */
-    K post(K key, D item);
-
-    /**
-     * Retrieves an item.
-     * 
-     * @param key
-     * @return
-     */
-    D get(K key) throws NotFoundException;
-
-    /**
-     * Updates an item.
-     * 
-     * @param key
-     * @param item
-     * @return
-     */
-    void put(K key, D item) throws NotFoundException;
-
-    /**
-     * Delete an item.
-     * 
-     * @param key
-     */
-    void delete(K key) throws NotFoundException;
-
+@Deprecated
+public interface ItemCollection extends Collection<String, Item> {
 }

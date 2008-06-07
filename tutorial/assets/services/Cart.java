@@ -19,7 +19,7 @@
 
 package services;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.data.collection.Collection;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable

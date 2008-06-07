@@ -24,9 +24,9 @@ import java.util.Date;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Link;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**

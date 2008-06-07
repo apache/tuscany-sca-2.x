@@ -81,6 +81,7 @@
                 <module>core-databinding</module>
                 <module>core-spi</module>
                 <module>core-spring</module>
+                <module>data-api</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
                 <module>databinding-jaxb</module>
@@ -121,7 +122,6 @@
                 <module>implementation-bpel</module>
                 <module>implementation-bpel-ode</module>
                 <module>implementation-das</module>
-                <module>implementation-data-api</module>
                 <module>implementation-data-xml</module>
                 <module>implementation-ejb</module>
                 <module>implementation-ejb-xml</module>

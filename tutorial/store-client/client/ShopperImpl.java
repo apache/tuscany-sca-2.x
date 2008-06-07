@@ -19,7 +19,7 @@
 
 package client;
 
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 
 import services.Cart;
