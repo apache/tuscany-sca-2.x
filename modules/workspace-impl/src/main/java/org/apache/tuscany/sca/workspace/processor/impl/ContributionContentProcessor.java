@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -157,6 +158,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
 
             // Add default contribution import and export
             DefaultImport defaultImport = contributionFactory.createDefaultImport();
+            defaultImport.setModelResolver(new DefaultModelResolver());
             contribution.getImports().add(defaultImport);
             DefaultExport defaultExport = contributionFactory.createDefaultExport();
             contribution.getExports().add(defaultExport);
