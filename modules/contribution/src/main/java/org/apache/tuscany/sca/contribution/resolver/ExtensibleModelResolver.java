@@ -157,9 +157,6 @@ public class ExtensibleModelResolver implements ModelResolver {
         // Protect against dependency cycles causing infinite recursion
         // Save the current unresolved object and check later if we are trying
         // to resolve the same object again
-        if (unresolved.getClass().getName().contains(".WSDLDef")) {
-            System.out.println(unresolved.getClass().getName());
-        }
         if (unresolved == lastUnresolved) {
             return unresolved;
         }
