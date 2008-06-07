@@ -37,6 +37,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -54,6 +55,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultExport;
+import org.apache.tuscany.sca.contribution.DefaultImport;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -610,6 +615,25 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                     contributionCache.contribution = contribution;
                     contributionCache.contributionLastModified = lastModified;
                     cache.contributions.put(location, contributionCache);
+                    
+                    
+                    // Make sure that the cloud contribution does not contain
+                    // default imports/exports as we want to isolate it from application
+                    // provided contributions
+                    if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
+                        for (Iterator<Import> i = contribution.getImports().iterator(); i.hasNext(); ) {
+                            Import import_ = i.next();
+                            if (import_ instanceof DefaultImport) {
+                                i.remove();
+                            }
+                        }
+                        for (Iterator<Export> i = contribution.getExports().iterator(); i.hasNext(); ) {
+                            Export export = i.next();
+                            if (export instanceof DefaultExport) {
+                                i.remove();
+                            }
+                        }
+                    }
                     
                 } catch (ContributionReadException e) {
                     Contribution contribution = contributionFactory.createContribution();

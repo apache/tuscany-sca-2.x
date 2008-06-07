@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
+import org.apache.tuscany.sca.contribution.DefaultExport;
+import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
 
@@ -46,6 +48,14 @@ public class ContributionFactoryImpl implements ContributionFactory {
 
     public Artifact createArtifact() {
         return new ArtifactImpl();
+    }
+    
+    public DefaultExport createDefaultExport() {
+        return new DefaultExportImpl();
+    }
+    
+    public DefaultImport createDefaultImport() {
+        return new DefaultImportImpl();
     }
     
     @Deprecated
