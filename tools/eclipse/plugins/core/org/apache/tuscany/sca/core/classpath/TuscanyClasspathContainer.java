@@ -115,6 +115,25 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                     list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
                 }
             }
+
+            File libDirectory = runtimePath.append("lib").toFile();
+            if (libDirectory != null && libDirectory.exists()) {
+                for (File file : libDirectory.listFiles()) {
+                    IPath path = new Path(file.getPath());
+                    String name = path.lastSegment();
+                    String extension = path.getFileExtension();
+                    
+                    // Only include jaxb, jaxws and jsr API JARs
+                    if (!"jar".equals(extension)) {
+                        continue;
+                    }
+                    if (name.indexOf("-api-") != -1) {
+                        if (name.startsWith("jaxb") || name.startsWith("jaxws") || name.startsWith("jsr")) {
+                            list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
+                        }
+                    }
+                }
+            }
         }
         
         return (IClasspathEntry[])list.toArray(new IClasspathEntry[list.size()]);
