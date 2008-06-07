@@ -27,9 +27,9 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 
 /**
  * Test case for the workspace admin services.

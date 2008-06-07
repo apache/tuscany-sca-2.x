@@ -17,12 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data.collection;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.sca.data.collection.Collection;
-
-public interface DATACollection extends Collection<String, XMLStreamReader> {
-
+/**
+ * Indicates that an item could not be found in a collection.
+ * 
+ * @version $Rev$ $Date$
+ */
+@Deprecated
+public class NotFoundException extends org.apache.tuscany.sca.data.collection.NotFoundException {
+    private static final long serialVersionUID = 2812975065056330240L;
 }

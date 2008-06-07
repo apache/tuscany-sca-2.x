@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.sca.implementation.data.collection;
 
-import org.osoa.sca.annotations.Remotable;
+
 
 /**
- * Provides access to a collection of data items.
+ * Represents a data item.
  * 
  * @version $Rev$ $Date$
  */
-@Remotable
-public interface ItemCollection extends Collection<String, Item> {
+@Deprecated
+public class Item extends org.apache.tuscany.sca.data.collection.Item {
 }

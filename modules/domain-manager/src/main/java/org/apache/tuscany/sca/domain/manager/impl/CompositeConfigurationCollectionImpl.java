@@ -29,11 +29,11 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.implementation.data.collection.Entry;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.Entry;
+import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.data.collection.ItemCollection;
+import org.apache.tuscany.sca.data.collection.LocalItemCollection;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;

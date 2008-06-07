@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -226,13 +226,13 @@ class FeedBindingListenerServlet extends HttpServlet {
                     if (responseMessage.isFault()) {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
-                        (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
+                    org.apache.tuscany.sca.data.collection.Entry<Object, Object>[] collection =
+                        (org.apache.tuscany.sca.data.collection.Entry<Object, Object>[])responseMessage.getBody();
                     if (collection != null) {
                         // Create the feed
                         feed = new Feed();
                         feed.setTitle("Feed");
-                        for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
+                        for (org.apache.tuscany.sca.data.collection.Entry<Object, Object> entry: collection) {
                             Entry feedEntry = createFeedEntry(entry);
                             feed.getEntries().add(feedEntry);
                         }
@@ -275,7 +275,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation only returns a data item, create an entry
                     // from it
-                    feedEntry = createFeedEntry(new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(id, responseMessage.getBody()));
+                    feedEntry = createFeedEntry(new org.apache.tuscany.sca.data.collection.Entry<Object, Object>(id, responseMessage.getBody()));
                 }
 
                 // Write the Atom entry
@@ -328,13 +328,13 @@ class FeedBindingListenerServlet extends HttpServlet {
                     if (responseMessage.isFault()) {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
-                        (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
+                    org.apache.tuscany.sca.data.collection.Entry<Object, Object>[] collection =
+                        (org.apache.tuscany.sca.data.collection.Entry<Object, Object>[])responseMessage.getBody();
                     if (collection != null) {
                         // Create the feed
                         feed = new Feed();
                         feed.setTitle("Feed");
-                        for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
+                        for (org.apache.tuscany.sca.data.collection.Entry<Object, Object> entry: collection) {
                             Entry feedEntry = createFeedEntry(entry);
                             feed.getEntries().add(feedEntry);
                         }
@@ -368,7 +368,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param entry 
      * @return
      */
-    private Entry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
+    private Entry createFeedEntry(org.apache.tuscany.sca.data.collection.Entry<Object, Object> entry) {
         Object key = entry.getKey();
         Object data = entry.getData();
         if (data instanceof Item) {
@@ -444,7 +444,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param feedEntry
      * @return
      */
-    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
+    private org.apache.tuscany.sca.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
         if (feedEntry != null) {
             if (itemClassType.getPhysical() == Item.class) {
                 String key = feedEntry.getId();
@@ -473,7 +473,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 
                 item.setDate(feedEntry.getCreated());
                 
-                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
+                return new org.apache.tuscany.sca.data.collection.Entry<Object, Object>(key, item);
                 
             } else {
                 String key = feedEntry.getId();
@@ -487,7 +487,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 String value = content.getValue();
                 Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 
-                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, data);
+                return new org.apache.tuscany.sca.data.collection.Entry<Object, Object>(key, data);
             }
         } else {
             return null;
@@ -540,7 +540,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    org.apache.tuscany.sca.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
                     requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = postInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -654,7 +654,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    org.apache.tuscany.sca.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
                     requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = putInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
