@@ -346,11 +346,17 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                 // Create a contribution entry, skip the domain root directory and childrens of the
                 // domain root directory
                 String rootLocationPath = rootLocation.getPath();
-                String locationPath = location.getPath(); 
+                if (rootLocationPath.indexOf('\\') != -1 || rootLocationPath.indexOf(' ') != -1) {
+                    rootLocationPath = new File(rootLocationPath.replace('\\', '/')).toURI().toString();
+                }
+                String locationPath = location.getPath();
+                if (locationPath.indexOf('\\') != -1 || locationPath.indexOf(' ') != -1) {
+                    locationPath = new File(locationPath.replace('\\', '/')).toURI().toString();
+                }
                 if (!locationPath.startsWith(rootLocationPath + "/") && !locationPath.equals(rootLocationPath)) {
                     Contribution contribution = contributionFactory.createContribution();
                     contribution.setURI(uri);
-                    contribution.setLocation(location.getPath());
+                    contribution.setLocation(locationPath);
                     entries.add(entry(suggestionWorkspace, contribution));
                 }
             }
