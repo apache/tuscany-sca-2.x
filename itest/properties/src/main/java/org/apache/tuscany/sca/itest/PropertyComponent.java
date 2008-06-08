@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import commonj.sdo.DataObject;
 
+import test.jaxb.props.ReturnCodeProperties;
 /**
  * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
  * interface. Implementation for these methods is provided in PropertyComponentImpl Class
@@ -114,7 +115,20 @@ public interface PropertyComponent {
     public DataObject getCustomerSdo();
     
     /**
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
+     * PropertyComponentImpl
+     */
+    public ReturnCodeProperties getComplexJAXBPropertyOne();
+
+    /**
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
+     * PropertyComponentImpl
+     */
+    public ReturnCodeProperties getComplexJAXBPropertyTwo();
+
+    /**
      * @return
      */
     public String getLocationFromComponentContext();
+
 }

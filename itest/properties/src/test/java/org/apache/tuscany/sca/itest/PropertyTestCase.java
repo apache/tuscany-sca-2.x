@@ -25,6 +25,8 @@ import static junit.framework.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import java.math.BigInteger;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
@@ -32,6 +34,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import test.jaxb.props.ReturnCodeProperties;
 import commonj.sdo.DataObject;
 
 /**
@@ -45,6 +48,8 @@ public class PropertyTestCase {
     private static CDComponent cdService;
     private static ABCDComponent abcdService;
     private static PropertyComponent propertyService;
+
+
 
     /**
      * Method annotated with
@@ -363,6 +368,7 @@ public class PropertyTestCase {
         assertEquals("Sdo Middler Name", dataObject.getString("middleName"));
         assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
     }
+     
 
     @Test
     public void testGetLocationFromComponentContext() {
@@ -411,6 +417,22 @@ public class PropertyTestCase {
             assertEquals("Middler Name " + i, dataObject.getString("middleName"));
             assertEquals("Lasting Name " + i, dataObject.getString("lastName"));
         }
+    }
+
+    @Test
+    public void testComplexJAXBProperty() {
+        ReturnCodeProperties rc = propertyService.getComplexJAXBPropertyOne();
+        assertEquals(10, rc.getA());
+        assertEquals(new BigInteger("10"), rc.getB());
+    }
+
+    @Test
+    public void testComplexJAXBPropertyFromFile() {
+        ReturnCodeProperties rc = propertyService.getComplexJAXBPropertyTwo();
+        System.out.println("SKSK: a =" + rc.getA());
+        System.out.println("SKSK: b =" + rc.getB());
+        assertEquals(20, rc.getA());
+        assertEquals(new BigInteger("20"), rc.getB());
     }
 
     /**
