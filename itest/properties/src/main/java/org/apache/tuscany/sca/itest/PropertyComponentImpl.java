@@ -28,6 +28,8 @@ import org.osoa.sca.annotations.Property;
 import com.example.customer.sdo.impl.CustomerImpl;
 import commonj.sdo.DataObject;
 
+import test.jaxb.props.ReturnCodeProperties;
+
 /**
  * This class Implements the interface PropertyComponent and gives implementation for all methods which are declared in
  * that interface.
@@ -74,6 +76,12 @@ public class PropertyComponentImpl implements PropertyComponent {
 
     @Property(name = "sdoArray")
     protected DataObject[] sdoArray;
+
+    @Property
+    protected ReturnCodeProperties complexJAXBPropertyOne;
+
+    @Property
+    protected ReturnCodeProperties complexJAXBPropertyTwo;
 
     public String getLocation() {
         return location;
@@ -168,5 +176,13 @@ public class PropertyComponentImpl implements PropertyComponent {
     
     public String getLocationFromComponentContext() {
         return context.getProperty(String.class, "location");
+    }
+
+    public ReturnCodeProperties getComplexJAXBPropertyOne() {
+        return complexJAXBPropertyOne;
+    }
+
+    public ReturnCodeProperties getComplexJAXBPropertyTwo() {
+        return complexJAXBPropertyTwo;
     }
 }

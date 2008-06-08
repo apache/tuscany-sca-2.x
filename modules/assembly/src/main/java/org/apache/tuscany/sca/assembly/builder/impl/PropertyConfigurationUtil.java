@@ -48,6 +48,7 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -98,7 +99,14 @@ abstract class PropertyConfigurationUtil {
             javax.xml.transform.Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
             transformer.transform(streamSource, result);
             
-            return (Document)result.getNode();
+            Document document = (Document)result.getNode();
+            
+            // TUSCANY-2377, Add a fake value element so it's consistent with
+            // the DOM tree loaded from inside SCDL
+            Element root = document.createElementNS(null, "value");
+            root.appendChild(document.getDocumentElement());
+            document.appendChild(root);
+            return document;
         } finally {
             if (is != null) {
                 is.close();

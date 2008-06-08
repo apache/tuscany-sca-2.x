@@ -21,6 +21,7 @@
        xmlns:cust="http://www.example.com/Customer"
        xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+       xmlns:rcp="http://test.sca.jaxb/rcprops"
        targetNamespace="http://foo"
        name="PropertyTest"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -241,6 +242,13 @@
                 <cust:lastName>Lasting Name 3</cust:lastName>
             </cust:customer>
         </property>
+        <property name="complexJAXBPropertyOne" type="rcp:ReturnCodeProperties">
+            <MyRCProps xmlns="http://test.sca.jaxb/rcprops">
+                <AInt>10</AInt>
+                <BInteger>10</BInteger>
+            </MyRCProps>
+        </property>
+        <property name="complexJAXBPropertyTwo" type="rcp:ReturnCodeProperties" file="rcProps.txt"/>
     </component>
 </composite>
 
