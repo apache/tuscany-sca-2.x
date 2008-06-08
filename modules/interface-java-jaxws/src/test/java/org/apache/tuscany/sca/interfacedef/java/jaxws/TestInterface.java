@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osoa.sca.annotations.Remotable;
 
@@ -48,7 +49,7 @@ public interface TestInterface {
 
     ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
 
-    // Map<String, String> getGreetingsMap(Map<String, String> namesMap);
+    Map<String, String> getGreetingsMap(Map<String, String> namesMap);
 
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
 }

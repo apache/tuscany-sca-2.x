@@ -23,6 +23,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,7 +34,6 @@ import javax.xml.ws.WebFault;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Type;
 
 public class FaultBeanGenerator extends BaseBeanGenerator {
     public FaultBeanGenerator() {
@@ -58,9 +58,8 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
                 }
                 // Add the field
                 String field = pd.getName();
-                String desc = Type.getDescriptor(pd.getPropertyType());
-                String genericDesc = CodeGenerationHelper.getSignature(pd.getReadMethod().getGenericReturnType());
-                props.add(new BeanProperty(field, desc, genericDesc));
+                Method getter = pd.getReadMethod();
+                props.add(new BeanProperty(field, getter.getReturnType(), getter.getGenericReturnType()));
             }
         }
         Collections.sort(props, new Comparator<BeanProperty>() {

@@ -41,20 +41,23 @@ public class WrapperBeanGeneratorTestCase {
     @Test
     public void testGenerate() throws Exception {
         List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
-        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
         for (Class<?> cls : classes) {
             for (Field f : cls.getDeclaredFields()) {
-                // System.out.println(f.getName());
+                System.out.println(f.getName());
+                System.out.println(f.getGenericType());
                 for (Annotation a : f.getAnnotations()) {
-                    // System.out.println(a);
+                    System.out.println(a);
                 }
             }
             for (Method m : cls.getDeclaredMethods()) {
-                // System.out.println(m);
+                System.out.println(m);
                 for (Annotation a : m.getAnnotations()) {
-                    // System.out.println(a);
+                    System.out.println(a);
                 }
             }
+        }
+        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+        for (Class<?> cls : classes) {
             Object obj = cls.newInstance();
             StringWriter sw = new StringWriter();
             context.createMarshaller().marshal(obj, sw);
