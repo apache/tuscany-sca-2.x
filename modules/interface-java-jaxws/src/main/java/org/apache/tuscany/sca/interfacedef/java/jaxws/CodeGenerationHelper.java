@@ -83,6 +83,15 @@ public class CodeGenerationHelper {
             sb.deleteCharAt(sb.length() - 1); // Remove ;
             sb.append('<').append(getSignature(getErasure(p))).append(">;");
             return sb.toString();
+        } else if (Map.class.isAssignableFrom(cls) && (type instanceof ParameterizedType)) {
+            ParameterizedType pType = (ParameterizedType)type;
+            Type key = pType.getActualTypeArguments()[0];
+            Type value = pType.getActualTypeArguments()[1];
+            StringBuffer sb = new StringBuffer();
+            sb.append(getSignature(cls));
+            sb.deleteCharAt(sb.length() - 1); // Remove ;
+            sb.append('<').append(getSignature(getErasure(key))).append(getSignature(getErasure(value))).append(">;");
+            return sb.toString();
         } else {
             return getSignature(cls);
         }
@@ -209,21 +218,21 @@ public class CodeGenerationHelper {
             || "I".equals(signature)) {
             return Opcodes.ILOAD;
         }
-    
+
         if ("J".equals(signature)) {
             return Opcodes.LLOAD;
         }
-    
+
         if ("F".equals(signature)) {
             return Opcodes.FLOAD;
         }
-    
+
         if ("D".equals(signature)) {
             return Opcodes.DLOAD;
         }
-    
+
         return Opcodes.ALOAD;
-    
+
     }
 
     public static int getReturnOPCode(String signature) {
@@ -233,24 +242,24 @@ public class CodeGenerationHelper {
             || "I".equals(signature)) {
             return Opcodes.IRETURN;
         }
-    
+
         if ("J".equals(signature)) {
             return Opcodes.LRETURN;
         }
-    
+
         if ("F".equals(signature)) {
             return Opcodes.FRETURN;
         }
-    
+
         if ("D".equals(signature)) {
             return Opcodes.DRETURN;
         }
         if ("V".equals(signature)) {
             return Opcodes.RETURN;
         }
-    
+
         return Opcodes.ARETURN;
-    
+
     }
 
 }

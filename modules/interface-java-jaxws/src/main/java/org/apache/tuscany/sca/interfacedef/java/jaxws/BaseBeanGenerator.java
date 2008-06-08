@@ -60,8 +60,9 @@ public abstract class BaseBeanGenerator implements Opcodes {
         declareConstructor(cw, classSignature);
         if (properties != null) {
             for (BeanProperty p : properties) {
+                boolean isMap = Map.class.isAssignableFrom(p.getType());
                 declareProperty(cw, classDescriptor, classSignature, p.getName(), p.getSignature(), p
-                    .getGenericSignature());
+                    .getGenericSignature(), isMap);
             }
         }
 
@@ -75,11 +76,11 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                    String classSignature,
                                    String propName,
                                    String propClassSignature,
-                                   String propTypeSignature) {
+                                   String propTypeSignature, boolean isMap) {
         if (propClassSignature.equals(propTypeSignature)) {
             propTypeSignature = null;
         }
-        declareField(cw, propName, propClassSignature, propTypeSignature);
+        declareField(cw, propName, propClassSignature, propTypeSignature, isMap);
         decalreGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
         declareSetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
     }
@@ -92,15 +93,18 @@ public abstract class BaseBeanGenerator implements Opcodes {
         }
     }
 
-    protected void declareField(ClassWriter cw, String propName, String propClassSignature, String propTypeSignature) {
+    protected void declareField(ClassWriter cw, String propName, String propClassSignature, String propTypeSignature, boolean isMap) {
         FieldVisitor fv;
         AnnotationVisitor av0;
         fv = cw.visitField(ACC_PROTECTED, getFieldName(propName), propClassSignature, propTypeSignature, null);
 
-        av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
-        av0.visit("name", propName);
-        av0.visit("namespace", "");
-        av0.visitEnd();
+        // For Map property, we cannot have the XmlElement annotation
+        if (!isMap) {
+            av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
+            av0.visit("name", propName);
+            av0.visit("namespace", "");
+            av0.visitEnd();
+        }
 
         fv.visitEnd();
     }
@@ -276,6 +280,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
     }
 
     public static class BeanProperty {
+        private Class<?> type;
         private String name;
         private String signature;
         private String genericSignature;
@@ -284,14 +289,8 @@ public abstract class BaseBeanGenerator implements Opcodes {
             super();
             this.name = name;
             this.signature = CodeGenerationHelper.getJAXWSSignature(javaClass);
+            this.type = javaClass;
             this.genericSignature = CodeGenerationHelper.getJAXWSSignature(type);
-        }
-
-        public BeanProperty(String name, String signature, String genericSignature) {
-            super();
-            this.name = name;
-            this.signature = signature;
-            this.genericSignature = genericSignature;
         }
 
         public String getName() {
@@ -304,6 +303,10 @@ public abstract class BaseBeanGenerator implements Opcodes {
 
         public String getGenericSignature() {
             return genericSignature;
+        }
+
+        public Class<?> getType() {
+            return type;
         }
     }
 }
