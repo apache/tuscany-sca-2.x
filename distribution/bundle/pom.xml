@@ -79,7 +79,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
+            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
