@@ -69,7 +69,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-http</artifactId>
+            <artifactId>tuscany-binding-http-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

@@ -57,6 +57,7 @@
                 <module>binding-rss-rome</module>
                 <!-- -->
                 <module>binding-http</module>
+                <module>binding-http-runtime</module>
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-notification</module>
