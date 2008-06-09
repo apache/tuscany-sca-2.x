@@ -449,7 +449,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-resource</artifactId>
+            <artifactId>tuscany-implementation-resource-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
