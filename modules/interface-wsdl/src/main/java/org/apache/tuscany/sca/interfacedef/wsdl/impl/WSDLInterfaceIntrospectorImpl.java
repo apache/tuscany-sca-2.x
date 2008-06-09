@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -36,6 +38,8 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
  * @version $Rev$ $Date$
  */
 public class WSDLInterfaceIntrospectorImpl {
+    private static final QName POLICY_REQUIRES = new QName("http://www.osoa.org/xmlns/sca/1.0", "requires");
+    private static final QName POLICY_CONVERSATIONAL = new QName("http://www.osoa.org/xmlns/sca/1.0", "conversational");
     
     private XSDFactory xsdFactory;
     
@@ -56,8 +60,7 @@ public class WSDLInterfaceIntrospectorImpl {
     public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
         wsdlInterface.setPortType(portType);
         wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver));
-        // FIXME: set to Non-conversational for now
-        wsdlInterface.setConversational(false);
+        wsdlInterface.setConversational(isConversational(portType));
     }
 
     public static Operation getOperation(javax.wsdl.Operation wsdlOp,
@@ -66,6 +69,22 @@ public class WSDLInterfaceIntrospectorImpl {
                                          XSDFactory xsdFactory) throws InvalidWSDLException {
         WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver);
         return op.getOperation();
+    }
+    
+    private boolean isConversational(PortType portType) {
+        boolean conversational = false;
+        
+        Object o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        if(o != null && o instanceof Vector) {
+            Vector<QName> policyAttributes = (Vector<QName>) o;
+            
+            if(policyAttributes.contains(POLICY_CONVERSATIONAL)) {
+                return true;
+            }
+            
+        }
+
+        return conversational;
     }
     
 }
