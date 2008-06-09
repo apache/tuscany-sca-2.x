@@ -21,18 +21,30 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest</artifactId>
+        <artifactId>tuscany-modules</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-contribution-import-resource</artifactId>
-    <name>Apache Tuscany SCA Contribution Resource Import Java Integration Tests</name>
 
-<dependencies>
-	
+    <artifactId>tuscany-implementation-resource-runtime</artifactId>
+    <name>Apache Tuscany SCA Resource Implementation Runtime</name>
+
+    <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-contribution-export-resource</artifactId>
+            <artifactId>tuscany-implementation-resource</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-data-api</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -40,48 +52,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-http</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-resource-runtime</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>
-		
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-				
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-tomcat</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -92,4 +63,24 @@
         </dependency>
 
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.resource.runtime</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.implementation.resource*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
