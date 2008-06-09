@@ -87,7 +87,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http</artifactId>
+            <artifactId>tuscany-binding-http-runtime</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
