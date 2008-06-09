@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jsonrpc;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.io.BufferedReader;
 import java.io.CharArrayWriter;
