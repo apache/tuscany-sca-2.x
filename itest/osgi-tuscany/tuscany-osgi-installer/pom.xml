@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-ejb</artifactId>
+            <artifactId>tuscany-binding-ejb-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
