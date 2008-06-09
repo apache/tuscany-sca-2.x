@@ -139,6 +139,7 @@
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
                 <module>implementation-widget</module>
+                <module>implementation-widget-runtime</module>
                 <module>implementation-xquery</module>
                 <module>monitor</module>
                 <module>monitor-logging</module>

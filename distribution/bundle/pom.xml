@@ -391,7 +391,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-widget</artifactId>
+            <artifactId>tuscany-implementation-widget-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
