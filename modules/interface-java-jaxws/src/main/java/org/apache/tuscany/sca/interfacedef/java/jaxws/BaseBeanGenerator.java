@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -32,6 +33,13 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public abstract class BaseBeanGenerator implements Opcodes {
+    private static final Map<String, String> COLLECTION_CLASSES = new HashMap<String, String>();
+    static {
+        COLLECTION_CLASSES.put("Ljava/util/Collection;", "java/util/ArrayList");
+        COLLECTION_CLASSES.put("Ljava/util/List;", "java/util/ArrayList");
+        COLLECTION_CLASSES.put("Ljava/util/Set;", "java/util/HashSet");
+        COLLECTION_CLASSES.put("Ljava/util/Queue;", "java/util/LinkedList");
+    }
     protected static final Map<Object, Class<?>> generatedClasses =
         Collections.synchronizedMap(new WeakHashMap<Object, Class<?>>());
 
@@ -143,15 +151,16 @@ public abstract class BaseBeanGenerator implements Opcodes {
         mv.visitEnd();
 
     }
-
+    
     protected void decalreGetter(ClassWriter cw,
                                  String classDescriptor,
                                  String classSignature,
                                  String propName,
                                  String propClassSignature,
                                  String propTypeSignature) {
-        if ("Ljava/util/List;".equals(propClassSignature)) {
-            decalreListGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
+        String collectionImplClass = COLLECTION_CLASSES.get(propClassSignature);
+        if (collectionImplClass != null) {
+            decalreCollectionGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature, collectionImplClass);
             return;
         }
 
@@ -173,12 +182,13 @@ public abstract class BaseBeanGenerator implements Opcodes {
         mv.visitEnd();
     }
 
-    protected void decalreListGetter(ClassWriter cw,
+    protected void decalreCollectionGetter(ClassWriter cw,
                                      String classDescriptor,
                                      String classSignature,
                                      String propName,
                                      String propClassSignature,
-                                     String propTypeSignature) {
+                                     String propTypeSignature, 
+                                     String collectionImplClass) {
         String getterName = "get" + capitalize(propName);
         String fieldName = getFieldName(propName);
         MethodVisitor mv =
@@ -196,9 +206,9 @@ public abstract class BaseBeanGenerator implements Opcodes {
         mv.visitLabel(l2);
         mv.visitLineNumber(64, l2);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitTypeInsn(NEW, "java/util/ArrayList");
+        mv.visitTypeInsn(NEW, collectionImplClass);
         mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V");
+        mv.visitMethodInsn(INVOKESPECIAL, collectionImplClass, "<init>", "()V");
         mv.visitFieldInsn(PUTFIELD, classDescriptor, fieldName, propClassSignature);
         mv.visitLabel(l1);
         mv.visitLineNumber(66, l1);
