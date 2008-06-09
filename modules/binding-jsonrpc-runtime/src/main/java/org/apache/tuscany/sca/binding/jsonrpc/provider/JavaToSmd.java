@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
- package org.apache.tuscany.sca.binding.jsonrpc;
+ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.lang.reflect.Method;
 
@@ -28,9 +28,9 @@ import java.lang.reflect.Method;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaToSmd {
+class JavaToSmd {
     
-    public static String interfaceToSmd(Class klazz, String serviceUrl) {
+    static String interfaceToSmd(Class<?> klazz, String serviceUrl) {
         String name = klazz.getSimpleName();
         Method[] methods = klazz.getMethods();
         
