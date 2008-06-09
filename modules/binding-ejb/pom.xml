@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-ejb</artifactId>
-    <name>Apache Tuscany SCA EJB Binding Extension</name>
+    <name>Apache Tuscany SCA EJB Binding Model</name>
 
     <dependencies>
         <dependency>

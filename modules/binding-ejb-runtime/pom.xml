@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-ejb-runtime</artifactId>
-    <name>Apache Tuscany SCA EJB Binding Runtime Extension</name>
+    <name>Apache Tuscany SCA EJB Binding Runtime</name>
 
     <dependencies>
         <dependency>
