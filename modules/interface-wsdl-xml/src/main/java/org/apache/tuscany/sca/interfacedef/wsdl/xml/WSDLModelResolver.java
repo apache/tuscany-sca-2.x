@@ -30,8 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.wsdl.Definition;
+import javax.wsdl.PortType;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.AttributeExtensible;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
@@ -56,10 +58,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -87,6 +88,10 @@ public class WSDLModelResolver implements ModelResolver {
     public static final QName Q_ELEM_XSD_2001 = new QName(NS_URI_XSD_2001, ELEM_SCHEMA);
     public static final List<QName> XSD_QNAME_LIST =
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
+    
+    // ---- Policy WSDL Attachments
+    
+    public static final QName POLICY_EXTENSION = new QName("http://www.osoa.org/xmlns/sca/1.0", "requires");
     
     // ---- Stuff added for BPEL extension elements ---  Mike Edwards 01/05/2008
     public static final String ELEM_PLINKTYPE = "partnerLinkType";
@@ -120,6 +125,9 @@ public class WSDLModelResolver implements ModelResolver {
             wsdlExtensionRegistry.registerSerializer(Types.class, schema, serializer);
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
+        // ---- Policy WSDL Extensions
+        wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, POLICY_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
+        
         // ---- BPEL additions
         serializer = new BPELExtensionHandler();
         deserializer = new BPELExtensionHandler();
