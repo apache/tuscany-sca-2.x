@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.types.util;
 
+import org.apache.tuscany.sca.binding.corba.impl.reference.InterfaceInstanceCreator;
 import org.apache.tuscany.sca.binding.corba.types.TypeTreeNode;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TypeCode;
@@ -35,8 +36,9 @@ public class ReferenceTypeHelper implements TypeHelper {
 		return null;
 	}
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_Object();
+	public java.lang.Object read(TypeTreeNode node, InputStream is) {
+		Object reference = is.read_Object();
+		return (java.lang.Object) InterfaceInstanceCreator.createInstance(reference, node.getJavaClass()); 
 	}
 
 	public void write(TypeTreeNode node, OutputStream os, java.lang.Object data) {
