@@ -34,4 +34,5 @@ public interface HelloServiceSimpleClient {
     ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names);
     Map<String, String> getGreetingsMapForward(Map<String, String> namesMap);
     HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap);
+    String getGreetingsVarArgsForward(String... names);
 }

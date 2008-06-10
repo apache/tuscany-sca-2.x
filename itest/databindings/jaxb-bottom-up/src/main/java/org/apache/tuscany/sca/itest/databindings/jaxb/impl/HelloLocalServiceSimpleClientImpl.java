@@ -66,4 +66,8 @@ public class HelloLocalServiceSimpleClientImpl implements HelloServiceSimpleClie
     public HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap) {
         return service.getGreetingsHashMap(namesMap);
     }
+
+    public String getGreetingsVarArgsForward(String... names) {
+        return service.getGreetingsVarArgs(names[0], names[1], names[2]);
+    }
 }

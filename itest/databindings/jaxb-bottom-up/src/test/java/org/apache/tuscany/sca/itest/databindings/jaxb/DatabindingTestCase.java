@@ -119,6 +119,16 @@ public class DatabindingTestCase {
     }
 
     /**
+     * Invokes the HelloServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsVarArgs.
+     */
+    @Test
+    public void testSCAVarArgs() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        performTestVarArgs(helloServiceSimpleClient);
+    }
+
+    /**
      * Invokes the HelloServiceSimple service using WS binding.
      * Service method invoked is getGreetings.
      */
@@ -181,6 +191,16 @@ public class DatabindingTestCase {
     }
 
     /**
+     * Invokes the HelloServiceSimple service using WS binding.
+     * Service method invoked is getGreetingsVarArgs.
+     */
+    @Test
+    public void testWSVarArgs() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        performTestVarArgs(helloServiceSimpleClient);
+    }
+
+    /**
      * Invokes the HelloLocalServiceSimple service using SCA binding.
      * Service method invoked is getGreetings.
      */
@@ -238,6 +258,16 @@ public class DatabindingTestCase {
     public void testSCALocalHashMap() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestHashMap(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsVarArgs.
+     */
+    @Test
+    public void testSCALocalVarArgs() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTestVarArgs(helloServiceSimpleClient);
     }
 
     private void performTest(HelloServiceSimpleClient helloServiceSimpleClient) {
@@ -300,5 +330,12 @@ public class DatabindingTestCase {
         for(Map.Entry<String, String> entry: namesMap.entrySet()) {
             Assert.assertEquals("Hello "+entry.getKey(), respMap.get(entry.getKey()));
         }
+    }
+
+    private void performTestVarArgs(HelloServiceSimpleClient helloServiceSimpleClient) {
+        String[] names = { "Me", "You", "Pandu" }; // Do not change the array size from 3.
+        String expected = "Hello Me You Pandu";
+        String actual = helloServiceSimpleClient.getGreetingsVarArgsForward(names[0], names[1], names[2]);
+        Assert.assertEquals(expected, actual);
     }
 }

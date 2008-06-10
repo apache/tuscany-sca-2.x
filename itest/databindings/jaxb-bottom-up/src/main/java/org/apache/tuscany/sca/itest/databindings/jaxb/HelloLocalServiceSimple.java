@@ -52,4 +52,6 @@ public interface HelloLocalServiceSimple {
     
     // @WebMethod(exclude=true)
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
+    
+    String getGreetingsVarArgs(String... names);
 }
