@@ -64,6 +64,6 @@ public class GenericsServiceImpl implements GenericsService, GenericsLocalServic
     }
 
     public Bean2 getPolymorphic(Bean2 arg) {
-        return arg;
+        return GenericsTransformer.getPolymorphic(arg);
     }
 }
