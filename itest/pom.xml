@@ -101,6 +101,7 @@
 		<module>policy-security</module>
                 <module>properties</module>
                 <module>recursive</module>
+                <module>recursive-multi-level</module>
                 <module>recursive-ws</module>
                 <module>references</module>
                 <module>serialization</module>
