@@ -27,7 +27,9 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -74,5 +76,12 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
         }
         
         Assert.assertTrue(foundIntent);
+        
+        for(Operation operation : contract.getOperations()) {
+            if(operation.getName().equals("cancel")) {
+                Assert.assertEquals(operation.getConversationSequence(), ConversationSequence.CONVERSATION_END);
+            }
+        }
+        
     }
 }
