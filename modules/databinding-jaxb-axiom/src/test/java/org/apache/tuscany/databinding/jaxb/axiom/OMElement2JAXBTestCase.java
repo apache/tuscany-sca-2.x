@@ -42,13 +42,15 @@ import com.example.ipo.jaxb.PurchaseOrderType;
  */
 public class OMElement2JAXBTestCase {
     private static final String XML =
-        "<ns1:root xmlns:ns1=\"http://ns1\" xmlns:ns2=\"http://www.example.com/IPO\">" + "<ns2:purchaseOrder>"
+        "<ns0:root xmlns:ns0=\"http://ns0\" xmlns:ns2=\"http://www.example.com/IPO\">" + "<ns1:next xmlns:ns1=\"http://ns1\">"
+            + "<ns2:purchaseOrder>"
             + "<shipTo xsi:type=\"ns2:USAddress\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
             + "<street>ABC St.</street><city>San Jose</city><state>CA</state></shipTo>"
             + "<ns2:comment>123</ns2:comment><items/>"
             + "</ns2:purchaseOrder>"
-            + "</ns1:root>";
+            + "</ns1:next>"
+            + "</ns0:root>";
 
     @Test
     public void testTransform() throws Exception {
@@ -61,7 +63,8 @@ public class OMElement2JAXBTestCase {
 
         StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         OMElement root = builder.getDocumentElement();
-        OMElement po = (OMElement)root.getChildElements().next();
+        OMElement next = (OMElement)root.getChildElements().next();
+        OMElement po = (OMElement)next.getChildElements().next();
         Object jaxb = new OMElement2JAXB().transform(po, tContext);
         Assert.assertTrue(jaxb instanceof PurchaseOrderType);
     }

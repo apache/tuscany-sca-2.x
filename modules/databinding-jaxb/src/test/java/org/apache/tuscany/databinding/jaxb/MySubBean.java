@@ -17,29 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.databinding.xmlbeans;
-
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
-import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.xmlbeans.XmlObject;
+package org.apache.tuscany.databinding.jaxb;
 
 /**
- * XMLBeans DataBinding
- *
  * @version $Rev$ $Date$
  */
-public class XMLBeansDataBinding extends BaseDataBinding {
-    public static final String NAME = XmlObject.class.getName();
-    public static final String[] ALIASES = { "xmlbeans" };
-    
-    public XMLBeansDataBinding() {
-        super(NAME, XmlObject.class);
+public class MySubBean extends MyBean {
+    private String addtional;
+
+    public String getAddtional() {
+        return addtional;
     }
 
-    @Override
-    public Object copy(Object object, DataType dataType, Operation operation) {
-        return ((XmlObject) object).copy();
+    public void setAddtional(String addtional) {
+        this.addtional = addtional;
     }
-
 }

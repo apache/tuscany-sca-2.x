@@ -167,8 +167,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return dataBinding;
         }
 
-        public Object copy(Object object) {
-            return getDataBinding().copy(object);
+        public Object copy(Object object, DataType dataType, Operation operation) {
+            return getDataBinding().copy(object, dataType, operation);
         }
 
         public String[] getAliases() {
@@ -195,8 +195,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return getDataBinding().introspect(dataType, operation);
         }
 
-        public DataType introspect(Object value) {
-            return getDataBinding().introspect(value);
+        public DataType introspect(Object value, Operation operation) {
+            return getDataBinding().introspect(value, operation);
         }
     }
 
@@ -254,7 +254,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             // which is java.lang.Object. Default to this only if no databinding
             // results
             if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
-                dataType = binding.introspect(value);
+                dataType = binding.introspect(value, operation);
             }
             if (dataType != null) {
                 return dataType;

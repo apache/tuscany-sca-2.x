@@ -118,7 +118,7 @@ public class SDODataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object arg) {
+    public Object copy(Object arg, DataType dataType, Operation operation) {
         HelperContext context = HelperProvider.getDefaultContext();
         CopyHelper copyHelper = context.getCopyHelper();
         if (arg instanceof XMLDocument) {
@@ -130,7 +130,7 @@ public class SDODataBinding extends BaseDataBinding {
         } else if (arg instanceof DataObject) {
             return context.getCopyHelper().copy((DataObject)arg);
         } else {
-            return super.copy(arg);
+            return super.copy(arg, dataType, operation);
         }
     }
 

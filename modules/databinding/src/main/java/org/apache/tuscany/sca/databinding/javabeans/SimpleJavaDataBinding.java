@@ -43,7 +43,7 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object arg) {
+    public Object copy(Object arg, DataType dataType, Operation operation) {
         return arg;
     }
 

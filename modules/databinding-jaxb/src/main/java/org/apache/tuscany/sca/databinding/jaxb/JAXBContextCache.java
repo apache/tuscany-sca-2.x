@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.awt.Image;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -44,10 +41,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 
 /**
  * @version $Rev$ $Date$
@@ -69,21 +62,26 @@ public class JAXBContextCache {
         loadClassMap.put("void", void.class);
     }
 
-    protected static Class<?>[] COMMON_CLASSES =
-        new Class[] {boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class,
-                     double.class, Boolean.class, Byte.class, Character.class, Short.class, Integer.class, Long.class,
-                     Float.class, Double.class, String.class, boolean[].class, byte[].class, char[].class,
-                     short[].class, int[].class, long[].class, float[].class, double[].class, String[].class,
-                     BigInteger.class, BigDecimal.class, Calendar.class, Date.class, QName.class, URI.class,
-                     XMLGregorianCalendar.class, Duration.class,
-                     // java.lang.Object.class, 
-                     Image.class,
-                     // java2XSD.put(javax.activation.DataHandler.class, "base64Binary");
-                     Source.class, UUID.class
+    protected static Class<?>[] JAXB_BUILTIN_CLASSES =
+        {byte[].class, boolean.class, byte.class, char.class, double.class, float.class, int.class, long.class,
+         short.class, void.class, java.awt.Image.class, java.io.File.class, java.lang.Boolean.class,
+         java.lang.Byte.class, java.lang.Character.class, java.lang.Class.class, java.lang.Double.class,
+         java.lang.Float.class, java.lang.Integer.class, java.lang.Long.class, java.lang.Object.class,
+         java.lang.Short.class, java.lang.String.class, java.lang.Void.class, java.math.BigDecimal.class,
+         java.math.BigInteger.class, java.net.URI.class, java.net.URL.class, java.util.Calendar.class,
+         java.util.Date.class, java.util.GregorianCalendar.class, java.util.UUID.class,
+         javax.activation.DataHandler.class, javax.xml.bind.JAXBElement.class, javax.xml.datatype.Duration.class,
+         javax.xml.datatype.XMLGregorianCalendar.class, javax.xml.namespace.QName.class,
+         javax.xml.transform.Source.class};
 
-        };
+    protected static final Set<Class<?>> BUILTIN_CLASSES_SET = new HashSet<Class<?>>(Arrays.asList(JAXB_BUILTIN_CLASSES));
 
-    protected static final Set<Class<?>> COMMON_CLASSES_SET = new HashSet<Class<?>>(Arrays.asList(COMMON_CLASSES));
+    protected static Class<?>[] COMMON_ARRAY_CLASSES =
+        new Class[] {char[].class, short[].class, int[].class, long[].class, float[].class, double[].class,
+                     String[].class
+                     };
+
+    protected static final Set<Class<?>> COMMON_CLASSES_SET = new HashSet<Class<?>>(Arrays.asList(COMMON_ARRAY_CLASSES));
 
     protected LRUCache<Object, JAXBContext> cache;
     protected LRUCache<JAXBContext, Unmarshaller> upool;
@@ -103,7 +101,7 @@ public class JAXBContextCache {
 
     public static JAXBContext getCommonJAXBContext() {
         try {
-            return JAXBContext.newInstance(COMMON_CLASSES);
+            return JAXBContext.newInstance(COMMON_CLASSES_SET.toArray(new Class<?>[COMMON_CLASSES_SET.size()]));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -204,7 +202,7 @@ public class JAXBContextCache {
     }
 
     public JAXBContext getJAXBContext(Class<?> cls) throws JAXBException {
-        if (COMMON_CLASSES_SET.contains(cls)) {
+        if (COMMON_CLASSES_SET.contains(cls) || BUILTIN_CLASSES_SET.contains(cls)) {
             return commonContext;
         }
         synchronized (cache) {
@@ -238,19 +236,36 @@ public class JAXBContextCache {
     }
 
     public JAXBContext getJAXBContext(Set<Class<?>> classes) throws JAXBException {
-        if (COMMON_CLASSES_SET.containsAll(classes)) {
+        // Remove the JAXB built-in types to maximize the cache hit 
+        Set<Class<?>> classSet = new HashSet<Class<?>>(classes);
+        classSet.removeAll(BUILTIN_CLASSES_SET);
+        
+        // FIXME: [rfeng] Remove java classes that are mapped to the same XSD type to avoid
+        // conflicts
+        if (classSet.contains(Date[].class)) {
+            classSet.remove(Calendar[].class);
+        }
+
+        if (classSet.contains(URI[].class)) {
+            classSet.remove(UUID[].class);
+        }
+
+        // Is the common one
+        if (COMMON_CLASSES_SET.containsAll(classSet)) {
             return commonContext;
         }
-        if (classes.size() == 1) {
-            return getJAXBContext(classes.iterator().next());
+        
+        // For single class
+        if (classSet.size() == 1) {
+            return getJAXBContext(classSet.iterator().next());
         }
         synchronized (cache) {
-            JAXBContext context = cache.get(classes);
+            JAXBContext context = cache.get(classSet);
             if (context != null) {
                 return context;
             }
-            context = JAXBContext.newInstance(classes.toArray(new Class<?>[classes.size()]));
-            cache.put(classes, context);
+            context = JAXBContext.newInstance(classSet.toArray(new Class<?>[classSet.size()]));
+            cache.put(classSet, context);
             return context;
         }
     }
