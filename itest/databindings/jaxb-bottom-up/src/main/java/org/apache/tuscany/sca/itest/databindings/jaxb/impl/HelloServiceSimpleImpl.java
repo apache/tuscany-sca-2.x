@@ -101,4 +101,12 @@ public class HelloServiceSimpleImpl implements HelloServiceSimple {
         }
         return namesMap;
     }
+
+    public String getGreetingsVarArgs(String... names) {
+        String resp = "Hello";
+        for(int i = 0; i < names.length; ++i) {
+            resp += (" "+names[i]);
+        }
+        return resp;
+    }
 }
