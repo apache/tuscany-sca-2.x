@@ -208,6 +208,34 @@ class BaseWireBuilderImpl {
     }
 
     /**
+     * Connect composite references and services to the reference and services that they promote.
+     * 
+     * @param composite
+     * @param componentServices
+     * @param problems
+     */
+    protected void connectCompositeReferencesAndServices(Composite composite){
+        // Wire nested composites recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                connectCompositeReferencesAndServices((Composite)implementation);
+            }
+        }
+
+        // Index components, services and references
+        Map<String, Component> components = new HashMap<String, Component>();
+        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+        indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
+
+        // Connect composite services and references to the component
+        // services and references that they promote
+        connectCompositeServices(composite, components, componentServices);
+        connectCompositeReferences(composite, componentReferences);
+    }
+            
+    /**
      * Connect composite services to the component services that they promote.
      * 
      * @param composite
@@ -1109,7 +1137,7 @@ class BaseWireBuilderImpl {
     }
 
     
-    private void computePolicies(Composite composite) {
+    protected void computePolicies(Composite composite) {
     
         for (Component component : composite.getComponents()) {
 

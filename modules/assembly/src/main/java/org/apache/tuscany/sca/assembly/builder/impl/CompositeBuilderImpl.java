@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -31,8 +30,6 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
