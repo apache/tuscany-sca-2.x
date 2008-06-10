@@ -75,7 +75,18 @@ public class TuscanyListingAgent extends ListingAgent {
         super(aConfigContext);
     }
 
-    protected String findAxisServiceName(String path) {
+    /**
+     * This method overrides the Axis2 listing agent's computation of the
+     * service name.
+     */
+    @Override
+    public String extractServiceName(String urlString) {
+        String serviceName = findAxisServiceName(urlString);
+        setContextRoot(urlString, serviceName);
+        return serviceName;
+    }
+
+    private String findAxisServiceName(String path) {
         HashMap services = configContext.getAxisConfiguration().getServices();
         if (services == null) {
             return null;
@@ -94,195 +105,6 @@ public class TuscanyListingAgent extends ListingAgent {
         }
 
         return null;
-    }
-    
-    @Override
-    public void processListService(HttpServletRequest req,
-                                   HttpServletResponse res)
-            throws IOException, ServletException {
-
-
-        String filePart = req.getRequestURL().toString();
-//        String serviceName = filePart.substring(filePart.lastIndexOf("/") + 1,
-//                                                filePart.length());
-// Change the Axis2 code so as to use the complete ServletPath as the service name
-// this line is the only change to to Axis2 code
-
-        String serviceName = findAxisServiceName(filePart);
-        setContextRoot(filePart, serviceName);
-
-        String query = req.getQueryString();
-        int wsdl2 = query.indexOf("wsdl2");
-        int wsdl = query.indexOf("wsdl");
-        int xsd = query.indexOf("xsd");
-        int policy = query.indexOf("policy");
-
-        HashMap services = configContext.getAxisConfiguration().getServices();
-        if ((services != null) && !services.isEmpty()) {
-            Object serviceObj = services.get(serviceName);
-            if (serviceObj != null) {
-                boolean isHttp = "http".equals(req.getScheme());
-                if (wsdl2 >= 0) {
-                    OutputStream out = res.getOutputStream();
-                    res.setContentType("text/xml");
-                    String ip = extractHostAndPort(filePart, isHttp);
-// JIRA TUSCANY-1561 Port to Axis2 1.3                    
-//                    ((AxisService) serviceObj).printWSDL2(out, ip, configContext.getServiceContextPath());
-                    ((AxisService) serviceObj).printWSDL2(out, ip);
-                    out.flush();
-                    out.close();
-                    return;
-                } else if (wsdl >= 0) {
-                    OutputStream out = res.getOutputStream();
-                    res.setContentType("text/xml");
-                    String ip = extractHostAndPort(filePart, isHttp);
-                    patchSOAP12Port((AxisService)serviceObj);
-//                  JIRA TUSCANY-1561 Port to Axis2 1.3                    
-//                    ((AxisService) serviceObj).printWSDL(out, ip, configContext.getServicePath());
-                    ((AxisService) serviceObj).printWSDL(out, ip);
-                    out.flush();
-                    out.close();
-                    return;
-                } else if (xsd >= 0) {
-                    OutputStream out = res.getOutputStream();
-                    res.setContentType("text/xml");
-                    AxisService axisService = (AxisService) serviceObj;
-                    //call the populator
-                    axisService.populateSchemaMappings();
-                    Map schemaMappingtable =
-                            axisService.getSchemaMappingTable();
-                    ArrayList schemas = axisService.getSchema();
-
-                    //a name is present - try to pump the requested schema
-                    String xsds = req.getParameter("xsd");
-                    if (!"".equals(xsds)) {
-                        XmlSchema schema =
-                                (XmlSchema) schemaMappingtable.get(xsds);
-                        if (schema != null) {
-                            //schema is there - pump it outs
-                            schema.write(new OutputStreamWriter(out, "UTF8"));
-                            out.flush();
-                            out.close();
-                        } else {
-                            InputStream in = axisService.getClassLoader()
-                                    .getResourceAsStream(DeploymentConstants.META_INF + "/" + xsds);
-                            if (in != null) {
-                                out.write(IOUtils.getStreamAsByteArray(in));
-                                out.flush();
-                                out.close();
-                            } else {
-                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                            }
-                        }
-
-                        //multiple schemas are present and the user specified
-                        //no name - in this case we cannot possibly pump a schema
-                        //so redirect to the service root
-                    } else if (schemas.size() > 1) {
-                        res.sendRedirect("");
-                        //user specified no name and there is only one schema
-                        //so pump that out
-                    } else {
-                        XmlSchema schema = axisService.getSchema(0);
-                        if (schema != null) {
-                            schema.write(new OutputStreamWriter(out, "UTF8"));
-                            out.flush();
-                            out.close();
-                        }
-                    }
-                    return;
-                } else if (policy >= 0) {
-
-                    OutputStream out = res.getOutputStream();
-
-                    ExternalPolicySerializer serializer = new ExternalPolicySerializer();
-                    serializer.setAssertionsToFilter(configContext
-                            .getAxisConfiguration().getLocalPolicyAssertions());
-
-                    // check whether Id is set
-                    String idParam = req.getParameter("id");
-
-                    if (idParam != null) {
-                        // Id is set
-
-                        Policy targetPolicy = findPolicy(idParam, (AxisService) serviceObj);
-
-                        if (targetPolicy != null) {
-                            XMLStreamWriter writer;
-
-                            try {
-                                writer = XMLOutputFactory.newInstance()
-                                        .createXMLStreamWriter(out);
-
-                                res.setContentType("text/xml");
-                                targetPolicy.serialize(writer);
-                                writer.flush();
-
-                            } catch (XMLStreamException e) {
-                                throw new ServletException(
-                                        "Error occured when serializing the Policy",
-                                        e);
-
-                            } catch (FactoryConfigurationError e) {
-                                throw new ServletException(
-                                        "Error occured when serializing the Policy",
-                                        e);
-                            }
-
-                        } else {
-
-                            res.setContentType("text/html");
-                            String outStr = "<b>No policy found for id="
-                                            + idParam + "</b>";
-                            out.write(outStr.getBytes());
-                        }
-
-                    } else {
-
-                        PolicyInclude policyInclude = ((AxisService) serviceObj).getPolicyInclude();
-                        Policy effecPolicy = policyInclude.getEffectivePolicy();
-
-                        if (effecPolicy != null) {
-                            XMLStreamWriter writer;
-
-                            try {
-                                writer = XMLOutputFactory.newInstance()
-                                        .createXMLStreamWriter(out);
-
-                                res.setContentType("text/xml");
-                                effecPolicy.serialize(writer);
-                                writer.flush();
-
-                            } catch (XMLStreamException e) {
-                                throw new ServletException(
-                                        "Error occured when serializing the Policy",
-                                        e);
-
-                            } catch (FactoryConfigurationError e) {
-                                throw new ServletException(
-                                        "Error occured when serializing the Policy",
-                                        e);
-                            }
-                        } else {
-
-                            res.setContentType("text/html");
-                            String outStr = "<b>No effective policy for "
-                                            + serviceName + " servcie</b>";
-                            out.write(outStr.getBytes());
-                        }
-                    }
-
-                    return;
-                } else {
-                    req.getSession().setAttribute(Constants.SINGLE_SERVICE,
-                                                  serviceObj);
-                }
-            } else {
-                req.getSession().setAttribute(Constants.SINGLE_SERVICE, null);
-            }
-        }
-
-        renderView(LIST_SINGLE_SERVICE_JSP_NAME, req, res);
     }
 
     /**
