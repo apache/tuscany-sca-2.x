@@ -37,4 +37,6 @@ public interface GenericsLocalService {
     Bean1<? super Bean3> getWildcardSuper(Bean1<? super Bean3> arg);
     
     Bean1<? extends Bean2> getWildcardExtends(Bean1<? extends Bean2> arg);
+    
+    Bean2 getPolymorphic(Bean2 arg);
 }

@@ -49,4 +49,8 @@ public class Bean31 extends Bean2 {
             return ((Bean31)that).address == null && super.equals(that);
         }
     }
+
+    public String toString() {
+        return this.getClass().getSimpleName()+"[name = "+super.getName()+", address = "+address+"]";
+    }
 }
