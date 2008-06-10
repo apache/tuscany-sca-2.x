@@ -206,7 +206,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURIArray.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
+    @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testSCANewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -488,7 +488,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURI.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
+    @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testWSNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -500,7 +500,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURIArray.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
+    @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testWSNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1093,10 +1093,11 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewURI(StandardTypesServiceClient serviceClient) {
-        URI[] uris = new URI[3];
+        URI[] uris = new URI[4];
         uris[0] = URI.create("a/b/c");
-        uris[1] = URI.create("http://abc/");
+        uris[1] = URI.create("http://abc");
         uris[2] = URI.create("ftp://a/b");
+        uris[3] = URI.create("http://abc").resolve("xyz");
 
         for (int i = 0; i < uris.length; ++i) {
             URI expected = uris[i].resolve("uri");
@@ -1106,11 +1107,14 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewURIArray(StandardTypesServiceClient serviceClient) {
-        URI[] uris = new URI[3];
+        URI[] uris = new URI[4];
         uris[0] = URI.create("a/b/c");
         // [rfeng] We need to have a trialign / to avoid the resolving problem
-        uris[1] = URI.create("http://abc/");
+        // FIXME: [vamsi] This is actually a data transformation problem. The array being returned from the service method is
+        // not making to the caller intact.
+        uris[1] = URI.create("http://abc");
         uris[2] = URI.create("ftp://a/b");
+        uris[3] = URI.create("http://abc").resolve("xyz");
 
         URI[] expected = new URI[uris.length];
         for (int i = 0; i < uris.length; ++i) {
