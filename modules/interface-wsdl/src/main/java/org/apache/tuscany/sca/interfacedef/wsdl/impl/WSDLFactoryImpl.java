@@ -27,8 +27,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * A factory for the WSDL model.
@@ -40,8 +38,7 @@ public abstract class WSDLFactoryImpl implements WSDLFactory {
     private WSDLInterfaceIntrospectorImpl introspector;
     
     public WSDLFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
-        XSDFactory factory = modelFactories.getFactory(XSDFactory.class);
-        introspector = new WSDLInterfaceIntrospectorImpl(factory);
+        introspector = new WSDLInterfaceIntrospectorImpl(modelFactories);
     }
 
     public WSDLInterface createWSDLInterface() {
