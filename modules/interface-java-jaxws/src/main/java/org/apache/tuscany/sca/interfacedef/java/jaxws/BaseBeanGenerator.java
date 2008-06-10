@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -42,6 +43,8 @@ public abstract class BaseBeanGenerator implements Opcodes {
     }
     protected static final Map<Object, Class<?>> generatedClasses =
         Collections.synchronizedMap(new WeakHashMap<Object, Class<?>>());
+
+    protected XMLAdapterExtensionPoint xmlAdapters;
 
     public byte[] defineClass(ClassWriter cw,
                               String classDescriptor,
@@ -69,8 +72,15 @@ public abstract class BaseBeanGenerator implements Opcodes {
         if (properties != null) {
             for (BeanProperty p : properties) {
                 boolean isMap = Map.class.isAssignableFrom(p.getType());
+                String xmlAdapterClassSignature = null;
+                if (xmlAdapters != null) {
+                    Class<?> adapterClass = xmlAdapters.getAdapter(p.getType());
+                    if (adapterClass != null) {
+                        xmlAdapterClassSignature = CodeGenerationHelper.getSignature(adapterClass);
+                    }
+                }
                 declareProperty(cw, classDescriptor, classSignature, p.getName(), p.getSignature(), p
-                    .getGenericSignature(), isMap);
+                    .getGenericSignature(), isMap, xmlAdapterClassSignature);
             }
         }
 
@@ -84,11 +94,13 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                    String classSignature,
                                    String propName,
                                    String propClassSignature,
-                                   String propTypeSignature, boolean isMap) {
+                                   String propTypeSignature,
+                                   boolean isMap,
+                                   String xmlAdapterClassSignature) {
         if (propClassSignature.equals(propTypeSignature)) {
             propTypeSignature = null;
         }
-        declareField(cw, propName, propClassSignature, propTypeSignature, isMap);
+        declareField(cw, propName, propClassSignature, propTypeSignature, isMap, xmlAdapterClassSignature);
         decalreGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
         declareSetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
     }
@@ -101,7 +113,12 @@ public abstract class BaseBeanGenerator implements Opcodes {
         }
     }
 
-    protected void declareField(ClassWriter cw, String propName, String propClassSignature, String propTypeSignature, boolean isMap) {
+    protected void declareField(ClassWriter cw,
+                                String propName,
+                                String propClassSignature,
+                                String propTypeSignature,
+                                boolean isMap,
+                                String xmlAdapterClassSignature) {
         FieldVisitor fv;
         AnnotationVisitor av0;
         fv = cw.visitField(ACC_PROTECTED, getFieldName(propName), propClassSignature, propTypeSignature, null);
@@ -111,6 +128,12 @@ public abstract class BaseBeanGenerator implements Opcodes {
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
             av0.visit("name", propName);
             av0.visit("namespace", "");
+            av0.visitEnd();
+        }
+
+        if (xmlAdapterClassSignature != null) {
+            av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/adapters/XmlJavaTypeAdapter;", true);
+            av0.visit("value", org.objectweb.asm.Type.getType(xmlAdapterClassSignature));
             av0.visitEnd();
         }
 
@@ -151,7 +174,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
         mv.visitEnd();
 
     }
-    
+
     protected void decalreGetter(ClassWriter cw,
                                  String classDescriptor,
                                  String classSignature,
@@ -160,7 +183,13 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                  String propTypeSignature) {
         String collectionImplClass = COLLECTION_CLASSES.get(propClassSignature);
         if (collectionImplClass != null) {
-            decalreCollectionGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature, collectionImplClass);
+            decalreCollectionGetter(cw,
+                                    classDescriptor,
+                                    classSignature,
+                                    propName,
+                                    propClassSignature,
+                                    propTypeSignature,
+                                    collectionImplClass);
             return;
         }
 
@@ -183,12 +212,12 @@ public abstract class BaseBeanGenerator implements Opcodes {
     }
 
     protected void decalreCollectionGetter(ClassWriter cw,
-                                     String classDescriptor,
-                                     String classSignature,
-                                     String propName,
-                                     String propClassSignature,
-                                     String propTypeSignature, 
-                                     String collectionImplClass) {
+                                           String classDescriptor,
+                                           String classSignature,
+                                           String propName,
+                                           String propClassSignature,
+                                           String propTypeSignature,
+                                           String collectionImplClass) {
         String getterName = "get" + capitalize(propName);
         String fieldName = getFieldName(propName);
         MethodVisitor mv =
@@ -318,5 +347,13 @@ public abstract class BaseBeanGenerator implements Opcodes {
         public Class<?> getType() {
             return type;
         }
+    }
+
+    public XMLAdapterExtensionPoint getXmlAdapters() {
+        return xmlAdapters;
+    }
+
+    public void setXmlAdapters(XMLAdapterExtensionPoint xmlAdapters) {
+        this.xmlAdapters = xmlAdapters;
     }
 }
