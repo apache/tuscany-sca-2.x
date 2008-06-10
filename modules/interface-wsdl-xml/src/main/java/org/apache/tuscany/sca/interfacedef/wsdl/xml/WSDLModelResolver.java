@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.wsdl.Definition;
+import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
@@ -91,7 +92,8 @@ public class WSDLModelResolver implements ModelResolver {
     
     // ---- Policy WSDL Attachments
     
-    public static final QName POLICY_EXTENSION = new QName("http://www.osoa.org/xmlns/sca/1.0", "requires");
+    public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://www.osoa.org/xmlns/sca/1.0", "requires");
+    public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://www.osoa.org/xmlns/sca/1.0", "endsConversation");
     
     // ---- Stuff added for BPEL extension elements ---  Mike Edwards 01/05/2008
     public static final String ELEM_PLINKTYPE = "partnerLinkType";
@@ -126,7 +128,8 @@ public class WSDLModelResolver implements ModelResolver {
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
         // ---- Policy WSDL Extensions
-        wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, POLICY_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
+        wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_POLICY_ATTRIBUTE_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
+        wsdlExtensionRegistry.registerExtensionAttributeType(Operation.class, Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION, AttributeExtensible.STRING_TYPE);
         
         // ---- BPEL additions
         serializer = new BPELExtensionHandler();
