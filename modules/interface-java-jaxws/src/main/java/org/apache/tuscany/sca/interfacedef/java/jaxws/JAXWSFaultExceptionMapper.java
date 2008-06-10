@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -52,10 +53,13 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
     private DataBindingExtensionPoint dataBindingExtensionPoint;
+    private XMLAdapterExtensionPoint xmlAdapterExtensionPoint;
 
-    public JAXWSFaultExceptionMapper(DataBindingExtensionPoint dataBindingExtensionPoint) {
+
+    public JAXWSFaultExceptionMapper(DataBindingExtensionPoint dataBindingExtensionPoint, XMLAdapterExtensionPoint xmlAdapters) {
         super();
         this.dataBindingExtensionPoint = dataBindingExtensionPoint;
+        this.xmlAdapterExtensionPoint = xmlAdapters;
     }
 
     /**
@@ -300,7 +304,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
                         if (generatingFaultBean) {
                             Class<? extends Throwable> t = (Class<? extends Throwable>)cls;
                             GeneratedClassLoader cl = new GeneratedClassLoader(t.getClassLoader());
-                            GeneratedDataTypeImpl dt = new GeneratedDataTypeImpl(t, cl);
+                            GeneratedDataTypeImpl dt = new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, t, cl);
                             return dt;
                         } else {
                             return new DataTypeImpl<XMLType>(cls, new XMLType(qname, qname));

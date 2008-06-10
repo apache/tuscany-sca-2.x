@@ -76,8 +76,8 @@ public class Java2WSDLHelperTestCase extends TestCase {
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
-        JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings);
-        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface);
+        JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
+        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         javaIC.setInterface(iface);
         WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory);
@@ -90,7 +90,7 @@ public class Java2WSDLHelperTestCase extends TestCase {
  
         JavaInterfaceContract javaIC2 = factory.createJavaInterfaceContract();
         JavaInterface iface2 = factory.createJavaInterface(TestJavaInterface.class);
-        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface2);
+        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface2);
         javaIC2.setInterface(iface2);
         WSDLInterfaceContract wsdlIC2 = Java2WSDLHelper.createWSDLInterfaceContract(javaIC2, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory);

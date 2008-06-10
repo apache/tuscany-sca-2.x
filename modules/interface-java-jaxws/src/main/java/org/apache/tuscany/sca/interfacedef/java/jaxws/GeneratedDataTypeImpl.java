@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -33,6 +34,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class GeneratedDataTypeImpl implements DataType<XMLType> {
+    private XMLAdapterExtensionPoint xmlAdapters;
+    
     private Class<?> physical;
     private XMLType logical;
 
@@ -45,15 +48,17 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
 
     private Class<? extends Throwable> exceptionClass;
 
-    public GeneratedDataTypeImpl(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
+    public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters, Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
         super();
         this.exceptionClass = exceptionClass;
         this.cl = cl;
         QName name = FaultBeanGenerator.getElementName(exceptionClass);
         this.logical = new XMLType(name, name);
+        this.xmlAdapters = xmlAdapters;
     }
 
-    public GeneratedDataTypeImpl(Method m,
+    public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters,
+                                 Method m,
                                  String wrapperClassName,
                                  String wrapperNamespace,
                                  String wrapperName,
@@ -68,6 +73,7 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
         this.request = request;
         QName name = new QName(wrapperNamespace, wrapperName);
         this.logical = new XMLType(name, name);
+        this.xmlAdapters = xmlAdapters;
     }
 
     public String getDataBinding() {
@@ -86,12 +92,15 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
         if (physical == null) {
             if (m != null) {
                 WrapperBeanGenerator generator = new WrapperBeanGenerator();
+                generator.setXmlAdapters(xmlAdapters);
                 physical =
                     request ? generator.generateRequestWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl)
                         : generator.generateResponseWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl);
                 ;
             } else if (exceptionClass != null) {
-                physical = new FaultBeanGenerator().generate(exceptionClass, cl);
+                FaultBeanGenerator faultBeanGenerator = new FaultBeanGenerator();
+                faultBeanGenerator.setXmlAdapters(xmlAdapters);
+                physical = faultBeanGenerator.generate(exceptionClass, cl);
             }
         }
         return physical;

@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfac
 import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.CallableReference2XMLStreamReader;
 import org.apache.tuscany.sca.core.databinding.transformers.CallableReferenceDataBinding;
+import org.apache.tuscany.sca.core.databinding.transformers.CallableReferenceXMLAdapter;
 import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
@@ -35,11 +36,13 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
+import org.osoa.sca.CallableReference;
 
 /**
  * @version $Rev$ $Date$
@@ -49,7 +52,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        FaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings);
+
+        XMLAdapterExtensionPoint xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
+        xmlAdapterExtensionPoint.addAdapter(CallableReference.class, CallableReferenceXMLAdapter.class);
+        FaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, xmlAdapterExtensionPoint);
         registry.addExtensionPoint(faultExceptionMapper);
         
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
@@ -81,7 +87,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         // [rfeng] The JAX-WS processor should come before the Databinding processor to make sure @WebService
         // is honored as Remoteable
-        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper));
+        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, xmlAdapterExtensionPoint));
 
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 

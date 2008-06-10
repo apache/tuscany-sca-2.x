@@ -41,6 +41,8 @@ import javax.xml.ws.ResponseWrapper;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -60,17 +62,20 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
-    private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
-    private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+    private static final String JAXB_DATABINDING = JAXBDataBinding.NAME;
     private static final String GET = "get";
     private DataBindingExtensionPoint dataBindingExtensionPoint;
     private FaultExceptionMapper faultExceptionMapper;
+    private XMLAdapterExtensionPoint xmlAdapterExtensionPoint;
+
 
     public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
-                                       FaultExceptionMapper faultExceptionMapper) {
+                                       FaultExceptionMapper faultExceptionMapper,
+                                       XMLAdapterExtensionPoint xmlAdapters) {
         super();
         this.dataBindingExtensionPoint = dataBindingExtensionPoint;
         this.faultExceptionMapper = faultExceptionMapper;
+        this.xmlAdapterExtensionPoint = xmlAdapters;
     }
 
     public JAXWSJavaInterfaceProcessor() {
@@ -201,7 +206,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
-                            return new GeneratedDataTypeImpl(method, inputWrapperClassName, inputNS, inputName, true,
+                            return new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, method, inputWrapperClassName, inputNS, inputName, true,
                                                              cl);
                         }
                     }
@@ -236,7 +241,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
-                            return new GeneratedDataTypeImpl(method, outputWrapperClassName, outputNS, outputName,
+                            return new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, method, outputWrapperClassName, outputNS, outputName,
                                                              false, cl);
                         }
                     }
