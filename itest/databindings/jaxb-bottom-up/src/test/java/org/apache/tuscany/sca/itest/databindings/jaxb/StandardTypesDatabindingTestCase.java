@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,6 +46,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Assert;
 
+import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.tuscany.sca.databinding.xml.String2Node;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransformer;
@@ -307,7 +310,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewDataHandler.
      */
     @Test
-    @Ignore("DataSource type is different")
     public void testSCANewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -319,7 +321,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewDataHandlerArray.
      */
     @Test
-    @Ignore("DataSource type is different")
     public void testSCANewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -604,7 +605,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewDataHandler.
      */
     @Test
-    @Ignore("DataSource type is different")
     public void testWSNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -616,7 +616,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewDataHandlerArray.
      */
     @Test
-    @Ignore("DataSource type is different")
     public void testWSNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1241,28 +1240,32 @@ public class StandardTypesDatabindingTestCase {
         }
     }
 
-    private void performTestNewDataHandler(StandardTypesServiceClient serviceClient) {
+    private void performTestNewDataHandler(StandardTypesServiceClient serviceClient) throws IOException {
         DataHandler[] dha = new DataHandler[3];
         dha[0] = new DataHandler("Some data", "text/plain");
-        dha[1] = new DataHandler("Some data1", "text/plain");
-        dha[2] = new DataHandler("Some data2", "text/plain");
+        dha[1] = new DataHandler(this.getClass().getClassLoader().getResource("standard-types-service.composite"));
+        dha[2] = new DataHandler(new ByteArrayDataSource("Some data2".getBytes()));
 
         for (int i = 0; i < dha.length; ++i) {
             DataHandler actual = serviceClient.getNewDataHandlerForward(dha[i]);
-            Assert.assertEquals(dha[i], actual);
+            // Note: The DataHandler returned may use a different type of DataSource.
+            // Compare the data content instead of using equals().
+            Assert.assertTrue(compare(dha[i], actual));
         }
     }
 
-    private void performTestNewDataHandlerArray(StandardTypesServiceClient serviceClient) {
+    private void performTestNewDataHandlerArray(StandardTypesServiceClient serviceClient) throws IOException {
         DataHandler[] dha = new DataHandler[3];
         dha[0] = new DataHandler("Some data", "text/plain");
-        dha[1] = new DataHandler("Some data1", "text/plain");
-        dha[2] = new DataHandler("Some data2", "text/plain");
+        dha[1] = new DataHandler(this.getClass().getClassLoader().getResource("standard-types-service.composite"));
+        dha[2] = new DataHandler(new ByteArrayDataSource("Some data2".getBytes()));
 
         DataHandler[] actual = serviceClient.getNewDataHandlerArrayForward(dha);
         Assert.assertEquals(dha.length, actual.length);
         for (int i = 0; i < dha.length; ++i) {
-            Assert.assertEquals(dha[i], actual[i]);
+            // Note: The DataHandler returned may use a different type of DataSource.
+            // Compare the data content instead of using equals().
+            Assert.assertTrue(compare(dha[i], actual[i]));
         }
     }
 
@@ -1320,6 +1323,28 @@ public class StandardTypesDatabindingTestCase {
         for (int i = 0; i < uuids.length; ++i) {
             UUID expected = UUID.fromString(uuids[i].toString() + "AAA");
             Assert.assertEquals(expected, actual[i]);
+        }
+    }
+    
+    /**
+     * This method compares two DataHandlers.
+     * @return true if the data in the two handlers is the same.
+     */
+    private boolean compare(DataHandler dh1, DataHandler dh2) throws IOException {
+        InputStream inp1 = dh1.getInputStream();
+        InputStream inp2 = dh2.getInputStream();
+        for(;;) {
+            int i1 = inp1.read();
+            int i2 = inp2.read();
+            if(i1 == -1 && i2 == -1) {
+                return true;
+            } else if(i1 != -1 && i2 != -1) {
+                if(i1 != i2) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
     }
 }
