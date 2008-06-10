@@ -24,11 +24,11 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This test class tests the Service annotation described in section 1.2.1 and
- * 1.8.17
+ *
  */
 public class CompomnentTypeFileTestCase {
 
@@ -43,7 +43,7 @@ public class CompomnentTypeFileTestCase {
             aService = ServiceFinder.getService(AService.class, "AComponent/AService");
         } catch (Exception ex) {
             ex.printStackTrace();
-        } 
+        }
     }
 
     @AfterClass
@@ -54,9 +54,54 @@ public class CompomnentTypeFileTestCase {
 
     }
 
+    /**
+     * Lines 435-439:
+     * <p>
+     * Step two covers the cases where introspection of the implementation is
+     * not possible or where it does not provide complete information and it
+     * involves looking for an SCA component type file. Component type
+     * information found in the component type file must be compatible with the
+     * equivalent information found from inspection of the implementation.
+     * <p>
+     * Lines 441-444:
+     * <p>
+     * In the ideal case, the component type information is determined by
+     * inspecting the implementation, for example as code annotations. The
+     * component type file provides a mechanism for the provision of component
+     * type information for implementation types where the information cannot be
+     * determined by inspecting the implementation.
+     */
     @Test
     public void typeFile1() throws Exception {
         Assert.assertSame("SomeStateFromB", aService.getState());
+    }
+
+    /**
+     * Lines 439-449:
+     * <p>
+     * The component type file can specify partial information, with the
+     * remainder being derived from the implementation.
+     * <p>
+     * The first test makes use of the reference to b which is provided by the
+     * type file. The second test makes use of the reference to b2 which is
+     * provided via annotation
+     */
+    @Test
+    public void typeFile2() throws Exception {
+        Assert.assertSame("SomeStateFromB", aService.getState());
+        Assert.assertSame("SomeStateFromB", aService.getState2());
+    }
+
+    /**
+     * Lines 450-451:
+     * <p>
+     * The componentType element can contain Service elements, Reference
+     * elements and Property elements.
+     */
+    @Test
+    @Ignore ("TUSCANY-2383")
+    public void typeFile3() throws Exception {
+        Assert.assertEquals("SomePropertyValue", aService.getBProperty());
     }
 
 }

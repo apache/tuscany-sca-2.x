@@ -21,17 +21,32 @@ package org.apache.tuscany.sca.vtest.assembly.ctypefile.impl;
 
 import org.apache.tuscany.sca.vtest.assembly.ctypefile.AService;
 import org.apache.tuscany.sca.vtest.assembly.ctypefile.BService;
+import org.osoa.sca.annotations.Reference;
 
 public class AServiceImpl implements AService {
 
     private BService bService;
-
+    private BService b2Service;
+   
     public void setBService(BService b) {
         this.bService = b;
+    }
+    
+    @Reference
+    public void setB2Service(BService b) {
+        this.b2Service = b;
     }
 
     public String getState() {
         return bService.getState();
+    }
+    
+    public String getState2() {
+        return b2Service.getState();
+    }
+
+    public String getBProperty() {
+        return bService.getSomeProperty();
     }
 
 }

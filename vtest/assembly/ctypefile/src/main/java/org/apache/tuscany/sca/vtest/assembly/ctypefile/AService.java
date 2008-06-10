@@ -24,5 +24,7 @@ package org.apache.tuscany.sca.vtest.assembly.ctypefile;
 public interface AService {
 
     public String getState();
+    public String getState2();
+    public String getBProperty();
     
 }
