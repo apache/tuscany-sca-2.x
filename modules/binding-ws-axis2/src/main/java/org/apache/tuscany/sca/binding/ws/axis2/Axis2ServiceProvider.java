@@ -105,6 +105,7 @@ public class Axis2ServiceProvider {
     
     private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
 
+    private RuntimeComponent component;
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
@@ -135,6 +136,7 @@ public class Axis2ServiceProvider {
                                 MessageFactory messageFactory,
                                 Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
+        this.component = component; 
         this.contract = contract; 
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
@@ -476,14 +478,10 @@ public class Axis2ServiceProvider {
      * Create an AxisService from the WSDL doc used by ws binding
      */
     protected AxisService createWSDLAxisService() throws AxisFault {
+
+        Axis2ServiceClient.configureWSDLDefinition(wsBinding, component, contract);
+        // The service, port and WSDL definition can be set by the above call
         Definition definition = wsBinding.getWSDLDefinition().getDefinition();
-
-        // WSDLToAxisServiceBuilder only uses the service and port to find the wsdl4J Binding
-        // An SCA service with binding.ws does not require a service or port so we may not have
-        // these but ...
-
-        Axis2ServiceClient.setServiceAndPort(wsBinding);
-        // The service and port can be set by the above call
         QName serviceQName =
             wsBinding.getService() != null ? wsBinding.getService().getQName() : wsBinding.getServiceName();
         String portName = wsBinding.getPort() != null ? wsBinding.getPort().getName() : wsBinding.getPortName();

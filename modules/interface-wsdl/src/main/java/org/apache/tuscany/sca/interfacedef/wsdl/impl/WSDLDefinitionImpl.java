@@ -53,6 +53,8 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private Definition definition;
     private String namespace;
     private URI location;
+    private URI uri;
+    private List<WSDLDefinition> imported = new ArrayList<WSDLDefinition>();
     private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
     private Binding binding;
@@ -136,6 +138,27 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
      */
     public void setLocation(URI url) {
         this.location = url;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getURI()
+     */
+    public URI getURI() {
+        return uri;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#setURI(java.net.URI)
+     */
+    public void setURI(URI uri) {
+        this.uri = uri;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getImportedDefinitions()
+     */
+    public List<WSDLDefinition> getImportedDefinitions() {
+        return imported;
     }
 
     /**

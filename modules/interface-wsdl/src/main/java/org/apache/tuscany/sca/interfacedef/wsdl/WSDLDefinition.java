@@ -86,6 +86,24 @@ public interface WSDLDefinition extends Base {
     void setLocation(URI url);
 
     /**
+     * Get the contribution artifact URI of the WSDL document
+     * @return The URI of the WSDL document
+     */
+    URI getURI();
+
+    /**
+     * Set the contribution artifact URI of the WSDL document
+     * @param uri
+     */
+    void setURI(URI uri);
+
+    /**
+     * Get the WSDL definitions imported by this definition
+     * @return A list of imported WSDL definitions
+     */
+    List<WSDLDefinition> getImportedDefinitions();
+
+    /**
      * Get an XSD element by QName
      * @param name
      * @return

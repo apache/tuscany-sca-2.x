@@ -316,6 +316,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         if (!resolved.isUnresolved()) {
             wsdlDefinition.setDefinition(resolved.getDefinition());
             wsdlDefinition.setLocation(resolved.getLocation());
+            wsdlDefinition.setURI(resolved.getURI());
             wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
             wsdlDefinition.setUnresolved(false);
             model.setDefinition(wsdlDefinition);
