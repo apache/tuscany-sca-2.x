@@ -49,4 +49,8 @@ public class Bean2 {
             return ((Bean2)that).name == null;
         }
     }
+    
+    public String toString() {
+        return this.getClass().getSimpleName()+"[name = "+name+"]";
+    }
 }

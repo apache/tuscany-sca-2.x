@@ -70,4 +70,8 @@ public class GenericsLocalServiceClientImpl implements GenericsServiceClient {
     public Bean1<? extends Bean2> getWildcardExtendsForward(Bean1<? extends Bean2> arg) {
         return service.getWildcardExtends(arg);
     }
+
+    public Bean2 getPolymorphicForward(Bean2 arg) {
+        return service.getPolymorphic(arg);
+    }
 }

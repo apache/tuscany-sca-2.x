@@ -62,4 +62,8 @@ public class GenericsServiceImpl implements GenericsService, GenericsLocalServic
     public Bean1<? extends Bean2> getWildcardExtends(Bean1<? extends Bean2> arg) {
         return GenericsTransformer.getWildcardExtends(arg);
     }
+
+    public Bean2 getPolymorphic(Bean2 arg) {
+        return arg;
+    }
 }

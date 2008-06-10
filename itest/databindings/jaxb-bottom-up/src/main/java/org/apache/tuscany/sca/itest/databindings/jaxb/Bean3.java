@@ -50,4 +50,7 @@ public class Bean3 extends Bean2 {
         }
     }
     
+    public String toString() {
+        return this.getClass().getSimpleName()+"[name = "+super.getName()+", address = "+address+"]";
+    }
 }

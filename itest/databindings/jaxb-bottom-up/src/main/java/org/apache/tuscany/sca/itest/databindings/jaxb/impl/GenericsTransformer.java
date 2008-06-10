@@ -118,4 +118,8 @@ public class GenericsTransformer {
             return new Bean1<Bean2>(temp);
         }
     }
+    
+    public static Bean2 getPolymorphic(Bean2 arg) {
+        return arg;
+    }
 }

@@ -38,4 +38,6 @@ public interface GenericsServiceClient {
     Bean1<? super Bean3> getWildcardSuperForward(Bean1<? super Bean3> arg);
     
     Bean1<? extends Bean2> getWildcardExtendsForward(Bean1<? extends Bean2> arg);
+
+    Bean2 getPolymorphicForward(Bean2 arg);
 }
