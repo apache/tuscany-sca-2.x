@@ -37,6 +37,12 @@
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
+         <dependency>
+             <groupId>wsdl4j</groupId>
+             <artifactId>wsdl4j</artifactId>
+             <version>1.6.2</version>
+         </dependency>
+         
     </dependencies>
 
 </project>

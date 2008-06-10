@@ -18,6 +18,15 @@
 
 package org.apache.tuscany.sca.vtest.utilities;
 
+import java.util.List;
+
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
+import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
+
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -47,5 +56,49 @@ public class ServiceFinder {
         domain.close();
         domain = null;
     }
+
+    private static String getUri(String component, String service, String binding) {
+        
+    	List<ComponentService> csList = domain.getComponentManager().getComponent(component).getServices();
+    	
+    	for (int i = 0; i < csList.size(); i++) {
+    		ComponentService cs = csList.get(i);
+    		if (service.equals(cs.getName())) {
+        		List<Binding> bList = cs.getBindings();
+        		for (int j = 0; j < bList.size(); j++) {
+        			String bName = bList.get(j).getName();
+        			if (bName.equals(binding)) {
+            			String bUri  = bList.get(j).getURI();
+            			System.out.println(component + "/" + service + "-> binding name: " + bName + ", uri: " + bUri);
+            			return bUri;
+        			}
+        		}
+    		}
+    	}
+    	return null;
+    }
+    
+    public static Definition getWSDLDefinition(String component, String service) {
+    	return getWSDLDefinition(component, service, service);
+    }
+    	
+    public static Definition getWSDLDefinition(String component, String service, String binding) {
+
+    	String uri = getUri(component, service, binding);
+
+        if (uri == null)
+    		return null;
+    	
+    	try {
+    		WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
+            wsdlReader.setFeature("javax.wsdl.verbose",false);
+            wsdlReader.setFeature("javax.wsdl.importDocuments",true);
+            return wsdlReader.readWSDL(uri + "?wsdl");
+    	} catch (WSDLException e) {
+    		e.printStackTrace(System.out);
+    	}
+    	return null;
+    }
+
 
 }
