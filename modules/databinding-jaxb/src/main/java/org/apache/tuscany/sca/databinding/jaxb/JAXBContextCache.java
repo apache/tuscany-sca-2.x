@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import java.awt.Image;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -41,6 +42,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.transform.Source;
 
 /**
  * @version $Rev$ $Date$
@@ -250,6 +252,10 @@ public class JAXBContextCache {
             classSet.remove(UUID[].class);
         }
 
+        if (classSet.contains(Source[].class)) {
+            classSet.remove(Image[].class);
+        } 
+        
         // Is the common one
         if (COMMON_CLASSES_SET.containsAll(classSet)) {
             return commonContext;
