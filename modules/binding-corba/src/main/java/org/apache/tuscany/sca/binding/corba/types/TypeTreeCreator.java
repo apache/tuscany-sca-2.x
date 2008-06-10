@@ -211,6 +211,10 @@ public class TypeTreeCreator {
 			node.setNodeType(NodeType.primitive);
 			node.setJavaClass(forClass);
 			node.setChildren(null);
+		} else if (forClass.isInterface()) {
+			node.setNodeType(NodeType.reference);
+			node.setJavaClass(forClass);
+			node.setChildren(null);
 		} else {
 			node.setNodeType(NodeType.struct);
 			node.setJavaClass(forClass);

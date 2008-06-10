@@ -23,13 +23,20 @@ import java.lang.reflect.Array;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.binding.corba.exceptions.CorbaException;
+import org.apache.tuscany.sca.binding.corba.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.DivByZeroException;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.DummyObject;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.NotSupportedException;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.SimpleStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.SomeStruct;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant;
-import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.CalcServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.ObjectManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.PrimitivesSetterServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NameComponent;
@@ -47,6 +54,8 @@ public class CorbaTypesTestCase extends TestCase {
 	private Object refPrimitivesSetter;
 	private Object refArraysSetter;
 	private Object refTestObject;
+	private Object refCalcObject;
+	private Object refObjectManager;
 
 	/**
 	 * Spawns tnameserv process (must be in PATH). Initializes test servants and
@@ -74,6 +83,8 @@ public class CorbaTypesTestCase extends TestCase {
 			PrimitivesSetterServant singleSetter = new PrimitivesSetterServant();
 			ArraysSetterServant arraysSetter = new ArraysSetterServant();
 			TestObjectServant complexObject = new TestObjectServant();
+			CalcServant calcObject = new CalcServant();
+			ObjectManagerServant objectManager = new ObjectManagerServant();
 
 			orb.connect(singleSetter);
 			orb.connect(arraysSetter);
@@ -93,12 +104,22 @@ public class CorbaTypesTestCase extends TestCase {
 			path = new NameComponent[] { nc };
 			namingContext.rebind(path, complexObject);
 
+			nc = new NameComponent("CalcObject", "");
+			path = new NameComponent[] { nc };
+			namingContext.rebind(path, calcObject);
+			
+			nc = new NameComponent("ObjectManager", "");
+			path = new NameComponent[] { nc };
+			namingContext.rebind(path, objectManager);
+
 			NamingContextExt nce = NamingContextExtHelper.narrow(orb
 					.resolve_initial_references("NameService"));
 
 			refArraysSetter = nce.resolve(nce.to_name("ArraysSetter"));
 			refPrimitivesSetter = nce.resolve(nce.to_name("PrimitivesSetter"));
 			refTestObject = nce.resolve(nce.to_name("TestObject"));
+			refCalcObject = nce.resolve(nce.to_name("CalcObject"));
+			refObjectManager = nce.resolve(nce.to_name("ObjectManager"));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -385,6 +406,100 @@ public class CorbaTypesTestCase extends TestCase {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Tests handling user defined remote exception (single declared)
+	 */
+	public void test_singleException() {
+		DynaCorbaRequest request1 = new DynaCorbaRequest(refCalcObject, "div");
+		request1.addArgument(2d);
+		request1.addArgument(2d);
+		request1.setOutputType(Double.class);
+		request1.addExceptionType(DivByZeroException.class);
+		try {
+			request1.invoke();
+		} catch (Exception e) {
+			fail();
+		}
+
+		DynaCorbaRequest request2 = new DynaCorbaRequest(refCalcObject, "div");
+		request2.addArgument(2d);
+		request2.addArgument(0d);
+		request2.setOutputType(Double.class);
+		request2.addExceptionType(DivByZeroException.class);
+		try {
+			request2.invoke();
+		} catch (DivByZeroException e) {
+			assertTrue(e.info != null && e.arguments != null
+					&& e.arguments.arg1 == 2 && e.arguments.arg2 == 0);
+		} catch (Exception exc) {
+			fail();
+		}
+	}
+
+	/**
+	 * Tests handling user defined multiple exceptions
+	 */
+	public void test_multipleExceptions() {
+		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject,
+				"divForSmallArgs");
+		request.addArgument(101d);
+		request.addArgument(101d);
+		request.setOutputType(Double.class);
+		request.addExceptionType(DivByZeroException.class);
+		request.addExceptionType(NotSupportedException.class);
+		try {
+			request.invoke();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+	}
+
+	/**
+	 * Tests handling exceptions while user defined no exceptions
+	 */
+	public void test_noDeclaredException() {
+		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
+		request.addArgument(1d);
+		request.addArgument(0d);
+		request.setOutputType(Double.class);
+		try {
+			request.invoke();
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+	}
+
+	/**
+	 * Tests handling non existing operation situation
+	 */
+	public void test_noOperationException() {
+		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject,
+				"thisOperationSurelyDoesNotExist");
+		try {
+			request.invoke();
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof CorbaException);
+		}
+	}
+	
+	/**
+	 * Tests obtaining references to other objects and using them with specified user interface
+	 */
+	public void test_enchancedReferences() {
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refObjectManager, "getDummyObject");
+			request.setOutputType(DummyObject.class);
+			DynaCorbaResponse response = request.invoke();
+			DummyObject dummy = (DummyObject) response.getContent();
+			DummyObject dummy2 = dummy.cloneObject();
+			assertNotSame(dummy.getLong(), dummy2.getLong());
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 }
