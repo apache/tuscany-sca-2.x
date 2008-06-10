@@ -56,6 +56,7 @@
             <input message="tns:GetLastTradePriceInput" />
             <output message="tns:GetLastTradePriceOutput" />
         </operation>
+        <operation name="cancel" sca:endsConversation="true"/>
     </portType>
 
 </definitions>
