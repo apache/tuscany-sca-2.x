@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -44,6 +45,7 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
 public class WSDLInterfaceIntrospectorImpl {
     private static final QName POLICY_REQUIRES = new QName("http://www.osoa.org/xmlns/sca/1.0", "requires");
     private static final QName POLICY_CONVERSATIONAL = new QName("http://www.osoa.org/xmlns/sca/1.0", "conversational");
+    public static final QName POLICY_END_CONVERSATION = new QName("http://www.osoa.org/xmlns/sca/1.0", "endsConversation");
     
     private XSDFactory xsdFactory;
     private PolicyFactory policyFactory;
@@ -58,7 +60,11 @@ public class WSDLInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
-            operations.add(getOperation(wsdlOp, wsdlDefinition, resolver, xsdFactory));
+            Operation operation = getOperation(wsdlOp, wsdlDefinition, resolver, xsdFactory);
+            if(isEndConversation(wsdlOp)) {
+                operation.setConversationSequence(ConversationSequence.CONVERSATION_END);
+            }
+            operations.add(operation);
         }
         return operations;
     }
@@ -118,6 +124,18 @@ public class WSDLInterfaceIntrospectorImpl {
         }
 
         return conversational;
+    }
+
+    private boolean isEndConversation(javax.wsdl.Operation operation) {
+        boolean endConversation = false;
+        
+        Object o =  operation.getExtensionAttribute(POLICY_END_CONVERSATION);
+        if(o != null && o instanceof String) {
+            endConversation = Boolean.valueOf((String)o);            
+        }
+
+        return endConversation;
+        
     }
     
 }
