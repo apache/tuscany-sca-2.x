@@ -365,10 +365,17 @@ public abstract class BaseStAXArtifactProcessor {
                 String prefix = qname.getPrefix();
                 String uri = qname.getNamespaceURI();
                 prefix = writer.getPrefix(uri);
-                if (prefix != null && prefix.length() > 0) {
+                if (prefix != null) {
 
                     // Use the prefix already bound to the given URI
-                    return prefix + ":" + qname.getLocalPart();
+                    if (prefix.length() > 0) {
+                        return prefix + ":" + qname.getLocalPart();
+                    } else {
+                        
+                        // Empty prefix, just return the local part of the given qname
+                        return qname.getLocalPart();
+                    }
+                    
                 } else {
                     
                     // Find an available prefix and bind it to the given URI 
