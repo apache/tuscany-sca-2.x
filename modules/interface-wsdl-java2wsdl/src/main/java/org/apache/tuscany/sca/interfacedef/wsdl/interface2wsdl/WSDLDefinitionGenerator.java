@@ -132,7 +132,7 @@ public class WSDLDefinitionGenerator {
             // Choose <porttype>Binding if available.  If this name is in use, insert
             // separating underscores until there is no clash.
             for (String suffix = BINDING_SUFFIX; ; suffix = "_" + suffix) { 
-                QName name = new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + suffix);
+                QName name = new QName(definition.getTargetNamespace(), portTypeName.getLocalPart() + suffix);
                 if (definition.getBinding(name) == null) {
                     binding.setQName(name);
                     break;
@@ -264,10 +264,10 @@ public class WSDLDefinitionGenerator {
             // Choose <porttype>Service if available.  If this name is in use, insert
             // separating underscores until there is no clash.
             for (String suffix = SERVICE_SUFFIX; ; suffix = "_" + suffix) {
-                QName name = new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + suffix);
+                QName name = new QName(definition.getTargetNamespace(), portTypeName.getLocalPart() + suffix);
                 if (definition.getService(name) == null) {
                     service.setQName(name);
-                     break;
+                    break;
                 }
             }
         }

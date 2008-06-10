@@ -199,6 +199,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 if (!resolved.isUnresolved()) {
                     wsdlDefinition.setDefinition(resolved.getDefinition());
                     wsdlDefinition.setLocation(resolved.getLocation());
+                    wsdlDefinition.setURI(resolved.getURI());
                     wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
                     wsdlDefinition.setUnresolved(false);
                     WSDLObject<PortType> portType = wsdlDefinition.getWSDLObject(PortType.class, wsdlInterface.getName());

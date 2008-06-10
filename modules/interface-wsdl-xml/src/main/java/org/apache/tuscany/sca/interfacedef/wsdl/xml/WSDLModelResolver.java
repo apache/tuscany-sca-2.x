@@ -269,6 +269,7 @@ public class WSDLModelResolver implements ModelResolver {
                 imp.setLocationURI(d.getDefinition().getDocumentBaseURI());
                 facade.addImport(imp);
                 aggregated.getXmlSchemas().addAll(d.getXmlSchemas());
+                aggregated.getImportedDefinitions().add(d);
             }
         }
         aggregated.setDefinition(facade);

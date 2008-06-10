@@ -86,7 +86,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
 
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
-            return indexRead(artifactURL);
+            WSDLDefinition definition = indexRead(artifactURL);
+            definition.setURI(artifactURI);
+            return definition;
         } catch (Exception e) {
         	ContributionReadException ce = new ContributionReadException(e);
         	error("ContributionReadException", artifactURL, ce);
@@ -113,6 +115,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy);
                         if (resolved != null && !resolved.isUnresolved()) {
                             imp.setDefinition(resolved.getDefinition());
+                            if (!model.getImportedDefinitions().contains(resolved)) {
+                                model.getImportedDefinitions().add(resolved);
+                            }
                         }
                     } else {
                         String location = imp.getLocationURI();
@@ -122,6 +127,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                             try {
                                 resolved = read(null, uri, uri.toURL());
                                 imp.setDefinition(resolved.getDefinition());
+                                if (!model.getImportedDefinitions().contains(resolved)) {
+                                    model.getImportedDefinitions().add(resolved);
+                                }
                             } catch (Exception e) {
                             	ContributionResolveException ce = new ContributionResolveException(e);
                             	error("ContributionResolveException", resolver, ce);
@@ -140,6 +148,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                                 try {
                                     resolved = read(null, locationURI, locationURI.toURL());
                                     imp.setDefinition(resolved.getDefinition());
+                                    if (!model.getImportedDefinitions().contains(resolved)) {
+                                        model.getImportedDefinitions().add(resolved);
+                                    }
                                 } catch (Exception e) {
                                 	ContributionResolveException ce = new ContributionResolveException(e);
                                 	error("ContributionResolveException", resolver, ce);
