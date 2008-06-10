@@ -20,16 +20,20 @@
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
@@ -42,9 +46,11 @@ public class WSDLInterfaceIntrospectorImpl {
     private static final QName POLICY_CONVERSATIONAL = new QName("http://www.osoa.org/xmlns/sca/1.0", "conversational");
     
     private XSDFactory xsdFactory;
+    private PolicyFactory policyFactory;
     
-    public WSDLInterfaceIntrospectorImpl(XSDFactory xsdFactory) {
-        this.xsdFactory = xsdFactory;
+    public WSDLInterfaceIntrospectorImpl(ModelFactoryExtensionPoint modelFactories) {
+        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);;
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS Specification?
@@ -58,6 +64,7 @@ public class WSDLInterfaceIntrospectorImpl {
     }
 
     public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
+        processIntents(wsdlInterface, portType);
         wsdlInterface.setPortType(portType);
         wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver));
         wsdlInterface.setConversational(isConversational(portType));
@@ -69,6 +76,32 @@ public class WSDLInterfaceIntrospectorImpl {
                                          XSDFactory xsdFactory) throws InvalidWSDLException {
         WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver);
         return op.getOperation();
+    }
+    
+    private void processIntents(WSDLInterface wsdlInterface, PortType portType) {
+        Object o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        if(o != null && o instanceof Vector) {
+            Vector<QName> policyAttributes = (Vector<QName>) o;
+            
+            Enumeration<QName> policyItents = policyAttributes.elements();
+            while(policyItents.hasMoreElements()) {
+                QName intentName = policyItents.nextElement();
+                
+                //ignores conversational, as it will have it's own
+                //attribute in the wsdl interface model
+                if(! intentName.equals(POLICY_CONVERSATIONAL)) {
+                    //process the intent
+                    System.out.println(">>> Intent : " + intentName);
+                    
+                    // Add each intent to the list
+                    Intent intent = policyFactory.createIntent();
+                    intent.setName(intentName);
+                    
+                    wsdlInterface.getRequiredIntents().add(intent);
+                }
+            }
+            
+        }
     }
     
     private boolean isConversational(PortType portType) {
