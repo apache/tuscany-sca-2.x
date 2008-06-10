@@ -425,7 +425,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-ejb-xml</artifactId>
+            <artifactId>tuscany-implementation-ejb</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
