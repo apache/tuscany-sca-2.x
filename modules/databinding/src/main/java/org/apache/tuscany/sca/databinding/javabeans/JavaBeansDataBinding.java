@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * DataBinding for JavaBeans
@@ -53,7 +55,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
     }
     
     @Override
-    public Object copy(Object arg) {
+    public Object copy(Object arg, DataType dataType, Operation operation) {
         if (arg == null) {
             return null;
         }

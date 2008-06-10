@@ -80,7 +80,7 @@ public class SDODataBindingTestCase extends TestCase {
     public final void testCopyRoot() {
         PurchaseOrderType po = SdoFactory.INSTANCE.createPurchaseOrderType();
         po.setComment("Comment");
-        Object copy = binding.copy(po);
+        Object copy = binding.copy(po, null, null);
         assertTrue(copy instanceof PurchaseOrderType);
         assertTrue(po != copy);
         assertTrue(context.getEqualityHelper().equal((DataObject)po, (DataObject)copy));
@@ -90,7 +90,7 @@ public class SDODataBindingTestCase extends TestCase {
     public final void testCopyNonRoot() {
         USAddress address = SdoFactory.INSTANCE.createUSAddress();
         address.setCity("San Jose");
-        Object copy = binding.copy(address);
+        Object copy = binding.copy(address, null, null);
         assertTrue(copy instanceof USAddress);
         assertTrue(address != copy);
         assertTrue(context.getEqualityHelper().equal((DataObject)address, (DataObject)copy));
@@ -104,7 +104,7 @@ public class SDODataBindingTestCase extends TestCase {
             context.getXMLHelper().createDocument((DataObject)po,
                                                   ORDER_QNAME.getNamespaceURI(),
                                                   ORDER_QNAME.getLocalPart());
-        Object copy = binding.copy(doc);
+        Object copy = binding.copy(doc, null, null);
         assertTrue(copy instanceof XMLDocument);
         XMLDocument docCopy = (XMLDocument)copy;
         assertTrue(doc != copy);

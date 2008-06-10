@@ -88,6 +88,7 @@ public class JAXBTestCase extends TestCase {
 
         TransformationContext tContext = createMock(TransformationContext.class);
         expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
+        expect(tContext.getTargetOperation()).andReturn(null).anyTimes();
         replay(tContext);
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
@@ -97,6 +98,8 @@ public class JAXBTestCase extends TestCase {
         TransformationContext tContext1 = createMock(TransformationContext.class);
         expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
+        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
+        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
         replay(tContext1);
 
         JAXB2Node t1 = new JAXB2Node();
@@ -119,6 +122,7 @@ public class JAXBTestCase extends TestCase {
 
         TransformationContext tContext = createMock(TransformationContext.class);
         expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
+        expect(tContext.getTargetOperation()).andReturn(null).anyTimes();
         replay(tContext);
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
@@ -129,6 +133,8 @@ public class JAXBTestCase extends TestCase {
         TransformationContext tContext1 = createMock(TransformationContext.class);
         expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
+        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
+        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
         replay(tContext1);
 
         JAXB2Node t1 = new JAXB2Node();
@@ -149,6 +155,8 @@ public class JAXBTestCase extends TestCase {
         TransformationContext tContext1 = createMock(TransformationContext.class);
         expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
+        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
+        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
         replay(tContext1);
 
         JAXB2Node t1 = new JAXB2Node();

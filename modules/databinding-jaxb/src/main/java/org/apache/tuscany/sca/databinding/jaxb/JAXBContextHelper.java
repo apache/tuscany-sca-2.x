@@ -20,6 +20,11 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
 import java.io.IOException;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,8 +48,6 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -83,20 +86,23 @@ public class JAXBContextHelper {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
-        DataType<?> dataType = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
-        // FIXME: We should check the context path or classes
-        // FIXME: What should we do if JAXB is an intermediate node?
+        // TODO: [rfeng] Need to figure out what's the best grantularity to create the JAXBContext
+        // per interface, operation or parameter
 
-        // String contextPath = null;
-        JAXBContext context = null;
-        Class<?> cls = getJavaType(dataType);
-
-        context = cache.getJAXBContext(cls);
-
-        if (context == null) {
-            throw new TransformationException("JAXB context is not set for the transformation.");
+        /*
+        Operation op = source ? tContext.getSourceOperation() : tContext.getTargetOperation();
+        if (op != null) {
+            return createJAXBContext(getDataTypes(op, true));
         }
-        return context;
+        */
+
+        DataType<?> dataType = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
+        return createJAXBContext(dataType);
+
+    }
+
+    public static JAXBContext createJAXBContext(DataType dataType) throws JAXBException {
+        return createJAXBContext(findClasses(dataType));
     }
 
     public static Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
@@ -109,7 +115,7 @@ public class JAXBContextHelper {
 
     @SuppressWarnings("unchecked")
     public static Object createJAXBElement(JAXBContext context, DataType dataType, Object value) {
-        Class<?> type = dataType.getPhysical();
+        Class<?> type = dataType == null ? value.getClass() : dataType.getPhysical();
         QName name = JAXBDataBinding.ROOT_ELEMENT;
         if (context != null) {
             Object logical = dataType == null ? null : dataType.getLogical();
@@ -134,14 +140,6 @@ public class JAXBContextHelper {
         if (value != null && introspector.isElement(value)) {
             // NOTE: [rfeng] We cannot wrap an element in a JAXBElement
             element = value;
-            /*
-            if (name == JAXBDataBinding.ROOT_ELEMENT) {
-                element = value;
-                name = introspector.getElementName(element);
-            } else {
-                value = JAXBIntrospector.getValue(value);
-            }
-            */
         }
         if (element == null) {
             element = new JAXBElement(name, type, value);
@@ -173,6 +171,10 @@ public class JAXBContextHelper {
         return cache.getJAXBContext(classes);
     }
 
+    public static JAXBContext createJAXBContext(Set<Class<?>> classes) throws JAXBException {
+        return cache.getJAXBContext(classes);
+    }
+
     /**
      * Create a JAXBContext for a given java interface
      * @param intf
@@ -197,18 +199,77 @@ public class JAXBContextHelper {
     public static JAXBContext createJAXBContext(List<DataType> dataTypes) throws JAXBException {
         JAXBContext context;
         Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Type> visited = new HashSet<Type>();
         for (DataType d : dataTypes) {
-            if (JAXBDataBinding.NAME.equals(d.getDataBinding()) || JavaBeansDataBinding.NAME.equals(d
-                .getDataBinding())
-                || SimpleJavaDataBinding.NAME.equals(d.getDataBinding())) {
-                if (!d.getPhysical().isInterface()) {
-                    classes.add(d.getPhysical());
-                }
-            }
+            findClasses(d, classes, visited);
         }
 
-        context = createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+        context = createJAXBContext(classes);
         return context;
+    }
+
+    private static Set<Class<?>> findClasses(DataType d) {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Type> visited = new HashSet<Type>();
+        findClasses(d, classes, visited);
+        return classes;
+    }
+
+    private static void findClasses(DataType d, Set<Class<?>> classes, Set<Type> visited) {
+        if (d == null) {
+            return;
+        }
+        String db = d.getDataBinding();
+        if (JAXBDataBinding.NAME.equals(db) || (db != null && db.startsWith("java:")) || db == null) {
+            if (!d.getPhysical().isInterface() && !JAXBElement.class.isAssignableFrom(d.getPhysical())) {
+                classes.add(d.getPhysical());
+            }
+        }
+        if (d.getPhysical() != d.getGenericType()) {
+            findClasses(d.getGenericType(), classes, visited);
+        }
+    }
+
+    /**
+     * Find referenced classes in the generic type
+     * @param type
+     * @param classSet
+     * @param visited
+     */
+    private static void findClasses(Type type, Set<Class<?>> classSet, Set<Type> visited) {
+        if (visited.contains(type) || type == null) {
+            return;
+        }
+        visited.add(type);
+        if (type instanceof Class) {
+            Class<?> cls = (Class<?>)type;
+            if (!cls.isInterface()) {
+                classSet.add(cls);
+            }
+            return;
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType)type;
+            findClasses(pType.getRawType(), classSet, visited);
+            for (Type t : pType.getActualTypeArguments()) {
+                findClasses(t, classSet, visited);
+            }
+        } else if (type instanceof TypeVariable) {
+            TypeVariable<?> tv = (TypeVariable<?>)type;
+            for (Type t : tv.getBounds()) {
+                findClasses(t, classSet, visited);
+            }
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType gType = (GenericArrayType)type;
+            findClasses(gType, classSet, visited);
+        } else if (type instanceof WildcardType) {
+            WildcardType wType = (WildcardType)type;
+            for (Type t : wType.getLowerBounds()) {
+                findClasses(t, classSet, visited);
+            }
+            for (Type t : wType.getUpperBounds()) {
+                findClasses(t, classSet, visited);
+            }
+        }
     }
 
     public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
@@ -223,33 +284,46 @@ public class JAXBContextHelper {
     private static List<DataType> getDataTypes(Interface intf, boolean useWrapper) {
         List<DataType> dataTypes = new ArrayList<DataType>();
         for (Operation op : intf.getOperations()) {
-            WrapperInfo wrapper = op.getWrapper();
-            if (useWrapper && wrapper != null) {
-                DataType dt1 = wrapper.getInputWrapperType();
-                if (dt1 != null) {
-                    dataTypes.add(dt1);
-                }
-                DataType dt2 = wrapper.getOutputWrapperType();
-                if (dt2 != null) {
-                    dataTypes.add(dt2);
-                }
-            } else {
-                for (DataType dt1 : op.getInputType().getLogical()) {
-                    dataTypes.add(dt1);
-                }
-                DataType dt2 = op.getOutputType();
-                if (dt2 != null) {
-                    dataTypes.add(dt2);
-                }
-            }
-            for (DataType<DataType> dt3 : op.getFaultTypes()) {
-                DataType dt4 = dt3.getLogical();
-                if (dt4 != null) {
-                    dataTypes.add(dt4);
-                }
-            }
+            getDataTypes(dataTypes, op, useWrapper);
         }
         return dataTypes;
+    }
+
+    private static List<DataType> getDataTypes(Operation op, boolean useWrapper) {
+        List<DataType> dataTypes = new ArrayList<DataType>();
+        getDataTypes(dataTypes, op, useWrapper);
+        return dataTypes;
+    }
+
+    private static void getDataTypes(List<DataType> dataTypes, Operation op, boolean useWrapper) {
+        WrapperInfo wrapper = op.getWrapper();
+        if (useWrapper && wrapper != null) {
+            DataType dt1 = wrapper.getInputWrapperType();
+            if (dt1 != null) {
+                dataTypes.add(dt1);
+            }
+            DataType dt2 = wrapper.getOutputWrapperType();
+            if (dt2 != null) {
+                dataTypes.add(dt2);
+            }
+        }
+        // FIXME: [rfeng] We may need to find the referenced classes in the child types
+        // else 
+        {
+            for (DataType dt1 : op.getInputType().getLogical()) {
+                dataTypes.add(dt1);
+            }
+            DataType dt2 = op.getOutputType();
+            if (dt2 != null) {
+                dataTypes.add(dt2);
+            }
+        }
+        for (DataType<DataType> dt3 : op.getFaultTypes()) {
+            DataType dt4 = dt3.getLogical();
+            if (dt4 != null) {
+                dataTypes.add(dt4);
+            }
+        }
     }
 
     public static Class<?> getJavaType(DataType<?> dataType) {
@@ -258,6 +332,7 @@ public class JAXBContextHelper {
         }
         Class type = dataType.getPhysical();
         if (JAXBElement.class.isAssignableFrom(type)) {
+            Type generic = dataType.getGenericType();
             type = Object.class;
         }
         if (type == Object.class && dataType.getLogical() instanceof XMLType) {

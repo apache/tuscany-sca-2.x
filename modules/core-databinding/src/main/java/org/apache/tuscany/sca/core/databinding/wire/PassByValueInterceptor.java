@@ -103,12 +103,12 @@ public class PassByValueInterceptor implements Interceptor {
             return nextInvoker.invoke(msg);
         }
 
-        msg.setBody(copy((Object[])msg.getBody(), inputDataBindings));
+        msg.setBody(copy((Object[])msg.getBody(), inputDataBindings, operation.getInputType().getLogical()));
 
         Message resultMsg = nextInvoker.invoke(msg);
 
         if (!msg.isFault() && operation.getOutputType() != null) {
-            resultMsg.setBody(copy(resultMsg.getBody(), outputDataBinding));
+            resultMsg.setBody(copy(resultMsg.getBody(), outputDataBinding, operation.getOutputType()));
         }
 
         if (msg.isFault()) {
@@ -129,7 +129,7 @@ public class PassByValueInterceptor implements Interceptor {
                 faultExceptionMapper.introspectFaultDataType(exType, operation, false);
                 DataType faultType = exType.getLogical();
                 Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), operation);
-                faultInfo = copy(faultInfo, dataBindings.getDataBinding(faultType.getDataBinding()));
+                faultInfo = copy(faultInfo, dataBindings.getDataBinding(faultType.getDataBinding()), faultType);
                 fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause(), operation);
                 return fault;
             }
@@ -142,7 +142,7 @@ public class PassByValueInterceptor implements Interceptor {
      * @param data array of objects to copy
      * @return the copy
      */
-    private Object[] copy(Object[] data, DataBinding[] dataBindings) {
+    private Object[] copy(Object[] data, DataBinding[] dataBindings, List<DataType> dataTypes) {
         if (data == null) {
             return null;
         }
@@ -157,7 +157,7 @@ public class PassByValueInterceptor implements Interceptor {
                 if (copiedArg != null) {
                     copy[i] = copiedArg;
                 } else {
-                    copiedArg = copy(arg, dataBindings[i]);
+                    copiedArg = copy(arg, dataBindings[i], dataTypes.get(i));
                     map.put(arg, copiedArg);
                     copy[i] = copiedArg;
                 }
@@ -170,9 +170,10 @@ public class PassByValueInterceptor implements Interceptor {
      * Copy data using the specified databinding.
      * @param data input data
      * @param dataBinding databinding to use
+     * @param dataType TODO
      * @return a copy of the data
      */
-    private Object copy(Object data, DataBinding dataBinding) {
+    private Object copy(Object data, DataBinding dataBinding, DataType dataType) {
         if (data == null) {
             return null;
         }
@@ -180,7 +181,7 @@ public class PassByValueInterceptor implements Interceptor {
         // If no databinding was specified, introspect the given arg to
         // determine its databinding
         if (dataBinding == null) {
-            DataType<?> dataType = dataBindings.introspectType(data, operation);
+            dataType = dataBindings.introspectType(data, operation);
             if (dataType != null) {
                 String db = dataType.getDataBinding();
                 dataBinding = dataBindings.getDataBinding(db);
@@ -237,7 +238,7 @@ public class PassByValueInterceptor implements Interceptor {
             }
         }
 
-        Object copy = dataBinding.copy(data);
+        Object copy = dataBinding.copy(data, dataType, operation);
         return copy;
     }
 

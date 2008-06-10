@@ -68,9 +68,10 @@ public interface DataBinding {
      * Introspect the data to figure out the corresponding data type
      * 
      * @param value The object to be checked
+     * @param operation The operation
      * @return The DataType or null if the java type is not supported by this databinding
      */
-    DataType introspect(Object value);
+    DataType introspect(Object value, Operation operation);
 
     /**
      * Provide a WrapperHandler for this databinding
@@ -82,9 +83,11 @@ public interface DataBinding {
      * Make a copy of the object for "pass-by-value" semantics.
      *
      * @param object source object to copy 
+     * @param dataType The data type
+     * @param operation The operation
      * @return copy of the object passed in as argument
      */
-    Object copy(Object object);
+    Object copy(Object object, DataType dataType, Operation operation);
     
     /**
      * Get the type mapper for simple types

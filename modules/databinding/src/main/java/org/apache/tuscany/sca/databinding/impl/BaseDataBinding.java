@@ -90,7 +90,7 @@ public abstract class BaseDataBinding implements DataBinding {
         return false;
     }
 
-    public DataType introspect(Object value) {
+    public DataType introspect(Object value, Operation operation) {
         if (value == null) {
             return null;
         } else {
@@ -114,7 +114,7 @@ public abstract class BaseDataBinding implements DataBinding {
         return null;
     }
 
-    public Object copy(Object object) {
+    public Object copy(Object object, DataType dataType, Operation operation) {
         return object;
     }
 

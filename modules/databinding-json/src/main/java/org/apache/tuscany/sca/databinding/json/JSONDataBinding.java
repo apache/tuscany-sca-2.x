@@ -59,7 +59,7 @@ public class JSONDataBinding extends BaseDataBinding {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object copy(Object arg) {
+    public Object copy(Object arg, DataType dataType, Operation operation) {
         if (arg == null) {
             return null;
         }

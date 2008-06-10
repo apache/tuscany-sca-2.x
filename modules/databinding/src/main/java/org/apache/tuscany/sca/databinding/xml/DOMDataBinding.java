@@ -50,12 +50,12 @@ public class DOMDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object source) {
+    public Object copy(Object source, DataType dataType, Operation operation) {
         if (Node.class.isAssignableFrom(source.getClass())) {
             Node nodeSource = (Node)source;
             return nodeSource.cloneNode(true);
         }
-        return super.copy(source);
+        return super.copy(source, dataType, operation);
     }
 
     @Override

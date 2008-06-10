@@ -74,6 +74,32 @@ public class POJOTestCase extends TestCase {
         MyBean newBean = (MyBean)e2.getValue();
         assertEquals(bean, newBean);
     }
+    
+    public void testPOJOArray() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(MyBean[].class);
+        StringWriter writer = new StringWriter();
+        MySubBean bean = new MySubBean();
+        bean.setAddtional("SUB");
+        bean.setName("Test");
+        bean.setAge(20);
+        bean.getNotes().add("1");
+        bean.getNotes().add("2");
+        bean.getMap().put("1", 1);
+
+        JAXBElement<Object> element =
+            new JAXBElement<Object>(new QName("http://ns1", "beans"), Object.class, new MyBean[] {bean});
+        context.createMarshaller().marshal(element, writer);
+        System.out.println(writer.toString());
+
+        Object result =
+            context.createUnmarshaller().unmarshal(new StreamSource(new StringReader(writer.toString())),
+                                                   MyBean[].class);
+        assertTrue(result instanceof JAXBElement);
+        JAXBElement e2 = (JAXBElement)result;
+        assertTrue(e2.getValue() instanceof MyBean[]);
+        MyBean newBean = ((MyBean[])e2.getValue())[0];
+        assertFalse(newBean instanceof MySubBean);
+    }
 
     public void testXMLStreamReader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);

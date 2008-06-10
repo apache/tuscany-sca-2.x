@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev$ $Date$
  */
 public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExchangeSemantics {
-    
+
     private DataBindingExtensionPoint registry;
     private Operation operation;
     private OSGiAnnotations osgiAnnotations;
@@ -51,10 +51,10 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
      * @param component
      */
     public OSGiRemotableInvoker(OSGiAnnotations osgiAnnotations,
-                              DataBindingExtensionPoint registry,
-                              Operation operation,
-                              OSGiImplementationProvider provider,
-                              RuntimeComponentService service) {
+                                DataBindingExtensionPoint registry,
+                                Operation operation,
+                                OSGiImplementationProvider provider,
+                                RuntimeComponentService service) {
         super(operation, provider, service);
         this.osgiAnnotations = osgiAnnotations;
         this.registry = registry;
@@ -62,14 +62,12 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
     }
 
     @Override
-    public Object invokeMethod(Object targetObject, Method m, Message msg) 
-        throws InvocationTargetException {
-        
+    public Object invokeMethod(Object targetObject, Method m, Message msg) throws InvocationTargetException {
+
         Object result;
         if (osgiAnnotations.isAllowsPassByReference(targetObject, m)) {
             result = super.invokeMethod(targetObject, m, msg);
-        }
-        else {
+        } else {
             Object obj = msg.getBody();
             msg.setBody(copy((Object[])obj));
 
@@ -78,7 +76,7 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
             if (operation.getOutputType() != null) {
                 String dataBindingId = operation.getOutputType().getDataBinding();
                 DataBinding dataBinding = registry.getDataBinding(dataBindingId);
-                result = copy(result, dataBinding);
+                result = copy(result, operation.getOutputType(), dataBinding);
             }
         }
         return result;
@@ -98,9 +96,10 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
                 if (copiedArg != null) {
                     copiedArgs[i] = copiedArg;
                 } else {
-                    String dataBindingId = operation.getInputType().getLogical().get(i).getDataBinding();
+                    DataType dt = operation.getInputType().getLogical().get(i);
+                    String dataBindingId = dt.getDataBinding();
                     DataBinding dataBinding = registry.getDataBinding(dataBindingId);
-                    copiedArg = copy(args[i], dataBinding);
+                    copiedArg = copy(args[i], dt, dataBinding);
                     map.put(args[i], copiedArg);
                     copiedArgs[i] = copiedArg;
                 }
@@ -109,20 +108,20 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
         return copiedArgs;
     }
 
-    public Object copy(Object arg, DataBinding argDataBinding) {
+    public Object copy(Object arg, DataType dataType, DataBinding argDataBinding) {
         if (arg == null) {
             return null;
         }
         Object copiedArg;
         if (argDataBinding != null) {
-            copiedArg = argDataBinding.copy(arg);
+            copiedArg = argDataBinding.copy(arg, dataType, operation);
         } else {
             copiedArg = arg;
-            DataType<?> dataType = registry.introspectType(arg, operation);
+            dataType = registry.introspectType(arg, operation);
             if (dataType != null) {
                 DataBinding binding = registry.getDataBinding(dataType.getDataBinding());
                 if (binding != null) {
-                    copiedArg = binding.copy(arg);
+                    copiedArg = binding.copy(arg, dataType, operation);
                 }
             }
             // FIXME: What to do if it's not recognized?
@@ -130,12 +129,11 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
         return copiedArg;
     }
 
-
     /**
      * @see org.apache.tuscany.sca.invocation.PassByValueAware#allowsPassByReference()
      */
     public boolean allowsPassByReference() {
-		return true;
-	}
+        return true;
+    }
 
 }

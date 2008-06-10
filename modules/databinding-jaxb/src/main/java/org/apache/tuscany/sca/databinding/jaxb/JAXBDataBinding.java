@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Document;
 
@@ -92,21 +93,26 @@ public class JAXBDataBinding extends BaseDataBinding {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object copy(Object arg) {
+    public Object copy(Object arg, DataType dataType, Operation operation) {
         try {
             boolean isElement = false;
-            Class cls = arg.getClass();
-            if (arg instanceof JAXBElement) {
-                isElement = true;
-                cls = ((JAXBElement)arg).getDeclaredType();
-            } else {
-                arg = new JAXBElement(ROOT_ELEMENT, Object.class, arg);
+            if (dataType == null) {
+                Class cls = arg.getClass();
+                if (arg instanceof JAXBElement) {
+                    isElement = true;
+                    cls = ((JAXBElement)arg).getDeclaredType();
+                }
+                dataType = new DataTypeImpl<XMLType>(NAME, cls, XMLType.UNKNOWN);
             }
-            JAXBContext context = JAXBContextHelper.createJAXBContext(cls);
+            JAXBContext context = JAXBContextHelper.createJAXBContext(dataType);
+            arg = JAXBContextHelper.createJAXBElement(context, dataType, arg);
             Document doc = DOMHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);
-            JAXBElement<?> element = context.createUnmarshaller().unmarshal(doc, cls);
-            return isElement ? element : element.getValue();
+            Object value = context.createUnmarshaller().unmarshal(doc, dataType.getPhysical());
+            if (isElement && value instanceof JAXBElement) {
+                return value;
+            }
+            return JAXBContextHelper.createReturnValue(context, dataType, value);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
