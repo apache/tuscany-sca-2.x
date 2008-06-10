@@ -25,10 +25,12 @@
     <component name="AComponent">
 	    <implementation.java class="org.apache.tuscany.sca.vtest.assembly.ctypefile.impl.AServiceImpl"/>
 	    <reference name="bService" target="BComponent/BService"/>
+	    <reference name="b2Service" target="BComponent/BService"/>
      </component>
 
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.assembly.ctypefile.impl.BServiceImpl"/>
+        <property name="someProperty">SomePropertyValue</property>
     </component>
-
+    
 </composite>
