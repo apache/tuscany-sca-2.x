@@ -146,8 +146,7 @@ public class StandardTypesServiceImpl implements StandardTypesService, StandardT
     }
 
     public Object getNewObject(Object obj) {
-        //FIXME: transform the input
-        return obj;
+        return StandardTypesTransformer.getNewObject(obj);
     }
 
     public Object[] getNewObjectArray(Object[] objs) {

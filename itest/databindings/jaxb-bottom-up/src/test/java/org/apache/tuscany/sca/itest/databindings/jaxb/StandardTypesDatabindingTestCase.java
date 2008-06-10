@@ -46,6 +46,7 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.databinding.xml.String2Node;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransformer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -261,7 +262,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObject.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for null")
     public void testSCANewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -273,7 +273,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for null")
     public void testSCANewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -851,7 +850,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObject.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for null")
     public void testSCALocalNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
@@ -863,7 +861,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for null")
     public void testSCALocalNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
@@ -1179,8 +1176,9 @@ public class StandardTypesDatabindingTestCase {
         objs[4] = null;
 
         for (int i = 0; i < objs.length; ++i) {
+            Object expected = StandardTypesTransformer.getNewObject(objs[i]);
             Object actual = serviceClient.getNewObjectForward(objs[i]);
-            Assert.assertEquals(objs[i], actual);
+            Assert.assertEquals(expected, actual);
         }
     }
 
@@ -1194,7 +1192,8 @@ public class StandardTypesDatabindingTestCase {
 
         Object[] actual = serviceClient.getNewObjectArrayForward(objs);
         for (int i = 0; i < objs.length; ++i) {
-            Assert.assertEquals(objs[i], actual[i]);
+            Object expected = StandardTypesTransformer.getNewObject(objs[i]);
+            Assert.assertEquals(expected, actual[i]);
         }
     }
 
