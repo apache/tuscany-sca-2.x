@@ -149,11 +149,14 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         // heuristically determine the properties references
         // make a first pass through all public methods with one param
         Set<String> setters = new HashSet<String>();
+        Set<String> others = new HashSet<String>();
         for (Method method : methods) {
             if (!isPublicSetter(method)) {
                 continue;
             }
             if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
+                // Add the property name as others
+                others.add(toPropertyName(method.getName()));
                 continue;
             }
             if (!isInServiceInterface(method, services)) {
@@ -180,6 +183,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 continue;
             }
             if (method.isAnnotationPresent(Callback.class) || method.isAnnotationPresent(Context.class)) {
+                // Add the property name as others
+                others.add(toPropertyName(method.getName()));
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
@@ -207,7 +212,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             if (field.isAnnotationPresent(Callback.class) || field.isAnnotationPresent(Context.class)) {
                 continue;
             }
-            if (setters.contains(field.getName())) {
+            if (setters.contains(field.getName()) || others.contains(field.getName())) {
                 continue;
             }
             String name = field.getName();
