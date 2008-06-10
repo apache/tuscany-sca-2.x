@@ -27,8 +27,8 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,13 +36,13 @@ import org.junit.Test;
  */
 public class DatabindingTestCase {
 
-    private SCADomain domain;
+    private static SCADomain domain;
 
     /**
-     * Runs before each test method
+     * Runs once before running the tests
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         try { 
             domain = SCADomain.newInstance("helloservice.composite");
         } catch(Throwable e) {
@@ -51,10 +51,10 @@ public class DatabindingTestCase {
     }
 
     /**
-     * Runs after each test method
+     * Runs once after running the tests
      */
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         domain.close();
     }
 
