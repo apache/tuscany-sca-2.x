@@ -354,21 +354,31 @@ class BaseWireBuilderImpl {
             // autowired reference
             Multiplicity multiplicity = componentReference.getMultiplicity();
             for (Component targetComponent : composite.getComponents()) {
-                for (ComponentService targetComponentService : targetComponent.getServices()) {
-                    if (componentReference.getInterfaceContract() == null ||
-                        interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
-                        
-                        Endpoint endpoint = endpointFactory.createEndpoint();
-                        endpoint.setTargetName(targetComponent.getName());
-                        endpoint.setSourceComponent(null); // TODO - fixed up at start
-                        endpoint.setSourceComponentReference(componentReference);
-                        endpoint.setTargetComponent(targetComponent);
-                        endpoint.setTargetComponentService(targetComponentService);
-                        endpoint.getCandidateBindings().addAll(componentReference.getBindings());
-                        endpoints.add(endpoint);
-                        
-                        if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
-                            break;
+                // prevent autowire connecting to self
+                boolean skipSelf = false;
+                for (ComponentReference targetComponentReference : targetComponent.getReferences()) {
+                    if (componentReference == targetComponentReference){
+                        skipSelf = true;
+                    }
+                }
+                
+                if (!skipSelf){
+                    for (ComponentService targetComponentService : targetComponent.getServices()) {
+                        if (componentReference.getInterfaceContract() == null ||
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+                            
+                            Endpoint endpoint = endpointFactory.createEndpoint();
+                            endpoint.setTargetName(targetComponent.getName());
+                            endpoint.setSourceComponent(null); // TODO - fixed up at start
+                            endpoint.setSourceComponentReference(componentReference);
+                            endpoint.setTargetComponent(targetComponent);
+                            endpoint.setTargetComponentService(targetComponentService);
+                            endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                            endpoints.add(endpoint);
+                            
+                            if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -1035,15 +1045,28 @@ class BaseWireBuilderImpl {
      * @param promotedReference
      */
     private void reconcileReferenceBindings(Reference reference, ComponentReference promotedReference) {
-        Set<Binding> bindings = new HashSet<Binding>();
-        bindings.addAll(promotedReference.getBindings());
-        bindings.addAll(reference.getBindings());
-        promotedReference.getBindings().clear();
-        for (Binding binding : bindings) {
+        List<Binding> bindings = new ArrayList<Binding>();
+        
+        // collect the top level bindings first
+        for (Binding binding : reference.getBindings()) {
             if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
-                promotedReference.getBindings().add(binding);
+                bindings.add(binding);
             }
         }
+        
+        // if there are not top level bindings to override the promoted bindings
+        // then collect the promoted bindings
+        if (bindings.size() == 0){
+            for (Binding binding : promotedReference.getBindings()) {
+                if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
+                    bindings.add(binding);
+                }
+            }
+        }
+        
+        promotedReference.getBindings().clear();
+        promotedReference.getBindings().addAll(bindings);
+        
         if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
             if (promotedReference.getBindings().size() > 1) {
                 warning("Component reference " + promotedReference.getName() + " has more than one wires",
