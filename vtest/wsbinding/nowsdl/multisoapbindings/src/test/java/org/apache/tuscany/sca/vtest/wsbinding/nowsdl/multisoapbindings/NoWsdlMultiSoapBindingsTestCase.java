@@ -33,7 +33,6 @@ import org.junit.Test;
  */
 public class NoWsdlMultiSoapBindingsTestCase {
 
-	protected static ServiceFinder serviceFinder;
     protected static String compositeName = "nowsdlmultisoapbindings.composite";
     protected static AService a1;
     protected static AService a2;
@@ -205,6 +204,7 @@ public class NoWsdlMultiSoapBindingsTestCase {
         Assert.assertEquals(new Integer(9003), c1Integer);
         
     }
+    
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
