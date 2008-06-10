@@ -122,12 +122,29 @@ public class JMSResourceFactory {
             if (jndiURL != null) {
                 props.setProperty(Context.PROVIDER_URL, jndiURL);
             }
+
+            initJREEnvironment(props);
+
             context = new InitialContext(props);
         }
         return context;
     }
 
-    public Destination lookupDestination(String jndiName) throws NamingException {
+    /**
+     * If using the WAS JMS Client with a non-IBM JRE then an additional
+     * environment property needs to be set to initialize the ORB correctly.
+     * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804 
+     */
+    private void initJREEnvironment(Properties props) {
+    	if (props.get(Context.INITIAL_CONTEXT_FACTORY).equals("com.ibm.websphere.naming.WsnInitialContextFactory")) {
+        	String vendor = System.getProperty("java.vendor");
+    		if (vendor == null || !vendor.contains("IBM")) {
+            	props.setProperty("com.ibm.CORBA.ORBInit","com.ibm.ws.sib.client.ORB");
+    		}
+    	}
+	}
+
+	public Destination lookupDestination(String jndiName) throws NamingException {
         return (Destination)jndiLookUp(jndiName);
     }
 
@@ -150,6 +167,7 @@ public class JMSResourceFactory {
             try {
                 o = getInitialContext().lookup(name);
             } catch (NamingException ex) {
+            	ex.printStackTrace();
                 // ignore
             }
         }
