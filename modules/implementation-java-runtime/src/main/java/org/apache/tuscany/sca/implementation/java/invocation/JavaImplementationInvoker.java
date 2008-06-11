@@ -118,7 +118,11 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             // compute the method object dynamically for this invocation.
             Method imethod = method;
             if (imethod == null || !imethod.getDeclaringClass().isInstance(instance)) {
-                imethod = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
+                try {
+                    imethod = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException(e);
+                }
             }
             
             Object ret;
