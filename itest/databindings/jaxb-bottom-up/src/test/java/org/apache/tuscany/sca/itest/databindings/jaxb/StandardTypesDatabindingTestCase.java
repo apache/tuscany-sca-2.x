@@ -347,7 +347,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSourceArray.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    @Ignore("TUSCANY-2387")
     public void testSCANewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -642,7 +642,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSourceArray.
      */
     @Test
-    @Ignore("org.apache.tuscany.sca.databinding.TransformationException: No path found for the transformation: java:array->org.apache.axiom.om.OMElement")
+    @Ignore("TUSCANY-2386")
     public void testWSNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1272,33 +1272,36 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewSource(StandardTypesServiceClient serviceClient) throws Exception {
-        String xml = new String("<a>A</a>");
+        String xml = new String("<a>A<b>B</b><c>C</c></a>");
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
         srcs[1] = new SAXSource(new InputSource(new StringReader(xml)));
         srcs[2] = new StreamSource(new StringReader(xml));
 
         for (int i = 0; i < srcs.length; ++i) {
-            Source actual = serviceClient.getNewSourceForward(srcs[i]);
             Source expected = StandardTypesTransformer.getNewSource(srcs[i]);
+            Source actual = serviceClient.getNewSourceForward(srcs[i]);
             // [rfeng] The data may come back as a different source
             Assert.assertEquals(sourceToString(expected), sourceToString(actual));
         }
     }
 
     private void performTestNewSourceArray(StandardTypesServiceClient serviceClient) throws Exception {
-        String xml = new String("<a>A</a>");
+        String xml = new String("<a>A<b>B</b><c>C</c></a>");
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
         srcs[1] = new SAXSource(new InputSource(new StringReader(xml)));
         srcs[2] = new StreamSource(new StringReader(xml));
 
         Source[] actual = serviceClient.getNewSourceArrayForward(srcs);
+        Source[] expected = new Source[srcs.length];
+        for(int i = 0; i < srcs.length; ++i) {
+            expected[i] = StandardTypesTransformer.getNewSource(srcs[i]);
+        }
         Assert.assertEquals(srcs.length, actual.length);
         for (int i = 0; i < srcs.length; ++i) {
-            Source expected = StandardTypesTransformer.getNewSource(srcs[i]);
             // [rfeng] The data may come back as a different source
-            Assert.assertEquals(sourceToString(expected), sourceToString(actual[i]));
+            Assert.assertEquals(sourceToString(expected[i]), sourceToString(actual[i]));
         }
 
     }
