@@ -28,33 +28,32 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * @version $Rev$ $Date$
  */
 public class DefaultXMLAdapterExtensionPoint implements XMLAdapterExtensionPoint {
-    private Map<Class<?>, Class<? extends XmlAdapter<?, ?>>> adapters =
-        new ConcurrentHashMap<Class<?>, Class<? extends XmlAdapter<?, ?>>>();
+    private Map<Class<?>, Class<? extends XmlAdapter>> adapters =
+        new ConcurrentHashMap<Class<?>, Class<? extends XmlAdapter>>();
 
-    public <B, A extends XmlAdapter<?, B>> void addAdapter(Class<B> boundType, Class<A> adapter) {
+    public void addAdapter(Class<?> boundType, Class<? extends XmlAdapter> adapter) {
         adapters.put(boundType, adapter);
     }
 
-    @SuppressWarnings("unchecked")
-    public <B, A extends XmlAdapter<?, B>> Class<A> getAdapter(Class<B> boundType) {
-        Class<A> cls = (Class<A>)adapters.get(boundType);
+    public Class<? extends XmlAdapter> getAdapter(Class<?> boundType) {
+        Class<? extends XmlAdapter> cls = adapters.get(boundType);
         if (cls != null) {
             return cls;
         }
-        for (Map.Entry<Class<?>, Class<? extends XmlAdapter<?, ?>>> e : adapters.entrySet()) {
+        for (Map.Entry<Class<?>, Class<? extends XmlAdapter>> e : adapters.entrySet()) {
             if (e.getKey().isAssignableFrom(boundType)) {
-                return ((Class<A>)e.getValue());
+                return e.getValue();
             }
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    public <B, A extends XmlAdapter<?, B>> Class<A> removeAdapter(Class<B> boundType) {
-        return (Class<A>)adapters.remove(boundType);
+    public Class<? extends XmlAdapter> removeAdapter(Class<?> boundType) {
+        return adapters.remove(boundType);
     }
 
-    public Map<Class<?>, Class<? extends XmlAdapter<?, ?>>> getAdapters() {
+    public Map<Class<?>, Class<? extends XmlAdapter>> getAdapters() {
         return adapters;
     }
 
