@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,10 @@ import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObj
 import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -145,7 +149,25 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         try {
             return componentContextProvider.createInvoker(operation);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+            // It's possible that the instance being invoked is a user-specified
+            // callback object that isn't an instance of the component implementation
+            // class.  As an attempt to deal with this, look up a method object from
+            // the service interface.  This isn't foolproof, as it's possible that
+            // the service interface isn't a Java interface, or that the callback
+            // object has the right method signature without implementing the
+            // callback interface.  There is code in JavaImplementationInvoker
+            // to deal with these possibilities.
+            Interface iface = service.getInterfaceContract().getInterface();
+            if (iface instanceof JavaInterface) {
+                try {
+                    Method method = JavaInterfaceUtil.findMethod(((JavaInterface)iface).getJavaClass(), operation);
+                    return new JavaImplementationInvoker(operation, method, componentContextProvider.getComponent());
+                } catch (NoSuchMethodException e1) {
+                    throw new IllegalArgumentException(e1);
+                }
+            } else {
+                return new JavaImplementationInvoker(operation, componentContextProvider.getComponent());
+            }
         }
     }
     

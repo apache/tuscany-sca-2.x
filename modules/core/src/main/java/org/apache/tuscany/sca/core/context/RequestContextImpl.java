@@ -66,9 +66,7 @@ public class RequestContextImpl implements RequestContext {
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
         ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
         ((CallableReferenceImpl<B>) callableReference).attachCallbackID(parameters.getCallbackID());
-        if (callableReference.getConversation() != null) {
-            ((CallableReferenceImpl<B>) callableReference).attachConversationID(parameters.getConversationID());
-        }
+        ((CallableReferenceImpl<B>) callableReference).attachConversation(parameters.getConversationID());
         return callableReference;
     }
 

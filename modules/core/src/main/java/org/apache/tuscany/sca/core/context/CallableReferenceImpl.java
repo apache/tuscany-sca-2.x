@@ -126,8 +126,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         // sca:component1/component11/component112/service1?
         this.compositeActivator = compositeActivator;
         this.conversationManager = this.compositeActivator.getConversationManager();
-        //RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
-        // init(wire);
         initCallbackID();
     }
 
@@ -163,7 +161,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             this.binding = wire.getSource().getBinding();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getConversationManager();
-            // init(wire);
             initCallbackID();
         }
     }
@@ -289,17 +286,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 if (parameters != null) {
                     refParams = parameters;
                     this.callbackID = parameters.getCallbackID();
-                    
-                    if (parameters.getConversationID() != null){
-                        ExtendedConversation conversation = conversationManager.getConversation(parameters.getConversationID());
-                        
-                        if (conversation == null){
-                            conversation = conversationManager.startConversation(parameters.getConversationID());
-                        }
-                        this.conversation = conversation;
-                    } else {
-                        this.conversation = null;
-                    }
+                    attachConversation(parameters.getConversationID());
                 }
 
                 for (Binding binding : reference.getBindings()) {
@@ -444,6 +431,17 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.conversation = conversation;
     }
 
+    public void attachConversation(Object conversationID) {
+        if (conversationID != null) {
+            ExtendedConversation conversation = conversationManager.getConversation(conversationID);
+            if (conversation == null){
+                conversation = conversationManager.startConversation(conversationID);
+            }
+            this.conversation = conversation;
+        } else {
+            this.conversation = null;
+        }
+    }
 
     protected ReferenceParameters getReferenceParameters() {
         ReferenceParameters parameters = new ReferenceParametersImpl();
