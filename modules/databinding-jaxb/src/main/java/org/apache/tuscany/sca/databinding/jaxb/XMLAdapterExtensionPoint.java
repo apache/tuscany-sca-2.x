@@ -28,30 +28,25 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public interface XMLAdapterExtensionPoint {
     /**
-     * @param <B>
-     * @param <A>
      * @param boundType
      * @param adapter
      */
-    <B, A extends XmlAdapter<?, B>> void addAdapter(Class<B> boundType, Class<A> adapter);
-    /**
-     * @param <B>
-     * @param <A>
-     * @param boundType
-     * @return
-     */
-    <B, A extends XmlAdapter<?, B>> Class<A> getAdapter(Class<B> boundType);
+    void addAdapter(Class<?> boundType, Class<? extends XmlAdapter> adapter);
 
     /**
-     * @param <B>
-     * @param <A>
      * @param boundType
      * @return
      */
-    <B, A extends XmlAdapter<?, B>> Class<A> removeAdapter(Class<B> boundType);
-    
+    Class<? extends XmlAdapter> getAdapter(Class<?> boundType);
+
+    /**
+     * @param boundType
+     * @return
+     */
+    Class<? extends XmlAdapter> removeAdapter(Class<?> boundType);
+
     /**
      * @return
      */
-    Map<Class<?>, Class<? extends XmlAdapter<?,?>>> getAdapters();
+    Map<Class<?>, Class<? extends XmlAdapter>> getAdapters();
 }
