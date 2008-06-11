@@ -136,7 +136,7 @@ public class JMSResourceFactory {
      * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804 
      */
     private void initJREEnvironment(Properties props) {
-    	if (props.get(Context.INITIAL_CONTEXT_FACTORY).equals("com.ibm.websphere.naming.WsnInitialContextFactory")) {
+    	if ("com.ibm.websphere.naming.WsnInitialContextFactory".equals(props.get(Context.INITIAL_CONTEXT_FACTORY))) {
         	String vendor = System.getProperty("java.vendor");
     		if (vendor == null || !vendor.contains("IBM")) {
             	props.setProperty("com.ibm.CORBA.ORBInit","com.ibm.ws.sib.client.ORB");
