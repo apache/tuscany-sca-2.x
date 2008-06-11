@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
 
+import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
@@ -134,5 +135,10 @@ public class StandardTypesTransformer {
             ret = src;
         }
         return ret;
+    }
+    
+    public static Image getNewImage(Image arg) {
+        arg.getGraphics().drawOval(2, 2, 7, 7);
+        return arg;
     }
 }

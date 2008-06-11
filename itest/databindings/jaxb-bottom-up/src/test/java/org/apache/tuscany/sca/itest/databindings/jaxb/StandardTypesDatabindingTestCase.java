@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -302,7 +303,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewImageArray.
      */
     @Test
-    @Ignore("junit.framework.AssertionFailedError: expected:<BufferedImage@79ecf4: type = 5 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 2> but was:<BufferedImage@1c160cb: type = 0 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 0>")
     public void testSCANewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -584,7 +584,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewImage.
      */
     @Test
-    @Ignore("junit.framework.AssertionFailedError: expected:<BufferedImage@1e9d0cc: type = 5 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 2> but was:<BufferedImage@18b0b4a: type = 0 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 0>")
     public void testWSNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -596,7 +595,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewImageArray.
      */
     @Test
-    @Ignore("junit.framework.AssertionFailedError: expected:<BufferedImage@5afcb1: type = 5 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 2> but was:<BufferedImage@bb1bc4: type = 0 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@aee320 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 10 height = 10 #numDataElements 3 dataOff[0] = 0>")
     public void testWSNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1202,28 +1200,70 @@ public class StandardTypesDatabindingTestCase {
         }
     }
 
-    private void performTestNewImage(StandardTypesServiceClient serviceClient) {
+    private void performTestNewImage(StandardTypesServiceClient serviceClient) throws InterruptedException {
+        // Create some images to test with.
         Image[] imgs = new Image[3];
         imgs[0] = new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR);
         imgs[1] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         imgs[2] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+        imgs[0].getGraphics().drawLine(1, 1, 8, 8);
+        imgs[1].getGraphics().drawLine(8, 1, 1, 8);
+        imgs[2].getGraphics().drawLine(1, 8, 8, 1);
+        
+        Image[] copy = imgs;
+        // Create the same images once again as the StandardTypesTransformer may manipulate the image passed.
+        imgs = new Image[3];
+        imgs[0] = new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR);
+        imgs[1] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        imgs[2] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+        imgs[0].getGraphics().drawLine(1, 1, 8, 8);
+        imgs[1].getGraphics().drawLine(8, 1, 1, 8);
+        imgs[2].getGraphics().drawLine(1, 8, 8, 1);
+        
+        // Make sure the images and copies are equal using ImageInfo
+        for(int i = 0; i < imgs.length; ++i) {
+            Assert.assertEquals(new ImageInfo(imgs[i]), new ImageInfo(copy[i]));
+        }
 
         for (int i = 0; i < imgs.length; ++i) {
             Image actual = serviceClient.getNewImageForward(imgs[i]);
-            Assert.assertEquals(imgs[i], actual);
+            Image expected = StandardTypesTransformer.getNewImage(copy[i]);
+            // Compare using ImageInfo
+            Assert.assertEquals(new ImageInfo(expected), new ImageInfo(actual));
         }
     }
 
-    private void performTestNewImageArray(StandardTypesServiceClient serviceClient) {
+    private void performTestNewImageArray(StandardTypesServiceClient serviceClient) throws InterruptedException {
+        // Create some images to test with.
         Image[] imgs = new Image[3];
         imgs[0] = new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR);
         imgs[1] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         imgs[2] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+        imgs[0].getGraphics().drawLine(1, 1, 8, 8);
+        imgs[1].getGraphics().drawLine(8, 1, 1, 8);
+        imgs[2].getGraphics().drawLine(1, 8, 8, 1);
+        
+        Image[] copy = imgs;
+        // Create the same images once again as the StandardTypesTransformer may manipulate the image passed.
+        imgs = new Image[3];
+        imgs[0] = new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR);
+        imgs[1] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        imgs[2] = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+        imgs[0].getGraphics().drawLine(1, 1, 8, 8);
+        imgs[1].getGraphics().drawLine(8, 1, 1, 8);
+        imgs[2].getGraphics().drawLine(1, 8, 8, 1);
+        
+        // Make sure the images and copies are equal using ImageInfo
+        for(int i = 0; i < imgs.length; ++i) {
+            Assert.assertEquals(new ImageInfo(imgs[i]), new ImageInfo(copy[i]));
+        }
 
         Image[] actual = serviceClient.getNewImageArrayForward(imgs);
         Assert.assertEquals(imgs.length, actual.length);
         for (int i = 0; i < imgs.length; ++i) {
-            Assert.assertEquals(imgs[i], actual[i]);
+            Image expected = StandardTypesTransformer.getNewImage(copy[i]);
+            // Compare using ImageInfo
+            Assert.assertEquals(new ImageInfo(expected), new ImageInfo(actual[i]));
         }
     }
 
@@ -1363,5 +1403,42 @@ public class StandardTypesDatabindingTestCase {
         TransformerFactory.newInstance().newTransformer().transform(s, r);
         sw.close();
         return sw.toString();
+    }
+    
+    /**
+     * This class initializes with the width, height and pixel data of a java.awt.Image object.
+     */
+    private static class ImageInfo {
+        private int h, w, pixels[];
+        public ImageInfo(Image img) throws InterruptedException {
+            w = img.getWidth(null);
+            h = img.getHeight(null);
+            pixels = new int[w*h];
+            PixelGrabber pg = new PixelGrabber(img, 0, 0, w, h, pixels, 0, w);
+            pg.grabPixels();
+        }
+        
+        public boolean equals(Object that) {
+            if(that == null) {
+                return false;
+            } else if(!(that instanceof ImageInfo)) {
+                return false;
+            }
+            
+            ImageInfo that1 = (ImageInfo)that;
+            if(w != that1.w || h != that1.h || pixels == null || that1.pixels == null || pixels.length != that1.pixels.length) {
+                return false;
+            }
+            for(int i = 0; i < pixels.length; ++i) {
+                if(pixels[i] != that1.pixels[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        public String toString() {
+            return this.getClass().getSimpleName()+"[w = "+w+", h = "+h+", pixels = "+pixels+"]";
+        }
     }
 }
