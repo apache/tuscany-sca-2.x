@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * The default implementation of a data binding extension point.
@@ -219,6 +220,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         // level?
         Class physical = dataType.getPhysical();
         if (physical == Object.class) {
+            dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;
         }
         if (dataType.getPhysical().isArray()) {
@@ -230,7 +232,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         } else {
             dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;
-        }    }
+        }
+    }
 
     private boolean introspectArray(DataType dataType, Operation operation) {
         Class physical = dataType.getPhysical();
@@ -260,6 +263,6 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                 return dataType;
             }
         }
-        return new DataTypeImpl<Class>(JavaBeansDataBinding.NAME, value.getClass(), value.getClass());
+        return new DataTypeImpl<XMLType>(JavaBeansDataBinding.NAME, value.getClass(), XMLType.UNKNOWN);
     }
 }

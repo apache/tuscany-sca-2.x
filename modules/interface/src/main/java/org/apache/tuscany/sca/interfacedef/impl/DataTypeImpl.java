@@ -44,6 +44,7 @@ public class DataTypeImpl<L> implements DataType<L> {
     private Class<?> physical;
     private Type genericType;
     private L logical;
+    private Object metaData;
 
     /**
      * Construct a data type specifying the physical and logical types.
@@ -201,5 +202,13 @@ public class DataTypeImpl<L> implements DataType<L> {
         } else if (!physical.equals(other.physical))
             return false;
         return true;
+    }
+
+    public Object getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(Object metaData) {
+        this.metaData = metaData;
     }
 }

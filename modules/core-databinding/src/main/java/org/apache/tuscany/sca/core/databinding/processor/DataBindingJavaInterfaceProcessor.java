@@ -22,9 +22,11 @@ package org.apache.tuscany.sca.core.databinding.processor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
@@ -46,7 +48,7 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
  */
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
-    private DataBindingExtensionPoint dataBindingRegistry; 
+    private DataBindingExtensionPoint dataBindingRegistry;
 
     public DataBindingJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
         super();
@@ -143,6 +145,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             String db = operation.getDataBinding();
             if (db == null || JAXB_DATABINDING.equals(db)) {
                 assignOperationDataBinding(operation);
+                db = operation.getDataBinding();
             }
 
             // Introspect the wrapper data type
@@ -154,6 +157,12 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     WrapperInfo wrapper = operation.getWrapper();
                     wrapper.setInputWrapperType(handler.getWrapperType(operation, true));
                     wrapper.setOutputWrapperType(handler.getWrapperType(operation, false));
+                }
+                if (dbObj != null && handler == null) {
+                    // To avoid JAXB wrapper bean generation
+                    WrapperInfo wrapper = operation.getWrapper();
+                    wrapper.setInputWrapperType(null);
+                    wrapper.setOutputWrapperType(null);
                 }
             }
         }
@@ -168,7 +177,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
      */
     private void assignOperationDataBinding(Operation operation) {
 
-        String nonDefaultDataBindingName = null;
+        Set<String> dbs = new HashSet<String>();
 
         // Can't use DataType<?> since operation.getInputType() returns: DataType<List<DataType>> 
         List<DataType> opDataTypes = new LinkedList<DataType>();
@@ -182,28 +191,20 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
         for (DataType<?> d : opDataTypes) {
             if (d != null) {
                 String dataBinding = d.getDataBinding();
-                // Assumes JavaBeans DB is default
-                if (dataBinding != null && !dataBinding.equals(JavaBeansDataBinding.NAME)
-                    && !dataBinding.equals(SimpleJavaDataBinding.NAME) && !dataBinding.startsWith("java:")) {
-                    if (nonDefaultDataBindingName != null) {
-                        if (!nonDefaultDataBindingName.equals(dataBinding)) {
-                            // We've seen two different non-default DBs, e.g. SDO and JAXB
-                            // so unset the string and break out of the loop 
-                            nonDefaultDataBindingName = null;
-                            break;
-                        } else {
-                            continue;
-                        }
-                    } else {
-                        nonDefaultDataBindingName = dataBinding;
-                    }
+                if ("java:array".equals(dataBinding)) {
+                    dataBinding = ((DataType)d.getLogical()).getDataBinding();
+                }
+                if (dataBinding != null) {
+                    dbs.add(dataBinding);
                 }
             }
         }
 
-        // We have a DB worthy of promoting to operation level.
-        if (nonDefaultDataBindingName != null) {
-            operation.setDataBinding(nonDefaultDataBindingName);
+        dbs.remove(JavaBeansDataBinding.NAME);
+        dbs.remove(SimpleJavaDataBinding.NAME);
+
+        if (dbs.size() == 1) {
+            operation.setDataBinding(dbs.iterator().next());
         }
     }
 }
