@@ -266,7 +266,6 @@ public class CallbackTestCase {
      * <p>
      */
     @Test
-    // @Ignore("TUSCANY-2306")
     public void statelessCallback3() throws Exception {
         System.out.println("Setting up for stateless callback ref null tests");
         ServiceFinder.init("callback-stateless-callbackfieldnull.composite");
@@ -367,7 +366,6 @@ public class CallbackTestCase {
      * TODO - Need to complete testing of 1.6.7.5 after resolution of t-2312
      */
     @Test
-    @Ignore("TUSCANY-2312")
     public void customCallback() throws Exception {
         System.out.println("Setting up for custom callback tests; create domain instance");
         ServiceFinder.init("callback-custom.composite");

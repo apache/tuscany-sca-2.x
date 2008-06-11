@@ -38,8 +38,8 @@ public class AServiceImpl implements AService {
 
     @Reference
     protected CustomCallback customCallback;
-        
-    private String someState;
+
+    protected static String someState;
 
     public void testCallback() {
         b.setCallback(customCallback);

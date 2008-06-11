@@ -32,6 +32,7 @@ public class CustomCallbackImpl implements CustomCallback, AServiceCallback {
     
     public void callBack(String someState) {
         System.out.println("Custom-callback called with this state => " + someState);
+        AServiceImpl.someState = someState;
    }
 
 }
