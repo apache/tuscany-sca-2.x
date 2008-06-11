@@ -48,7 +48,7 @@ public final class SDOContextHelper {
     private SDOContextHelper() {
     }
 
-    public static HelperContext getHelperContext(TransformationContext context) {
+    public static HelperContext getHelperContext(TransformationContext context, boolean source) {
         if (context == null) {
             return getDefaultHelperContext();
         }
@@ -57,44 +57,21 @@ public final class SDOContextHelper {
         if (helperContext != null) {
             return helperContext;
         }
-        helperContext = SDOUtil.createHelperContext();
-
-        boolean found = false;
-        Operation op = context.getSourceOperation();
-        if (op != null) {
-            found = register(helperContext, op.getInputType()) || found;
-            found = register(helperContext, op.getOutputType()) || found;
-            WrapperInfo wrapper = op.getWrapper();
-            if (wrapper != null) {
-                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
-                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
-            }
-        } else {
-            found = register(helperContext, context.getSourceDataType()) || found;
-        }
-
-        op = context.getTargetOperation();
-        if (op != null) {
-            found = register(helperContext, op.getInputType()) || found;
-            found = register(helperContext, op.getOutputType()) || found;
-            WrapperInfo wrapper = op.getWrapper();
-            if (wrapper != null) {
-                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
-                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
-            }
-        } else {
+        Operation op = source ? context.getSourceOperation() : context.getTargetOperation();
+        if (op == null) {
+            helperContext = SDOUtil.createHelperContext();
+            boolean found = register(helperContext, context.getSourceDataType());
             found = register(helperContext, context.getTargetDataType()) || found;
+            if (!found) {
+                helperContext = getDefaultHelperContext();
+            }
+            return helperContext;
+        } else {
+            return getHelperContext(op);
         }
-
-        if (!found) {
-            helperContext = getDefaultHelperContext();
-        }
-
-        context.getMetadata().put(HelperContext.class.getName(), helperContext);
-        return helperContext;
 
     }
-    
+
     public static HelperContext getHelperContext(Operation op) {
         if (op == null) {
             return getDefaultHelperContext();
@@ -111,6 +88,9 @@ public final class SDOContextHelper {
                 found = register(helperContext, wrapper.getInputWrapperClass()) || found;
                 found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
             }
+            for (DataType<DataType> ft : op.getFaultTypes()) {
+                found = register(helperContext, ft.getLogical()) || found;
+            }
         }
         if (!found) {
             helperContext = getDefaultHelperContext();
@@ -119,7 +99,6 @@ public final class SDOContextHelper {
         return helperContext;
 
     }
-
 
     /**
      * @param helperContext

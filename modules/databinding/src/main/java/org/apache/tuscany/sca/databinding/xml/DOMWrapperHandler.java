@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
@@ -47,8 +46,11 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         super();
     }
 
-    public Node create(ElementInfo element, Class<? extends Node> wrapperClass, TransformationContext context) {
+    public Node create(Operation operation, boolean input) {
         try {
+            WrapperInfo wrapperInfo = operation.getWrapper();
+            ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+            // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
             Document document = DOMHelper.newDocument();
             QName name = element.getQName();
             return DOMHelper.createElement(document, name);
@@ -58,9 +60,10 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
     }
 
     public void setChildren(Node wrapper,
-                            List<ElementInfo> childElements,
                             Object[] childObjects,
-                            TransformationContext context) {
+                            Operation operation, boolean input) {
+        List<ElementInfo> childElements = input? operation.getWrapper().getInputChildElements():
+            operation.getWrapper().getOutputChildElements();
         for (int i = 0; i < childElements.size(); i++) {
             setChild(wrapper, i, childElements.get(i), childObjects[i]);
         }
@@ -74,8 +77,10 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         wrapper.appendChild(wrapper.getOwnerDocument().importNode(node, true));
     }
 
-    public List getChildren(Node wrapper, List<ElementInfo> childElements, TransformationContext context) {
+    public List getChildren(Node wrapper, Operation operation, boolean input) {
         assert wrapper != null;
+        List<ElementInfo> childElements = input? operation.getWrapper().getInputChildElements():
+            operation.getWrapper().getOutputChildElements();
         if (wrapper.getNodeType() == Node.DOCUMENT_NODE) {
             wrapper = ((Document)wrapper).getDocumentElement();
         }
@@ -102,9 +107,12 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
     }
 
     public boolean isInstance(Object wrapperObj,
-                              ElementInfo element,
-                              List<ElementInfo> childElements,
-                              TransformationContext context) {
+                              Operation operation,
+                              boolean input) {
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        List<ElementInfo> childElements =
+            input ? wrapperInfo.getInputChildElements() : wrapperInfo.getOutputChildElements();
         Node wrapper = (Node)wrapperObj;
         if (wrapper.getNodeType() == Node.DOCUMENT_NODE) {
             wrapper = ((Document)wrapper).getDocumentElement();

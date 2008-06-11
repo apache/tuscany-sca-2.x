@@ -183,14 +183,14 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                     if (sourceWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
                         Class<?> sourceWrapperClass = sourceWrapperType.getPhysical();
 
-                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
+                        Object sourceWrapper = sourceWrapperHandler.create(sourceOp, false);
                         if (sourceWrapper != null) {
                             if (!childElements.isEmpty()) {
                                 // Set the return value
                                 sourceWrapperHandler.setChildren(sourceWrapper,
-                                                                 wrapper.getOutputChildElements(),
                                                                  new Object[] {response},
-                                                                 context);
+                                                                 sourceOp,
+                                                                 false);
                             }
                             Object targetWrapper =
                                 mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical(), context
@@ -199,8 +199,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                         }
                     }
                 }
-                Object targetWrapper =
-                    targetWrapperHandler.create(wrapper.getOutputWrapperElement(), targetWrapperClass, context);
+                Object targetWrapper = targetWrapperHandler.create(targetOp, false);
 
                 if (childElements.isEmpty()) {
                     // void output
@@ -210,7 +209,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                 DataType<XMLType> argType = wrapper.getUnwrappedOutputType();
                 Object child = response;
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
-                targetWrapperHandler.setChildren(targetWrapper, childElements, new Object[] {child}, context);
+                targetWrapperHandler.setChildren(targetWrapper, new Object[] {child}, targetOp, false);
                 return targetWrapper;
             } else if (sourceWrapped && (!targetWrapped)) {
                 // Wrapped to Unwrapped
@@ -225,7 +224,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
 
                     // FIXME: This is a workaround for the wsdless support as it passes in child elements
                     // under the wrapper that only matches by position
-                    if (sourceWrapperHandler.isInstance(sourceWrapper, wrapperElement, childElements, context)) {
+                    if (sourceWrapperHandler.isInstance(sourceWrapper, sourceOp, false)) {
 
                         WrapperInfo targetWrapperInfo = targetOp.getWrapper();
                         DataType targetWrapperType =
@@ -235,11 +234,11 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                             Object targetWrapper =
                                 mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
                                     .getMetadata());
-                            return targetWrapperHandler.getChildren(targetWrapper, childElements, context).get(0);
+                            return targetWrapperHandler.getChildren(targetWrapper, targetOp, false).get(0);
                         }
                     }
                 }
-                Object child = sourceWrapperHandler.getChildren(sourceWrapper, childElements, context).get(0);
+                Object child = sourceWrapperHandler.getChildren(sourceWrapper, sourceOp, false).get(0);
                 DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
                 return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
             } else {

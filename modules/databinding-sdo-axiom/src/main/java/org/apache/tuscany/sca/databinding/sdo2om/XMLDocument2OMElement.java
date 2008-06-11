@@ -39,7 +39,7 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
     PullTransformer<XMLDocument, OMElement> {
 
     public OMElement transform(XMLDocument source, TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+        HelperContext helperContext = SDOContextHelper.getHelperContext(context, true);
         SDODataSource dataSource = new SDODataSource(source, helperContext);
         OMFactory factory = OMAbstractFactory.getOMFactory();
         QName name = new QName(source.getRootElementURI(), source.getRootElementName());

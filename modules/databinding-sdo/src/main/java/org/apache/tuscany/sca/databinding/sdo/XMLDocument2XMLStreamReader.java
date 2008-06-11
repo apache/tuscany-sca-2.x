@@ -43,7 +43,7 @@ public class XMLDocument2XMLStreamReader extends BaseTransformer<XMLDocument, XM
             return null;
         }
         try {
-            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context, true);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext);
             return streamHelper.createXMLStreamReader(source);
         } catch (XMLStreamException e) {

@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -51,11 +50,11 @@ import commonj.sdo.helper.XSDHelper;
  */
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 
-    /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#create(ElementInfo, Class, TransformationContext)
-     */
-    public Object create(ElementInfo element, Class<? extends Object> wrapperClass, TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+    public Object create(Operation operation, boolean input) {
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
+        HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
             DataFactory dataFactory = helperContext.getDataFactory();
@@ -64,14 +63,12 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
         return null;
     }
 
-    public void setChildren(Object wrapper,
-                            List<ElementInfo> childElements,
-                            Object[] childObjects,
-                            TransformationContext context) {
+    public void setChildren(Object wrapper, Object[] childObjects, Operation operation, boolean input) {
+        List<ElementInfo> childElements =
+            input ? operation.getWrapper().getInputChildElements() : operation.getWrapper().getOutputChildElements();
         for (int i = 0; i < childElements.size(); i++) {
             setChild(wrapper, i, childElements.get(i), childObjects[i]);
         }
-
     }
 
     /**
@@ -91,7 +88,7 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public List getChildren(Object wrapper, List<ElementInfo> childElements, TransformationContext context) {
+    public List getChildren(Object wrapper, Operation operation, boolean input) {
         DataObject wrapperDO =
             (wrapper instanceof XMLDocument) ? ((XMLDocument)wrapper).getRootObject() : (DataObject)wrapper;
         List<Property> properties = wrapperDO.getInstanceProperties();
@@ -124,10 +121,9 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(Operation operation,
-                                   boolean input) {
+    public DataType getWrapperType(Operation operation, boolean input) {
         WrapperInfo wrapper = operation.getWrapper();
-        ElementInfo element = input? wrapper.getInputWrapperElement(): wrapper.getOutputWrapperElement();
+        ElementInfo element = input ? wrapper.getInputWrapperElement() : wrapper.getOutputWrapperElement();
         HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
@@ -164,13 +160,14 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#isInstance(java.lang.Object, org.apache.tuscany.sca.interfacedef.util.ElementInfo, java.util.List, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#isInstance(java.lang.Object, Operation, boolean)
      */
-    public boolean isInstance(Object wrapper,
-                              ElementInfo element,
-                              List<ElementInfo> childElements,
-                              TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+    public boolean isInstance(Object wrapper, Operation operation, boolean input) {
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        //        List<ElementInfo> childElements =
+        //            input ? wrapperInfo.getInputChildElements() : wrapperInfo.getOutputChildElements();
+        HelperContext helperContext = SDOContextHelper.getHelperContext(operation);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
             return sdoType.isInstance(wrapper);

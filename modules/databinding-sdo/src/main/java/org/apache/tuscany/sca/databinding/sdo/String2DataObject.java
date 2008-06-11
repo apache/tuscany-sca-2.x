@@ -35,7 +35,7 @@ public class String2DataObject extends BaseTransformer<String, DataObject> imple
             return null;
         }
         try {
-            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context, false);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
             return xmlHelper.load(source).getRootObject();
         } catch (Exception e) {

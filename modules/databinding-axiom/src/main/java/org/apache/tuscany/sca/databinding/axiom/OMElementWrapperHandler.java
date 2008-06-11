@@ -31,7 +31,6 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -55,15 +54,17 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         this.factory = OMAbstractFactory.getOMFactory();
     }
 
-    public OMElement create(ElementInfo element, Class<? extends OMElement> wrapperClass, TransformationContext context) {
+    public OMElement create(Operation operation, boolean input) {
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
         OMElement wrapper = AxiomHelper.createOMElement(factory, element.getQName());
         return wrapper;
     }
 
-    public void setChildren(OMElement wrapper,
-                            List<ElementInfo> childElements,
-                            Object[] childObjects,
-                            TransformationContext context) {
+    public void setChildren(OMElement wrapper, Object[] childObjects, Operation operation, boolean input) {
+        List<ElementInfo> childElements =
+            input ? operation.getWrapper().getInputChildElements() : operation.getWrapper().getOutputChildElements();
         for (int i = 0; i < childElements.size(); i++) {
             setChild(wrapper, i, childElements.get(i), childObjects[i]);
         }
@@ -100,11 +101,14 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         wrapper.addChild(element);
     }
 
-    public List getChildren(OMElement wrapper, List<ElementInfo> childElements, TransformationContext context) {
+    public List getChildren(OMElement wrapper, Operation operation, boolean input) {
+        List<ElementInfo> childElements = input? operation.getWrapper().getInputChildElements():
+            operation.getWrapper().getOutputChildElements();
+
         List<Object> elements = new ArrayList<Object>();
         int i = 0;
         for (ElementInfo e : childElements) {
-            elements.add(getChild(wrapper, e, i, context));
+            elements.add(getChild(wrapper, e, i));
             i++;
         }
         return elements;
@@ -113,19 +117,19 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(Operation, boolean)
      */
-    public DataType getWrapperType(Operation operation,
-                                   boolean input) {
+    public DataType getWrapperType(Operation operation, boolean input) {
         WrapperInfo wrapper = operation.getWrapper();
-        ElementInfo element = input? wrapper.getInputWrapperElement(): wrapper.getOutputWrapperElement();
+        ElementInfo element = input ? wrapper.getInputWrapperElement() : wrapper.getOutputWrapperElement();
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(AxiomDataBinding.NAME, OMElement.class, new XMLType(element));
         return wrapperType;
     }
 
-    public boolean isInstance(Object wrapperObj,
-                              ElementInfo element,
-                              List<ElementInfo> childElements,
-                              TransformationContext context) {
+    public boolean isInstance(Object wrapperObj, Operation operation, boolean input) {
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        //        List<ElementInfo> childElements =
+        //            input ? wrapperInfo.getInputChildElements() : wrapperInfo.getOutputChildElements();
         OMElement wrapper = (OMElement)wrapperObj;
         if (!element.getQName().equals(wrapper.getQName())) {
             return false;
@@ -171,7 +175,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         return elements;
     }
 
-    public Object getChild(OMElement wrapper, ElementInfo childElement, int index, TransformationContext context) {
+    public Object getChild(OMElement wrapper, ElementInfo childElement, int index) {
         Iterator children = wrapper.getChildrenWithName(childElement.getQName());
         if (!children.hasNext()) {
             // No name match, try by index
