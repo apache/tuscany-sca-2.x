@@ -40,7 +40,7 @@ public class Node2DataObject extends BaseTransformer<Node, DataObject> implement
             return null;
         }
         try {
-            HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+            HelperContext helperContext = SDOContextHelper.getHelperContext(context, false);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
             Document doc = DOMHelper.promote(source);
             DOMSource domSource = new DOMSource(doc);

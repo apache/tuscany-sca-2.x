@@ -88,14 +88,12 @@ public class JAXBContextHelper {
 
         // TODO: [rfeng] Need to figure out what's the best grantularity to create the JAXBContext
         // per interface, operation or parameter
-
-        
         Operation op = source ? tContext.getSourceOperation() : tContext.getTargetOperation();
         if (op != null) {
             return createJAXBContext(getDataTypes(op, true));
         }
-        
 
+        // For property transformation, the operation can be null
         DataType<?> dataType = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
         return createJAXBContext(dataType);
 

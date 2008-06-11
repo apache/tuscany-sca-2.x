@@ -24,7 +24,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.DataObject;
@@ -50,7 +53,8 @@ public class SDOWrapperHandlerTestCase extends TestCase {
     public void testWrapperAnyType() throws Exception {
         XMLHelper xmlHelper = context.getXMLHelper();
         XMLDocument document = xmlHelper.load(getClass().getResourceAsStream("/wrapper.xml"));
-        List children = handler.getChildren(document, null, null);
+        Operation op = new OperationImpl();
+        List children = handler.getChildren(document, op, true);
         assertEquals(5, children.size());
     }
 
@@ -59,7 +63,8 @@ public class SDOWrapperHandlerTestCase extends TestCase {
         xsdHelper.define(getClass().getResourceAsStream("/wrapper.xsd"), null);
         XMLHelper xmlHelper = context.getXMLHelper();
         XMLDocument document = xmlHelper.load(getClass().getResourceAsStream("/wrapper.xml"));
-        List children = handler.getChildren(document, null, null);
+        Operation op = new OperationImpl();
+        List children = handler.getChildren(document, op, true);
         assertEquals(5, children.size());
     }
     
@@ -68,7 +73,10 @@ public class SDOWrapperHandlerTestCase extends TestCase {
         XSDHelper xsdHelper = context.getXSDHelper();
         xsdHelper.define(getClass().getResourceAsStream("/wrapper.xsd"), null);
         ElementInfo element = new ElementInfo(new QName("http://www.example.com/wrapper", "op"), null);
-        DataObject wrapper = (DataObject) handler.create(element, null, null);
+        Operation op = new OperationImpl();
+        WrapperInfo wrapperInfo = new WrapperInfo(SDODataBinding.NAME, element, null, null, null);
+        op.setWrapper(wrapperInfo);
+        DataObject wrapper = (DataObject) handler.create(op, true);
         assertNotNull(wrapper);
     }
 

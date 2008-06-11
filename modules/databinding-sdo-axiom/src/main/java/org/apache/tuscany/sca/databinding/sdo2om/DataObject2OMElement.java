@@ -45,7 +45,7 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
     PullTransformer<DataObject, OMElement> {
 
     public OMElement transform(DataObject source, TransformationContext context) {
-        HelperContext helperContext = SDOContextHelper.getHelperContext(context);
+        HelperContext helperContext = SDOContextHelper.getHelperContext(context, true);
         OMFactory factory = OMAbstractFactory.getOMFactory();
 
         QName name  = ROOT_ELEMENT;

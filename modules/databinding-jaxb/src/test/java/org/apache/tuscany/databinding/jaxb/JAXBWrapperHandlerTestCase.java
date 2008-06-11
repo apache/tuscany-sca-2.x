@@ -27,8 +27,14 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBWrapperHandler;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 import com.example.stock.StockQuoteOffer;
 
@@ -53,7 +59,12 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
 
     public void testCreate() {
         ElementInfo element = new ElementInfo(ELEMENT, null);
-        Object offer = handler.create(element, StockQuoteOffer.class, null);
+        Operation op = new OperationImpl();
+        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, element, null, null, null);
+        wrapperInfo.setInputWrapperType(new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, StockQuoteOffer.class,
+                                                                  XMLType.UNKNOWN));
+        op.setWrapper(wrapperInfo);
+        Object offer = handler.create(op, true);
         Assert.assertTrue(offer instanceof StockQuoteOffer);
     }
 
@@ -68,7 +79,10 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
         wrapper.setInput("IBM");
         List<ElementInfo> elements = new ArrayList<ElementInfo>();
         elements.add(new ElementInfo(INPUT, null));
-        List children = handler.getChildren(wrapper, elements, null);
+        WrapperInfo wrapperInfo = new WrapperInfo(JAXBDataBinding.NAME, null, null, elements, null);
+        Operation op = new OperationImpl();
+        op.setWrapper(wrapperInfo);
+        List children = handler.getChildren(wrapper, op, true);
         assertNotNull(children);
         assertEquals(1, children.size());
         assertEquals("IBM", children.get(0));
