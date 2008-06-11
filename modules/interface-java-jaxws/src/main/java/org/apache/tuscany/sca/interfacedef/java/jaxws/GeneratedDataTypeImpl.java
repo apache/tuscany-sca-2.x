@@ -39,19 +39,20 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
     private Class<?> physical;
     private XMLType logical;
 
-    private Method m;
+    private Object metaData;
+    private Method method;
     private String wrapperClassName;
     private String wrapperNamespace;
     private String wrapperName;
     private boolean request;
-    private GeneratedClassLoader cl;
+    private GeneratedClassLoader classLoader;
 
     private Class<? extends Throwable> exceptionClass;
 
     public GeneratedDataTypeImpl(XMLAdapterExtensionPoint xmlAdapters, Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
         super();
         this.exceptionClass = exceptionClass;
-        this.cl = cl;
+        this.classLoader = cl;
         QName name = FaultBeanGenerator.getElementName(exceptionClass);
         this.logical = new XMLType(name, name);
         this.xmlAdapters = xmlAdapters;
@@ -65,11 +66,11 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
                                  boolean request,
                                  GeneratedClassLoader cl) {
         super();
-        this.m = m;
+        this.method = m;
         this.wrapperClassName = wrapperClassName;
         this.wrapperNamespace = wrapperNamespace;
         this.wrapperName = wrapperName;
-        this.cl = cl;
+        this.classLoader = cl;
         this.request = request;
         QName name = new QName(wrapperNamespace, wrapperName);
         this.logical = new XMLType(name, name);
@@ -90,17 +91,17 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
 
     public synchronized Class<?> getPhysical() {
         if (physical == null) {
-            if (m != null) {
+            if (method != null) {
                 WrapperBeanGenerator generator = new WrapperBeanGenerator();
                 generator.setXmlAdapters(xmlAdapters);
                 physical =
-                    request ? generator.generateRequestWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl)
-                        : generator.generateResponseWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl);
+                    request ? generator.generateRequestWrapper(method, wrapperClassName, wrapperNamespace, wrapperName, classLoader)
+                        : generator.generateResponseWrapper(method, wrapperClassName, wrapperNamespace, wrapperName, classLoader);
                 ;
             } else if (exceptionClass != null) {
                 FaultBeanGenerator faultBeanGenerator = new FaultBeanGenerator();
                 faultBeanGenerator.setXmlAdapters(xmlAdapters);
-                physical = faultBeanGenerator.generate(exceptionClass, cl);
+                physical = faultBeanGenerator.generate(exceptionClass, classLoader);
             }
         }
         return physical;
@@ -124,6 +125,14 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+    
+    public Object getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(Object metaData) {
+        this.metaData = metaData;
     }
 
 }

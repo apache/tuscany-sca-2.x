@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.GenericsTransformer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -82,7 +81,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getTypeExtends.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCATypeExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestTypeExtends(serviceClient);
@@ -114,7 +113,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardSuper.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCAWildcardSuper() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardSuper(serviceClient);
@@ -125,7 +124,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardExtends.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCAWildcardExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardExtends(serviceClient);
@@ -167,7 +166,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getTypeExtends.
      */
     @Test
-    @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault: com.ctc.wstx.exc.WstxEOFException: Unexpected EOF in prolog at [row,col {unknown-source}]: [1,0]")
+    // @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault: com.ctc.wstx.exc.WstxEOFException: Unexpected EOF in prolog at [row,col {unknown-source}]: [1,0]")
     public void testWSTypeExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestTypeExtends(serviceClient);
@@ -199,7 +198,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardSuper.
      */
     @Test
-    @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
+    // @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
     public void testWSWildcardSuper() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardSuper(serviceClient);
@@ -210,7 +209,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardExtends.
      */
     @Test
-    @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
+    // @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
     public void testWSWildcardExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardExtends(serviceClient);
@@ -221,7 +220,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getPolymorphic.
      */
     @Test
-    @Ignore("junit.framework.AssertionFailedError: expected:<Bean3[name = Me, address = My address]> but was:<Bean2[name = Me]>")
+    // @Ignore("junit.framework.AssertionFailedError: expected:<Bean3[name = Me, address = My address]> but was:<Bean2[name = Me]>")
     public void testWSPolymorphic() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestPolymorphic(serviceClient);

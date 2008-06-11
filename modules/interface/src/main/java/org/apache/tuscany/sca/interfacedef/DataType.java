@@ -103,4 +103,15 @@ public interface DataType<L> extends Cloneable {
      */
     void setLogical(L logical);
 
+    /**
+     * Get the databinding-specific metadata
+     * @return the databinding-specific metadata
+     */
+    Object getMetaData();
+    /**
+     * Set the databinding-specific metadata
+     * @param metaData the databinding-specific metadata, such as SDO's commonj.sdo.Type or 
+     * JAXB's javax.xml.bind.JAXBContext
+     */
+    void setMetaData(Object metaData);
 }
