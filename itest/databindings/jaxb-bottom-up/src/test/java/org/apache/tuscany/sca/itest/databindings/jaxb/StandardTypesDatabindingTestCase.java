@@ -560,7 +560,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObject.
      */
     @Test
-    @Ignore("java.lang.RuntimeException: no data binding for null")
+    @Ignore("TUSCANY-2385")
     public void testWSNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -572,7 +572,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    @Ignore("java.lang.RuntimeException: no data binding for null")
+    @Ignore("TUSCANY-2385")
     public void testWSNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1172,12 +1172,13 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewObject(StandardTypesServiceClient serviceClient) {
-        Object[] objs = new Object[5];
+        Object[] objs = new Object[6];
         objs[0] = "Hello";
         objs[1] = 10;
         objs[2] = -1.0;
         objs[3] = URI.create("http://tuscany");
         objs[4] = null;
+        objs[5] = UUID.randomUUID();
 
         for (int i = 0; i < objs.length; ++i) {
             Object expected = StandardTypesTransformer.getNewObject(objs[i]);
