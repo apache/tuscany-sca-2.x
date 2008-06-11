@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -39,9 +40,12 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Assert;
@@ -332,7 +336,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSource.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for javax.xml.transform.Source")
     public void testSCANewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -627,7 +630,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSource.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for javax.xml.transform.Source")
+    @Ignore("junit.framework.ComparisonFailure: null expected:<... encoding=\"UTF-8\"?><[a>A</a]>> but was:<... encoding=\"UTF-8\"?><[return xmlns=\"http://jaxb.databindings.itest.sca.tuscany.apache.org/\">A</return]>>")
     public void testWSNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -639,7 +642,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSourceArray.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    @Ignore("org.apache.tuscany.sca.databinding.TransformationException: No path found for the transformation: java:array->org.apache.axiom.om.OMElement")
     public void testWSNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -915,7 +918,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSource.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for javax.xml.transform.Source")
     public void testSCALocalNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
@@ -927,7 +929,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewSourceArray.
      */
     @Test
-    // @Ignore("java.lang.RuntimeException: no data binding for javax.xml.transform.Source")
     public void testSCALocalNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
@@ -1269,7 +1270,7 @@ public class StandardTypesDatabindingTestCase {
         }
     }
 
-    private void performTestNewSource(StandardTypesServiceClient serviceClient) {
+    private void performTestNewSource(StandardTypesServiceClient serviceClient) throws Exception {
         String xml = new String("<a>A</a>");
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
@@ -1278,13 +1279,13 @@ public class StandardTypesDatabindingTestCase {
 
         for (int i = 0; i < srcs.length; ++i) {
             Source actual = serviceClient.getNewSourceForward(srcs[i]);
-            srcs[i].setSystemId(srcs[i].getSystemId() + "AAA");
+            Source expected = StandardTypesTransformer.getNewSource(srcs[i]);
             // [rfeng] The data may come back as a different source
-            // Assert.assertEquals(srcs[i], actual);
+            Assert.assertEquals(sourceToString(expected), sourceToString(actual));
         }
     }
 
-    private void performTestNewSourceArray(StandardTypesServiceClient serviceClient) {
+    private void performTestNewSourceArray(StandardTypesServiceClient serviceClient) throws Exception {
         String xml = new String("<a>A</a>");
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
@@ -1294,8 +1295,9 @@ public class StandardTypesDatabindingTestCase {
         Source[] actual = serviceClient.getNewSourceArrayForward(srcs);
         Assert.assertEquals(srcs.length, actual.length);
         for (int i = 0; i < srcs.length; ++i) {
-            srcs[i].setSystemId(srcs[i].getSystemId() + "AAA");
-            // Assert.assertEquals(srcs[i], actual[i]);
+            Source expected = StandardTypesTransformer.getNewSource(srcs[i]);
+            // [rfeng] The data may come back as a different source
+            Assert.assertEquals(sourceToString(expected), sourceToString(actual[i]));
         }
 
     }
@@ -1346,5 +1348,16 @@ public class StandardTypesDatabindingTestCase {
                 return false;
             }
         }
+    }
+    
+    /**
+     * This method returns the content of a source object as String.
+     */
+    private String sourceToString(Source s) throws Exception {
+        StringWriter sw = new StringWriter();
+        Result r  = new StreamResult(sw);
+        TransformerFactory.newInstance().newTransformer().transform(s, r);
+        sw.close();
+        return sw.toString();
     }
 }
