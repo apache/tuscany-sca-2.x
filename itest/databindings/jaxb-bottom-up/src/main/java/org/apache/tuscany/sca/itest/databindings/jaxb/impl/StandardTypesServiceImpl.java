@@ -184,8 +184,7 @@ public class StandardTypesServiceImpl implements StandardTypesService, StandardT
     }
     
     public Source getNewSource(Source src) {
-        src.setSystemId(src.getSystemId()+"AAA");
-        return src;
+        return StandardTypesTransformer.getNewSource(src);
     }
 
     public Source[] getNewSourceArray(Source[] srcs) {
