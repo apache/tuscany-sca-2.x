@@ -173,7 +173,6 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsMap.
      */
     @Test
-    // @Ignore
     public void testWSMap() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestMap(helloServiceSimpleClient);
@@ -184,7 +183,6 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsHashMap.
      */
     @Test
-    // @Ignore
     public void testWSHashMap() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestHashMap(helloServiceSimpleClient);

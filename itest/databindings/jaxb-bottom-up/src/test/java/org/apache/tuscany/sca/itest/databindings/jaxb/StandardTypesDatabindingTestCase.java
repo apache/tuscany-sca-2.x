@@ -214,7 +214,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURIArray.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testSCANewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
@@ -480,7 +479,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewQNameArray.
      */
     @Test
-    // @Ignore("QNames with just local part are not getting passsed on over the wire.")
     public void testWSNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -492,7 +490,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURI.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testWSNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -504,7 +501,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewURIArray.
      */
     @Test
-    // @Ignore("junit.framework.AssertionFailedError: expected:<http://abcuri> but was:<http://abcuri>")
     public void testWSNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
