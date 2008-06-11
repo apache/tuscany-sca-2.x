@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -57,6 +58,12 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
         this.allowsPBR = ((JavaImplementation)component.getImplementation()).isAllowsPassByReference(method);
+    }
+
+    public JavaImplementationInvoker(Operation operation, RuntimeComponent component) {
+        // used if the method can't be computed statically in advance 
+        this.operation = operation;
+        this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
     }
 
     @SuppressWarnings("unchecked")
@@ -104,11 +111,21 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             }
 
             Object instance = wrapper.getInstance();
+
+            // If the method couldn't be computed statically, or the instance being
+            // invoked is a user-specified callback object that doesn't implement
+            // the service interface from which the reflective method was obtained,
+            // compute the method object dynamically for this invocation.
+            Method imethod = method;
+            if (imethod == null || !imethod.getDeclaringClass().isInstance(instance)) {
+                imethod = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
+            }
+            
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
-                ret = method.invoke(instance, payload);
+                ret = imethod.invoke(instance, payload);
             } else {
-                ret = method.invoke(instance, (Object[])payload);
+                ret = imethod.invoke(instance, (Object[])payload);
             }
 
             scopeContainer.returnWrapper(wrapper, contextId);
