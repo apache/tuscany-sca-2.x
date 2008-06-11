@@ -158,8 +158,7 @@ public class StandardTypesServiceImpl implements StandardTypesService, StandardT
     }
 
     public Image getNewImage(Image img) {
-        //FIXME: transform the input
-        return img;
+        return StandardTypesTransformer.getNewImage(img);
     }
 
     public Image[] getNewImageArray(Image[] imgs) {
