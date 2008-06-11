@@ -148,7 +148,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         //
         // This should catch an appropriate exception.
         //
-        catch (IllegalArgumentException goodEx)
+        catch (IllegalStateException goodEx)
         {
             System.out.println("correct exception " + goodEx);
             correctException = true;
