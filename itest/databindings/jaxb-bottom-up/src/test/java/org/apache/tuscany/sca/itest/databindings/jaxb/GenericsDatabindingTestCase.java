@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.GenericsTransformer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,9 +33,8 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class GenericsDatabindingTestCase {
-
     private static SCADomain domain;
-
+ 
     /**
      * Runs before each test method
      */
@@ -82,7 +80,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getTypeExtends.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCATypeExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestTypeExtends(serviceClient);
@@ -114,7 +112,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardSuper.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCAWildcardSuper() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardSuper(serviceClient);
@@ -125,7 +123,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardExtends.
      */
     @Test
-    @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
+    // @Ignore("java.lang.IllegalArgumentException: javax.xml.bind.MarshalException")
     public void testSCAWildcardExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardExtends(serviceClient);
@@ -199,7 +197,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardSuper.
      */
     @Test
-    @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
+    // @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
     public void testWSWildcardSuper() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardSuper(serviceClient);
@@ -210,7 +208,7 @@ public class GenericsDatabindingTestCase {
      * Service method invoked is getWildcardExtends.
      */
     @Test
-    @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
+    // @Ignore("org.osoa.sca.ServiceRuntimeException: org.apache.axis2.AxisFault")
     public void testWSWildcardExtends() throws Exception {
         GenericsServiceClient serviceClient = domain.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardExtends(serviceClient);
