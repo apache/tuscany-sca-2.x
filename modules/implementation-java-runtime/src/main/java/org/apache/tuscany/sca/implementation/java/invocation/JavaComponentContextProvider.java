@@ -114,12 +114,15 @@ public class JavaComponentContextProvider {
         if (element != null && configuredProperty.getValue() != null) {
             if (!(element.getAnchor() instanceof Constructor)) {
                 if(element.getElementType() == ElementType.FIELD) {
-                    Field field = (Field)element.getAnchor();
+                    // Field field = (Field)element.getAnchor();
+                    instanceFactoryProvider.getInjectionSites().add(element);
+                    /*
                     if(Modifier.isPublic(field.getModifiers())) {
                         instanceFactoryProvider.getInjectionSites().add(element);
                     } else if(field.getAnnotation(org.osoa.sca.annotations.Property.class) != null) {
                         instanceFactoryProvider.getInjectionSites().add(element);
                     }
+                    */
                 } else {
                     instanceFactoryProvider.getInjectionSites().add(element);
                 }
