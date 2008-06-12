@@ -350,11 +350,6 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-node-xml</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-implementation-node-runtime</artifactId>
             <version>${pom.version}</version>
             <exclusions>
