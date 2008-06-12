@@ -121,7 +121,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 try {
                     imethod = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
                 } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException(e);
+                    throw new IllegalArgumentException("Callback object does not provide method " + e.getMessage());
                 }
             }
             

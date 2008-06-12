@@ -281,6 +281,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         conversationPreinvoke(msg, wire);
         handleCallback(msg, wire, currentConversationID);
         ThreadMessageContext.setMessageContext(msg);
+        boolean abnormalEndConversation = false;
         try {
             // dispatch the wire down the chain and get the response
             Message resp = headInvoker.invoke(msg);
@@ -299,7 +300,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                         }
                         
                         if (businessException == false){
-                            operation.setConversationSequence(ConversationSequence.CONVERSATION_END);
+                            abnormalEndConversation = true;
                         }
                     } catch (Exception ex){
                         // TODO - sure what the best course of action is here. We have
@@ -310,7 +311,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
             return body;
         } finally {
-            conversationPostInvoke(msg, wire);
+            conversationPostInvoke(msg, wire, abnormalEndConversation);
             ThreadMessageContext.setMessageContext(msgContext);
         }
     }
@@ -346,7 +347,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
         }
 
-        Interface interfaze = msg.getOperation().getInterface();
+        Interface interfaze = msg.getFrom().getCallbackEndpoint().getInterfaceContract().getInterface();
         if (callbackObject != null) {
             if (callbackObject instanceof ServiceReference) {
                 EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
@@ -357,6 +358,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                         throw new IllegalArgumentException(
                                                            "Callback object for stateless callback is not a ServiceReference");
                     } else {
+                        if (!(callbackObject instanceof Serializable)) {
+                            throw new IllegalArgumentException(
+                                          "Callback object for stateful callback is not Serializable");
+                        }
                         ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
                         if (scopeContainer != null) {
                             InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
@@ -402,7 +407,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
         // if this is a local wire then schedule conversation timeouts based on the timeout
         // parameters from the service implementation. If this isn't a local wire then
-        // the RuntimeWireInvker will take care of this
+        // the RuntimeWireInvoker will take care of this
         if (wire.getTarget().getComponent() != null){
             conversation.updateLastReferencedTime();
         }
@@ -418,13 +423,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @throws TargetDestructionException
      */
     @SuppressWarnings("unchecked")
-    private void conversationPostInvoke(Message msg, RuntimeWire wire) throws TargetDestructionException {
+    private void conversationPostInvoke(Message msg, RuntimeWire wire, boolean abnormalEndConversation)
+                     throws TargetDestructionException {
         Operation operation = msg.getOperation();
         ConversationSequence sequence = operation.getConversationSequence();
         // We check that conversation has not already ended as there is only one
         // conversation manager in the runtime and so, in the case of remote bindings, 
         // the conversation will already have been stopped when we get back to the client
-        if ((sequence == ConversationSequence.CONVERSATION_END) && (conversation.getState() != ConversationState.ENDED)) {
+        if ((sequence == ConversationSequence.CONVERSATION_END || abnormalEndConversation) &&
+            (conversation.getState() != ConversationState.ENDED)) {
 
             // remove conversation id from scope container
             ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
