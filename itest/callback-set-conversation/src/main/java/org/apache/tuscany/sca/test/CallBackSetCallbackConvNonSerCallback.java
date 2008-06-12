@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.sca.test;
 
+import junit.framework.Assert;
+
 public class CallBackSetCallbackConvNonSerCallback implements CallBackSetCallbackConvCallback {
 
     private int callBackCount = 0;
-    private Object monitor;
 
     public CallBackSetCallbackConvNonSerCallback() {
         super();
@@ -35,24 +36,21 @@ public class CallBackSetCallbackConvNonSerCallback implements CallBackSetCallbac
         return callBackCount;
     }
 
-    public void setMonitor(Object anObject) {
-        monitor = anObject;
-    }
-
     public void callBackMessage(String aString) {
-
+        //
+        // This callback method should never be called.
+        //
         System.out.println("Entering CallBackSetCallbackConvNonSerCallback callBackMessage: " + aString);
-
+        Assert.fail("CallBackSetCallbackConvNonSerCallback: callbackMessage called");
     }
 
     public void callBackIncrement(String aString) {
-
-        System.out.println("Entering callback increment: " + aString);
-
-        synchronized (monitor) {
-            this.incrementCallBackCount();
-            monitor.notify();
-        }
+        //
+        // This callback method should never be called.
+        //
+        System.out.println("Entering callbackIncrement: " + aString);
+        this.incrementCallBackCount();
+        Assert.fail("CallBackSetCallbackConvNonSerCallback: callbackIncrement called");
     }
 
 }

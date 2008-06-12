@@ -18,11 +18,9 @@
  */
 package org.apache.tuscany.sca.test;
 
+import java.io.Serializable;
 
-public class CallBackSetCallbackConvObjectCallback
-        //FIXME: remove the following hack, needed to get around current JavaImplementationInvoker limitation
-        extends CallBackSetCallbackConvClientImpl
-        //implements CallBackSetCallbackConvCallback
+public class CallBackSetCallbackConvObjectCallback implements CallBackSetCallbackConvCallback, Serializable
 {
     private int callBackCount = 0;
 

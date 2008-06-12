@@ -29,14 +29,14 @@ import org.osoa.sca.annotations.Service;
 
 @Service(CallBackSetCallbackConvClient.class)
 @Scope("CONVERSATION")
-public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackConvClient,
-        //FIXME: remove the following hack, needed to get around current JavaImplementationInvoker limitation
-        CallBackSetCallbackConvCallback {
+public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackConvClient {
 
     @Context
     protected ComponentContext componentContext;
+
     @Reference
     protected CallBackSetCallbackConvService aCallBackService;
+
     private CallBackSetCallbackConvObjectCallback aCallbackObject = null;
 
     public void run() {
@@ -84,7 +84,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                 = componentContext.cast(aCallBackService);
         aCallBackServiceRef.setCallback(aCallbackObject);
-        aCallBackService.knockKnock("Knock Knock");
+        aCallBackService.knockKnock("Knock Knock 7");
 
         Assert.assertEquals("CallBackSetCallbackConv - Test7", 2, aCallbackObject.getCount());
 
@@ -105,7 +105,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
             ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                     = componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvBadCallback());
-            aCallBackService.knockKnock("Knock Knock");
+            aCallBackService.knockKnock("Knock Knock 8");
         }
 
         //
@@ -143,12 +143,12 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
             ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                     = componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvNonSerCallback());
-            aCallBackService.knockKnock("Knock Knock");
+            aCallBackService.knockKnock("Knock Knock 9");
         }
         //
         // This should catch an appropriate exception.
         //
-        catch (IllegalStateException goodEx)
+        catch (IllegalArgumentException goodEx)
         {
             System.out.println("correct exception " + goodEx);
             correctException = true;
@@ -158,16 +158,6 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         Assert.assertEquals("CallBackSetCallbackConv - Test9", true, correctException);
 
-    }
-
-    //FIXME: remove the following methods, needed to get around current JavaImplementationInvoker limitation
-
-    public void callBackMessage(String aString) {
-        throw new IllegalStateException("CallbackSetCallbackConvClientImpl.callbackMessage called");
-    }
-
-    public void callBackIncrement(String aString) {
-        throw new IllegalStateException("CallbackSetCallbackConvClientImpl.callbackIncrement called");
     }
 
 }

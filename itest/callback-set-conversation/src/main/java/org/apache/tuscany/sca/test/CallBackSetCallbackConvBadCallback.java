@@ -18,9 +18,11 @@
  */
 package org.apache.tuscany.sca.test;
 
+import java.io.Serializable;
+
 import junit.framework.Assert;
 
-public class CallBackSetCallbackConvBadCallback {
+public class CallBackSetCallbackConvBadCallback implements Serializable {
 
     public CallBackSetCallbackConvBadCallback() {
         super();
@@ -32,7 +34,6 @@ public class CallBackSetCallbackConvBadCallback {
         //
         System.out.println("CallBackSetCallbackBadCallback: callback called");
         Assert.fail("CallBackSetCallbackConvBadCallback: callback called");
-        return;
     }
 
 }
