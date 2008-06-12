@@ -131,7 +131,6 @@
                 <module>implementation-java-xml</module>
                 <module>implementation-java-runtime</module>
                 <module>implementation-node</module>
-                <module>implementation-node-xml</module>
                 <module>implementation-node-runtime</module>
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
