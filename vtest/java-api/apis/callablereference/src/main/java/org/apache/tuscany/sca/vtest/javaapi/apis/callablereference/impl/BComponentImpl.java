@@ -63,8 +63,8 @@ public class BComponentImpl implements BComponent {
         Assert.assertEquals("AConversationID", cid);
     }
 
-    public void testNullConversation() {
-        Assert.assertNull(componentContext.getRequestContext().getServiceReference().getConversation());
+    public void testNonNullConversation() {
+        Assert.assertNotNull(componentContext.getRequestContext().getServiceReference().getConversation());
     }
 
 }
