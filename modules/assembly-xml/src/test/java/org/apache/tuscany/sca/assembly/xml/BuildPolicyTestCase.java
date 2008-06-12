@@ -44,7 +44,9 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -78,7 +80,10 @@ public class BuildPolicyTestCase extends TestCase {
         MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();
         monitor = monitorFactory.createMonitor();
         
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, new InterfaceContractMapperImpl(), monitor);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
+        
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, monitor);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);

@@ -59,7 +59,6 @@ import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -111,7 +110,8 @@ public class ReallySmallRuntime {
         workScheduler = registry.getExtensionPoint(WorkScheduler.class);
 
         // Create an interface contract mapper
-        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
         // Get factory extension point
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -145,7 +145,6 @@ public class ReallySmallRuntime {
         ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class);
         
         // Create a monitor
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         
         if (monitorFactory != null){
@@ -222,7 +221,8 @@ public class ReallySmallRuntime {
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
         EndpointFactory endpointFactory = factories.getFactory(EndpointFactory.class);        
-        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         
         //Create a composite builder
         SCADefinitions aggregatedDefinitions = new SCADefinitionsImpl();
@@ -263,7 +263,8 @@ public class ReallySmallRuntime {
             ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
             SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
             IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
-            InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+            UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+            InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
             domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
                                                                           scaBindingFactory,
                                                                           intentAttachPointTypeFactory,

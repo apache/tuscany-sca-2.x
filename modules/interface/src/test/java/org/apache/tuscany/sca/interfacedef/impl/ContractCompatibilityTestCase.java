@@ -26,6 +26,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -40,7 +43,14 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  */
 public class ContractCompatibilityTestCase extends TestCase {
 
-    private InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+    private InterfaceContractMapper mapper;
+    
+    @Override
+    protected void setUp() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        mapper = utilities.getUtility(InterfaceContractMapper.class);
+    }
 
     public void testNoOperation() throws Exception {
         InterfaceContract source = new MockContract("FooContract");

@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
@@ -41,10 +40,6 @@ import org.osoa.sca.ServiceReference;
 public class JDKProxyFactory implements ProxyFactory {
     protected InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
-
-    public JDKProxyFactory() {
-        this(new MessageFactoryImpl(), new InterfaceContractMapperImpl());
-    }
 
     public JDKProxyFactory(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.contractMapper = mapper;

@@ -46,10 +46,6 @@ import org.osoa.sca.ServiceReference;
 public class CglibProxyFactory implements ProxyFactory {
     private MessageFactory messageFactory;
 
-    public CglibProxyFactory() {
-        this(new MessageFactoryImpl(), new InterfaceContractMapperImpl());
-    }
-
     public CglibProxyFactory(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.messageFactory = messageFactory;
 

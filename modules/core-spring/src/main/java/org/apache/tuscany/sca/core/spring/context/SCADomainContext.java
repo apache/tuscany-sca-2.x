@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -58,7 +59,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProces
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -86,7 +86,8 @@ public class SCADomainContext {
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         modelFactories.addFactory(assemblyFactory);
-        InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
@@ -144,7 +145,7 @@ public class SCADomainContext {
             }
             
             // Wire the top level component's composite
-            buildComposite(composites.get(0), assemblyFactory, scaBindingFactory, interfaceContractMapper);
+            buildComposite(composites.get(0), assemblyFactory, scaBindingFactory, mapper);
             
         } catch (ContributionException e) {
             throw new RuntimeException(e);
