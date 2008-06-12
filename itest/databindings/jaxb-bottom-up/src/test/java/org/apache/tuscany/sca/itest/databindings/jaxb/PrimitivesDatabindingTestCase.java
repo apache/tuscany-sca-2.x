@@ -24,7 +24,6 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -110,7 +109,6 @@ public class PrimitivesDatabindingTestCase {
      * Test for byte array.
      */
     @Test
-    @Ignore("TUSCANY-2351")
     public void testSCAPassByValueByteArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
