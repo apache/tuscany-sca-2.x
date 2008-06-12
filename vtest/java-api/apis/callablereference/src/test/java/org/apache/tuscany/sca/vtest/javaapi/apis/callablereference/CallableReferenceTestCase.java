@@ -100,7 +100,7 @@ public class CallableReferenceTestCase {
     @Test
     public void testGetConversation() throws Exception {
         a.testConversationID();
-        b.testNullConversation();
+        b.testNonNullConversation();
     }
 
     /**

@@ -33,6 +33,6 @@ public interface BComponent {
     
     public void testCallback();
     public void testConversationID();
-    public void testNullConversation();
+    public void testNonNullConversation();
 
 }
