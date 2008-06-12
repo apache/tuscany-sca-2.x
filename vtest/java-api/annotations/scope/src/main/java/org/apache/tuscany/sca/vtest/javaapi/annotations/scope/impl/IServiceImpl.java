@@ -53,7 +53,9 @@ public class IServiceImpl implements IService {
 	public boolean isInitReady = false;
 	
 	public IServiceImpl() {
-		currentInstanceId = ++instanceCounter;
+		synchronized (IServiceImpl.class) {
+			currentInstanceId = ++instanceCounter;
+		}
 		isInitReady = false;
 	}
 
