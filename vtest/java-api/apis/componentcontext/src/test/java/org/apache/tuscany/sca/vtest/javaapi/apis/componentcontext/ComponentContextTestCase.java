@@ -137,14 +137,12 @@ public class ComponentContextTestCase {
      * request, or null if there is no current request or if the context is
      * unavailable.
      * 
-     * @throws Exception TODO: fails for me so I've added
-     * @Ignore
+     * @throws Exception
      */
     @Test
-    @Ignore
     public void testGetRequestContext() throws Exception {
         Assert.assertEquals("AComponent", a.getRequestContextServiceName());
-        Assert.assertEquals("Null", a.getRequestContextContent());
+        Assert.assertEquals("NotNull", a.getRequestContextContent());
     }
 
     /**
