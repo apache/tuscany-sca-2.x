@@ -62,9 +62,11 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementation;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -132,6 +134,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
     private boolean packagesRefreshed;
     
+    private MessageFactory messageFactory;
+    private InterfaceContractMapper mapper;
+    
 
     public OSGiImplementationProvider(RuntimeComponent definition,
             OSGiImplementationInterface impl,
@@ -139,7 +144,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             JavaPropertyValueObjectFactory propertyValueFactory,
             ProxyFactory proxyFactory,
             ScopeRegistry scopeRegistry,
-            RequestContextFactory requestContextFactory) throws BundleException {
+            RequestContextFactory requestContextFactory,
+            MessageFactory messageFactory,
+            InterfaceContractMapper mapper) throws BundleException {
         
         
         this.implementation = (OSGiImplementation)impl;
@@ -147,7 +154,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         this.dataBindingRegistry = dataBindingRegistry;
         this.propertyValueFactory = propertyValueFactory;
         this.scopeRegistry = scopeRegistry;
-        
+        this.messageFactory = messageFactory;
+        this.mapper = mapper;
         
         bundleContext = getBundleContext();
         osgiBundle = (Bundle)implementation.getOSGiBundle();
@@ -854,7 +862,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         }
         
            
-        JDKProxyFactory proxyService = new JDKProxyFactory();
+        JDKProxyFactory proxyService = new JDKProxyFactory(messageFactory, mapper);
 
         // Allow privileged access to load classes. Requires getClassLoader permission in security
         // policy.

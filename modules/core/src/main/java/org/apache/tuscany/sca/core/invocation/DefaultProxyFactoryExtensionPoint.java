@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
@@ -38,10 +37,6 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
 
     private ProxyFactory interfaceFactory;
     private ProxyFactory classFactory;
-
-    public DefaultProxyFactoryExtensionPoint() {
-        this(new MessageFactoryImpl(), new InterfaceContractMapperImpl());
-    }
 
     public DefaultProxyFactoryExtensionPoint(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.interfaceContractMapper = mapper;

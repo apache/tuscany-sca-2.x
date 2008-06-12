@@ -92,7 +92,7 @@ public class CustomCompositeBuilder {
         monitor = monitorFactory.createMonitor();
         
         // Create an interface contract mapper
-        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         extensionPoints.addExtensionPoint(mapper);
         
         // Create Message factory

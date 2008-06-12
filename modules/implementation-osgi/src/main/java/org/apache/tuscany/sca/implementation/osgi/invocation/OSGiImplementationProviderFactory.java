@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.implementation.osgi.invocation;
 
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
@@ -30,6 +32,8 @@ import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -47,6 +51,8 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
     private JavaPropertyValueObjectFactory propertyFactory;
     private ProxyFactory proxyFactory;
     private ScopeRegistry scopeRegistry;
+    private MessageFactory messageFactory;
+    private InterfaceContractMapper mapper;
     
     private RequestContextFactory requestContextFactory;
     
@@ -66,7 +72,12 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
         TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         propertyFactory = new JavaPropertyValueObjectFactory(mediator);
+
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        messageFactory = modelFactories.getFactory(MessageFactory.class);
         
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        mapper = utilities.getUtility(InterfaceContractMapper.class);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
@@ -80,7 +91,9 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
                     propertyFactory,
                     proxyFactory,
                     scopeRegistry,
-                    requestContextFactory
+                    requestContextFactory,
+                    messageFactory,
+                    mapper
                     );
                 
         } catch (BundleException e) {

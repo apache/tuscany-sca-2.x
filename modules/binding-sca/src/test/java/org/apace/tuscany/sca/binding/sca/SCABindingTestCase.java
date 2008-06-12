@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -70,7 +71,9 @@ public class SCABindingTestCase {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
         
     }
