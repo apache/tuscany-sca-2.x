@@ -119,7 +119,7 @@ public class PhaseManager {
         return getPhases(STAGE_IMPLEMENTATION);
     }
 
-    public List<String> getAllPhases() {
+    public synchronized List<String> getAllPhases() {
         if (phases == null) {
             phases = new ArrayList<String>();
             phases.addAll(getReferencePhases());
