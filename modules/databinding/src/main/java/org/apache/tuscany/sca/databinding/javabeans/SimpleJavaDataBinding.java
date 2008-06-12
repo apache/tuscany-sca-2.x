@@ -44,6 +44,9 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
 
     @Override
     public Object copy(Object arg, DataType dataType, Operation operation) {
+        if (arg instanceof byte[]) {
+            return ((byte[])arg).clone();
+        }
         return arg;
     }
 

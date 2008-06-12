@@ -23,9 +23,13 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -177,7 +181,18 @@ public class PassByValueInterceptor implements Interceptor {
         if (data == null) {
             return null;
         }
-
+        Class<?> clazz = data.getClass();
+        if (String.class == clazz || clazz.isPrimitive()
+            || Number.class.isAssignableFrom(clazz)
+            || Boolean.class.isAssignableFrom(clazz)
+            || Character.class.isAssignableFrom(clazz)
+            || Byte.class.isAssignableFrom(clazz)
+            || URI.class == clazz
+            || UUID.class == clazz
+            || QName.class == clazz) {
+            // Immutable classes
+            return data;
+        }
         // If no databinding was specified, introspect the given arg to
         // determine its databinding
         if (dataBinding == null) {
@@ -201,7 +216,7 @@ public class PassByValueInterceptor implements Interceptor {
 
             // If the input data is an array containing non Serializable elements
             // use JAXB
-            Class<?> clazz = data.getClass();
+            clazz = data.getClass();
             if (clazz.isArray()) {
                 if (Array.getLength(data) != 0) {
                     Object element = Array.get(data, 0);
