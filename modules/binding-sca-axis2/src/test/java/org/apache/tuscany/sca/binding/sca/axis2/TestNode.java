@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -107,8 +106,7 @@ public class TestNode  {
         }         
     }
     
-    public void start()
-        throws NodeException {
+    public void start() {
         
         try {
             nodeRuntime.getCompositeActivator().start(appComposite);
@@ -119,13 +117,14 @@ public class TestNode  {
         
     }
     
-    public void stop() throws NodeException {
+    public void stop() {
         try {
             nodeRuntime.stop();
-        } catch(Exception ex) {
-            throw new NodeException(ex);
+        } catch (Exception ex) {
+            System.err.println("Exception when creating domain " + ex.getMessage());
+            ex.printStackTrace(System.err);
         }
-    }   
+    } 
     
     public <B> B getService(Class<B> businessInterface, String serviceName) {
         ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);

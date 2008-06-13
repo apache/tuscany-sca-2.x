@@ -55,7 +55,6 @@
                 <module>binding-atom-abdera</module>
                 <module>binding-rss</module>
                 <module>binding-rss-rome</module>
-                <!-- -->
                 <module>binding-http</module>
                 <module>binding-http-runtime</module>
                 <module>binding-jms</module>
@@ -65,9 +64,6 @@
                 <module>binding-rmi</module>
                 <module>binding-sca</module>
                 <module>binding-sca-axis2</module>
-                <!--
-                <module>binding-sca-jms</module>
-                -->
                 <module>binding-sca-xml</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
@@ -99,9 +95,6 @@
                 <module>data-engine-helper</module>
                 <module>definitions</module>
                 <module>definitions-xml</module>
-                <module>domain</module>
-                <module>domain-api</module>
-                <module>domain-impl</module>
                 <module>domain-manager</module>
                 <module>endpoint</module>
                 <module>extensibility</module>
@@ -143,10 +136,7 @@
                 <module>implementation-xquery</module>
                 <module>monitor</module>
                 <module>monitor-logging</module>
-                <module>node</module>
-                <module>node-api</module>
                 <module>node2-api</module>
-                <module>node-impl</module>
                 <module>node2-impl</module>
                 <module>node2-launcher</module>
                 <module>node2-launcher-webapp</module>
@@ -159,9 +149,9 @@
                 <module>policy-security-jsr250</module>
                 <module>policy-security-ws</module>
                 <module>policy-transaction</module>
-                <module>runtime</module>
+                <!--module>runtime</module-->
                 <module>runtime-tomcat</module>
-                <module>runtime-war</module>
+                <!--module>runtime-war</module-->
                 <module>sca-api</module>
                 <module>workspace</module>
                 <module>workspace-impl</module>

@@ -26,7 +26,7 @@ import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.core.StandardContext;
-import org.apache.tuscany.sca.runtime.Launcher;
+//import org.apache.tuscany.sca.runtime.Launcher;
 
 /**
  *
@@ -34,11 +34,11 @@ import org.apache.tuscany.sca.runtime.Launcher;
  */
 public class TuscanyContextListener implements LifecycleListener {
 
-    private Launcher launcher;
+//    private Launcher launcher;
 
-    public TuscanyContextListener(Launcher launcher) {
-        this.launcher = launcher;
-    }
+//    public TuscanyContextListener(Launcher launcher) {
+//        this.launcher = launcher;
+//    }
 
     public void lifecycleEvent(LifecycleEvent event) {
         String type = event.getType();
@@ -56,7 +56,7 @@ public class TuscanyContextListener implements LifecycleListener {
             File f = new File(path + "WEB-INF/classes");
             if (f.exists()) {
                 System.out.println("adding contribution: "+ path);
-                launcher.addContribution(f.toURL());
+//                launcher.addContribution(f.toURL());
             }
         } catch (Exception e) {
             e.printStackTrace();

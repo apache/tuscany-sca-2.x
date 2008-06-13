@@ -20,8 +20,12 @@ package myapp;
 
 import myserver.MyService;
 import myserver.MyServiceCallback;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -47,11 +51,12 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
     }
 
     public static void main(String[] args) throws Exception {
-        SCANode node = SCANodeFactory.createNodeWithComposite("myapp.composite");
-        MyClient myClient = node.getDomain().getService(MyClient.class, "MyClientComponent");
+        SCANode2 node = SCANode2Factory.newInstance().createSCANode("target/classes/myapp.composite", new SCAContribution("test", "target/classes"));
+        node.start();
+        MyClient myClient = ((SCAClient)node).getService(MyClient.class, "MyClientComponent");
         myClient.aClientMethod();
         Thread.sleep(5000);  // don't exit before callback arrives
         System.out.println("Closing the domain");
-        node.destroy();
+        node.stop();
     }
 }
