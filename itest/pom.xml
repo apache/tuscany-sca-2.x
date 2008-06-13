@@ -96,9 +96,9 @@
                 <module>operation-overloading</module>
                 <module>osgi-implementation</module>
                 <module>osgi-contribution</module>
-		<module>policy</module>
-                <!--module>policy-authorization</module-->
-		<module>policy-security</module>
+                <module>policy</module>
+                <module>policy-security</module>
+                <module>policy-security-jsr250</module>
                 <module>properties</module>
                 <module>recursive</module>
                 <module>recursive-multi-level</module>
