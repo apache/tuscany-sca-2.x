@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -159,12 +158,6 @@ public class ReallySmallRuntimeBuilder {
                                         monitor);
     }
     
-    public static DomainBuilder createDomainBuilder(AssemblyFactory assemblyFactory,
-            SCABindingFactory scaBindingFactory,
-            IntentAttachPointTypeFactory intentAttachPointTypeFactory,
-            InterfaceContractMapper interfaceContractMapper) {
-        return new DomainWireBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, null);
-    }     
 
     /**
      * Create the contribution service used by this domain.

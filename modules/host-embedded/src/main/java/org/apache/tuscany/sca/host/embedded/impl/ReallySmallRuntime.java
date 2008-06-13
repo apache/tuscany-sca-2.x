@@ -250,24 +250,7 @@ public class ReallySmallRuntime {
     public AssemblyFactory getAssemblyFactory() {
         return assemblyFactory;
     }
-
-    public DomainBuilder getDomainBuilder() {
-        if ( domainBuilder == null ) {
-            //Create a domain builder
-            //Get factory extension point
-            ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-            SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-            IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
-            UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-            InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-            domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
-                                                                          scaBindingFactory,
-                                                                          intentAttachPointTypeFactory,
-                                                                          mapper);
-        }
-        return domainBuilder;
-    }
-    
+   
     private void  loadSCADefinitions() throws ActivationException {
         try {
             URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
