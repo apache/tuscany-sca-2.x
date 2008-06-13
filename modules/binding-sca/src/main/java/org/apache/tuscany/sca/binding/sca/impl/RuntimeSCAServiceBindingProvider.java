@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.node.spi.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -42,18 +41,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
   
-    private NodeFactory nodeFactory; 
     private RuntimeComponentService service;
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
     private ServiceBindingProvider distributedProvider;
     private DistributedSCABinding distributedBinding;
     
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
-    		                            NodeFactory nodeFactory,
                                             RuntimeComponent component,
                                             RuntimeComponentService service,
                                             SCABinding binding) {
-    	this.nodeFactory = nodeFactory;
         this.service = service;
         // if there is potentially a wire to this service that crosses the node boundary 
         if (service.getInterfaceContract().getInterface().isRemotable()) {  

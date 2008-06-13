@@ -44,7 +44,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.node.spi.NodeFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
@@ -63,7 +62,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 
     private static final Logger logger = Logger.getLogger(Axis2SCAReferenceBindingProvider.class.getName());
     
-    private NodeFactory nodeFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -84,7 +82,6 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
 
-        this.nodeFactory = modelFactories.getFactory(NodeFactory.class);
         this.component = component;
         this.reference = reference;
         this.binding = binding.getSCABinding();

@@ -19,8 +19,6 @@
 package helloworld;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -29,15 +27,15 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class HelloWorldJmsClient {
 
     public  final static void main(String[] args) throws Exception {
-		SCANode node = SCANodeFactory.createNodeWithComposite("helloworldjmsreference.composite");
-		HelloWorldService helloWorldService = node.getDomain().getService(HelloWorldService.class, "HelloWorldServiceComponent");
+		//SCANode node = SCANodeFactory.createNodeWithComposite("helloworldjmsreference.composite");
+		//HelloWorldService helloWorldService = node.getDomain().getService(HelloWorldService.class, "HelloWorldServiceComponent");
     	
-        //SCADomain scaDomain = SCADomain.newInstance("helloworldjmsreference.composite");
-        //HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
+        SCADomain scaDomain = SCADomain.newInstance("helloworldjmsreference.composite");
+        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
 
         String value = helloWorldService.getGreetings("World");
         System.out.println(value);
 
-        node.destroy();
+        scaDomain.close();
     }
 }

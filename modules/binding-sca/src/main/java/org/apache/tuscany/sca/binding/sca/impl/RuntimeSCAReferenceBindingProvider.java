@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.node.spi.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -54,7 +53,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
-    private NodeFactory nodeFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -64,11 +62,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private ReferenceBindingProvider distributedProvider = null;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
-                                              NodeFactory nodeFactory,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               SCABinding binding) {
-        this.nodeFactory = nodeFactory;
         this.component = component;
         this.reference = reference;
         this.binding = binding;
