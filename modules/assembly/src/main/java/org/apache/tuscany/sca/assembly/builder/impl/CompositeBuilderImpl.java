@@ -46,6 +46,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     private CompositeBuilder compositeCloneBuilder;
     private CompositeBuilder componentConfigurationBuilder;
     private CompositeBuilder compositeServiceConfigurationBuilder;
+    private CompositeBuilder compositePromotionBuilder;
+    private CompositeBuilder compositePolicyBuilder;
     
     /**
      * Constructs a new composite builder.
@@ -83,36 +85,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 SCADefinitions policyDefinitions,
                                 Monitor monitor) {
         
-        // TODO - why does this builder have two constructors
         if (endpointFactory == null){
             endpointFactory = new DefaultEndpointFactory();
-        }
-        
-        /*if (monitor == null) {
-            monitor = new Monitor () {
-                public void problem(Problem problem) {
-                    
-                    Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
-                    
-                    if (problemLogger == null){
-                        logger.severe("Can't get logger " + problem.getSourceClassName()+ " with bundle " + problem.getBundleName());
-                    }
-                    
-                    if (problem.getSeverity() == Severity.INFO) {
-                        problemLogger.log(Level.INFO, problem.getMessageId(), problem.getMessageParams());
-                    } else if (problem.getSeverity() == Severity.WARNING) {
-                        problemLogger.log(Level.WARNING, problem.getMessageId(), problem.getMessageParams());
-                    } else if (problem.getSeverity() == Severity.ERROR) {
-                        if (problem.getCause() != null) {
-                            problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getCause());
-                        } else {
-                            problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getMessageParams());
-                        }
-                    }
-                }                
-            };
-        }*/
-        
+        }       
         
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor); 
         componentWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
@@ -120,6 +95,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         compositeCloneBuilder = new CompositeCloneBuilderImpl(monitor);
         componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
@@ -133,6 +110,12 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Configure all components
         componentConfigurationBuilder.build(composite);
 
+        // Connect composite services/references to promoted services/references
+        compositePromotionBuilder.build(composite);
+        
+        // Compute the policies across the model hierarchy
+        compositePolicyBuilder.build(composite);
+        
         // Wire the components
         componentWireBuilder.build(composite);
 
