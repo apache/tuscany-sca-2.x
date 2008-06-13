@@ -79,9 +79,10 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
                         String roleName = reader.getAttributeValue(null, ROLE);
                         if (roleName == null) {
                             error("RequiredAttributeRolesMissing", reader);
-                            throw new IllegalArgumentException("Required attribute 'roles' is missing.");
+                            //throw new IllegalArgumentException("Required attribute 'roles' is missing.");
+                        } else {
+                            policy.setRunAsRole(roleName);
                         }
-                        policy.setRunAsRole(roleName);
                     } else if ("useCallerIdentity".equals(ac)) {
                         policy.setUseCallerIdentity(true);
                     }
@@ -123,8 +124,10 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
     }
 
     public void resolve(SecurityIdentityPolicy policy, ModelResolver resolver) throws ContributionResolveException {
-        //right now nothing to resolve
-        policy.setUnresolved(false);
+        
+    	if (policy.getRunAsRole() != null)
+    	    //right now nothing to resolve
+            policy.setUnresolved(false);
     }
 
 }

@@ -24,7 +24,7 @@
 	name="TestNode">
 
     <component name="TestNode">
-        <tuscany:implementation.node composite="sc:TestComposite"/>
+        <tuscany:implementation.node uri="TestNode" composite="sc:TestComposite"/>
     </component>
 
 </composite>

@@ -101,9 +101,9 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
                         String ns = reader.getAttributeValue(null, NAMESPACE);
                         if (ns == null) {
                         	error("AttributeNameSpaceMissing", reader);
-                            throw new ContributionReadException("Attribute 'namespace' is missing");
-                        }
-                        namespaceImport.setNamespace(ns);
+                            //throw new ContributionReadException("Attribute 'namespace' is missing");
+                        } else 
+                            namespaceImport.setNamespace(ns);
 
                         String location = reader.getAttributeValue(null, LOCATION);
                         if (location != null) {

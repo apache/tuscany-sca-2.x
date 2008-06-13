@@ -49,11 +49,16 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
@@ -81,6 +86,7 @@ public class NodeImpl implements SCANode2, SCAClient {
     private XMLInputFactory inputFactory;
     private ModelFactoryExtensionPoint modelFactories;
     private StAXArtifactProcessorExtensionPoint artifactProcessors;
+    private Monitor monitor;
 
     // The composite loaded into this node
     private Composite composite; 
@@ -268,6 +274,11 @@ public class NodeImpl implements SCANode2, SCAClient {
         
         // Save the composite activator
         compositeActivator = runtime.getCompositeActivator();
+        
+        // save the monitor
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
     }
     
     private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
@@ -302,6 +313,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
             contributions.add(contributionService.contribute(contribution.getURI(), contributionURL, false));
+            analyseProblems();
         }
         
         // Load the specified composite
@@ -320,9 +332,13 @@ public class NodeImpl implements SCANode2, SCAClient {
             composite = configuration.getComposite();
         }
         
+        analyseProblems();
+        
         // Resolve it within the context of the first contribution
         Contribution mainContribution = contributions.get(contributions.size()-1);
         compositeProcessor.resolve(composite, mainContribution.getModelResolver());
+        
+        analyseProblems();
             
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
@@ -341,6 +357,22 @@ public class NodeImpl implements SCANode2, SCAClient {
         
         // Build the composite
         runtime.buildComposite(composite);
+        
+        analyseProblems();
+    }
+    
+    private void analyseProblems() throws Exception {
+        
+        for (Problem problem : monitor.getProblems()){
+            if ((problem.getSeverity() == Severity.ERROR) &&
+               (!problem.getMessageId().equals("SchemaError"))){
+                if (problem.getCause() != null){
+                    throw problem.getCause();
+                } else {
+                    throw new ServiceRuntimeException(problem.toString());
+                }    
+            }
+        }
     }
     
     public void start() {

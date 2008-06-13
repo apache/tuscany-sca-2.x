@@ -51,9 +51,9 @@ public class PartnerLinkHasBothAttrTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
+    	assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("PartnerLinkHasBothAttr"));
+    	/*Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();        
     	assertNotNull(problem);
-        assertEquals("PartnerLinkHasBothAttr", problem.getMessageId());
+        assertEquals("PartnerLinkHasBothAttr", problem.getMessageId());*/
     }
 }

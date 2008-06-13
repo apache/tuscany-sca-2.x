@@ -101,9 +101,9 @@ public class ResourceImportProcessor  implements StAXArtifactProcessor<ResourceI
                         String uri = reader.getAttributeValue(null, URI);
                         if (uri == null) {
                         	error("AttributeURIMissing", reader);
-                            throw new ContributionReadException("Attribute 'uri' is missing");
-                        }
-                        resourceImport.setURI(uri);
+                            //throw new ContributionReadException("Attribute 'uri' is missing");
+                        } else
+                            resourceImport.setURI(uri);
 
                         String location = reader.getAttributeValue(null, LOCATION);
                         if (location != null) {

@@ -82,11 +82,12 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
                         String roleNames = reader.getAttributeValue(null, ROLES);
                         if (roleNames == null) {
                             error("RequiredAttributeRolesMissing", reader);
-                            throw new IllegalArgumentException("Required attribute 'roles' is missing.");
-                        }
-                        StringTokenizer st = new StringTokenizer(roleNames);
-                        while (st.hasMoreTokens()) {
-                            policy.getRoleNames().add(st.nextToken());
+                            //throw new IllegalArgumentException("Required attribute 'roles' is missing.");
+                        } else {
+                            StringTokenizer st = new StringTokenizer(roleNames);
+                            while (st.hasMoreTokens()) {
+                                policy.getRoleNames().add(st.nextToken());
+                            }
                         }
                     } else if ("permitAll".equals(ac)) {
                         policy.setAccessControl(AuthorizationPolicy.AcessControl.permitAll);
@@ -137,6 +138,13 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
     }
 
     public void resolve(AuthorizationPolicy policy, ModelResolver resolver) throws ContributionResolveException {
+        
+        if ((policy.getAccessControl() == AuthorizationPolicy.AcessControl.allow) &&
+            (policy.getRoleNames().isEmpty())){
+            // role names are required so leave policy unresolved
+            return;
+        }
+
         //right now nothing to resolve
         policy.setUnresolved(false);
     }

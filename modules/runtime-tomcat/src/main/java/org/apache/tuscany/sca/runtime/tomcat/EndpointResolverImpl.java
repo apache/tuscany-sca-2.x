@@ -103,7 +103,12 @@ public class EndpointResolverImpl implements EndpointResolver {
         DefaultEndpointBuilder ebi = new DefaultEndpointBuilder(new Monitor() {
             public void problem(Problem problem) {
                 logger.warning(problem.toString());
-            }});
+            }
+            
+            public List<Problem> getProblems() {
+                return null;
+            }    
+        });
 
         ebi.build(endpoint);
     }

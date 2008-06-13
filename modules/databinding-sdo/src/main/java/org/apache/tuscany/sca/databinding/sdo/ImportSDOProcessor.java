@@ -128,21 +128,22 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         if (factoryName != null) {
             ClassReference reference = new ClassReference(factoryName);
             ClassReference resolved = resolver.resolveModel(ClassReference.class, reference);
-            if (resolved == null || resolved.isUnresolved()) {
+            if (resolved != null && !resolved.isUnresolved()) {
+            	try {
+                    Class<?> factoryClass = resolved.getJavaClass();
+                    register(factoryClass, importSDO.getHelperContext());
+                    importSDO.setUnresolved(false);
+                } catch (Exception e) {
+                	ContributionResolveException ce = new ContributionResolveException(e);
+                	error("ContributionResolveException", resolver, ce);
+                    //throw ce;
+                }                
+            } else {
             	error("FailToResolveClass", resolver, factoryName);
-                ContributionResolveException loaderException =
-                    new ContributionResolveException("Fail to resolve class: " + factoryName);
-                throw loaderException;
-            }
-            try {
-                Class<?> factoryClass = resolved.getJavaClass();
-                register(factoryClass, importSDO.getHelperContext());
-            } catch (Exception e) {
-            	ContributionResolveException ce = new ContributionResolveException(e);
-            	error("ContributionResolveException", resolver, ce);
-                throw ce;
-            }
-            importSDO.setUnresolved(false);
+                //ContributionResolveException loaderException =
+                    //new ContributionResolveException("Fail to resolve class: " + factoryName);
+                //throw loaderException;
+            }            
         }
     }
 
@@ -163,29 +164,28 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 Artifact artifact = contributionFactory.createArtifact();
                 artifact.setURI(location);
                 artifact = resolver.resolveModel(Artifact.class, artifact);
-                if (artifact.getLocation() == null) {
-                	error("FailToResolveLocation", resolver, location);
-                    ContributionResolveException loaderException =
-                        new ContributionResolveException("Fail to resolve location: " + location);
-                    throw loaderException;
-                }
-
-                String wsdlURL = artifact.getLocation();
-                URLConnection connection = new URL(wsdlURL).openConnection();
-                connection.setUseCaches(false);
-                InputStream xsdInputStream = connection.getInputStream();
-                try {
-                    XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
-                    xsdHelper.define(xsdInputStream, wsdlURL);
-                } finally {
-                    xsdInputStream.close();
-                }
+                if (artifact.getLocation() != null) {
+                	String wsdlURL = artifact.getLocation();
+                    URLConnection connection = new URL(wsdlURL).openConnection();
+                    connection.setUseCaches(false);
+                    InputStream xsdInputStream = connection.getInputStream();
+                    try {
+                        XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
+                        xsdHelper.define(xsdInputStream, wsdlURL);
+                    } finally {
+                        xsdInputStream.close();
+                    }
+                    importSDO.setUnresolved(false);
+                } else {
+                   	error("FailToResolveLocation", resolver, location);
+                    //ContributionResolveException loaderException = new ContributionResolveException("Fail to resolve location: " + location);
+                    //throw loaderException;
+                }                
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
             	error("ContributionResolveException", resolver, ce);
-                throw ce;
-            }
-            importSDO.setUnresolved(false);
+                //throw ce;
+            }            
         }
     }
 

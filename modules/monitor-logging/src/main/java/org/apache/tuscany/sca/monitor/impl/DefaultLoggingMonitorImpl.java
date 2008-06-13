@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.monitor.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,17 +39,10 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class DefaultLoggingMonitorImpl implements Monitor {
     private static final Logger logger = Logger.getLogger(DefaultLoggingMonitorImpl.class.getName());
 
-    // remembers the last logged problem for testing purposes
-    private Problem lastProblem = null;
+    // Cache all the problem reported to monitor for further analysis
+    private List<Problem> problemCache = new ArrayList<Problem>();
 
-    /**
-     * Reports a build problem.
-     * 
-     * @param problem
-     */
     public void problem(Problem problem) {
-        
-        lastProblem = problem;
         
         Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
         
@@ -54,19 +51,53 @@ public class DefaultLoggingMonitorImpl implements Monitor {
         }
         
         if (problem.getSeverity() == Severity.INFO) {
-            problemLogger.log(Level.INFO, problem.getMessageId(), problem.getMessageParams());
-        } else if (problem.getSeverity() == Severity.WARNING) {
-            problemLogger.log(Level.WARNING, problem.getMessageId(), problem.getMessageParams());
-        } else if (problem.getSeverity() == Severity.ERROR) {
+            problemCache.add(problem);
+            problemLogger.logp(Level.INFO, problem.getSourceClassName(), null, 
+                                  problem.getMessageId(), problem.getMessageParams());
+        } 
+        else if (problem.getSeverity() == Severity.WARNING) {
+            problemCache.add(problem);
+            problemLogger.logp(Level.WARNING, problem.getSourceClassName(), null, 
+                                  problem.getMessageId(), problem.getMessageParams());
+        } 
+        else if (problem.getSeverity() == Severity.ERROR) {
             if (problem.getCause() != null) {
-                problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getCause());
+                problemCache.add(problem);
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), 
+                                    null, problem.getMessageId(), problem.getCause());
             } else {
-                problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getMessageParams());
+                problemCache.add(problem);
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, 
+                                   problem.getMessageId(), problem.getMessageParams());
             }
         }
     }
     
+    public List<Problem> getProblems(){
+        return problemCache;
+    }
+    
     public Problem getLastLoggedProblem(){
-        return lastProblem;
+        return problemCache.get(problemCache.size() - 1);
+    }
+    
+    public boolean isMessageLogged(String messageId) {
+        for (Problem problem : problemCache){
+            if (problem.getMessageId().equals(messageId)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public Problem getProblem(String messageId) {
+        for (Problem problem : problemCache){
+            if (problem.getMessageId().equals(messageId)){
+                return problem;
+            }
+        }
+        
+        return null;
     }
 }

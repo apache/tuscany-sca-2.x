@@ -205,7 +205,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     serviceCallbackProperties.put(serviceCallbackName, props);
                 else {
                 	error("PropertyShouldSpecifySR", reader);
-                    throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");
+                    //throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");
                 }
             }
 
@@ -232,20 +232,21 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         
         try {
         	
-        	if (!impl.isUnresolved())
+        	if (impl == null || !impl.isUnresolved())
         		return;
-            
-            impl.setUnresolved(false);
+        	
+        	impl.setUnresolved(false);
             
             BundleReference bundleReference = new BundleReference(impl.getBundleSymbolicName(), impl.getBundleVersion());
             BundleReference resolvedBundle = resolver.resolveModel(BundleReference.class, bundleReference);
             Bundle bundle = (Bundle)resolvedBundle.getBundle();
-            if (bundle != null)
-                impl.setOSGiBundle(bundle);
-            else {
+            if (bundle != null) {
+                impl.setOSGiBundle(bundle);                
+            } else {
             	error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
-                throw new ContributionResolveException("Could not locate OSGi bundle " + 
-                        impl.getBundleSymbolicName());
+                //throw new ContributionResolveException("Could not locate OSGi bundle " + 
+                        //impl.getBundleSymbolicName());
+            	return;
             }
             
             String bundleName = resolvedBundle.getBundleRelativePath();
@@ -260,7 +261,8 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             componentType = resolver.resolveModel(ComponentType.class, componentType);
             if (componentType.isUnresolved()) {
             	error("MissingComponentTypeFile", impl, ctURI);
-                throw new ContributionResolveException("missing .componentType side file " + ctURI);
+                //throw new ContributionResolveException("missing .componentType side file " + ctURI);
+            	return;
             }
             
             List<Service> services = componentType.getServices();
@@ -306,10 +308,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                 impl.getProperties().add(property);
             }
             impl.setConstrainingType(componentType.getConstrainingType());
-           
             
-        } catch (Exception e) {
-            throw new ContributionResolveException(e);
+        } catch (InvalidInterfaceException e) {
+        	ContributionResolveException ce = new ContributionResolveException(e);
+        	error("ContributionResolveException", resolver, ce);
+            //throw ce;
         }
         
     }

@@ -99,9 +99,9 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
                         String uri = reader.getAttributeValue(null, URI);
                         if (uri == null) {
                         	error("AttributeURIMissing", reader);
-                            throw new ContributionReadException("Attribute 'uri' is missing");
-                        }
-                        resourceExport.setURI(uri);
+                            //throw new ContributionReadException("Attribute 'uri' is missing");
+                        } else
+                            resourceExport.setURI(uri);
                     } 
                     
                     break;
@@ -134,8 +134,9 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
     }
 
     public void resolve(ResourceExport resourceExport, ModelResolver resolver) throws ContributionResolveException {
-
-        // Initialize the export's model resolver
-        resourceExport.setModelResolver(new ResourceExportModelResolver(resourceExport, resolver));
+        
+        if (resourceExport.getURI() != null)
+            // Initialize the export's model resolver
+            resourceExport.setModelResolver(new ResourceExportModelResolver(resourceExport, resolver));
     }
 }

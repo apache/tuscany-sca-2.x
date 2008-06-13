@@ -92,11 +92,14 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
         } catch (Exception e) {
         	ContributionReadException ce = new ContributionReadException(e);
         	error("ContributionReadException", artifactURL, ce);
-            throw ce;
+            //throw ce;
+        	return null;
         }
     }
 
     public void resolve(WSDLDefinition model, ModelResolver resolver) throws ContributionResolveException {
+        if (model == null) return;
+    	
         Definition definition = model.getDefinition();
         if (definition != null) {
             for (Object imports : definition.getImports().values()) {
@@ -133,7 +136,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                             } catch (Exception e) {
                             	ContributionResolveException ce = new ContributionResolveException(e);
                             	error("ContributionResolveException", resolver, ce);
-                                throw ce;
+                                //throw ce;
                             }
                         } else {
                             if (location.startsWith("/")) {
@@ -154,7 +157,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                                 } catch (Exception e) {
                                 	ContributionResolveException ce = new ContributionResolveException(e);
                                 	error("ContributionResolveException", resolver, ce);
-                                    throw ce;
+                                    //throw ce;
                                 }
                             }
                         }

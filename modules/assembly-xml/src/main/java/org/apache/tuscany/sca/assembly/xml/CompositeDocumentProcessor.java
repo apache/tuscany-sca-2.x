@@ -89,7 +89,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             if (scaDefnSink != null ) {
                 fillDomainPolicySets(scaDefnSink);
             }
-
+            
+            Composite composite = null;
             
             byte[] transformedArtifactContent;
             try {
@@ -102,10 +103,14 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                     connection.setUseCaches(false);
                     scdlStream = connection.getInputStream();
                 }
+            } catch ( IOException e ) {
+            	ContributionReadException ce = new ContributionReadException(e);
+            	error("ContributionReadException", scdlStream, ce);
+            	throw ce;
             } catch ( Exception e ) {
             	ContributionReadException ce = new ContributionReadException(e);
             	error("ContributionReadException", scdlStream, ce);
-                throw ce;
+                //throw ce;
             }
             
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
@@ -113,7 +118,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             reader.nextTag();
             
             // Read the composite model
-            Composite composite = (Composite)extensionProcessor.read(reader);
+            composite = (Composite)extensionProcessor.read(reader);
             if (composite != null) {
                 composite.setURI(uri.toString());
             }
@@ -155,7 +160,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     }
     
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
-        extensionProcessor.resolve(composite, resolver);
+        if (composite != null)
+    	    extensionProcessor.resolve(composite, resolver);
     }
 
     public String getArtifactType() {

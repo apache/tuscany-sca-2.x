@@ -101,10 +101,9 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
                         	error("AttributePackageMissing", reader);
-                            throw new ContributionReadException("Attribute 'package' is missing");
-                        }
-                        
-                        javaExport.setPackage(packageName);
+                            //throw new ContributionReadException("Attribute 'package' is missing");
+                        } else                        
+                            javaExport.setPackage(packageName);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -137,7 +136,8 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
 
     public void resolve(JavaExport javaExport, ModelResolver resolver) throws ContributionResolveException {
         
-        // Initialize the export resolver
-        javaExport.setModelResolver(new JavaExportModelResolver(javaExport, resolver));
+        if (javaExport.getPackage() != null)
+            // Initialize the export resolver
+            javaExport.setModelResolver(new JavaExportModelResolver(javaExport, resolver));
     }
 }

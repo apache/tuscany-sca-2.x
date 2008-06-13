@@ -34,9 +34,14 @@ import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * Test the contribution metadata processor.
@@ -63,6 +68,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private Monitor monitor;
 
     @Override
     protected void setUp() throws Exception {
@@ -71,6 +77,13 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        if (monitorFactory != null) {
+        	monitor = monitorFactory.createMonitor();
+        	utilities.addUtility(monitorFactory);
+        }        
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
@@ -84,12 +97,16 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
 
     public void testReadInvalid() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        try {
+        /*try {
             staxProcessor.read(reader);
             fail("InvalidException should have been thrown");
         } catch (ContributionReadException e) {
             assertTrue(true);
-        }
+        }*/
+        staxProcessor.read(reader);
+        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
+        assertNotNull(problem);
+        assertEquals("AttributeCompositeMissing", problem.getMessageId());
     }    
 
     public void testWrite() throws Exception {

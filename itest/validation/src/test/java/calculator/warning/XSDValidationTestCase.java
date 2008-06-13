@@ -45,6 +45,7 @@ public class XSDValidationTestCase extends TestCase {
 
     private CalculatorService calculatorService;
     private SCANode2 node;
+    private Exception startUpException;
 
     @Override
     protected void setUp() throws Exception {
@@ -56,10 +57,8 @@ public class XSDValidationTestCase extends TestCase {
             node.start();
             calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
         } catch (Exception ex){
-            // do nothing
-            return;
-        }
-        Assert.fail();
+            startUpException = ex;
+        }        
     }
 
     @Override
@@ -71,16 +70,9 @@ public class XSDValidationTestCase extends TestCase {
 
 
     public void testCalculator() throws Exception {
-        /*
-        ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
-        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-
-        assertNotNull(problem);
-        assertEquals("SchemaError", problem.getMessageId());
-        */
+        
+        assertEquals("org.osoa.sca.ServiceRuntimeException: Unexpected <binding> element found. It should appear inside a <service> or <reference> element.", startUpException.getMessage());
+   
     }
  
 }

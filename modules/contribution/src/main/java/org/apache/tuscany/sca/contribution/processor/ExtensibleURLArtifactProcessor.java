@@ -116,7 +116,7 @@ public class ExtensibleURLArtifactProcessor
         } else {
             UnrecognizedElementException e = new UnrecognizedElementException(null);
             e.setResourceURI(artifactURI.toString());
-            error("UnrecognizedElementException", processors, "null", artifactURI.toString());
+            error("UnrecognizedElementException", processors, artifactURI.toString());
             throw e;
         }
     }

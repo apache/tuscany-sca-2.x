@@ -143,7 +143,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         } catch (XPathExpressionException e) {
         	ContributionReadException ce = new ContributionReadException(e);
         	error("ContributionReadException", policySet, ce);
-            throw ce;
+            //throw ce;
         }  
         
         readProvidedIntents(policySet, reader);
@@ -163,7 +163,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             readIntentMap(reader, policySet, mappedIntent);
                         } else {
                         	error("IntentNotSpecified", policySet, policySetName);
-                            throw new ContributionReadException("Intent Map provides for Intent not specified as provided by parent PolicySet - " + policySetName);
+                            //throw new ContributionReadException("Intent Map provides for Intent not specified as provided by parent PolicySet - " + policySetName);
                         }
                     } else if ( POLICY_SET_REFERENCE_QNAME.equals(name) )  {
                         PolicySet referredPolicySet = policyFactory.createPolicySet();
@@ -230,9 +230,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                     readIntentMap(reader, policySet, qualifiedIntent);
                                 } else {
                                 	error("IntentMapDoesNotMatch", providedIntent, providedIntent, qualifierName, policySet);
-                                    throw new ContributionReadException("Intent provided by IntentMap " + 
-                                                                    providedIntent + " does not match parent qualifier " + qualifierName +
-                                                                    " in policyset - " + policySet);
+                                    //throw new ContributionReadException("Intent provided by IntentMap " + 
+                                                                    //providedIntent + " does not match parent qualifier " + qualifierName +
+                                                                    //" in policyset - " + policySet);
                                 }
                             }/* else if ( WS_POLICY_QNAME.equals(name) )  {
                                 OMElement policyElement = loadElement(reader);
@@ -278,8 +278,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                         mappedPolicies.put(mappedIntent, policyList);
                                     } else {
                                     	error("UnableToMapPolicies", mappedPolicies, mappedIntent, policySet);
-                                        throw new ContributionReadException("Unable to map policies for default qualifier in IntentMap for - " +
-                                                                            mappedIntent + " in policy set - " + policySet);
+                                        //throw new ContributionReadException("Unable to map policies for default qualifier in IntentMap for - " +
+                                                                            //mappedIntent + " in policy set - " + policySet);
                                     }
                                     defaultQualifier = null;
                                 }
@@ -375,9 +375,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         providedIntents.add(resolvedProvidedIntent);
                     } else {
                     	error("ProvidedIntentNotFound", policySet, providedIntent, policySet);
-                        throw new ContributionResolveException("Provided Intent - " + providedIntent
-                            + " not found for PolicySet "
-                            + policySet);
+                        //throw new ContributionResolveException("Provided Intent - " + providedIntent
+                                                           //+ " not found for PolicySet " + policySet);
 
                     }
                 } else {
@@ -400,10 +399,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                     mappedPolicies.put(resolvedMappedIntent, entry.getValue());
                 } else {
                 	error("MappedIntentNotFound", policySet, mappedIntent, policySet);
-                    throw new ContributionResolveException("Mapped Intent - " + mappedIntent
-                        + " not found for PolicySet "
-                        + policySet);
-    
+                    //throw new ContributionResolveException("Mapped Intent - " + mappedIntent
+                                                   //+ " not found for PolicySet " + policySet);    
                 }
             } else {
                 mappedPolicies.put(mappedIntent, entry.getValue());
@@ -424,9 +421,8 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                     referredPolicySets.add(resolvedReferredPolicySet);
                 } else {
                 	error("ReferredPolicySetNotFound", policySet, referredPolicySet, policySet);
-                    throw new ContributionResolveException("Referred PolicySet - " + referredPolicySet
-                        + "not found for PolicySet - "
-                        + policySet);
+                    //throw new ContributionResolveException("Referred PolicySet - " + referredPolicySet
+                                                             //+ "not found for PolicySet - " + policySet);
                 }
             } else {
                 referredPolicySets.add(referredPolicySet);

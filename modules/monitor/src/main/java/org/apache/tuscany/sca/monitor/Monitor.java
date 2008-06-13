@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.monitor;
 
+import java.util.List;
+
 /**
  * A monitor for the watching for validation problems
  *
@@ -31,5 +33,12 @@ public interface Monitor {
      * @param problem
      */
     void problem(Problem problem);
+    
+    /** 
+     * Returns a list of reported problems. 
+     * 
+     * @return the list of problems. The list may be empty
+     */
+    List<Problem> getProblems();
     
 }

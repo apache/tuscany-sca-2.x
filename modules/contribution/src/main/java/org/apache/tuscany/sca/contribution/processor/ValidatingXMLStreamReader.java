@@ -73,7 +73,9 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         try {
             handler.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
         } catch (SAXException e) {
-            throw new XMLStreamException(e);
+        	XMLStreamException xse = new XMLStreamException(e);
+        	error("XMLStreamException", handler, xse);
+            throw xse;
         }
         
         // These validation errors are just warnings for us as we want to support
@@ -118,8 +120,10 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
      * @param model
      */
     private void warning(String message, Object model, Object... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-        monitor.problem(problem);
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+    	}
     }
     
     /**
@@ -130,8 +134,10 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
      * @param model
      */
     private void error(String message, Object model, Object... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-        monitor.problem(problem);
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     @Override
@@ -169,7 +175,9 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
                     break;
             }
         } catch (SAXException e) {
-            throw new XMLStreamException(e.getMessage(), e);
+        	XMLStreamException xse = new XMLStreamException(e.getMessage(), e);
+        	error("XMLStreamException", handler, xse);
+            throw xse;
         }
         return event;
     }
@@ -210,7 +218,9 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
                         return event;
                 }
             } catch (SAXException e) {
-                throw new XMLStreamException(e);
+            	XMLStreamException xse = new XMLStreamException(e);
+            	error("XMLStreamException", handler, xse);
+                throw xse;
             }
             super.next();
         }

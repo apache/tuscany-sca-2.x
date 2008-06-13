@@ -121,15 +121,19 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     public SpringImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
         // Create the Spring implementation
-        SpringImplementation springImplementation = new SpringImplementation();
+        SpringImplementation springImplementation = null;
 
         // Read the location attribute for the spring implementation
         String springLocation = reader.getAttributeValue(null, LOCATION);
-        if (springLocation == null) {
+        if (springLocation != null) {
+        	springImplementation = new SpringImplementation();
+        	springImplementation.setLocation(springLocation);
+        	springImplementation.setUnresolved(true);
+            processComponentType(springImplementation);
+        } else {
         	error("LocationAttributeMissing", reader);
-            throw new ContributionReadException(MSG_LOCATION_MISSING);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
-        springImplementation.setLocation(springLocation);
 
         // Skip to end element
         while (reader.hasNext()) {
@@ -137,8 +141,6 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
                 break;
             }
         } // end while
-
-        processComponentType(springImplementation);
 
         return springImplementation;
     } // end read
@@ -182,6 +184,9 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      */
     public void resolve(SpringImplementation springImplementation, ModelResolver resolver)
         throws ContributionResolveException {
+    	
+    	if (springImplementation == null)
+    		return;
 
         /* Load the Spring component type by reading the Spring application context */
         SpringXMLComponentTypeLoader springLoader =
@@ -201,11 +206,12 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
             ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
             if (componentType.isUnresolved()) {
             	error("UnableToResolveComponentType", resolver);
-                throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");
-            }
-            springImplementation.setComponentType(componentType);
-
-            springImplementation.setUnresolved(false);
+                //throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");             
+            } else {
+                springImplementation.setComponentType(componentType);
+                springImplementation.setUnresolved(false);
+           }            
+   
         } // end if
 
     } // end method resolve

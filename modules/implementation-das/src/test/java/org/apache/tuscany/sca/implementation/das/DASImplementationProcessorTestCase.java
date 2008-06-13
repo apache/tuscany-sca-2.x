@@ -37,6 +37,11 @@ import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -67,15 +72,28 @@ public class DASImplementationProcessorTestCase extends TestCase {
             + "      </tuscany:connectionInfo>"
             + "   </tuscany:implementation.das>"
             + "</component>";
+    
+    private static final String INVALID_XML =
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
+            + " <component name=\"DasComponent\">"
+            + "   <tuscany:implementation.das>"
+            + "      <tuscany:connectionInfo datasource=\"dataSource\"/>"
+            + "   </tuscany:implementation.das>"
+            + "</component>";
 
     private XMLInputFactory xmlFactory;
     private ModelFactoryExtensionPoint modelFactories;
+    private Monitor monitor;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         xmlFactory = XMLInputFactory.newInstance();
-        
+        // Create a monitor
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        if (monitorFactory != null) 
+        	this.monitor = monitorFactory.createMonitor();
         modelFactories = new DefaultModelFactoryExtensionPoint();
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         modelFactories.addFactory(assemblyFactory);
@@ -86,7 +104,7 @@ public class DASImplementationProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingDatasource() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories, null);
+        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories, monitor);
         
         while(true) {
             int event = reader.next();
@@ -112,7 +130,7 @@ public class DASImplementationProcessorTestCase extends TestCase {
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories, null);
+        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories, monitor);
         
         while(true) {
             int event = reader.next();
@@ -136,5 +154,26 @@ public class DASImplementationProcessorTestCase extends TestCase {
         assertEquals("driverClass",connProperties.getDriverClass());
         assertEquals("databaseURL",connProperties.getDatabaseURL());
         assertEquals(1,connProperties.getLoginTimeout().intValue());
-    }    
+    }
+    
+    /**
+     * Test loading an INVALID implementation.das element from a contribution metadata stream
+     */
+    public void testLoadInvalid() throws Exception {
+        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
+        
+        DASImplementationProcessor dataProcessor = new DASImplementationProcessor(modelFactories, monitor);
+        
+        while(true) {
+            int event = reader.next();
+            if(event == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_DAS.equals(reader.getName())) {
+                break;
+            }
+        }
+
+        dataProcessor.read(reader);        
+        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();         
+        assertNotNull(problem);
+        assertEquals("DataAccessTypeAttributeMissing", problem.getMessageId());
+    }
 }

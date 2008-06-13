@@ -23,9 +23,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
@@ -69,8 +66,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
-    private static final Logger logger = Logger.getLogger(WebServiceBindingProcessor.class.getName());    
-
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
@@ -99,7 +94,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     private void warning(String message, Object model, Object... messageParameters) {
        if (monitor != null) {
            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-                                             monitor.problem(problem);
+           monitor.problem(problem);
        }
     }
          
@@ -113,7 +108,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-                                              monitor.problem(problem);
+            monitor.problem(problem);
         }        
     }
 
@@ -150,7 +145,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
             int index = wsdlElement.indexOf('#');
             if (index == -1) {
             	error("InvalidWsdlElementAttr", reader, wsdlElement);
-                throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                //throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+            	return wsBinding;
             }
             String namespace = wsdlElement.substring(0, index);
             wsBinding.setNamespace(namespace);
@@ -168,11 +164,11 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 int s = localName.indexOf('/');
                 if (s == -1) {
                 	error("InvalidWsdlElementAttr", reader, wsdlElement);
-                    throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                    //throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                } else {
+                    wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
+                    wsBinding.setPortName(localName.substring(s + 1));
                 }
-                wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
-                wsBinding.setPortName(localName.substring(s + 1));
-
             } else if (localName.startsWith("wsdl.endpoint")) {
 
                 // Read a wsdl.endpoint
@@ -180,11 +176,11 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 int s = localName.indexOf('/');
                 if (s == -1) {
                 	error("InvalidWsdlElementAttr", reader, wsdlElement);
-                    throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                    //throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                } else {
+                    wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
+                    wsBinding.setEndpointName(localName.substring(s + 1));
                 }
-                wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
-                wsBinding.setEndpointName(localName.substring(s + 1));
-
             } else if (localName.startsWith("wsdl.binding")) {
 
                 // Read a wsdl.binding
@@ -195,7 +191,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
 
             } else {
             	error("InvalidWsdlElementAttr", reader, wsdlElement);
-                throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                //throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
             }
         }
 
@@ -308,7 +304,11 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     }
 
     public void resolve(WebServiceBinding model, ModelResolver resolver) throws ContributionResolveException {
-        WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+        
+    	if (model == null || !model.isUnresolved())
+    		return;
+    		
+    	WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
         WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);

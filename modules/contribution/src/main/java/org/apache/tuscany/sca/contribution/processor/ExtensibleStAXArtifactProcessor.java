@@ -93,6 +93,20 @@ public class ExtensibleStAXArtifactProcessor
 	        monitor.problem(problem);
     	 }
      }
+     
+     /**
+      * Report a error.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Object... messageParameters) {
+     	if (monitor != null) {
+ 	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+ 	        monitor.problem(problem);
+     	}
+     }
     
     /**
      * Report a exception.
@@ -177,14 +191,15 @@ public class ExtensibleStAXArtifactProcessor
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
-                        UnrecognizedElementException e = new UnrecognizedElementException(name);
+                    	error("UnrecognizedElementException", reader, name);
+                        UnrecognizedElementException e = new UnrecognizedElementException(name);                        
                         throw e;
                     }
                 } catch (ContributionReadException e) {
                     Location location = reader.getLocation();
                     e.setLine(location.getLineNumber());
                     e.setColumn(location.getColumnNumber());
-                    //error("ContributionReadException", reader, e);
+                    error("ContributionReadException", reader, e);
                     throw e;
                 } finally {
                     try {
