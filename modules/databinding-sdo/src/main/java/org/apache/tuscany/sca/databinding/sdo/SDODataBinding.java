@@ -31,13 +31,13 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Type;
 import commonj.sdo.helper.CopyHelper;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.impl.HelperProvider;
 
 /**
  * SDO Databinding
@@ -61,33 +61,48 @@ public class SDODataBinding extends BaseDataBinding {
     }
 
     @Override
-    public boolean introspect(DataType dataType, Operation operation) {
-        Class javaType = dataType.getPhysical();
+    public boolean introspect(DataType dataType, final Operation operation) {
+        final Class javaType = dataType.getPhysical();
         // Allow privileged access to read system properties. Requires PropertyPermission
         // java.specification.version read in security policy.
-        HelperContext context = AccessController.doPrivileged(new PrivilegedAction<HelperContext>() {
+        final HelperContext context = AccessController.doPrivileged(new PrivilegedAction<HelperContext>() {
             public HelperContext run() {
-                return HelperProvider.getDefaultContext();
+                return SDOContextHelper.getHelperContext(operation);
             }
         });
-        // FIXME: Need a better to test dynamic SDO
-        if (DataObject.class.isAssignableFrom(javaType)) {
-            // Dynamic SDO
-            dataType.setDataBinding(getName());
-            if (dataType.getLogical() == null) {
-                dataType.setLogical(XMLType.UNKNOWN);
-            }
-            return true;
-        }
-        // FIXME: We need to access HelperContext
+
         Type type = context.getTypeHelper().getType(javaType);
         if (type == null) {
+            // FIXME: Need a better to test dynamic SDO
+            if (DataObject.class.isAssignableFrom(javaType)) {
+                // Dynamic SDO
+                dataType.setDataBinding(getName());
+                if (dataType.getLogical() == null) {
+                    dataType.setLogical(XMLType.UNKNOWN);
+                }
+                return true;
+            }
             return false;
-        }
+        } 
         if (type.isDataType()) {
             // FIXME: Ignore simple types?
             return false;
         }
+
+        // Found a SDO type, replace the default context with a private one
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                if (context == SDOContextHelper.getDefaultHelperContext()) {
+                    HelperContext newContext = SDOUtil.createHelperContext();
+                    SDOContextHelper.register(newContext, javaType);
+                    if (operation != null) {
+                        operation.getInputType().setMetaData(HelperContext.class, newContext);
+                    }
+                }
+                return null;
+            }
+        });
+
         String namespace = type.getURI();
         String name = context.getXSDHelper().getLocalName(type);
         QName xmlType = new QName(namespace, name);
@@ -98,6 +113,7 @@ public class SDODataBinding extends BaseDataBinding {
             elementName = ((XMLType)logical).getElementName();
         }
         dataType.setLogical(new XMLType(elementName, xmlType));
+
         return true;
     }
 
@@ -113,13 +129,13 @@ public class SDODataBinding extends BaseDataBinding {
 
     @Override
     public XMLTypeHelper getXMLTypeHelper() {
-        return new SDOTypeHelper();
-        // return xmlTypeHelper;
+        // return new SDOTypeHelper();
+        return xmlTypeHelper;
     }
 
     @Override
     public Object copy(Object arg, DataType dataType, Operation operation) {
-        HelperContext context = HelperProvider.getDefaultContext();
+        HelperContext context = SDOContextHelper.getHelperContext(operation);
         CopyHelper copyHelper = context.getCopyHelper();
         if (arg instanceof XMLDocument) {
             XMLDocument document = (XMLDocument)arg;

@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamSource;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache.LRUCache;
+import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.junit.Test;
 
 import com.example.ipo.jaxb.Address;
@@ -67,15 +67,15 @@ public class JAXBContextCacheTestCase {
 
     @Test
     public void testLRUCache() {
-        JAXBContextCache.LRUCache<String, String> cache = new LRUCache<String, String>(3);
+        LRUCache<String, String> cache = new LRUCache<String, String>(3);
         cache.put("1", "A");
-        Assert.assertEquals(1, cache.getCache().size());
+        Assert.assertEquals(1, cache.size());
         cache.put("2", "B");
-        Assert.assertEquals(2, cache.getCache().size());
+        Assert.assertEquals(2, cache.size());
         cache.put("3", "C");
-        Assert.assertEquals(3, cache.getCache().size());
+        Assert.assertEquals(3, cache.size());
         cache.put("4", "D");
-        Assert.assertEquals(3, cache.getCache().size());
+        Assert.assertEquals(3, cache.size());
         String data = cache.get("1");
         Assert.assertNull(data);
         data = cache.get("2");

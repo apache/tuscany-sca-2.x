@@ -28,11 +28,10 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.impl.GroupDataBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -44,14 +43,15 @@ import org.xml.sax.InputSource;
 public class XMLGroupDataBinding extends GroupDataBinding {
 
     public XMLGroupDataBinding() {
-        super(new Class[] {InputStream.class, OutputStream.class, Reader.class, Writer.class, Source.class,
-                           Result.class, InputSource.class, ContentHandler.class, XMLStreamReader.class,
+        super(new Class[] {InputStream.class, OutputStream.class, Reader.class, Writer.class, 
+                           // Source.class, Result.class, 
+                           InputSource.class, ContentHandler.class, XMLStreamReader.class,
                            XMLStreamWriter.class, XMLEventReader.class, XMLEventWriter.class});
     }
 
     @Override
     protected Object getLogical(Class<?> markerType, Operation operation) {
-        return null;
+        return XMLType.UNKNOWN;
     }
 
 }

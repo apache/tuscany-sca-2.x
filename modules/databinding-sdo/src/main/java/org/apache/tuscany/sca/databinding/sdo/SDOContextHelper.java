@@ -22,18 +22,20 @@ package org.apache.tuscany.sca.databinding.sdo;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.util.DataTypeHelper;
+import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
+import commonj.sdo.DataObject;
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.TypeHelper;
@@ -45,6 +47,8 @@ import commonj.sdo.impl.HelperProvider;
  * @version $Rev$ $Date$
  */
 public final class SDOContextHelper {
+    private static final LRUCache<Object, HelperContext> cache = new LRUCache<Object, HelperContext>(1024);
+
     private SDOContextHelper() {
     }
 
@@ -53,18 +57,21 @@ public final class SDOContextHelper {
             return getDefaultHelperContext();
         }
 
-        HelperContext helperContext = (HelperContext)context.getMetadata().get(HelperContext.class.getName());
-        if (helperContext != null) {
-            return helperContext;
-        }
+        HelperContext helperContext = null;
         Operation op = source ? context.getSourceOperation() : context.getTargetOperation();
         if (op == null) {
+            DataType<?> dt = source ? context.getSourceDataType() : context.getTargetDataType();
+
+            helperContext = dt.getMetaData(HelperContext.class);
+            if (helperContext != null) {
+                return helperContext;
+            }
             helperContext = SDOUtil.createHelperContext();
-            boolean found = register(helperContext, context.getSourceDataType());
-            found = register(helperContext, context.getTargetDataType()) || found;
+            boolean found = register(helperContext, dt);
             if (!found) {
                 helperContext = getDefaultHelperContext();
             }
+            dt.setMetaData(HelperContext.class, helperContext);
             return helperContext;
         } else {
             return getHelperContext(op);
@@ -77,27 +84,29 @@ public final class SDOContextHelper {
             return getDefaultHelperContext();
         }
 
-        HelperContext helperContext = SDOUtil.createHelperContext();
+        HelperContext helperContext = op.getInputType().getMetaData(HelperContext.class);
 
+        if (helperContext != null) {
+            return helperContext;
+        }
+
+        // Use the default HelperContext until a type is registered later on
+        helperContext = getDefaultHelperContext();
+
+        /*
+        List<DataType> dataTypes = DataTypeHelper.getDataTypes(op, false);
         boolean found = false;
-        if (op != null) {
-            found = register(helperContext, op.getInputType()) || found;
-            found = register(helperContext, op.getOutputType()) || found;
-            WrapperInfo wrapper = op.getWrapper();
-            if (wrapper != null) {
-                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
-                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
-            }
-            for (DataType<DataType> ft : op.getFaultTypes()) {
-                found = register(helperContext, ft.getLogical()) || found;
+        for (DataType d : dataTypes) {
+            if (register(helperContext, d)) {
+                found = true;
             }
         }
         if (!found) {
             helperContext = getDefaultHelperContext();
         }
-
+        */
+        op.getInputType().setMetaData(HelperContext.class, helperContext);
         return helperContext;
-
     }
 
     /**
@@ -109,25 +118,10 @@ public final class SDOContextHelper {
         if (dataType == null) {
             return false;
         }
-        String db = dataType.getDataBinding();
+        Set<Class<?>> classes = DataTypeHelper.findClasses(dataType);
         boolean found = false;
-        if (DataBinding.IDL_INPUT.equals(db) || DataBinding.IDL_OUTPUT.equals(db)
-            || DataBinding.IDL_FAULT.equals(db)
-            || SDODataBinding.NAME.equals(db)) {
-            Class javaType = dataType.getPhysical();
-            found = register(helperContext, javaType);
-            if (dataType.getLogical() instanceof DataType) {
-                DataType logical = (DataType)dataType.getLogical();
-                found = register(helperContext, logical.getPhysical()) || found;
-            }
-            if (dataType.getLogical() instanceof List) {
-                List types = (List)dataType.getLogical();
-                for (Object type : types) {
-                    if (type instanceof DataType) {
-                        found = register(helperContext, ((DataType)type)) || found;
-                    }
-                }
-            }
+        for (Class<?> cls : classes) {
+            found = register(helperContext, dataType.getPhysical()) || found;
         }
         return found;
     }
@@ -138,16 +132,16 @@ public final class SDOContextHelper {
      * @param javaType
      */
 
-    private static boolean register(HelperContext helperContext, Class javaType) {
-        if (javaType == null) {
+    public static boolean register(HelperContext helperContext, Class javaType) {
+        if (javaType == null || DataObject.class == javaType) {
             return false;
         }
         try {
             Type type = helperContext.getTypeHelper().getType(javaType);
             if (type != null && (!type.isDataType())) {
-                Method method = type.getClass().getMethod("getEPackage", new Class[] {});
+                Method method = type.getClass().getMethod("getEPackage");
                 Object factory = method.invoke(type, new Object[] {});
-                method = factory.getClass().getMethod("register", new Class[] {HelperContext.class});
+                method = factory.getClass().getMethod("register", HelperContext.class);
                 method.invoke(factory, new Object[] {helperContext});
                 return true;
             }

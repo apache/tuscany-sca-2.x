@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
 
@@ -44,7 +46,7 @@ public class DataTypeImpl<L> implements DataType<L> {
     private Class<?> physical;
     private Type genericType;
     private L logical;
-    private Object metaData;
+    private Map<Class<?>, Object> metaDataMap;
 
     /**
      * Construct a data type specifying the physical and logical types.
@@ -204,11 +206,14 @@ public class DataTypeImpl<L> implements DataType<L> {
         return true;
     }
 
-    public Object getMetaData() {
-        return metaData;
+    public <T> T getMetaData(Class<T> type) {
+        return metaDataMap == null ? null : type.cast(metaDataMap.get(type));
     }
 
-    public void setMetaData(Object metaData) {
-        this.metaData = metaData;
+    public <T> void setMetaData(Class<T> type, T metaData) {
+        if (metaDataMap == null) {
+            metaDataMap = new ConcurrentHashMap<Class<?>, Object>();
+        }
+        metaDataMap.put(type, metaData);
     }
 }
