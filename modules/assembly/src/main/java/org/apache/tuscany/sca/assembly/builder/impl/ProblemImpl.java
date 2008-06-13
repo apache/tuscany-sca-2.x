@@ -113,7 +113,15 @@ public class ProblemImpl implements Problem {
         Logger logger = Logger.getLogger(sourceClassName, bundleName);
         
         LogRecord record = new LogRecord(Level.INFO, messageId);
-        record.setParameters(messageParams);
+        
+        if (cause == null){
+            record.setParameters(messageParams);
+            
+        } else {
+            Object[] params = new String[1];
+            params[0] = cause.toString();
+            record.setParameters(params);
+        }
         record.setResourceBundle(logger.getResourceBundle());
         record.setSourceClassName(sourceClassName);
  

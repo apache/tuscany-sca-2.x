@@ -23,27 +23,36 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Implementation of a CompositeBuilder.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeIncludeBuilderImpl implements CompositeBuilder {
-    
-    public static final Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
-	
-    public CompositeIncludeBuilderImpl(Monitor monitor) {
-    }
+public class CompositeIncludeBuilderImpl implements CompositeBuilder {   
 
+    private Monitor monitor;
+        
+    public CompositeIncludeBuilderImpl(Monitor monitor) {
+        this.monitor = monitor;
+    }
+      
     public void build(Composite composite) throws CompositeBuilderException {
         fuseIncludes(composite);
+    }
+
+    private void warning(String message, Object model, String... messageParameters) {
+        if (monitor != null){
+            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     /**
@@ -55,7 +64,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     private void collectIncludes(Composite composite, List<Composite> includes, Set<Composite> visited) {
         for (Composite include : composite.getIncludes()) {
             if (visited.contains(include)) {
-                logger.warning("Composite " + include.getName() + " has already been included.");
+                warning("CompositeAlreadyIncluded", composite, include.getName().toString());
                 continue;
             }
                         

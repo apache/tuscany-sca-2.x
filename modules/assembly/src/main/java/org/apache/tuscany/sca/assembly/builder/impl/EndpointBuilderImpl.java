@@ -46,7 +46,15 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
             Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
-    }    
+    }
+    
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null){
+            Problem problem = null;
+            problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }
+    }
 
     /**
      * Resolve an endpoint against the provided target information and the 
@@ -82,7 +90,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
             PolicyConfigurationUtil.determineApplicableBindingPolicySets(endpoint.getSourceComponentReference(), 
                                                                          endpoint.getTargetComponentService());
         } catch ( Exception e ) {
-            warning("Policy related exception: " + e, e);
+            error("PolicyRelatedException", endpoint, e);
         }    
         
 

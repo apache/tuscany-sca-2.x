@@ -64,7 +64,7 @@ public class DefaultLoggingMonitorImpl implements Monitor {
             if (problem.getCause() != null) {
                 problemCache.add(problem);
                 problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), 
-                                    null, problem.getMessageId(), problem.getCause());
+                                    null, problem.getMessageId(), problem.getCause().toString());
             } else {
                 problemCache.add(problem);
                 problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, 
