@@ -546,7 +546,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             String promote;
             if (promotedService != null) {
                 if (promotedService.getName() != null) {
-                    promote = promotedComponent.getName() + '/' + promotedService.getService();
+                    promote = promotedComponent.getName() + '/' + promotedService.getName();
                 } else {
                     promote = promotedComponent.getName();
                 }
