@@ -170,8 +170,10 @@ public class ContributionServiceImpl implements ContributionService {
      * @param model
      */
     private void error(String message, Object model, Object... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-        monitor.problem(problem);
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)

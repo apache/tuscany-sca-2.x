@@ -20,7 +20,7 @@
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
-    <policySet name="tuscany:ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation">
+    <policySet name="tuscany:ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="sca:implementation.java">
         <intentMap provides="managedTransaction" default="global">
             <qualifier name="global">
                 <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_GLOBAL" />
@@ -36,19 +36,19 @@
         <tuscany:transactionPolicy action="REQUIRE_NONE" />
     </policySet>
 
-    <policySet name="tuscany:PropagatesTransactionPolicySet" provides="propagatesTransaction" appliesTo="binding">
+    <policySet name="tuscany:PropagatesTransactionPolicySet" provides="propagatesTransaction" appliesTo="sca:component">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>
 
-    <policySet name="tuscany:SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="binding">
+    <policySet name="tuscany:SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="sca:binding.sca">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>
 
-    <policySet name="tuscany:TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="binding">
+    <policySet name="tuscany:TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="sca:binding.sca">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>
 
-    <policySet name="tuscany:ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="binding">
+    <policySet name="tuscany:ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="sca:binding.sca">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>
 

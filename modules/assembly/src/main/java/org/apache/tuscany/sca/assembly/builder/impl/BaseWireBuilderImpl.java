@@ -134,7 +134,7 @@ class BaseWireBuilderImpl {
                         warning("ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
                     }
                 } else {
-                    warning("Too many targets on reference: " + componentReference.getName(), composite);
+                    warning("TooManyReferenceTargets", composite, componentReference.getName());
                 }
             }
         }
@@ -202,8 +202,23 @@ class BaseWireBuilderImpl {
      */
     private void warning(String message, Object model, String... messageParameters) {
         if (monitor != null) {
-    	        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-             monitor.problem(problem);
+            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+  
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem = null;
+            problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
         }
     }
 
@@ -295,7 +310,7 @@ class BaseWireBuilderImpl {
                     	// Check the compositeServiceInterfaceContract and promotedServiceInterfaceContract
                     	boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract, promotedServiceInterfaceContract);
                     	if(!isCompatible){
-                    	    warning("Interface of composite service "+promotedServiceName +" must be subset of the interface declared by promoted component service.", compositeService);
+                    	    warning("ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
                     	}
                     }
     
@@ -358,7 +373,7 @@ class BaseWireBuilderImpl {
                         	// Check the compositeInterfaceContract and componentInterfaceContract
                         	boolean isCompatible = interfaceContractMapper.isCompatible(compositeReferenceInterfaceContract, componentReferenceInterfaceContract);
                         	if (!isCompatible) {
-                        	    warning("Interface of composite reference "+componentReferenceName +" must be compatible with the interface declared by promoted component reference.", compositeReference);
+                        	    warning("ReferenceInterfaceNotSubSet", compositeReference, componentReferenceName);
                         	}
                         }
                     } else {
@@ -414,13 +429,19 @@ class BaseWireBuilderImpl {
             
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
                 if (endpoints.size() == 0) {
-                    warning("No target services found for the component reference to be autowired: " + componentReference
-                                .getName(),
-                            componentReference);
+                    warning("NoComponentReferenceTarget", componentReference, componentReference.getName());
                 }
             }
 
         } else if (!componentReference.getTargets().isEmpty()) {
+        	
+               // Check if the component reference does not mix the use of endpoints specified via 
+               // binding elements with target endpoints specified via the target attribute
+               for (Binding binding : componentReference.getBindings()) {
+        	    if (binding.getURI() != null) {
+        	        warning("ReferenceEndPointMixWithTarget", composite, componentReference.getName());
+        	    }
+        	}
 
             // Resolve targets specified on the component reference
             for (ComponentService componentService : componentReference.getTargets()) {
@@ -456,7 +477,8 @@ class BaseWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        warning("ReferenceIncompatibleInterface", composite, composite.getName().toString(), componentReference.getName(), componentService.getName());
+                        warning("ReferenceIncompatibleInterface", composite, composite.getName().toString(), 
+                        		                    componentReference.getName(), componentService.getName());
                     }
                 } else {
                     // add all the reference bindings into the target so that they
@@ -472,7 +494,8 @@ class BaseWireBuilderImpl {
                     
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
-                    warning("ComponentReferenceTargetNotFound", composite, composite.getName().toString(), componentService.getName());
+                    warning("ComponentReferenceTargetNotFound", composite, 
+                    		composite.getName().toString(), componentService.getName());
                 }
             }
         } else if (componentReference.getReference() != null) {
@@ -513,11 +536,8 @@ class BaseWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        warning("Incompatible interfaces on component reference and target: " + componentReference
-                                    .getName()
-                                    + " : "
-                                    + componentService.getName(),
-                                composite);
+                        warning("ComponentIncompatibleInterface", composite, 
+                        		componentReference.getName(), componentService.getName());
                     }
                 } else {
                     // add all the reference bindings into the target so that they
@@ -534,7 +554,8 @@ class BaseWireBuilderImpl {
                     endpoint.getCandidateBindings().addAll(componentReference.getBindings());
                     endpoints.add(endpoint);                    
                     
-                    warning("Component reference target from component type not found, it might be a remote service: " + componentService.getName(), composite);
+                    warning("ComponentReferenceTargetNotFound", composite, 
+                    		         composite.getName().toString(), componentService.getName());
                 }
             }
         } 
@@ -861,7 +882,7 @@ class BaseWireBuilderImpl {
                 if (resolvedReference != null) {
                     wire.setSource(resolvedReference);
                 } else {
-                    warning("Wire source not found: " + source.getName(), composite);
+                    warning("WireSourceNotFound", composite, source.getName());
                 }
             } else {
                 resolvedReference = wire.getSource();
@@ -874,7 +895,7 @@ class BaseWireBuilderImpl {
                 if (resolvedService != null) {
                     wire.setTarget(target);
                 } else {
-                    warning("Wire target not found: " + source.getName(), composite);
+                    warning("WireTargetNotFound", composite, source.getName());
                 }
             } else {
                 resolvedService = wire.getTarget();
@@ -892,9 +913,7 @@ class BaseWireBuilderImpl {
                     //resolvedReference.getTargets().add(resolvedService);
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
-                    warning("Incompatible interfaces on wire source and target: " + source.getName()
-                        + " : "
-                        + target.getName(), composite);
+                    warning("WireIncompatibleInterface", composite, source.getName(), target.getName());
                 }
             }
         }
@@ -1097,8 +1116,7 @@ class BaseWireBuilderImpl {
         
         if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
             if (promotedReference.getBindings().size() > 1) {
-                warning("Component reference " + promotedReference.getName() + " has more than one wires",
-                        promotedReference);
+                warning("ComponentReferenceMoreWire", promotedReference, promotedReference.getName());                
             }
         }
         Set<Binding> callbackBindings = new HashSet<Binding>();
@@ -1152,7 +1170,7 @@ class BaseWireBuilderImpl {
             try {
                 PolicyConfigurationUtil.computeImplementationIntentsAndPolicySets(implemenation, component);
             } catch ( Exception e ) {
-                warning("Policy related exception: " + e, e);
+                error("PolicyRelatedException", implemenation, e);
                 //throw new RuntimeException(e);
             }
 
@@ -1192,7 +1210,7 @@ class BaseWireBuilderImpl {
                     PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentService, null);
     
                 } catch ( Exception e ) {
-                    warning("Policy related exception: " + e, e);
+                    error("PolicyRelatedException", componentService, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -1223,7 +1241,7 @@ class BaseWireBuilderImpl {
                                                false);
                     }
                 } catch ( Exception e ) {
-                    warning("Policy related exception: " + e, e);
+                    error("PolicyRelatedException", componentReference, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -1243,7 +1261,7 @@ class BaseWireBuilderImpl {
                 PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(service);
                 PolicyConfigurationUtil.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
-                warning("Policy related exception: " + e, e);
+                error("PolicyRelatedException", service, e);
                 //throw new RuntimeException(e);
             }
                 
@@ -1268,7 +1286,7 @@ class BaseWireBuilderImpl {
                 PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(reference);
                 PolicyConfigurationUtil.determineApplicableBindingPolicySets(reference, null);
             } catch ( Exception e ) {
-                warning("Policy related exception: " + e, e);
+                error("PolicyRelatedException", reference, e);
                 //throw new RuntimeException(e);
             }
         }

@@ -298,10 +298,24 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param model
      */
     private void warning(String message, Object model, String... messageParameters) {
-    	if (monitor != null) {
-          Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-          monitor.problem(problem);
-    	}
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, String... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     /**
@@ -392,9 +406,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    warning("No type specified on component property: " + component.getName()
-                        + "/"
-                        + componentProperty.getName(), component);
+                    warning("NoTypeForComponentProperty", component, component.getName(), componentProperty.getName());
                 }
             }
         }
@@ -553,10 +565,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     if (interfaceContract != null && !componentService.getInterfaceContract().equals(interfaceContract)) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning("Component service interface incompatible with service interface: " + component
-                                .getName()
-                                + "/"
-                                + componentService.getName(), component);
+                            warning("ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
                         }
                     }
                 } else {
@@ -640,9 +649,7 @@ public abstract class BaseConfigurationBuilderImpl {
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                    warning("Duplicate service name: " + component.getName()
-                        + "/"
-                        + service.getName(), component);
+                    warning("DuplicateImplementationServiceName", component, component.getName(), service.getName());
                 } else {
                     services.put(service.getName(), service);
                 }
@@ -1261,13 +1268,7 @@ public abstract class BaseConfigurationBuilderImpl {
             
             binding.setURI(constructBindingURI(baseURI, componentURI, bindingURI, includeBindingName, bindingName));
         } catch (URISyntaxException ex) {
-            warning("URLSyntaxException when creating binding URI at component " +
-                                                componentURIString +
-                                                " service " + 
-                                                service.getName() +
-                                                " binding " + 
-                                                binding.getName(),
-                                                ex);
+            error("URLSyntaxException", binding, componentURIString, service.getName(), binding.getName());
         }      
     }
     
