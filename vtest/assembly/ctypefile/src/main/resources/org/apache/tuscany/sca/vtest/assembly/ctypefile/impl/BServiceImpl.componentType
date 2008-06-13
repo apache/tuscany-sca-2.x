@@ -22,7 +22,7 @@
      <interface.java interface="org.apache.tuscany.sca.vtest.assembly.ctypefile.BService"/> 
   </service>
    
-  <property name="someProperty" type="xsd:string"></property>
+  <property name="someProperty" type="xsd:string">SomePropertyValue</property>
   
 </componentType>              
        

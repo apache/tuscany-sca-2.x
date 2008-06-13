@@ -30,7 +30,7 @@
 
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.assembly.ctypefile.impl.BServiceImpl"/>
-        <property name="someProperty">SomePropertyValue</property>
+        <property name="someProperty"></property>
     </component>
     
 </composite>
