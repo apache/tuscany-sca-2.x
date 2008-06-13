@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -39,7 +40,8 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
     private WorkScheduler workScheduler;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        workScheduler = extensionPoints.getExtensionPoint(WorkScheduler.class);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        workScheduler = utilities.getUtility(WorkScheduler.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,

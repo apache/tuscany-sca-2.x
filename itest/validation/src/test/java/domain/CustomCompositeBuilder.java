@@ -16,17 +16,13 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
-import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -34,14 +30,10 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -49,7 +41,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 public class CustomCompositeBuilder {
     private URLArtifactProcessor<Contribution> contributionProcessor;
@@ -91,21 +82,6 @@ public class CustomCompositeBuilder {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
         
-        // Create an interface contract mapper
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-        extensionPoints.addExtensionPoint(mapper);
-        
-        // Create Message factory
-        MessageFactory messageFactory = new MessageFactoryImpl();
-        
-        // Create Proxy factory
-        ProxyFactory proxyFactory = new DefaultProxyFactoryExtensionPoint(messageFactory, mapper);
-        extensionPoints.addExtensionPoint(proxyFactory);
-        
-        // Create context factory extension point
-        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint(extensionPoints);
-        extensionPoints.addExtensionPoint(contextFactories);
-        
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
         for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
@@ -116,8 +92,6 @@ public class CustomCompositeBuilder {
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);       
-        
-        modelFactories.addFactory(messageFactory);        
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 

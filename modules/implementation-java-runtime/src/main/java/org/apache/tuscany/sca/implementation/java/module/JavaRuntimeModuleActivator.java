@@ -28,7 +28,10 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.CglibProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
@@ -55,11 +58,13 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
 
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
-        ProxyFactoryExtensionPoint proxyFactory = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        proxyFactory.setClassProxyFactory(new CglibProxyFactory(messageFactory, proxyFactory
-            .getInterfaceContractMapper()));
+        
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        InterfaceContractMapper interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+
+        ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        proxyFactories.setClassProxyFactory(new CglibProxyFactory(messageFactory, interfaceContractMapper));
 
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
 
@@ -75,6 +80,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
         policyHandlerClassNames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
         
+        ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+        
         JavaImplementationProviderFactory javaImplementationProviderFactory =
             new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
                                                   requestContextFactory, policyHandlerClassNames);
@@ -83,7 +90,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(javaImplementationProviderFactory);
 
-        InterfaceContractMapper interfaceContractMapper = registry.getExtensionPoint(InterfaceContractMapper.class);
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
             registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {

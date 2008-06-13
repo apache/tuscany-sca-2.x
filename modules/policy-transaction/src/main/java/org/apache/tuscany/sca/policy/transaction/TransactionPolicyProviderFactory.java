@@ -24,6 +24,7 @@ import javax.transaction.TransactionManager;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
@@ -39,7 +40,8 @@ public class TransactionPolicyProviderFactory implements PolicyProviderFactory<T
 
     public TransactionPolicyProviderFactory(ExtensionPointRegistry registry) {
         super();
-        TransactionManager tm = registry.getExtensionPoint(TransactionManager.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        TransactionManager tm = utilities.getUtility(TransactionManager.class);
         this.helper = new TransactionManagerHelper(tm);
     }
     

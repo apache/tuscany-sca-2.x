@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
@@ -59,7 +60,8 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
     public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints ) {
         
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
-        proxyFactory = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
         ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
         requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
         

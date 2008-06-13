@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
@@ -63,12 +62,12 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationManagerImpl;
-import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
@@ -99,19 +98,6 @@ public class ReallySmallRuntimeBuilder {
     
     private static final Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
 	
-    public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
-                                                  InterfaceContractMapper mapper,
-                                                  MessageFactory messageFactory) {
-
-        ProxyFactory proxyFactory = new DefaultProxyFactoryExtensionPoint(messageFactory, mapper);
-
-        // FIXME Pass these around differently as they are not extension points
-        registry.addExtensionPoint(proxyFactory);
-        registry.addExtensionPoint(mapper);
-
-        return proxyFactory;
-    }
-
     public static CompositeActivator createCompositeActivator(ExtensionPointRegistry registry,
                                                               AssemblyFactory assemblyFactory,
                                                               MessageFactory messageFactory,
@@ -143,8 +129,8 @@ public class ReallySmallRuntimeBuilder {
         RequestContextFactory requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
 
-        ConversationManager conversationManager = new ConversationManagerImpl();
-        registry.addExtensionPoint(conversationManager);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        ConversationManager conversationManager = utilities.getUtility(ConversationManager.class);
         
         // Create the composite activator
         CompositeActivator compositeActivator =
