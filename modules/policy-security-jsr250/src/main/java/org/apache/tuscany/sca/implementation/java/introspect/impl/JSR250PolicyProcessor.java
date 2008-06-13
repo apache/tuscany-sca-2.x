@@ -79,6 +79,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(RUN_AS);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             ((org.apache.tuscany.sca.policy.PolicySetAttachPoint)type).getPolicySets().add(policySet);
         }
         
@@ -98,6 +99,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(ALLOW);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             ((org.apache.tuscany.sca.policy.PolicySetAttachPoint)type).getPolicySets().add(policySet);
         }
         
@@ -109,6 +111,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(PERMIT_ALL);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             ((org.apache.tuscany.sca.policy.PolicySetAttachPoint)type).getPolicySets().add(policySet);
         }
         
@@ -136,6 +139,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(ALLOW);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             confOp.getPolicySets().add(policySet);
         }
         
@@ -151,6 +155,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(PERMIT_ALL);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             confOp.getPolicySets().add(policySet);
         }
         
@@ -166,6 +171,7 @@ public class JSR250PolicyProcessor extends BaseJavaClassVisitor {
             PolicySet policySet = policyFactory.createPolicySet();
             policySet.setName(DENY_ALL);
             policySet.getPolicies().add(policy);
+            policySet.setUnresolved(false);
             confOp.getPolicySets().add(policySet);
         }
     }    
