@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
 
@@ -39,7 +41,7 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
     private Class<?> physical;
     private XMLType logical;
 
-    private Object metaData;
+    private Map<Class<?>, Object> metaDataMap;
     private Method method;
     private String wrapperClassName;
     private String wrapperNamespace;
@@ -127,12 +129,14 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
         return super.clone();
     }
     
-    public Object getMetaData() {
-        return metaData;
+    public <T> T getMetaData(Class<T> type) {
+        return metaDataMap == null ? null : type.cast(metaDataMap.get(type));
     }
 
-    public void setMetaData(Object metaData) {
-        this.metaData = metaData;
+    public <T> void setMetaData(Class<T> type, T metaData) {
+        if (metaDataMap == null) {
+            metaDataMap = new ConcurrentHashMap<Class<?>, Object>();
+        }
+        metaDataMap.put(type, metaData);
     }
-
 }

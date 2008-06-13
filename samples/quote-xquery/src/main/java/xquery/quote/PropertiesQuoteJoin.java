@@ -18,10 +18,15 @@
  */
 package xquery.quote;
 
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
+
 import org.example.quote.Quote;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 public interface PropertiesQuoteJoin {
+    @RequestWrapper(className="xquery.quote.joinPriceAndAvailQuotes")
+    @ResponseWrapper(className="xquery.quote.joinPriceAndAvailQuotesResponse")
     public Quote joinPriceAndAvailQuotes();
 }

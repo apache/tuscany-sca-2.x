@@ -151,7 +151,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             // Introspect the wrapper data type
             if (operation.getWrapper() != null) {
                 org.apache.tuscany.sca.databinding.DataBinding dbObj =
-                    dataBindingRegistry.getDataBinding(operation.getDataBinding());
+                    dataBindingRegistry.getDataBinding(db);
                 WrapperHandler handler = dbObj == null ? null : dbObj.getWrapperHandler();
                 if (handler != null) {
                     WrapperInfo wrapper = operation.getWrapper();

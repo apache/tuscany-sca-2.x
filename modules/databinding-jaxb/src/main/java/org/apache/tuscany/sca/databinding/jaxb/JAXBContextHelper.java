@@ -48,7 +48,7 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache.LRUCache;
+import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -62,10 +62,9 @@ import org.w3c.dom.Node;
  */
 // FIXME: [rfeng] We probably should turn this into a pluggable system service
 public class JAXBContextHelper {
-    // TODO: Do we need to set them for source and target?
-    public static final String JAXB_CLASSES = "jaxb.classes";
+    // public static final String JAXB_CLASSES = "jaxb.classes";
 
-    public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
+    // public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
 
     private static final JAXBContextCache cache = new JAXBContextCache();
 
@@ -90,7 +89,14 @@ public class JAXBContextHelper {
         // per interface, operation or parameter
         Operation op = source ? tContext.getSourceOperation() : tContext.getTargetOperation();
         if (op != null) {
-            return createJAXBContext(getDataTypes(op, true));
+            synchronized (op) {
+                JAXBContext context = op.getInputType().getMetaData(JAXBContext.class);
+                if (context == null) {
+                    context = createJAXBContext(getDataTypes(op, true));
+                    op.getInputType().setMetaData(JAXBContext.class, context);
+                }
+                return context;
+            }
         }
 
         // For property transformation, the operation can be null

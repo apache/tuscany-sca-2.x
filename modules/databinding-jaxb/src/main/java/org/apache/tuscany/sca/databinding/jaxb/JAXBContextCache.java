@@ -24,18 +24,13 @@ import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -43,6 +38,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.transform.Source;
+
+import org.apache.tuscany.sca.databinding.util.LRUCache;
 
 /**
  * @version $Rev$ $Date$
@@ -95,9 +92,9 @@ public class JAXBContextCache {
     }
 
     public JAXBContextCache(int contextSize, int marshallerSize, int unmarshallerSize) {
-        cache = new LRUCache<Object, JAXBContext>(new WeakHashMap<Object, JAXBContext>(), contextSize);
-        upool = new LRUCache<JAXBContext, Unmarshaller>(new WeakHashMap<JAXBContext, Unmarshaller>(), unmarshallerSize);
-        mpool = new LRUCache<JAXBContext, Marshaller>(new WeakHashMap<JAXBContext, Marshaller>(), marshallerSize);
+        cache = new LRUCache<Object, JAXBContext>(contextSize);
+        upool = new LRUCache<JAXBContext, Unmarshaller>(unmarshallerSize);
+        mpool = new LRUCache<JAXBContext, Marshaller>(marshallerSize);
         commonContext = getCommonJAXBContext();
     }
 
@@ -286,74 +283,6 @@ public class JAXBContextCache {
         synchronized (upool) {
             upool.clear();
         }
-    }
-
-    public static class LRUCache<K, V> {
-        private Map<K, V> cache;
-        private List<K> keyQueue;
-        private int queueSizeThreshold;
-
-        public LRUCache(int queueSizeThreshold) {
-            super();
-            this.cache = new HashMap<K, V>();
-            this.keyQueue = new ArrayList<K>();
-            this.queueSizeThreshold = queueSizeThreshold;
-        }
-
-        public LRUCache(Map<K, V> cache, int queueSizeThreshold) {
-            super();
-            this.cache = cache;
-            this.keyQueue = new ArrayList<K>(cache.keySet());
-            this.queueSizeThreshold = queueSizeThreshold;
-        }
-
-        public V get(K key) {
-            V value = cache.get(key);
-            if (value != null) {
-                // Move the most recently used key to the front of the queue
-                if (!key.equals(keyQueue.get(0))) {
-                    keyQueue.remove(key);
-                    keyQueue.add(0, key);
-                }
-            }
-            return value;
-        }
-
-        public void put(K key, V value) {
-            if (cache.containsKey(key)) {
-                // Adjust the key usage
-                if (!key.equals(keyQueue.get(0))) {
-                    keyQueue.remove(key);
-                    keyQueue.add(0, key);
-                }
-            } else {
-                if (keyQueue.size() >= queueSizeThreshold) {
-                    // Remove the least recently used key
-                    K last = keyQueue.remove(keyQueue.size() - 1);
-                    keyQueue.add(0, key);
-                    cache.remove(last);
-                } else {
-                    keyQueue.add(0, key);
-                }
-            }
-            cache.put(key, value);
-        }
-
-        public V remove(K key) {
-            V data = cache.remove(key);
-            keyQueue.remove(key);
-            return data;
-        }
-
-        public void clear() {
-            cache.clear();
-            keyQueue.clear();
-        }
-
-        public Map<K, V> getCache() {
-            return Collections.unmodifiableMap(cache);
-        }
-
     }
 
 }
