@@ -29,19 +29,18 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * A composite builder that computes policy sets based on attached intents and policy sets.
- * Useful if you want to build the model without making any runtime decisions such as
- * reference/services matching
+ * A composite builder that makes the connections between composite services and references
+ * and the services and references that they promote
  *
  * @version $Rev$ $Date$
  */
-public class CompositePolicyBuilderImpl extends BaseWireBuilderImpl implements CompositeBuilder {
+public class CompositePromotionBuilderImpl extends BaseWireBuilderImpl implements CompositeBuilder {
 
-    public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
+    public CompositePromotionBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
         super(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
-        computePolicies(composite);
+        connectCompositeReferencesAndServices(composite);
     }
 }

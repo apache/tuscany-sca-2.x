@@ -102,11 +102,11 @@ class BaseWireBuilderImpl {
 
         // Connect composite services and references to the component
         // services and references that they promote
-        connectCompositeServices(composite, components, componentServices);
-        connectCompositeReferences(composite, componentReferences);
+        //connectCompositeServices(composite, components, componentServices);
+        //connectCompositeReferences(composite, componentReferences);
 
         // Compute the policies before connecting component references
-        computePolicies(composite);
+        //computePolicies(composite);
 
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences);
@@ -1156,6 +1156,14 @@ class BaseWireBuilderImpl {
 
     
     protected void computePolicies(Composite composite) {
+        
+        // compute policies recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                computePolicies((Composite)implementation);
+            }
+        }
     
         for (Component component : composite.getComponents()) {
 
