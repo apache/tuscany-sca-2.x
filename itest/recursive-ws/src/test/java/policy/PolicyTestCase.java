@@ -37,8 +37,12 @@ public class PolicyTestCase{
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance("policy/PolicyOuterComposite.composite");
-        targetClient = domain.getService(Target.class, "TargetClientComponent");
+        try {
+            domain = SCADomain.newInstance("policy/PolicyOuterComposite.composite");
+            targetClient = domain.getService(Target.class, "TargetClientComponent");
+        } catch(Exception ex) {
+            System.out.println(ex.toString());
+        }
     }
 
     @After
@@ -48,27 +52,23 @@ public class PolicyTestCase{
 
     @Test
     public void test() throws Exception {
-        try {
-        	//Check that the binding policy sets do flow down to the component but not down to the
-        	//component inside implementation.composite
-        	Component outerComponent = ((DefaultSCADomain)domain).getComponent("OuterTargetServiceComponent");
-        	
-        	// The outer component service bindings should have policy sets attached
-        	Assert.assertEquals(1, ((PolicySetAttachPoint)outerComponent.getServices().get(0).getBindings().get(0)).getPolicySets().size());
-        	
-        	Component component =((CompositeImpl)outerComponent.getImplementation()).getComponents().get(0);
-        	
-        	// The original inner component service binding should not have policy sets attached
-        	Assert.assertEquals(0, ((PolicySetAttachPoint)component.getServices().get(0).getBindings().get(0)).getPolicySets().size());
-            
-            // The promoted inner component service binding should have policy sets attached
-        	Assert.assertEquals(1, ((PolicySetAttachPoint)component.getServices().get(1).getBindings().get(0)).getPolicySets().size());
-        	
-            String result = targetClient.hello("Fred");
+    	//Check that the binding policy sets do flow down to the component but not down to the
+    	//component inside implementation.composite
+    	Component outerComponent = ((DefaultSCADomain)domain).getComponent("OuterTargetServiceComponent");
+    	
+    	// The outer component service bindings should have policy sets attached
+    	Assert.assertEquals(1, ((PolicySetAttachPoint)outerComponent.getServices().get(0).getBindings().get(0)).getPolicySets().size());
+    	
+    	Component component =((CompositeImpl)outerComponent.getImplementation()).getComponents().get(0);
+    	
+    	// The original inner component service binding should not have policy sets attached
+    	Assert.assertEquals(0, ((PolicySetAttachPoint)component.getServices().get(0).getBindings().get(0)).getPolicySets().size());
+        
+        // The promoted inner component service binding should have policy sets attached
+    	Assert.assertEquals(1, ((PolicySetAttachPoint)component.getServices().get(1).getBindings().get(0)).getPolicySets().size());
+    	
+        String result = targetClient.hello("Fred");
 
-            System.out.println(result);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        System.out.println(result);
     }
 }

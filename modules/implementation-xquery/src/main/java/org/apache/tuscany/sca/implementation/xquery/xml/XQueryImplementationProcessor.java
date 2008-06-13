@@ -53,8 +53,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     private static final String IMPLEMENTATION_XQUERY = "implementation.xquery";
     private static final QName IMPLEMENTATION_XQUERY_QNAME =
         new QName(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
-    private static final String MSG_LOCATION_MISSING = "Reading implementation.xquery - location attribute missing";
-
+    
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private ContributionFactory contributionFactory;
@@ -90,17 +89,20 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
      */
     public XQueryImplementation read(XMLStreamReader reader)
         throws ContributionReadException, XMLStreamException {
+    	
+    	/* Create the XQuery implementation and set the location into it */
+        XQueryImplementation xqueryImplementation = null;
 
         /* Read the location attribute for the XQuery implementation  */
         String xqueryLocation = reader.getAttributeValue(null, LOCATION);
-        if (xqueryLocation == null) {
+        if (xqueryLocation != null) {
+        	xqueryImplementation = XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
+            xqueryImplementation.setLocation(xqueryLocation);
+            xqueryImplementation.setUnresolved(true);
+        } else {        
         	error("LocationAttributeMissing", reader);
-            throw new ContributionReadException(MSG_LOCATION_MISSING);
-        }
-        /* Create the XQuery implementation and set the location into it */
-        XQueryImplementation xqueryImplementation =
-            XQueryImplementationFactory.INSTANCE.createXQueryImplementation();
-        xqueryImplementation.setLocation(xqueryLocation);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
+        }        
 
         // Skip to end element
         while (reader.hasNext()) {
@@ -108,8 +110,6 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
                 break;
             }
         } // end while
-
-        xqueryImplementation.setUnresolved(true);
 
         return xqueryImplementation;
     }
@@ -135,23 +135,25 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
      */
     public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver)
         throws ContributionResolveException {
-
-        Artifact artifact = contributionFactory.createArtifact();
-        artifact.setURI(xqueryImplementation.getLocation());
-    	artifact = resolver.resolveModel(Artifact.class, artifact);
-    	if (artifact.getLocation() == null) {
-    		error("CouldNotLocateFile", resolver, xqueryImplementation.getLocation());
-            throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
-        }
-    	xqueryImplementation.setLocationURL(artifact.getLocation());
-
-        XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
-
-        boolean success = introspector.introspect(xqueryImplementation, resolver);
-
-        if (success) {
-            xqueryImplementation.setUnresolved(false);
-        }
+    	
+    	if (xqueryImplementation != null) {
+            Artifact artifact = contributionFactory.createArtifact();
+            artifact.setURI(xqueryImplementation.getLocation());
+    	    artifact = resolver.resolveModel(Artifact.class, artifact);
+    	    if (artifact.getLocation() != null) {
+    	    	xqueryImplementation.setLocationURL(artifact.getLocation());
+    	        
+    	    	XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
+    	        
+    	        boolean success = introspector.introspect(xqueryImplementation, resolver);
+    	        if (success) {
+    	            xqueryImplementation.setUnresolved(false);
+    	        }
+    	    } else {
+    	    	error("CouldNotLocateFile", resolver, xqueryImplementation.getLocation());
+                //throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
+    	    }
+    	}
     }
 
 }

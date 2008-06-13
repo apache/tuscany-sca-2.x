@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -108,7 +107,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      private void warning(String message, Object model, Object... messageParameters) {
          if (monitor != null) {
              Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-                                               monitor.problem(problem);
+             monitor.problem(problem);
          }
      }
      
@@ -122,7 +121,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
       private void error(String message, Object model, Object... messageParameters) {
           if (monitor != null) {
               Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-                                                monitor.problem(problem);
+              monitor.problem(problem);
           }
       }
     
@@ -136,7 +135,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      private void error(String message, Object model, Exception ex) {
          if (monitor != null) {
              Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
-                                               monitor.problem(problem);
+             monitor.problem(problem);
          }        
      }
             
@@ -159,7 +158,9 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
             processDefinition.setURI(artifactURI);
             processDefinition.setUnresolved(false);
         } catch (Exception e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", artifactURL, ce);
+            //throw ce;
         }
         
         return processDefinition;
@@ -203,10 +204,11 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                     theImport.setWSDLDefinition( resolved );
                 } else {
                     error("CannotResolveWSDLReference", resolver, WSDLLocation, WSDLNamespace);
-                    throw new ContributionResolveException("BPELDocumentProcessor:resolve -" +
-                			" unable to resolve WSDL referenced by BPEL import" +
-                			"WSDL location: " + WSDLLocation + " WSDLNamespace: " +
-                			WSDLNamespace );
+                    //throw new ContributionResolveException("BPELDocumentProcessor:resolve -" +
+                			//" unable to resolve WSDL referenced by BPEL import" +
+                			//"WSDL location: " + WSDLLocation + " WSDLNamespace: " +
+                			//WSDLNamespace );
+                    return;
                 } // end if	
     		} // end if
     	} // end for
@@ -229,11 +231,10 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     			findPartnerLinkType( partnerLinkType, thePLinkTypes );
     		if( pLinkType == null ) {
     		    error("PartnerLinkNoMatchingType", thePartnerLink, thePartnerLink.getName());
-    		    throw new ContributionResolveException( "PartnerLink " 
-    		        + thePartnerLink.getName() + " has no matching partner link type");
-    		}
-    					
-    		thePartnerLink.setPartnerLinkType(pLinkType);
+    		    //throw new ContributionResolveException( "PartnerLink " 
+    		        //+ thePartnerLink.getName() + " has no matching partner link type");
+    		} else    					
+    		    thePartnerLink.setPartnerLinkType(pLinkType);
     	} // end for
     	
     } // end resolve
@@ -286,9 +287,8 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     				    error("PartnerLinkTypeNoRoles", theElement, pLinkElement.getName());
     				    throw new ContributionResolveException( "partnerLinkType " +
     				        pLinkElement.getName() +" has no Roles defined" );
-    				}
-    						                         
-    				thePLinks.add( pLinkElement );
+    				} else    						                         
+    				    thePLinks.add( pLinkElement );
     			} // end if
     			
     		} // end for
@@ -322,7 +322,9 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                         		theWSDL, resolver);
                         wsdlInterface.setWsdlDefinition(theWSDL);
                     } catch (InvalidInterfaceException e) {
-                        throw new ContributionResolveException(e);
+                    	ContributionResolveException ce = new ContributionResolveException(e);
+                    	error("ContributionResolveException", resolver, ce);
+                        throw ce;
                     } // end try
                     resolver.addModel(wsdlInterface);
                     theInterfaces.add(wsdlInterface);
@@ -481,8 +483,6 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
 		if( partnerLink == null ) {
 		    warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
-		    System.out.println("BPEL TypeLoader - element references partnerLink " 
-								+ partnerLinkName + " not in the list");
 		} else {
 			// Set the type of the partnerLink to "service" if not already set...
 			if( !partnerLink.isSCATyped() ) partnerLink.setAsService( partnerLinkName );
@@ -497,8 +497,6 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
 		if( partnerLink == null ) {
 		    warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
-		    System.out.println("BPEL TypeLoader - element references partnerLink " 
-								+ partnerLinkName + " not in the list");
 		} else {
 			// Set the type of the partnerLink to "service" if not already set...
 			if( !partnerLink.isSCATyped() ) partnerLink.setAsReference( partnerLinkName );

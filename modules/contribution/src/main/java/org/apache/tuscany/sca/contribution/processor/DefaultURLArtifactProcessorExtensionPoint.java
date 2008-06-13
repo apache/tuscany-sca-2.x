@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -38,6 +39,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
@@ -69,7 +72,21 @@ public class DefaultURLArtifactProcessorExtensionPoint
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, this.monitor);
     }
-
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+    */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+    	    Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+    	    monitor.problem(problem);
+    	}        
+    }
+    
     public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
         if (artifactProcessor.getArtifactType() != null) {
             processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
@@ -112,7 +129,9 @@ public class DefaultURLArtifactProcessorExtensionPoint
         try {
             processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class);
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+        	IllegalStateException ie = new IllegalStateException(e);
+        	error("IllegalStateException", staxProcessor, ie);
+            throw ie;
         }
         
         for (ServiceDeclaration processorDeclaration: processorDeclarations) {
@@ -163,6 +182,13 @@ public class DefaultURLArtifactProcessorExtensionPoint
             return artifactType;
         }
         
+        private void error(String message, Object model, Exception ex) {
+            if (monitor != null) {
+        	    Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+        	    monitor.problem(problem);
+        	}        
+        }
+        
         @SuppressWarnings("unchecked")
         private URLArtifactProcessor getProcessor() {
             if (processor == null) {
@@ -182,7 +208,9 @@ public class DefaultURLArtifactProcessorExtensionPoint
                         }
                     }
                 } catch (Exception e) {
-                    throw new IllegalStateException(e);
+                	IllegalStateException ie = new IllegalStateException(e);
+                	error("IllegalStateException", processor, ie);
+                    throw ie;
                 }
             }
             return processor;
@@ -196,8 +224,10 @@ public class DefaultURLArtifactProcessorExtensionPoint
             if (modelTypeName != null && modelType == null) {
                 try {
                     modelType = processorDeclaration.loadClass(modelTypeName);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
+                } catch (ClassNotFoundException e) {
+                	IllegalStateException ie = new IllegalStateException(e);
+                	error("IllegalStateException", processorDeclaration, ie);
+                    throw ie;
                 }
             }
             return modelType;

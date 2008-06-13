@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -43,6 +44,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * The default implementation of an extension point for StAX artifact processors.
@@ -72,6 +75,20 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         if (monitorFactory != null)
         	this.monitor = monitorFactory.createMonitor();
         this.extensibleStAXProcessor = new ExtensibleStAXArtifactProcessor(this, inputFactory, outputFactory, this.monitor);
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+    */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+    	    Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+    	    monitor.problem(problem);
+    	}        
     }
 
     public void addArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
@@ -142,7 +159,9 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         try {
             processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class);
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+        	IllegalStateException ie = new IllegalStateException(e);
+        	error("IllegalStateException", extensibleStAXProcessor, ie);
+            throw ie;
         }
 
         for (ServiceDeclaration processorDeclaration : processorDeclarations) {
@@ -207,6 +226,13 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         public QName getArtifactType() {
             return artifactType;
         }
+        
+        private void error(String message, Object model, Exception ex) {
+            if (monitor != null) {
+        	    Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+        	    monitor.problem(problem);
+        	}        
+        }
 
         @SuppressWarnings("unchecked")
         private StAXArtifactProcessor getProcessor() {
@@ -244,7 +270,9 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                                                     modelFactory,
                                                     monitor);
                     } catch (Exception e) {
-                        throw new IllegalStateException(e);
+                    	IllegalStateException ie = new IllegalStateException(e);
+                    	error("IllegalStateException", processor, ie);
+                        throw ie;
                     }
                 } else {
                     ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -299,7 +327,9 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                           }
                         }
                     } catch (Exception e) {
-                        throw new IllegalStateException(e);
+                    	IllegalStateException ie = new IllegalStateException(e);
+                    	error("IllegalStateException", processor, ie);
+                        throw ie;
                     }
                 }
             }
@@ -321,7 +351,9 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                 try {
                     modelType = processorDeclaration.loadClass(modelTypeName);
                 } catch (Exception e) {
-                    throw new IllegalStateException(e);
+                	IllegalStateException ie = new IllegalStateException(e);
+                	error("IllegalStateException", processorDeclaration, ie);
+                    throw ie;
                 }
             }
             return modelType;

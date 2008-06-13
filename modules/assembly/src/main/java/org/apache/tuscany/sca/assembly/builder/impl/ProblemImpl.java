@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import org.apache.tuscany.sca.monitor.Problem;
 
 /**
@@ -104,11 +110,15 @@ public class ProblemImpl implements Problem {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        if (messageId !=  null) {
-            sb.append(messageId);
-        }
+        Logger logger = Logger.getLogger(sourceClassName, bundleName);
         
-        return sb.toString();
+        LogRecord record = new LogRecord(Level.INFO, messageId);
+        record.setParameters(messageParams);
+        record.setResourceBundle(logger.getResourceBundle());
+        record.setSourceClassName(sourceClassName);
+ 
+        Formatter formatter = new SimpleFormatter();
+        
+        return formatter.formatMessage(record);
     }
 }

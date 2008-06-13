@@ -77,6 +77,9 @@ public class CalculateBindingURITestCase extends TestCase {
                     }
                 }
             }
+            public List<Problem> getProblems() {
+                return null;
+            }
         };
         configurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, null, monitor);
         Binding defaultBinding = new TestBindingImpl();

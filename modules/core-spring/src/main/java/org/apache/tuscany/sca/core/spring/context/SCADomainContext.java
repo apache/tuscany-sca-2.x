@@ -164,6 +164,9 @@ public class SCADomainContext {
             public void problem(Problem problem) {
                 System.out.println("Composite assembly problem: " + problem.toString());
             }
+            public List<Problem> getProblems() {
+                return null;
+            }
         };
 
         // Configure and wire the composite

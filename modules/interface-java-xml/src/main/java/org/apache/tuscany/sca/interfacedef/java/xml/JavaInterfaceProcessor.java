@@ -149,10 +149,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 Class javaClass = classReference.getJavaClass();
                 if (javaClass == null) {
                     error("ClassNotFoundException", resolver, javaInterface.getName());
-                    throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
+                    return javaInterface;
+                    //throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
                 }
-                try {
-                        
+                
+                try {                        
                     // Introspect the Java interface and populate the interface and
                     // operations
                     javaFactory.createJavaInterface(javaInterface, javaClass);
@@ -160,7 +161,8 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 } catch (InvalidInterfaceException e) {
                 	ContributionResolveException ce = new ContributionResolveException(e);
                 	error("ContributionResolveException", javaFactory, ce);
-                    throw ce;
+                    return javaInterface;
+                	//throw ce;
                 }
 
                 // Cache the resolved interface

@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
 
-
-
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -32,9 +30,14 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * Test NamespaceExportProcessorTestCase
@@ -53,13 +56,21 @@ public class NamespaceExportProcessorTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private Monitor monitor;
 
     @Override
     protected void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        if (monitorFactory != null) {
+        	monitor = monitorFactory.createMonitor();
+        	utilities.addUtility(monitorFactory);
+        }        
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
     }
 
     /**
@@ -78,11 +89,15 @@ public class NamespaceExportProcessorTestCase extends TestCase {
      */
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        try {
+        /*try {
             staxProcessor.read(reader);
             fail("readerException should have been thrown");
         } catch (ContributionReadException e) {
             assertTrue(true);
-        }
+        }*/
+        staxProcessor.read(reader);
+        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
+        assertNotNull(problem);
+        assertEquals("AttributeNameSpaceMissing", problem.getMessageId());
     }    
 }

@@ -99,9 +99,9 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
                         String ns = reader.getAttributeValue(null, NAMESPACE);
                         if (ns == null) {
                         	error("AttributeNameSpaceMissing", reader);
-                            throw new ContributionReadException("Attribute 'namespace' is missing");
-                        }
-                        namespaceExport.setNamespace(ns);
+                            //throw new ContributionReadException("Attribute 'namespace' is missing");
+                        } else
+                            namespaceExport.setNamespace(ns);
                     } 
                     
                     break;
@@ -135,7 +135,8 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
 
     public void resolve(NamespaceExport namespaceExport, ModelResolver resolver) throws ContributionResolveException {
         
-        // Initialize the export's resolver
-        namespaceExport.setModelResolver(new NamespaceExportModelResolver(resolver));
+        if (namespaceExport.getNamespace() != null)
+            // Initialize the export's resolver
+            namespaceExport.setModelResolver(new NamespaceExportModelResolver(resolver));
     }
 }

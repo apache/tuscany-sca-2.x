@@ -104,13 +104,14 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                 return implType;
             } else {
             	error("UnrecognizedIntentAttachPointType", reader, type);
-                throw new ContributionReadException("Unrecognized IntentAttachPointType - " + type);
+                //throw new ContributionReadException("Unrecognized IntentAttachPointType - " + type);
             }
         } else {
         	error("RequiredAttributeMissing", reader, TYPE);
-            throw new ContributionReadException("Required attribute '" + TYPE + 
-                                                "' missing from BindingType Definition");
-        }
+            //throw new ContributionReadException("Required attribute '" + TYPE + 
+                                                //"' missing from BindingType Definition");
+        }        
+        return null;
     }
 
     private void readAlwaysProvidedIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
@@ -182,10 +183,13 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
     }
     
     public void resolve(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-        resolveAlwaysProvidedIntents(extnType, resolver);
-        resolveMayProvideIntents(extnType, resolver);
-        extnType.setUnresolved(false);
-        //resolveExtensionType(extnType, resolver);
+        
+    	if (extnType != null && extnType.isUnresolved()) {
+    	    resolveAlwaysProvidedIntents(extnType, resolver);
+            resolveMayProvideIntents(extnType, resolver);
+            extnType.setUnresolved(false);
+            //resolveExtensionType(extnType, resolver);
+        }
     }
 
     private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType,
@@ -200,9 +204,9 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                         alwaysProvided.add(providedIntent);
                     } else {
                     	error("AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
-                        throw new ContributionResolveException("Always Provided Intent - " + providedIntent
-                                                                     + " not found for ExtensionType "
-                                                                     + extensionType);
+                        //throw new ContributionResolveException("Always Provided Intent - " + providedIntent
+                                                                     //+ " not found for ExtensionType "
+                                                                     //+ extensionType);
                     }
                 } else {
                     alwaysProvided.add(providedIntent);
@@ -225,9 +229,9 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                         mayProvide.add(providedIntent);
                     } else {
                     	error("MayProvideIntentNotFound", resolver, providedIntent, extensionType);
-                        throw new ContributionResolveException("May Provide Intent - " + providedIntent
-                                                                     + " not found for ExtensionType "
-                                                                     + extensionType);
+                        //throw new ContributionResolveException("May Provide Intent - " + providedIntent
+                                                                     //+ " not found for ExtensionType "
+                                                                     //+ extensionType);
                     }
                 } else {
                     mayProvide.add(providedIntent);

@@ -49,10 +49,8 @@ public class ContributionResolveExceptionTestCase extends TestCase {
     }
 
     public void testCalculator() {
-    	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
-    	assertNotNull(problem);
-        assertEquals("ContributionResolveException", problem.getMessageId());  
+    	Monitor monitor = customDomain.getMonitorInstance();        
+    	assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("ContributionResolveException"));
+        //assertEquals("ContributionResolveException", problem.getMessageId());  
     }
 }

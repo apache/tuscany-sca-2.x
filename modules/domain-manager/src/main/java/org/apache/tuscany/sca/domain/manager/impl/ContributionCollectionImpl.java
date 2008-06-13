@@ -404,6 +404,10 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             public void problem(Problem problem) {
                 problems.add(problem.getMessageId() + " " + problem.getProblemObject().toString());
             }
+            
+            public List<Problem> getProblems() {
+                return null;
+            }
         };
         
         StringBuffer sb = new StringBuffer();

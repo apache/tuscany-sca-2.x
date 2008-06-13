@@ -52,8 +52,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
     private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
-    private static final String MSG_LOCATION_MISSING = "Reading implementation.resource - location attribute missing";
-
+    
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
     private Monitor monitor;
@@ -111,14 +110,13 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
 
         // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
-
         if (location != null) {
             implementation = implementationFactory.createResourceImplementation();
             implementation.setLocation(location);
             implementation.setUnresolved(true);
         } else {
             error("LocationAttributeMissing", reader);
-            throw new ContributionReadException(MSG_LOCATION_MISSING);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
         // Skip to end element
@@ -132,7 +130,10 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     }
 
     public void resolve(ResourceImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
-
+    	
+    	if (implementation == null)
+    		return;
+    	
         // Resolve the resource directory location
         Artifact artifact = contributionFactory.createArtifact();
         artifact.setURI(implementation.getLocation());
@@ -144,11 +145,11 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
             	error("ContributionResolveException", resolver, ce);
-                throw ce;
+                //throw ce;
             }
         } else {
             error("CouldNotResolveLocation", resolver, implementation.getLocation());
-            throw new ContributionResolveException("Could not resolve implementation.resource location: " + implementation.getLocation());
+            //throw new ContributionResolveException("Could not resolve implementation.resource location: " + implementation.getLocation());
         }
     }
 

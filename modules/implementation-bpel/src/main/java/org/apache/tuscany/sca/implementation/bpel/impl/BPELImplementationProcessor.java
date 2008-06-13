@@ -114,13 +114,16 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         assert IMPLEMENTATION_BPEL_QNAME.equals(reader.getName());
         
         // Read an <implementation.bpel> element
-
+        BPELImplementation implementation = null;
+        
         // Read the process attribute. 
         QName process = getAttributeValueNS(reader, PROCESS);
-
+        if (process == null) {
+        	return implementation;
+        }
 
         // Create and initialize the BPEL implementation model
-        BPELImplementation implementation = bpelFactory.createBPELImplementation();
+        implementation = bpelFactory.createBPELImplementation();
         implementation.setProcess(process);
         implementation.setUnresolved(true);
         
@@ -135,23 +138,25 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     }
 
     public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
-        if( impl != null && impl.isUnresolved()) {
+        
+    	if( impl != null && impl.isUnresolved()) 
+    	{
             BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(impl, resolver);
             if(processDefinition.isUnresolved()) {
             	error("BPELProcessNotFound", impl, processDefinition.getName());
-                throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
-            }
+                //throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
+            } else {            
+                impl.setProcessDefinition(processDefinition);
             
-            impl.setProcessDefinition(processDefinition);
+                // Get the component type from the process definition
+                generateComponentType( impl );
             
-            // Get the component type from the process definition
-            generateComponentType( impl );
-            
-            //resolve component type
-            mergeComponentType(resolver, impl);
+                //resolve component type
+                mergeComponentType(resolver, impl);
                         
-            //set current implementation resolved 
-            impl.setUnresolved(false);
+                //set current implementation resolved 
+                impl.setUnresolved(false);
+            }
         }
         
     } // end resolve
@@ -273,19 +278,21 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // TODO: support other multiplicities 
         reference.setName(name);
         reference.setMultiplicity(Multiplicity.ONE_ONE);
-
-        // Set the call interface and, if present, the callback interface
-        WSDLInterface callInterface = null;
-        for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
-        } // end for
-        // Throw an exception if no interface is found
-        if( callInterface == null ) {
-        	error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
-        	throw new ContributionResolveException("Interface not found for port type " +
-        			callPT.getQName().toString() );
-        } // end if 
-        reference.getInterfaceContract().setInterface(callInterface);
+        
+        if ( callPT != null ) {
+            // Set the call interface and, if present, the callback interface
+            WSDLInterface callInterface = null;
+            for( WSDLInterface anInterface : theInterfaces ) {
+        	    if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
+            } // end for
+            // Throw an exception if no interface is found
+            if( callInterface == null ) {
+        	    error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
+        	    throw new ContributionResolveException("Interface not found for port type " +
+        			    callPT.getQName().toString() );
+            } else
+                reference.getInterfaceContract().setInterface(callInterface);
+        }
  
         // There is a callback if the partner role is not null and if the partner role port type
         // is not the same as the port type for my role
@@ -299,8 +306,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             	throw new ContributionResolveException("Interface not found for port type " +
             			callbackPT.getQName().toString() );
-            } // end if 
-            reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+            } else 
+                reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
     	
     	return reference;
@@ -342,22 +349,22 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         if( callPT == null && callbackPT == null ) {
         	error("MyRolePartnerRoleNull", theInterfaces);
         	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
-        } // end if 
+        } // end if
 
-
-        // Set the call interface and, if present, the callback interface
-        WSDLInterface callInterface = null;
-        for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
-        } // end for
-        // Throw an exception if no interface is found
-        if( callInterface == null ) {
-        	error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
-        	throw new ContributionResolveException("Interface not found for port type " +
-        			callPT.getQName().toString() );
-        } // end if 
-
-        service.getInterfaceContract().setInterface(callInterface);    
+        if ( callPT != null ) {
+            // Set the call interface and, if present, the callback interface
+            WSDLInterface callInterface = null;
+            for( WSDLInterface anInterface : theInterfaces ) {
+        	    if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
+            } // end for
+            // Throw an exception if no interface is found
+            if( callInterface == null ) {
+        	    error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
+        	    throw new ContributionResolveException("Interface not found for port type " +
+        			    callPT.getQName().toString() );
+            } else
+                service.getInterfaceContract().setInterface(callInterface);
+        } // end if
         
         // There is a callback if the partner role is not null and if the partner role port type
         // is not the same as the port type for my role
@@ -371,9 +378,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             	throw new ContributionResolveException("Interface not found for port type " +
             			callbackPT.getQName().toString() );
-            } // end if 
-
-            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+            } else 
+                service.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
     	
     	return service;
@@ -488,11 +494,15 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      */
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
         String fullValue = reader.getAttributeValue(null, attribute);
+        if (fullValue == null) {
+        	error("AttributeProcessMissing", reader);
+        	return null;
+        }
         
         // Deal with the attribute in the XML Namespaces recommendation format
         // - trim off any leading/trailing spaces and check that the first character is '{'
-        if( fullValue.trim().charAt(0) == '{' ){
-        	try{
+        if( fullValue.trim().charAt(0) == '{' ) {
+        	try {
         		// Attempt conversion to a QName object
         		QName theProcess = QName.valueOf( fullValue );
         		return theProcess;
@@ -500,22 +510,27 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         		// This exception happens if the attribute begins with '{' but doesn't conform
         		// to the XML Namespaces recommendation format
         		error("AttributeWithoutNamespace", reader, attribute, fullValue);
-        		throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                " in your composite should be of the form {namespaceURI}localname");
+        		return null;
+        		//throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
+                //" in your composite should be of the form {namespaceURI}localname");
         	}
         } // endif
         
         // Deal with the attribute in the local name + prefix format
-        if (fullValue.indexOf(":") < 0)
-            throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                    " in your composite should be prefixed (process=\"prefix:name\").");
+        if (fullValue.indexOf(":") < 0) {
+        	error("AttributeWithoutPrefix", reader, attribute, fullValue);
+        	return null;
+            //throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
+                    //" in your composite should be prefixed (process=\"prefix:name\").");
+        }
         String prefix = fullValue.substring(0, fullValue.indexOf(":"));
         String name = fullValue.substring(fullValue.indexOf(":") + 1);
         String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
         if (nsUri == null) {
         	error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
-            throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                    " in your composite has an unrecognized namespace prefix.");
+        	return null;
+            //throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
+                    //" in your composite has an unrecognized namespace prefix.");
         } 
         return new QName(nsUri, name, prefix);
     }

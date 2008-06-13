@@ -507,9 +507,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     }
                 }
             } catch ( PolicyValidationException e ) {
-            	error("PolicyServiceValidationException", contract, contract.getName(), parentName);
-                throw new ContributionResolveException("PolicyValidation exceptions when processing service/reference '" 
-                                                       + contract.getName() + "' in '" + parentName + "'");
+            	error("PolicyServiceValidationException", contract, contract.getName(), parentName, e.getMessage());
+                //throw new ContributionResolveException("PolicyValidation exceptions when processing service/reference '" 
+                                                       //+ contract.getName() + "' in '" + parentName + "'");
             }
         }
     }

@@ -102,11 +102,11 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
                         	error("AttributePackageMissing", reader);
-                            throw new ContributionReadException("Attribute 'package' is missing");
-                        }
+                            //throw new ContributionReadException("Attribute 'package' is missing");
+                        } else
+                        	javaImport.setPackage(packageName);
                         
-                        String location = reader.getAttributeValue(null, LOCATION);
-                        javaImport.setPackage(packageName);
+                        String location = reader.getAttributeValue(null, LOCATION);                        
                         javaImport.setLocation(location);
                     }
                     break;

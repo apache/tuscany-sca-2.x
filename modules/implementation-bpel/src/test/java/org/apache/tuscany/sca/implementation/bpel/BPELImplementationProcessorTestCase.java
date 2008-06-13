@@ -34,6 +34,12 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -60,11 +66,19 @@ public class BPELImplementationProcessorTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private Monitor monitor;
 
     @Override
     protected void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        if (monitorFactory != null) {
+        	monitor = monitorFactory.createMonitor();
+        	utilities.addUtility(monitorFactory);
+        }
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
     }
@@ -89,13 +103,15 @@ public class BPELImplementationProcessorTestCase extends TestCase {
      */
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
-
-        try {
-            staxProcessor.read(reader);
-            
+        /*try {
+            staxProcessor.read(reader);            
             fail("InvalidException should have been thrown");
         } catch(Exception e) {
             assertTrue(true);
-        }
+        }*/
+        staxProcessor.read(reader);
+        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
+        assertNotNull(problem);
+        assertEquals("AttributeProcessMissing", problem.getMessageId());
     }    
 }

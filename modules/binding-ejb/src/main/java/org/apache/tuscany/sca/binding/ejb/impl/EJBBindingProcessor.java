@@ -129,7 +129,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
                 ejbBinding.setSessionType(EJBBinding.SessionType.STATEFUL);
             } else {
             	error("UnknownEJBSessionType", reader, sessionType, name);            	
-                throw new ContributionReadException("Unknown EJB Session Type of " + sessionType + " for " + name);
+                //throw new ContributionReadException("Unknown EJB Session Type of " + sessionType + " for " + name);
             }
         }
 
@@ -140,8 +140,8 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
             } else if (ejbVersion.equals("EJB3")) {
                 ejbBinding.setEjbVersion(EJBBinding.EJBVersion.EJB3);
             } else {
-            	error("UnknownEJBVersion", reader, sessionType, name);
-                throw new ContributionReadException("Unknown EJB Version of " + sessionType + " for " + name);
+            	error("UnknownEJBVersion", reader, ejbVersion, name);
+                //throw new ContributionReadException("Unknown EJB Version of " + ejbVersion + " for " + name);
             }
         }
 

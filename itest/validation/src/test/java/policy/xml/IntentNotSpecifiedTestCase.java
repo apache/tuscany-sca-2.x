@@ -50,9 +50,9 @@ public class IntentNotSpecifiedTestCase extends TestCase {
 
     public void testCalculator() {
        Monitor monitor = customDomain.getMonitorInstance();
-       Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
+       assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("IntentNotSpecified"));
+       /*Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem(); 
        assertNotNull(problem);
-       assertEquals("IntentNotSpecified", problem.getMessageId());  
+       assertEquals("IntentNotSpecified", problem.getMessageId());*/  
     }
 }

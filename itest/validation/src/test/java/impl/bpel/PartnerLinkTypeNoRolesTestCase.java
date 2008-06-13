@@ -51,9 +51,10 @@ public class PartnerLinkTypeNoRolesTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
+    	assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("PartnerLinkTypeNoRoles"));
+    	/*Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();        
     	assertNotNull(problem);
-        assertEquals("PartnerLinkTypeNoRoles", problem.getMessageId());
+        assertEquals("PartnerLinkTypeNoRoles", problem.getMessageId());*/
+        
     }
 }

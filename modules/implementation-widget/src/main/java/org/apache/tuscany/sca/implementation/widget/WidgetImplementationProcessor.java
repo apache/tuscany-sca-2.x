@@ -51,8 +51,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class WidgetImplementationProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");
-    private static final String MSG_LOCATION_MISSING = "Reading implementation.widget - location attribute missing";
-    
+        
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private WidgetImplementationFactory implementationFactory;
@@ -112,14 +111,13 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
 
         // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
-
         if (location != null) {                
             implementation = implementationFactory.createWidgetImplementation();
             implementation.setLocation(location);
             implementation.setUnresolved(true);
         } else {
             error("LocationAttributeMissing", reader);
-            throw new ContributionReadException(MSG_LOCATION_MISSING);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
         // Skip to end element
@@ -134,28 +132,31 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
 
     public void resolve(WidgetImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
         
-        // Resolve the resource directory location
-        Artifact artifact = contributionFactory.createArtifact();
-        artifact.setURI(implementation.getLocation());
-        Artifact resolved = resolver.resolveModel(Artifact.class, artifact);
-        if (resolved.getLocation() != null) {
-            try {
-                implementation.setLocationURL(new URL(resolved.getLocation()));
-                implementation.setUnresolved(false);
-                
-                //introspect implementation
-                WidgetImplementationIntrospector widgetIntrospector = new WidgetImplementationIntrospector(assemblyFactory, implementation);
-                widgetIntrospector.introspectImplementation();
-
-            } catch (IOException e) {
-            	ContributionResolveException ce = new ContributionResolveException(e);
-            	error("ContributionResolveException", resolver, ce);
-                //throw ce;
+    	if (implementation != null) {
+    		// Resolve the resource directory location
+            Artifact artifact = contributionFactory.createArtifact();
+            artifact.setURI(implementation.getLocation());
+            Artifact resolved = resolver.resolveModel(Artifact.class, artifact);
+            if (resolved.getLocation() != null) {
+                try {
+                    implementation.setLocationURL(new URL(resolved.getLocation()));                 
+                    
+                    //introspect implementation
+                    WidgetImplementationIntrospector widgetIntrospector = 
+                    	new WidgetImplementationIntrospector(assemblyFactory, implementation);
+                    widgetIntrospector.introspectImplementation();
+                    
+                    implementation.setUnresolved(false);
+                } catch (IOException e) {
+                	ContributionResolveException ce = new ContributionResolveException(e);
+                	error("ContributionResolveException", resolver, ce);
+                    //throw ce;
+                }
+            } else {
+                error("CouldNotResolveLocation", resolver, implementation.getLocation());
+                //throw new ContributionResolveException("Could not resolve implementation.widget location: " + implementation.getLocation());            
             }
-        } else {
-            error("CouldNotResolveLocation", resolver, implementation.getLocation());
-            throw new ContributionResolveException("Could not resolve implementation.widget location: " + implementation.getLocation());            
-        }
+    	}
     }
 
     public void write(WidgetImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {

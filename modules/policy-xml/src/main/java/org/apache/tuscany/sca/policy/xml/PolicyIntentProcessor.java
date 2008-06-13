@@ -176,8 +176,8 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                 writer.writeAttribute(CONSTRAINS, sb.toString());
             } else {
             	error("ContrainsAttributeMissing", policyIntent, policyIntent.getName());
-                throw new ContributionWriteException("Contrains attribute missing from " +
-                                "Policy Intent Definition" + policyIntent.getName());
+                //throw new ContributionWriteException("Contrains attribute missing from " +
+                                        //"Policy Intent Definition" + policyIntent.getName());
             }
         }
         
@@ -251,9 +251,8 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                         requiredIntents.add(resolvedRequiredIntent);
                     } else {
                     	error("RequiredIntentNotFound", resolver, requiredIntent, policyIntent);
-                        throw new ContributionResolveException("Required Intent - " + requiredIntent
-                                                                     + " not found for ProfileIntent "
-                                                                     + policyIntent);
+                        //throw new ContributionResolveException("Required Intent - " + requiredIntent
+                                                    //+ " not found for ProfileIntent " + policyIntent);
                     }
                 } else {
                     requiredIntents.add(requiredIntent);
@@ -276,9 +275,8 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                     policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
                 } else {
                 	error("QualifiableIntentNotFound", resolver, qualifiableIntent, policyIntent);
-                    throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
-                        + " not found for QualifiedIntent "
-                        + policyIntent);
+                    //throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
+                                                    //+ " not found for QualifiedIntent " + policyIntent);
                 }
     
             }
@@ -314,9 +312,8 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
         String value = reader.getAttributeValue(null, CONSTRAINS);
         if ( policyIntent instanceof QualifiedIntent && value != null) {
         	error("ErrorInPolicyIntentDefinition", policyIntent, policyIntent.getName(), QUALIFIED_INTENT_CONSTRAINS_ERROR);
-            String errorMsg = 
-                "Error in PolicyIntent Definition - " + policyIntent.getName() + QUALIFIED_INTENT_CONSTRAINS_ERROR;
-            throw new ContributionReadException(errorMsg);
+            //String errorMsg = "Error in PolicyIntent Definition - " + policyIntent.getName() + QUALIFIED_INTENT_CONSTRAINS_ERROR;
+            //throw new ContributionReadException(errorMsg);
         } else {
             if (value != null) {
                 List<QName> constrainedArtifacts = policyIntent.getConstrains();
@@ -368,10 +365,8 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                         excludedIntents.add(resolvedExcludedIntent);
                     } else {
                     	error("ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
-                        throw new ContributionResolveException(
-                                    "Excluded Intent " + excludedIntent
-                                  + " not found for intent " + policyIntent);
-
+                        //throw new ContributionResolveException("Excluded Intent " + excludedIntent
+                                                         //+ " not found for intent " + policyIntent);
                     }
                 } else {
                     excludedIntents.add(excludedIntent);

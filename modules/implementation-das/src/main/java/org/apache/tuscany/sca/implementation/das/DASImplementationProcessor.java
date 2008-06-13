@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -44,6 +45,8 @@ import org.apache.tuscany.sca.data.engine.ConnectionInfoArtifactProcessor;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
@@ -83,6 +86,20 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
         // Returns the type of model processed by this processor
         return DASImplementation.class;
     }
+    
+    /**
+     * Report a error.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-das-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
 
     /*
      * <component name="CompanyDataComponent">
@@ -100,17 +117,29 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
         assert IMPLEMENTATION_DAS.equals(reader.getName());
 
         // Read an <implementation.das> element
+        
+        // Create an initialize the DAS implementation model
+        DASImplementation implementation = null;
 
         // Read the das config file attribute.
         // This is das configuration side file to use
-        String config = reader.getAttributeValue(null, "config");
+        String config = reader.getAttributeValue(null, "config");        
 
         // Read the data access type attribute
         // This is the type of data store in use (e.g RDB, XML, etc)
-        String dataAccessType = reader.getAttributeValue(null, "dataAccessType");
+        String dataAccessType = reader.getAttributeValue(null, "dataAccessType");        
+        
+        // Both config and dataAccessType are required attributes, hence validating.
+        if (config == null || dataAccessType == null) {
+            if (config == null) 
+                error("ConfigAttributeMissing", reader);
+            if (dataAccessType == null) 
+                error("DataAccessTypeAttributeMissing", reader);
+            return implementation;
+        }
 
         // Create an initialize the DAS implementation model
-        DASImplementation implementation = dasFactory.createDASImplementation();
+        implementation = dasFactory.createDASImplementation();
         implementation.setConfig(config);
         implementation.setDataAccessType(dataAccessType);
         implementation.setUnresolved(true);

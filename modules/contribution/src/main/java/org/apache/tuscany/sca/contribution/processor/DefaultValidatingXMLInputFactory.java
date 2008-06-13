@@ -44,7 +44,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -74,6 +77,20 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.schemas = schemas;
         this.monitor = monitor;
     }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
     
     /**
      * Initialize the registered schemas and create an aggregated schema for
@@ -109,6 +126,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                         }
                     });
                 } catch (PrivilegedActionException e) {
+                	error("PrivilegedActionException", url, (IOException)e.getException());
                     throw (IOException)e.getException();
                 }
                 sources[i] = new StreamSource(urlStream, uri);
@@ -125,6 +143,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                     }
                 });
             } catch (PrivilegedActionException e) {
+            	error("PrivilegedActionException", schemaFactory, (SAXException)e.getException());
                 throw (SAXException)e.getException();
             }
 
@@ -132,7 +151,9 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             // FIXME Log this, some old JDKs don't support XMLSchema validation
             //e.printStackTrace();
         } catch (SAXParseException e) {
-            throw new IllegalStateException(e);
+        	IllegalStateException ie = new IllegalStateException(e);
+        	error("IllegalStateException", schemas, ie);
+            throw ie;
         } catch (Exception e) {
             //FIXME Log this, some old JDKs don't support XMLSchema validation
             e.printStackTrace();

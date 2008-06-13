@@ -55,6 +55,8 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
@@ -64,6 +66,10 @@ import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -89,6 +95,7 @@ public class DefaultSCADomain extends SCADomain {
     private ClassLoader applicationClassLoader;
     private String domainURI;
     private String contributionLocation;
+    private Monitor monitor;
 
     /**
      * Constructs a new domain facade.
@@ -124,6 +131,11 @@ public class DefaultSCADomain extends SCADomain {
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
+        
+        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
 
         // Contribute the given contribution to an in-memory repository
         ContributionService contributionService = runtime.getContributionService();
@@ -224,6 +236,7 @@ public class DefaultSCADomain extends SCADomain {
         for (Composite composite : domainComposite.getIncludes()) {
             try {
                 runtime.buildComposite(composite);
+                analyseProblems();
             } catch (CompositeBuilderException e) {
                 throw new ServiceRuntimeException(e);
             }
@@ -281,6 +294,23 @@ public class DefaultSCADomain extends SCADomain {
         //            }
         //        }
     }
+    
+    private void analyseProblems() throws ServiceRuntimeException {
+        
+        for (Problem problem : monitor.getProblems()){
+            // look for any reported errors. Schema errors are filtered
+            // out as there are several that are generally reported at the
+            // moment and we don't want to stop 
+            if ((problem.getSeverity() == Severity.ERROR) &&
+                 (!problem.getMessageId().equals("SchemaError"))){
+                if (problem.getCause() != null){
+                    throw new ServiceRuntimeException(problem.getCause());
+                } else {
+                    throw new ServiceRuntimeException(problem.toString());
+                }    
+            }
+        }
+    }    
 
     protected void addContribution(final ContributionService contributionService, final URL contributionURL) throws IOException {
         String contributionURI = FileHelper.getName(contributionURL.getPath());
@@ -300,6 +330,8 @@ public class DefaultSCADomain extends SCADomain {
         } catch (PrivilegedActionException e) {
             throw new ServiceRuntimeException(e.getException());
         }
+        
+        analyseProblems();
     }
 
     @Override

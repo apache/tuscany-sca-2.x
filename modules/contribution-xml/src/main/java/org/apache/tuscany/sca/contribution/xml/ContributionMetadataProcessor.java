@@ -122,24 +122,22 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                         contribution = this.contributionFactory.createContributionMetadata();
                         contribution.setUnresolved(true);
                         
-                    } else if (DEPLOYABLE_QNAME.equals(name)) {
-                        
+                    } else if (DEPLOYABLE_QNAME.equals(name)) {                        
                         
                         // Read <deployable>
                         QName compositeName = getQName(reader, "composite");
                         if (compositeName == null) {
                         	error("AttributeCompositeMissing", reader);
-                            throw new ContributionReadException("Attribute 'composite' is missing");
+                            //throw new ContributionReadException("Attribute 'composite' is missing");
+                        } else {
+                            if (contribution != null) {
+                                Composite composite = assemblyFactory.createComposite();
+                                composite.setName(compositeName);
+                                composite.setUnresolved(true);
+                                contribution.getDeployables().add(composite);                         
+                            }
                         }
-
-                        if (contribution != null) {
-                            Composite composite = assemblyFactory.createComposite();
-                            composite.setName(compositeName);
-                            composite.setUnresolved(true);
-                            contribution.getDeployables().add(composite);
-                            
-                        }
-                    } else{
+                    } else {
 
                         // Read an extension element
                         Object extension = extensionProcessor.read(reader);
@@ -195,8 +193,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     }
 
     public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
-        contribution.setUnresolved(false);
-        
+               
         // Resolve imports and exports
         for (Export export: contribution.getExports()) {
             extensionProcessor.resolve(export, resolver);
@@ -206,7 +203,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         }
         
         // Resolve deployable composites
-        List<Composite> deployables = contribution.getDeployables();
+        List<Composite> deployables = contribution.getDeployables();        
         for (int i = 0, n = deployables.size(); i < n; i++) {
             Composite deployable = deployables.get(i);
             Composite resolved = (Composite)resolver.resolveModel(Composite.class, deployable);
@@ -214,5 +211,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                 deployables.set(i, resolved);
             }
         }
+        
+        contribution.setUnresolved(false);
     }
 }

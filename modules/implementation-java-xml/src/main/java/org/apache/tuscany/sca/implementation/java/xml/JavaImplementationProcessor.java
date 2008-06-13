@@ -182,19 +182,22 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         Class javaClass = classReference.getJavaClass();
         if (javaClass == null) {
         	error("ClassNotFoundException", resolver, javaImplementation.getName());
-            throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
+            //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
+        	return;
         }
-        javaImplementation.setJavaClass(javaClass);
-        javaImplementation.setUnresolved(false);
+        
+        javaImplementation.setJavaClass(javaClass);        
 
         try {
             javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
         } catch (IntrospectionException e) {
         	ContributionResolveException ce = new ContributionResolveException(e);
         	error("ContributionResolveException", javaFactory, ce);
-            throw ce;
+            //throw ce;
+        	return;
         }
-
+        
+        javaImplementation.setUnresolved(false);
         mergeComponentType(resolver, javaImplementation);
 
         // FIXME the introspector should always create at least one service
