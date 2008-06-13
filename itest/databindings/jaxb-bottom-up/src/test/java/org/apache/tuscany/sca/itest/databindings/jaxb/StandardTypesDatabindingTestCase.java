@@ -556,7 +556,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObject.
      */
     @Test
-    @Ignore("TUSCANY-2385")
     public void testWSNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -568,7 +567,7 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    @Ignore("TUSCANY-2385")
+    @Ignore("TUSCANY-2389")
     public void testWSNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
@@ -1166,13 +1165,12 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewObject(StandardTypesServiceClient serviceClient) {
-        Object[] objs = new Object[6];
+        Object[] objs = new Object[5];
         objs[0] = "Hello";
         objs[1] = 10;
-        objs[2] = -1.0;
-        objs[3] = URI.create("http://tuscany");
+        objs[2] = null;
+        objs[3] = -1.0;
         objs[4] = null;
-        objs[5] = UUID.randomUUID();
 
         for (int i = 0; i < objs.length; ++i) {
             Object expected = StandardTypesTransformer.getNewObject(objs[i]);
@@ -1185,11 +1183,12 @@ public class StandardTypesDatabindingTestCase {
         Object[] objs = new Object[5];
         objs[0] = "Hello";
         objs[1] = 10;
-        objs[2] = -1.0;
-        objs[3] = URI.create("http://tuscany");
+        objs[2] = null;
+        objs[3] = -1.0;
         objs[4] = null;
 
         Object[] actual = serviceClient.getNewObjectArrayForward(objs);
+        Assert.assertEquals(objs.length, actual.length);
         for (int i = 0; i < objs.length; ++i) {
             Object expected = StandardTypesTransformer.getNewObject(objs[i]);
             Assert.assertEquals(expected, actual[i]);
