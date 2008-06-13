@@ -19,12 +19,11 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
-import java.util.List;
-
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
 
 /**
  * Default implementation of a ProxyFactoryExtensionPoint.
@@ -38,115 +37,38 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     private ProxyFactory interfaceFactory;
     private ProxyFactory classFactory;
 
+    public DefaultProxyFactoryExtensionPoint(ExtensionPointRegistry extensionPoints) {
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
+        
+        interfaceFactory = new JDKProxyFactory(messageFactory, interfaceContractMapper);
+    }
+
     public DefaultProxyFactoryExtensionPoint(MessageFactory messageFactory, InterfaceContractMapper mapper) {
         this.interfaceContractMapper = mapper;
         this.messageFactory = messageFactory;
         interfaceFactory = new JDKProxyFactory(messageFactory, mapper);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint#getClassProxyFactory()
-     */
     public ProxyFactory getClassProxyFactory() {
         return classFactory;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint#getInterfaceProxyFactory()
-     */
     public ProxyFactory getInterfaceProxyFactory() {
         return interfaceFactory;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint#setClassProxyFactory(org.apache.tuscany.sca.core.invocation.ProxyFactory)
-     */
     public void setClassProxyFactory(ProxyFactory factory) {
         this.classFactory = factory;
 
     }
 
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint#setInterfaceProxyFactory(org.apache.tuscany.sca.core.invocation.ProxyFactory)
-     */
     public void setInterfaceProxyFactory(ProxyFactory factory) {
         this.interfaceFactory = factory;
 
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#cast(java.lang.Object)
-     */
-    @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        if (interfaceFactory.isProxyClass(target.getClass())) {
-            return (R)interfaceFactory.cast(target);
-        } else if (classFactory != null && classFactory.isProxyClass(target.getClass())) {
-            return (R)classFactory.cast(target);
-        } else {
-            throw new IllegalArgumentException("The target is not a callable proxy");
-        }
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createCallbackProxy(java.lang.Class,
-     *      java.util.List)
-     */
-    public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        if (interfaze.isInterface()) {
-            return interfaceFactory.createCallbackProxy(interfaze, wires);
-        } else {
-            return classFactory.createCallbackProxy(interfaze, wires);
-        }
-    }
-
-    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
-        if (callableReference.getBusinessInterface().isInterface()) {
-            return interfaceFactory.createProxy(callableReference);
-        } else {
-            return classFactory.createProxy(callableReference);
-        }
-    }
-
-    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
-        if (callbackReference.getBusinessInterface().isInterface()) {
-            return interfaceFactory.createCallbackProxy(callbackReference);
-        } else {
-            return classFactory.createCallbackProxy(callbackReference);
-        }
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
-     *      org.apache.tuscany.sca.runtime.RuntimeWire)
-     */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        if (interfaze.isInterface()) {
-            return interfaceFactory.createProxy(interfaze, wire);
-        } else {
-            return classFactory.createProxy(interfaze, wire);
-        }
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#isProxyClass(java.lang.Class)
-     */
-    public boolean isProxyClass(Class<?> clazz) {
-        return interfaceFactory.isProxyClass(clazz) || (classFactory != null && classFactory.isProxyClass(clazz));
-    }
-
-    /**
-     * @return the interfaceContractMapper
-     */
-    public InterfaceContractMapper getInterfaceContractMapper() {
-        return interfaceContractMapper;
-    }
-
-    /**
-     * @return the messageFactory
-     */
-    public MessageFactory getMessageFactory() {
-        return messageFactory;
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.http.jetty.JettyServer;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -45,7 +46,8 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
         
         if (servletHosts.getServletHosts().size() < 1) {
-            final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+            UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+            final WorkScheduler workScheduler = utilities.getUtility(WorkScheduler.class);
             // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
             try {
                 server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {

@@ -34,8 +34,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
-import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
-import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -50,8 +48,9 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
@@ -105,27 +104,23 @@ public class ReallySmallRuntime {
     	
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
 
-        //Get work scheduler
-        workScheduler = registry.getExtensionPoint(WorkScheduler.class);
+        // Get work scheduler
+        workScheduler = utilities.getUtility(WorkScheduler.class);
 
         // Create an interface contract mapper
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
         // Get factory extension point
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
-        // Create context factory extension point
-        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint(registry);
-        registry.addExtensionPoint(contextFactories);
-        
-        // Create Message factory
-        MessageFactory messageFactory = new MessageFactoryImpl();
-        factories.addFactory(messageFactory);
+        // Get Message factory
+        MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
 
-        // Create a proxy factory
-        proxyFactory = ReallySmallRuntimeBuilder.createProxyFactory(registry, mapper, messageFactory);
+        // Get proxy factory
+        ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);  
+        proxyFactory = new ExtensibleProxyFactory(proxyFactories); 
 
         // Create model factories
         assemblyFactory = new RuntimeAssemblyFactory();

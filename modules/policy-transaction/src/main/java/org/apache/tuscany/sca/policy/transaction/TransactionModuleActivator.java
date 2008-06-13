@@ -23,6 +23,7 @@ import javax.transaction.TransactionManager;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 
 /**
  * @version $Rev$ $Date$
@@ -35,7 +36,8 @@ public class TransactionModuleActivator implements ModuleActivator {
      */
     public void start(ExtensionPointRegistry registry) {
         if (registry != null) {
-            TransactionManager transactionManager = registry.getExtensionPoint(TransactionManager.class);
+            UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+            TransactionManager transactionManager = utilities.getUtility(TransactionManager.class);
             if (transactionManager != null) {
                 // The transaction manage is provided by the hosting environment
 //                RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
@@ -52,7 +54,8 @@ public class TransactionModuleActivator implements ModuleActivator {
             throw new IllegalStateException(e);
         }
         if (registry != null) {
-            registry.addExtensionPoint(wrapper.getTransactionManager());
+            UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+            utilities.addUtility(wrapper.getTransactionManager());
 //            RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
 //                registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
 //            TransactionManagerHelper helper = new TransactionManagerHelper(wrapper.getTransactionManager());
@@ -70,7 +73,8 @@ public class TransactionModuleActivator implements ModuleActivator {
                 wrapper = null;
             }
             if (registry != null && wrapper != null) {
-                registry.removeExtensionPoint(wrapper.getTransactionManager());
+                UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+                utilities.removeUtility(wrapper.getTransactionManager());
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);
