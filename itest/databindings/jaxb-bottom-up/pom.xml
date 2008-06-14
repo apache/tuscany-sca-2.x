@@ -21,13 +21,13 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>itest-databindings</artifactId>
-        <version>2.0-incubating-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>itest-databindings-jaxb-bottom-up</artifactId>
-    <version>2.0-incubating-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Apache Tuscany SCA Databinding Integration Tests - JAXB Bottom Up</name>
 
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

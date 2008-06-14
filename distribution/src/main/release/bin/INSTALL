@@ -4,7 +4,6 @@ Installing the Apache Tuscany SCA 1.2 (incubating) April 2008 Release binary dis
 Unzip Tuscany binary distribution archive and you get the following:
 
 tuscany-sca-1.1-incubating        
-   DISCLAIMER    - the ASF incubation disclaimer
    INSTALL       - this help file
    LICENSE       - the Apache License and any dependecy licenses
    NOTICE        - attribution notices associated with the licenses
