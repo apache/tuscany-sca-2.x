@@ -24,14 +24,14 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-demos</artifactId>
-        <version>2.0-incubating-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>demo-alert-aggregator-webapp</artifactId>
     <packaging>war</packaging>
-    <version>2.0-incubating-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <name>Apache Tuscany SCA Alert Aggregator Demo</name>
     <url>http://cwiki.apache.org/TUSCANY</url>
 
@@ -109,24 +109,24 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-atom-abdera</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rss-rome</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
@@ -326,7 +326,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-ant-generator</artifactId>
-                <version>2.0-incubating-SNAPSHOT</version>
+                <version>1.4-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <configuration>

@@ -22,15 +22,15 @@
       Apache Tuscany SCA Tools.
    </description>
    
-   <feature id="org.apache.tuscany.sca.feature" version="1.2.0"
-      url="features/org.apache.tuscany.sca.feature-2.0-incubating-SNAPSHOT.jar"/>
+   <feature id="org.apache.tuscany.sca.feature" version="1.4.0"
+      url="features/org.apache.tuscany.sca.feature-1.4-SNAPSHOT.jar"/>
    
-   <archive path="plugins/org.apache.tuscany.sca.core_1.2.0.jar"
-      url="plugins/org.apache.tuscany.sca.core-2.0-incubating-SNAPSHOT.jar"/>
+   <archive path="plugins/org.apache.tuscany.sca.core_1.4.0.jar"
+      url="plugins/org.apache.tuscany.sca.core-1.4-SNAPSHOT.jar"/>
 
-   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/runtime/apache-tuscany-sca-2.0-incubating-SNAPSHOT.jar"
-      url="../apache-tuscany-sca-2.0-incubating-SNAPSHOT.zip"/>
+   <archive path="features/org.apache.tuscany.sca.feature_1.4.0/runtime/apache-tuscany-sca-1.4-SNAPSHOT.jar"
+      url="../apache-tuscany-sca-1.4-SNAPSHOT.zip"/>
 
-   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/src/apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"
-      url="../apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"/>   
+   <archive path="features/org.apache.tuscany.sca.feature_1.4.0/src/apache-tuscany-sca-1.4-SNAPSHOT-src.zip"
+      url="../apache-tuscany-sca-1.4-SNAPSHOT-src.zip"/>   
 </site>

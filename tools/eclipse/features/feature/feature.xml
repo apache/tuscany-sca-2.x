@@ -20,7 +20,7 @@
 <feature
       id="org.apache.tuscany.sca.feature"
       label="Apache Tuscany SCA Tools"
-      version="1.2.0"
+      version="1.4.0"
       provider-name="Apache Software Foundation">
    <install-handler handler="org.eclipse.update.core.DefaultInstallHandler"/>
 
@@ -56,16 +56,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
          id="org.apache.tuscany.sca.core"
          download-size="0"
          install-size="0"
-         version="1.2.0"
+         version="1.4.0"
          unpack="false"/>
 
    <data
-         id="runtime/apache-tuscany-sca-2.0-incubating-SNAPSHOT.jar"
+         id="runtime/apache-tuscany-sca-1.4-SNAPSHOT.jar"
          download-size="0"
          install-size="0"/>
 
    <data
-         id="src/apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"
+         id="src/apache-tuscany-sca-1.4-SNAPSHOT-src.zip"
          download-size="0"
          install-size="0"/>
 

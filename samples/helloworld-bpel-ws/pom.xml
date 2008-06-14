@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>2.0-incubating-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-helloworld-bpel-ws</artifactId>
@@ -39,34 +39,34 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-bpel-ode</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-wsdl2java</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -187,7 +187,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-wsdl2java</artifactId>
-                <version>2.0-incubating-SNAPSHOT</version>
+                <version>1.4-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <configuration>
