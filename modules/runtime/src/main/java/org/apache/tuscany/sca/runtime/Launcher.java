@@ -34,9 +34,9 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+//import org.apache.tuscany.sca.node.NodeException;
+//import org.apache.tuscany.sca.node.SCANode;
+//import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * A Launcher using a multiple nodes part as part of a domain
@@ -46,8 +46,8 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class Launcher {
     private static final Logger logger = Logger.getLogger(Launcher.class.getName());
 
-    protected SCANodeFactory scaNodeFactory;
-    protected List<SCANode> scaNodes;
+//    protected SCANodeFactory scaNodeFactory;
+//    protected List<SCANode> scaNodes;
     protected String domainName;
     protected File repository;
 
@@ -69,16 +69,16 @@ public class Launcher {
         logger.info("repository: " + repository.getAbsolutePath());
         logger.info("domain: " + ((domainName != null) ? domainName : "STANDALONE"));
         
-        scaNodeFactory = SCANodeFactory.newInstance();
-        scaNodes = new ArrayList<SCANode>();
+//        scaNodeFactory = SCANodeFactory.newInstance();
+//        scaNodes = new ArrayList<SCANode>();
         
         if (repository != null && repository.exists()) {
-            if (isExplodedContribution(repository)) {
-                addContributionFolder(repository);
-            } else {
-                addTopLevelJARs(repository);
-                addSubFolders(repository);
-            }
+//            if (isExplodedContribution(repository)) {
+//                addContributionFolder(repository);
+//            } else {
+//                addTopLevelJARs(repository);
+//                addSubFolders(repository);
+//            }
         }
     }
     
@@ -86,116 +86,116 @@ public class Launcher {
         return getJARsInFolder(folder).length < 1 && containsCompositeFile(folder);
     }
 
-    protected void addContributionFolder(File folder) {
-        SCANode repoNode;
-        try {
-            repoNode = createNode(cp);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-        try {
-            repoNode.addContribution(folder.toURL().toString(), folder.toURL());
-            logger.info("added contribution folder: " + folder.toURL());
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.log(Level.WARNING, "exception adding contribution folder: " + folder, e);
-        }
-    }
-
-    protected URL[] addTopLevelJARs(File repository) {
-        SCANode repoNode;
-        try {
-            repoNode = createNode(cp);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-        URL[] jars = getJARsInFolder(repository);
-        for (URL jarURL : jars) {
-            try {
-                repoNode.addContribution(jarURL.toString(), jarURL);
-                logger.info("added contribution: " + jarURL);
-            } catch (NodeException e) {
-                e.printStackTrace();
-                logger.log(Level.WARNING, "exception adding contribution: " + jarURL, e);
-            }
-        }
-        
-        return jars;
-    }
-
-    protected URL[] addSubFolders(File repository) {
-        URL[] folders = getSubFolders(repository);
-        for (URL folderURL : folders) {
-            try {
-                SCANode scaNode = createNode(cp + "/" + folderURL);
-                scaNode.addContribution(folderURL.toString(), folderURL);
-                logger.info("added contribution: " + folderURL);
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.log(Level.WARNING, "exception adding contribution: " + folderURL, e);
-            }
-        }
-        return folders;
-    }
-
-    public void addContribution(URL contributionURL) throws NodeException {
-        SCANode scaNode = createNode(cp + "/" + contributionURL);
-
-        if (started && domainName == null) {
-            scaNode.stop();
-        }
-        
-        scaNode.addContribution(contributionURL.toString(), contributionURL);
-        logger.info("added contribution: " + contributionURL);
-        
-        if (started) {
-            if (domainName == null) {
-                scaNode.addToDomainLevelComposite((QName)null);
-                scaNode.start();
-            } else {
-                scaNode.addToDomainLevelComposite((QName)null);
-                scaNode.start();
-            }
-        }
-    }
-
-    public void start() {
-        try {
-
-            for (SCANode scaNode : scaNodes) {
-                scaNode.addToDomainLevelComposite((QName)null);
-                scaNode.start();
-            }
-
-        } catch (NodeException e) {
-            throw new RuntimeException(e);
-        }
-        started = true;
-    }
-
-    public void stop() {
-        try {
-            for (SCANode scaNode : scaNodes) {
-                scaNode.stop();
-            }
-        } catch (NodeException e) {
-            throw new RuntimeException(e);
-        }
-        started = false;
-    }
-
-    public void destroy() {
-        try {
-            stop();
-            for (SCANode scaNode : scaNodes) {
-                scaNode.destroy();
-            }
-        } catch (NodeException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    protected void addContributionFolder(File folder) {
+//        SCANode repoNode;
+//        try {
+//            repoNode = createNode(cp);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        
+//        try {
+//            repoNode.addContribution(folder.toURL().toString(), folder.toURL());
+//            logger.info("added contribution folder: " + folder.toURL());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.log(Level.WARNING, "exception adding contribution folder: " + folder, e);
+//        }
+//    }
+//
+//    protected URL[] addTopLevelJARs(File repository) {
+//        SCANode repoNode;
+//        try {
+//            repoNode = createNode(cp);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        
+//        URL[] jars = getJARsInFolder(repository);
+//        for (URL jarURL : jars) {
+//            try {
+//                repoNode.addContribution(jarURL.toString(), jarURL);
+//                logger.info("added contribution: " + jarURL);
+//            } catch (NodeException e) {
+//                e.printStackTrace();
+//                logger.log(Level.WARNING, "exception adding contribution: " + jarURL, e);
+//            }
+//        }
+//        
+//        return jars;
+//    }
+//
+//    protected URL[] addSubFolders(File repository) {
+//        URL[] folders = getSubFolders(repository);
+//        for (URL folderURL : folders) {
+//            try {
+//                SCANode scaNode = createNode(cp + "/" + folderURL);
+//                scaNode.addContribution(folderURL.toString(), folderURL);
+//                logger.info("added contribution: " + folderURL);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                logger.log(Level.WARNING, "exception adding contribution: " + folderURL, e);
+//            }
+//        }
+//        return folders;
+//    }
+//
+//    public void addContribution(URL contributionURL) throws NodeException {
+//        SCANode scaNode = createNode(cp + "/" + contributionURL);
+//
+//        if (started && domainName == null) {
+//            scaNode.stop();
+//        }
+//        
+//        scaNode.addContribution(contributionURL.toString(), contributionURL);
+//        logger.info("added contribution: " + contributionURL);
+//        
+//        if (started) {
+//            if (domainName == null) {
+//                scaNode.addToDomainLevelComposite((QName)null);
+//                scaNode.start();
+//            } else {
+//                scaNode.addToDomainLevelComposite((QName)null);
+//                scaNode.start();
+//            }
+//        }
+//    }
+//
+//    public void start() {
+//        try {
+//
+//            for (SCANode scaNode : scaNodes) {
+//                scaNode.addToDomainLevelComposite((QName)null);
+//                scaNode.start();
+//            }
+//
+//        } catch (NodeException e) {
+//            throw new RuntimeException(e);
+//        }
+//        started = true;
+//    }
+//
+//    public void stop() {
+//        try {
+//            for (SCANode scaNode : scaNodes) {
+//                scaNode.stop();
+//            }
+//        } catch (NodeException e) {
+//            throw new RuntimeException(e);
+//        }
+//        started = false;
+//    }
+//
+//    public void destroy() {
+//        try {
+//            stop();
+//            for (SCANode scaNode : scaNodes) {
+//                scaNode.destroy();
+//            }
+//        } catch (NodeException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     protected URL[] getJARsInFolder(File repository) {
 
@@ -270,23 +270,23 @@ public class Launcher {
      * Creates a new SCA Node unless running as a standalone node in 
      * which case just a single node is used to run for all contributions
      */
-    protected SCANode createNode(String nodeName) throws NodeException {
-        SCANode scaNode;
-
-        if (domainName == null || domainName.length() < 1) {
-            if (scaNodes.size() < 1) {
-                scaNode = scaNodeFactory.createSCANode(nodeName, null);
-                scaNodes.add(scaNode);
-            } else {
-                scaNode = scaNodes.get(0);
-            }
-        } else {
-            scaNode = scaNodeFactory.createSCANode(nodeName, null);
-            scaNodes.add(scaNode);
-        }
-
-        return scaNode;
-    }
+//    protected SCANode createNode(String nodeName) throws NodeException {
+//        SCANode scaNode;
+//
+//        if (domainName == null || domainName.length() < 1) {
+//            if (scaNodes.size() < 1) {
+//                scaNode = scaNodeFactory.createSCANode(nodeName, null);
+//                scaNodes.add(scaNode);
+//            } else {
+//                scaNode = scaNodes.get(0);
+//            }
+//        } else {
+//            scaNode = scaNodeFactory.createSCANode(nodeName, null);
+//            scaNodes.add(scaNode);
+//        }
+//
+//        return scaNode;
+//    }
 
     protected void initFromPropertyFile() {
         File file = new File(repository, "tuscany.properties");
