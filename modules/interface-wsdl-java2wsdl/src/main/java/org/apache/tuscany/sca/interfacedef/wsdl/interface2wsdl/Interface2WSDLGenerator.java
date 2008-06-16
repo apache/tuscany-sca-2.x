@@ -499,9 +499,13 @@ public class Interface2WSDLGenerator {
         part.setName(partName);
         if (arg != null && arg.getLogical() instanceof XMLType) {
             XMLType xmlType = (XMLType)arg.getLogical();
-            part.setElementName(xmlType.getElementName());
+            QName elementName = xmlType.getElementName();
+            part.setElementName(elementName);
+            addNamespace(definition, elementName);
             if (xmlType.getElementName() == null) {
-                part.setTypeName(xmlType.getTypeName());
+                QName typeName = xmlType.getTypeName();
+                part.setTypeName(typeName);
+                addNamespace(definition, typeName);
             }
         }
         return part;
@@ -523,6 +527,7 @@ public class Interface2WSDLGenerator {
                 input ? opWrapper.getInputChildElements() : opWrapper.getOutputChildElements();
             QName wrapperName = elementInfo.getQName();
             part.setElementName(wrapperName);
+            addNamespace(definition, wrapperName);
             wrappers.put(wrapperName, elements);
 
             // FIXME: [rfeng] Ideally, we should try to register the wrappers only. But we are
@@ -595,6 +600,13 @@ public class Interface2WSDLGenerator {
         element.setMany(byte[].class != javaType && javaType.isArray());
         element.setNillable(!javaType.isPrimitive());
         return element;
+    }
+
+    private static void addNamespace(Definition definition, QName name) {
+        String namespace = name.getNamespaceURI();
+        if (definition.getPrefix(namespace) == null) {
+            definition.addNamespace("ns" + definition.getNamespaces().size(), namespace);
+        }
     }
 
     /*

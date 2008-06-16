@@ -26,7 +26,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.BServiceImpl"/>
 		<service name="BService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService"/>
-			<binding.ws/>
+			<binding.ws uri="http://localhost:8080/BComponent"/>
 		</service>
     </component>
 
@@ -58,7 +58,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.CServiceImpl"/>
 		<service name="CService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.CService"/>
-			<binding.ws requires="soap.1_2"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8080/CComponent"/>
 		</service>
     </component>
 

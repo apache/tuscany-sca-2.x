@@ -59,13 +59,13 @@ import org.w3c.dom.Element;
  */
 public class WSDLDefinitionGenerator {
     private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";
-    private static final QName SOAP_ADDRESS = new QName(SOAP_NS, "address");
+    public static final QName SOAP_ADDRESS = new QName(SOAP_NS, "address");
     private static final QName SOAP_BINDING = new QName(SOAP_NS, "binding");
     private static final QName SOAP_BODY = new QName(SOAP_NS, "body");
     private static final QName SOAP_FAULT = new QName(SOAP_NS, "fault");
     private static final QName SOAP_OPERATION = new QName(SOAP_NS, "operation");
     private static final String SOAP12_NS = "http://schemas.xmlsoap.org/wsdl/soap12/";
-    private static final QName SOAP12_ADDRESS = new QName(SOAP12_NS, "address");
+    public static final QName SOAP12_ADDRESS = new QName(SOAP12_NS, "address");
     private static final QName SOAP12_BINDING = new QName(SOAP12_NS, "binding");
     private static final QName SOAP12_BODY = new QName(SOAP12_NS, "body");
     private static final QName SOAP12_FAULT = new QName(SOAP12_NS, "fault");

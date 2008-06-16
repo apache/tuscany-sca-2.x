@@ -22,7 +22,10 @@
            name="QuestionMarkWSDLTests">
 
     <service name="ep1" promote="HelloWorldService">
+        <binding.ws wsdlElement="http://helloworld#wsdl.service(HelloWorldService)"/>
+        <!--
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+        -->
     </service>
 
     <service name="ep2" promote="HelloWorldService">

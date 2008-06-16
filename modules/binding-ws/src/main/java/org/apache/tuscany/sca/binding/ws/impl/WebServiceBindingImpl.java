@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.wsdl.Binding;
+import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
@@ -56,7 +57,6 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private IntentAttachPointType intentAttachPointType;
     private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-    
     private String location;
     private Binding binding;
     private Service service;
@@ -70,6 +70,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private String wsdlNamespace;
     private InterfaceContract bindingInterfaceContract;
     private Element endPointReference;
+    private Definition generatedWSDLDocument;
     
     protected WebServiceBindingImpl() {
     }
@@ -273,7 +274,15 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     public void setEndPointReference(Element epr) {
         this.endPointReference = epr;
     }
-    
+
+    public Definition getWSDLDocument() {
+        return generatedWSDLDocument;
+    }
+
+    public void setWSDLDocument(Definition definition) {
+        this.generatedWSDLDocument = definition;
+    }
+
     public void setPolicySets(List<PolicySet> policySets) {
         this.policySets = policySets; 
     }
