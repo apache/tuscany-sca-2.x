@@ -15,7 +15,9 @@
     <include schemaLocation="sca-binding-webservice.xsd"/>
     <include schemaLocation="sca-binding-jms.xsd"/>
     <include schemaLocation="sca-binding-sca.xsd"/>
-    
+
+    <include schemaLocation="sca-contributions.xsd"/>
+        
     <include schemaLocation="sca-definitions.xsd"/>
     <include schemaLocation="sca-policy.xsd"/>
     
