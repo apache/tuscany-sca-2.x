@@ -45,6 +45,7 @@
                 <module>assembly-xml</module>
                 <module>assembly-xsd</module>
                 <module>binding-corba</module>
+                <module>binding-corba-runtime</module>
                 <module>binding-dwr</module>
                 <module>binding-ejb</module>
                 <module>binding-ejb-runtime</module>
