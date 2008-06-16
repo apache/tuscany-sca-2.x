@@ -30,6 +30,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +79,6 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -116,6 +116,16 @@ public class Axis2ServiceClient {
         this.contract = contract;
         this.wsBinding = wsBinding;
         this.policyHandlerClassnames = policyHandlerClassnames;
+        Definition definition = wsBinding.getWSDLDocument();
+        if (definition != null) {
+            // Can happen if a self-reference.  Reuse the service's WSDL configuration.
+            // In theory this is just a useful optimization but in practice I found
+            // it was needed to make the JUnit test for the helloworld-ws-service-jms
+            // sample run.
+        } else {
+            definition = Axis2WSDLHelper.configureWSDLDefinition(wsBinding, component, contract, servletHost);
+            wsBinding.setWSDLDocument(definition);
+        }
     }
 
     protected void start() {
@@ -172,14 +182,31 @@ public class Axis2ServiceClient {
             createPolicyHandlers();
             setupPolicyHandlers(policyHandlerList, configContext);
 
-            configureWSDLDefinition(wsBinding, component, contract);
-            // The service, port and WSDL definition can be set by the above call
-            Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
-            QName serviceQName =
-                wsBinding.getService() != null ? wsBinding.getService().getQName() : wsBinding.getServiceName();
-            String portName = wsBinding.getPort() != null ? wsBinding.getPort().getName() : wsBinding.getPortName();
+            Definition definition = wsBinding.getWSDLDocument();
+            QName serviceQName = wsBinding.getService().getQName();
+            Port port = wsBinding.getPort();
+            if (port == null) {
+                // service has multiple ports, select one port to use
+                Collection<Port> ports = wsBinding.getService().getPorts().values();
+                for (Port p : ports) {
+                    // look for a SOAP 1.1 port first
+                    if (p.getExtensibilityElements().get(0) instanceof SOAPAddress) {
+                        port = p;
+                        break;
+                    }
+                }
+                if (port == null) {
+                    // no SOAP 1.1 port available, so look for a SOAP 1.2 port
+                    for (Port p : ports) {
+                        if (p.getExtensibilityElements().get(0) instanceof SOAP12Address) {
+                            port = p;
+                            break;
+                        }
+                    }
+                }
+            }
             AxisService axisService =
-                createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
+                createClientSideAxisService(definition, serviceQName, port.getName(), new Options());
 
             HttpClient httpClient = (HttpClient)configContext.getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
             if (httpClient == null) {
@@ -277,12 +304,12 @@ public class Axis2ServiceClient {
      * @throws AxisFault
      */
     @Deprecated
-    public static AxisService createClientSideAxisService(Definition wsdlDefinition,
-                                                          QName wsdlServiceName,
+    public static AxisService createClientSideAxisService(Definition definition,
+                                                          QName serviceName,
                                                           String portName,
                                                           Options options) throws AxisFault {
-        Definition def = getDefinition(wsdlDefinition, wsdlServiceName);
-        final WSDL11ToAxisServiceBuilder serviceBuilder = new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
+        Definition def = getDefinition(definition, serviceName);
+        final WSDL11ToAxisServiceBuilder serviceBuilder = new WSDL11ToAxisServiceBuilder(def, serviceName, portName);
         serviceBuilder.setServerSide(false);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         serviceBuilder.setCustomResolver(new URIResolverImpl(def));
@@ -308,6 +335,7 @@ public class Axis2ServiceClient {
         return axisService;
     }
 
+    /*
     private static <T extends ExtensibilityElement> T getExtensibilityElement(List elements, Class<T> type) {
         for (Object e : elements) {
             if (type.isInstance(e)) {
@@ -316,186 +344,7 @@ public class Axis2ServiceClient {
         }
         return null;
     }
-
-    /**
-     * Generate a suitably configured WSDL definition
-     */
-    protected static void configureWSDLDefinition(WebServiceBinding wsBinding,
-                                                  RuntimeComponent component,
-                                                  AbstractContract contract) {
-        WSDLDefinition wsdlDefinition = wsBinding.getWSDLDefinition();
-        Definition def = wsdlDefinition.getDefinition();
-        if (wsBinding.getWSDLDefinition().getURI() != null) {
-            // The WSDL document was provided by the user.  Generate a new
-            // WSDL document with imports from the user-provided document.
-            WSDLFactory factory = null;
-            try {
-                factory = WSDLFactory.newInstance();
-            } catch (WSDLException e) {
-                throw new RuntimeException(e);
-            }
-            Definition definition = factory.newDefinition();
-
-            // Construct a target namespace from the base URI of the user's
-            // WSDL document (is this what we should be using?) and a path
-            // computed according to the SCA Web Service binding spec.
-            String nsName = component.getName() + "/" + contract.getName();
-            String namespaceURI = null;
-            try {
-                URI userTNS = new URI(def.getTargetNamespace());
-                namespaceURI = userTNS.resolve("/" + nsName).toString();
-            } catch (URISyntaxException e1) {
-            } catch (IllegalArgumentException e2) {
-            }
-
-            // set name and targetNamespace attributes on the definition
-            String defsName = component.getName() + "." + contract.getName();
-            definition.setQName(new QName(namespaceURI, defsName));
-            definition.setTargetNamespace(namespaceURI);
-            definition.addNamespace("tns", namespaceURI);
-
-            // add soap11 or soap12 prefix as required
-            boolean requiresSOAP11 = false;
-            boolean requiresSOAP12 = false;
-            for (Object binding : def.getAllBindings().values()) {
-                List bindingExtensions = ((Binding)binding).getExtensibilityElements();
-                for (final Object extension : bindingExtensions) {
-                    if (extension instanceof SOAPBinding) {
-                        requiresSOAP11 = true;
-                    }
-                    if (extension instanceof SOAP12Binding) {
-                        requiresSOAP12 = true;
-                    }
-                }
-            }
-            if (requiresSOAP11 || wsBinding.getBinding() == null) {
-                definition.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
-            }
-            if (requiresSOAP12) {
-                definition.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
-            }
-
-            // set wsdl namespace prefix on the definition
-            definition.addNamespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
-
-            // import the existing portType
-            int index = 0;
-            List<WSDLDefinition> imports = new ArrayList<WSDLDefinition>();
-            InterfaceContract ic = wsBinding.getBindingInterfaceContract();
-            WSDLInterface wi = (WSDLInterface)ic.getInterface();
-            PortType portType = wi.getPortType();
-            WSDLDefinition ptDef = getPortTypeDefinition(wsdlDefinition, portType.getQName());
-            if (ptDef != null) {
-                Import imp = definition.createImport();
-                String ptNamespace = portType.getQName().getNamespaceURI();
-                imp.setNamespaceURI(ptNamespace);
-                imp.setLocationURI(ptDef.getURI().toString());
-                imp.setDefinition(ptDef.getDefinition());
-                imports.add(ptDef);
-                definition.addNamespace("ns" + index++, ptNamespace);
-                definition.addImport(imp);
-            } else {
-                throw new RuntimeException("Unable to find portType " + portType.getQName());
-            }
-
-            // import an existing binding if specified
-            Binding binding = wsBinding.getBinding();
-            if (binding != null) {
-                String biNamespace = binding.getQName().getNamespaceURI();
-                if (definition.getImports(biNamespace) == null) {
-                    WSDLDefinition biDef = getBindingDefinition(wsdlDefinition, binding.getQName());
-                    if (biDef != null) {
-                        Import imp = definition.createImport();
-                        imp.setNamespaceURI(biNamespace);
-                        imp.setLocationURI(biDef.getURI().toString());
-                        imp.setDefinition(biDef.getDefinition());
-                        imports.add(biDef);
-                        definition.addNamespace("ns" + index++, biNamespace);
-                        definition.addImport(imp);
-                    } else {
-                        throw new RuntimeException("Unable to find binding " + binding.getQName());
-                    }
-                }
-            }
-
-            // replace original WSDL definition by the generated definition
-            def = definition;
-            wsdlDefinition.setDefinition(definition);
-            wsdlDefinition.setLocation(null);
-            wsdlDefinition.setURI(null);
-            wsdlDefinition.getImportedDefinitions().clear();
-            wsdlDefinition.getImportedDefinitions().addAll(imports);
-        }
-
-        QName serviceQName = wsBinding.getServiceName();
-        String portName = wsBinding.getPortName();
-
-        if (portName != null || serviceQName != null) {
-            return;
-        }
-
-        // If no WSDL service or port is specified in the binding element, add a
-        // suitably configured service and port to the WSDL definition.  
-        WSDLDefinitionGenerator helper =
-                new WSDLDefinitionGenerator(Axis2ServiceBindingProvider.requiresSOAP12(wsBinding));
-        if (wsBinding.getBinding() == null) {
-            InterfaceContract ic = wsBinding.getBindingInterfaceContract();
-            WSDLInterface wi = (WSDLInterface)ic.getInterface();
-            PortType portType = wi.getPortType();
-            Service service = helper.createService(def, portType);
-            Binding binding = helper.createBinding(def, portType);
-            helper.createBindingOperations(def, binding, portType);
-            binding.setUndefined(false);
-            def.addBinding(binding);
-            
-            Port port = helper.createPort(def, binding, service, wsBinding.getURI());
-            wsBinding.setService(service);
-            wsBinding.setPort(port);
-            wsBinding.setBinding(port.getBinding());
-        } else {
-            Service service = helper.createService(def, wsBinding.getBinding());
-            Port port = helper.createPort(def, wsBinding.getBinding(), service, wsBinding.getURI());
-            wsBinding.setService(service);
-            wsBinding.setPort(port);
-        }
-
-    }
-
-    private static WSDLDefinition getPortTypeDefinition(WSDLDefinition def, QName portTypeName) {
-        
-        if (def == null || portTypeName == null) {
-            return def;
-        }
-        Object portType = def.getDefinition().getPortTypes().get(portTypeName);
-        if (portType != null) {
-            return def;
-        }
-        for (WSDLDefinition impDef : def.getImportedDefinitions()) {
-            WSDLDefinition d = getPortTypeDefinition(impDef, portTypeName);
-            if (d != null) {
-                return d;
-            }
-        }
-        return null;
-    }
-
-    private static WSDLDefinition getBindingDefinition(WSDLDefinition def, QName bindingName) {
-        
-        if (def == null || bindingName == null) {
-            return def;
-        }
-        Object binding = def.getDefinition().getBindings().get(bindingName);
-        if (binding != null) {
-            return def;
-        }
-        for (WSDLDefinition impDef : def.getImportedDefinitions()) {
-            WSDLDefinition d = getBindingDefinition(impDef, bindingName);
-            if (d != null) {
-                return d;
-            }
-        }
-        return null;
-    }
+    */
 
     protected void stop() {
         if (serviceClient != null) {
@@ -658,4 +507,5 @@ public class Axis2ServiceClient {
             aHandler.setUp(configContext);
         }
     }
+
 }

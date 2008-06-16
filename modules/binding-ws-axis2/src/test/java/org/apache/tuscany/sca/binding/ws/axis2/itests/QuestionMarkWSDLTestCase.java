@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.itests;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 
 import javax.wsdl.Definition;
@@ -48,13 +52,21 @@ public class QuestionMarkWSDLTestCase extends TestCase {
      * Tests ?wsdl works and returns the correct port endpoint from the WSDL
      */
     public void testWSDLPortEndpoint() throws Exception {
+        InputStream inp = new URL("http://localhost:8085/services/HelloWorldWebService?wsdl").openStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(inp));
+        String line;
+        while((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/services/HelloWorldWebService?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://helloworld", "HelloWorldService"));
+        Service service = definition.getService(new QName("http://helloworld/HelloWorldService/$promoted$.ep1",
+                                                          "HelloWorldService"));
         Port port = service.getPort("HelloWorldSoapPort");
 
         String endpoint = getEndpoint(port);
@@ -66,6 +78,13 @@ public class QuestionMarkWSDLTestCase extends TestCase {
      * Tests ?wsdl works and returns the correct port endpoint from binding.ws with a custom URI
      */
     public void testCustomEndpoint() throws Exception {
+        InputStream inp = new URL("http://localhost:8085/foo/bar?wsdl").openStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(inp));
+        String line;
+        while((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
         wsdlReader.setFeature("javax.wsdl.verbose",false);
         wsdlReader.setFeature("javax.wsdl.importDocuments",true);

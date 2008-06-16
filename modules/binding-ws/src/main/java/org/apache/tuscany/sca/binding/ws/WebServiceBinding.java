@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.ws;
 
+import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
@@ -196,4 +197,17 @@ public interface WebServiceBinding extends Binding {
     Element getEndPointReference();
     
     void setEndPointReference(Element element);
+
+    /**
+     * Returns the generated WSDL definitions document.
+     * @return the generated WSDL definitions document
+     */
+    Definition getWSDLDocument();
+
+    /**
+     * Sets the generated WSDL definitions document.
+     * @param definition the generated WSDL definitions document
+     */
+    void setWSDLDocument(Definition definition);
+
 }
