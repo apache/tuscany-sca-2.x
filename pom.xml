@@ -33,9 +33,9 @@
     <version>1.4-SNAPSHOT</version>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/tuscany/java/sca</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/tuscany/java/sca</developerConnection>
-        <url>http://svn.apache.org/repos/asf/incubator/tuscany/java/sca</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
+        <url>http://svn.apache.org/repos/asf/tuscany/java/sca</url>
     </scm>
 
     <repositories>
