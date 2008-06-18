@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -425,10 +426,9 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         System.out.println("setTransient called with boolean: " + t );
     }
 
-    /*public List<Element> getExtensionElement(QName arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }*/
+    public List<Element> getExtensionElement(QName arg0) {
+        return Collections.emptyList();
+    }
     // end of other public APIs
     //-----------------------------------------------------------------------------
 
