@@ -116,78 +116,78 @@
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-epr</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-store</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-dao</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-dao</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-dao-jpa</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-runtime</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-api</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-scheduler-simple</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-utils</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-compiler</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-schemas</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-bpel-obj</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-jacob</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ode</groupId>
 			<artifactId>ode-jacob-ap</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 		</dependency>
 		
 		<!-- ODE Dependencies -->
@@ -367,8 +367,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-                                <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
-                                <version>2.3.1</version>
+                <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
+                <version>2.3.1</version>
 				<configuration>
 					<useFile>false</useFile>
 					<trimStackTrace>false</trimStackTrace>
@@ -390,7 +390,7 @@
 								<artifactItem>
 									<groupId>org.apache.ode</groupId>
 									<artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-									<version>1.1</version>
+									<version>1.1.1</version>
 									<type>zip</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
