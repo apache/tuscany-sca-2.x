@@ -60,7 +60,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
      */
     private void error(String message, Object model, Exception ex) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
+            Problem problem = new ProblemImpl(this.getClass().getName(), "xsd-xml-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }        
     }
