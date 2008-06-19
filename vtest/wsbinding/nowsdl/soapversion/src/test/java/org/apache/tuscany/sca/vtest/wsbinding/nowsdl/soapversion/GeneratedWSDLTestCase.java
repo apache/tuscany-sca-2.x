@@ -225,11 +225,11 @@ public class GeneratedWSDLTestCase {
      * within the document, derived from the requirements of the binding, or
      * are imported from existing WSDL documents.<br>
      * Generated bindings have the following fixed assumptions:<br>
-     * <li>use=”literal” for input and output messages</li>
-     * <li>style=”document” for the binding</li>
+     * <li>use="literal" for input and output messages</li>
+     * <li>style="document" for the binding</li>
      * <li>All faults map to soap:faults</li>
      * <li>No header or headerFault elements are generated</li>
-     * <li>The transport is “http://schemas.xmlsoap.org/soap/http”, unless the
+     * <li>The transport is "http://schemas.xmlsoap.org/soap/http", unless the
      * system provides intents for alternative transports<br>
      * <p>
      */
