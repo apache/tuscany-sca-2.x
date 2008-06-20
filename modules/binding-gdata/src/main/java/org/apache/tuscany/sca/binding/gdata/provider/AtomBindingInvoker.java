@@ -28,9 +28,11 @@ import com.google.gdata.client.GoogleService;
 import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
+import com.google.gdata.data.extensions.EventEntry;
 import java.net.URL;
 import com.google.gdata.util.ServiceException;
 import com.google.gdata.util.ResourceNotFoundException;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * Invoker for the Atom binding.
@@ -41,12 +43,12 @@ class AtomBindingInvoker implements Invoker {
 
     Operation operation;
     String uri;
-    GoogleService myService;
+    GoogleService service;
 
-    AtomBindingInvoker(Operation operation, String uri, GoogleService myService) {
+    AtomBindingInvoker(Operation operation, String uri, GoogleService service) {
         this.operation = operation;
         this.uri = uri;
-        this.myService = myService;
+        this.service = service;
     }
 
     public Message invoke(Message msg) {
@@ -61,14 +63,27 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class GetInvoker extends AtomBindingInvoker {
 
-        public GetInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public GetInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
-            return super.invoke(msg);
+
+            try {
+                String id = (String) ((Object[]) msg.getBody())[0];
+
+                //FIXME - Adapt the class to each kind of entry
+                BaseEntry searchedEntry = service.getEntry(new URL(id), EventEntry.class);
+
+                msg.setBody(searchedEntry);
+
+            } catch (IOException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            }
+            return msg;
         }
     }
 
@@ -77,15 +92,27 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PostInvoker extends AtomBindingInvoker {
 
-        public PostInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public PostInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
-            return super.invoke(msg);
 
+            try {
+
+                BaseEntry entry = (BaseEntry) ((Object[]) msg.getBody())[0];
+                BaseEntry returnedEntry = service.insert(new URL(uri), entry);
+
+                msg.setBody(returnedEntry);
+
+            } catch (IOException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            }
+
+            return msg;
         }
     }
 
@@ -94,14 +121,29 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PutInvoker extends AtomBindingInvoker {
 
-        public PutInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public PutInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
-            return super.invoke(msg);
+            try {
+
+                Object[] args = (Object[]) msg.getBody();
+                String id = (String) args[0];
+                BaseEntry entry = (BaseEntry) args[1];
+
+                BaseEntry updatedEntry = service.update(new URL(id), entry);
+
+                msg.setBody(updatedEntry);
+
+            } catch (IOException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            }
+
+            return msg;
         }
     }
 
@@ -110,14 +152,23 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class DeleteInvoker extends AtomBindingInvoker {
 
-        public DeleteInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public DeleteInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
-            return super.invoke(msg);
+            try {
+                String id = (String) ((Object[]) msg.getBody())[0];
+                service.delete(new URL(id));
+                
+            } catch (IOException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            }
+
+            return msg;
         }
     }
 
@@ -126,24 +177,16 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class GetAllInvoker extends AtomBindingInvoker {
 
-        public GetAllInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public GetAllInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
         public Message invoke(Message msg) {
 
             try {
-                //FIXME - Get credentials automatically
-                myService.setUserCredentials("gsocstudent2008@gmail.com", "gsoc2008");
 
-                Feed feed = myService.getFeed(new URL(uri), Feed.class);
-
-                //FIXME - Only for tests
-                System.out.println("Feed content - " + feed.getUpdated().toString() + ":\n");
-                for (Entry e : feed.getEntries()) {
-                    System.out.println("# " + e.getTitle().getPlainText());
-                }
+                Feed feed = service.getFeed(new URL(uri), Feed.class);
 
                 msg.setBody(feed);
 
@@ -164,8 +207,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class QueryInvoker extends AtomBindingInvoker {
 
-        public QueryInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public QueryInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
@@ -180,8 +223,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PostMediaInvoker extends AtomBindingInvoker {
 
-        public PostMediaInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public PostMediaInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
@@ -196,8 +239,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PutMediaInvoker extends AtomBindingInvoker {
 
-        public PutMediaInvoker(Operation operation, String uri, GoogleService myService) {
-            super(operation, uri, myService);
+        public PutMediaInvoker(Operation operation, String uri, GoogleService service) {
+            super(operation, uri, service);
         }
 
         @Override
@@ -205,5 +248,9 @@ class AtomBindingInvoker implements Invoker {
             // TODO implement
             return super.invoke(msg);
         }
+    }
+
+    public boolean allowsPassByReference() {
+        return true;
     }
 }

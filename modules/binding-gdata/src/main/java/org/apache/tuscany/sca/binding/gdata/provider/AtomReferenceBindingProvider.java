@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.gdata.provider;
 
-
-
 import com.google.gdata.client.GoogleService;
+import com.google.gdata.util.AuthenticationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -38,7 +39,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
     private AtomBinding binding;
-    private GoogleService myService;
+    private GoogleService service;
 
     /**
      * Constructs a new AtomReferenceBindingProvider
@@ -52,34 +53,42 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
             AtomBinding binding) {
         this.reference = reference;
         this.binding = binding;
-        
+
         //FIXME - Handling only calendar
-        this.myService = new GoogleService("cl", "");
-        this.myService.setConnectTimeout(60000);
+        this.service = new GoogleService("cl", "");
+        
+        try {
+            //FIXME - Get credentials automatically
+            service.setUserCredentials("gsocstudent2008@gmail.com", "gsoc2008");
+        } catch (AuthenticationException ex) {
+            Logger.getLogger(AtomReferenceBindingProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        this.service.setConnectTimeout(60000);
     }
 
     public Invoker createInvoker(Operation operation) {
 
         String operationName = operation.getName();
         if (operationName.equals("get")) {
-            return new AtomBindingInvoker.GetInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.GetInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("post")) {
-            return new AtomBindingInvoker.PostInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.PostInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("put")) {
-            return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("delete")) {
-            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
-            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("postMedia")) {
-            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("putMedia")) {
-            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("query")) {
-            return new AtomBindingInvoker.QueryInvoker(operation, binding.getURI(), myService);
+            return new AtomBindingInvoker.QueryInvoker(operation, binding.getURI(), service);
         }
 
-        return new AtomBindingInvoker(operation, binding.getURI(), myService);
+        return new AtomBindingInvoker(operation, binding.getURI(), service);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
