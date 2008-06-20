@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.job;
 
-import java.util.*;
-import java.io.Serializable;
+import java.util.HashMap;
 
 public class JobDataMap implements java.io.Serializable {
     private static final long serialVersionUID = -2602843967597362950L;
