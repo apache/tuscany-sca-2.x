@@ -71,7 +71,7 @@ public interface Collection {
      * @param entry
      * @return
      */
-    void put(String id, BaseEntry entry) throws NotFoundException;
+    BaseEntry put(String id, BaseEntry entry) throws NotFoundException;
 
     /**
      * Delete an entry.
