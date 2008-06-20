@@ -27,13 +27,21 @@ import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.testing.enums.Color;
 import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.DivByZero;
 import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported;
+import org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct;
+import org.apache.tuscany.sca.binding.corba.testing.generated.SomeStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.DummyObject;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.SimpleStruct;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.SomeStruct;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum1;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum2;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum3;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct1;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct2;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct3;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.CalcServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.EnumManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ObjectManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.PrimitivesSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
@@ -56,6 +64,7 @@ public class CorbaTypesTestCase extends TestCase {
 	private Object refTestObject;
 	private Object refCalcObject;
 	private Object refObjectManager;
+	private Object refEnumManager;
 
 	/**
 	 * Spawns tnameserv process (must be in PATH). Initializes test servants and
@@ -85,6 +94,7 @@ public class CorbaTypesTestCase extends TestCase {
 			TestObjectServant complexObject = new TestObjectServant();
 			CalcServant calcObject = new CalcServant();
 			ObjectManagerServant objectManager = new ObjectManagerServant();
+			EnumManagerServant enumManager = new EnumManagerServant();
 
 			orb.connect(singleSetter);
 			orb.connect(arraysSetter);
@@ -107,10 +117,14 @@ public class CorbaTypesTestCase extends TestCase {
 			nc = new NameComponent("CalcObject", "");
 			path = new NameComponent[] { nc };
 			namingContext.rebind(path, calcObject);
-			
+
 			nc = new NameComponent("ObjectManager", "");
 			path = new NameComponent[] { nc };
 			namingContext.rebind(path, objectManager);
+
+			nc = new NameComponent("EnumManager", "");
+			path = new NameComponent[] { nc };
+			namingContext.rebind(path, enumManager);
 
 			NamingContextExt nce = NamingContextExtHelper.narrow(orb
 					.resolve_initial_references("NameService"));
@@ -120,6 +134,7 @@ public class CorbaTypesTestCase extends TestCase {
 			refTestObject = nce.resolve(nce.to_name("TestObject"));
 			refCalcObject = nce.resolve(nce.to_name("CalcObject"));
 			refObjectManager = nce.resolve(nce.to_name("ObjectManager"));
+			refEnumManager = nce.resolve(nce.to_name("EnumManager"));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -270,10 +285,9 @@ public class CorbaTypesTestCase extends TestCase {
 		struct.threeDimSeq = TestConstants.INT_ARRAY_3_DIM;
 		struct.str = TestConstants.STR_1;
 
-		request.addArgument(struct);
-		request.setOutputType(SomeStruct.class);
-
 		try {
+			request.addArgument(struct);
+			request.setOutputType(SomeStruct.class);
 			DynaCorbaResponse response = request.invoke();
 			SomeStruct result = (SomeStruct) response.getContent();
 			int sum = 0;
@@ -314,9 +328,9 @@ public class CorbaTypesTestCase extends TestCase {
 		struct.field2 = TestConstants.INT_1;
 		DynaCorbaRequest request = new DynaCorbaRequest(refTestObject,
 				"setSimpleStruct");
-		request.setOutputType(SimpleStruct.class);
-		request.addArgument(struct);
 		try {
+			request.setOutputType(SimpleStruct.class);
+			request.addArgument(struct);
 			DynaCorbaResponse response = request.invoke();
 			SimpleStruct retStruct = (SimpleStruct) response.getContent();
 			assertTrue(retStruct.field1.equals(struct.field1)
@@ -339,9 +353,9 @@ public class CorbaTypesTestCase extends TestCase {
 		}
 		DynaCorbaRequest request = new DynaCorbaRequest(refTestObject,
 				"setLongSeq2");
-		request.setOutputType(arr1.getClass());
-		request.addArgument(arr1);
 		try {
+			request.setOutputType(arr1.getClass());
+			request.addArgument(arr1);
 			DynaCorbaResponse response = request.invoke();
 			int[][] arr2 = (int[][]) response.getContent();
 			for (int i = 0; i < 2; i++) {
@@ -389,13 +403,13 @@ public class CorbaTypesTestCase extends TestCase {
 
 		DynaCorbaRequest request = new DynaCorbaRequest(refTestObject,
 				"pickStructFromArgs");
-		request.setOutputType(SomeStruct.class);
-		request.addArgument(arg1);
-		request.addArgument(arg2);
-		request.addArgument(arg3);
-		request.addArgument(1);
 		try {
 
+			request.setOutputType(SomeStruct.class);
+			request.addArgument(arg1);
+			request.addArgument(arg2);
+			request.addArgument(arg3);
+			request.addArgument(1);
 			DynaCorbaResponse response = request.invoke();
 			SomeStruct result = (SomeStruct) response.getContent();
 
@@ -413,27 +427,28 @@ public class CorbaTypesTestCase extends TestCase {
 	 */
 	public void test_singleException() {
 		DynaCorbaRequest request1 = new DynaCorbaRequest(refCalcObject, "div");
-		request1.addArgument(2d);
-		request1.addArgument(2d);
-		request1.setOutputType(Double.class);
-		request1.addExceptionType(DivByZero.class);
 		try {
+			request1.addArgument(2d);
+			request1.addArgument(2d);
+			request1.setOutputType(Double.class);
+			request1.addExceptionType(DivByZero.class);
 			request1.invoke();
 		} catch (Exception e) {
 			fail();
 		}
 
 		DynaCorbaRequest request2 = new DynaCorbaRequest(refCalcObject, "div");
-		request2.addArgument(2d);
-		request2.addArgument(0d);
-		request2.setOutputType(Double.class);
-		request2.addExceptionType(DivByZero.class);
 		try {
+			request2.addArgument(2d);
+			request2.addArgument(0d);
+			request2.setOutputType(Double.class);
+			request2.addExceptionType(DivByZero.class);
 			request2.invoke();
 		} catch (DivByZero e) {
 			assertTrue(e.info != null && e.arguments != null
 					&& e.arguments.arg1 == 2 && e.arguments.arg2 == 0);
 		} catch (Exception exc) {
+			exc.printStackTrace();
 			fail();
 		}
 	}
@@ -444,12 +459,12 @@ public class CorbaTypesTestCase extends TestCase {
 	public void test_multipleExceptions() {
 		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject,
 				"divForSmallArgs");
-		request.addArgument(101d);
-		request.addArgument(101d);
-		request.setOutputType(Double.class);
-		request.addExceptionType(DivByZero.class);
-		request.addExceptionType(NotSupported.class);
 		try {
+			request.addArgument(101d);
+			request.addArgument(101d);
+			request.setOutputType(Double.class);
+			request.addExceptionType(DivByZero.class);
+			request.addExceptionType(NotSupported.class);
 			request.invoke();
 		} catch (Exception e) {
 			assertTrue(e instanceof NotSupported);
@@ -461,10 +476,10 @@ public class CorbaTypesTestCase extends TestCase {
 	 */
 	public void test_noExceptionsDeclared() {
 		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
-		request.addArgument(1d);
-		request.addArgument(0d);
-		request.setOutputType(Double.class);
 		try {
+			request.addArgument(1d);
+			request.addArgument(0d);
+			request.setOutputType(Double.class);
 			request.invoke();
 			fail();
 		} catch (Exception e) {
@@ -477,18 +492,18 @@ public class CorbaTypesTestCase extends TestCase {
 	 */
 	public void test_noSuchExceptionDeclared() {
 		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
-		request.addArgument(1d);
-		request.addArgument(0d);
-		request.addExceptionType(NotSupported.class);
-		request.setOutputType(Double.class);
 		try {
+			request.addArgument(1d);
+			request.addArgument(0d);
+			request.addExceptionType(NotSupported.class);
+			request.setOutputType(Double.class);
 			request.invoke();
 			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof RequestConfigurationException);
 		}
 	}
-	
+
 	/**
 	 * Tests handling non existing operation situation
 	 */
@@ -502,18 +517,106 @@ public class CorbaTypesTestCase extends TestCase {
 			assertTrue(e instanceof CorbaException);
 		}
 	}
-	
+
 	/**
-	 * Tests obtaining references to other objects and using them with specified user interface
+	 * Tests obtaining references to other objects and using them with specified
+	 * user interface
 	 */
 	public void test_enchancedReferences() {
 		try {
-			DynaCorbaRequest request = new DynaCorbaRequest(refObjectManager, "getDummyObject");
+			DynaCorbaRequest request = new DynaCorbaRequest(refObjectManager,
+					"getDummyObject");
 			request.setOutputType(DummyObject.class);
 			DynaCorbaResponse response = request.invoke();
 			DummyObject dummy = (DummyObject) response.getContent();
 			DummyObject dummy2 = dummy.cloneObject();
 			assertNotSame(dummy.getLong(), dummy2.getLong());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Test passing enums as arguments and retrieving them as a result
+	 */
+	public void test_enums() {
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refEnumManager,
+					"getColor");
+			Color color = Color.green;
+			request.addArgument(color);
+			request.setOutputType(Color.class);
+			DynaCorbaResponse response = request.invoke();
+			Color result = (Color) response.getContent();
+			assertEquals(color.value(), result.value());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Tests recognizing structures
+	 */
+	public void test_structValidation() {
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidStruct1.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidStruct2.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidStruct3.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(SomeStruct.class);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	/**
+	 * Tests recognizing enums
+	 */
+	public void test_enumValidation() {
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidEnum1.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidEnum2.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(InvalidEnum3.class);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof RequestConfigurationException);
+		}
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
+			request.setOutputType(Color.class);
 		} catch (Exception e) {
 			fail();
 		}
