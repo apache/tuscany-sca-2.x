@@ -19,9 +19,17 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.types;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 
 /**
  * @version $Rev$ $Date$
@@ -134,7 +142,8 @@ public class TypeTreeCreator {
 	 * @param forClass
 	 * @return type tree
 	 */
-	public static TypeTree createTypeTree(Class<?> forClass) {
+	public static TypeTree createTypeTree(Class<?> forClass)
+			throws RequestConfigurationException {
 		TypeTree tree = new TypeTree();
 		TypeTreeNode rootNode = null;
 		rootNode = inspectClassHierarchy(forClass, tree);
@@ -151,7 +160,7 @@ public class TypeTreeCreator {
 	 * @return
 	 */
 	private static TypeTreeNode inspectClassHierarchy(Class<?> forClass,
-			TypeTree tree) {
+			TypeTree tree) throws RequestConfigurationException {
 		// //remains of type tree caching
 		// TypeTreeNode existingNode = tree.getNodeForType(forClass);
 		// if (existingNode != null) {
@@ -175,7 +184,8 @@ public class TypeTreeCreator {
 			Class<?> reduced = reduceArrayDimension(node.getJavaClass());
 			children = new TypeTreeNode[1];
 			children[0] = inspectClassHierarchy(reduced, tree);
-		} else if (nodeType.equals(NodeType.struct)) {
+		} else if (nodeType.equals(NodeType.struct)
+				|| nodeType.equals(NodeType.exception)) {
 			// inspect types for every structure member
 			Field[] fields = node.getJavaClass().getFields();
 			children = new TypeTreeNode[fields.length];
@@ -185,6 +195,8 @@ public class TypeTreeCreator {
 				child.setName(fields[i].getName());
 				children[i] = child;
 			}
+		} else if (nodeType.equals(NodeType.idl_enum)) {
+
 		} else if (nodeType.equals(NodeType.union)) {
 			// TODO: unions
 		} else if (nodeType.equals(NodeType.reference)) {
@@ -201,8 +213,10 @@ public class TypeTreeCreator {
 	 * @param forClass
 	 *            class
 	 * @return node
+	 * @throws RequestConfigurationException
 	 */
-	private static TypeTreeNode createTypeNode(Class<?> forClass) {
+	private static TypeTreeNode createTypeNode(Class<?> forClass)
+			throws RequestConfigurationException {
 		TypeTreeNode node = new TypeTreeNode();
 		if (forClass.isArray()) {
 			node.setNodeType(NodeType.sequence);
@@ -215,10 +229,144 @@ public class TypeTreeCreator {
 			node.setNodeType(NodeType.reference);
 			node.setJavaClass(forClass);
 			node.setChildren(null);
-		} else {
+		} else if (isStructType(forClass)) {
 			node.setNodeType(NodeType.struct);
 			node.setJavaClass(forClass);
+		} else if (isEnumType(forClass)) {
+			node.setNodeType(NodeType.idl_enum);
+			node.setJavaClass(forClass);
+		} else if (isUserException(forClass)) {
+			node.setNodeType(NodeType.exception);
+			node.setJavaClass(forClass);
+		} else {
+			RequestConfigurationException e = new RequestConfigurationException(
+					"User defined type which cannot be handler: "
+							+ forClass.getCanonicalName());
+			throw e;
 		}
 		return node;
+	}
+
+	/**
+	 * Tells whether given class is structure
+	 * 
+	 * @param forClass
+	 * @return
+	 */
+	private static boolean isStructType(Class<?> forClass) {
+		int classMods = forClass.getModifiers();
+		if (!Modifier.isFinal(classMods)) {
+			return false;
+		}
+		boolean areCtorsValid = false;
+		Class<?>[] fieldsTypes = null;
+		Constructor<?>[] ctors = forClass.getConstructors();
+		/*
+		 * Do we have 2 ctors and one of them is null ctor?
+		 */
+		if (ctors.length != 2) {
+			return false;
+		}
+		for (int i = 0; i < ctors.length; i++) {
+			Class<?>[] params = ctors[i].getParameterTypes();
+			if (params.length == 0) {
+				areCtorsValid = true;
+			} else {
+				fieldsTypes = params;
+			}
+		}
+		if (!areCtorsValid) {
+			return false;
+		}
+		/*
+		 * Are constructor args declared as class fields? 
+		 */
+		Field[] fields = forClass.getFields();
+		Set<Class<?>> fieldsSet = new HashSet<Class<?>>(Arrays
+				.asList(fieldsTypes));
+		for (int i = 0; i < fields.length && !fieldsSet.isEmpty(); i++) {
+			int mods = fields[i].getModifiers();
+			if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)
+					&& !Modifier.isFinal(mods)) {
+				fieldsSet.remove(fields[i].getType());
+			}
+
+		}
+		return fieldsSet.isEmpty();
+	}
+
+	/**
+	 * Tells whether given class is enum
+	 * 
+	 * @param forClass
+	 * @return
+	 */
+	private static boolean isEnumType(Class<?> forClass) {
+		boolean isValueMethod = false;
+		boolean isFromIntMethod = false;
+		/*
+		 * enum type should have value and from_int methods
+		 */
+		try {
+			Method valueMet = forClass.getMethod("value", new Class[] {});
+			int modValueMet = valueMet.getModifiers();
+			if (valueMet.getReturnType().equals(int.class)
+					&& Modifier.isPublic(modValueMet)) {
+				isValueMethod = true;
+			}
+			Method fromIntMet = forClass.getMethod("from_int",
+					new Class[] { int.class });
+			int modFromIntMet = fromIntMet.getModifiers();
+			if ((fromIntMet.getReturnType().equals(forClass)
+					&& Modifier.isPublic(modFromIntMet) && Modifier
+					.isStatic(modFromIntMet))) {
+				isFromIntMethod = true;
+			}
+		} catch (NoSuchMethodException e) {
+		}
+		if (!isFromIntMethod && !isValueMethod) {
+			return false;
+		}
+		/*
+		 * enum type should also contain minimum one pair of fields: EnumType
+		 * field and int _field
+		 */
+		int enumCount = 0;
+		Field[] fields = forClass.getFields();
+		for (int i = 0; i < fields.length; i++) {
+			if (fields[i].getType().equals(forClass)) {
+				int modifiers = fields[i].getModifiers();
+				if (Modifier.isStatic(modifiers)
+						&& Modifier.isPublic(modifiers)
+						&& Modifier.isFinal(modifiers)) {
+					try {
+						Field field = forClass.getField("_"
+								+ fields[i].getName());
+						if (field.getType().equals(int.class)) {
+							enumCount++;
+						}
+					} catch (NoSuchFieldException e) {
+					}
+
+				}
+			}
+		}
+		return enumCount > 0;
+	}
+
+	/**
+	 * Tells whether given class is corba user exception
+	 * @param forClass
+	 * @return
+	 */
+	private static boolean isUserException(Class<?> forClass) {
+		do {
+			if (forClass.equals(Exception.class)) {
+				return true;
+			} else {
+				forClass = forClass.getSuperclass();
+			}
+		} while (!forClass.equals(Object.class));
+		return false;
 	}
 }

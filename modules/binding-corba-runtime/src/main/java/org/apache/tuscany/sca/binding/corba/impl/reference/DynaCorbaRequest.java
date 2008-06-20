@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.reference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
@@ -43,7 +41,6 @@ import org.omg.CORBA.portable.OutputStream;
 public class DynaCorbaRequest {
 
 	private TypeTree returnTree;
-	private List<TypeTree> arguments = new ArrayList<TypeTree>();
 	private Map<String, TypeTree> exceptions = new HashMap<String, TypeTree>();
 	private OutputStream outputStream;
 	private ObjectImpl remoteObject;
@@ -69,7 +66,8 @@ public class DynaCorbaRequest {
 	 * 
 	 * @param argument
 	 */
-	public void addArgument(java.lang.Object argument) {
+	public void addArgument(java.lang.Object argument)
+			throws RequestConfigurationException {
 		TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
 		TypeHelpersProxy.write(tree.getRootNode(), outputStream, argument);
 	}
@@ -79,7 +77,8 @@ public class DynaCorbaRequest {
 	 * 
 	 * @param forClass
 	 */
-	public void setOutputType(Class<?> forClass) {
+	public void setOutputType(Class<?> forClass)
+			throws RequestConfigurationException {
 		returnTree = TypeTreeCreator.createTypeTree(forClass);
 	}
 
@@ -99,7 +98,8 @@ public class DynaCorbaRequest {
 	 * 
 	 * @param forClass
 	 */
-	public void addExceptionType(Class<?> forClass) {
+	public void addExceptionType(Class<?> forClass)
+			throws RequestConfigurationException {
 		TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
 		String exceptionId = getExceptionId(forClass);
 		exceptions.put(exceptionId, tree);

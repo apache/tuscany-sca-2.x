@@ -32,6 +32,10 @@ public class RequestConfigurationException extends Exception {
 		this.objectId = objectId;
 	}
 	
+	public RequestConfigurationException(String message) {
+		super(message);
+	}
+	
 	public String getType() {
 		return objectId;
 	}
