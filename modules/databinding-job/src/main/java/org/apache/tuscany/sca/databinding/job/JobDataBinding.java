@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.job;
 
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
@@ -28,18 +27,10 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 public class JobDataBinding extends BaseDataBinding {
 
     public static final String NAME = Job.class.getName();
-    public static final String[] ALIASES = new String[] { "job" };
+    public static final String[] ALIASES = new String[] {"job"};
 
     public JobDataBinding() {
         super(NAME, ALIASES, Job.class);
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseDataBinding#getWrapperHandler()
-     */
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new JobExceptionHandler();
     }
 
 }

@@ -20,19 +20,13 @@ package org.apache.tuscany.sca.databinding.job;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
-import java.util.Iterator;
 
-import javax.activation.DataHandler;
-
-import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
-import org.apache.tuscany.sca.databinding.axiom.AxiomHelper;
 
 /**
  * Transformer to convert data from an OMElement to Job
