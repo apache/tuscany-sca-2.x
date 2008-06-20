@@ -24,11 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloLocalServiceSimple;
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple;
 import org.osoa.sca.annotations.Service;
@@ -38,20 +33,12 @@ import org.osoa.sca.annotations.Service;
  * The implementation provides both a local and a remotable service.
  */
 @Service(interfaces = {HelloServiceSimple.class, HelloLocalServiceSimple.class})
-@WebService(targetNamespace = "http://jaxb.databindings.itest.sca.tuscany.apache.org/")
 public class HelloServiceSimpleImpl implements HelloServiceSimple {
-
-    @WebMethod
-    @WebResult(name = "return", targetNamespace = "")
-    public String getGreetings(@WebParam(name = "arg0", targetNamespace = "")
-    String name) {
+    public String getGreetings(String name) {
         return "Hello " + name;
     }
 
-    @WebMethod
-    @WebResult(name = "return", targetNamespace = "")
-    public String[] getGreetingsArray(@WebParam(name = "arg0", targetNamespace = "")
-    String[] names) {
+    public String[] getGreetingsArray(String[] names) {
         String[] resps = new String[names.length];
         for (int i = 0; i < names.length; ++i) {
             resps[i] = "Hello " + names[i];
@@ -59,10 +46,7 @@ public class HelloServiceSimpleImpl implements HelloServiceSimple {
         return resps;
     }
 
-    @WebMethod
-    @WebResult(name = "return", targetNamespace = "")
-    public List<String> getGreetingsList(@WebParam(name = "arg0", targetNamespace = "")
-    List<String> names) {
+    public List<String> getGreetingsList(List<String> names) {
         List<String> resps = new ArrayList<String>();
         for (int i = 0; i < names.size(); ++i) {
             resps.add("Hello " + names.get(i));
@@ -70,10 +54,7 @@ public class HelloServiceSimpleImpl implements HelloServiceSimple {
         return resps;
     }
 
-    @WebMethod
-    @WebResult(name = "return", targetNamespace = "")
-    public ArrayList<String> getGreetingsArrayList(@WebParam(name = "arg0", targetNamespace = "")
-    ArrayList<String> names) {
+    public ArrayList<String> getGreetingsArrayList(ArrayList<String> names) {
         ArrayList<String> resps = new ArrayList<String>();
         for (int i = 0; i < names.size(); ++i) {
             resps.add("Hello " + names.get(i));
@@ -81,21 +62,14 @@ public class HelloServiceSimpleImpl implements HelloServiceSimple {
         return resps;
     }
 
-    //    @WebMethod
-    //    @WebResult(name = "return", targetNamespace = "")
-    public Map<String, String> getGreetingsMap(
-    // @WebParam(name = "arg0", targetNamespace = "")
-    Map<String, String> namesMap) {
+    public Map<String, String> getGreetingsMap(Map<String, String> namesMap) {
         for (Map.Entry<String, String> entry : namesMap.entrySet()) {
             entry.setValue("Hello " + entry.getKey());
         }
         return namesMap;
     }
 
-    @WebMethod
-    @WebResult(name = "return", targetNamespace = "")
-    public HashMap<String, String> getGreetingsHashMap(@WebParam(name = "arg0", targetNamespace = "")
-    HashMap<String, String> namesMap) {
+    public HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap) {
         for (Map.Entry<String, String> entry : namesMap.entrySet()) {
             entry.setValue("Hello " + entry.getKey());
         }

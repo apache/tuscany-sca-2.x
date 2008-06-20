@@ -29,29 +29,9 @@ import java.util.Map;
 public interface HelloLocalServiceSimple {
     String getGreetings(String name);
     String[] getGreetingsArray(String[] names);
-    /**
-     * Add the RequestWrapper/ResponseWrapper annotations to support Collections.  These annotations are used
-     * by the remotable interface that extends this interface.
-     * @param names
-     * @return
-     */
     List<String> getGreetingsList(List<String> names);
-    
-    /**
-     * Add the RequestWrapper/ResponseWrapper annotations to support Collections.  These annotations are used
-     * by the remotable interface that extends this interface.
-     * @param names
-     * @return
-     */
-    // @RequestWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsList")
-    // @ResponseWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsListResponse")
     ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
-    
-    // @WebMethod(exclude=true)
     Map<String, String> getGreetingsMap(Map<String, String> namesMap);
-    
-    // @WebMethod(exclude=true)
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
-    
     String getGreetingsVarArgs(String... names);
 }
