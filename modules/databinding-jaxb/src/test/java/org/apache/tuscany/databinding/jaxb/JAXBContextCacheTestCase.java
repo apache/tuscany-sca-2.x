@@ -50,8 +50,8 @@ public class JAXBContextCacheTestCase {
         JAXBContext context3 = cache.getJAXBContext(String[].class);
         JAXBContext context4 = cache.getJAXBContext(Source.class);
         Assert.assertSame(context1, context2);
-        Assert.assertSame(context2, context3);
-        Assert.assertSame(context3, context4);
+        Assert.assertNotSame(context2, context3);
+        Assert.assertSame(context1, context4);
 
         QName name = new QName("http://example.com/ns1", "e1");
         JAXBElement<String> element = new JAXBElement<String>(name, String.class, "123");
