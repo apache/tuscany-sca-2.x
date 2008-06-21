@@ -237,7 +237,8 @@ public class Interface2WSDLGenerator {
                 } else {
                     schemaDoc = createDocument();
                     schema = schemaDoc.createElementNS(SCHEMA_NS, "xs:schema");
-                    schema.setAttribute("elementFormDefault", "qualified");
+                    // The elementFormDefault should be set to unqualified, see TUSCANY-2388
+                    schema.setAttribute("elementFormDefault", "unqualified");
                     schema.setAttribute("attributeFormDefault", "qualified");
                     schema.setAttribute("targetNamespace", targetNS);
                     schema.setAttributeNS(XMLNS_NS, "xmlns:xs", SCHEMA_NS);
