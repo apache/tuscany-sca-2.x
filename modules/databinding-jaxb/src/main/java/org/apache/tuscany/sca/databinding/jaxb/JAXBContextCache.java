@@ -75,17 +75,21 @@ public class JAXBContextCache {
 
     protected static final Set<Class<?>> BUILTIN_CLASSES_SET = new HashSet<Class<?>>(Arrays.asList(JAXB_BUILTIN_CLASSES));
 
+    /*
     protected static Class<?>[] COMMON_ARRAY_CLASSES =
         new Class[] {char[].class, short[].class, int[].class, long[].class, float[].class, double[].class,
                      String[].class
                      };
 
     protected static final Set<Class<?>> COMMON_CLASSES_SET = new HashSet<Class<?>>(Arrays.asList(COMMON_ARRAY_CLASSES));
+    */
 
     protected LRUCache<Object, JAXBContext> cache;
     protected LRUCache<JAXBContext, Unmarshaller> upool;
     protected LRUCache<JAXBContext, Marshaller> mpool;
-    protected JAXBContext commonContext;
+    
+    // protected JAXBContext commonContext;
+    protected JAXBContext defaultContext;
 
     public JAXBContextCache() {
         this(CACHE_SIZE, CACHE_SIZE, CACHE_SIZE);
@@ -95,12 +99,12 @@ public class JAXBContextCache {
         cache = new LRUCache<Object, JAXBContext>(contextSize);
         upool = new LRUCache<JAXBContext, Unmarshaller>(unmarshallerSize);
         mpool = new LRUCache<JAXBContext, Marshaller>(marshallerSize);
-        commonContext = getCommonJAXBContext();
+        defaultContext = getDefaultJAXBContext();
     }
-
-    public static JAXBContext getCommonJAXBContext() {
+    
+    public static JAXBContext getDefaultJAXBContext() {
         try {
-            return JAXBContext.newInstance(COMMON_CLASSES_SET.toArray(new Class<?>[COMMON_CLASSES_SET.size()]));
+            return JAXBContext.newInstance();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -201,8 +205,8 @@ public class JAXBContextCache {
     }
 
     public JAXBContext getJAXBContext(Class<?> cls) throws JAXBException {
-        if (COMMON_CLASSES_SET.contains(cls) || BUILTIN_CLASSES_SET.contains(cls)) {
-            return commonContext;
+        if (BUILTIN_CLASSES_SET.contains(cls)) {
+            return defaultContext;
         }
         synchronized (cache) {
             JAXBContext context = cache.get(cls);
@@ -253,9 +257,8 @@ public class JAXBContextCache {
             classSet.remove(Image[].class);
         } 
         
-        // Is the common one
-        if (COMMON_CLASSES_SET.containsAll(classSet)) {
-            return commonContext;
+        if(classSet.isEmpty()) {
+            return defaultContext;
         }
         
         // For single class
