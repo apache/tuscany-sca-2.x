@@ -87,11 +87,13 @@ public class XSDModelResolver implements ModelResolver {
         // Lookup a definition for the given namespace
         String namespace = definition.getNamespace();
         List<XSDefinition> list = map.get(namespace);
+        XSDefinition modelXSD = null;
         if (list != null && definition.getDocument() != null) {
             // Set the document for the inline schema
             int index = list.indexOf(definition);
-            if (index != -1) {
-                list.get(index).setDocument(definition.getDocument());
+            if (index != -1) {  // a matching (not identical) document was found
+                modelXSD = list.get(index);
+                modelXSD.setDocument(definition.getDocument());
             }
         }
         if (list == null && definition.getDocument() != null) {
@@ -107,6 +109,14 @@ public class XSDModelResolver implements ModelResolver {
             throw new ContributionRuntimeException(e);
         }
         if (resolved != null && !resolved.isUnresolved()) {
+            if (definition.isUnresolved() && definition.getSchema() == null && modelXSD != null) {
+                // Update the unresolved model with schema information and mark it
+                // resolved.  This information in the unresolved model is needed when
+                // this method is called by WSDLModelResolver.readInlineSchemas().
+                definition.setSchema(modelXSD.getSchema());
+                definition.setSchemaCollection(modelXSD.getSchemaCollection());
+                definition.setUnresolved(false);
+            }
             return modelClass.cast(resolved);
         }
 
@@ -221,7 +231,7 @@ public class XSDModelResolver implements ModelResolver {
                                                      java.lang.String schemaLocation,
                                                      java.lang.String baseUri) {
             try {
-                if (schemaLocation == null || schemaLocation.startsWith("/")) {
+                if (schemaLocation == null) {
                     return null;
                 }
                 URL url = null;
