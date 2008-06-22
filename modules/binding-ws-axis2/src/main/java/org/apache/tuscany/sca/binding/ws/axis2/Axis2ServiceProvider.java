@@ -27,6 +27,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +39,8 @@ import java.util.logging.Logger;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Port;
+import javax.wsdl.Types;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
@@ -85,6 +88,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -98,12 +102,22 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaExternal;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.handler.WSHandlerResult;
 import org.osoa.sca.ServiceRuntimeException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 
 public class Axis2ServiceProvider {
+    public static final String IMPORT_TAG = "import";
+    public static final String INCLUDE_TAG = "include";
     
     private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
 
@@ -128,6 +142,21 @@ public class Axis2ServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
+
+    //Schema element names
+    public static final String ELEM_SCHEMA = "schema";
+
+    //Schema URI
+    public static final String NS_URI_XSD_1999 = "http://www.w3.org/1999/XMLSchema";
+    public static final String NS_URI_XSD_2000 = "http://www.w3.org/2000/10/XMLSchema";
+    public static final String NS_URI_XSD_2001 = "http://www.w3.org/2001/XMLSchema";
+
+    //Schema QNames
+    public static final QName Q_ELEM_XSD_1999 = new QName(NS_URI_XSD_1999, ELEM_SCHEMA);
+    public static final QName Q_ELEM_XSD_2000 = new QName(NS_URI_XSD_2000, ELEM_SCHEMA);
+    public static final QName Q_ELEM_XSD_2001 = new QName(NS_URI_XSD_2001, ELEM_SCHEMA);
+    public static final List<QName> XSD_QNAME_LIST =
+        Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
 
     public Axis2ServiceProvider(RuntimeComponent component,
                                 AbstractContract contract,
@@ -290,8 +319,7 @@ public class Axis2ServiceProvider {
                 URI uriPath = new URI(endpointURL);
                 String stringURIPath = uriPath.getPath();
             
-                //[nash] Need a leading slash for WSDL imports to work with ?wsdl
-                /*
+                /* [nash] Need a leading slash for WSDL imports to work with ?wsdl
                 // remove any "/" from the start of the path
                 if (stringURIPath.startsWith("/")) {
                     stringURIPath = stringURIPath.substring(1, stringURIPath.length());
@@ -425,12 +453,21 @@ public class Axis2ServiceProvider {
             }
         }
 
+        // Add schema information to the AxisService (needed for "?xsd=" support)
+        addSchemas(wsBinding.getWSDLDefinition(), axisService);
+
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
         wsdlParam.setValue(definition);
         axisService.addParameter(wsdlParam);
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
         axisService.addParameter(userWSDL);
+
+        // Modify schema imports and includes to add "servicename?xsd=" prefix.
+        // Axis2 does this for schema extensibility elements, but Tuscany has
+        // overriden the WSDl4J deserializer to create UnknownExtensibilityElement
+        // elements in place of these.
+        modifySchemaImportsAndIncludes(definition, name);
 
         // Axis2 1.3 has a bug with returning incorrect values for the port
         // addresses.  To work around this, compute the values here.
@@ -445,6 +482,74 @@ public class Axis2ServiceProvider {
         }
 
         return axisService;
+    }
+
+    private void addSchemas(WSDLDefinition wsdlDef, AxisService axisService) {
+        for (XSDefinition xsDef : wsdlDef.getXmlSchemas()) {
+            axisService.addSchema(xsDef.getSchema());
+            updateSchemaRefs(xsDef.getSchema(), axisService.getName());
+        }
+        for (WSDLDefinition impDef : wsdlDef.getImportedDefinitions()) {
+            addSchemas(impDef, axisService);
+        }
+    }
+
+    private void updateSchemaRefs(XmlSchema parentSchema, String name) {
+        for (Iterator iter = parentSchema.getIncludes().getIterator(); iter.hasNext();) {
+            Object obj = iter.next();
+            if (obj instanceof XmlSchemaExternal) {
+                XmlSchemaExternal extSchema = (XmlSchemaExternal)obj;
+                String location = extSchema.getSchemaLocation();
+                if (location.indexOf(":/") < 0 & location.indexOf("?xsd=") < 0) {
+                    extSchema.setSchemaLocation(name + "?xsd=" + location);
+                }
+                updateSchemaRefs(extSchema.getSchema(), name);
+            }
+        }
+    }
+
+    private void modifySchemaImportsAndIncludes(Definition definition, String name){
+        // adjust the schema locations in types section
+        Types types = definition.getTypes();
+        if (types != null) {
+            for (Iterator iter = types.getExtensibilityElements().iterator(); iter.hasNext();) {
+                Object ext = iter.next();
+                if (ext instanceof UnknownExtensibilityElement &&
+                    XSD_QNAME_LIST.contains(((UnknownExtensibilityElement)ext).getElementType())) {
+                    changeLocations(((UnknownExtensibilityElement)ext).getElement(), name);
+                }
+            }
+        }
+        for (Iterator iter = definition.getImports().values().iterator(); iter.hasNext();) {
+            Vector values = (Vector)iter.next();
+            for (Iterator valuesIter = values.iterator(); valuesIter.hasNext();) {
+                Import wsdlImport = (Import)valuesIter.next();
+                modifySchemaImportsAndIncludes(wsdlImport.getDefinition(), name);
+            }
+        }
+    }
+
+    private void changeLocations(Element element, String name) {
+        NodeList nodeList = element.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            String tagName = nodeList.item(i).getLocalName();
+            if (IMPORT_TAG.equals(tagName) || INCLUDE_TAG.equals(tagName)) {
+                processImport(nodeList.item(i), name);
+            }
+        }
+    }
+
+    private void processImport(Node importNode, String name) {
+        NamedNodeMap nodeMap = importNode.getAttributes();
+        for (int i = 0; i < nodeMap.getLength(); i++) {
+            Node attribute = nodeMap.item(i);
+            if (attribute.getNodeName().equals("schemaLocation")) {
+                String location = attribute.getNodeValue();
+                if (location.indexOf(":/") < 0 & location.indexOf("?xsd=") < 0) {
+                    attribute.setNodeValue(name + "?xsd=" + location);
+                }
+            }
+        }
     }
 
     private String getPortAddress(Port port) {
@@ -606,8 +711,8 @@ public class Axis2ServiceProvider {
     }
     
     private void createPolicyHandlers() throws IllegalAccessException,
-                                                              InstantiationException, 
-                                                              ClassNotFoundException {
+                                               InstantiationException, 
+                                               ClassNotFoundException {
         if (wsBinding instanceof PolicySetAttachPoint) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
             PolicyHandler policyHandler = null;

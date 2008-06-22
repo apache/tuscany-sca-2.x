@@ -282,6 +282,9 @@ public class WSDLModelResolver implements ModelResolver {
 
         // Lookup a definition for the given namespace
         String namespace = ((WSDLDefinition)unresolved).getNamespace();
+        if (namespace == null) {
+            return modelClass.cast(unresolved);
+        }
         List<WSDLDefinition> list = map.get(namespace);
         WSDLDefinition resolved = aggregate(list);
         if (resolved != null && !resolved.isUnresolved()) {
@@ -352,11 +355,39 @@ public class WSDLModelResolver implements ModelResolver {
             reader.setFeature("javax.wsdl.importDocuments", true);
             // FIXME: We need to decide if we should disable the import processing by WSDL4J
             // reader.setFeature("javax.wsdl.importDocuments", false);
-            reader.setExtensionRegistry(wsdlExtensionRegistry);
+            reader.setExtensionRegistry(wsdlExtensionRegistry);  // use a custom registry
 
             WSDLLocatorImpl locator = new WSDLLocatorImpl(artifactURL, is);
             Definition definition = reader.readWSDL(locator);
             wsdlDef.setDefinition(definition);
+
+            // If this definition imports any definitions from other namespaces,
+            // set the correct WSDLDefinition import relationships.
+            for (Map.Entry<String, List<javax.wsdl.Import>> entry :
+                    ((Map<String, List<javax.wsdl.Import>>)definition.getImports()).entrySet()) {
+                if (!entry.getKey().equals(definition.getTargetNamespace())) { 
+                    WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                    wsdlDefinition.setUnresolved(true);
+                    wsdlDefinition.setNamespace(entry.getKey());
+                    WSDLDefinition resolved = resolveModel(WSDLDefinition.class, wsdlDefinition);
+                    if (!resolved.isUnresolved()) {
+                        for (javax.wsdl.Import imp : entry.getValue()) {
+                            if (resolved.getDefinition().getDocumentBaseURI().equals(imp.getDefinition().getDocumentBaseURI())) {
+                                // this WSDLDefinition contains the imported document
+                                wsdlDef.getImportedDefinitions().add(resolved);
+                            } else {
+                                // this is a facade, so look in its imported definitions
+                                for (WSDLDefinition def : resolved.getImportedDefinitions()) {
+                                    if (def.getDefinition().getDocumentBaseURI().equals(imp.getDefinition().getDocumentBaseURI())) {
+                                        wsdlDef.getImportedDefinitions().add(def);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             //Read inline schemas 
             readInlineSchemas(wsdlDef, definition);
@@ -427,6 +458,9 @@ public class WSDLModelResolver implements ModelResolver {
                         contribution.getModelResolver().resolveModel(XSDefinition.class, xsDefinition);
                     if (resolved != null && !resolved.isUnresolved()) {
                         if (!wsdlDefinition.getXmlSchemas().contains(resolved)) {
+                            // Don't add resolved because it may be an aggregate that
+                            // contains more than we need.  The resolver will have
+                            // set the specific schema we need into unresolved.
                             wsdlDefinition.getXmlSchemas().add(xsDefinition);
                         }
                     }
