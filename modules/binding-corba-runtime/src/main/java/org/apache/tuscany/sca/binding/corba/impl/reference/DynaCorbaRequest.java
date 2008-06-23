@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfiguration
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeCreator;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.TypeHelpersProxy;
+import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
 import org.omg.CORBA.BAD_OPERATION;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.SystemException;
@@ -82,17 +83,6 @@ public class DynaCorbaRequest {
 		returnTree = TypeTreeCreator.createTypeTree(forClass);
 	}
 
-	private String getExceptionId(Class<?> forClass) {
-		String result = forClass.getName().replace('.', '/');
-		result = result.replaceAll("Package", "");
-		if (result.endsWith("Exception")) {
-			result = result
-					.substring(0, result.length() - "Exception".length());
-		}
-		result = "IDL:" + result + ":1.0";
-		return result;
-	}
-
 	/**
 	 * Configures possible exceptions
 	 * 
@@ -101,7 +91,7 @@ public class DynaCorbaRequest {
 	public void addExceptionType(Class<?> forClass)
 			throws RequestConfigurationException {
 		TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
-		String exceptionId = getExceptionId(forClass);
+		String exceptionId = Utils.getExceptionId(forClass);
 		exceptions.put(exceptionId, tree);
 	}
 

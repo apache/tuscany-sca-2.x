@@ -29,7 +29,6 @@ module org {
 				module binding {
 					module corba {
 						module testing {
-							module references {
 								module generated {
 
 									interface RemoteObject {
@@ -107,8 +106,8 @@ module org {
 									};
 								
 									interface TestObject {
-										SomeStruct pickStructFromArgs(inout SomeStruct arg1, inout SomeStruct arg2, inout SomeStruct arg3, in long structNumber);
-										SomeStruct setStruct(inout SomeStruct arg);
+										SomeStruct pickStructFromArgs(in SomeStruct arg1, in SomeStruct arg2, in SomeStruct arg3, in long structNumber);
+										SomeStruct setStruct(in SomeStruct arg);
 										SimpleStruct setSimpleStruct(inout SimpleStruct arg);
 										long_seq1 setLongSeq1(inout long_seq1 arg);
 										long_seq2 setLongSeq2(inout long_seq2 arg);
@@ -116,7 +115,6 @@ module org {
 									};
 								
 								};
-							};
 						};
 					};
 				};
