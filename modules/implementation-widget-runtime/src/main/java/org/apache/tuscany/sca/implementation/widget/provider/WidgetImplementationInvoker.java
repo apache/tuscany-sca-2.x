@@ -27,6 +27,8 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
@@ -108,11 +110,18 @@ class WidgetImplementationInvoker implements Invoker {
         pw.println("/* Apache Tuscany SCA Widget header */");
         pw.println();
         
+        Map<String, Boolean> bindingClientProcessed = new HashMap<String, Boolean>();
+        
         for(ComponentReference reference : component.getReferences()) {
             for(Binding binding : reference.getBindings()) {
                 String bindingProxyName = WidgetProxyHelper.getJavaScriptProxyFile(binding.getClass().getName());
-                if(bindingProxyName != null) {
-                    generateJavaScriptBindingProxy(pw,bindingProxyName);
+                //check if binding client code was already processed and inject to the generated script
+                Boolean processedFlag = bindingClientProcessed.get(bindingProxyName);
+                if( processedFlag == null || processedFlag.booleanValue() == false) {
+                    if(bindingProxyName != null) {
+                        generateJavaScriptBindingProxy(pw,bindingProxyName);
+                        bindingClientProcessed.put(bindingProxyName, Boolean.TRUE);
+                    }
                 }
             }
         }
