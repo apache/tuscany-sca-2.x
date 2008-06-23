@@ -29,7 +29,7 @@
     <artifactId>tuscany-sca</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Implementation Project</name>
-    <url>http://incubator.apache.org/tuscany/</url>
+    <url>http://tuscany.apache.org</url>
     <version>1.4-SNAPSHOT</version>
 
     <scm>
