@@ -36,7 +36,7 @@ public class ShoppingCartImpl implements Cart, Total {
     private Map<String, Item> cart;
     
     @Init
-    protected void init() {
+    public void init() {
         cart = new HashMap<String, Item>();
     }
 
