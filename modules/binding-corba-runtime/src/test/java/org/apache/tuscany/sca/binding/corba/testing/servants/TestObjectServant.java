@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.corba.testing.servants;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHolder;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SomeStruct;
-import org.apache.tuscany.sca.binding.corba.testing.generated.SomeStructHolder;
 import org.apache.tuscany.sca.binding.corba.testing.generated._TestObjectImplBase;
 import org.apache.tuscany.sca.binding.corba.testing.generated.long_seq1Holder;
 import org.apache.tuscany.sca.binding.corba.testing.generated.long_seq2Holder;
@@ -52,21 +51,21 @@ public class TestObjectServant extends _TestObjectImplBase {
 		return arg.value;
 	}
 
-	public SomeStruct setStruct(SomeStructHolder arg) {
-		return arg.value;
+	public SomeStruct setStruct(SomeStruct arg) {
+		return arg;
 	}
 
-	public SomeStruct pickStructFromArgs(SomeStructHolder arg1,
-			SomeStructHolder arg2, SomeStructHolder arg3, int structNumber) {
+	public SomeStruct pickStructFromArgs(SomeStruct arg1,
+			SomeStruct arg2, SomeStruct arg3, int structNumber) {
 		switch (structNumber) {
 		case 1:
-			return arg1.value;
+			return arg1;
 		case 2:
-			return arg2.value;
+			return arg2;
 		case 3:
-			return arg3.value;
+			return arg3;
 		default:
-			return arg1.value;
+			return arg1;
 		}
 	}
 

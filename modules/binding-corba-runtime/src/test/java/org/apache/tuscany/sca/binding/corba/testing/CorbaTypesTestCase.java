@@ -290,24 +290,8 @@ public class CorbaTypesTestCase extends TestCase {
 			request.setOutputType(SomeStruct.class);
 			DynaCorbaResponse response = request.invoke();
 			SomeStruct result = (SomeStruct) response.getContent();
-			int sum = 0;
-			for (int i = 0; i < result.twoDimSeq.length; i++) {
-				for (int j = 0; j < result.twoDimSeq[i].length; j++) {
-					sum++;
-					assertEquals(TestConstants.INT_ARRAY_2_DIM[i][j],
-							result.twoDimSeq[i][j]);
-				}
-			}
-			sum = 0;
-			for (int i = 0; i < result.threeDimSeq.length; i++) {
-				for (int j = 0; j < result.threeDimSeq[i].length; j++) {
-					for (int k = 0; k < result.threeDimSeq[i][j].length; k++) {
-						sum++;
-						assertEquals(TestConstants.INT_ARRAY_3_DIM[i][j][k],
-								result.threeDimSeq[i][j][k]);
-					}
-				}
-			}
+			assertTrue(TestConstants.are2DimArraysEqual(result.twoDimSeq, TestConstants.INT_ARRAY_2_DIM));
+			assertTrue(TestConstants.are3DimArraysEqual(result.threeDimSeq, TestConstants.INT_ARRAY_3_DIM));
 			assertEquals(TestConstants.STR_1, result.str);
 			assertEquals(TestConstants.STR_ARR_2[0], result.str_list[0]);
 			assertEquals(TestConstants.STR_ARR_2[1], result.str_list[1]);
