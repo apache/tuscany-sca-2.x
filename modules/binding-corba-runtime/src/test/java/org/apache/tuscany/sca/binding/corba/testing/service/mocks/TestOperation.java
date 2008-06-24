@@ -39,135 +39,135 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class TestOperation implements Operation {
 
-	private DataType<List<DataType>> inputType;
-	private DataType outputType;
-	private String name;
+    private DataType<List<DataType>> inputType;
+    private DataType outputType;
+    private String name;
 
-	public ConversationSequence getConversationSequence() {
-		return null;
-	}
+    public ConversationSequence getConversationSequence() {
+        return null;
+    }
 
-	public String getDataBinding() {
-		return null;
-	}
+    public String getDataBinding() {
+        return null;
+    }
 
-	public Map<QName, List<DataType<XMLType>>> getFaultBeans() {
-		return null;
-	}
+    public Map<QName, List<DataType<XMLType>>> getFaultBeans() {
+        return null;
+    }
 
-	public List<DataType> getFaultTypes() {
-		return null;
-	}
+    public List<DataType> getFaultTypes() {
+        return null;
+    }
 
-	public DataType<List<DataType>> getInputType() {
-		return inputType;
-	}
+    public DataType<List<DataType>> getInputType() {
+        return inputType;
+    }
 
-	public Interface getInterface() {
-		return null;
-	}
+    public Interface getInterface() {
+        return null;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public DataType getOutputType() {
-		return outputType;
-	}
+    public DataType getOutputType() {
+        return outputType;
+    }
 
-	public WrapperInfo getWrapper() {
-		return null;
-	}
+    public WrapperInfo getWrapper() {
+        return null;
+    }
 
-	public boolean isDynamic() {
-		return false;
-	}
+    public boolean isDynamic() {
+        return false;
+    }
 
-	public boolean isNonBlocking() {
-		return false;
-	}
+    public boolean isNonBlocking() {
+        return false;
+    }
 
-	public boolean isUnresolved() {
-		return false;
-	}
+    public boolean isUnresolved() {
+        return false;
+    }
 
-	public boolean isWrapperStyle() {
-		return false;
-	}
+    public boolean isWrapperStyle() {
+        return false;
+    }
 
-	public void setConversationSequence(ConversationSequence sequence) {
+    public void setConversationSequence(ConversationSequence sequence) {
 
-	}
+    }
 
-	public void setDataBinding(String dataBinding) {
+    public void setDataBinding(String dataBinding) {
 
-	}
+    }
 
-	public void setDynamic(boolean b) {
+    public void setDynamic(boolean b) {
 
-	}
+    }
 
-	public void setFaultBeans(Map<QName, List<DataType<XMLType>>> faultBeans) {
+    public void setFaultBeans(Map<QName, List<DataType<XMLType>>> faultBeans) {
 
-	}
+    }
 
-	public void setFaultTypes(List<DataType> faultTypes) {
+    public void setFaultTypes(List<DataType> faultTypes) {
 
-	}
+    }
 
-	public void setInputType(DataType<List<DataType>> inputType) {
-		this.inputType = inputType;
-	}
+    public void setInputType(DataType<List<DataType>> inputType) {
+        this.inputType = inputType;
+    }
 
-	public void setInterface(Interface interfaze) {
+    public void setInterface(Interface interfaze) {
 
-	}
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setNonBlocking(boolean nonBlocking) {
+    public void setNonBlocking(boolean nonBlocking) {
 
-	}
+    }
 
-	public void setOutputType(DataType outputType) {
-		this.outputType = outputType;
-	}
+    public void setOutputType(DataType outputType) {
+        this.outputType = outputType;
+    }
 
-	public void setUnresolved(boolean unresolved) {
+    public void setUnresolved(boolean unresolved) {
 
-	}
+    }
 
-	public void setWrapper(WrapperInfo wrapperInfo) {
+    public void setWrapper(WrapperInfo wrapperInfo) {
 
-	}
+    }
 
-	public void setWrapperStyle(boolean wrapperStyle) {
+    public void setWrapperStyle(boolean wrapperStyle) {
 
-	}
+    }
 
-	public List<PolicySet> getApplicablePolicySets() {
-		return null;
-	}
+    public List<PolicySet> getApplicablePolicySets() {
+        return null;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return null;
-	}
+    public List<PolicySet> getPolicySets() {
+        return null;
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return null;
-	}
+    public List<Intent> getRequiredIntents() {
+        return null;
+    }
 
-	public IntentAttachPointType getType() {
-		return null;
-	}
+    public IntentAttachPointType getType() {
+        return null;
+    }
 
-	public void setType(IntentAttachPointType type) {
-	}
+    public void setType(IntentAttachPointType type) {
+    }
 
 }

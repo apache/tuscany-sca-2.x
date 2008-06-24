@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.generated;
 * monday, 23 june 2008 2008 14:12:28 CEST
 */
 
-public final class SimpleStructHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct value = null;
+public final class SimpleStructHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct value = null;
 
-  public SimpleStructHolder ()
-  {
-  }
+    public SimpleStructHolder() {
+    }
 
-  public SimpleStructHolder (org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct initialValue)
-  {
-    value = initialValue;
-  }
+    public SimpleStructHolder(org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStructHelper.type();
+    }
 
 }

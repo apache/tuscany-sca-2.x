@@ -30,16 +30,16 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class CharTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(9));
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(9));
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_char();
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        return is.read_char();
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		os.write_char((Character) data);
-	}
-	
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        os.write_char((Character)data);
+    }
+
 }

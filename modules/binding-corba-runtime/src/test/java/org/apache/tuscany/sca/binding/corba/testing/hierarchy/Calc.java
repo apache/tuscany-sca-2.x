@@ -23,8 +23,8 @@ import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.DivBy
 
 public interface Calc {
 
-	public double div(double arg1, double arg2) throws DivByZero;
+    public double div(double arg1, double arg2) throws DivByZero;
 
-	public double divForSmallArgs(double arg1, double arg2);
+    public double divForSmallArgs(double arg1, double arg2);
 
 }

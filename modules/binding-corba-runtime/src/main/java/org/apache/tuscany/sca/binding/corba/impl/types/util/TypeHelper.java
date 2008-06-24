@@ -28,28 +28,28 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public interface TypeHelper {
-	
-	/**
-	 * Gets type definition for CORBA API.
-	 * @param node 
-	 * @return
-	 */
-	TypeCode getType(TypeTreeNode node);
-	
-	/**
-	 * Reads CORBA object
-	 * @param node
-	 * @param is
-	 * @return
-	 */
-	Object read(TypeTreeNode node, InputStream is);
-	
-	/**
-	 * Writes CORBA object
-	 * @param node
-	 * @param os
-	 * @param data
-	 */
-	void write(TypeTreeNode node, OutputStream os, Object data);
-	
+
+    /**
+     * Gets type definition for CORBA API.
+     * @param node 
+     * @return
+     */
+    TypeCode getType(TypeTreeNode node);
+
+    /**
+     * Reads CORBA object
+     * @param node
+     * @param is
+     * @return
+     */
+    Object read(TypeTreeNode node, InputStream is);
+
+    /**
+     * Writes CORBA object
+     * @param node
+     * @param os
+     * @param data
+     */
+    void write(TypeTreeNode node, OutputStream os, Object data);
+
 }

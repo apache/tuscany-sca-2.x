@@ -32,66 +32,66 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class TestInterface implements Interface {
 
-	private List<Operation> operations;
+    private List<Operation> operations;
 
-	public TestInterface(List<Operation> opearations) {
-		this.operations = opearations;
-	}
+    public TestInterface(List<Operation> opearations) {
+        this.operations = opearations;
+    }
 
-	public List<Operation> getOperations() {
-		return operations;
-	}
+    public List<Operation> getOperations() {
+        return operations;
+    }
 
-	public boolean isConversational() {
-		return false;
-	}
+    public boolean isConversational() {
+        return false;
+    }
 
-	public boolean isDynamic() {
-		return false;
-	}
+    public boolean isDynamic() {
+        return false;
+    }
 
-	public boolean isRemotable() {
-		return false;
-	}
+    public boolean isRemotable() {
+        return false;
+    }
 
-	public void resetDataBinding(String dataBinding) {
+    public void resetDataBinding(String dataBinding) {
 
-	}
+    }
 
-	public void setConversational(boolean conversational) {
+    public void setConversational(boolean conversational) {
 
-	}
+    }
 
-	public void setDefaultDataBinding(String dataBinding) {
+    public void setDefaultDataBinding(String dataBinding) {
 
-	}
+    }
 
-	public void setRemotable(boolean remotable) {
+    public void setRemotable(boolean remotable) {
 
-	}
+    }
 
-	public List<PolicySet> getApplicablePolicySets() {
-		return null;
-	}
+    public List<PolicySet> getApplicablePolicySets() {
+        return null;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return null;
-	}
+    public List<PolicySet> getPolicySets() {
+        return null;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return null;
-	}
+    public List<Intent> getRequiredIntents() {
+        return null;
+    }
 
-	public IntentAttachPointType getType() {
-		return null;
-	}
+    public IntentAttachPointType getType() {
+        return null;
+    }
 
-	public void setType(IntentAttachPointType type) {
+    public void setType(IntentAttachPointType type) {
 
-	}
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
 }

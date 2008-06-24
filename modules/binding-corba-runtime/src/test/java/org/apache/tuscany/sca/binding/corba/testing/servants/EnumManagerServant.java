@@ -24,10 +24,10 @@ import org.apache.tuscany.sca.binding.corba.testing.enums._EnumManagerImplBase;
 
 public class EnumManagerServant extends _EnumManagerImplBase {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public Color getColor(Color color) {
-		return color;
-	}
+    public Color getColor(Color color) {
+        return color;
+    }
 
 }

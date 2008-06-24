@@ -29,48 +29,48 @@ import java.util.Map;
  */
 public class TypeTree {
 
-	private Map<Class<?>, TypeTreeNode> typesUsed = new HashMap<Class<?>, TypeTreeNode>();
-	private TypeTreeNode rootNode;
+    private Map<Class<?>, TypeTreeNode> typesUsed = new HashMap<Class<?>, TypeTreeNode>();
+    private TypeTreeNode rootNode;
 
-	/**
-	 * Intent was to cache previously computed type trees. In practice it caused
-	 * a bug, and it's not being used right now. TODO: enable type trees caching
-	 * 
-	 * @param forClass
-	 * @param node
-	 */
-	public void addUsedType(Class<?> forClass, TypeTreeNode node) {
-		typesUsed.put(forClass, node);
-	}
+    /**
+     * Intent was to cache previously computed type trees. In practice it caused
+     * a bug, and it's not being used right now. TODO: enable type trees caching
+     * 
+     * @param forClass
+     * @param node
+     */
+    public void addUsedType(Class<?> forClass, TypeTreeNode node) {
+        typesUsed.put(forClass, node);
+    }
 
-	/**
-	 * Returns node for previously created tree, it's getter for nodes added by
-	 * addUsedType method. Not in use right now. TODO: enable type trees caching
-	 * 
-	 * @param forClass
-	 * @return
-	 */
-	public TypeTreeNode getNodeForType(Class<?> forClass) {
-		return typesUsed.get(forClass);
-	}
+    /**
+     * Returns node for previously created tree, it's getter for nodes added by
+     * addUsedType method. Not in use right now. TODO: enable type trees caching
+     * 
+     * @param forClass
+     * @return
+     */
+    public TypeTreeNode getNodeForType(Class<?> forClass) {
+        return typesUsed.get(forClass);
+    }
 
-	/**
-	 * Returns root node.
-	 * 
-	 * @return root of type tree
-	 */
-	public TypeTreeNode getRootNode() {
-		return rootNode;
-	}
+    /**
+     * Returns root node.
+     * 
+     * @return root of type tree
+     */
+    public TypeTreeNode getRootNode() {
+        return rootNode;
+    }
 
-	/**
-	 * Sets root of the type tree.
-	 * 
-	 * @param rootNode
-	 *            root node.
-	 */
-	public void setRootNode(TypeTreeNode rootNode) {
-		this.rootNode = rootNode;
-	}
+    /**
+     * Sets root of the type tree.
+     * 
+     * @param rootNode
+     *            root node.
+     */
+    public void setRootNode(TypeTreeNode rootNode) {
+        this.rootNode = rootNode;
+    }
 
 }

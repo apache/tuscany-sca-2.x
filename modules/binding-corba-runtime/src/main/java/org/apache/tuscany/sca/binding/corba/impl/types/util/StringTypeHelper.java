@@ -30,17 +30,16 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class StringTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		return ORB.init().create_string_tc(0);
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        return ORB.init().create_string_tc(0);
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_string();
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        return is.read_string();
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		os.write_string((String) data);
-	}
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        os.write_string((String)data);
+    }
 
-	
 }

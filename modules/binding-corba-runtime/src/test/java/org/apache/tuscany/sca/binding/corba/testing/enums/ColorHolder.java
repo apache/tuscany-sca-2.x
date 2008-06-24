@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.enums;
 * czwartek, 19 czerwiec 2008 15:46:10 CEST
 */
 
-public final class ColorHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.enums.Color value = null;
+public final class ColorHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.enums.Color value = null;
 
-  public ColorHolder ()
-  {
-  }
+    public ColorHolder() {
+    }
 
-  public ColorHolder (org.apache.tuscany.sca.binding.corba.testing.enums.Color initialValue)
-  {
-    value = initialValue;
-  }
+    public ColorHolder(org.apache.tuscany.sca.binding.corba.testing.enums.Color initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.enums.ColorHelper.type();
+    }
 
 }

@@ -23,8 +23,8 @@ package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
  * @version $Rev$ $Date$
  */
 public class SimpleStruct {
-	
-	public String field1;
-	public int field2;
-	
+
+    public String field1;
+    public int field2;
+
 }

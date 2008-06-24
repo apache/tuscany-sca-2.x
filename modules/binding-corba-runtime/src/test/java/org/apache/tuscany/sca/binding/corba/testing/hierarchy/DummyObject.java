@@ -21,7 +21,8 @@ package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
 public interface DummyObject {
 
-	int getLong();
-	DummyObject cloneObject();
-	
+    int getLong();
+
+    DummyObject cloneObject();
+
 }

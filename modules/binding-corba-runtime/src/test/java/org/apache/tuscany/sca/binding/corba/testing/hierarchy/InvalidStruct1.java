@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
 public final class InvalidStruct1 {
 
-	public InvalidStruct1() {
-		
-	}
-	
+    public InvalidStruct1() {
+
+    }
+
 }

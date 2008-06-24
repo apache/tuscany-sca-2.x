@@ -28,30 +28,30 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  */
 public class TestInterfaceContract implements InterfaceContract {
 
-	private Interface iface;
+    private Interface iface;
 
-	public Interface getCallbackInterface() {
-		return null;
-	}
+    public Interface getCallbackInterface() {
+        return null;
+    }
 
-	public Interface getInterface() {
-		return iface;
-	}
+    public Interface getInterface() {
+        return iface;
+    }
 
-	public InterfaceContract makeUnidirectional(boolean isCallback) {
-		return null;
-	}
+    public InterfaceContract makeUnidirectional(boolean isCallback) {
+        return null;
+    }
 
-	public void setCallbackInterface(Interface callbackInterface) {
+    public void setCallbackInterface(Interface callbackInterface) {
 
-	}
+    }
 
-	public void setInterface(Interface callInterface) {
-		this.iface = callInterface;
-	}
+    public void setInterface(Interface callInterface) {
+        this.iface = callInterface;
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
 }

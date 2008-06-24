@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
 public class InvalidEnum3 {
 
-	public static final int _red = 0;
-	public static final InvalidEnum2 red = new InvalidEnum2(_red);
+    public static final int _red = 0;
+    public static final InvalidEnum2 red = new InvalidEnum2(_red);
 
-	public int value() {
-		return 0;
-	}
+    public int value() {
+        return 0;
+    }
 
-	protected InvalidEnum3(int value) {
-	}
+    protected InvalidEnum3(int value) {
+    }
 }

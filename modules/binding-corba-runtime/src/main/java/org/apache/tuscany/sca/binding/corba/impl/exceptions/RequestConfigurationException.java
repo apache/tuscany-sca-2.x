@@ -24,20 +24,20 @@ package org.apache.tuscany.sca.binding.corba.impl.exceptions;
  */
 public class RequestConfigurationException extends Exception {
 
-	private static final long serialVersionUID = 1L;
-	private String objectId;
-	
-	public RequestConfigurationException(String message, String objectId) {
-		super(message + ", object id was: " + objectId);
-		this.objectId = objectId;
-	}
-	
-	public RequestConfigurationException(String message) {
-		super(message);
-	}
-	
-	public String getType() {
-		return objectId;
-	}
+    private static final long serialVersionUID = 1L;
+    private String objectId;
+
+    public RequestConfigurationException(String message, String objectId) {
+        super(message + ", object id was: " + objectId);
+        this.objectId = objectId;
+    }
+
+    public RequestConfigurationException(String message) {
+        super(message);
+    }
+
+    public String getType() {
+        return objectId;
+    }
 
 }

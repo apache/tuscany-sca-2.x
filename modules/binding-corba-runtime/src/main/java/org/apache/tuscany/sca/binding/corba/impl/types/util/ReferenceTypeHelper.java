@@ -31,18 +31,18 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class ReferenceTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public java.lang.Object read(TypeTreeNode node, InputStream is) {
-		Object reference = is.read_Object();
-		return (java.lang.Object) InterfaceInstanceCreator.createInstance(reference, node.getJavaClass()); 
-	}
+    public java.lang.Object read(TypeTreeNode node, InputStream is) {
+        Object reference = is.read_Object();
+        return (java.lang.Object)InterfaceInstanceCreator.createInstance(reference, node.getJavaClass());
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, java.lang.Object data) {
-		os.write_Object((Object) data);
-	}
+    public void write(TypeTreeNode node, OutputStream os, java.lang.Object data) {
+        os.write_Object((Object)data);
+    }
 
 }

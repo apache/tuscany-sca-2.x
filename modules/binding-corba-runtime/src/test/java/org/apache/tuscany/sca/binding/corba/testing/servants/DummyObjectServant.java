@@ -24,19 +24,19 @@ import org.apache.tuscany.sca.binding.corba.testing.references._DummyObjectImplB
 
 public class DummyObjectServant extends _DummyObjectImplBase {
 
-	private static final long serialVersionUID = 1L;
-	private int retVal;
+    private static final long serialVersionUID = 1L;
+    private int retVal;
 
-	public DummyObjectServant() {
-		retVal = (int) System.currentTimeMillis();
-	}
+    public DummyObjectServant() {
+        retVal = (int)System.currentTimeMillis();
+    }
 
-	public int getLong() {
-		return retVal;
-	}
+    public int getLong() {
+        return retVal;
+    }
 
-	public DummyObject cloneObject() {
-		return new DummyObjectServant();
-	}
+    public DummyObject cloneObject() {
+        return new DummyObjectServant();
+    }
 
 }

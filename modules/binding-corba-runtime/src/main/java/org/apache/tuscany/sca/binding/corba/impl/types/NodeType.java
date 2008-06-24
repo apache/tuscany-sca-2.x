@@ -24,5 +24,5 @@ package org.apache.tuscany.sca.binding.corba.impl.types;
  * Types of CORBA objects.
  */
 public enum NodeType {
-	primitive, struct, union, array, sequence, reference, idl_enum, exception
+    primitive, struct, union, array, sequence, reference, idl_enum, exception
 }

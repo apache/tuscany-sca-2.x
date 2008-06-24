@@ -34,39 +34,37 @@ import org.omg.CORBA.Object;
  */
 public class InterfaceInstanceCreator {
 
-	private static final CallbackFilter FILTER = new CallbackFilter() {
-		public int accept(Method method) {
-			return 1;
-		}
-	};
+    private static final CallbackFilter FILTER = new CallbackFilter() {
+        public int accept(Method method) {
+            return 1;
+        }
+    };
 
-	/**
-	 * Dynamically creates instance of user defined interface. Instance is
-	 * enhanced by RemoteMethodInterceptor
-	 * 
-	 * @param reference
-	 *            CORBA reference
-	 * @param forClass
-	 *            user defined interface
-	 * @return dynamic implementation instance
-	 */
-	public static java.lang.Object createInstance(Object reference,
-			Class<?> forClass) {
-		java.lang.Object result = null;
-		try {
-			Enhancer enhancer = new Enhancer();
-			enhancer.setInterfaces(new Class[] { forClass });
-			enhancer.setCallbackFilter(FILTER);
-			enhancer.setCallbackTypes(new Class[] { NoOp.class,
-					MethodInterceptor.class });
-			Class<?> newClass = enhancer.createClass();
-			Enhancer.registerStaticCallbacks(newClass, new Callback[] {
-					NoOp.INSTANCE, new InterfaceMethodInterceptor(reference) });
-			result = newClass.newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+    /**
+     * Dynamically creates instance of user defined interface. Instance is
+     * enhanced by RemoteMethodInterceptor
+     * 
+     * @param reference
+     *            CORBA reference
+     * @param forClass
+     *            user defined interface
+     * @return dynamic implementation instance
+     */
+    public static java.lang.Object createInstance(Object reference, Class<?> forClass) {
+        java.lang.Object result = null;
+        try {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setInterfaces(new Class[] {forClass});
+            enhancer.setCallbackFilter(FILTER);
+            enhancer.setCallbackTypes(new Class[] {NoOp.class, MethodInterceptor.class});
+            Class<?> newClass = enhancer.createClass();
+            Enhancer.registerStaticCallbacks(newClass, new Callback[] {NoOp.INSTANCE,
+                                                                       new InterfaceMethodInterceptor(reference)});
+            result = newClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }

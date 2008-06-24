@@ -48,188 +48,182 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class TestRuntimeComponentService implements RuntimeComponentService {
 
-	private InterfaceContract interfaceContract;
-	private RuntimeWire runtimeWire;
+    private InterfaceContract interfaceContract;
+    private RuntimeWire runtimeWire;
 
-	public TestRuntimeComponentService(Object invocationTarget) {
-		runtimeWire = new TestRuntimeWire(invocationTarget);
-		List<Operation> operations = new ArrayList<Operation>();
-		Method[] methods = invocationTarget.getClass().getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			int mod = methods[i].getModifiers();
-			if (methods[i].getDeclaringClass().equals(invocationTarget.getClass()) && Modifier.isPublic(mod) && !methods[i].getName().startsWith("_")) {
-				Operation operation = new TestOperation();
-				DataType returnType = new TestDataType(methods[i]
-						.getReturnType());
-				operation.setOutputType(returnType);
-				Class<?>[] argTypes = methods[i].getParameterTypes();
-				List<DataType> argDataTypes = new ArrayList<DataType>();
-				for (int j = 0; j < argTypes.length; j++) {
-					argDataTypes.add(new TestDataType(argTypes[j]));
-				}
-				TestDataType<List<DataType>> inputDataType = new TestDataType<List<DataType>>(
-						null, argDataTypes);
-				operation.setInputType(inputDataType);
-				operations.add(operation);
-				operation.setName(methods[i].getName());
-			}
-		}
-		TestInterface iface = new TestInterface(operations);
-		interfaceContract = new TestInterfaceContract();
-		interfaceContract.setInterface(iface);
-	}
+    public TestRuntimeComponentService(Object invocationTarget) {
+        runtimeWire = new TestRuntimeWire(invocationTarget);
+        List<Operation> operations = new ArrayList<Operation>();
+        Method[] methods = invocationTarget.getClass().getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            int mod = methods[i].getModifiers();
+            if (methods[i].getDeclaringClass().equals(invocationTarget.getClass()) && Modifier.isPublic(mod)
+                && !methods[i].getName().startsWith("_")) {
+                Operation operation = new TestOperation();
+                DataType returnType = new TestDataType(methods[i].getReturnType());
+                operation.setOutputType(returnType);
+                Class<?>[] argTypes = methods[i].getParameterTypes();
+                List<DataType> argDataTypes = new ArrayList<DataType>();
+                for (int j = 0; j < argTypes.length; j++) {
+                    argDataTypes.add(new TestDataType(argTypes[j]));
+                }
+                TestDataType<List<DataType>> inputDataType = new TestDataType<List<DataType>>(null, argDataTypes);
+                operation.setInputType(inputDataType);
+                operations.add(operation);
+                operation.setName(methods[i].getName());
+            }
+        }
+        TestInterface iface = new TestInterface(operations);
+        interfaceContract = new TestInterfaceContract();
+        interfaceContract.setInterface(iface);
+    }
 
-	public void addPolicyProvider(Binding binding, PolicyProvider policyProvider) {
+    public void addPolicyProvider(Binding binding, PolicyProvider policyProvider) {
 
-	}
+    }
 
-	public ServiceBindingProvider getBindingProvider(Binding binding) {
-		return null;
-	}
+    public ServiceBindingProvider getBindingProvider(Binding binding) {
+        return null;
+    }
 
-	public List<RuntimeWire> getCallbackWires() {
-		return null;
-	}
+    public List<RuntimeWire> getCallbackWires() {
+        return null;
+    }
 
-	public InvocationChain getInvocationChain(Binding binding,
-			Operation operation) {
-		return null;
-	}
+    public InvocationChain getInvocationChain(Binding binding, Operation operation) {
+        return null;
+    }
 
-	public InvocationChain getInvocationChain(Binding binding,
-			InterfaceContract interfaceContract, Operation operation) {
-		return null;
-	}
+    public InvocationChain getInvocationChain(Binding binding, InterfaceContract interfaceContract, Operation operation) {
+        return null;
+    }
 
-	public Invoker getInvoker(Binding binding, Operation operation) {
-		return null;
-	}
+    public Invoker getInvoker(Binding binding, Operation operation) {
+        return null;
+    }
 
-	public Invoker getInvoker(Binding binding,
-			InterfaceContract interfaceContract, Operation operation) {
-		return null;
-	}
+    public Invoker getInvoker(Binding binding, InterfaceContract interfaceContract, Operation operation) {
+        return null;
+    }
 
-	public List<PolicyProvider> getPolicyProviders(Binding binding) {
-		return null;
-	}
+    public List<PolicyProvider> getPolicyProviders(Binding binding) {
+        return null;
+    }
 
-	public RuntimeWire getRuntimeWire(Binding binding) {
-		return runtimeWire;
-	}
+    public RuntimeWire getRuntimeWire(Binding binding) {
+        return runtimeWire;
+    }
 
-	public RuntimeWire getRuntimeWire(Binding binding,
-			InterfaceContract interfaceContract) {
-		return null;
-	}
+    public RuntimeWire getRuntimeWire(Binding binding, InterfaceContract interfaceContract) {
+        return null;
+    }
 
-	public List<RuntimeWire> getRuntimeWires() {
-		return null;
-	}
+    public List<RuntimeWire> getRuntimeWires() {
+        return null;
+    }
 
-	public void setBindingProvider(Binding binding,
-			ServiceBindingProvider bindingProvider) {
+    public void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider) {
 
-	}
+    }
 
-	public ComponentReference getCallbackReference() {
-		return null;
-	}
+    public ComponentReference getCallbackReference() {
+        return null;
+    }
 
-	public Service getService() {
-		return null;
-	}
+    public Service getService() {
+        return null;
+    }
 
-	public void setCallbackReference(ComponentReference callbackReference) {
+    public void setCallbackReference(ComponentReference callbackReference) {
 
-	}
+    }
 
-	public void setService(Service service) {
+    public void setService(Service service) {
 
-	}
+    }
 
-	public InterfaceContract getInterfaceContract() {
-		return interfaceContract;
-	}
+    public InterfaceContract getInterfaceContract() {
+        return interfaceContract;
+    }
 
-	public String getName() {
-		return null;
-	}
+    public String getName() {
+        return null;
+    }
 
-	public boolean isCallback() {
-		return false;
-	}
+    public boolean isCallback() {
+        return false;
+    }
 
-	public void setInterfaceContract(InterfaceContract interfaceContract) {
-		this.interfaceContract = interfaceContract;
-	}
+    public void setInterfaceContract(InterfaceContract interfaceContract) {
+        this.interfaceContract = interfaceContract;
+    }
 
-	public void setIsCallback(boolean isCallback) {
+    public void setIsCallback(boolean isCallback) {
 
-	}
+    }
 
-	public void setName(String name) {
+    public void setName(String name) {
 
-	}
+    }
 
-	public boolean isUnresolved() {
-		return false;
-	}
+    public boolean isUnresolved() {
+        return false;
+    }
 
-	public void setUnresolved(boolean unresolved) {
+    public void setUnresolved(boolean unresolved) {
 
-	}
+    }
 
-	public List<Object> getExtensions() {
-		return null;
-	}
+    public List<Object> getExtensions() {
+        return null;
+    }
 
-	public List<Intent> getRequiredIntents() {
-		return null;
-	}
+    public List<Intent> getRequiredIntents() {
+        return null;
+    }
 
-	public IntentAttachPointType getType() {
-		return null;
-	}
+    public IntentAttachPointType getType() {
+        return null;
+    }
 
-	public void setType(IntentAttachPointType type) {
+    public void setType(IntentAttachPointType type) {
 
-	}
+    }
 
-	public List<ConfiguredOperation> getConfiguredOperations() {
-		return null;
-	}
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return null;
+    }
 
-	public <B> B getBinding(Class<B> bindingClass) {
-		return null;
-	}
+    public <B> B getBinding(Class<B> bindingClass) {
+        return null;
+    }
 
-	public List<Binding> getBindings() {
-		return null;
-	}
+    public List<Binding> getBindings() {
+        return null;
+    }
 
-	public Callback getCallback() {
-		return null;
-	}
+    public Callback getCallback() {
+        return null;
+    }
 
-	public <B> B getCallbackBinding(Class<B> bindingClass) {
-		return null;
-	}
+    public <B> B getCallbackBinding(Class<B> bindingClass) {
+        return null;
+    }
 
-	public void setCallback(Callback callback) {
+    public void setCallback(Callback callback) {
 
-	}
+    }
 
-	public List<PolicySet> getApplicablePolicySets() {
-		return null;
-	}
+    public List<PolicySet> getApplicablePolicySets() {
+        return null;
+    }
 
-	public List<PolicySet> getPolicySets() {
-		return null;
-	}
+    public List<PolicySet> getPolicySets() {
+        return null;
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
 }

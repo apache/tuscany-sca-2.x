@@ -32,30 +32,31 @@ import org.omg.CORBA.Object;
  */
 public class InterfaceMethodInterceptor implements MethodInterceptor {
 
-	private Object reference;
+    private Object reference;
 
-	public InterfaceMethodInterceptor(Object reference) {
-		this.reference = reference;
-	}
+    public InterfaceMethodInterceptor(Object reference) {
+        this.reference = reference;
+    }
 
-	/**
-	 * Create and execute DynaCorbaRequest instance, basing on intercepted
-	 * method arguments, return types, exceptions
-	 */
-	public java.lang.Object intercept(java.lang.Object object, Method method,
-			java.lang.Object[] arguments, MethodProxy arg3) throws Throwable {
-		DynaCorbaRequest request = new DynaCorbaRequest(reference, method
-				.getName());
-		for (int i = 0; i < arguments.length; i++) {
-			request.addArgument(arguments[i]);
-		}
-		request.setOutputType(method.getReturnType());
-		Class<?>[] exceptions = method.getExceptionTypes();
-		for (int i = 0; i < exceptions.length; i++) {
-			request.addExceptionType(exceptions[i]);
-		}
-		DynaCorbaResponse response = request.invoke();
-		return response.getContent();
-	}
+    /**
+     * Create and execute DynaCorbaRequest instance, basing on intercepted
+     * method arguments, return types, exceptions
+     */
+    public java.lang.Object intercept(java.lang.Object object,
+                                      Method method,
+                                      java.lang.Object[] arguments,
+                                      MethodProxy arg3) throws Throwable {
+        DynaCorbaRequest request = new DynaCorbaRequest(reference, method.getName());
+        for (int i = 0; i < arguments.length; i++) {
+            request.addArgument(arguments[i]);
+        }
+        request.setOutputType(method.getReturnType());
+        Class<?>[] exceptions = method.getExceptionTypes();
+        for (int i = 0; i < exceptions.length; i++) {
+            request.addExceptionType(exceptions[i]);
+        }
+        DynaCorbaResponse response = request.invoke();
+        return response.getContent();
+    }
 
 }

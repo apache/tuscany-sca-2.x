@@ -26,28 +26,27 @@ import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSu
 
 public class CalcServant extends _CalcImplBase {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public double div(double arg1, double arg2) throws DivByZero {
-		if (arg2 == 0) {
-			DivByZero exception = new DivByZero();
-			exception.arguments = new Arguments(arg1, arg2);
-			exception.info = "Error occured during div: div by zero";
-			throw exception;
-		} else {
-			return arg1 / arg2;
-		}
-	}
+    public double div(double arg1, double arg2) throws DivByZero {
+        if (arg2 == 0) {
+            DivByZero exception = new DivByZero();
+            exception.arguments = new Arguments(arg1, arg2);
+            exception.info = "Error occured during div: div by zero";
+            throw exception;
+        } else {
+            return arg1 / arg2;
+        }
+    }
 
-	public double divForSmallArgs(double arg1, double arg2) throws DivByZero,
-			NotSupported {
-		if (arg1 > 100 || arg2 > 100) {
-			NotSupported exception = new NotSupported();
-			exception.info = "arg1: " + arg1 + ", arg2: " + arg2;
-			throw exception;
-		} else {
-			return div(arg1, arg2);	
-		}
-	}
+    public double divForSmallArgs(double arg1, double arg2) throws DivByZero, NotSupported {
+        if (arg1 > 100 || arg2 > 100) {
+            NotSupported exception = new NotSupported();
+            exception.info = "arg1: " + arg1 + ", arg2: " + arg2;
+            throw exception;
+        } else {
+            return div(arg1, arg2);
+        }
+    }
 
 }

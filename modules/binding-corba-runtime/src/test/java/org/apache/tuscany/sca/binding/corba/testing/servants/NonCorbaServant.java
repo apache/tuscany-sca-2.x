@@ -23,14 +23,14 @@ import org.apache.tuscany.sca.binding.corba.testing.hierarchy.NonCorbaException;
 
 public class NonCorbaServant {
 
-	public String setString(String arg) {
-		return arg;
-	}
+    public String setString(String arg) {
+        return arg;
+    }
 
-	public void throwException() throws NonCorbaException {
-		NonCorbaException e = new NonCorbaException();
-		e.someField = "test";
-		throw e;
-	}
+    public void throwException() throws NonCorbaException {
+        NonCorbaException e = new NonCorbaException();
+        e.someField = "test";
+        throw e;
+    }
 
 }

@@ -24,14 +24,14 @@ import org.apache.tuscany.sca.binding.corba.testing.references._ObjectManagerImp
 
 public class ObjectManagerServant extends _ObjectManagerImplBase {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DummyObject getObjectByArgument(DummyObject arg) {
-		return arg;
-	}
+    public DummyObject getObjectByArgument(DummyObject arg) {
+        return arg;
+    }
 
-	public DummyObject getDummyObject() {
-		return new DummyObjectServant();
-	}
+    public DummyObject getDummyObject() {
+        return new DummyObjectServant();
+    }
 
 }
