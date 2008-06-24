@@ -54,8 +54,10 @@
                 <!-- new bindings -->
                 <module>binding-atom</module>
                 <module>binding-atom-abdera</module>
-                <module>binding-rss</module>
-                <module>binding-rss-rome</module>
+                <!--
+                <module>binding-gdata</module>
+                <module>binding-gdata-runtime</module>
+                -->
                 <module>binding-http</module>
                 <module>binding-http-runtime</module>
                 <module>binding-jms</module>
@@ -63,6 +65,8 @@
                 <module>binding-jsonrpc-runtime</module>
                 <module>binding-notification</module>
                 <module>binding-rmi</module>
+                <module>binding-rss</module>
+                <module>binding-rss-rome</module>
                 <module>binding-sca</module>
                 <module>binding-sca-axis2</module>
                 <module>binding-sca-xml</module>
