@@ -43,7 +43,7 @@ public class HelloWorldRmiImpl implements HelloWorldRmiService {
         return extService.sayHello(name) + " thro the RMI Reference";
     }
     
-    public String sayRmiHi(String name, String greeter) {
+    public String sayRmiHi(String name, String greeter) throws HelloException {
         return extService.sayHi(name, greeter) + " thro the RMI Reference";
     }
 

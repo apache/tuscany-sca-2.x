@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.rmi;
 
+import helloworld.HelloException;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
@@ -34,32 +35,38 @@ import org.junit.Test;
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
     private static SCADomain domain;
- 
+
     @Test
     public void testRmiService() {
-        System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
-        Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference",
-                helloWorldRmiService.sayRmiHello("Tuscany World!"));
-        
-        System.out.println(helloWorldRmiService.sayRmiHi("Tuscany World!", "Apache World"));
-        
-        Assert.assertEquals("Hi from Apache World in RMI Service to - Tuscany World! thro the RMI Reference",
-                            helloWorldRmiService.sayRmiHi("Tuscany World!", "Apache World"));
+        String msg = helloWorldRmiService.sayRmiHello("Tuscany World!");
+        System.out.println(msg);
+        Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference", msg);
+
+        try {
+            msg = helloWorldRmiService.sayRmiHi("Tuscany World!", "Apache World");
+            System.out.println(msg);
+            Assert.assertEquals("Hi from Apache World in RMI Service to - Tuscany World! thro the RMI Reference", msg);
+        } catch (HelloException e) {
+            Assert.fail(e.getMessage());
+        }
+        try {
+            msg = helloWorldRmiService.sayRmiHi(null, "Apache World");
+            Assert.fail("HelloException should have been thrown");
+        } catch (HelloException e) {
+
+        }
     }
 
-
-    
     @BeforeClass
     public static void init() throws Exception {
-try {
-        domain = SCADomain.newInstance("RMIBindingTest.composite");
-        helloWorldRmiService = 
-            domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
-} catch (Exception e) {
-    e.printStackTrace();
-}
-  }
-    
+        try {
+            domain = SCADomain.newInstance("RMIBindingTest.composite");
+            helloWorldRmiService = domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @AfterClass
     public static void destroy() throws Exception {
         domain.close();
