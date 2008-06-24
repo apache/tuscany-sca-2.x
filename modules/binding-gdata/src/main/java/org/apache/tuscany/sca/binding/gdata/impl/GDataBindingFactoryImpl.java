@@ -17,20 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.gdata;
+package org.apache.tuscany.sca.binding.gdata.impl;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.binding.gdata.GDataBinding;
+import org.apache.tuscany.sca.binding.gdata.GDataBindingFactory;
 
-public class Consumer {
+/**
+ * Factory for the GData binding model.
+ *
+ * @version $Rev$ $Date$
+ */
+public class GDataBindingFactoryImpl implements GDataBindingFactory {
 
-    public static void main(String[] args) throws Exception {
-
-            SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Consumer.composite");
-
-            CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
-
-            testService.testCustomerCollection();
-
-            scaDomain.close();
+    public GDataBinding createAtomBinding() {
+        return new GDataBindingImpl();
     }
+
 }

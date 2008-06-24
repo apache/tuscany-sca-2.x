@@ -19,18 +19,17 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+/**
+ * Factory for the GData binding
+ *
+ * @version $Rev$ $Date$
+ */
+public interface GDataBindingFactory {
 
-public class Consumer {
+    /**
+     * Creates a new Atom binding.
+     * @return the new Atom binding
+     */
+    GDataBinding createAtomBinding();
 
-    public static void main(String[] args) throws Exception {
-
-            SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Consumer.composite");
-
-            CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
-
-            testService.testCustomerCollection();
-
-            scaDomain.close();
-    }
 }

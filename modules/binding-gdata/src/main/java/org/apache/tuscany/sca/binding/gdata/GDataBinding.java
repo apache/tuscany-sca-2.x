@@ -19,18 +19,25 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.assembly.Binding;
 
-public class Consumer {
-
-    public static void main(String[] args) throws Exception {
-
-            SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Consumer.composite");
-
-            CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
-
-            testService.testCustomerCollection();
-
-            scaDomain.close();
-    }
+/**
+ * GData binding model.
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface GDataBinding extends Binding {
+    
+    /**
+     * Returns the title of the Atom collection.
+     * @return
+     */
+    String getTitle();
+    
+    /**
+     * Sets the title of the Atom collection.
+     * @param title
+     */
+    void setTitle(String title);
+    
 }
