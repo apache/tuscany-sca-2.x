@@ -240,7 +240,7 @@ public class TypeTreeCreator {
 			node.setJavaClass(forClass);
 		} else {
 			RequestConfigurationException e = new RequestConfigurationException(
-					"User defined type which cannot be handler: "
+					"User defined type which cannot be handled: "
 							+ forClass.getCanonicalName());
 			throw e;
 		}
@@ -366,7 +366,7 @@ public class TypeTreeCreator {
 			} else {
 				forClass = forClass.getSuperclass();
 			}
-		} while (!forClass.equals(Object.class));
+		} while (forClass != null && !forClass.equals(Object.class));
 		return false;
 	}
 }

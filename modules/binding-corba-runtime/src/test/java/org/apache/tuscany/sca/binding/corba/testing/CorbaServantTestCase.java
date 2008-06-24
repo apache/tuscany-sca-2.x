@@ -25,6 +25,7 @@ import java.lang.reflect.Array;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
+import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
@@ -48,6 +49,7 @@ import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant
 import org.apache.tuscany.sca.binding.corba.testing.servants.CalcServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.EnumManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.InvalidTestObjectServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.InvalidTypesServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.NonCorbaServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.PrimitivesSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
@@ -283,7 +285,7 @@ public class CorbaServantTestCase extends TestCase {
 	/**
 	 * Tests handling BAD_OPERATION system exception
 	 */
-	public void test_noSuchOperation() {
+	public void test_systemException_BAD_OPERATION() {
 		try {
 			TestObjectServant tos = new TestObjectServant();
 			TestRuntimeComponentService service = new TestRuntimeComponentService(
@@ -436,5 +438,53 @@ public class CorbaServantTestCase extends TestCase {
 			}
 		}
 	}
-
+	
+	/**
+	 * Tests handling BAD_PARAM system exception
+	 */
+	public void test_systemException_BAD_PARAM() {
+		try {
+			CalcServant calc = new CalcServant();
+			TestRuntimeComponentService service = new TestRuntimeComponentService(
+					calc);
+			DynaCorbaServant servant = new DynaCorbaServant(service, null);
+			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0" };
+			servant.setIds(ids);
+			bindServant(servant, "Calc");
+			DynaCorbaRequest request = new DynaCorbaRequest(
+					bindReference("Calc"), "div");
+			request.addArgument(2d);
+			request.setOutputType(double.class);
+			request.invoke();
+			fail();
+		} catch (Exception e) {
+			if (e instanceof CorbaException) {
+				assertTrue(true);
+			} else {
+				e.printStackTrace();
+				fail();
+			}
+		}
+	}
+	
+	/**
+	 * Tests handling BAD_PARAM system exception
+	 */
+	public void test_invalidServantConfiguraion() {
+		try {
+			InvalidTypesServant its = new InvalidTypesServant();
+			TestRuntimeComponentService service = new TestRuntimeComponentService(its);
+			//expecting exception...
+			new DynaCorbaServant(service, null);
+			fail();
+		} catch (Exception e) {
+			if (e instanceof RequestConfigurationException) {
+				assertTrue(true);
+			} else {
+				e.printStackTrace();
+				fail();
+			}
+		}
+	}
+	
 }
