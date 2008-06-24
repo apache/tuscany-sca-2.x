@@ -57,7 +57,7 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
 		Method[] methods = invocationTarget.getClass().getMethods();
 		for (int i = 0; i < methods.length; i++) {
 			int mod = methods[i].getModifiers();
-			if (Modifier.isPublic(mod)) {
+			if (methods[i].getDeclaringClass().equals(invocationTarget.getClass()) && Modifier.isPublic(mod) && !methods[i].getName().startsWith("_")) {
 				Operation operation = new TestOperation();
 				DataType returnType = new TestDataType(methods[i]
 						.getReturnType());

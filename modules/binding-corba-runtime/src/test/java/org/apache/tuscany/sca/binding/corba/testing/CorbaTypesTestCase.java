@@ -491,7 +491,7 @@ public class CorbaTypesTestCase extends TestCase {
 	/**
 	 * Tests handling non existing operation situation
 	 */
-	public void test_noOperationException() {
+	public void test_systemException_BAD_OPERATION() { 
 		DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject,
 				"thisOperationSurelyDoesNotExist");
 		try {
@@ -603,6 +603,26 @@ public class CorbaTypesTestCase extends TestCase {
 			request.setOutputType(Color.class);
 		} catch (Exception e) {
 			fail();
+		}
+	}
+	
+	/**
+	 * Tests hanlding passing wrong params
+	 */
+	public void test_systemException_BAD_PARAM() {
+		try {
+			DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
+			request.setOutputType(Double.class);
+			request.addArgument(3d);
+			request.invoke();
+			fail();
+		} catch (Exception e) {
+			if (e instanceof CorbaException) {
+				assertTrue(true);
+			} else {
+				e.printStackTrace();
+				fail();
+			}
 		}
 	}
 

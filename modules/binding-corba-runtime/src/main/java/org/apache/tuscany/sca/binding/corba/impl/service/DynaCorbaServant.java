@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.binding.corba.impl.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
@@ -32,6 +34,7 @@ import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.omg.CORBA.MARSHAL;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.InvokeHandler;
 import org.omg.CORBA.portable.ObjectImpl;
@@ -47,10 +50,50 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 	private RuntimeComponentService service;
 	private Binding binding;
 	private String[] ids = DEFAULT_IDS;
+	private Map<String, OperationTypes> operationsCache = new HashMap<String, OperationTypes>();
 
-	public DynaCorbaServant(RuntimeComponentService service, Binding binding) {
+	public DynaCorbaServant(RuntimeComponentService service, Binding binding)
+			throws RequestConfigurationException {
 		this.service = service;
 		this.binding = binding;
+		cacheOperationTypes(service.getInterfaceContract().getInterface()
+				.getOperations());
+
+	}
+
+	private void cacheOperationTypes(List<Operation> operations)
+			throws RequestConfigurationException {
+		for (Operation operation : operations) {
+			try {
+				OperationTypes operationTypes = new OperationTypes();
+				List<TypeTree> inputInstances = new ArrayList<TypeTree>();
+				// cache output type tree
+				if (operation.getOutputType() != null
+						&& operation.getOutputType().getPhysical() != null
+						&& !operation.getOutputType().getPhysical().equals(
+								void.class)) {
+					TypeTree outputType = TypeTreeCreator
+							.createTypeTree(operation.getOutputType()
+									.getPhysical());
+					operationTypes.setOutputType(outputType);
+				}
+				// cache input types trees
+				if (operation.getInputType() != null) {
+					for (DataType<List<DataType>> type : operation
+							.getInputType().getLogical()) {
+						Class<?> forClass = type.getPhysical();
+						TypeTree inputType = TypeTreeCreator
+								.createTypeTree(forClass);
+						inputInstances.add(inputType);
+					}
+
+				}
+				operationTypes.setInputType(inputInstances);
+				operationsCache.put(operation.getName(), operationTypes);
+			} catch (RequestConfigurationException e) {
+				throw e;
+			}
+		}
 	}
 
 	public void setIds(String[] ids) {
@@ -64,8 +107,6 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 	public OutputStream _invoke(String method, InputStream in,
 			ResponseHandler rh) {
 
-		DataType outputType = null;
-		DataType<List<DataType>> inputType = null;
 		Operation operation = null;
 
 		List<Operation> operations = service.getInterfaceContract()
@@ -73,8 +114,6 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 		// searching for proper operation
 		for (Operation oper : operations) {
 			if (oper.getName().equals(method)) {
-				outputType = oper.getOutputType();
-				inputType = oper.getInputType();
 				operation = oper;
 				break;
 			}
@@ -85,27 +124,26 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 					org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 		} else {
 			List<Object> inputInstances = new ArrayList<Object>();
+			OperationTypes types = operationsCache.get(operation.getName());
 			try {
 				// retrieving in arguments
-				for (DataType type : inputType.getLogical()) {
-					Class<?> forClass = type.getPhysical();
-					TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
+				for (TypeTree tree : types.getInputType()) {
 					Object o = TypeHelpersProxy.read(tree.getRootNode(), in);
 					inputInstances.add(o);
-
 				}
-			} catch (RequestConfigurationException e) {
-				// TODO: raise remote exception, BAD_PARAM exception maybe?
-				e.printStackTrace();
+			} catch (MARSHAL e) {
+				// parameter passed by user was not compatible with Java to
+				// Corba mapping
+				throw new org.omg.CORBA.BAD_PARAM(0,
+						org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 			}
 			try {
 				// invocation and sending result
 				Object result = service.getRuntimeWire(binding).invoke(
 						operation, inputInstances.toArray());
-				if (outputType != null) {
+				if (types.getOutputType() != null) {
 					OutputStream out = rh.createReply();
-					TypeTree tree = TypeTreeCreator.createTypeTree(outputType
-							.getPhysical());
+					TypeTree tree = types.getOutputType();
 					TypeHelpersProxy.write(tree.getRootNode(), out, result);
 					return out;
 				}
@@ -122,7 +160,7 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 					TypeHelpersProxy.write(tree.getRootNode(), out, ie
 							.getTargetException());
 					return out;
-				} catch (RequestConfigurationException e) {
+				} catch (Exception e) {
 					// TODO: raise remote exception - exception while handling
 					// target exception
 					e.printStackTrace();

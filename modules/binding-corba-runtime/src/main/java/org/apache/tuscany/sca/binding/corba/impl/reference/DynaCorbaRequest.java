@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeCreator;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.TypeHelpersProxy;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
 import org.omg.CORBA.BAD_OPERATION;
+import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.portable.ApplicationException;
@@ -137,6 +138,8 @@ public class DynaCorbaRequest {
 	private void handleSystemException(SystemException se) throws Exception {
 		if (se instanceof BAD_OPERATION) {
 			throw new CorbaException("Bad operation name: " + operation, se);
+		} else if (se instanceof BAD_PARAM) {
+			throw new CorbaException("Bad parameter", se);
 		} else {
 			// TODO: handle more system exception types
 			throw new CorbaException(se.getMessage(), se);
