@@ -24,7 +24,6 @@ import org.omg.CORBA.ServerRequest;
 import org.omg.PortableServer.DynamicImplementation;
 import org.omg.PortableServer.POA;
 
-
 /**
  * This is the CORBA DSI servant that dispatches CORBA requests to SCA components
  * 
@@ -32,9 +31,9 @@ import org.omg.PortableServer.POA;
  */
 public class TuscanyServant extends DynamicImplementation {
     private ORB orb;
-    
+
     @Override
-    public void invoke(ServerRequest request) {       
+    public void invoke(ServerRequest request) {
     }
 
     @Override

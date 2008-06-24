@@ -21,16 +21,16 @@ package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
 public final class InvalidStruct3 {
 
-	public int f1;
-	public String f2;
-	public static byte f3;
+    public int f1;
+    public String f2;
+    public static byte f3;
 
-	public InvalidStruct3() {
+    public InvalidStruct3() {
 
-	}
+    }
 
-	public InvalidStruct3(int f1, String f2, byte f3) {
+    public InvalidStruct3(int f1, String f2, byte f3) {
 
-	}
+    }
 
 }

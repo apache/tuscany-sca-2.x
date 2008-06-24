@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage;
 * sobota, 7 czerwiec 2008 16:12:31 CEST
 */
 
-public final class NotSupportedHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported value = null;
+public final class NotSupportedHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported value = null;
 
-  public NotSupportedHolder ()
-  {
-  }
+    public NotSupportedHolder() {
+    }
 
-  public NotSupportedHolder (org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported initialValue)
-  {
-    value = initialValue;
-  }
+    public NotSupportedHolder(org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupportedHelper.type();
+    }
 
 }

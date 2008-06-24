@@ -46,136 +46,119 @@ import org.omg.CORBA.portable.ResponseHandler;
  */
 public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 
-	private static String[] DEFAULT_IDS = { "IDL:default:1.0" };
-	private RuntimeComponentService service;
-	private Binding binding;
-	private String[] ids = DEFAULT_IDS;
-	private Map<String, OperationTypes> operationsCache = new HashMap<String, OperationTypes>();
+    private static String[] DEFAULT_IDS = {"IDL:default:1.0"};
+    private RuntimeComponentService service;
+    private Binding binding;
+    private String[] ids = DEFAULT_IDS;
+    private Map<String, OperationTypes> operationsCache = new HashMap<String, OperationTypes>();
 
-	public DynaCorbaServant(RuntimeComponentService service, Binding binding)
-			throws RequestConfigurationException {
-		this.service = service;
-		this.binding = binding;
-		cacheOperationTypes(service.getInterfaceContract().getInterface()
-				.getOperations());
+    public DynaCorbaServant(RuntimeComponentService service, Binding binding) throws RequestConfigurationException {
+        this.service = service;
+        this.binding = binding;
+        cacheOperationTypes(service.getInterfaceContract().getInterface().getOperations());
 
-	}
+    }
 
-	private void cacheOperationTypes(List<Operation> operations)
-			throws RequestConfigurationException {
-		for (Operation operation : operations) {
-			try {
-				OperationTypes operationTypes = new OperationTypes();
-				List<TypeTree> inputInstances = new ArrayList<TypeTree>();
-				// cache output type tree
-				if (operation.getOutputType() != null
-						&& operation.getOutputType().getPhysical() != null
-						&& !operation.getOutputType().getPhysical().equals(
-								void.class)) {
-					TypeTree outputType = TypeTreeCreator
-							.createTypeTree(operation.getOutputType()
-									.getPhysical());
-					operationTypes.setOutputType(outputType);
-				}
-				// cache input types trees
-				if (operation.getInputType() != null) {
-					for (DataType<List<DataType>> type : operation
-							.getInputType().getLogical()) {
-						Class<?> forClass = type.getPhysical();
-						TypeTree inputType = TypeTreeCreator
-								.createTypeTree(forClass);
-						inputInstances.add(inputType);
-					}
+    private void cacheOperationTypes(List<Operation> operations) throws RequestConfigurationException {
+        for (Operation operation : operations) {
+            try {
+                OperationTypes operationTypes = new OperationTypes();
+                List<TypeTree> inputInstances = new ArrayList<TypeTree>();
+                // cache output type tree
+                if (operation.getOutputType() != null && operation.getOutputType().getPhysical() != null
+                    && !operation.getOutputType().getPhysical().equals(void.class)) {
+                    TypeTree outputType = TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical());
+                    operationTypes.setOutputType(outputType);
+                }
+                // cache input types trees
+                if (operation.getInputType() != null) {
+                    for (DataType<List<DataType>> type : operation.getInputType().getLogical()) {
+                        Class<?> forClass = type.getPhysical();
+                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass);
+                        inputInstances.add(inputType);
+                    }
 
-				}
-				operationTypes.setInputType(inputInstances);
-				operationsCache.put(operation.getName(), operationTypes);
-			} catch (RequestConfigurationException e) {
-				throw e;
-			}
-		}
-	}
+                }
+                operationTypes.setInputType(inputInstances);
+                operationsCache.put(operation.getName(), operationTypes);
+            } catch (RequestConfigurationException e) {
+                throw e;
+            }
+        }
+    }
 
-	public void setIds(String[] ids) {
-		if (ids != null) {
-			this.ids = ids;
-		} else {
-			this.ids = DEFAULT_IDS;
-		}
-	}
+    public void setIds(String[] ids) {
+        if (ids != null) {
+            this.ids = ids;
+        } else {
+            this.ids = DEFAULT_IDS;
+        }
+    }
 
-	public OutputStream _invoke(String method, InputStream in,
-			ResponseHandler rh) {
+    public OutputStream _invoke(String method, InputStream in, ResponseHandler rh) {
 
-		Operation operation = null;
+        Operation operation = null;
 
-		List<Operation> operations = service.getInterfaceContract()
-				.getInterface().getOperations();
-		// searching for proper operation
-		for (Operation oper : operations) {
-			if (oper.getName().equals(method)) {
-				operation = oper;
-				break;
-			}
-		}
-		if (operation == null) {
-			// operation wasn't found
-			throw new org.omg.CORBA.BAD_OPERATION(0,
-					org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
-		} else {
-			List<Object> inputInstances = new ArrayList<Object>();
-			OperationTypes types = operationsCache.get(operation.getName());
-			try {
-				// retrieving in arguments
-				for (TypeTree tree : types.getInputType()) {
-					Object o = TypeHelpersProxy.read(tree.getRootNode(), in);
-					inputInstances.add(o);
-				}
-			} catch (MARSHAL e) {
-				// parameter passed by user was not compatible with Java to
-				// Corba mapping
-				throw new org.omg.CORBA.BAD_PARAM(0,
-						org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
-			}
-			try {
-				// invocation and sending result
-				Object result = service.getRuntimeWire(binding).invoke(
-						operation, inputInstances.toArray());
-				if (types.getOutputType() != null) {
-					OutputStream out = rh.createReply();
-					TypeTree tree = types.getOutputType();
-					TypeHelpersProxy.write(tree.getRootNode(), out, result);
-					return out;
-				}
-			} catch (InvocationTargetException ie) {
-				// handling user exception
-				try {
-					OutputStream out = rh.createExceptionReply();
-					Class<?> exceptionClass = ie.getTargetException()
-							.getClass();
-					TypeTree tree = TypeTreeCreator
-							.createTypeTree(exceptionClass);
-					String exceptionId = Utils.getExceptionId(exceptionClass);
-					out.write_string(exceptionId);
-					TypeHelpersProxy.write(tree.getRootNode(), out, ie
-							.getTargetException());
-					return out;
-				} catch (Exception e) {
-					// TODO: raise remote exception - exception while handling
-					// target exception
-					e.printStackTrace();
-				}
-			} catch (Exception e) {
-				// TODO: raise remote exception
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
+        List<Operation> operations = service.getInterfaceContract().getInterface().getOperations();
+        // searching for proper operation
+        for (Operation oper : operations) {
+            if (oper.getName().equals(method)) {
+                operation = oper;
+                break;
+            }
+        }
+        if (operation == null) {
+            // operation wasn't found
+            throw new org.omg.CORBA.BAD_OPERATION(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
+        } else {
+            List<Object> inputInstances = new ArrayList<Object>();
+            OperationTypes types = operationsCache.get(operation.getName());
+            try {
+                // retrieving in arguments
+                for (TypeTree tree : types.getInputType()) {
+                    Object o = TypeHelpersProxy.read(tree.getRootNode(), in);
+                    inputInstances.add(o);
+                }
+            } catch (MARSHAL e) {
+                // parameter passed by user was not compatible with Java to
+                // Corba mapping
+                throw new org.omg.CORBA.BAD_PARAM(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
+            }
+            try {
+                // invocation and sending result
+                Object result = service.getRuntimeWire(binding).invoke(operation, inputInstances.toArray());
+                if (types.getOutputType() != null) {
+                    OutputStream out = rh.createReply();
+                    TypeTree tree = types.getOutputType();
+                    TypeHelpersProxy.write(tree.getRootNode(), out, result);
+                    return out;
+                }
+            } catch (InvocationTargetException ie) {
+                // handling user exception
+                try {
+                    OutputStream out = rh.createExceptionReply();
+                    Class<?> exceptionClass = ie.getTargetException().getClass();
+                    TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass);
+                    String exceptionId = Utils.getExceptionId(exceptionClass);
+                    out.write_string(exceptionId);
+                    TypeHelpersProxy.write(tree.getRootNode(), out, ie.getTargetException());
+                    return out;
+                } catch (Exception e) {
+                    // TODO: raise remote exception - exception while handling
+                    // target exception
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                // TODO: raise remote exception
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public String[] _ids() {
-		return ids;
-	}
+    @Override
+    public String[] _ids() {
+        return ids;
+    }
 
 }

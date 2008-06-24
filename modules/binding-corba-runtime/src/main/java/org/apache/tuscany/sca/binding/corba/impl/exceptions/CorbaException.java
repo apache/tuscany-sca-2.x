@@ -25,10 +25,10 @@ package org.apache.tuscany.sca.binding.corba.impl.exceptions;
  */
 public class CorbaException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CorbaException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
+    public CorbaException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

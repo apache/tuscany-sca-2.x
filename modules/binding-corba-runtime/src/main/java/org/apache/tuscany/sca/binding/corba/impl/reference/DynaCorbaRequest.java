@@ -42,132 +42,128 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class DynaCorbaRequest {
 
-	private TypeTree returnTree;
-	private Map<String, TypeTree> exceptions = new HashMap<String, TypeTree>();
-	private OutputStream outputStream;
-	private ObjectImpl remoteObject;
-	private String operation;
+    private TypeTree returnTree;
+    private Map<String, TypeTree> exceptions = new HashMap<String, TypeTree>();
+    private OutputStream outputStream;
+    private ObjectImpl remoteObject;
+    private String operation;
 
-	/**
-	 * Creates request.
-	 * 
-	 * @param ObjectremoteObject
-	 *            remote object reference
-	 * @param operation
-	 *            operation to invoke
-	 */
-	public DynaCorbaRequest(Object remoteObject, String operation) {
-		outputStream = ((ObjectImpl) remoteObject)._request(operation, true);
-		this.remoteObject = (ObjectImpl) remoteObject;
-		this.operation = operation;
+    /**
+     * Creates request.
+     * 
+     * @param ObjectremoteObject
+     *            remote object reference
+     * @param operation
+     *            operation to invoke
+     */
+    public DynaCorbaRequest(Object remoteObject, String operation) {
+        outputStream = ((ObjectImpl)remoteObject)._request(operation, true);
+        this.remoteObject = (ObjectImpl)remoteObject;
+        this.operation = operation;
 
-	}
+    }
 
-	/**
-	 * Adds operation argument
-	 * 
-	 * @param argument
-	 */
-	public void addArgument(java.lang.Object argument)
-			throws RequestConfigurationException {
-		TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
-		TypeHelpersProxy.write(tree.getRootNode(), outputStream, argument);
-	}
+    /**
+     * Adds operation argument
+     * 
+     * @param argument
+     */
+    public void addArgument(java.lang.Object argument) throws RequestConfigurationException {
+        TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
+        TypeHelpersProxy.write(tree.getRootNode(), outputStream, argument);
+    }
 
-	/**
-	 * Sets return type for operation
-	 * 
-	 * @param forClass
-	 */
-	public void setOutputType(Class<?> forClass)
-			throws RequestConfigurationException {
-		returnTree = TypeTreeCreator.createTypeTree(forClass);
-	}
+    /**
+     * Sets return type for operation
+     * 
+     * @param forClass
+     */
+    public void setOutputType(Class<?> forClass) throws RequestConfigurationException {
+        returnTree = TypeTreeCreator.createTypeTree(forClass);
+    }
 
-	/**
-	 * Configures possible exceptions
-	 * 
-	 * @param forClass
-	 */
-	public void addExceptionType(Class<?> forClass)
-			throws RequestConfigurationException {
-		TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
-		String exceptionId = Utils.getExceptionId(forClass);
-		exceptions.put(exceptionId, tree);
-	}
+    /**
+     * Configures possible exceptions
+     * 
+     * @param forClass
+     */
+    public void addExceptionType(Class<?> forClass) throws RequestConfigurationException {
+        TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
+        String exceptionId = Utils.getExceptionId(forClass);
+        exceptions.put(exceptionId, tree);
+    }
 
-	/**
-	 * Handles application excpeition.
-	 * 
-	 * @param ae
-	 *            occured exception
-	 * @throws Exception
-	 */
-	private void handleApplicationException(ApplicationException ae)
-			throws Exception {
-		try {
-			if (exceptions.size() == 0) {
-				RequestConfigurationException exception = new RequestConfigurationException(
-						"ApplicationException occured, but no exception type was specified.",
-						ae.getId());
-				throw exception;
-			}
-			InputStream is = ae.getInputStream();
-			String exceptionId = is.read_string();
-			TypeTree tree = exceptions.get(exceptionId);
-			if (tree == null) {
-				RequestConfigurationException exception = new RequestConfigurationException(
-						"ApplicationException occured, but no such exception was defined",
-						ae.getId());
-				throw exception;
-			} else {
-				Exception ex = (Exception) TypeHelpersProxy.read(tree
-						.getRootNode(), is);
-				throw ex;
-			}
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+    /**
+     * Handles application excpeition.
+     * 
+     * @param ae
+     *            occured exception
+     * @throws Exception
+     */
+    private void handleApplicationException(ApplicationException ae) throws Exception {
+        try {
+            if (exceptions.size() == 0) {
+                RequestConfigurationException exception =
+                    new RequestConfigurationException(
+                                                      "ApplicationException occured, but no exception type was specified.",
+                                                      ae.getId());
+                throw exception;
+            }
+            InputStream is = ae.getInputStream();
+            String exceptionId = is.read_string();
+            TypeTree tree = exceptions.get(exceptionId);
+            if (tree == null) {
+                RequestConfigurationException exception =
+                    new RequestConfigurationException(
+                                                      "ApplicationException occured, but no such exception was defined",
+                                                      ae.getId());
+                throw exception;
+            } else {
+                Exception ex = (Exception)TypeHelpersProxy.read(tree.getRootNode(), is);
+                throw ex;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
-	/**
-	 * Handles exceptions generated by CORBA API
-	 * 
-	 * @param se
-	 */
-	private void handleSystemException(SystemException se) throws Exception {
-		if (se instanceof BAD_OPERATION) {
-			throw new CorbaException("Bad operation name: " + operation, se);
-		} else if (se instanceof BAD_PARAM) {
-			throw new CorbaException("Bad parameter", se);
-		} else {
-			// TODO: handle more system exception types
-			throw new CorbaException(se.getMessage(), se);
-		}
-	}
+    /**
+     * Handles exceptions generated by CORBA API
+     * 
+     * @param se
+     */
+    private void handleSystemException(SystemException se) throws Exception {
+        if (se instanceof BAD_OPERATION) {
+            throw new CorbaException("Bad operation name: " + operation, se);
+        } else if (se instanceof BAD_PARAM) {
+            throw new CorbaException("Bad parameter", se);
+        } else {
+            // TODO: handle more system exception types
+            throw new CorbaException(se.getMessage(), se);
+        }
+    }
 
-	/**
-	 * Invokes previously configured request
-	 * 
-	 * @return
-	 */
-	public DynaCorbaResponse invoke() throws Exception {
-		DynaCorbaResponse response = new DynaCorbaResponse();
-		InputStream is = null;
-		try {
-			is = remoteObject._invoke(outputStream);
-			if (is != null && returnTree != null) {
-				response.setContent(TypeHelpersProxy.read(returnTree
-						.getRootNode(), is));
-			}
-		} catch (ApplicationException ae) {
-			handleApplicationException(ae);
-		} catch (SystemException se) {
-			handleSystemException(se);
-		} catch (Exception e) {
-			throw e;
-		}
-		return response;
-	}
+    /**
+     * Invokes previously configured request
+     * 
+     * @return
+     */
+    public DynaCorbaResponse invoke() throws Exception {
+        DynaCorbaResponse response = new DynaCorbaResponse();
+        InputStream is = null;
+        try {
+            is = remoteObject._invoke(outputStream);
+            if (is != null && returnTree != null) {
+                response.setContent(TypeHelpersProxy.read(returnTree.getRootNode(), is));
+            }
+        } catch (ApplicationException ae) {
+            handleApplicationException(ae);
+        } catch (SystemException se) {
+            handleSystemException(se);
+        } catch (Exception e) {
+            throw e;
+        }
+        return response;
+    }
 
 }

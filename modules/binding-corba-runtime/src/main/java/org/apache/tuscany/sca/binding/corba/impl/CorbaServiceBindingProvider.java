@@ -61,34 +61,29 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
             org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(new String[0], props);
 
             Servant servant = createServant();
-            
+
             // get reference to rootpoa & activate the POAManager
-            POA rootpoa = POAHelper.narrow(
-              orb.resolve_initial_references("RootPOA"));
+            POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 
             // get object reference from the servant
-            org.omg.CORBA.Object ref = 
-              rootpoa.servant_to_reference(servant);
-            
+            org.omg.CORBA.Object ref = rootpoa.servant_to_reference(servant);
+
             org.omg.CORBA.Object href = null; // AddHelper.narrow(ref);
-                
+
             // get the root naming context
             // NameService invokes the name service
-            org.omg.CORBA.Object objRef = 
-              orb.resolve_initial_references("NameService");
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
             // Use NamingContextExt which is part of the Interoperable
             // Naming Service (INS) specification.
-            NamingContextExt ncRef = 
-              NamingContextExtHelper.narrow(objRef);
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 
             // bind the Object Reference in Naming
-            NameComponent path[] = ncRef.to_name( binding.getURI() );
+            NameComponent path[] = ncRef.to_name(binding.getURI());
             ncRef.rebind(path, href);
 
             // wait for invocations from clients
             orb.run();
-
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

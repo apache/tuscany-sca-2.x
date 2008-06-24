@@ -23,12 +23,12 @@ import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct1;
 
 public class InvalidTypesServant {
 
-	public InvalidStruct1 firstMethodWithInvalidArg() {
-		return null;
-	}
-	
-	public void secondMethodWithInvalidArg(InvalidStruct1 arg) {
-		
-	}
-	
+    public InvalidStruct1 firstMethodWithInvalidArg() {
+        return null;
+    }
+
+    public void secondMethodWithInvalidArg(InvalidStruct1 arg) {
+
+    }
+
 }

@@ -30,16 +30,16 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class FloatTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(6));
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(6));
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_float();
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        return is.read_float();
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		os.write_float((Float) data);
-	}
-	
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        os.write_float((Float)data);
+    }
+
 }

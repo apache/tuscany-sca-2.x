@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.enums;
 * czwartek, 19 czerwiec 2008 15:46:10 CEST
 */
 
-public final class EnumManagerHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager value = null;
+public final class EnumManagerHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager value = null;
 
-  public EnumManagerHolder ()
-  {
-  }
+    public EnumManagerHolder() {
+    }
 
-  public EnumManagerHolder (org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager initialValue)
-  {
-    value = initialValue;
-  }
+    public EnumManagerHolder(org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper.type();
+    }
 
 }

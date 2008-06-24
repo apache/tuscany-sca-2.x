@@ -34,68 +34,66 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class TestRuntimeWire implements RuntimeWire {
 
-	private Object invocationTarget;
+    private Object invocationTarget;
 
-	public TestRuntimeWire(Object invocationTarget) {
-		this.invocationTarget = invocationTarget;
-	}
+    public TestRuntimeWire(Object invocationTarget) {
+        this.invocationTarget = invocationTarget;
+    }
 
-	public InvocationChain getInvocationChain(Operation arg0) {
-		return null;
-	}
+    public InvocationChain getInvocationChain(Operation arg0) {
+        return null;
+    }
 
-	public List<InvocationChain> getInvocationChains() {
-		return null;
-	}
+    public List<InvocationChain> getInvocationChains() {
+        return null;
+    }
 
-	public EndpointReference getSource() {
-		return null;
-	}
+    public EndpointReference getSource() {
+        return null;
+    }
 
-	public EndpointReference getTarget() {
-		return null;
-	}
+    public EndpointReference getTarget() {
+        return null;
+    }
 
-	public Object invoke(Operation operation, Object[] args)
-			throws InvocationTargetException {
-		Class<?>[] types = new Class<?>[args.length];
-		for (int i = 0; i < args.length; i++) {
-			types[i] = args[i].getClass();
-		}
-		Object result = null;
-		try {
-			Method[] methods = invocationTarget.getClass().getMethods();
-			for (int i = 0; i < methods.length; i++) {
-				if (methods[i].getName().equals(operation.getName())) {
-					result = methods[i].invoke(invocationTarget, args);
-					break;
-				}
-			}
-		} catch (InvocationTargetException e) {
-			throw e;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+    public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
+        Class<?>[] types = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            types[i] = args[i].getClass();
+        }
+        Object result = null;
+        try {
+            Method[] methods = invocationTarget.getClass().getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(operation.getName())) {
+                    result = methods[i].invoke(invocationTarget, args);
+                    break;
+                }
+            }
+        } catch (InvocationTargetException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public Object invoke(Operation operation, Message arg1)
-			throws InvocationTargetException {
+    public Object invoke(Operation operation, Message arg1) throws InvocationTargetException {
 
-		return null;
-	}
+        return null;
+    }
 
-	public void rebuild() {
+    public void rebuild() {
 
-	}
+    }
 
-	public void setTarget(EndpointReference arg0) {
+    public void setTarget(EndpointReference arg0) {
 
-	}
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
 }

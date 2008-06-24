@@ -63,428 +63,403 @@ import org.omg.CosNaming.NamingContextHelper;
 
 public class CorbaServantTestCase extends TestCase {
 
-	private Process process;
-	private ORB orb;
+    private Process process;
+    private ORB orb;
 
-	/**
-	 * Spawns tnamserv an initiates ORB
-	 */
-	public void setUp() throws IOException {
-		String[] args = { "-ORBInitialPort",
-				"" + TestConstants.ORB_INITIAL_PORT };
-		process = Runtime.getRuntime().exec(
-				"tnameserv " + args[0] + " " + args[1]);
-		try {
-			// let the tnameserv have time to start
-			Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
-			orb = ORB.init(args, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Spawns tnamserv an initiates ORB
+     */
+    public void setUp() throws IOException {
+        String[] args = {"-ORBInitialPort", "" + TestConstants.ORB_INITIAL_PORT};
+        process = Runtime.getRuntime().exec("tnameserv " + args[0] + " " + args[1]);
+        try {
+            // let the tnameserv have time to start
+            Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
+            orb = ORB.init(args, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Kills tnameserv
-	 */
-	public void tearDown() {
-		try {
-			if (process != null) {
-				process.destroy();
-			}
-			// let the tnameserv have time to die
-			Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Kills tnameserv
+     */
+    public void tearDown() {
+        try {
+            if (process != null) {
+                process.destroy();
+            }
+            // let the tnameserv have time to die
+            Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Binds servant implementation to name
-	 */
-	private void bindServant(DynaCorbaServant servant, String name) {
-		try {
-			Object nameService = orb.resolve_initial_references("NameService");
-			NamingContext namingContext = NamingContextHelper
-					.narrow(nameService);
+    /**
+     * Binds servant implementation to name
+     */
+    private void bindServant(DynaCorbaServant servant, String name) {
+        try {
+            Object nameService = orb.resolve_initial_references("NameService");
+            NamingContext namingContext = NamingContextHelper.narrow(nameService);
 
-			NameComponent nc = new NameComponent(name, "");
-			NameComponent[] path = new NameComponent[] { nc };
-			namingContext.rebind(path, servant);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            NameComponent nc = new NameComponent(name, "");
+            NameComponent[] path = new NameComponent[] {nc};
+            namingContext.rebind(path, servant);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Returns object reference which is binded to given name
-	 * 
-	 * @param name
-	 * @return
-	 */
-	private org.omg.CORBA.Object bindReference(String name) {
-		try {
-			org.omg.CORBA.Object objRef = orb
-					.resolve_initial_references("NameService");
-			NamingContext ncRef = NamingContextHelper.narrow(objRef);
-			NameComponent nc = new NameComponent(name, "");
-			NameComponent path[] = { nc };
-			return ncRef.resolve(path);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    /**
+     * Returns object reference which is binded to given name
+     * 
+     * @param name
+     * @return
+     */
+    private org.omg.CORBA.Object bindReference(String name) {
+        try {
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContext ncRef = NamingContextHelper.narrow(objRef);
+            NameComponent nc = new NameComponent(name, "");
+            NameComponent path[] = {nc};
+            return ncRef.resolve(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	/**
-	 * Tests primitives (arguments, return types)
-	 */
-	public void test_primitivesSetter() {
-		try {
-			PrimitivesSetter primitivesSetter = new PrimitivesSetterServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					primitivesSetter);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/PrimitivesSetter:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "PrimitivesSetter");
-			PrimitivesSetter psClient = PrimitivesSetterHelper
-					.narrow(bindReference("PrimitivesSetter"));
-			assertTrue(psClient.setBoolean(true) == true);
-			assertTrue(psClient.setChar('A') == 'A');
-			assertTrue(psClient.setString("SomeTest").equals("SomeTest"));
-			assertTrue(psClient.setDouble(2d) == 2d);
-			assertTrue(psClient.setFloat(3f) == 3f);
-			assertTrue(psClient.setLong(1) == 1);
-			assertTrue(psClient.setLongLong(0L) == 0L);
-			assertTrue(psClient.setOctet((byte) 8) == (byte) 8);
-			assertTrue(psClient.setShort((short) 6) == (short) 6);
-			assertTrue(psClient.setUnsignedLong(9) == 9);
-			assertTrue(psClient.setUnsignedLongLong(11L) == 11L);
-			assertTrue(psClient.setUnsignedShort((short) 15) == (short) 15);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+    /**
+     * Tests primitives (arguments, return types)
+     */
+    public void test_primitivesSetter() {
+        try {
+            PrimitivesSetter primitivesSetter = new PrimitivesSetterServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(primitivesSetter);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids =
+                new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/PrimitivesSetter:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "PrimitivesSetter");
+            PrimitivesSetter psClient = PrimitivesSetterHelper.narrow(bindReference("PrimitivesSetter"));
+            assertTrue(psClient.setBoolean(true) == true);
+            assertTrue(psClient.setChar('A') == 'A');
+            assertTrue(psClient.setString("SomeTest").equals("SomeTest"));
+            assertTrue(psClient.setDouble(2d) == 2d);
+            assertTrue(psClient.setFloat(3f) == 3f);
+            assertTrue(psClient.setLong(1) == 1);
+            assertTrue(psClient.setLongLong(0L) == 0L);
+            assertTrue(psClient.setOctet((byte)8) == (byte)8);
+            assertTrue(psClient.setShort((short)6) == (short)6);
+            assertTrue(psClient.setUnsignedLong(9) == 9);
+            assertTrue(psClient.setUnsignedLongLong(11L) == 11L);
+            assertTrue(psClient.setUnsignedShort((short)15) == (short)15);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 
-	/**
-	 * Tests if array values are equal
-	 */
-	private boolean areArraysEqual(java.lang.Object arr1,
-			java.lang.Object arr2, int arrLen) {
-		try {
-			for (int i = 0; i < arrLen; i++) {
-				if (!Array.get(arr1, i).equals(Array.get(arr2, i))) {
-					return false;
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+    /**
+     * Tests if array values are equal
+     */
+    private boolean areArraysEqual(java.lang.Object arr1, java.lang.Object arr2, int arrLen) {
+        try {
+            for (int i = 0; i < arrLen; i++) {
+                if (!Array.get(arr1, i).equals(Array.get(arr2, i))) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-	/**
-	 * Tests arrays (arguments, return types)
-	 */
-	public void test_arraysSetter() {
-		try {
-			ArraysSetter arraysSetter = new ArraysSetterServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					arraysSetter);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/ArraysSetter:1.0" };
-			servant.setIds(ids);
-			java.lang.Object result = null;
-			bindServant(servant, "ArraysSetter");
-			ArraysSetter asClient = ArraysSetterHelper
-					.narrow(bindReference("ArraysSetter"));
+    /**
+     * Tests arrays (arguments, return types)
+     */
+    public void test_arraysSetter() {
+        try {
+            ArraysSetter arraysSetter = new ArraysSetterServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(arraysSetter);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/ArraysSetter:1.0"};
+            servant.setIds(ids);
+            java.lang.Object result = null;
+            bindServant(servant, "ArraysSetter");
+            ArraysSetter asClient = ArraysSetterHelper.narrow(bindReference("ArraysSetter"));
 
-			boolean[] bArr = new boolean[] { true, false };
-			result = (java.lang.Object) asClient.setBoolean(bArr);
-			assertTrue(areArraysEqual(bArr, result, bArr.length));
+            boolean[] bArr = new boolean[] {true, false};
+            result = (java.lang.Object)asClient.setBoolean(bArr);
+            assertTrue(areArraysEqual(bArr, result, bArr.length));
 
-			byte[] byArr = new byte[] { 1, 2 };
-			result = (java.lang.Object) asClient.setOctet(byArr);
-			assertTrue(areArraysEqual(byArr, result, byArr.length));
+            byte[] byArr = new byte[] {1, 2};
+            result = (java.lang.Object)asClient.setOctet(byArr);
+            assertTrue(areArraysEqual(byArr, result, byArr.length));
 
-			short[] shArr = new short[] { 1, 2 };
-			result = (java.lang.Object) asClient.setShort(shArr);
-			assertTrue(areArraysEqual(shArr, result, shArr.length));
+            short[] shArr = new short[] {1, 2};
+            result = (java.lang.Object)asClient.setShort(shArr);
+            assertTrue(areArraysEqual(shArr, result, shArr.length));
 
-			int[] iArr = new int[] { 1, 2 };
-			result = (java.lang.Object) asClient.setLong(iArr);
-			assertTrue(areArraysEqual(iArr, result, iArr.length));
+            int[] iArr = new int[] {1, 2};
+            result = (java.lang.Object)asClient.setLong(iArr);
+            assertTrue(areArraysEqual(iArr, result, iArr.length));
 
-			long[] lArr = new long[] { 1, 2 };
-			result = (java.lang.Object) asClient.setLongLong(lArr);
-			assertTrue(areArraysEqual(lArr, result, lArr.length));
+            long[] lArr = new long[] {1, 2};
+            result = (java.lang.Object)asClient.setLongLong(lArr);
+            assertTrue(areArraysEqual(lArr, result, lArr.length));
 
-			String[] strArr = new String[] { "Some", "Test" };
-			result = (java.lang.Object) asClient.setString(strArr);
-			assertTrue(areArraysEqual(strArr, result, strArr.length));
+            String[] strArr = new String[] {"Some", "Test"};
+            result = (java.lang.Object)asClient.setString(strArr);
+            assertTrue(areArraysEqual(strArr, result, strArr.length));
 
-			char[] chArr = new char[] { 'A', 'B' };
-			result = (java.lang.Object) asClient.setChar(chArr);
-			assertTrue(areArraysEqual(chArr, result, chArr.length));
+            char[] chArr = new char[] {'A', 'B'};
+            result = (java.lang.Object)asClient.setChar(chArr);
+            assertTrue(areArraysEqual(chArr, result, chArr.length));
 
-			float[] flArr = new float[] { 1, 2 };
-			result = (java.lang.Object) asClient.setFloat(flArr);
-			assertTrue(areArraysEqual(flArr, result, flArr.length));
+            float[] flArr = new float[] {1, 2};
+            result = (java.lang.Object)asClient.setFloat(flArr);
+            assertTrue(areArraysEqual(flArr, result, flArr.length));
 
-			double[] dbArr = new double[] { 1, 2 };
-			result = (java.lang.Object) asClient.setDouble(dbArr);
-			assertTrue(areArraysEqual(dbArr, result, dbArr.length));
+            double[] dbArr = new double[] {1, 2};
+            result = (java.lang.Object)asClient.setDouble(dbArr);
+            assertTrue(areArraysEqual(dbArr, result, dbArr.length));
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 
-	/**
-	 * Tests structures (arguments, return types)
-	 */
-	public void test_TestObject_setStruct() {
-		try {
-			TestObject to = new TestObjectServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					to);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "TestObject");
-			TestObject testObject = TestObjectHelper
-					.narrow(bindReference("TestObject"));
-			SomeStruct ss = new SomeStruct();
-			SimpleStruct inner = new SimpleStruct();
-			inner.field1 = TestConstants.STR_1;
-			inner.field2 = TestConstants.INT_1;
-			ss.innerStruct = inner;
-			ss.str = TestConstants.STR_2;
-			ss.str_list = TestConstants.STR_ARR_1;
-			ss.threeDimSeq = TestConstants.INT_ARRAY_3_DIM;
-			ss.twoDimSeq = TestConstants.INT_ARRAY_2_DIM;
-			SomeStruct result = testObject.setStruct(ss);
-			assertTrue(TestConstants.are2DimArraysEqual(result.twoDimSeq,
-					TestConstants.INT_ARRAY_2_DIM));
-			assertTrue(TestConstants.are3DimArraysEqual(result.threeDimSeq,
-					TestConstants.INT_ARRAY_3_DIM));
-			assertTrue(result.str.equals(ss.str));
-			assertTrue(result.innerStruct.field1.equals(ss.innerStruct.field1));
-			assertTrue(result.innerStruct.field2 == ss.innerStruct.field2);
-			assertTrue(areArraysEqual(result.str_list, ss.str_list,
-					ss.str_list.length));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+    /**
+     * Tests structures (arguments, return types)
+     */
+    public void test_TestObject_setStruct() {
+        try {
+            TestObject to = new TestObjectServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(to);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "TestObject");
+            TestObject testObject = TestObjectHelper.narrow(bindReference("TestObject"));
+            SomeStruct ss = new SomeStruct();
+            SimpleStruct inner = new SimpleStruct();
+            inner.field1 = TestConstants.STR_1;
+            inner.field2 = TestConstants.INT_1;
+            ss.innerStruct = inner;
+            ss.str = TestConstants.STR_2;
+            ss.str_list = TestConstants.STR_ARR_1;
+            ss.threeDimSeq = TestConstants.INT_ARRAY_3_DIM;
+            ss.twoDimSeq = TestConstants.INT_ARRAY_2_DIM;
+            SomeStruct result = testObject.setStruct(ss);
+            assertTrue(TestConstants.are2DimArraysEqual(result.twoDimSeq, TestConstants.INT_ARRAY_2_DIM));
+            assertTrue(TestConstants.are3DimArraysEqual(result.threeDimSeq, TestConstants.INT_ARRAY_3_DIM));
+            assertTrue(result.str.equals(ss.str));
+            assertTrue(result.innerStruct.field1.equals(ss.innerStruct.field1));
+            assertTrue(result.innerStruct.field2 == ss.innerStruct.field2);
+            assertTrue(areArraysEqual(result.str_list, ss.str_list, ss.str_list.length));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 
-	/**
-	 * Tests handling BAD_OPERATION system exception
-	 */
-	public void test_systemException_BAD_OPERATION() {
-		try {
-			TestObjectServant tos = new TestObjectServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					tos);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "TestObject");
-			DynaCorbaRequest request = new DynaCorbaRequest(
-					bindReference("TestObject"), "methodThatSurelyDoesNotExist");
-			request.invoke();
-		} catch (Exception e) {
-			if (e instanceof CorbaException) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-			}
-		}
+    /**
+     * Tests handling BAD_OPERATION system exception
+     */
+    public void test_systemException_BAD_OPERATION() {
+        try {
+            TestObjectServant tos = new TestObjectServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(tos);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "TestObject");
+            DynaCorbaRequest request =
+                new DynaCorbaRequest(bindReference("TestObject"), "methodThatSurelyDoesNotExist");
+            request.invoke();
+        } catch (Exception e) {
+            if (e instanceof CorbaException) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+            }
+        }
 
-		try {
-			InvalidTestObjectServant tos = new InvalidTestObjectServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					tos);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "InvalidTestObject");
-			TestObject to = TestObjectHelper
-					.narrow(bindReference("InvalidTestObject"));
-			SomeStruct str = new SomeStruct();
-			str.innerStruct = new SimpleStruct();
-			str.innerStruct.field1 = "Whatever";
-			str.str = "Whatever";
-			str.str_list = new String[] {};
-			str.threeDimSeq = new int[][][] {};
-			str.twoDimSeq = new int[][] {};
-			to.setStruct(str);
-		} catch (Exception e) {
-			if (e instanceof BAD_OPERATION) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-			}
-		}
-	}
+        try {
+            InvalidTestObjectServant tos = new InvalidTestObjectServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(tos);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "InvalidTestObject");
+            TestObject to = TestObjectHelper.narrow(bindReference("InvalidTestObject"));
+            SomeStruct str = new SomeStruct();
+            str.innerStruct = new SimpleStruct();
+            str.innerStruct.field1 = "Whatever";
+            str.str = "Whatever";
+            str.str_list = new String[] {};
+            str.threeDimSeq = new int[][][] {};
+            str.twoDimSeq = new int[][] {};
+            to.setStruct(str);
+        } catch (Exception e) {
+            if (e instanceof BAD_OPERATION) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	/**
-	 * Tests handling user exceptions
-	 */
-	public void test_userExceptions() {
-		try {
-			CalcServant calc = new CalcServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					calc);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = { "IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "Calc");
-			Calc calcClient = CalcHelper.narrow(bindReference("Calc"));
-			calcClient.div(1, 0);
-			fail();
-		} catch (Exception e) {
-			if (e instanceof DivByZero) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-				fail();
-			}
-		}
+    /**
+     * Tests handling user exceptions
+     */
+    public void test_userExceptions() {
+        try {
+            CalcServant calc = new CalcServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "Calc");
+            Calc calcClient = CalcHelper.narrow(bindReference("Calc"));
+            calcClient.div(1, 0);
+            fail();
+        } catch (Exception e) {
+            if (e instanceof DivByZero) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+                fail();
+            }
+        }
 
-		try {
-			CalcServant calc = new CalcServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					calc);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = { "IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "Calc");
-			Calc calcClient = CalcHelper.narrow(bindReference("Calc"));
-			calcClient.divForSmallArgs(255, 255);
-			fail();
-		} catch (Exception e) {
-			if (e instanceof NotSupported) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-				fail();
-			}
-		}
-	}
+        try {
+            CalcServant calc = new CalcServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "Calc");
+            Calc calcClient = CalcHelper.narrow(bindReference("Calc"));
+            calcClient.divForSmallArgs(255, 255);
+            fail();
+        } catch (Exception e) {
+            if (e instanceof NotSupported) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+                fail();
+            }
+        }
+    }
 
-	/**
-	 * Tests enums (arguments, return types)
-	 */
-	public void test_enums() {
-		try {
-			EnumManagerServant ems = new EnumManagerServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					ems);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = { "IDL:org/apache/tuscany/sca/binding/corba/testing/enums/EnumManager:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "Enum");
-			EnumManager em = EnumManagerHelper.narrow(bindReference("Enum"));
-			Color color = Color.red;
-			assertTrue(em.getColor(color).value() == color.value());
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+    /**
+     * Tests enums (arguments, return types)
+     */
+    public void test_enums() {
+        try {
+            EnumManagerServant ems = new EnumManagerServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(ems);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/enums/EnumManager:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "Enum");
+            EnumManager em = EnumManagerHelper.narrow(bindReference("Enum"));
+            Color color = Color.red;
+            assertTrue(em.getColor(color).value() == color.value());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 
-	public void test_nonCorbaServants() {
-		try {
-			NonCorbaServant ncs = new NonCorbaServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					ncs);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			bindServant(servant, "NonCorbaServant");
-			// it's non corba servant so we don't have stubs to test them
-			DynaCorbaRequest request = new DynaCorbaRequest(
-					bindReference("NonCorbaServant"), "setString");
-			request.addArgument(TestConstants.STR_1);
-			request.setOutputType(String.class);
-			DynaCorbaResponse response = request.invoke();
-			assertTrue(response.getContent().equals(TestConstants.STR_1));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+    public void test_nonCorbaServants() {
+        try {
+            NonCorbaServant ncs = new NonCorbaServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(ncs);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            bindServant(servant, "NonCorbaServant");
+            // it's non corba servant so we don't have stubs to test them
+            DynaCorbaRequest request = new DynaCorbaRequest(bindReference("NonCorbaServant"), "setString");
+            request.addArgument(TestConstants.STR_1);
+            request.setOutputType(String.class);
+            DynaCorbaResponse response = request.invoke();
+            assertTrue(response.getContent().equals(TestConstants.STR_1));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
 
-		try {
-			NonCorbaServant ncs = new NonCorbaServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					ncs);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			bindServant(servant, "NonCorbaServant");
-			// it's non corba servant so we don't have stubs to test them
-			DynaCorbaRequest request = new DynaCorbaRequest(
-					bindReference("NonCorbaServant"), "throwException");
-			request.addExceptionType(NonCorbaException.class);
-			request.invoke();
-			fail();
-		} catch (Exception e) {
-			if (e instanceof NonCorbaException) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-				fail();
-			}
-		}
-	}
-	
-	/**
-	 * Tests handling BAD_PARAM system exception
-	 */
-	public void test_systemException_BAD_PARAM() {
-		try {
-			CalcServant calc = new CalcServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(
-					calc);
-			DynaCorbaServant servant = new DynaCorbaServant(service, null);
-			String[] ids = new String[] { "IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0" };
-			servant.setIds(ids);
-			bindServant(servant, "Calc");
-			DynaCorbaRequest request = new DynaCorbaRequest(
-					bindReference("Calc"), "div");
-			request.addArgument(2d);
-			request.setOutputType(double.class);
-			request.invoke();
-			fail();
-		} catch (Exception e) {
-			if (e instanceof CorbaException) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-				fail();
-			}
-		}
-	}
-	
-	/**
-	 * Tests handling BAD_PARAM system exception
-	 */
-	public void test_invalidServantConfiguraion() {
-		try {
-			InvalidTypesServant its = new InvalidTypesServant();
-			TestRuntimeComponentService service = new TestRuntimeComponentService(its);
-			//expecting exception...
-			new DynaCorbaServant(service, null);
-			fail();
-		} catch (Exception e) {
-			if (e instanceof RequestConfigurationException) {
-				assertTrue(true);
-			} else {
-				e.printStackTrace();
-				fail();
-			}
-		}
-	}
-	
+        try {
+            NonCorbaServant ncs = new NonCorbaServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(ncs);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            bindServant(servant, "NonCorbaServant");
+            // it's non corba servant so we don't have stubs to test them
+            DynaCorbaRequest request = new DynaCorbaRequest(bindReference("NonCorbaServant"), "throwException");
+            request.addExceptionType(NonCorbaException.class);
+            request.invoke();
+            fail();
+        } catch (Exception e) {
+            if (e instanceof NonCorbaException) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+                fail();
+            }
+        }
+    }
+
+    /**
+     * Tests handling BAD_PARAM system exception
+     */
+    public void test_systemException_BAD_PARAM() {
+        try {
+            CalcServant calc = new CalcServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
+            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "Calc");
+            DynaCorbaRequest request = new DynaCorbaRequest(bindReference("Calc"), "div");
+            request.addArgument(2d);
+            request.setOutputType(double.class);
+            request.invoke();
+            fail();
+        } catch (Exception e) {
+            if (e instanceof CorbaException) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+                fail();
+            }
+        }
+    }
+
+    /**
+     * Tests handling BAD_PARAM system exception
+     */
+    public void test_invalidServantConfiguraion() {
+        try {
+            InvalidTypesServant its = new InvalidTypesServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(its);
+            //expecting exception...
+            new DynaCorbaServant(service, null);
+            fail();
+        } catch (Exception e) {
+            if (e instanceof RequestConfigurationException) {
+                assertTrue(true);
+            } else {
+                e.printStackTrace();
+                fail();
+            }
+        }
+    }
+
 }

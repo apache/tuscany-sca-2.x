@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.references;
 * niedziela, 8 czerwiec 2008 16:43:12 CEST
 */
 
-public final class DummyObjectHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.references.DummyObject value = null;
+public final class DummyObjectHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.references.DummyObject value = null;
 
-  public DummyObjectHolder ()
-  {
-  }
+    public DummyObjectHolder() {
+    }
 
-  public DummyObjectHolder (org.apache.tuscany.sca.binding.corba.testing.references.DummyObject initialValue)
-  {
-    value = initialValue;
-  }
+    public DummyObjectHolder(org.apache.tuscany.sca.binding.corba.testing.references.DummyObject initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.references.DummyObjectHelper.type();
+    }
 
 }

@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.generated;
 * monday, 23 june 2008 14:12:28 CEST
 */
 
-public final class ArraysSetterHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetter value = null;
+public final class ArraysSetterHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetter value = null;
 
-  public ArraysSetterHolder ()
-  {
-  }
+    public ArraysSetterHolder() {
+    }
 
-  public ArraysSetterHolder (org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetter initialValue)
-  {
-    value = initialValue;
-  }
+    public ArraysSetterHolder(org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetter initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.generated.ArraysSetterHelper.type();
+    }
 
 }

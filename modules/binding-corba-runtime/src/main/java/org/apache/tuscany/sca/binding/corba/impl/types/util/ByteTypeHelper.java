@@ -30,16 +30,16 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class ByteTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(10));
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(10));
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_octet();
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        return is.read_octet();
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		os.write_octet((Byte) data);
-	}
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        os.write_octet((Byte)data);
+    }
 
 }

@@ -25,20 +25,23 @@ import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
 
 public class OperationTypes {
 
-	private TypeTree outputType;
-	private List<TypeTree> inputType;
-	
-	public TypeTree getOutputType() {
-		return outputType;
-	}
-	public void setOutputType(TypeTree outputType) {
-		this.outputType = outputType;
-	}
-	public List<TypeTree> getInputType() {
-		return inputType;
-	}
-	public void setInputType(List<TypeTree> inputType) {
-		this.inputType = inputType;
-	}
-	
+    private TypeTree outputType;
+    private List<TypeTree> inputType;
+
+    public TypeTree getOutputType() {
+        return outputType;
+    }
+
+    public void setOutputType(TypeTree outputType) {
+        this.outputType = outputType;
+    }
+
+    public List<TypeTree> getInputType() {
+        return inputType;
+    }
+
+    public void setInputType(List<TypeTree> inputType) {
+        this.inputType = inputType;
+    }
+
 }

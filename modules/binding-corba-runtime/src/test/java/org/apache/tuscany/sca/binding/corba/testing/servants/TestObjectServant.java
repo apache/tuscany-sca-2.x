@@ -32,41 +32,40 @@ import org.apache.tuscany.sca.binding.corba.testing.generated.long_seq3Holder;
  */
 public class TestObjectServant extends _TestObjectImplBase {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public int[] setLongSeq1(long_seq1Holder arg) {
-		return arg.value;
-	}
+    public int[] setLongSeq1(long_seq1Holder arg) {
+        return arg.value;
+    }
 
-	public int[][] setLongSeq2(long_seq2Holder arg) {
-		
-		return arg.value;
-	}
+    public int[][] setLongSeq2(long_seq2Holder arg) {
 
-	public int[][][] setLongSeq3(long_seq3Holder arg) {
-		return arg.value;
-	}
+        return arg.value;
+    }
 
-	public SimpleStruct setSimpleStruct(SimpleStructHolder arg) {
-		return arg.value;
-	}
+    public int[][][] setLongSeq3(long_seq3Holder arg) {
+        return arg.value;
+    }
 
-	public SomeStruct setStruct(SomeStruct arg) {
-		return arg;
-	}
+    public SimpleStruct setSimpleStruct(SimpleStructHolder arg) {
+        return arg.value;
+    }
 
-	public SomeStruct pickStructFromArgs(SomeStruct arg1,
-			SomeStruct arg2, SomeStruct arg3, int structNumber) {
-		switch (structNumber) {
-		case 1:
-			return arg1;
-		case 2:
-			return arg2;
-		case 3:
-			return arg3;
-		default:
-			return arg1;
-		}
-	}
+    public SomeStruct setStruct(SomeStruct arg) {
+        return arg;
+    }
+
+    public SomeStruct pickStructFromArgs(SomeStruct arg1, SomeStruct arg2, SomeStruct arg3, int structNumber) {
+        switch (structNumber) {
+            case 1:
+                return arg1;
+            case 2:
+                return arg2;
+            case 3:
+                return arg3;
+            default:
+                return arg1;
+        }
+    }
 
 }

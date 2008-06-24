@@ -28,60 +28,60 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  */
 public class TestDataType<L> implements DataType<L> {
 
-	public Class<?> typeClass;
-	public L logical;
+    public Class<?> typeClass;
+    public L logical;
 
-	public TestDataType(Class<?> typeClass) {
-		this.typeClass = typeClass;
-	}
+    public TestDataType(Class<?> typeClass) {
+        this.typeClass = typeClass;
+    }
 
-	public TestDataType(Class<?> typeClass, L logical) {
-		this.typeClass = typeClass;
-		this.logical = logical;
-	}
+    public TestDataType(Class<?> typeClass, L logical) {
+        this.typeClass = typeClass;
+        this.logical = logical;
+    }
 
-	public String getDataBinding() {
-		return null;
-	}
+    public String getDataBinding() {
+        return null;
+    }
 
-	public Type getGenericType() {
-		return null;
-	}
+    public Type getGenericType() {
+        return null;
+    }
 
-	public L getLogical() {
-		return logical;
-	}
+    public L getLogical() {
+        return logical;
+    }
 
-	public <T> T getMetaData(Class<T> arg0) {
-		return null;
-	}
+    public <T> T getMetaData(Class<T> arg0) {
+        return null;
+    }
 
-	public Class<?> getPhysical() {
-		return typeClass;
-	}
+    public Class<?> getPhysical() {
+        return typeClass;
+    }
 
-	public void setDataBinding(String arg0) {
+    public void setDataBinding(String arg0) {
 
-	}
+    }
 
-	public void setGenericType(Type arg0) {
+    public void setGenericType(Type arg0) {
 
-	}
+    }
 
-	public void setLogical(L arg0) {
+    public void setLogical(L arg0) {
 
-	}
+    }
 
-	public <T> void setMetaData(Class<T> arg0, T arg1) {
+    public <T> void setMetaData(Class<T> arg0, T arg1) {
 
-	}
+    }
 
-	public void setPhysical(Class<?> arg0) {
+    public void setPhysical(Class<?> arg0) {
 
-	}
+    }
 
-	public Object clone() {
-		return null;
-	}
+    public Object clone() {
+        return null;
+    }
 
 }

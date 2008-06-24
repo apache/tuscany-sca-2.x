@@ -23,24 +23,25 @@ import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
 import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
+
 /**
  * @version $Rev$ $Date$
  */
 public class ArrayTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		// TODO Auto-generated method stub
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

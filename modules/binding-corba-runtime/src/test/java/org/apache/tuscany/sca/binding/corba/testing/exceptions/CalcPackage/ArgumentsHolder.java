@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage;
 * sobota, 7 czerwiec 2008 16:12:31 CEST
 */
 
-public final class ArgumentsHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.Arguments value = null;
+public final class ArgumentsHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.Arguments value = null;
 
-  public ArgumentsHolder ()
-  {
-  }
+    public ArgumentsHolder() {
+    }
 
-  public ArgumentsHolder (org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.Arguments initialValue)
-  {
-    value = initialValue;
-  }
+    public ArgumentsHolder(org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.Arguments initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.ArgumentsHelper.type();
+    }
 
 }

@@ -26,32 +26,26 @@ package org.apache.tuscany.sca.binding.corba.testing.generated;
 * monday, 23 june 2008 2008 14:12:28 CEST
 */
 
-public final class RemoteObjectHolder implements org.omg.CORBA.portable.Streamable
-{
-  public org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObject value = null;
+public final class RemoteObjectHolder implements org.omg.CORBA.portable.Streamable {
+    public org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObject value = null;
 
-  public RemoteObjectHolder ()
-  {
-  }
+    public RemoteObjectHolder() {
+    }
 
-  public RemoteObjectHolder (org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObject initialValue)
-  {
-    value = initialValue;
-  }
+    public RemoteObjectHolder(org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObject initialValue) {
+        value = initialValue;
+    }
 
-  public void _read (org.omg.CORBA.portable.InputStream i)
-  {
-    value = org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.read (i);
-  }
+    public void _read(org.omg.CORBA.portable.InputStream i) {
+        value = org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.read(i);
+    }
 
-  public void _write (org.omg.CORBA.portable.OutputStream o)
-  {
-    org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.write (o, value);
-  }
+    public void _write(org.omg.CORBA.portable.OutputStream o) {
+        org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.write(o, value);
+    }
 
-  public org.omg.CORBA.TypeCode _type ()
-  {
-    return org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.type ();
-  }
+    public org.omg.CORBA.TypeCode _type() {
+        return org.apache.tuscany.sca.binding.corba.testing.generated.RemoteObjectHelper.type();
+    }
 
 }

@@ -30,17 +30,16 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class LongTypeHelper implements TypeHelper {
 
-	public TypeCode getType(TypeTreeNode node) {
-		return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(23));
-	}
+    public TypeCode getType(TypeTreeNode node) {
+        return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(23));
+    }
 
-	public Object read(TypeTreeNode node, InputStream is) {
-		return is.read_longlong();
-	}
+    public Object read(TypeTreeNode node, InputStream is) {
+        return is.read_longlong();
+    }
 
-	public void write(TypeTreeNode node, OutputStream os, Object data) {
-		os.write_longlong((Long) data);
-	}
-	
-	
+    public void write(TypeTreeNode node, OutputStream os, Object data) {
+        os.write_longlong((Long)data);
+    }
+
 }
