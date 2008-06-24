@@ -97,7 +97,17 @@ public class RMIService implements ComponentLifecycle {
         enhancer.setSuperclass(UnicastRemoteObject.class);
         enhancer.setCallback(new MethodInterceptor() {
             public Object intercept(Object arg0, Method method, Object[] args, MethodProxy arg3) throws Throwable {
-                return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), args);
+                try {
+                    return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), args);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    for (Class<?> declaredType : method.getExceptionTypes()) {
+                        if (declaredType.isInstance(cause)) {
+                            throw e;
+                        }
+                    }
+                    throw cause;
+                }
             }
         });
         Class targetJavaInterface = getTargetJavaClass(serviceInterface);

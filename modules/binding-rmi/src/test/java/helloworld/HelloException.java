@@ -16,27 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package helloworld;
 
-import org.osoa.sca.annotations.Service;
-
-
 /**
- * This class implements the HelloWorld service.
- *
  * @version $Rev$ $Date$
  */
-@Service(HelloWorldService.class)
-public class HelloWorldImpl implements HelloWorldService {
+public class HelloException extends Exception {
 
-    public String sayHello(String name) {
-        return "Hello from the RMI Service to - " + name;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2570611055132507470L;
+
+    /**
+     * 
+     */
+    public HelloException() {
     }
-    
-    public String sayHi(String name, String greeter) throws HelloException {
-        if (name == null || greeter == null) {
-            throw new HelloException("Invalid name or greeter: name=" + name + " greeter=" + greeter);
-        }
-        return "Hi from " + greeter + " in RMI Service to - " + name;
+
+    /**
+     * @param message
+     */
+    public HelloException(String message) {
+        super(message);
     }
+
+    /**
+     * @param cause
+     */
+    public HelloException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public HelloException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
