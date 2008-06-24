@@ -19,10 +19,14 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 
@@ -65,19 +69,36 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
 
                 Class<?>[] paramTypes = m.getParameterTypes();
                 Type[] genericParamTypes = m.getGenericParameterTypes();
-                BeanProperty[] properties = new BeanProperty[paramTypes.length];
+                Annotation[][] paramAnnotations = m.getParameterAnnotations();
+                List<BeanProperty> properties = new ArrayList<BeanProperty>();
                 for (int i = 0; i < paramTypes.length; i++) {
+                    String propNS = "";
                     String propName = "arg" + i;
-                    properties[i] = new BeanProperty(propName, paramTypes[i], genericParamTypes[i]);
+
+                    WebParam webParam = findAnnotation(paramAnnotations[i], WebParam.class);
+                    if (webParam != null && webParam.header()) {
+                        continue;
+                    }
+                    WebParam.Mode mode = WebParam.Mode.IN;
+                    if (webParam != null) {
+                        mode = webParam.mode();
+                        if (webParam.name().length() > 0) {
+                            propName = webParam.name();
+                        }
+                        propNS = webParam.targetNamespace();
+                    }
+                    if (mode.equals(WebParam.Mode.IN) || mode.equals(WebParam.Mode.INOUT)) {
+                        java.lang.reflect.Type genericParamType = getHolderValueType(genericParamTypes[i]);
+                        Class<?> paramType = CodeGenerationHelper.getErasure(genericParamType);
+                        BeanProperty prop = new BeanProperty(propNS, propName, paramType, genericParamType, true);
+                        prop.getJaxbAnnotaions().addAll(findJAXBAnnotations(paramAnnotations[i]));
+                        properties.add(prop);
+                    }
                 }
 
                 wrapperClass =
-                    generate(wrapperClassDescriptor,
-                             wrapperClassSignature,
-                             wrapperNamespace,
-                             wrapperName,
-                             properties,
-                             cl);
+                    generate(wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, wrapperName, properties
+                        .toArray(new BeanProperty[properties.size()]), cl);
                 generatedClasses.put(key, wrapperClass);
             }
             return wrapperClass;
@@ -107,20 +128,67 @@ public class WrapperBeanGenerator extends BaseBeanGenerator {
                 String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
                 String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
 
+                List<BeanProperty> properties = new ArrayList<BeanProperty>();
+                // Collect all OUT, INOUT parameters as fields
+                Annotation[][] paramAnns = m.getParameterAnnotations();
+                Class<?>[] paramTypes = m.getParameterTypes();
+                java.lang.reflect.Type[] genericParamTypes = m.getGenericParameterTypes();
+                for (int i = 0; i < paramTypes.length; i++) {
+                    WebParam webParam = findAnnotation(paramAnns[i], WebParam.class);
+                    if (webParam != null) {
+                        if (webParam.header() || webParam.mode() == WebParam.Mode.IN) {
+                            continue;
+                        }
+                    }
+                    if (!isHolder(genericParamTypes[i])) {
+                        continue;
+                    }
+
+                    List<Annotation> jaxb = findJAXBAnnotations(paramAnns[i]);
+
+                    java.lang.reflect.Type genericParamType = getHolderValueType(genericParamTypes[i]);
+                    Class<?> paramType = CodeGenerationHelper.getErasure(genericParamType);
+
+                    String paramNamespace = "";
+                    String paramName = "arg" + i;
+
+                    if (webParam != null) {
+                        if (webParam.name().length() > 0)
+                            paramName = webParam.name();
+                        if (webParam.targetNamespace().length() > 0)
+                            paramNamespace = webParam.targetNamespace();
+                    }
+
+                    BeanProperty prop = new BeanProperty(paramNamespace, paramName, paramType, genericParamType, true);
+                    prop.getJaxbAnnotaions().addAll(jaxb);
+                    properties.add(prop);
+                }
+
+                WebResult webResult = m.getAnnotation(WebResult.class);
                 Class<?> returnType = m.getReturnType();
-                BeanProperty[] properties = null;
-                if (returnType != void.class) {
-                    Type genericReturnType = m.getGenericReturnType();
+                if (!((webResult != null && webResult.header()) || returnType == Void.TYPE)) {
                     String propName = "return";
-                    properties = new BeanProperty[] {new BeanProperty(propName, returnType, genericReturnType)};
+                    String propNS = "";
+
+                    if (webResult != null) {
+                        if (webResult.name().length() > 0) {
+                            propName = webResult.name();
+                        }
+                        if (webResult.targetNamespace().length() > 1) {
+                            propNS = webResult.targetNamespace();
+                        }
+                    }
+
+                    List<Annotation> jaxb = findJAXBAnnotations(m.getAnnotations());
+
+                    Type genericReturnType = m.getGenericReturnType();
+                    BeanProperty prop = new BeanProperty(propNS, propName, returnType, genericReturnType, true);
+                    prop.getJaxbAnnotaions().addAll(jaxb);
+                    properties.add(prop);
                 }
                 wrapperClass =
-                    generate(wrapperClassDescriptor,
-                             wrapperClassSignature,
-                             wrapperNamespace,
-                             wrapperName,
-                             properties,
-                             cl);
+                    generate(wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, wrapperName, properties
+                        .toArray(new BeanProperty[properties.size()]), cl);
                 generatedClasses.put(key, wrapperClass);
             }
             return wrapperClass;

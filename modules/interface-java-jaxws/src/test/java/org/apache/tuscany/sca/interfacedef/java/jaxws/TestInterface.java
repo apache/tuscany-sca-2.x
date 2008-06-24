@@ -24,6 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
+import javax.xml.ws.Holder;
+
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -52,4 +57,10 @@ public interface TestInterface {
     Map<String, String> getGreetingsMap(Map<String, String> namesMap);
 
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
+    
+    @WebMethod
+    @WebResult(name = "output")
+    String webMethod(@WebParam(name = "input", mode = WebParam.Mode.IN)
+    String in, @WebParam(name = "holder", mode = WebParam.Mode.INOUT)
+    Holder<String> holder);
 }
