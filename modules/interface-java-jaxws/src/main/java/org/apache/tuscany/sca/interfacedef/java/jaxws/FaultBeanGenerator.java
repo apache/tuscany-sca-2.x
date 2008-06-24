@@ -59,7 +59,7 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
                 // Add the field
                 String field = pd.getName();
                 Method getter = pd.getReadMethod();
-                props.add(new BeanProperty(field, getter.getReturnType(), getter.getGenericReturnType()));
+                props.add(new BeanProperty("", field, getter.getReturnType(), getter.getGenericReturnType(), false));
             }
         }
         Collections.sort(props, new Comparator<BeanProperty>() {

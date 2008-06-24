@@ -19,11 +19,23 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import javax.xml.bind.annotation.XmlAttachmentRef;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.ws.Holder;
 
 import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.objectweb.asm.AnnotationVisitor;
@@ -41,6 +53,66 @@ public abstract class BaseBeanGenerator implements Opcodes {
         COLLECTION_CLASSES.put("Ljava/util/Set;", "java/util/HashSet");
         COLLECTION_CLASSES.put("Ljava/util/Queue;", "java/util/LinkedList");
     }
+    private final static Class[] KNOWN_JAXB_ANNOTATIONS =
+        {XmlAttachmentRef.class, XmlMimeType.class, XmlJavaTypeAdapter.class, XmlList.class};
+    private static final Map<String, String> JAVA_KEYWORDS = new HashMap<String, String>();
+
+    static {
+        JAVA_KEYWORDS.put("abstract", "_abstract");
+        JAVA_KEYWORDS.put("assert", "_assert");
+        JAVA_KEYWORDS.put("boolean", "_boolean");
+        JAVA_KEYWORDS.put("break", "_break");
+        JAVA_KEYWORDS.put("byte", "_byte");
+        JAVA_KEYWORDS.put("case", "_case");
+        JAVA_KEYWORDS.put("catch", "_catch");
+        JAVA_KEYWORDS.put("char", "_char");
+        JAVA_KEYWORDS.put("class", "_class");
+        JAVA_KEYWORDS.put("const", "_const");
+        JAVA_KEYWORDS.put("continue", "_continue");
+        JAVA_KEYWORDS.put("default", "_default");
+        JAVA_KEYWORDS.put("do", "_do");
+        JAVA_KEYWORDS.put("double", "_double");
+        JAVA_KEYWORDS.put("else", "_else");
+        JAVA_KEYWORDS.put("extends", "_extends");
+        JAVA_KEYWORDS.put("false", "_false");
+        JAVA_KEYWORDS.put("final", "_final");
+        JAVA_KEYWORDS.put("finally", "_finally");
+        JAVA_KEYWORDS.put("float", "_float");
+        JAVA_KEYWORDS.put("for", "_for");
+        JAVA_KEYWORDS.put("goto", "_goto");
+        JAVA_KEYWORDS.put("if", "_if");
+        JAVA_KEYWORDS.put("implements", "_implements");
+        JAVA_KEYWORDS.put("import", "_import");
+        JAVA_KEYWORDS.put("instanceof", "_instanceof");
+        JAVA_KEYWORDS.put("int", "_int");
+        JAVA_KEYWORDS.put("interface", "_interface");
+        JAVA_KEYWORDS.put("long", "_long");
+        JAVA_KEYWORDS.put("native", "_native");
+        JAVA_KEYWORDS.put("new", "_new");
+        JAVA_KEYWORDS.put("null", "_null");
+        JAVA_KEYWORDS.put("package", "_package");
+        JAVA_KEYWORDS.put("private", "_private");
+        JAVA_KEYWORDS.put("protected", "_protected");
+        JAVA_KEYWORDS.put("public", "_public");
+        JAVA_KEYWORDS.put("return", "_return");
+        JAVA_KEYWORDS.put("short", "_short");
+        JAVA_KEYWORDS.put("static", "_static");
+        JAVA_KEYWORDS.put("strictfp", "_strictfp");
+        JAVA_KEYWORDS.put("super", "_super");
+        JAVA_KEYWORDS.put("switch", "_switch");
+        JAVA_KEYWORDS.put("synchronized", "_synchronized");
+        JAVA_KEYWORDS.put("this", "_this");
+        JAVA_KEYWORDS.put("throw", "_throw");
+        JAVA_KEYWORDS.put("throws", "_throws");
+        JAVA_KEYWORDS.put("transient", "_transient");
+        JAVA_KEYWORDS.put("true", "_true");
+        JAVA_KEYWORDS.put("try", "_try");
+        JAVA_KEYWORDS.put("void", "_void");
+        JAVA_KEYWORDS.put("volatile", "_volatile");
+        JAVA_KEYWORDS.put("while", "_while");
+        JAVA_KEYWORDS.put("enum", "_enum");
+    }
+
     protected static final Map<Object, Class<?>> generatedClasses =
         Collections.synchronizedMap(new WeakHashMap<Object, Class<?>>());
 
@@ -71,7 +143,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
         declareConstructor(cw, classSignature);
         if (properties != null) {
             for (BeanProperty p : properties) {
-                boolean isMap = Map.class.isAssignableFrom(p.getType());
+                boolean isElement = p.isElement() && (!Map.class.isAssignableFrom(p.getType()));
                 String xmlAdapterClassSignature = null;
                 if (xmlAdapters != null) {
                     Class<?> adapterClass = xmlAdapters.getAdapter(p.getType());
@@ -80,7 +152,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
                     }
                 }
                 declareProperty(cw, classDescriptor, classSignature, p.getName(), p.getSignature(), p
-                    .getGenericSignature(), isMap, xmlAdapterClassSignature);
+                    .getGenericSignature(), isElement, p.isNillable(), xmlAdapterClassSignature, p.getJaxbAnnotaions());
             }
         }
 
@@ -89,45 +161,75 @@ public abstract class BaseBeanGenerator implements Opcodes {
         return cw.toByteArray();
     }
 
+    protected static boolean isHolder(java.lang.reflect.Type type) {
+        if (type instanceof ParameterizedType) {
+            Class<?> cls = CodeGenerationHelper.getErasure(type);
+            return cls == Holder.class;
+        }
+        return false;
+    }
+
+    protected static java.lang.reflect.Type getHolderValueType(java.lang.reflect.Type paramType) {
+        if (paramType instanceof ParameterizedType) {
+            ParameterizedType p = (ParameterizedType)paramType;
+            Class<?> cls = CodeGenerationHelper.getErasure(p);
+            if (cls == Holder.class) {
+                return p.getActualTypeArguments()[0];
+            }
+        }
+        return paramType;
+    }
+
     protected void declareProperty(ClassWriter cw,
                                    String classDescriptor,
                                    String classSignature,
                                    String propName,
                                    String propClassSignature,
                                    String propTypeSignature,
-                                   boolean isMap,
-                                   String xmlAdapterClassSignature) {
+                                   boolean isElement,
+                                   boolean isNillable,
+                                   String xmlAdapterClassSignature,
+                                   List<Annotation> jaxbAnnotations) {
         if (propClassSignature.equals(propTypeSignature)) {
             propTypeSignature = null;
         }
-        declareField(cw, propName, propClassSignature, propTypeSignature, isMap, xmlAdapterClassSignature);
+        declareField(cw,
+                     propName,
+                     propClassSignature,
+                     propTypeSignature,
+                     isElement,
+                     isNillable,
+                     xmlAdapterClassSignature,
+                     jaxbAnnotations);
         decalreGetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
         declareSetter(cw, classDescriptor, classSignature, propName, propClassSignature, propTypeSignature);
     }
 
     protected String getFieldName(String propName) {
-        if ("return".equals(propName)) {
-            return "_return";
-        } else {
-            return propName;
-        }
+        String name = JAVA_KEYWORDS.get(propName);
+        return name != null ? name : propName;
     }
 
     protected void declareField(ClassWriter cw,
                                 String propName,
                                 String propClassSignature,
                                 String propTypeSignature,
-                                boolean isMap,
-                                String xmlAdapterClassSignature) {
+                                boolean isElement,
+                                boolean isNillable,
+                                String xmlAdapterClassSignature,
+                                List<Annotation> jaxbAnnotations) {
         FieldVisitor fv;
         AnnotationVisitor av0;
         fv = cw.visitField(ACC_PROTECTED, getFieldName(propName), propClassSignature, propTypeSignature, null);
 
         // For Map property, we cannot have the XmlElement annotation
-        if (!isMap) {
+        if (isElement) {
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
             av0.visit("name", propName);
             av0.visit("namespace", "");
+            if (isNillable) {
+                av0.visit("nillable", Boolean.TRUE);
+            }
             av0.visitEnd();
         }
 
@@ -135,6 +237,25 @@ public abstract class BaseBeanGenerator implements Opcodes {
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/adapters/XmlJavaTypeAdapter;", true);
             av0.visit("value", org.objectweb.asm.Type.getType(xmlAdapterClassSignature));
             av0.visitEnd();
+        }
+
+        for (Annotation ann : jaxbAnnotations) {
+            if (ann instanceof XmlMimeType) {
+                AnnotationVisitor mime = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlMimeType;", true);
+                mime.visit("value", ((XmlMimeType)ann).value());
+                mime.visitEnd();
+            } else if (ann instanceof XmlJavaTypeAdapter) {
+                AnnotationVisitor ada = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlJavaTypeAdapter;", true);
+                ada.visit("value", ((XmlJavaTypeAdapter)ann).value());
+                ada.visit("type", ((XmlJavaTypeAdapter)ann).type());
+                ada.visitEnd();
+            } else if (ann instanceof XmlAttachmentRef) {
+                AnnotationVisitor att = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlAttachmentRef;", true);
+                att.visitEnd();
+            } else if (ann instanceof XmlList) {
+                AnnotationVisitor list = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlList;", true);
+                list.visitEnd();
+            }
         }
 
         fv.visitEnd();
@@ -320,16 +441,23 @@ public abstract class BaseBeanGenerator implements Opcodes {
 
     public static class BeanProperty {
         private Class<?> type;
+        private String namespace;
         private String name;
         private String signature;
         private String genericSignature;
+        private List<Annotation> jaxbAnnotaions = new ArrayList<Annotation>();
+        private boolean element;
+        private boolean nillable;
 
-        public BeanProperty(String name, Class<?> javaClass, Type type) {
+        public BeanProperty(String namespace, String name, Class<?> javaClass, Type type, boolean isElement) {
             super();
+            this.namespace = namespace;
             this.name = name;
             this.signature = CodeGenerationHelper.getJAXWSSignature(javaClass);
             this.type = javaClass;
             this.genericSignature = CodeGenerationHelper.getJAXWSSignature(type);
+            this.element = isElement; 
+            this.nillable = (type instanceof GenericArrayType);
         }
 
         public String getName() {
@@ -347,6 +475,22 @@ public abstract class BaseBeanGenerator implements Opcodes {
         public Class<?> getType() {
             return type;
         }
+
+        public List<Annotation> getJaxbAnnotaions() {
+            return jaxbAnnotaions;
+        }
+
+        public String getNamespace() {
+            return namespace;
+        }
+
+        public boolean isElement() {
+            return element;
+        }
+
+        public boolean isNillable() {
+            return nillable;
+        }
     }
 
     public XMLAdapterExtensionPoint getXmlAdapters() {
@@ -356,4 +500,36 @@ public abstract class BaseBeanGenerator implements Opcodes {
     public void setXmlAdapters(XMLAdapterExtensionPoint xmlAdapters) {
         this.xmlAdapters = xmlAdapters;
     }
+
+    protected static <T extends Annotation> T findAnnotation(Annotation[] anns, Class<T> annotationClass) {
+        for (Annotation a : anns) {
+            if (a.annotationType() == annotationClass) {
+                return annotationClass.cast(a);
+            }
+        }
+        return null;
+    }
+
+    protected static List<Annotation> findJAXBAnnotations(Annotation[] anns) {
+        List<Annotation> jaxbAnnotation = new ArrayList<Annotation>();
+        for (Class<? extends Annotation> c : KNOWN_JAXB_ANNOTATIONS) {
+            Annotation a = findAnnotation(anns, c);
+            if (a != null) {
+                jaxbAnnotation.add(a);
+            }
+        }
+        return jaxbAnnotation;
+    }
+
+    protected List<Annotation> findJAXBAnnotations(Method method) {
+        List<Annotation> anns = new ArrayList<Annotation>();
+        for (Class<? extends Annotation> c : KNOWN_JAXB_ANNOTATIONS) {
+            Annotation ann = method.getAnnotation(c);
+            if (ann != null) {
+                anns.add(ann);
+            }
+        }
+        return anns;
+    }
+
 }
