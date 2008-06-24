@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.gdata.provider;
 
-import com.google.gdata.client.GoogleService;
-import com.google.gdata.util.AuthenticationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.tuscany.sca.binding.atom.AtomBinding;
+
+import org.apache.tuscany.sca.binding.gdata.GDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -30,15 +29,18 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
+import com.google.gdata.client.GoogleService;
+import com.google.gdata.util.AuthenticationException;
+
 /**
  * Implementation of the Atom binding provider.
  *
  * @version $Rev$ $Date$
  */
-class AtomReferenceBindingProvider implements ReferenceBindingProvider {
+class GDataReferenceBindingProvider implements ReferenceBindingProvider {
 
     private RuntimeComponentReference reference;
-    private AtomBinding binding;
+    private GDataBinding binding;
     private GoogleService service;
 
     /**
@@ -48,9 +50,9 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
      * @param binding
      * @param mediator
      */
-    AtomReferenceBindingProvider(RuntimeComponent component,
+    GDataReferenceBindingProvider(RuntimeComponent component,
             RuntimeComponentReference reference,
-            AtomBinding binding) {
+            GDataBinding binding) {
         this.reference = reference;
         this.binding = binding;
 
@@ -61,7 +63,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
             //FIXME - Get credentials automatically
             service.setUserCredentials("gsocstudent2008@gmail.com", "gsoc2008");
         } catch (AuthenticationException ex) {
-            Logger.getLogger(AtomReferenceBindingProvider.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GDataReferenceBindingProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         this.service.setConnectTimeout(60000);
@@ -71,24 +73,24 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 
         String operationName = operation.getName();
         if (operationName.equals("get")) {
-            return new AtomBindingInvoker.GetInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.GetInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("post")) {
-            return new AtomBindingInvoker.PostInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.PostInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("put")) {
-            return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.PutInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("delete")) {
-            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.DeleteInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
-            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.GetAllInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("postMedia")) {
-            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.PostMediaInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("putMedia")) {
-            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.PutMediaInvoker(operation, binding.getURI(), service);
         } else if (operationName.equals("query")) {
-            return new AtomBindingInvoker.QueryInvoker(operation, binding.getURI(), service);
+            return new GDataBindingInvoker.QueryInvoker(operation, binding.getURI(), service);
         }
 
-        return new AtomBindingInvoker(operation, binding.getURI(), service);
+        return new GDataBindingInvoker(operation, binding.getURI(), service);
     }
 
     public InterfaceContract getBindingInterfaceContract() {

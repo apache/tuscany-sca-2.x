@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.gdata.provider.AtomBindingProviderFactory;model=org.apache.tuscany.sca.binding.atom.AtomBinding
+org.apache.tuscany.sca.binding.gdata.provider.GDataBindingProviderFactory;model=org.apache.tuscany.sca.binding.gdata.GDataBinding

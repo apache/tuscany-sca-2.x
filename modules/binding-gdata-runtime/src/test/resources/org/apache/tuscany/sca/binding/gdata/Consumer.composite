@@ -25,7 +25,7 @@
     <component name="CustomerClient">
         <implementation.java class="org.apache.tuscany.sca.binding.gdata.CustomerClientImpl"/>
         <reference name="resourceCollection">
-        	<tuscany:binding.atom uri="http://www.google.com/calendar/feeds/gsocstudent2008@gmail.com/private/full"/>
+        	<tuscany:binding.gdata uri="http://www.google.com/calendar/feeds/gsocstudent2008@gmail.com/private/full"/>
         </reference>
     </component>
 

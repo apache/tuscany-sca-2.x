@@ -39,13 +39,13 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
  * 
  * @version $Rev$ $Date$
  */
-class AtomBindingInvoker implements Invoker {
+class GDataBindingInvoker implements Invoker {
 
     Operation operation;
     String uri;
     GoogleService service;
 
-    AtomBindingInvoker(Operation operation, String uri, GoogleService service) {
+    GDataBindingInvoker(Operation operation, String uri, GoogleService service) {
         this.operation = operation;
         this.uri = uri;
         this.service = service;
@@ -61,7 +61,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * Get operation invoker
      */
-    public static class GetInvoker extends AtomBindingInvoker {
+    public static class GetInvoker extends GDataBindingInvoker {
 
         public GetInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -90,7 +90,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * Post operation invoker
      */
-    public static class PostInvoker extends AtomBindingInvoker {
+    public static class PostInvoker extends GDataBindingInvoker {
 
         public PostInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -119,7 +119,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * Put operation invoker
      */
-    public static class PutInvoker extends AtomBindingInvoker {
+    public static class PutInvoker extends GDataBindingInvoker {
 
         public PutInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -150,7 +150,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * Delete operation invoker
      */
-    public static class DeleteInvoker extends AtomBindingInvoker {
+    public static class DeleteInvoker extends GDataBindingInvoker {
 
         public DeleteInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -175,7 +175,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * GetAll operation invoker
      */
-    public static class GetAllInvoker extends AtomBindingInvoker {
+    public static class GetAllInvoker extends GDataBindingInvoker {
 
         public GetAllInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -205,7 +205,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * Query operation invoker
      */
-    public static class QueryInvoker extends AtomBindingInvoker {
+    public static class QueryInvoker extends GDataBindingInvoker {
 
         public QueryInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -221,7 +221,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * PostMedia operation invoker
      */
-    public static class PostMediaInvoker extends AtomBindingInvoker {
+    public static class PostMediaInvoker extends GDataBindingInvoker {
 
         public PostMediaInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);
@@ -237,7 +237,7 @@ class AtomBindingInvoker implements Invoker {
     /**
      * PutMedia operation invoker
      */
-    public static class PutMediaInvoker extends AtomBindingInvoker {
+    public static class PutMediaInvoker extends GDataBindingInvoker {
 
         public PutMediaInvoker(Operation operation, String uri, GoogleService service) {
             super(operation, uri, service);

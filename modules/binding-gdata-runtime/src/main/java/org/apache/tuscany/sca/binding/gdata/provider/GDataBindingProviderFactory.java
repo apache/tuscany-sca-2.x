@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.binding.gdata.provider;
 
-import org.apache.tuscany.sca.binding.atom.AtomBinding;
+import org.apache.tuscany.sca.binding.gdata.GDataBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -41,13 +41,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  *
  * @version $Rev$ $Date$
  */
-public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBinding> {
+public class GDataBindingProviderFactory implements BindingProviderFactory<GDataBinding> {
 
     private MessageFactory messageFactory;
     private Mediator mediator;
     private ServletHost servletHost;
 
-    public AtomBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public GDataBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -58,20 +58,20 @@ public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBi
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
-                                                                   AtomBinding binding) {
-        return new AtomReferenceBindingProvider(component, reference, binding);
+                                                                   GDataBinding binding) {
+        return new GDataReferenceBindingProvider(component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
-                                                               AtomBinding binding) {
+                                                               GDataBinding binding) {
         //return new AtomServiceBindingProvider(component, service, binding, servletHost, messageFactory, mediator);
         
         //FIXME - To implement AtomServiceBindingProvider
         return null;
     }
 
-    public Class<AtomBinding> getModelType() {
-        return AtomBinding.class;
+    public Class<GDataBinding> getModelType() {
+        return GDataBinding.class;
     }
 }
