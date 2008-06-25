@@ -146,7 +146,8 @@ public class ConversationManagerImpl implements ConversationManager {
      * @see org.apache.tuscany.sca.core.conversation.ConversationManager#getConversation(java.lang.Object)
      */
     public ExtendedConversation getConversation(Object conversationID) {
-        return conversations.get(conversationID);
+        // ConcurrentHashMap cannot take null key
+        return conversationID == null ? null : conversations.get(conversationID);
     }
 
     /**
