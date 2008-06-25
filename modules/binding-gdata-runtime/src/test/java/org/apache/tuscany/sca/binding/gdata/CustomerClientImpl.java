@@ -96,8 +96,20 @@ public class CustomerClientImpl implements CustomerClient {
                 "\n//--------------------------" +
                 "\n// Delete an Entry" +
                 "\n//--------------------------\n");
-        
+
         resourceCollection.delete(updatedEntry.getEditLink().getHref());
+
+        System.out.println(
+                "\n//--------------------------" +
+                "\n// Execute a query" +
+                "\n//--------------------------\n");
+
+        feed = resourceCollection.query("Students");
+        
+        System.out.println("Feed content - " + feed.getUpdated().toString() + ":\n");
+        for (Entry e : feed.getEntries()) {
+            System.out.println("# " + e.getTitle().getPlainText());
+        }
 
     }
 }
