@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.demos.aggregator;
 
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -44,9 +45,12 @@ public class RSSCheckerServiceImpl implements RSSCheckerService {
         List returnAlertList    = returnAlerts.getAlert();
         
         try {
-            // Turn the date into something we can process. 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance();
-            Date timestamp = dateFormatter.parse(lastchecktimestamp);
+        	// lastchecktimestamp comes from sources.xml configuration.
+        	// That origin requires ISO 8601 date input (yyyy-MM-dd hh:mm:ss).
+        	DateFormat configDateFormatter = new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss"); 
+            Date timestamp = configDateFormatter.parse(lastchecktimestamp);
+            // Turn feed dates into something we can process. 
+            DateFormat feedDateFormatter = DateFormat.getDateTimeInstance();
             
             // get the feed data from the supplied address            
             SyndFeedInput input = new SyndFeedInput();
@@ -58,6 +62,7 @@ public class RSSCheckerServiceImpl implements RSSCheckerService {
             for(Object entry: entries){
                 SyndEntry syndEntry = (SyndEntry)entry;             
                 
+                // System.err.println( "Entry pubdate=" + syndEntry.getPublishedDate() );
                 if (syndEntry.getPublishedDate().after(timestamp)){
                     AlertType newAlert = factory.createAlertType();
                     
@@ -67,7 +72,7 @@ public class RSSCheckerServiceImpl implements RSSCheckerService {
                 //                        "]]>");
                     newAlert.setSummary("");                    
                     newAlert.setAddress(syndEntry.getLink());
-                    newAlert.setDate(dateFormatter.format(syndEntry.getPublishedDate()));
+                    newAlert.setDate(feedDateFormatter.format(syndEntry.getPublishedDate()));
                     newAlert.setId(rssaddress);
                     newAlert.setUnread(true);
                     
@@ -76,6 +81,7 @@ public class RSSCheckerServiceImpl implements RSSCheckerService {
             }
             
         } catch(Exception ex) {
+        	ex.printStackTrace( System.err );
             System.err.println("Exception " + ex.toString());
         }
 
