@@ -25,10 +25,10 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.ServiceRuntimeException;
 
 import com.google.gdata.client.GoogleService;
+import com.google.gdata.client.Query;
 import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
-import com.google.gdata.data.extensions.EventEntry;
 import java.net.URL;
 import com.google.gdata.util.ServiceException;
 import com.google.gdata.util.ResourceNotFoundException;
@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
  * 
  * @version $Rev$ $Date$
  */
-class GDataBindingInvoker implements Invoker {
+class GDataBindingInvoker implements Invoker, DataExchangeSemantics {
 
     Operation operation;
     String uri;
@@ -73,8 +73,7 @@ class GDataBindingInvoker implements Invoker {
             try {
                 String id = (String) ((Object[]) msg.getBody())[0];
 
-                //FIXME - Adapt the class to each kind of entry
-                BaseEntry searchedEntry = service.getEntry(new URL(id), EventEntry.class);
+                BaseEntry searchedEntry = service.getEntry(new URL(id), Entry.class);
 
                 msg.setBody(searchedEntry);
 
@@ -82,8 +81,9 @@ class GDataBindingInvoker implements Invoker {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
             } catch (ServiceException ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
             }
-            return msg;
         }
     }
 
@@ -110,9 +110,9 @@ class GDataBindingInvoker implements Invoker {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
             } catch (ServiceException ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
             }
-
-            return msg;
         }
     }
 
@@ -141,9 +141,9 @@ class GDataBindingInvoker implements Invoker {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
             } catch (ServiceException ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
             }
-
-            return msg;
         }
     }
 
@@ -161,14 +161,14 @@ class GDataBindingInvoker implements Invoker {
             try {
                 String id = (String) ((Object[]) msg.getBody())[0];
                 service.delete(new URL(id));
-                
+
             } catch (IOException ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
             } catch (ServiceException ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
             }
-
-            return msg;
         }
     }
 
@@ -196,9 +196,9 @@ class GDataBindingInvoker implements Invoker {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
             } catch (Exception ex) {
                 msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
             }
-
-            return msg;
         }
     }
 
@@ -213,8 +213,22 @@ class GDataBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
-            return super.invoke(msg);
+            try {
+
+                String strQuery = (String) ((Object[]) msg.getBody())[0];
+
+                Query query = new Query(new URL(uri));
+                query.setFullTextQuery(strQuery);
+                Feed feed = service.query(query, Feed.class);
+                msg.setBody(feed);
+
+            } catch (IOException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } finally {
+                return msg;
+            }
         }
     }
 
