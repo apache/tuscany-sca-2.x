@@ -75,10 +75,16 @@
             <version>1.1-incubating</version>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>9.0.0.2</version>
+        </dependency-->
+
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <version>8.7</version>
         </dependency>
 
         <dependency>

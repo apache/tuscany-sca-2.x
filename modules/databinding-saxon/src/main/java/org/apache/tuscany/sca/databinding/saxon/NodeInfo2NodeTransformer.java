@@ -46,7 +46,7 @@ public class NodeInfo2NodeTransformer extends BaseTransformer<NodeInfo, Node> im
             Properties props = new Properties();
             props.setProperty(OutputKeys.METHOD, "xml");
             props.setProperty(OutputKeys.INDENT, "yes");
-            QueryResult.serialize(source, destination, props);
+            QueryResult.serialize(source, destination, props, source.getConfiguration());
         } catch (Exception e) {
             throw new TransformationException(e);
         }

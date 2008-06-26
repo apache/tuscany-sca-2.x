@@ -36,7 +36,7 @@ public class Value2ObjectTransformer extends BaseTransformer<Value, Object> impl
     public Object transform(Value source, TransformationContext context) {
         Object object;
         try {
-            object = Value.convertToJava(Value.asItem(source));
+            object = Value.convert(Value.asItem(source));
         } catch (XPathException e) {
             throw new TransformationException(e);
         }
