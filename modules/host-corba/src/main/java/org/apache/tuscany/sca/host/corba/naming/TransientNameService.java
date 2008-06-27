@@ -1,19 +1,20 @@
-/**
- *
- * Licensed to the Apache Software Foundation (ASF) under one or more
-*  contributor license agreements.  See the NOTICE file distributed with
-*  this work for additional information regarding copyright ownership.
-*  The ASF licenses this file to You under the Apache License, Version 2.0
-*  (the "License"); you may not use this file except in compliance with
-*  the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
  */
 
 /**
@@ -55,7 +56,6 @@ public class TransientNameService {
     protected String serviceName;
     // the orb instance we're running on
     protected ORB createdOrb;
-
 
     /**
      * Create a new TransientNameService, using all default
@@ -106,7 +106,7 @@ public class TransientNameService {
         props.put("org.omg.CORBA.ORBServerId", "1000000");
         props.put("org.omg.CORBA.ORBInitialHost", host);
         props.put("org.omg.CORBA.ORBInitialPort", portStr);
-        
+
         // STEP 1: Set ORBPeristentServerPort property
         // Set the proprietary property to open up a port to listen to
         // INS requests. 
@@ -124,7 +124,7 @@ public class TransientNameService {
 
         // now initialize the service
         initialize(createdOrb);
-        
+
     }
 
     /**
@@ -174,7 +174,7 @@ public class TransientNameService {
             createdOrb = null;
         }
     }
-    
+
     public ORB getORB() {
         return createdOrb;
     }
