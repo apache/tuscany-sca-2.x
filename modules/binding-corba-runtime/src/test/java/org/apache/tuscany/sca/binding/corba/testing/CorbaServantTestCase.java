@@ -19,10 +19,11 @@
 
 package org.apache.tuscany.sca.binding.corba.testing;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.lang.reflect.Array;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
@@ -54,6 +55,8 @@ import org.apache.tuscany.sca.binding.corba.testing.servants.NonCorbaServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.PrimitivesSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
 import org.apache.tuscany.sca.binding.corba.testing.service.mocks.TestRuntimeComponentService;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.omg.CORBA.BAD_OPERATION;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
@@ -61,15 +64,16 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
-public class CorbaServantTestCase extends TestCase {
+public class CorbaServantTestCase  {
 
-    private Process process;
-    private ORB orb;
+    private static Process process;
+    private static ORB orb;
 
     /**
      * Spawns tnamserv an initiates ORB
      */
-    public void setUp() throws IOException {
+    @BeforeClass
+    public static void setUp() throws IOException {
         String[] args = {"-ORBInitialPort", "" + TestConstants.ORB_INITIAL_PORT};
         process = Runtime.getRuntime().exec("tnameserv " + args[0] + " " + args[1]);
         try {
@@ -84,7 +88,8 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Kills tnameserv
      */
-    public void tearDown() {
+    @BeforeClass
+    public static void tearDown() {
         try {
             if (process != null) {
                 process.destroy();
@@ -134,7 +139,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests primitives (arguments, return types)
      */
-    public void test_primitivesSetter() {
+    @Test public void test_primitivesSetter() {
         try {
             PrimitivesSetter primitivesSetter = new PrimitivesSetterServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(primitivesSetter);
@@ -182,7 +187,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests arrays (arguments, return types)
      */
-    public void test_arraysSetter() {
+    @Test public void test_arraysSetter() {
         try {
             ArraysSetter arraysSetter = new ArraysSetterServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(arraysSetter);
@@ -238,7 +243,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests structures (arguments, return types)
      */
-    public void test_TestObject_setStruct() {
+    @Test public void test_TestObject_setStruct() {
         try {
             TestObject to = new TestObjectServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(to);
@@ -272,7 +277,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests handling BAD_OPERATION system exception
      */
-    public void test_systemException_BAD_OPERATION() {
+    @Test public void test_systemException_BAD_OPERATION() {
         try {
             TestObjectServant tos = new TestObjectServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(tos);
@@ -319,7 +324,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests handling user exceptions
      */
-    public void test_userExceptions() {
+    @Test public void test_userExceptions() {
         try {
             CalcServant calc = new CalcServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
@@ -362,7 +367,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests enums (arguments, return types)
      */
-    public void test_enums() {
+    @Test public void test_enums() {
         try {
             EnumManagerServant ems = new EnumManagerServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(ems);
@@ -379,7 +384,7 @@ public class CorbaServantTestCase extends TestCase {
         }
     }
 
-    public void test_nonCorbaServants() {
+    @Test public void test_nonCorbaServants() {
         try {
             NonCorbaServant ncs = new NonCorbaServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(ncs);
@@ -419,7 +424,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests handling BAD_PARAM system exception
      */
-    public void test_systemException_BAD_PARAM() {
+    @Test public void test_systemException_BAD_PARAM() {
         try {
             CalcServant calc = new CalcServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
@@ -445,7 +450,7 @@ public class CorbaServantTestCase extends TestCase {
     /**
      * Tests handling BAD_PARAM system exception
      */
-    public void test_invalidServantConfiguraion() {
+    @Test public void test_invalidServantConfiguraion() {
         try {
             InvalidTypesServant its = new InvalidTypesServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(its);

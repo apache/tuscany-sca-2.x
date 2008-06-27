@@ -43,14 +43,14 @@ public class ExtensibleCorbaHost implements CorbaHost {
         if (chep.getCorbaHosts().isEmpty()) {
             throw new CorbaHostException("No registered CORBA hosts");
         }
-        registerServant(name, host, port, serviceObject);
+        chep.getCorbaHosts().get(0).registerServant(name, host, port, serviceObject);
     }
 
     public void unregisterServant(String name, String host, int port) throws CorbaHostException {
         if (chep.getCorbaHosts().isEmpty()) {
             throw new CorbaHostException("No registered CORBA hosts");
         }
-        unregisterServant(name, host, port);
+        chep.getCorbaHosts().get(0).unregisterServant(name, host, port);
     }
 
 }

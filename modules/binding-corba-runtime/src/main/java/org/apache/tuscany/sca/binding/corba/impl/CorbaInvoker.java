@@ -19,27 +19,23 @@
 
 package org.apache.tuscany.sca.binding.corba.impl;
 
-import org.apache.tuscany.sca.binding.corba.CorbaBinding;
-import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
+import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.omg.CORBA.Any;
-import org.omg.CORBA.Request;
-import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
+import org.omg.CORBA.Object;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CorbaInvoker implements Invoker {
-    private Operation operation;
-    private CorbaBinding binding;
 
-    public CorbaInvoker(CorbaBinding binding, Operation operation) {
-        super();
-        this.binding = binding;
-        this.operation = operation;
+    private Object remoteObject;
+
+    public CorbaInvoker(Object remoteObject) {
+        this.remoteObject = remoteObject;
     }
 
     /**
@@ -47,35 +43,27 @@ public class CorbaInvoker implements Invoker {
      */
     public Message invoke(Message msg) {
         try {
-            org.omg.CORBA.ORB orb = initORB(binding.getHost(), String.valueOf(binding.getPort()));
-
-            org.omg.CORBA.Object service = orb.string_to_object(binding.getURI());
-
-            // get the root naming context
-            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
-
-            // Use NamingContextExt instead of NamingContext. This is 
-            // part of the Interoperable Naming Service.  
-            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-
-            // resolve the Object Reference in Naming
-            org.omg.CORBA.Object impl = ncRef.resolve_str(binding.getURI());
-
-            String op = operation.getName();
-            Request req = impl._request(op);
-            Any any = req.add_in_arg();
-            return null;
+            DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, msg.getOperation().getName());
+            if (msg.getOperation().getOutputType() != null) {
+                request.setOutputType(msg.getOperation().getOutputType().getPhysical());
+            }
+            java.lang.Object[] args = msg.getBody();
+            if (args != null) {
+                for (int i = 0; i < args.length; i++) {
+                    request.addArgument(args[i]);
+                }
+            }
+            if (msg.getOperation().getFaultTypes() != null) {
+                for (DataType type : msg.getOperation().getFaultTypes()) {
+                    request.addExceptionType(type.getPhysical());
+                }
+            }
+            DynaCorbaResponse response = request.invoke();
+            msg.setBody(response.getContent());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
-    }
-
-    private org.omg.CORBA.ORB initORB(String host, String port) {
-        java.util.Properties props = new java.util.Properties();
-        props.put("org.omg.CORBA.ORBInitialHost", host);
-        props.put("org.omg.CORBA.ORBInitialPort", port);
-        org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(new String[0], props);
-        return orb;
+        return msg;
     }
 
 }
