@@ -28,6 +28,8 @@ import java.io.IOException;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.DefaultCorbaHost;
+import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
+import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.corba.testing.general.TestInterface;
 import org.apache.tuscany.sca.host.corba.testing.general.TestInterfaceHelper;
 import org.apache.tuscany.sca.host.corba.testing.servants.TestInterfaceServant;
@@ -87,6 +89,7 @@ public class DefaultCorbaHostTestCase {
         }
     }
 
+    /*
     @BeforeClass
     public static void start() {
         try {
@@ -101,6 +104,29 @@ public class DefaultCorbaHostTestCase {
     @AfterClass
     public static void stop() {
         killProcess(tn);
+    }
+    */
+    
+    private static TransientNameServer server;
+
+    @BeforeClass
+    public static void start() {
+        try {
+            server = new TransientNameServer(LOCALHOST, DEFAULT_PORT, TransientNameService.DEFAULT_SERVICE_NAME);
+            Thread t = server.start();
+            if (t == null) {
+                fail("The naming server cannot be started");
+            }
+            host = new DefaultCorbaHost();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    @AfterClass
+    public static void stop() {
+        server.stop();
     }
 
     /**
