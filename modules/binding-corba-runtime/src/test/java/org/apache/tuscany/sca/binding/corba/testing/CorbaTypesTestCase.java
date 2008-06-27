@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.binding.corba.testing;
 
-import java.lang.reflect.Array;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Array;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
@@ -45,6 +48,9 @@ import org.apache.tuscany.sca.binding.corba.testing.servants.EnumManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ObjectManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.PrimitivesSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NameComponent;
@@ -56,21 +62,22 @@ import org.omg.CosNaming.NamingContextHelper;
 /**
  * @version $Rev$ $Date$
  */
-public class CorbaTypesTestCase extends TestCase {
+public class CorbaTypesTestCase {
 
-    private Process tnameservProcess;
-    private Object refPrimitivesSetter;
-    private Object refArraysSetter;
-    private Object refTestObject;
-    private Object refCalcObject;
-    private Object refObjectManager;
-    private Object refEnumManager;
+    private static Process tnameservProcess;
+    private static Object refPrimitivesSetter;
+    private static Object refArraysSetter;
+    private static Object refTestObject;
+    private static Object refCalcObject;
+    private static Object refObjectManager;
+    private static Object refEnumManager;
 
     /**
      * Spawns tnameserv process (must be in PATH). Initializes test servants and
      * stores it's references so tests can use it.
      */
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         try {
             String[] args = {"-ORBInitialPort", "11100"};
 
@@ -141,7 +148,8 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Kills previously spawned tnameserv process.
      */
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         tnameservProcess.destroy();
         try {
             // let the tnameserv have time to die
@@ -198,7 +206,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests passing (and getting as result) varied primitives
      */
-    public void test_setPrimitives() {
+    @Test public void test_setPrimitives() {
 
         dynaTestInvoker(refPrimitivesSetter, "setBoolean", Boolean.class, new Boolean[] {true}, true);
         dynaTestInvoker(refPrimitivesSetter, "setOctet", Byte.class, new Byte[] {1}, (byte)1);
@@ -215,7 +223,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests passing (and getting as result) varied types sequences
      */
-    public void test_setArrays() {
+    @Test public void test_setArrays() {
 
         dynaTestInvoker(refArraysSetter,
                         "setBoolean",
@@ -269,7 +277,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests passing (and getting as result) complex structure
      */
-    public void test_TestObject_setStruct() {
+    @Test public void test_TestObject_setStruct() {
         DynaCorbaRequest request = new DynaCorbaRequest(refTestObject, "setStruct");
 
         SomeStruct struct = new SomeStruct();
@@ -303,7 +311,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Test passing (and getting as result) simple two-field structure
      */
-    public void test_TestObject_setSimpleStruct() {
+    @Test public void test_TestObject_setSimpleStruct() {
         SimpleStruct struct = new SimpleStruct();
         struct.field1 = TestConstants.STR_1;
         struct.field2 = TestConstants.INT_1;
@@ -323,7 +331,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests passing (and getting as result) two dim. sequence of long.
      */
-    public void test_TestObject_setLongSeq2() {
+    @Test public void test_TestObject_setLongSeq2() {
         int[][] arr1 = new int[2][2];
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
@@ -350,7 +358,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests passing multiple complex attributes.
      */
-    public void test_TestObject_pickStructFromArgs() {
+    @Test public void test_TestObject_pickStructFromArgs() {
         SomeStruct arg1 = new SomeStruct();
         SomeStruct arg2 = new SomeStruct();
         SomeStruct arg3 = new SomeStruct();
@@ -402,7 +410,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests handling user defined remote exception (single declared)
      */
-    public void test_singleException() {
+    @Test public void test_singleException() {
         DynaCorbaRequest request1 = new DynaCorbaRequest(refCalcObject, "div");
         try {
             request1.addArgument(2d);
@@ -432,7 +440,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests handling user defined multiple exceptions
      */
-    public void test_multipleExceptions() {
+    @Test public void test_multipleExceptions() {
         DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "divForSmallArgs");
         try {
             request.addArgument(101d);
@@ -449,7 +457,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests handling exceptions while user defined no exceptions
      */
-    public void test_noExceptionsDeclared() {
+    @Test public void test_noExceptionsDeclared() {
         DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
         try {
             request.addArgument(1d);
@@ -465,7 +473,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests handling exceptions while user defined no such exception
      */
-    public void test_noSuchExceptionDeclared() {
+    @Test public void test_noSuchExceptionDeclared() {
         DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
         try {
             request.addArgument(1d);
@@ -482,7 +490,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests handling non existing operation situation
      */
-    public void test_systemException_BAD_OPERATION() {
+    @Test public void test_systemException_BAD_OPERATION() {
         DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "thisOperationSurelyDoesNotExist");
         try {
             request.invoke();
@@ -496,7 +504,7 @@ public class CorbaTypesTestCase extends TestCase {
      * Tests obtaining references to other objects and using them with specified
      * user interface
      */
-    public void test_enchancedReferences() {
+    @Test public void test_enchancedReferences() {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(refObjectManager, "getDummyObject");
             request.setOutputType(DummyObject.class);
@@ -513,7 +521,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Test passing enums as arguments and retrieving them as a result
      */
-    public void test_enums() {
+    @Test public void test_enums() {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(refEnumManager, "getColor");
             Color color = Color.green;
@@ -531,7 +539,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests recognizing structures
      */
-    public void test_structValidation() {
+    @Test public void test_structValidation() {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
             request.setOutputType(InvalidStruct1.class);
@@ -564,7 +572,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests recognizing enums
      */
-    public void test_enumValidation() {
+    @Test public void test_enumValidation() {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(refArraysSetter, "whatever");
             request.setOutputType(InvalidEnum1.class);
@@ -597,7 +605,7 @@ public class CorbaTypesTestCase extends TestCase {
     /**
      * Tests hanlding passing wrong params
      */
-    public void test_systemException_BAD_PARAM() {
+    @Test public void test_systemException_BAD_PARAM() {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(refCalcObject, "div");
             request.setOutputType(Double.class);

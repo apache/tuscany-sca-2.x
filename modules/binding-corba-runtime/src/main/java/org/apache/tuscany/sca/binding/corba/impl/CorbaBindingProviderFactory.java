@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.binding.corba.impl;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.corba.CorbaHostExtensionPoint;
+import org.apache.tuscany.sca.host.corba.ExtensibleCorbaHost;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -32,13 +35,20 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class CorbaBindingProviderFactory implements BindingProviderFactory<CorbaBinding> {
 
+    private CorbaHostExtensionPoint chep;
+    private ExtensibleCorbaHost host;
+    
+    public CorbaBindingProviderFactory(ExtensionPointRegistry registry) {
+        chep = registry.getExtensionPoint(CorbaHostExtensionPoint.class);
+        host = new ExtensibleCorbaHost(chep);
+    }
     /**
      * @see org.apache.tuscany.sca.provider.BindingProviderFactory#createReferenceBindingProvider(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.runtime.RuntimeComponentReference, org.apache.tuscany.sca.assembly.Binding)
      */
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    CorbaBinding binding) {
-        return null;
+        return new CorbaReferenceBindingProvider(binding, host, reference);
     }
 
     /**
@@ -47,7 +57,7 @@ public class CorbaBindingProviderFactory implements BindingProviderFactory<Corba
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                CorbaBinding binding) {
-        return null;
+        return new CorbaServiceBindingProvider(binding, host, service);
     }
 
     /**
