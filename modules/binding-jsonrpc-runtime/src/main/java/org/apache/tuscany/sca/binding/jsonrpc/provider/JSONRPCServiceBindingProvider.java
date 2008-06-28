@@ -85,7 +85,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-        serviceContract.getInterface().setDefaultDataBinding(JSONDataBinding.NAME);
+        serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
