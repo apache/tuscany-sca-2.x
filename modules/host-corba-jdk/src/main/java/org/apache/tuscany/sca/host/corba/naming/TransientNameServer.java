@@ -47,7 +47,7 @@ public class TransientNameServer {
                 synchronized (flag) {
                     try {
                         service.run();
-                        orb = service.createdOrb;
+                        orb = service.getORB();
                         started = Boolean.TRUE;
                     } catch (Throwable e) {
                         started = Boolean.FALSE;
@@ -56,19 +56,11 @@ public class TransientNameServer {
                         flag.notifyAll();
                     }
                 }
+                // Wait for requests
                 orb.run();
-                /*
-                // now we just sit and wait here.
-                synchronized (service) {
-                    try {
-                        service.wait();
-                    } catch (InterruptedException e) {
-                        throw new IllegalStateException(e);
-                    }
-                }
-                */
             }
         };
+        // t.setDaemon(true);
         t.start();
         checkState();
         return t.isAlive() ? t : null;

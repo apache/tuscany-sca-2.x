@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.host.corba;
 
+import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 /**
@@ -26,31 +27,33 @@ import org.omg.CORBA.Object;
  */
 public class ExtensibleCorbaHost implements CorbaHost {
 
-    private CorbaHostExtensionPoint chep;
+    private CorbaHostExtensionPoint hosts;
 
     public ExtensibleCorbaHost(CorbaHostExtensionPoint chep) {
-        this.chep = chep;
+        this.hosts = chep;
     }
 
-    public Object getReference(String name, String host, int port) throws CorbaHostException {
-        if (chep.getCorbaHosts().isEmpty()) {
-            throw new CorbaHostException("No registered CORBA hosts");
-        }
-        return chep.getCorbaHosts().get(0).getReference(name, host, port);
+    public Object lookup(ORB orb, String name) throws CorbaHostException {
+        return getCorbaHost().lookup(orb, name);
     }
 
-    public void registerServant(String name, String host, int port, Object serviceObject) throws CorbaHostException {
-        if (chep.getCorbaHosts().isEmpty()) {
-            throw new CorbaHostException("No registered CORBA hosts");
-        }
-        chep.getCorbaHosts().get(0).registerServant(name, host, port, serviceObject);
+    public void registerServant(ORB orb, String name, Object serviceObject) throws CorbaHostException {
+        getCorbaHost().registerServant(orb, name, serviceObject);
     }
 
-    public void unregisterServant(String name, String host, int port) throws CorbaHostException {
-        if (chep.getCorbaHosts().isEmpty()) {
+    public void unregisterServant(ORB orb, String name) throws CorbaHostException {
+        getCorbaHost().unregisterServant(orb, name);
+    }
+    
+    protected CorbaHost getCorbaHost() throws CorbaHostException {
+        if (hosts.getCorbaHosts().isEmpty()) {
             throw new CorbaHostException("No registered CORBA hosts");
         }
-        chep.getCorbaHosts().get(0).unregisterServant(name, host, port);
+        return hosts.getCorbaHosts().get(0);
+    }
+
+    public ORB createORB(String host, int port, boolean server) throws CorbaHostException {
+        return getCorbaHost().createORB(host, port, server);
     }
 
 }

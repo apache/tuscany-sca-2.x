@@ -30,8 +30,6 @@ public class DefaultCorbaHostExtensionPoint implements CorbaHostExtensionPoint {
     private List<CorbaHost> corbaHosts = new ArrayList<CorbaHost>();
 
     public DefaultCorbaHostExtensionPoint() {
-        CorbaHost defaultHost = new DefaultCorbaHost();
-        addCorbaHost(defaultHost);
     }
 
     public void addCorbaHost(CorbaHost host) {

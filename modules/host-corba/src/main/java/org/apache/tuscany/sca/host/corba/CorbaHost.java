@@ -19,43 +19,45 @@
 
 package org.apache.tuscany.sca.host.corba;
 
+import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 /**
  * CORBA Service hosting interface
  */
 public interface CorbaHost {
-
+    /**
+     * Create an ORB instance
+     * @param host The host name
+     * @param port The port number
+     * @param server Is it for server side
+     * @return
+     */
+    ORB createORB(String host, int port, boolean server) throws CorbaHostException;
     /**
      * Registers servant in name server.
-     * 
+     * @param orb The ORB instance
      * @param name binding name
-     * @param host name server host
-     * @param port name server port
      * @param serviceObject
      * @throws CorbaHostException
      */
-    void registerServant(String name, String host, int port, Object serviceObject) throws CorbaHostException;
+    void registerServant(ORB orb, String name, Object serviceObject) throws CorbaHostException;
 
     /**
      * Removes servant from name server
-     * 
+     * @param orb The ORB instance
      * @param name binding name
-     * @param host name server host
-     * @param port name server port
      * @throws CorbaHostException
      */
-    void unregisterServant(String name, String host, int port) throws CorbaHostException;
+    void unregisterServant(ORB orb, String name) throws CorbaHostException;
 
     /**
      * Gets reference to object
-     * 
+     * @param orb The ORB instance
      * @param name binding name
-     * @param host name server host
-     * @param port name server port
      * @return objects reference
      * @throws CorbaHostException
      */
-    Object getReference(String name, String host, int port) throws CorbaHostException;
+    Object lookup(ORB orb, String name) throws CorbaHostException;
 
 }

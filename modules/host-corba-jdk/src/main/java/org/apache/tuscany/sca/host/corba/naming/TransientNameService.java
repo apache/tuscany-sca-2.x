@@ -170,6 +170,7 @@ public class TransientNameService {
     public void destroy() {
         // only destroy this if we created the orb instance.
         if (createdOrb != null) {
+            createdOrb.shutdown(true);
             createdOrb.destroy();
             createdOrb = null;
         }

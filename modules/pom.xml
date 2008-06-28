@@ -105,6 +105,7 @@
                 <module>extensibility</module>
                 <module>extension-helper</module>
                 <module>host-corba</module>
+                <module>host-corba-jdk</module>
                 <module>host-ejb</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
