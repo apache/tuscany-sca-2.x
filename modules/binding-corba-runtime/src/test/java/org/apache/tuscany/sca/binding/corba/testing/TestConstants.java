@@ -32,7 +32,8 @@ public class TestConstants {
     public static final String[] STR_ARR_2 = {"Another", "string", "array"};
     public static final int INT_1 = 0;
 
-    public static final int ORB_INITIAL_PORT = 11100;
+    public static final int DEFAULT_PORT = 11100;
+    public static final String DEFAULT_HOST = "localhost";
 
     public static final int[][] INT_ARRAY_2_DIM = { {1, 2}, {3, 4}};
     public static final int[][][] INT_ARRAY_3_DIM = { { {1, 2}, {3, 4}}, { {5, 6}, {7, 8}}};
