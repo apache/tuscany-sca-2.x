@@ -31,7 +31,7 @@
 
     <component name="RssAggregator">
         <implementation.java class="feed.AggregatorImpl"/>             
-		<reference name="rssfeed1">
+		<reference name="rssFeed1">
    	 		<tuscany:binding.rss uri="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml"/>
    		</reference>
    		<reference name="rssFeed2"> 	

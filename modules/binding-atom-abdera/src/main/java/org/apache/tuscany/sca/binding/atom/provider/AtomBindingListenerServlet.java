@@ -147,9 +147,10 @@ class AtomBindingListenerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // No authentication required for a get request
-
+    	
         // Get the request path
-        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+    	int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
+        String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
 
         logger.fine("get " + request.getRequestURI());
 
