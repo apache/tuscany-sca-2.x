@@ -85,10 +85,16 @@
         </dependency>    
         
         <dependency>
-        	<groupId>org.apache.abdera</groupId>
-      		<artifactId>abdera-parser</artifactId>
-      		<version>0.3.0-incubating</version>
-	    </dependency>           
+           <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-parser</artifactId>
+            <version>0.3.0-incubating</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>           
                 
         <dependency>
             <groupId>javax.servlet</groupId>
