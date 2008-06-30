@@ -107,6 +107,40 @@
         </profile>
 
         <profile>
+            <id>sources</id>
+            <modules>
+                <module>modules</module>
+                <module>tools</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>vtest</module>
+                <module>tutorial</module>
+            </modules>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>         
+            </build>
+        </profile>
+
+        <profile>
             <id>eclipse</id>
             <modules>
                 <module>modules</module>
