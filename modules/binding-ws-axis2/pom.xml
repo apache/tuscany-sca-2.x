@@ -357,6 +357,10 @@
                    <groupId>javax.servlet</groupId>
                    <artifactId>servlet-api</artifactId>
                </exclusion>
+               <exclusion>
+                    <groupId>backport-util-concurrent</groupId>
+                    <artifactId>backport-util-concurrent</artifactId>
+                </exclusion>                
             </exclusions>
         </dependency>
 
@@ -388,9 +392,18 @@
                 <exclusion>
                    <groupId>javax.servlet</groupId>
                    <artifactId>servlet-api</artifactId>
-               </exclusion>                
+               </exclusion> 
+               <exclusion>
+                    <groupId>backport-util-concurrent</groupId>
+                    <artifactId>backport-util-concurrent</artifactId>
+                </exclusion>  
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>3.0</version>
+        </dependency>         
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
