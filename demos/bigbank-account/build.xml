@@ -67,14 +67,14 @@
         </jar>    	
     </target>		
 	
-    <target name="run" depends="compile">
+    <!--target name="run" depends="compile">
         <java classname="${test.class}"
               fork="true">
             <classpath>
                 <path refid="test.classpath"/>
             </classpath>
         </java>    	
-    </target>
+    </target-->
 
     <target name="clean">
 		<delete quiet="true" includeemptydirs="true">
