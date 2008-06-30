@@ -316,7 +316,7 @@ public class TypeTreeCreator {
             }
         } catch (NoSuchMethodException e) {
         }
-        if (!isFromIntMethod && !isValueMethod) {
+        if (!isFromIntMethod || !isValueMethod) {
             return false;
         }
         /*
@@ -345,6 +345,7 @@ public class TypeTreeCreator {
 
     /**
      * Tells whether given class is corba user exception
+     * 
      * @param forClass
      * @return
      */

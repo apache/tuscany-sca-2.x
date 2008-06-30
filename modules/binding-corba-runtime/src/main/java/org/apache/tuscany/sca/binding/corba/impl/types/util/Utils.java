@@ -29,9 +29,6 @@ public class Utils {
     public static String getExceptionId(Class<?> forClass) {
         String result = forClass.getName().replace('.', '/');
         result = result.replaceAll("Package", "");
-        if (result.endsWith("Exception")) {
-            result = result.substring(0, result.length() - "Exception".length());
-        }
         result = "IDL:" + result + ":1.0";
         return result;
     }

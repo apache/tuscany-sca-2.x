@@ -23,8 +23,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
-import java.io.IOException;
-
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.jdk.DefaultCorbaHost;
@@ -46,66 +44,8 @@ public class DefaultCorbaHostTestCase {
 
     private static final String LOCALHOST = "localhost";
     private static final int DEFAULT_PORT = 11100; //1050;
-    private static final long INTERVAL = 500;
-
-    private static Process tn;
+    
     private static CorbaHost host;
-
-    /**
-     * Spawn tnameserv under given port
-     * 
-     * @param port
-     * @return
-     * @throws IOException
-     */
-    private static Process spawnTnameserv(int port) throws IOException {
-        Process process = Runtime.getRuntime().exec("tnameserv -ORBInitialPort " + port);
-        for (int i = 0; i < 3; i++) {
-            try {
-                // Thread.sleep(SPAWN_TIME);
-                String[] args = {"-ORBInitialHost", LOCALHOST, "-ORBInitialPort", "" + port};
-                ORB orb = ORB.init(args, null);
-                orb.resolve_initial_references("NameService");
-                break;
-            } catch (Throwable e) {
-                try {
-                    Thread.sleep(INTERVAL);
-                } catch (InterruptedException e1) {
-                    // Ignore
-                }
-            }
-        }
-        return process;
-    }
-
-    /**
-     * Kill previously spawned tnameserv
-     * 
-     * @param p
-     */
-    private static void killProcess(Process p) {
-        if (p != null) {
-            p.destroy();
-        }
-    }
-
-    /*
-    @BeforeClass
-    public static void start() {
-        try {
-            tn = spawnTnameserv(DEFAULT_PORT);
-            host = new DefaultCorbaHost();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
-    @AfterClass
-    public static void stop() {
-        killProcess(tn);
-    }
-    */
 
     private static TransientNameServer server;
 

@@ -37,4 +37,8 @@ public interface CorbaBinding extends Binding {
     int getPort();
 
     void setPort(int port);
+    
+    String getId();
+    
+    void setId(String id);
 }

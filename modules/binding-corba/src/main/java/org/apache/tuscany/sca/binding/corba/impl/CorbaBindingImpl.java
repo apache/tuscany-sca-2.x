@@ -36,6 +36,7 @@ public class CorbaBindingImpl implements CorbaBinding, PolicySetAttachPoint {
     private String uri;
     private String host;
     private int port;
+    private String id;
 
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -113,6 +114,14 @@ public class CorbaBindingImpl implements CorbaBinding, PolicySetAttachPoint {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }
