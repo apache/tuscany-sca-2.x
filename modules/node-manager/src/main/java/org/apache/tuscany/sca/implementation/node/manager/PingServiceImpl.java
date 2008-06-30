@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.launcher;
+package org.apache.tuscany.sca.implementation.node.manager;
 
 import java.io.IOException;
 import java.util.logging.Logger;

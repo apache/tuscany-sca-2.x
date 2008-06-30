@@ -23,14 +23,14 @@
     name="NodeDaemon">
 
     <component name="NodeProcessCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.implementation.node.manager.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/node/processes" title="Log"/>
    		</service>
     </component>
 
     <component name="PingServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.PingServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.implementation.node.manager.PingServiceImpl"/>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/ping"/>
    		</service>
