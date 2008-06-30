@@ -229,6 +229,11 @@
                     <groupId>mx4j</groupId>
                     <artifactId>mx4j-remote</artifactId>
                 </exclusion>
+                <exclusion>
+                    <!-- exclude backport-util-concurrent-2.2.jar since we are using version 3.0 -->
+                    <groupId>backport-util-concurrent</groupId>
+                    <artifactId>backport-util-concurrent</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>  
     </dependencies>
