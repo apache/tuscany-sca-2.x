@@ -88,11 +88,13 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
     }
 
     public void setIds(String[] ids) {
-        if (ids != null) {
-            this.ids = ids;
-        } else {
-            this.ids = DEFAULT_IDS;
+        for (int i = 0; i < ids.length; i++) {
+            if (ids[i] == null || ids[i].length() == 0) {
+                this.ids = DEFAULT_IDS;
+                return;
+            }
         }
+        this.ids = ids;
     }
 
     public OutputStream _invoke(String method, InputStream in, ResponseHandler rh) {

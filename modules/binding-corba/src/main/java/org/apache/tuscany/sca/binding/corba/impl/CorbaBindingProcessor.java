@@ -80,6 +80,11 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
         if (uri != null) {
             binding.setURI(uri);
         }
+        // Read CORBA id
+        String id = reader.getAttributeValue(null, "id");
+        if (id != null) {
+            binding.setId(id);
+        }
         return binding;
     }
 
@@ -104,6 +109,10 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
 
         if (model.getPort() != -1) {
             writer.writeAttribute("port", String.valueOf(model.getPort()));
+        }
+        
+        if (model.getId() != null) {
+            writer.writeAttribute("id", model.getId());
         }
 
         writer.writeEndElement();

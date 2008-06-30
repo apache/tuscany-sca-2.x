@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.impl;
 
+import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -60,8 +61,10 @@ public class CorbaInvoker implements Invoker {
             }
             DynaCorbaResponse response = request.invoke();
             msg.setBody(response.getContent());
-        } catch (Exception e) {
+        } catch (RequestConfigurationException e) {
             throw new ServiceRuntimeException(e);
+        } catch (Exception e) {
+            msg.setFaultBody(e);
         }
         return msg;
     }

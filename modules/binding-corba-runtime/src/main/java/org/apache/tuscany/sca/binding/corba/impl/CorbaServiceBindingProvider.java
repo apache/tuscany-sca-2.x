@@ -59,6 +59,7 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
         try {
             this.orb = host.createORB(binding.getHost(), binding.getPort(), false);
             servant = new DynaCorbaServant(service, binding);
+            servant.setIds(new String[] {binding.getId()});
             host.registerServant(orb, binding.getName(), servant);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
