@@ -688,7 +688,7 @@
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.PolicyProviderFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/org.apache.tuscany.sca.definitions.SCADefinitionsProvider</resource>
+                                    <resource>META-INF/services/org.apache.tuscany.sca.provider.SCADefinitionsProvider</resource>
                                 </transformer>
                             </transformers>
                         </configuration>
