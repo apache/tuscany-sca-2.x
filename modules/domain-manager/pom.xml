@@ -153,13 +153,6 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-monitor-logging</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
