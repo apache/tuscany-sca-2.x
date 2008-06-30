@@ -29,21 +29,18 @@ import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * The service binding provider for the remote sca binding implementation. Relies on the 
@@ -65,33 +62,26 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     public Axis2SCAServiceBindingProvider(RuntimeComponent component,
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
-                                          ServletHost servletHost,
-                                          ModelFactoryExtensionPoint modelFactories,
-                                          Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames,
-                                          DataBindingExtensionPoint dataBindings) {
+                                          ExtensionPointRegistry extensionPoints,
+                                          Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
+        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
+        ServletHost servletHost = servletHosts.getServletHosts().get(0);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
-        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
 
         this.binding = binding.getSCABinding();
         wsBinding = modelFactories.getFactory(WebServiceBindingFactory.class).createWebServiceBinding();
-        
-        // Turn the java interface contract into a WSDL interface contract
-        InterfaceContract contract = service.getInterfaceContract();
-        if ((contract instanceof JavaInterfaceContract)) {
-            ModelResolver resolver = component instanceof ResolverExtension ?
-                                         ((ResolverExtension)component).getModelResolver() : null;
-            contract = Java2WSDLHelper.createWSDLInterfaceContract(
-                           (JavaInterfaceContract)contract, resolver, dataBindings, wsdlFactory, xsdFactory);
-        }
-        
-        // Set to use the Axiom data binding
-        contract.getInterface().resetDataBinding(OMElement.class.getName());
-        
-        wsBinding.setBindingInterfaceContract(contract);
-        wsBinding.setName(this.binding.getName()); 
+        wsBinding.setName(this.binding.getName());         
         wsBinding.setURI(this.binding.getURI());
+       
+        // Turn the java interface contract into a WSDL interface contract
+        BindingWSDLGenerator.generateWSDL(component, service, wsBinding, extensionPoints, null);
+
+        // Set to use the Axiom data binding
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
+        contract.getInterface().resetDataBinding(OMElement.class.getName());
         
         axisProvider = new Axis2SCAServiceProvider(component, 
                                                    service, 
@@ -100,9 +90,6 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                                    servletHost,
                                                    messageFactory,
                                                    policyHandlerClassnames);
-        
-        this.binding.setURI(wsBinding.getURI());      
-
     }
 
     public InterfaceContract getBindingInterfaceContract() {

@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -48,6 +49,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     private CompositeBuilder compositeServiceConfigurationBuilder;
     private CompositeBuilder compositePromotionBuilder;
     private CompositeBuilder compositePolicyBuilder;
+    private CompositeBuilder compositeServiceBindingBuilder;
+    private CompositeBuilder compositeReferenceBindingBuilder;
     
     /**
      * Constructs a new composite builder.
@@ -97,6 +100,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        compositeServiceBindingBuilder = new CompositeServiceBindingBuilderImpl(monitor);
+        compositeReferenceBindingBuilder = new CompositeReferenceBindingBuilderImpl(monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
@@ -115,6 +120,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         
         // Compute the policies across the model hierarchy
         compositePolicyBuilder.build(composite);
+
+        // Build service binding-related information
+        compositeServiceBindingBuilder.build(composite);
         
         // Wire the components
         componentWireBuilder.build(composite);
@@ -124,6 +132,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Wire the composite references
         compositeReferenceWireBuilder.build(composite);
+
+        // Build reference binding-related information
+        compositeReferenceBindingBuilder.build(composite);
         
         // Fuse nested composites
         //FIXME do this later

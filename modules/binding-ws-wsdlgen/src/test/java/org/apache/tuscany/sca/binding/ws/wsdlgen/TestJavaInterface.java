@@ -16,17 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.warning;
 
+package org.apache.tuscany.sca.binding.ws.wsdlgen;
+
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+
+import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * The Add service interface
+ *
+ * @version $Rev$ $Date$
  */
 @Remotable
-public interface AddService {
+@WebService
+public interface TestJavaInterface {
+    String m1(String str);
 
-    double add(double n1, double n2);
-    String getServiceName();
+    @OneWay
+    @WebMethod
+    void m2(int i);
 
+    @WebMethod
+    String m3();
+
+    void m4();
+
+    @WebMethod
+    String m5(String str, int i);
+
+    @WebMethod(exclude = true)
+    void dummy();
+
+    @WebMethod
+    void m6(TestJavaClass info) throws TestException;
+
+    @WebMethod
+    void m7(TestJavaClass info) throws TestFault;
 }

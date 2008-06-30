@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -71,6 +72,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private InterfaceContract bindingInterfaceContract;
     private Element endPointReference;
     private Definition generatedWSDLDocument;
+    private BindingBuilder builder;
     
     protected WebServiceBindingImpl() {
     }
@@ -281,6 +283,14 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
 
     public void setWSDLDocument(Definition definition) {
         this.generatedWSDLDocument = definition;
+    }
+
+    public BindingBuilder getBuilder() {
+        return builder;
+    }
+
+    public void setBuilder(BindingBuilder builder) {
+        this.builder = builder;
     }
 
     public void setPolicySets(List<PolicySet> policySets) {

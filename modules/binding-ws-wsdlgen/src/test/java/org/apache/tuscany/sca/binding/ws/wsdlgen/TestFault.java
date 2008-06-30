@@ -16,17 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.warning;
 
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.binding.ws.wsdlgen;
+
+import javax.xml.ws.WebFault;
 
 /**
- * The Add service interface
+ *
+ * @version $Rev$ $Date$
  */
-@Remotable
-public interface AddService {
+@WebFault(faultBean="org.apache.tuscany.sca.binding.ws.wsdlgen.TestFaultBean")
+public class TestFault extends Exception {
 
-    double add(double n1, double n2);
-    String getServiceName();
+    private TestFaultBean bean;
 
+    public TestFault(TestFaultBean bean, String message) {
+        super(message);
+        this.bean = bean;
+    }
+
+    public TestFault(TestFaultBean bean, String message, Throwable cause) {
+        super(message, cause);
+        this.bean = bean;
+    }
+
+    public TestFaultBean getFaultInfo() {
+        return bean;
+    }
 }

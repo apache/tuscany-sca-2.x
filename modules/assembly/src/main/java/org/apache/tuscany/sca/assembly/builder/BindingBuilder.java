@@ -16,17 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.warning;
 
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.assembly.builder;
+
+import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * The Add service interface
+ * A builder that handles any build-time configuration needed by bindings.
+ *
+ * @version $Rev$ $Date$
  */
-@Remotable
-public interface AddService {
-
-    double add(double n1, double n2);
-    String getServiceName();
-
+public interface BindingBuilder {
+    
+    /**
+     * Configure a binding.
+     * 
+     * @param component The component for the binding's service or reference
+     * @param contract The binding's service or reference
+     */
+    void build(Component component, AbstractContract contract, Binding binding, Monitor monitor);
+    
 }

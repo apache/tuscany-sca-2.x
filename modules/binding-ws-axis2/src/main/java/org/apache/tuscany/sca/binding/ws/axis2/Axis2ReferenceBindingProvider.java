@@ -24,22 +24,17 @@ import java.util.Map;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
@@ -55,50 +50,15 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
                                          DataBindingExtensionPoint dataBindings) {
 
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
-        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.wsBinding = wsBinding;
 
-        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
-        if (contract == null) {
-            contract = reference.getInterfaceContract().makeUnidirectional(false);
-            if (contract instanceof JavaInterfaceContract) {
-                ModelResolver resolver = component instanceof ResolverExtension ?
-                                             ((ResolverExtension)component).getModelResolver() : null;
-                contract = Java2WSDLHelper.createWSDLInterfaceContract(
-                                   (JavaInterfaceContract)contract,
-                                   Axis2ServiceBindingProvider.requiresSOAP12(wsBinding),
-                                   resolver,
-                                   dataBindings,
-                                   wsdlFactory,
-                                   xsdFactory);
-            }
-            wsBinding.setBindingInterfaceContract(contract);
-        }
-        
-        // TODO - fix up the conversational flag and operation sequences in case the contract has come from WSDL
-        // as we don't yet support requires="conversational" or sca:endConversation annotations
-        // in WSDL interface descriptions (see section 1.5.4 of the Assembly Specification V1.0)
-        if ( reference.getInterfaceContract().getInterface() != null && contract.getInterface() != null) {
-            contract.getInterface().setConversational(reference.getInterfaceContract().getInterface().isConversational());
-    
-            for (Operation operation : contract.getInterface().getOperations()){
-                Operation referenceOperation = null;
-                
-                for (Operation tmpOp : reference.getInterfaceContract().getInterface().getOperations()){
-                    if ( operation.getName().equals(tmpOp.getName())) {
-                        referenceOperation = tmpOp;
-                        break;
-                    }
-                }
-                
-                if (referenceOperation != null ){
-                    operation.setConversationSequence(referenceOperation.getConversationSequence());
-                }
-            }        
+        // A WSDL document should always be present in the binding
+        if (wsBinding.getWSDLDocument() == null) {
+            throw new ServiceRuntimeException("No WSDL document for " + component.getName() + "/" + reference.getName());
         }
 
         // Set to use the Axiom data binding
+        InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract.getInterface() != null) {
             contract.getInterface().resetDataBinding(OMElement.class.getName());
         }

@@ -47,6 +47,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -54,6 +56,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -66,6 +69,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
+    private ExtensionPointRegistry extensionPoints;
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
@@ -74,13 +78,19 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     private ConfiguredOperationProcessor configuredOperationProcessor;
     private Monitor monitor;
     
-    public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WebServiceBindingProcessor(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsFactory = new DefaultWebServiceBindingFactory();
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        this.monitor = monitor;
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        if (monitorFactory != null) {
+            this.monitor = monitorFactory.createMonitor();
+        }
         this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories, this.monitor);
     }
     
@@ -121,6 +131,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         bindingType.setUnresolved(true);
         ((PolicySetAttachPoint)wsBinding).setType(bindingType);*/
         wsBinding.setUnresolved(true);
+        wsBinding.setBuilder(new BindingBuilderImpl(extensionPoints));
 
         // Read policies
         policyProcessor.readPolicies(wsBinding, reader);

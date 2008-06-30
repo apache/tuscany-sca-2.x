@@ -825,7 +825,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 newComponentService.setName("$promoted$." + compositeService.getName());
                 promotedComponent.getServices().add(newComponentService);
                 newComponentService.setService(promotedService.getService());
-                newComponentService.getBindings().addAll(compositeService.getBindings());
+                 newComponentService.getBindings().addAll(compositeService.getBindings());
                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
                 if (compositeService.getInterfaceContract() != null && compositeService
                     .getInterfaceContract().getCallbackInterface() != null) {
@@ -891,7 +891,7 @@ public abstract class BaseConfigurationBuilderImpl {
                             newComponentService.setName("$promoted$." + componentService.getName());
                             promotedComponent.getServices().add(newComponentService);
                             newComponentService.setService(promotedService.getService());
-                            newComponentService.getBindings()
+                             newComponentService.getBindings()
                                 .addAll(componentService.getBindings());
                             newComponentService.setInterfaceContract(componentService
                                 .getInterfaceContract());
@@ -952,7 +952,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param compositeService
      * @return
      */
-    private static Component getPromotedComponent(CompositeService compositeService) {
+    protected static Component getPromotedComponent(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();

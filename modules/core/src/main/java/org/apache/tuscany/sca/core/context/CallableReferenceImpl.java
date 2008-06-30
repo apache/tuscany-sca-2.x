@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
@@ -343,6 +344,9 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         // contribution at runtime?
                         }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
+                }
+                if (binding instanceof BindingBuilderExtension) {
+                    ((BindingBuilderExtension)binding).getBuilder().build(component, reference, binding, null);
                 }
                 this.proxyFactory = compositeActivator.getProxyFactory();
             }

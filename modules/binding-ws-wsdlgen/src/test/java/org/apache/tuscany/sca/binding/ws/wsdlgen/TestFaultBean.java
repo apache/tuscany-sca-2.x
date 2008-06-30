@@ -16,17 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.warning;
 
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 /**
- * The Add service interface
+ *
+ * @version $Rev$ $Date$
  */
-@Remotable
-public interface AddService {
+public class TestFaultBean {
+    private String lastName;
+    private String firstName;
+    private float age;
 
-    double add(double n1, double n2);
-    String getServiceName();
+    public String getLastName() {
+        return lastName;
+    }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public float getAge() {
+        return age;
+    }
+
+    public void setAge(float age) {
+        this.age = age;
+    }
 }
