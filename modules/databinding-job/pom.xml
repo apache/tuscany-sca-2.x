@@ -48,9 +48,9 @@
         </dependency>
 	
         <dependency>
-            <groupId>stax</groupId>
+            <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
+            <version>1.0-2</version>
         </dependency>
 	
 	<dependency>
@@ -97,6 +97,12 @@
             <artifactId>wstx-asl</artifactId>
             <version>3.2.1</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

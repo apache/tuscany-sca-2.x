@@ -84,6 +84,12 @@
             <artifactId>wstx-asl</artifactId>
             <version>3.2.1</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
