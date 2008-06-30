@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.launcher;
+package org.apache.tuscany.sca.implementation.node.manager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -217,7 +217,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
         private void start() throws IOException {
 
             // Determine the node configuration URI
-            String nodeConfigurationURI = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
+            String nodeConfigurationURI = NodeManagerUtil.nodeConfigurationURI(nodeName);
             
             // Build the Java VM command line
             Properties props = System.getProperties();
