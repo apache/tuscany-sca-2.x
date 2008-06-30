@@ -23,12 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
@@ -45,33 +40,26 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class Axis2SCABindingProviderFactory implements BindingProviderFactory<DistributedSCABinding> {
     
-    private ModelFactoryExtensionPoint modelFactories;
-    private ServletHost servletHost;
+    private ExtensionPointRegistry extensionPoints;
     private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
-    private DataBindingExtensionPoint dataBindings;
 
     public Axis2SCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        servletHost = servletHosts.getServletHosts().get(0);
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.extensionPoints = extensionPoints;
         policyHandlerClassnames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
-        dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }    
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    DistributedSCABinding binding) {
         return new Axis2SCAReferenceBindingProvider(component, reference, binding,
-                                                    servletHost, modelFactories,
-                                                    policyHandlerClassnames, dataBindings);
+                                                    extensionPoints, policyHandlerClassnames);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                DistributedSCABinding binding) {
         return new Axis2SCAServiceBindingProvider(component, service, binding,
-                                                  servletHost, modelFactories,
-                                                  policyHandlerClassnames, dataBindings);
+                                                  extensionPoints, policyHandlerClassnames);
     }
 
     public Class<DistributedSCABinding> getModelType() {

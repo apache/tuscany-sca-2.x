@@ -34,7 +34,7 @@
     
     <component name="AddServiceComponent">
         <implementation.java class="calculator.warning.AddServiceImpl"/>
-        <service name="AddServiceImpl">
+        <service name="AddService">
             <binding.ws/>
         </service>
     </component>    

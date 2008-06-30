@@ -35,7 +35,7 @@
     </component>   
 
     <component name="AddServiceComponent_one">
-        <service name="AddService"/>
+        <service name="AddService_one"/>
         <implementation.java class="calculator.warning.AddServiceImpl"/>
     </component> 
 

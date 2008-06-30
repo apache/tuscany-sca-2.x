@@ -141,6 +141,8 @@ public class Axis2ServiceProvider {
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
+    private static final QName TRANSPORT_JMS_QUALIFIED_INTENT =
+        new QName("http://www.osoa.org/xmlns/sca/1.0", "transport.jms");
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
 
     //Schema element names
@@ -194,39 +196,66 @@ public class Axis2ServiceProvider {
 
         configContext.setContextRoot(servletHost.getContextPath());
 
-        /*
-        // Look at all the Web Service bindings of the SCA service to see if any
-        // of them have an existing generated WSDL definitions document.  If found,
-        // use it for this binding as well.  If not found, generate a new document.
-        Definition definition = null;
-        for (Binding binding : contract.getBindings()) {
-            if (binding instanceof WebServiceBinding) {
-                definition = ((WebServiceBinding)binding).getWSDLDocument();
-                if (definition != null) {
-                    wsBinding.setWSDLDocument(definition);
-                    break;
-                }
-            }
-        }
-        */
-        // The above code is disabled temporarily.  Instead, we only look
-        // for a WSDL definitions document in this binding and don't
-        // attempt to share the same document across multiple bindings.
-        Definition definition = wsBinding.getWSDLDocument();
-
-        // generate a WSDL definitions document if needed
-        if (definition == null) {
-            definition = Axis2WSDLHelper.configureWSDLDefinition(wsBinding, component, contract, servletHost);
-            wsBinding.setWSDLDocument(definition);
-        }
-
-        // The generated WSDL document maps ports to endpoint URLs.  Create a
-        // reverse map that eliminates duplicate ports for the same endpoint.
+        // Update port addresses with runtime information, and create a
+        // map from endpoint URIs to WSDL ports that eliminates duplicate
+        // ports for the same endpoint.
         for (Object port : wsBinding.getService().getPorts().values()) {
-            urlMap.put(getPortAddress((Port)port), (Port)port);
+            String portAddress = getPortAddress((Port)port);
+            String endpointURI = computeEndpointURI(portAddress, servletHost);
+            setPortAddress((Port)port, endpointURI);
+            urlMap.put(endpointURI, (Port)port);
         }
     }
-    
+
+    private String computeEndpointURI(String uri, ServletHost servletHost) {
+
+        if (uri == null) {
+            return null;
+        }
+
+        // pull out the binding intents to see what sort of transport is required
+        PolicySet transportJmsPolicySet = AxisPolicyHelper.getPolicySet(wsBinding, TRANSPORT_JMS_QUALIFIED_INTENT);
+        if (transportJmsPolicySet != null){
+            if (!uri.startsWith("jms:/")) {
+                uri = "jms:" + uri;
+            }
+            
+            // construct the rest of the URI based on the policy. All the details are put
+            // into the URI here rather than being place directly into the Axis configuration 
+            // as the Axis JMS sender relies on parsing the target URI      
+            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
+            for ( Object policy : transportJmsPolicySet.getPolicies() ) {
+                if ( policy instanceof Axis2ConfigParamPolicy ) {
+                    axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
+                    Iterator paramIterator = axis2ConfigParamPolicy.getParamElements().get(DEFAULT_QUEUE_CONNECTION_FACTORY).getChildElements();
+                    
+                    if (paramIterator.hasNext()){
+                        StringBuffer uriParams = new StringBuffer("?");
+                       
+                        while (paramIterator.hasNext()){
+                            OMElement parameter = (OMElement)paramIterator.next();
+                            uriParams.append(parameter.getAttributeValue(new QName("","name")));
+                            uriParams.append("=");
+                            uriParams.append(parameter.getText());
+                            
+                            if (paramIterator.hasNext()){
+                                uriParams.append("&");
+                            }
+                        }
+                        
+                        uri = uri + uriParams;
+                    }
+                }
+            }                     
+        } else {
+            if (!uri.startsWith("jms:")) {
+                uri = servletHost.getURLMapping(uri).toString();
+            }
+        }
+
+        return uri;
+    }
+
     public void start() {
 
         try {

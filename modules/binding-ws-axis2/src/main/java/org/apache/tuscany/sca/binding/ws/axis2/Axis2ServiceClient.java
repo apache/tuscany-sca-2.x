@@ -116,16 +116,6 @@ public class Axis2ServiceClient {
         this.contract = contract;
         this.wsBinding = wsBinding;
         this.policyHandlerClassnames = policyHandlerClassnames;
-        Definition definition = wsBinding.getWSDLDocument();
-        if (definition != null) {
-            // Can happen if a self-reference.  Reuse the service's WSDL configuration.
-            // In theory this is just a useful optimization but in practice I found
-            // it was needed to make the JUnit test for the helloworld-ws-service-jms
-            // sample run.
-        } else {
-            definition = Axis2WSDLHelper.configureWSDLDefinition(wsBinding, component, contract, servletHost);
-            wsBinding.setWSDLDocument(definition);
-        }
     }
 
     protected void start() {

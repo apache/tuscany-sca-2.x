@@ -16,17 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.warning;
 
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 /**
- * The Add service interface
+ *
+ * @version $Rev$ $Date$
  */
-@Remotable
-public interface AddService {
-
-    double add(double n1, double n2);
-    String getServiceName();
-
+public class TestJavaClass {
+    public String name;
+    public int number;
+    public float balance;
 }
