@@ -46,6 +46,7 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.Value;
 
 import org.apache.tuscany.sca.databinding.saxon.SaxonDataBindingHelper;
+import org.apache.tuscany.sca.databinding.saxon.collection.ItemList;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -106,10 +107,7 @@ public class XQueryInvoker implements Invoker {
      *    object be attached in some way to the invocation request?
      * 5. All parameters, reference proxies and property values are mapped
      *    to external variables of the XQuery script
-     * 6. The query is executed and the result is returned depending on its type
-     *    (i.e. it could be either a node NodeInfo or Value object). Currently
-     *    no collections are supported, i.e. if there is more then one element
-     *    in the result only the first one will be returned
+     * 6. The query is executed and all the results are stored in a ItemList object
      *    
      *    NOTE: During execution of the XQuery a static variable is set with
      *    the current configuration. This variable is used by the NodeInfo transformers
@@ -169,15 +167,33 @@ public class XQueryInvoker implements Invoker {
         } finally {
             SaxonDataBindingHelper.CURR_EXECUTING_CONFIG = oldConfigValue;
         }
+        
+        ItemList list = new ItemList();
         Item item = iterator.next();
-        if (item == null) {
+               
+        while (item != null) {
+        	list.add(item);
+        	item = iterator.next();
+        	
+        }
+        
+        if (list.size() == 0) {
             return null;
+            
+        } else if (list.size() == 1) {
+        
+        	item = list.iterator().next();
+        	
+        	if (item instanceof NodeInfo) {
+                return item;
+            } else {
+                return Value.asValue(item);
+            }
+        	
         }
-        if (item instanceof NodeInfo) {
-            return item;
-        } else {
-            return Value.asValue(item);
-        }
+        
+        return list;
+        
     }
 
     public Message invoke(Message msg) {
