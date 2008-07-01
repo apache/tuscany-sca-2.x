@@ -126,4 +126,8 @@ public class WidgetImplementation implements Implementation {
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }    
+    
+    public String toString() {
+        return "Widget : " + getLocation(); 
+    }
 }
