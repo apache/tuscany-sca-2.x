@@ -26,169 +26,155 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>Apache Tuscany SCDL4J</name>
-    <artifactId>tuscany-scdl4j</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>tuscany-api</artifactId>
+    <name>Apache Tuscany SCA API</name>
 
     <dependencies>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-assembly</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-assembly-xsd</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-definitions</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-definitions-xml</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-interface</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-policy</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-policy-xml</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-xsd</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-
-  <!-- extensions -->
-
- <!--
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-atom</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-corba</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-ejb</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
--->
-
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-interface-java</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-interface-java-xml</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-interface-java-jaxws</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-
-  <!-- dependencies to keep in the shaded pom.xml -->
-
-        <dependency>
-            <groupId>javax.xml.stream</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0-2</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-            <version>3.2.1</version>
-            <scope>runtime</scope>
-        </dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-extensibility</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-definitions</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-definitions-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-assembly-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-binding-sca</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-binding-sca-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-contribution-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-policy-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-core-databinding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-assembly-xsd</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-policy-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-endpoint</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
 
     </dependencies>
 
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
+
             <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <!-- promoteTransitiveDependencies>true</promoteTransitiveDependencies -->
-              <!-- shadedArtifactAttached>true</shadedArtifactAttached -->
-              <artifactSet>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedGroupFilter>org.apache.tuscany.sca</shadedGroupFilter>
+
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createSourcesJar>${createSourcesJar}</createSourcesJar>
+                            <promoteTransitiveDependencies>false</promoteTransitiveDependencies>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+
+              <!-- artifactSet>
+                 <includes>
+                     <include>org.apache.tuscany.sca:sca-api</include>
+                 </includes>
                  <excludes>
-                     <exclude>javax.xml.stream:stax-api</exclude>
-                     <exclude>stax:stax-api</exclude>
-                     <exclude>com.sun.xml.bind:jaxb-impl</exclude>
-                     <exclude>xml-apis:xml-apis</exclude>
-                     <exclude>javax.jws:jsr181-api</exclude>
-                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                     <exclude>org.jvnet.jaxb.reflection:jaxb2-reflection</exclude>
-                     <exclude>org.codehaus.woodstox:wstx-asl</exclude>
-                     <exclude>asm:asm-all</exclude>
-                     <exclude>javax.annotation:jsr250-api</exclude>
-                     <exclude>javax.activation:activation</exclude>
-                     <exclude>cglib:cglib-nodep</exclude>
-                     <exclude>javax.xml.ws:jaxws-api</exclude>
-                     <exclude>javax.xml.soap:saaj-api</exclude>
-                     <exclude>org.apache.geronimo.specs:geronimo-commonj_1.1_spec</exclude>
-                     <exclude>org.apache.ws.commons.schema:XmlSchema</exclude>
+                     <exclude>org.apache.tuscany.sca:extensibility</exclude>
                  </excludes>
-              </artifactSet>
-            <filters>
+              </artifactSet -->
+
+                            <filters>
               <filter>
-                <artifact>org.apache.tuscany.sca:tuscany-interface-java-jaxws</artifact>
+                <artifact>org.apache.tuscany.sca:tuscany-host-embedded</artifact>
                 <excludes>
-                   <exclude>com/example/**</exclude>
+                   <exclude>org/apache/tuscany/sca/host/embedded/impl/**</exclude>
                 </excludes>
               </filter>
-              <filter>
-                <artifact>org.apache.tuscany.sca:tuscany-databinding-jaxb</artifact>
-                <excludes>
-                   <exclude>com/example/**</exclude>
-                </excludes>
-              </filter>
-            </filters>
-              <transformers>
+                                <filter>
+                                    <artifact>${project.groupId}:${project.artifactId}</artifact>
+
+                                    <excludes>
+                                        <exclude>org/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.assembly.AssemblyFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.assembly.SCABindingFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.AtomBindingFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.RSSBindingFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.atom.AtomBindingFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.rss.RSSBindingFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.http.HTTPResourceBindingFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.contribution.ContributionFactory</resource>
@@ -278,6 +264,9 @@
                                     <resource>META-INF/services/org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.provider.BindingProviderFactory</resource>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
@@ -304,10 +293,10 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.definitions.SCADefinitionsProvider</resource>
                                 </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
