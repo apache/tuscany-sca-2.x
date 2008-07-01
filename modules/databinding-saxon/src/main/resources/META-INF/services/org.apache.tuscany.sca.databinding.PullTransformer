@@ -24,3 +24,9 @@ org.apache.tuscany.sca.databinding.saxon.SimpleType2ValueTransformer;source=java
 org.apache.tuscany.sca.databinding.saxon.Value2SimpleTypeTransformer;source=net.sf.saxon.value.Value,target=java:simpleType,weight=80000
 org.apache.tuscany.sca.databinding.saxon.NodeInfo2DataObjectTransformer;source=net.sf.saxon.om.NodeInfo,target=commonj.sdo.DataObject,weight=1000
 org.apache.tuscany.sca.databinding.saxon.DataObject2NodeInfoTransformer;source=commonj.sdo.DataObject,target=net.sf.saxon.om.NodeInfo,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=net.sf.saxon.om.NodeInfo,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=net.sf.saxon.value.Value,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=commonj.sdo.DataObject,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:complex,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:simple,weight=1000
+org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:array,weight=1000
