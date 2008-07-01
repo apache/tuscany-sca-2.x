@@ -28,13 +28,6 @@
     <artifactId>tuscany-binding-jms</artifactId>
     <name>Apache Tuscany SCA JMS Binding Extension</name>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
-
     <dependencies>
             
         <dependency>
