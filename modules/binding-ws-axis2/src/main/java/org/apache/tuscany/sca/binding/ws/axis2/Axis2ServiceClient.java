@@ -82,7 +82,6 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl.WSDLDefinitionGenerator;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
