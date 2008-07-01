@@ -189,7 +189,6 @@ public class BindingWSDLGenerator {
         DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
-        System.out.println("$$createWSDLDocument: wsBinding " + wsBinding);
 
         if (contract.getInterfaceContract() == null) {
             // can happen if incorrect component service name
@@ -198,12 +197,10 @@ public class BindingWSDLGenerator {
 
         InterfaceContract icontract = wsBinding.getBindingInterfaceContract();
         if (icontract == null) {
-            System.out.println("$$null bindingInterfaceContract: wsBinding " + wsBinding);
             icontract = contract.getInterfaceContract().makeUnidirectional(false);
             if (icontract instanceof JavaInterfaceContract) {
                 ModelResolver resolver = component instanceof ResolverExtension ?
                                              ((ResolverExtension)component).getModelResolver() : null;
-                System.out.println("$$calling createWSDLInterfaceContract(): wsBinding " + wsBinding);
                 icontract = createWSDLInterfaceContract(
                                     (JavaInterfaceContract)icontract,
                                     requiresSOAP12(wsBinding),
@@ -212,7 +209,6 @@ public class BindingWSDLGenerator {
                                     wsdlFactory,
                                     xsdFactory,
                                     monitor);
-                System.out.println("$$returned from createWSDLInterfaceContract(): wsBinding " + wsBinding);
             } else {
                 try {
                     //TUSCANY-2316 Cloning the Interface Contract to avoid overriding data binding information 
@@ -220,11 +216,6 @@ public class BindingWSDLGenerator {
                 } catch (Exception e) {
                     //ignore
                 }
-            }
-            System.out.println("$$calling setBindingInterfaceContract(): wsBinding " + wsBinding);
-            System.out.println("$$icontract: " + icontract);
-            if (icontract.getInterface() instanceof WSDLInterface) {
-                System.out.println("$$wsdlDefinition: " + ((WSDLInterface)icontract.getInterface()).getWsdlDefinition());
             }
             wsBinding.setBindingInterfaceContract(icontract);
         }
