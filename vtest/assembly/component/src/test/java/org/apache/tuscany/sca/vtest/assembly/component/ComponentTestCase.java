@@ -31,30 +31,8 @@ import org.junit.Test;
  */
 public class ComponentTestCase {
 
-    protected static String compositeName = "component.composite";
-    protected static AService aService = null;
-
-    @BeforeClass
-    public static void init() throws Exception {
-        try {
-            System.out.println("Setting up");
-            ServiceFinder.init(compositeName);
-            aService = ServiceFinder.getService(AService.class, "AComponent/AService");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @AfterClass
-    public static void destroy() throws Exception {
-
-        System.out.println("Cleaning up");
-        ServiceFinder.cleanup();
-
-    }
-
     /**
-     * Lines 92-94:
+     * Lines 92-96:
      * <p>
      * Components are configured instances of implementations. Components
      * provide and consume services. More than one component can use and
@@ -62,9 +40,27 @@ public class ComponentTestCase {
      * implementation differently.
      */
     @Test
-    public void component1() throws Exception {
-        Assert.assertEquals("some b component value", aService.getBProperty());
-        Assert.assertEquals("some b2 component value", aService.getB2Property());
+    public void components1() throws Exception {
+        System.out.println("Setting up");
+        ServiceFinder.init("component.composite");
+        AService service = ServiceFinder.getService(AService.class, "AComponent/AService");
+        Assert.assertEquals("some b component value", service.getBProperty());
+        Assert.assertEquals("some b2 component value", service.getB2Property());
+        System.out.println("Cleaning up");
+        ServiceFinder.cleanup();
+    }
+
+    /**
+     * Lines 96-97:
+     * <p>
+     * There can be zero or more component elements within a composite.
+     */
+    @Test
+    public void components2() throws Exception {
+        System.out.println("Setting up");
+        ServiceFinder.init("zerocomponents.composite");
+        System.out.println("Cleaning up");
+        ServiceFinder.cleanup();
     }
 
 }
