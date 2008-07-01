@@ -72,6 +72,7 @@
                 <module>binding-sca-xml</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
+                <module>binding-ws-wsdlgen</module>
                 <module>binding-ws-xml</module>
                 <module>contribution</module>
                 <module>contribution-groovy</module>
