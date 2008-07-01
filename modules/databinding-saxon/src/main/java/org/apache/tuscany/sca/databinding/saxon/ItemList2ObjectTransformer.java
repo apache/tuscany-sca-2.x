@@ -34,22 +34,22 @@ import org.apache.tuscany.sca.databinding.saxon.collection.ItemList;
 /**
  * Transforms each object contained in the ItemList object.
  * 
- * If the object type is the same as the target type, it is not transformed.
+ * 	If the object type is the same as the target type, it is not transformed.
  * 
- * If the object is a NodeInfo, it's transformed to a DataObject.
+ * 	If the object is a NodeInfo, it's transformed to a DataObject.
  * 
- * If the object is a Value, it's transformed to a Java object.
+ * 	If the object is a Value, it's transformed to a Java object.
  * 
  * If the target type is not an array, the first transformed object is returned.
  * 
- * If the first transformed object type is not a target type, then a
- * TransformException is thrown
+ * 	If the first transformed object type is not a target type, then a
+ * 	TransformException is thrown
  * 
  * If the target type is an array, a array of this type is created containing
  * all transformed objects and it is returned
  * 
- * If any transformed object is not a target type, then a TransformException is
- * thrown
+ * 	If any transformed object is not a target type, then a TransformException is
+ * 	thrown
  * 
  * @version $Rev: 659284 $ $Date: 2008-05-22 14:26:18 -0800 (Thu, 22 May 2008) $
  */
