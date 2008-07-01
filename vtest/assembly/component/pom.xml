@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-vtest</artifactId>
+        <artifactId>vtest-assembly</artifactId>
         <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>vtest-assembly</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Assembly Verification Tests</name>
+    <artifactId>vtest-assembly-component</artifactId>
+
+    <name>Apache Tuscany SCA Assembly Verification Tests - Component</name>
 
     <dependencies>
         <dependency>
@@ -43,27 +43,7 @@
             <scope>runtime</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>vtest-utilities</artifactId>
-            <version>1.4-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
 
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>ctypefile</module>
-                <module>component</module>
-           </modules>
-        </profile>
-    </profiles>
 
 </project>
