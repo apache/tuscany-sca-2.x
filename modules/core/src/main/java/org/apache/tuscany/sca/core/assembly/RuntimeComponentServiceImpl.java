@@ -155,4 +155,8 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     public List<PolicyProvider> getPolicyProviders(Binding binding) {
         return policyProviders.get(binding);
     }
+    
+    public String toString() {
+        return getName();
+    }
 }
