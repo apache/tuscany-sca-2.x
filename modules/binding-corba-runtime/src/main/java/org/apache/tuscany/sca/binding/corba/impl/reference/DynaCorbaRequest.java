@@ -45,16 +45,15 @@ public class DynaCorbaRequest {
     private TypeTree returnTree;
     private Map<String, TypeTree> exceptions = new HashMap<String, TypeTree>();
     private OutputStream outputStream;
+    private InputStream inputStream;
     private ObjectImpl remoteObject;
     private String operation;
 
     /**
      * Creates request.
      * 
-     * @param ObjectremoteObject
-     *            remote object reference
-     * @param operation
-     *            operation to invoke
+     * @param ObjectremoteObject remote object reference
+     * @param operation operation to invoke
      */
     public DynaCorbaRequest(Object remoteObject, String operation) {
         outputStream = ((ObjectImpl)remoteObject)._request(operation, true);
@@ -96,8 +95,7 @@ public class DynaCorbaRequest {
     /**
      * Handles application excpeition.
      * 
-     * @param ae
-     *            occured exception
+     * @param ae occured exception
      * @throws Exception
      */
     private void handleApplicationException(ApplicationException ae) throws Exception {
@@ -150,11 +148,10 @@ public class DynaCorbaRequest {
      */
     public DynaCorbaResponse invoke() throws Exception {
         DynaCorbaResponse response = new DynaCorbaResponse();
-        InputStream is = null;
         try {
-            is = remoteObject._invoke(outputStream);
-            if (is != null && returnTree != null) {
-                response.setContent(TypeHelpersProxy.read(returnTree.getRootNode(), is));
+            inputStream = remoteObject._invoke(outputStream);
+            if (inputStream != null && returnTree != null) {
+                response.setContent(TypeHelpersProxy.read(returnTree.getRootNode(), inputStream));
             }
         } catch (ApplicationException ae) {
             handleApplicationException(ae);
@@ -162,8 +159,14 @@ public class DynaCorbaRequest {
             handleSystemException(se);
         } catch (Exception e) {
             throw e;
+        } finally {
+            release();
         }
         return response;
+    }
+    
+    public void release() {
+        remoteObject._releaseReply(inputStream);
     }
 
 }

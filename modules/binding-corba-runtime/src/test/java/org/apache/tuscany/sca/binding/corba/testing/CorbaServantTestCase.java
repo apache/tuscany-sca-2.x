@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.corba.testing;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 
 import junit.framework.Assert;
@@ -71,48 +70,14 @@ import org.omg.CosNaming.NamingContextHelper;
 
 public class CorbaServantTestCase {
 
-    private static Process process;
     private static ORB orb;
-
-    /**
-     * Spawns tnamserv an initiates ORB
-     */
-    // @BeforeClass
-    public static void setUp() throws IOException {
-        String[] args = {"-ORBInitialPort", "" + TestConstants.DEFAULT_PORT};
-        process = Runtime.getRuntime().exec("tnameserv " + args[0] + " " + args[1]);
-        try {
-            // let the tnameserv have time to start
-            Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
-            orb = ORB.init(args, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Kills tnameserv
-     */
-    // @BeforeClass
-    public static void tearDown() {
-        try {
-            if (process != null) {
-                process.destroy();
-            }
-            // let the tnameserv have time to die
-            Thread.sleep(TestConstants.TNAMESERV_SPAWN_WAIT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private static TransientNameServer server;
 
     @BeforeClass
     public static void start() {
         try {
             server =
-                new TransientNameServer(TestConstants.DEFAULT_HOST, TestConstants.DEFAULT_PORT,
+                new TransientNameServer(TestConstants.TEST2_HOST, TestConstants.TEST2_PORT,
                                         TransientNameService.DEFAULT_SERVICE_NAME);
             Thread t = server.start();
             if (t == null) {
@@ -321,6 +286,7 @@ public class CorbaServantTestCase {
             DynaCorbaRequest request =
                 new DynaCorbaRequest(bindReference("TestObject"), "methodThatSurelyDoesNotExist");
             request.invoke();
+            fail();
         } catch (Exception e) {
             if (e instanceof CorbaException) {
                 assertTrue(true);

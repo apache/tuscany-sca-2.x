@@ -23,6 +23,9 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
+import java.net.ConnectException;
+import java.net.Socket;
+
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.jdk.DefaultCorbaHost;
@@ -83,6 +86,9 @@ public class DefaultCorbaHostTestCase {
             assertEquals(2, ref.getInt(2));
 
             host.unregisterServant(orb, "Test");
+
+            //register servant once again to check if previous name was released 
+            host.registerServant(orb, "Test", servant);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -194,6 +200,25 @@ public class DefaultCorbaHostTestCase {
         } catch (Exception e) {
             e.printStackTrace();
             fail();
+        }
+    }
+    
+    @Test
+    // @Ignore("Fix stopping ORB")
+    public void test_ensureORBStopped() {
+        try {
+            int innerORBPort = 11102;
+            TransientNameServer innerServer = new TransientNameServer(LOCALHOST, innerORBPort, TransientNameService.DEFAULT_SERVICE_NAME);
+            innerServer.start();
+            innerServer.stop();
+            new Socket(LOCALHOST, innerORBPort);
+            fail();
+        } catch (Exception e) {
+            if (e instanceof ConnectException) {
+                assertTrue(true);    
+            } else {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -23,6 +23,7 @@
 package org.apache.tuscany.sca.host.corba.naming;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.omg.CORBA.ORB;
@@ -170,8 +171,24 @@ public class TransientNameService {
     public void destroy() {
         // only destroy this if we created the orb instance.
         if (createdOrb != null) {
-            createdOrb.shutdown(true);
+            createdOrb.shutdown(false);
             createdOrb.destroy();
+            
+            try {
+                // This is a workaround to close the sockets for SUN ORB
+                Method m = createdOrb.getClass().getMethod("getTransportManager");
+                Object tm = m.invoke(createdOrb);
+                m = tm.getClass().getMethod("close");
+                m.invoke(tm);
+                m = tm.getClass().getMethod("getAcceptors");
+                Collection acceptors = (Collection) m.invoke(tm);
+                for(Object a: acceptors) {
+                    m = a.getClass().getMethod("close");
+                    m.invoke(a);
+                }
+            } catch (Throwable e) {
+                // Ignore
+            }
             createdOrb = null;
         }
     }

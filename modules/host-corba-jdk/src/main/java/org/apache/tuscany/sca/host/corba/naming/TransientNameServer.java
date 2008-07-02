@@ -60,7 +60,7 @@ public class TransientNameServer {
                 orb.run();
             }
         };
-        // t.setDaemon(true);
+        t.setDaemon(true);
         t.start();
         checkState();
         return t.isAlive() ? t : null;
