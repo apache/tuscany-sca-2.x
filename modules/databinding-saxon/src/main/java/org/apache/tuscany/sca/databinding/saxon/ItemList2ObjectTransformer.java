@@ -53,106 +53,101 @@ import org.apache.tuscany.sca.databinding.saxon.collection.ItemList;
  * 
  * @version $Rev: 659284 $ $Date: 2008-05-22 14:26:18 -0800 (Thu, 22 May 2008) $
  */
-public class ItemList2ObjectTransformer extends
-		BaseTransformer<ItemList, Object> implements
-		PullTransformer<ItemList, Object> {
+public class ItemList2ObjectTransformer extends BaseTransformer<ItemList, Object> implements
+    PullTransformer<ItemList, Object> {
 
-	private NodeInfo2DataObjectTransformer nodeInfo2DataObjectTransformer = new NodeInfo2DataObjectTransformer();
+    private NodeInfo2DataObjectTransformer nodeInfo2DataObjectTransformer = new NodeInfo2DataObjectTransformer();
 
-	public ItemList2ObjectTransformer() {
-	}
+    public ItemList2ObjectTransformer() {
+    }
 
-	@Override
-	protected Class<ItemList> getSourceType() {
-		return ItemList.class;
-	}
+    @Override
+    protected Class<ItemList> getSourceType() {
+        return ItemList.class;
+    }
 
-	@Override
-	protected Class<Object> getTargetType() {
-		return Object.class;
-	}
+    @Override
+    protected Class<Object> getTargetType() {
+        return Object.class;
+    }
 
-	@Override
-	public int getWeight() {
-		return 30 + nodeInfo2DataObjectTransformer.getWeight();
-	}
+    @Override
+    public int getWeight() {
+        return 30 + nodeInfo2DataObjectTransformer.getWeight();
+    }
 
-	public Object transform(ItemList source, TransformationContext context) {
+    public Object transform(ItemList source, TransformationContext context) {
 
-		if (source.size() == 0) {
-			return null;
-		}
+        if (source.size() == 0) {
+            return null;
+        }
 
-		Class<?> targetType = context.getTargetDataType().getPhysical();
+        Class<?> targetType = context.getTargetDataType().getPhysical();
 
-		if (targetType.isArray()) {
-			int i = 0;
-			Class<?> componentClass = targetType.getComponentType();
-			Object[] result = (Object[]) Array.newInstance(componentClass,
-					source.size());
+        if (targetType.isArray()) {
+            int i = 0;
+            Class<?> componentClass = targetType.getComponentType();
+            Object[] result = (Object[])Array.newInstance(componentClass, source.size());
 
-			try {
+            try {
 
-				if (componentClass.isAssignableFrom(NodeInfo.class)
-						|| componentClass.isAssignableFrom(Value.class)) {
+                if (componentClass.isAssignableFrom(NodeInfo.class) || componentClass.isAssignableFrom(Value.class)) {
 
-					for (Item item : source) {
-						result[i++] = item;
-					}
+                    for (Item item : source) {
+                        result[i++] = item;
+                    }
 
-				} else {
+                } else {
 
-					for (Item item : source) {
+                    for (Item item : source) {
 
-						if (item instanceof NodeInfo) {
-							result[i] = nodeInfo2DataObjectTransformer
-									.transform((NodeInfo) item, context);
+                        if (item instanceof NodeInfo) {
+                            result[i] = nodeInfo2DataObjectTransformer.transform((NodeInfo)item, context);
 
-						} else if (item instanceof Value) {
-							result[i] = Value.convertToJava(item);
+                        } else if (item instanceof Value) {
+                            result[i] = Value.convert(item);
 
-						} else {
-							result[i] = item;
-						}
+                        } else {
+                            result[i] = item;
+                        }
 
-						i++;
+                        i++;
 
-					}
+                    }
 
-				}
+                }
 
-			} catch (ArrayStoreException ex) {
-				throw new TransformationException(ex);
+            } catch (ArrayStoreException ex) {
+                throw new TransformationException(ex);
 
-			} catch (XPathException ex) {
-				throw new TransformationException(ex);
-			}
+            } catch (XPathException ex) {
+                throw new TransformationException(ex);
+            }
 
-			return result;
+            return result;
 
-		} else {
-			Item item = source.iterator().next();
+        } else {
+            Item item = source.iterator().next();
 
-			if (item.getClass().isAssignableFrom(targetType)) {
-				return item;
+            if (item.getClass().isAssignableFrom(targetType)) {
+                return item;
 
-			} else if (item instanceof NodeInfo) {
-				return nodeInfo2DataObjectTransformer.transform(
-						(NodeInfo) item, context);
+            } else if (item instanceof NodeInfo) {
+                return nodeInfo2DataObjectTransformer.transform((NodeInfo)item, context);
 
-			} else {
+            } else {
 
-				try {
-					return Value.convertToJava(item);
+                try {
+                    return Value.convert(item);
 
-				} catch (XPathException e) {
-					throw new TransformationException(e);
-				}
+                } catch (XPathException e) {
+                    throw new TransformationException(e);
+                }
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
 }
