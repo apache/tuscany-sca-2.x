@@ -41,6 +41,7 @@
     <module>sdogen</module>
     <module>jaxbgen</module>
     <module>jaxb-bottom-up</module>
+    <module>jaxb-top-down</module>
     <module>interop</module>
   </modules>
 </project>
