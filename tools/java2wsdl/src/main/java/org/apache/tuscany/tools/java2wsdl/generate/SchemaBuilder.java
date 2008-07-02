@@ -554,14 +554,19 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
         this.elementFormDefault = elementFormDefault;
     }
 
-
+    private static String getPackageName(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        return index == -1 ? "" : name.substring(0, index);
+    }
+    
     /**
      * Recognize the pattern of generated SDO type names vs. SDO factory names.
      * E.g. SDO class:   test.sca.w2j.gen.Company will be associated with 
      *      SDO factory: test.sca.w2j.gen.GenFactory
      */
     private void detectAndRegisterFactory(Class sdoClass) {
-        String pkgName = sdoClass.getPackage().getName();
+        String pkgName = getPackageName(sdoClass);
 
         // Find last segment, e.g. from 'test.sca.w2j.gen' produce 'gen'.
         int lastDot = pkgName.lastIndexOf('.');

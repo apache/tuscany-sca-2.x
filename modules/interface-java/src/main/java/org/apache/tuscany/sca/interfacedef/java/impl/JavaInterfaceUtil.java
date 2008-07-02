@@ -147,13 +147,19 @@ public final class JavaInterfaceUtil {
 
     }
     
+    private static String getPackageName(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        return index == -1 ? "" : name.substring(0, index);
+    }
+
     public static String getNamespace(Class<?> cls) {
-        Package pkg = cls.getPackage();
-        if (pkg == null) {
+        String packageName = getPackageName(cls);
+        if ("".equals(packageName)) {
             return "";
         }
         StringBuffer ns = new StringBuffer("http://");
-        String[] names = pkg.getName().split("\\.");
+        String[] names = packageName.split("\\.");
         for (int i = names.length - 1; i >= 0; i--) {
             ns.append(names[i]);
             if (i != 0) {

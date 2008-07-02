@@ -188,7 +188,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     requestWrapper == null ? operationName : getValue(requestWrapper.localName(), operationName);
                 String wrapperBeanName = requestWrapper == null ? "" : requestWrapper.className();
                 if ("".equals(wrapperBeanName)) {
-                    wrapperBeanName = clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName());
+                    wrapperBeanName = CodeGenerationHelper.getPackagePrefix(clazz) + capitalize(method.getName());
                 }
 
                 DataType<XMLType> inputWrapperDT = null;
@@ -222,7 +222,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 wrapperBeanName = responseWrapper == null ? "" : responseWrapper.className();
                 if ("".equals(wrapperBeanName)) {
                     wrapperBeanName =
-                        clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName()) + "Response";
+                        CodeGenerationHelper.getPackagePrefix(clazz) + capitalize(method.getName()) + "Response";
                 }
 
                 DataType<XMLType> outputWrapperDT = null;
