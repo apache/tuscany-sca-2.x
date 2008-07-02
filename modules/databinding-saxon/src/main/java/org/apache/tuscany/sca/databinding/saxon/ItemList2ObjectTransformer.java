@@ -109,7 +109,7 @@ public class ItemList2ObjectTransformer extends
 									.transform((NodeInfo) item, context);
 
 						} else if (item instanceof Value) {
-							result[i] = Value.convert(item);
+							result[i] = Value.convertToJava(item);
 
 						} else {
 							result[i] = item;
@@ -143,7 +143,7 @@ public class ItemList2ObjectTransformer extends
 			} else {
 
 				try {
-					return Value.convert(item);
+					return Value.convertToJava(item);
 
 				} catch (XPathException e) {
 					throw new TransformationException(e);

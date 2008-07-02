@@ -30,3 +30,5 @@ org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.a
 org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:complex,weight=1000
 org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:simple,weight=1000
 org.apache.tuscany.sca.databinding.saxon.ItemList2ObjectTransformer;source=org.apache.tuscany.sca.databinding.saxon.collection.ItemList,target=java:array,weight=1000
+org.apache.tuscany.sca.databinding.saxon.NodeInfo2JavaArrayTransformer;source=net.sf.saxon.om.NodeInfo,target=java:array,weight=1000
+org.apache.tuscany.sca.databinding.saxon.Value2JavaArrayTransformer;source=net.sf.saxon.value.Value,target=java:array,weight=1000
