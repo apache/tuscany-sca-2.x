@@ -261,5 +261,20 @@ public class CodeGenerationHelper {
         return Opcodes.ARETURN;
 
     }
+    
+    /**
+     * Get the package prefix for generated JAXWS artifacts
+     * @param cls
+     * @return
+     */
+    public static String getPackagePrefix(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        if (index == -1) {
+            return "jaxws.";
+        } else {
+            return name.substring(0, index) + ".jaxws.";
+        }
+    }
 
 }

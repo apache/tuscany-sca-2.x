@@ -550,7 +550,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         String EOL = System.getProperty("line.separator");
 
         String interfaceName = interfaceClass.getName();
-        String packageName = interfaceClass.getPackage().getName();
+        String packageName = getPackageName(interfaceClass);
         String bundleName = "dummy.sca." + packageName;
 
         String manifestStr = "Manifest-Version: 1.0" + EOL
@@ -645,6 +645,11 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             return exp.getExportingBundle();
     }
     
+    private static String getPackageName(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        return index == -1 ? "" : name.substring(0, index);
+    }
     
     private Bundle installDummyBundle(Class<?> interfaceClass)
             throws Exception {
@@ -660,7 +665,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         ArrayList<Class<?>> dummyClasses = new ArrayList<Class<?>>();
         
         String interfaceName = interfaceClass.getName();
-        String packageName = interfaceClass.getPackage().getName();
+        String packageName = getPackageName(interfaceClass);
         String bundleName = "dummy.sca." + interfaceName;
         
         

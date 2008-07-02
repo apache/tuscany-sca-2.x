@@ -68,7 +68,7 @@ public final class JavaIntrospectionHelper {
 
     private static void checkInvalidAnnotations(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
-            if ("org.osoa.sca.annotations".equals(a.annotationType().getPackage().getName())) {
+            if (a.annotationType().getName().startsWith("org.osoa.sca.annotations.")) {
                 logger.warning("Invalid annotation " + a + " is found on " + element);
             }
         }

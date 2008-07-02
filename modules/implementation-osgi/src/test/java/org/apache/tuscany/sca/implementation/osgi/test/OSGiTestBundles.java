@@ -36,6 +36,11 @@ import java.util.zip.ZipEntry;
  * @version $Rev$ $Date$
  */
 public class OSGiTestBundles {
+    private static String getPackageName(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        return index == -1 ? "" : name.substring(0, index);
+    }
     
     public static void createBundle(String jarName,
             Class<?> interfaceClass, Class<?> implClass) throws Exception {
@@ -44,7 +49,7 @@ public class OSGiTestBundles {
 
         String EOL = System.getProperty("line.separator");
         
-        String packageName = interfaceClass.getPackage().getName();
+        String packageName = getPackageName(interfaceClass);
         String bundleName = interfaceClass.getName();
 
         String manifestStr = "Manifest-Version: 1.0" + EOL

@@ -150,17 +150,25 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
         public String getValue() {
             return getStringValue(value);
         }
+        
+        private static String getPackageName(Class<?> cls) {
+            String name = cls.getName();
+            int index = name.lastIndexOf('.');
+            return index == -1 ? "" : name.substring(0, index);
+        }
 
         public static QName getName(Class<?> cls) {
             if (cls == null) {
                 return null;
             }
-            Package pkg = cls.getPackage();
-            if (pkg == null) {
+
+            String packageName = getPackageName(cls);
+
+            if ("".equals(packageName)) {
                 return new QName("", cls.getSimpleName());
             }
             StringBuffer ns = new StringBuffer("http://");
-            String[] names = pkg.getName().split("\\.");
+            String[] names = packageName.split("\\.");
             for (int i = names.length - 1; i >= 0; i--) {
                 ns.append(names[i]);
                 if (i != 0) {

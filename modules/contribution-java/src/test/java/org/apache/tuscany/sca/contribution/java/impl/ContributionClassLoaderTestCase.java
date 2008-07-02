@@ -134,6 +134,11 @@ public class ContributionClassLoaderTestCase  {
         
     }
     
+    private static String getPackageName(Class<?> cls) {
+        String name = cls.getName();
+        int index = name.lastIndexOf('.');
+        return index == -1 ? "" : name.substring(0, index);
+    }
 
     @Test
     public void testClassLoadingFromImportedContribution() throws ClassNotFoundException, MalformedURLException {
@@ -146,7 +151,7 @@ public class ContributionClassLoaderTestCase  {
         exportContribList.add(contribC);
         
         JavaImport import_ = javaImportExportFactory.createJavaImport();
-        import_.setPackage(this.getClass().getPackage().getName());
+        import_.setPackage(getPackageName(getClass()));
         import_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import_);
         import_ = javaImportExportFactory.createJavaImport();
@@ -155,7 +160,7 @@ public class ContributionClassLoaderTestCase  {
         contribB.getImports().add(import_);
         
         JavaExport export = javaImportExportFactory.createJavaExport();
-        export.setPackage(this.getClass().getPackage().getName());
+        export.setPackage(getPackageName(getClass()));
         contribA.getExports().add(export);
         export = javaImportExportFactory.createJavaExport();
         export.setPackage("calculator");
@@ -197,7 +202,7 @@ public class ContributionClassLoaderTestCase  {
         
         // Try to load non-existent class from imported package - should throw ClassNotFoundException
         try {
-            contribB.getClassLoader().loadClass(this.getClass().getPackage().getName() + ".NonExistentClass");
+            contribB.getClassLoader().loadClass(getPackageName(getClass()) + ".NonExistentClass");
             
             Assert.assertTrue("ClassNotFoundException not thrown as expected", false);
             
@@ -218,7 +223,7 @@ public class ContributionClassLoaderTestCase  {
         exportContribList.add(contribC);
         
         JavaImport import_ = javaImportExportFactory.createJavaImport();
-        import_.setPackage(this.getClass().getPackage().getName());
+        import_.setPackage(getPackageName(getClass()));
         import_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import_);
         JavaImport import1_ = javaImportExportFactory.createJavaImport();
@@ -227,7 +232,7 @@ public class ContributionClassLoaderTestCase  {
         contribB.getImports().add(import1_);
         
         JavaExport export = javaImportExportFactory.createJavaExport();
-        export.setPackage(this.getClass().getPackage().getName());
+        export.setPackage(getPackageName(getClass()));
         contribA.getExports().add(export);
         JavaExport export1 = javaImportExportFactory.createJavaExport();
         export1.setPackage("calculator");

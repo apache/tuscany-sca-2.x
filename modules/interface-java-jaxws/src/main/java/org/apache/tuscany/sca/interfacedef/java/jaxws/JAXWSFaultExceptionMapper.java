@@ -293,7 +293,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         }
 
         if (faultBean == null) {
-            final String faultBeanClassName = cls.getPackage().getName() + ".jaxws." + cls.getSimpleName() + "Bean";
+            final String faultBeanClassName = CodeGenerationHelper.getPackagePrefix(cls) + cls.getSimpleName() + "Bean";
             final QName qname = faultName;
             faultType = AccessController.doPrivileged(new PrivilegedAction<DataType<XMLType>>() {
                 public DataType<XMLType> run() {
