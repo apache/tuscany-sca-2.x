@@ -49,8 +49,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     private CompositeBuilder compositeServiceConfigurationBuilder;
     private CompositeBuilder compositePromotionBuilder;
     private CompositeBuilder compositePolicyBuilder;
+    private CompositeBuilder componentServiceBindingBuilder;
     private CompositeBuilder compositeServiceBindingBuilder;
-    private CompositeBuilder compositeReferenceBindingBuilder;
+    private CompositeBuilder componentReferenceBindingBuilder;
     
     /**
      * Constructs a new composite builder.
@@ -100,8 +101,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(monitor);
         compositeServiceBindingBuilder = new CompositeServiceBindingBuilderImpl(monitor);
-        compositeReferenceBindingBuilder = new CompositeReferenceBindingBuilderImpl(monitor);
+        componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
@@ -121,7 +123,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Compute the policies across the model hierarchy
         compositePolicyBuilder.build(composite);
 
-        // Build service binding-related information
+        // Build component service binding-related information
+        componentServiceBindingBuilder.build(composite);
+
+        // Build composite service binding-related information
         compositeServiceBindingBuilder.build(composite);
         
         // Wire the components
@@ -133,8 +138,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Wire the composite references
         compositeReferenceWireBuilder.build(composite);
 
-        // Build reference binding-related information
-        compositeReferenceBindingBuilder.build(composite);
+        // Build component reference binding-related information
+        componentReferenceBindingBuilder.build(composite);
         
         // Fuse nested composites
         //FIXME do this later

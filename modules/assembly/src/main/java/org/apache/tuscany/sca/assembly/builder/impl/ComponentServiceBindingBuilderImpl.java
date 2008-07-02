@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -32,37 +32,37 @@ import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that performs any additional building steps that
- * reference bindings may need.  Used for WSDL generation.
+ * component service bindings may need.  Used for WSDL generation.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceBindingBuilderImpl implements CompositeBuilder {
+public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
     private Monitor monitor;
 
-    public CompositeReferenceBindingBuilderImpl(Monitor monitor) {
+    public ComponentServiceBindingBuilderImpl(Monitor monitor) {
         this.monitor = monitor;
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
-        buildReferenceBindings(composite);
+        buildServiceBindings(composite);
     }
     
-    private void buildReferenceBindings(Composite composite) {
+    private void buildServiceBindings(Composite composite) {
         
         // build bindings recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildReferenceBindings((Composite)implementation);
+                buildServiceBindings((Composite)implementation);
             }
         }
-    
-        // find all the component reference bindings     
+
+        // find all the component service bindings     
         for (Component component : composite.getComponents()) {
-            for (ComponentReference componentReference : component.getReferences()) {
-                for (Binding binding : componentReference.getBindings()) {
+            for (ComponentService componentService : component.getServices()) {
+                for (Binding binding : componentService.getBindings()) {
                     if (binding instanceof BindingBuilderExtension) {
-                        ((BindingBuilderExtension)binding).getBuilder().build(component, componentReference, binding, monitor);
+                        ((BindingBuilderExtension)binding).getBuilder().build(component, componentService, binding, monitor);
                     }
                 }
             }
