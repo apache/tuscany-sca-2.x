@@ -20,11 +20,11 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>parent</artifactId>
-        <version>3-SNAPSHOT</version>
-        <relativePath>../pom/parent/pom.xml</relativePath>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>4</version>
     </parent>
+
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-sca</artifactId>
     <packaging>pom</packaging>
@@ -37,6 +37,19 @@
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
         <url>http://svn.apache.org/repos/asf/tuscany/java/sca</url>
     </scm>
+
+    <prerequisites>
+        <maven>2.0.6</maven>
+    </prerequisites>
+
+    <properties>
+        <notice.dir>.</notice.dir>
+    </properties>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/TUSCANY</url>
+    </issueManagement>
 
     <repositories>
        <repository>
@@ -75,6 +88,57 @@
             <url>http://ftp.osuosl.org/pub/eclipse/tools/emf/maven2</url>
         </repository>        
     </repositories>
+
+    <pluginRepositories>
+        <!-- Apache Incubator repository for artifacts released by Incubator projects -->
+        <pluginRepository>
+            <id>apache.incubator</id>
+            <name>Apache Incubator Repository</name>
+            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- Apache SNAPSHOT repository for unreleased artifacts -->
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <name>Apache SNAPSHOT Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- Codehaus SNAPSHOT repository -->
+        <pluginRepository>
+            <id>codehaus-snapshot</id>
+            <name>Codehaus Snapshot Repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>apache.releases</id>
+            <name>Apache Release Distribution Repository</name>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>apache.snapshots</id>
+            <name>Apache Development Snapshot Repository</name>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <profiles>
         <profile>
@@ -142,6 +206,9 @@
 
         <profile>
             <id>eclipse</id>
+            <properties>
+                <notice.dir>src/main/resources</notice.dir>
+            </properties>
             <modules>
                 <module>modules</module>
                 <module>tools</module>
@@ -216,6 +283,34 @@
                 </plugins>         
             </build>
         </profile>
+
+        <!-- profile for verifying source code correctness -->
+        <profile>
+            <id>sourcecheck</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>1.5</source>
+                            <target>1.5</target>
+                            <showDeprecation>true</showDeprecation>
+                            <compilerArgument>-Xlint:unchecked,deprecation,fallthrough,finally</compilerArgument>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
  
 
