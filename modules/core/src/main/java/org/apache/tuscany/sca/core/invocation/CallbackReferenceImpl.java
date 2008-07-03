@@ -225,11 +225,8 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 
         // Get the target Component and Service from the URI
         final String uri = in.readUTF();
-        final String[] splitURI = super.splitComponentURI(uri);
-        final String componentURI = splitURI[0];
-        final String serviceName = splitURI[1];
-        final Component targetComponent = super.resolveComponentURI(componentURI);
-        final ComponentService targetService = super.resolveService(serviceName, targetComponent);
+        final Component targetComponent = super.resolveComponentURI(uri);
+        final ComponentService targetService = super.resolveServiceURI(uri, targetComponent);
         final InterfaceContract targetServiceIfaceContract = targetService.getInterfaceContract();
 
         // Re-create the resolved Endpoint
