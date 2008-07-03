@@ -1,0 +1,1155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+
+<!-- $Rev$ $Date$ -->
+
+<wsdl:definitions name="StandardTypesService"
+	targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+	xmlns:tns="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+	xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:types>
+		<xs:schema targetNamespace="http://jaxb.dev.java.net/array"
+			version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:complexType final="#all" name="anyTypeArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:anyType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="base64BinaryArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:base64Binary" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema targetNamespace="http://jaxb.dev.java.net/array"
+			version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:complexType final="#all" name="dateTimeArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:dateTime" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="durationArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:duration" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="integerArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:integer" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="anySimpleTypeArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:anySimpleType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="QNameArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:QName" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="decimalArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:decimal" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType final="#all" name="base64BinaryArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:base64Binary" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType final="#all" name="stringArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="item" nillable="true" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema attributeFormDefault="qualified"
+			elementFormDefault="unqualified"
+			targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+			xmlns:ns0="http://activation.javax/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="getNewBigDecimalArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:decimal" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewImageArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigDecimal">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:decimal" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewURIArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewObjectArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:anyType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDataHandler">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDateResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigInteger">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:integer" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDateArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigIntegerArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:integer" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewQNameArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:QName" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewURIResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewUUIDArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewCalendarArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewXMLGregorianCalendarArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:anySimpleType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewCalendarResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewCalendar">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewCalendarArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewImageArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewObjectResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:anyType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDurationArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:duration" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element
+				name="getNewXMLGregorianCalendarArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:anySimpleType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewSource">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewObjectArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:anyType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewUUIDResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigIntegerResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:integer" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewQNameArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:QName" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewUUIDArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigDecimalResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:decimal" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDateArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewURIArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDurationArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:duration" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewObject">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:anyType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDataHandlerResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewQName">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:QName" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDate">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:dateTime" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewUUID">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewXMLGregorianCalendarResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:anySimpleType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigIntegerArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:integer" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewSourceArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewImage">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewSourceArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewXMLGregorianCalendar">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:anySimpleType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewQNameResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:QName" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDataHandlerArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewBigDecimalArrayResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="return" nillable="true" type="xs:decimal" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDuration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:duration" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDataHandlerArray">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" minOccurs="0"
+							name="arg0" nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewImageResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewSourceResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:base64Binary" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewDurationResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="return"
+							nillable="true" type="xs:duration" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getNewURI">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="arg0"
+							nillable="true" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="getNewBigDecimalArray">
+		<wsdl:part name="getNewBigDecimalArray"
+			element="tns:getNewBigDecimalArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewImageArrayResponse">
+
+		<wsdl:part name="getNewImageArrayResponse"
+			element="tns:getNewImageArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigDecimal">
+		<wsdl:part name="getNewBigDecimal"
+			element="tns:getNewBigDecimal">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewURIArray">
+		<wsdl:part name="getNewURIArray" element="tns:getNewURIArray">
+
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewObjectArray">
+		<wsdl:part name="getNewObjectArray"
+			element="tns:getNewObjectArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDataHandler">
+		<wsdl:part name="getNewDataHandler"
+			element="tns:getNewDataHandler">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDateResponse">
+		<wsdl:part name="getNewDateResponse"
+			element="tns:getNewDateResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigInteger">
+		<wsdl:part name="getNewBigInteger"
+			element="tns:getNewBigInteger">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDateArrayResponse">
+		<wsdl:part name="getNewDateArrayResponse"
+			element="tns:getNewDateArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigIntegerArray">
+		<wsdl:part name="getNewBigIntegerArray"
+			element="tns:getNewBigIntegerArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewQNameArrayResponse">
+		<wsdl:part name="getNewQNameArrayResponse"
+			element="tns:getNewQNameArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewURIResponse">
+		<wsdl:part name="getNewURIResponse"
+			element="tns:getNewURIResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewUUIDArrayResponse">
+		<wsdl:part name="getNewUUIDArrayResponse"
+			element="tns:getNewUUIDArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewCalendarArrayResponse">
+		<wsdl:part name="getNewCalendarArrayResponse"
+			element="tns:getNewCalendarArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewXMLGregorianCalendarArray">
+		<wsdl:part name="getNewXMLGregorianCalendarArray"
+			element="tns:getNewXMLGregorianCalendarArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewCalendarResponse">
+		<wsdl:part name="getNewCalendarResponse"
+			element="tns:getNewCalendarResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewCalendar">
+		<wsdl:part name="getNewCalendar" element="tns:getNewCalendar">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewCalendarArray">
+		<wsdl:part name="getNewCalendarArray"
+			element="tns:getNewCalendarArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewImageArray">
+		<wsdl:part name="getNewImageArray"
+			element="tns:getNewImageArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewObjectResponse">
+		<wsdl:part name="getNewObjectResponse"
+			element="tns:getNewObjectResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDurationArray">
+		<wsdl:part name="getNewDurationArray"
+			element="tns:getNewDurationArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewXMLGregorianCalendarArrayResponse">
+		<wsdl:part name="getNewXMLGregorianCalendarArrayResponse"
+			element="tns:getNewXMLGregorianCalendarArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewSource">
+		<wsdl:part name="getNewSource" element="tns:getNewSource">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewObjectArrayResponse">
+		<wsdl:part name="getNewObjectArrayResponse"
+			element="tns:getNewObjectArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewUUIDResponse">
+		<wsdl:part name="getNewUUIDResponse"
+			element="tns:getNewUUIDResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigIntegerResponse">
+		<wsdl:part name="getNewBigIntegerResponse"
+			element="tns:getNewBigIntegerResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewQNameArray">
+		<wsdl:part name="getNewQNameArray"
+			element="tns:getNewQNameArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewUUIDArray">
+		<wsdl:part name="getNewUUIDArray"
+			element="tns:getNewUUIDArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigDecimalResponse">
+		<wsdl:part name="getNewBigDecimalResponse"
+			element="tns:getNewBigDecimalResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDateArray">
+		<wsdl:part name="getNewDateArray"
+			element="tns:getNewDateArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewURIArrayResponse">
+		<wsdl:part name="getNewURIArrayResponse"
+			element="tns:getNewURIArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDurationArrayResponse">
+		<wsdl:part name="getNewDurationArrayResponse"
+			element="tns:getNewDurationArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewObject">
+		<wsdl:part name="getNewObject" element="tns:getNewObject">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDataHandlerResponse">
+		<wsdl:part name="getNewDataHandlerResponse"
+			element="tns:getNewDataHandlerResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewQName">
+		<wsdl:part name="getNewQName" element="tns:getNewQName">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDate">
+		<wsdl:part name="getNewDate" element="tns:getNewDate">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewUUID">
+		<wsdl:part name="getNewUUID" element="tns:getNewUUID">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewXMLGregorianCalendarResponse">
+		<wsdl:part name="getNewXMLGregorianCalendarResponse"
+			element="tns:getNewXMLGregorianCalendarResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigIntegerArrayResponse">
+		<wsdl:part name="getNewBigIntegerArrayResponse"
+			element="tns:getNewBigIntegerArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewSourceArray">
+		<wsdl:part name="getNewSourceArray"
+			element="tns:getNewSourceArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewImage">
+		<wsdl:part name="getNewImage" element="tns:getNewImage">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewSourceArrayResponse">
+		<wsdl:part name="getNewSourceArrayResponse"
+			element="tns:getNewSourceArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewXMLGregorianCalendar">
+		<wsdl:part name="getNewXMLGregorianCalendar"
+			element="tns:getNewXMLGregorianCalendar">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewQNameResponse">
+		<wsdl:part name="getNewQNameResponse"
+			element="tns:getNewQNameResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDataHandlerArrayResponse">
+		<wsdl:part name="getNewDataHandlerArrayResponse"
+			element="tns:getNewDataHandlerArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewBigDecimalArrayResponse">
+		<wsdl:part name="getNewBigDecimalArrayResponse"
+			element="tns:getNewBigDecimalArrayResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDuration">
+		<wsdl:part name="getNewDuration" element="tns:getNewDuration">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDataHandlerArray">
+		<wsdl:part name="getNewDataHandlerArray"
+			element="tns:getNewDataHandlerArray">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewImageResponse">
+		<wsdl:part name="getNewImageResponse"
+			element="tns:getNewImageResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewSourceResponse">
+		<wsdl:part name="getNewSourceResponse"
+			element="tns:getNewSourceResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewDurationResponse">
+		<wsdl:part name="getNewDurationResponse"
+			element="tns:getNewDurationResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getNewURI">
+		<wsdl:part name="getNewURI" element="tns:getNewURI"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="StandardTypesService">
+		<wsdl:operation name="getNewObject">
+			<wsdl:input message="tns:getNewObject"></wsdl:input>
+			<wsdl:output message="tns:getNewObjectResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewImage">
+			<wsdl:input message="tns:getNewImage"></wsdl:input>
+			<wsdl:output message="tns:getNewImageResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewSource">
+			<wsdl:input message="tns:getNewSource"></wsdl:input>
+			<wsdl:output message="tns:getNewSourceResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigInteger">
+			<wsdl:input message="tns:getNewBigInteger"></wsdl:input>
+			<wsdl:output message="tns:getNewBigIntegerResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigIntegerArray">
+			<wsdl:input message="tns:getNewBigIntegerArray">
+			</wsdl:input>
+			<wsdl:output message="tns:getNewBigIntegerArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigDecimal">
+			<wsdl:input message="tns:getNewBigDecimal"></wsdl:input>
+			<wsdl:output message="tns:getNewBigDecimalResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigDecimalArray">
+			<wsdl:input message="tns:getNewBigDecimalArray">
+			</wsdl:input>
+			<wsdl:output message="tns:getNewBigDecimalArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewCalendar">
+			<wsdl:input message="tns:getNewCalendar"></wsdl:input>
+			<wsdl:output message="tns:getNewCalendarResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewCalendarArray">
+			<wsdl:input message="tns:getNewCalendarArray"></wsdl:input>
+			<wsdl:output message="tns:getNewCalendarArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDate">
+			<wsdl:input message="tns:getNewDate"></wsdl:input>
+			<wsdl:output message="tns:getNewDateResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDateArray">
+			<wsdl:input message="tns:getNewDateArray"></wsdl:input>
+			<wsdl:output message="tns:getNewDateArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewQName">
+			<wsdl:input message="tns:getNewQName"></wsdl:input>
+			<wsdl:output message="tns:getNewQNameResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewQNameArray">
+			<wsdl:input message="tns:getNewQNameArray"></wsdl:input>
+			<wsdl:output message="tns:getNewQNameArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewURI">
+			<wsdl:input message="tns:getNewURI"></wsdl:input>
+			<wsdl:output message="tns:getNewURIResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewURIArray">
+			<wsdl:input message="tns:getNewURIArray"></wsdl:input>
+			<wsdl:output message="tns:getNewURIArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewXMLGregorianCalendar">
+			<wsdl:input message="tns:getNewXMLGregorianCalendar">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:getNewXMLGregorianCalendarResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewXMLGregorianCalendarArray">
+			<wsdl:input message="tns:getNewXMLGregorianCalendarArray">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:getNewXMLGregorianCalendarArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDuration">
+			<wsdl:input message="tns:getNewDuration"></wsdl:input>
+			<wsdl:output message="tns:getNewDurationResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDurationArray">
+			<wsdl:input message="tns:getNewDurationArray"></wsdl:input>
+			<wsdl:output message="tns:getNewDurationArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewObjectArray">
+			<wsdl:input message="tns:getNewObjectArray"></wsdl:input>
+			<wsdl:output message="tns:getNewObjectArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewImageArray">
+			<wsdl:input message="tns:getNewImageArray"></wsdl:input>
+			<wsdl:output message="tns:getNewImageArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDataHandler">
+			<wsdl:input message="tns:getNewDataHandler"></wsdl:input>
+			<wsdl:output message="tns:getNewDataHandlerResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDataHandlerArray">
+			<wsdl:input message="tns:getNewDataHandlerArray">
+			</wsdl:input>
+			<wsdl:output message="tns:getNewDataHandlerArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewSourceArray">
+			<wsdl:input message="tns:getNewSourceArray"></wsdl:input>
+			<wsdl:output message="tns:getNewSourceArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewUUID">
+			<wsdl:input message="tns:getNewUUID"></wsdl:input>
+			<wsdl:output message="tns:getNewUUIDResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewUUIDArray">
+			<wsdl:input message="tns:getNewUUIDArray"></wsdl:input>
+			<wsdl:output message="tns:getNewUUIDArrayResponse">
+			</wsdl:output>
+		</wsdl:operation>
+
+	</wsdl:portType>
+	<wsdl:binding name="StandardTypesServiceBinding"
+		type="tns:StandardTypesService">
+		<soap11:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getNewObject">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewImage">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewSource">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigInteger">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigIntegerArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigDecimal">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewBigDecimalArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewCalendar">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewCalendarArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDate">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDateArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewQName">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewQNameArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewURI">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewURIArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewXMLGregorianCalendar">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewXMLGregorianCalendarArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDuration">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDurationArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewObjectArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewImageArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDataHandler">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewDataHandlerArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewSourceArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewUUID">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getNewUUIDArray">
+			<soap11:operation />
+			<wsdl:input>
+				<soap11:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap11:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="StandardTypesServiceService">
+		<wsdl:port name="StandardTypesServicePort"
+			binding="tns:StandardTypesServiceBinding">
+			<soap11:address location="http://localhost:8085/sts-ep"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
