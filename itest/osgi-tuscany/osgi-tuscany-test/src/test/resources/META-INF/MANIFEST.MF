@@ -10,7 +10,5 @@ Import-Package: org.osgi.framework,
   org.apache.tuscany.sca.host.embedded,
   org.osoa.sca,
   org.osoa.sca.annotations,
-  org.apache.tuscany.sca.databinding.annotation,
-  org.apache.tuscany.sca.domain,
-  org.apache.tuscany.sca.node
+  org.apache.tuscany.sca.databinding.annotation
 DynamicImport-Package: *

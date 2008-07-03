@@ -42,19 +42,13 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.main</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.felix</groupId>
@@ -66,7 +60,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.2</version>
         </dependency>
 
 End Felix dependencies -->

@@ -96,7 +96,7 @@ public class ServiceDiscovery {
      * @return set of service declarations
      * @throws IOException
      */
-    public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
+    public synchronized Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
 
         Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
 
@@ -126,7 +126,7 @@ public class ServiceDiscovery {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public Class<?> loadFirstServiceClass(Class<?> serviceInterface) throws IOException, ClassNotFoundException {
+    public synchronized Class<?> loadFirstServiceClass(Class<?> serviceInterface) throws IOException, ClassNotFoundException {
 
         Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
 
@@ -151,7 +151,7 @@ public class ServiceDiscovery {
      * @return Table of URLs with associated ClassLoaders
      * @throws IOException
      */
-    public Hashtable<ClassLoader, Set<URL>> getServiceResources(final String name) throws IOException {
+    public synchronized Hashtable<ClassLoader, Set<URL>> getServiceResources(final String name) throws IOException {
 
         Hashtable<ClassLoader, Set<URL>> resourceTable = new Hashtable<ClassLoader, Set<URL>>();
 
