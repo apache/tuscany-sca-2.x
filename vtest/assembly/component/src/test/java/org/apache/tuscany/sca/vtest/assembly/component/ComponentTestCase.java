@@ -24,7 +24,7 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osoa.sca.ConversationEndedException;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  *
@@ -75,7 +75,7 @@ public class ComponentTestCase {
      * name (required) – the name of the component. The name must be unique
      * across all the components in the composite.
      */
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ServiceRuntimeException.class)
     @Ignore("TUSCANY-2455")
     public void components3() throws Exception {
         initDomain("nonuniquename.composite");
