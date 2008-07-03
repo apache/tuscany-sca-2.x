@@ -368,7 +368,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             }
         } catch (Exception e) {
             // e.printStackTrace();
-            throw new IOException(e.getMessage());
+            throw new IOException(e.toString());
         }
     }
 
