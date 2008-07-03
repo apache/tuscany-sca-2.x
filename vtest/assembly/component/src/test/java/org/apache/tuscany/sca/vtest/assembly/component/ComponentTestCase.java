@@ -22,14 +22,24 @@ package org.apache.tuscany.sca.vtest.assembly.component;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.osoa.sca.ConversationEndedException;
 
 /**
  *
  */
 public class ComponentTestCase {
+
+    private void initDomain(String compositePath) {
+        System.out.println("Setting up");
+        ServiceFinder.init(compositePath);
+    }
+
+    private void cleanupDomain() {
+        System.out.println("Cleaning up");
+        ServiceFinder.cleanup();
+    }
 
     /**
      * Lines 92-96:
@@ -41,13 +51,11 @@ public class ComponentTestCase {
      */
     @Test
     public void components1() throws Exception {
-        System.out.println("Setting up");
-        ServiceFinder.init("component.composite");
+        initDomain("component.composite");
         AService service = ServiceFinder.getService(AService.class, "AComponent/AService");
         Assert.assertEquals("some b component value", service.getBProperty());
         Assert.assertEquals("some b2 component value", service.getB2Property());
-        System.out.println("Cleaning up");
-        ServiceFinder.cleanup();
+        cleanupDomain();
     }
 
     /**
@@ -57,10 +65,21 @@ public class ComponentTestCase {
      */
     @Test
     public void components2() throws Exception {
-        System.out.println("Setting up");
-        ServiceFinder.init("zerocomponents.composite");
-        System.out.println("Cleaning up");
-        ServiceFinder.cleanup();
+        initDomain("zerocomponents.composite");
+        cleanupDomain();
+    }
+
+    /**
+     * Lines 142-143:
+     * <p>
+     * name (required) – the name of the component. The name must be unique
+     * across all the components in the composite.
+     */
+    @Test(expected = RuntimeException.class)
+    @Ignore("TUSCANY-2455")
+    public void components3() throws Exception {
+        initDomain("nonuniquename.composite");
+        cleanupDomain();
     }
 
 }
