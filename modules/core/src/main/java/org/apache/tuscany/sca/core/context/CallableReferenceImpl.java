@@ -292,16 +292,12 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof OptimizableBinding) {
-                        // Split up the URI
-                        final String[] splitURI = splitComponentURI(binding.getURI());
-                        final String componentURI = splitURI[0];
-                        final String serviceName = splitURI[1];
-                        
                         // Resolve the Component
-                        final Component targetComponent = resolveComponentURI(componentURI);
+                        final String bindingURI = binding.getURI();
+                        final Component targetComponent = resolveComponentURI(bindingURI);
                         
                         // Find the Service
-                        final ComponentService targetService = resolveService(serviceName, targetComponent);
+                        final ComponentService targetService = resolveServiceURI(bindingURI, targetComponent);
 
                         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
                         optimizableBinding.setTargetComponent(targetComponent);
@@ -480,50 +476,62 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     /**
      * Resolves the specified URI to a Component using the compositeActivator.
+     * There are two cases that we need to handle:
+     * <ul>
+     * <li>URI containing just Composite name(s) (i.e. no Service name specified)
+     * <li>URI containing Composite name(s) and a Service Name
+     * </ul>
      * 
      * @param componentURI The URI of the Component to resolve
      * @return The Component for the specified URI or null if not founds
      */
     protected Component resolveComponentURI(String componentURI) {
-        final String[] splitUri = splitComponentURI(componentURI);
-        return compositeActivator.resolve(splitUri[0]);
-    }
-
-    /**
-     * This method will split the specified URI into the Component URI
-     * and Service Name.
-     * 
-     * @param componentURI The URI to split
-     * @return [0] = Component URI [1] = ServiceName
-     */
-    protected String[] splitComponentURI(String componentURI) {
-        final String[] result = new String[2];
-
+        // If the URI has come from a binding, it may well start with a '/'. We will need
+        // to remove this so we can match it to the composite names.
         if (componentURI.startsWith("/")) {
             componentURI = componentURI.substring(1);
         }
-        final int index = componentURI.lastIndexOf('/');
-        String serviceName = "";
-        if (index > -1) {
-            serviceName = componentURI.substring(index + 1);
-            componentURI = componentURI.substring(0, index);
+
+        // First assume that we are dealing with a Component URI without a Service Name
+        Component component = compositeActivator.resolve(componentURI);
+        if (component != null) {
+            return component;
         }
 
-        // Return the results
-        result[0] = componentURI;
-        result[1] = serviceName;
-        return result;
+        // Perhaps we have a ComponentURI that has a ServiceName on the end of it
+        final int index = componentURI.lastIndexOf('/');
+        if (index > -1) {
+            componentURI = componentURI.substring(0, index);
+            return compositeActivator.resolve(componentURI);
+        }
+
+        // We could not resolve the Component URI
+        return null;
     }
 
     /**
      * Examines the Services on the specified Component and returns the Service that matches the
-     * specified name.
+     * specified Binding URI.
      * 
-     * @param serviceName The name of the Service to resolve on the Component
+     * @param bindingURI The Binding URI to resolve on the Component
      * @param targetComponent The Component containing the Services
      * @return The Service with the specified serviceName or null if no such Service found.
      */
-    protected ComponentService resolveService(String serviceName, Component targetComponent) {
+    protected ComponentService resolveServiceURI(String bindingURI, Component targetComponent) {
+        if (bindingURI.startsWith("/")) {
+            bindingURI = bindingURI.substring(1);
+        }
+
+        final String componentURI = targetComponent.getURI();
+        final String serviceName;
+        if (componentURI.equals(bindingURI)) {
+            // No service specified
+            serviceName = "";
+        } else {
+            // Get the Service name from the Binding URI
+            serviceName = bindingURI.substring(componentURI.length() + 1);
+        }
+
         ComponentService targetService = null;
         if (targetComponent != null) {
             if ("".equals(serviceName)) {
