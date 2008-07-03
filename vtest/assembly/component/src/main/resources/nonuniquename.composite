@@ -28,6 +28,6 @@
 
     <component name="AComponent">
 	    <implementation.java class="org.apache.tuscany.sca.vtest.assembly.component.impl.BServiceImpl"/>
-     </component>
+    </component>
     
 </composite>
