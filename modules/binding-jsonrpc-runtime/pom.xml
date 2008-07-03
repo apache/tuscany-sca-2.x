@@ -146,8 +146,15 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jsonrpc.runtime</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.jsonrpc*</Export-Package>
-                        <Import-Package>org.apache.tuscany.sca.assembly.xml,*</Import-Package>
+                        <Export-Package>
+                            !org.apache.tuscany.sca.binding.jsonrpc,
+                            org.apache.tuscany.sca.binding.jsonrpc*
+                        </Export-Package>
+                        <Import-Package>
+                            org.apache.tuscany.sca.assembly.xml,
+                            org.apache.tuscany.sca.binding.jsonrpc,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

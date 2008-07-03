@@ -30,7 +30,7 @@
     <name>Apache Tuscany SCA Implementation Modules</name>
 
     <properties>
-        <tuscany.version>2.0</tuscany.version>
+        <tuscany.version>1.4</tuscany.version>
     </properties>
 
     <profiles>

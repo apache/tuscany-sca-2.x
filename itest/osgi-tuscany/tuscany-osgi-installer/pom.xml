@@ -480,7 +480,6 @@
             <artifactId>tuscany-implementation-widget-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
-<!--
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-node2-api</artifactId>
@@ -496,7 +495,6 @@
             <artifactId>tuscany-node2-launcher</artifactId>
             <version>${pom.version}</version>
         </dependency>
--->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-policy</artifactId>

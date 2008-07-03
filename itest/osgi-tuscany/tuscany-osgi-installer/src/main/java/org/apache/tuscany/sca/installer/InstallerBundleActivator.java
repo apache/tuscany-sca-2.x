@@ -42,9 +42,6 @@ public class InstallerBundleActivator implements BundleActivator {
     };
     
     private static final String[] tuscanyModulesToIgnore = {
-        "node2-api",
-        "node2-impl",
-        "node2-launcher",
         "node2-launcher-webapp",
         "implementation-node-runtime", // uses node2
         "saxon",
