@@ -364,7 +364,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 out.writeBoolean(false);
             } else {
                 out.writeBoolean(true);
-                out.writeUTF(toXMLString());
+                out.writeUTF(xml);
             }
         } catch (Exception e) {
             // e.printStackTrace();
