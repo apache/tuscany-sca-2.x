@@ -19,10 +19,12 @@
 package binding.ejb;
 
 import junit.framework.TestCase;
-import domain.CustomCompositeBuilder;
+
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
+import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
+
+import domain.CustomCompositeBuilder;
 
 /**
  * This shows how to test the Calculator service component.
