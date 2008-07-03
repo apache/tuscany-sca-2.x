@@ -22,43 +22,26 @@
 		targetNamespace="http://photo-gallery"
 		name="photo-gallery">
 		
-    <component name="Store">
-        <t:implementation.widget location="uiservices/store.html"/>
+    <component name="Gallery">
+        <t:implementation.widget location="gallery.html"/>
         <service name="Widget">
-        	<t:binding.http uri="/store"/>
+        	<t:binding.http uri="/gallery"/>
         </service>
-		<reference name="catalog" target="Catalog">
-		 	<t:binding.jsonrpc/>
-		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart/Cart">
-		 	<t:binding.atom/>
-		 </reference>
-		 <reference name="shoppingTotal" target="ShoppingCart/Total">
+		<reference name="album" target="Album">
 		 	<t:binding.jsonrpc/>
 		 </reference>
     </component>
     
-	<component name="Catalog">
-		<implementation.java class="services.FruitsCatalogImpl"/> 
-		<property name="currencyCode">USD</property>
-		<service name="Catalog">
+	<component name="Album">
+		<implementation.java class="services.AlbumImpl"/> 
+		<property name="gallery">gallery</property>
+		<property name="album">boston</property>
+		<service name="Album">
 			<t:binding.jsonrpc/>
    		</service>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
- 	
-	<component name="ShoppingCart">
-		<implementation.java class="services.ShoppingCartImpl"/>
-		<service name="Cart">
-			<t:binding.atom uri="/ShoppingCart/Cart"/>
-		</service>    	
-		<service name="Total">
-			<t:binding.jsonrpc/>
-		</service>    	
+	
+	<component name="GalleryPictures">
+		<t:implementation.resource location="gallery"></t:implementation.resource>
 	</component>
-    
-	<component name="CurrencyConverter">
-		<implementation.java class="services.CurrencyConverterImpl"/>
-	</component>     
-
 </composite>
