@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.monitor;
 
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.MonitorFactoryImpl;
+import org.apache.tuscany.sca.monitor.logging.impl.MonitorFactoryImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

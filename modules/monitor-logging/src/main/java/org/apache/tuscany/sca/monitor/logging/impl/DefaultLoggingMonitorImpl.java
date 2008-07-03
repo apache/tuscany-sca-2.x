@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.monitor.impl;
+package org.apache.tuscany.sca.monitor.logging.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
