@@ -20,6 +20,7 @@ package calculator.warning;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.osoa.sca.annotations.Service;
 
 /**

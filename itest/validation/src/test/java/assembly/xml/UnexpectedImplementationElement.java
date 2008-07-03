@@ -19,9 +19,10 @@
 package assembly.xml;
 
 import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
+import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 
 import domain.CustomCompositeBuilder;
 

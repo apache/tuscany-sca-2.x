@@ -27,13 +27,11 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
+import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-
-import calculator.warning.CalculatorService;
 
 /**
  * This shows how to test the Calculator service component.
