@@ -17,18 +17,13 @@
  * under the License.    
  */
 
-package launch;
+package services;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.osoa.sca.annotations.Remotable;
 
-public class Launch {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Starting ...");
-        SCADomain scaDomain = SCADomain.newInstance("photo-gallery.composite");
-        System.out.println("photo.gallery.composite ready for big business !!!");
-        System.in.read();
-        System.out.println("Stopping ...");
-        scaDomain.close();
-        System.out.println();
-    }
+@Remotable
+public interface Album {
+    
+    public String[] getPictures();
+
 }
