@@ -42,6 +42,12 @@ public class SCAManagedConversationalClientImpl implements SCAManagedConversatio
     protected ServiceReference<ConversationalService> conversationalServiceRef;
 
     /**
+     * Injected reference to the ConversationalService.
+     */
+    @Reference(name = "nestedConversationalService")
+    protected ServiceReference<ConversationalService> nestedConversationalServiceRef;
+
+    /**
      * This is the message that we sent to the callback.
      */
     private String messageSentToCallback;
@@ -52,14 +58,33 @@ public class SCAManagedConversationalClientImpl implements SCAManagedConversatio
      * @throws Exception Test failed
      */
     public void testSerializeConversationalServiceReference() throws Exception {
-        Assert.assertNotNull(conversationalServiceRef);
+        doTestSerializeConversationalServiceReference(conversationalServiceRef);
+    }
 
-        ConversationalService service = conversationalServiceRef.getService();
+    /**
+     * Tests Serializing a Nested Conversational ServiceReference.
+     * 
+     * @throws Exception Test failed
+     */
+    public void testSerializeNestedConversationalServiceReference() throws Exception {
+        doTestSerializeConversationalServiceReference(nestedConversationalServiceRef);
+    }
+
+    /**
+     * Test Serializing a Conversational ServiceReference.
+     * 
+     * @param aServiceRef The Reference to Serialize
+     * @throws Exception Test failed.
+     */
+    private void doTestSerializeConversationalServiceReference(ServiceReference<ConversationalService> aServiceRef) throws Exception {
+        Assert.assertNotNull(aServiceRef);
+
+        ConversationalService service = aServiceRef.getService();
         Object origConvID = service.getConversationID();
         Assert.assertNotNull(origConvID);
 
         // Serialize the ServiceReference
-        byte[] serializedSR = ServiceReferenceUtils.serialize(conversationalServiceRef);
+        byte[] serializedSR = ServiceReferenceUtils.serialize(aServiceRef);
         Assert.assertNotNull(serializedSR);
 
         // Deserialize the ServiceReference

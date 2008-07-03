@@ -40,18 +40,43 @@ public class SCAManagedClientImpl implements SCAManagedClient, StatelessServiceC
     protected ServiceReference<StatelessService> statelessServiceRef;
 
     /**
+     * Injected reference to the Nested StatelessService.
+     */
+    @Reference(name = "nestedStatelessService")
+    protected ServiceReference<StatelessService> nestedStatelessServiceRef;
+
+    /**
      * Tests Serializing a Stateless ServiceReference
      * 
      * @throws Exception Test failed
      */
     public void testSerializeStatelessServiceReference() throws Exception {
-        Assert.assertNotNull(statelessServiceRef);
+        doTestSerializeStatelessServiceReference(statelessServiceRef);
+    }
+    
+    /**
+     * Tests Serializing a Nested Stateless ServiceReference.
+     * 
+     * @throws Exception Test failed
+     */
+    public void testSerializeNestedStatelessServiceReference() throws Exception {
+        doTestSerializeStatelessServiceReference(nestedStatelessServiceRef);
+    }
 
-        StatelessService service = statelessServiceRef.getService();
+    /**
+     * Tests Serializing a Stateless ServiceReference.
+     * 
+     * @throws Exception Test failed
+     */
+    private void doTestSerializeStatelessServiceReference(
+            ServiceReference<StatelessService> aServiceRef) throws Exception {
+        Assert.assertNotNull(aServiceRef);
+
+        StatelessService service = aServiceRef.getService();
         service.getCurrentTime();
         
         // Serialize the ServiceReference
-        byte[] serializedSR = ServiceReferenceUtils.serialize(statelessServiceRef);
+        byte[] serializedSR = ServiceReferenceUtils.serialize(aServiceRef);
         Assert.assertNotNull(serializedSR);
 
         // Deserialize the ServiceReference
