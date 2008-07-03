@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.monitor.impl.MonitorFactoryImpl
+org.apache.tuscany.sca.monitor.logging.impl.MonitorFactoryImpl
