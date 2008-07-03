@@ -35,6 +35,13 @@ public interface SCAManagedClient {
     void testSerializeStatelessServiceReference() throws Exception;
 
     /**
+     * Tests Serializing a Nested Stateless ServiceReference.
+     * 
+     * @throws Exception Test failed
+     */
+    void testSerializeNestedStatelessServiceReference() throws Exception;
+
+    /**
      * Tests Serializing a Callback to a Stateless Service as managed
      * SCA code
      * 

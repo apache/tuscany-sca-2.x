@@ -39,6 +39,13 @@ public interface SCAManagedConversationalClient {
     void testSerializeConversationalServiceReference() throws Exception;
 
     /**
+     * Tests Serializing a Nested Conversational ServiceReference.
+     * 
+     * @throws Exception Test failed
+     */
+    void testSerializeNestedConversationalServiceReference() throws Exception;
+
+    /**
      * Tests Serializing a Callback to a Conversational Service as managed
      * SCA code.
      * 

@@ -17,29 +17,17 @@
     * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo" targetNamespace="http://foo"
-    name="ServiceReferenceSerializationTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    name="NestedComposite" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <component name="StatelessComponent">
+    <service name="StatelessNestedService" promote = "StatelessNestedComponent"/>
+    
+    <service name="ConversationalNestedService" promote = "ConversationalNestedComponent"/>
+
+    <component name="StatelessNestedComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.servicereference.StatelessServiceImpl" />
     </component>
 
-    <component name="ConversationalComponent">
+    <component name="ConversationalNestedComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.servicereference.ConversationalServiceImpl" />
-    </component>
-
-    <component name="SCAManagedClientComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.servicereference.SCAManagedClientImpl" />
-        <reference name="statelessService" target="StatelessComponent"/>
-        <reference name="nestedStatelessService" target="NestedComponent/StatelessNestedService"/>
-    </component>
-
-    <component name="SCAManagedConversationalClientComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.servicereference.SCAManagedConversationalClientImpl" />
-        <reference name="conversationalService" target="ConversationalComponent"/>
-        <reference name="nestedConversationalService" target="NestedComponent/ConversationalNestedService"/>
-    </component>
-
-    <component name="NestedComponent">
-        <implementation.composite name="foo:NestedComposite" />
     </component>
 </composite>
