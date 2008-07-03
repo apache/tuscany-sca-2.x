@@ -92,9 +92,21 @@
     <pluginRepositories>
         <!-- Apache Incubator repository for artifacts released by Incubator projects -->
         <pluginRepository>
-            <id>apache.incubator</id>
+            <id>apache</id>
             <name>Apache Incubator Repository</name>
             <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>apache.incubator</id>
+            <name>Apache Incubator Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
