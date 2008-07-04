@@ -166,19 +166,29 @@ class BaseWireBuilderImpl {
             ComponentService nonCallbackService = null;
             int nonCallbackServices = 0;
             for (ComponentService componentService : component.getServices()) {
-                
+                                  
                 // Index component services by component name / service name
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
-                if (!componentService.isCallback()) {
+                
+                boolean promotedService = false;
+                if (componentService.getName() != null && componentService.getName().indexOf("$promoted$") > -1) {
+                    promotedService = true;
+                }
+                
+                // count how many non-callback, non-promoted services there are
+                // if there is only one the component name also acts as the service name
+                if ((!componentService.isCallback()) && (!promotedService)) {                            
                     
-                    // Check how many non callback services we have
+                    // Check how many non callback non-promoted services we have
                     if (nonCallbackServices == 0) {
                         nonCallbackService = componentService;
                     }
                     nonCallbackServices++;
                 }
+
             }
+            
             if (nonCallbackServices == 1) {
                 // If we have a single non callback service, index it by
                 // component name as well
