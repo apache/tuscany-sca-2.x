@@ -31,9 +31,11 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
@@ -297,8 +299,19 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         final Component targetComponent = resolveComponentURI(bindingURI);
                         
                         // Find the Service
-                        final ComponentService targetService = resolveServiceURI(bindingURI, targetComponent);
-
+                        ComponentService targetService = resolveServiceURI(bindingURI, targetComponent);
+                        
+                        // if the target service is a promoted service then find the
+                        // service it promotes
+                        if ((targetService != null) && (targetService.getService() instanceof CompositeService)) {
+                            CompositeService compositeService = (CompositeService) targetService.getService();
+                            // Find the promoted component service
+                            ComponentService promotedComponentService = getPromotedComponentService(compositeService);
+                            if (promotedComponentService != null && !promotedComponentService.isUnresolved()) {
+                                targetService = promotedComponentService;
+                            }
+                        }
+                        
                         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
                         optimizableBinding.setTargetComponent(targetComponent);
                         optimizableBinding.setTargetComponentService(targetService);
@@ -353,6 +366,34 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             }
         }
     }
+    
+    /**
+     * Follow a service promotion chain down to the inner most (non composite)
+     * component service.
+     * 
+     * @param topCompositeService
+     * @return
+     */
+     private ComponentService getPromotedComponentService(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (componentService.getName() != null && service instanceof CompositeService) {
+    
+                // Continue to follow the service promotion chain
+                return getPromotedComponentService((CompositeService)service);
+    
+            } else {
+    
+                // Found a non-composite service
+                return componentService;
+            }
+        } else {
+    
+            // No promoted service
+            return null;
+        }
+    }    
 
     /**
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
@@ -518,22 +559,24 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      * @return The Service with the specified serviceName or null if no such Service found.
      */
     protected ComponentService resolveServiceURI(String bindingURI, Component targetComponent) {
-        if (bindingURI.startsWith("/")) {
-            bindingURI = bindingURI.substring(1);
-        }
-
-        final String componentURI = targetComponent.getURI();
-        final String serviceName;
-        if (componentURI.equals(bindingURI)) {
-            // No service specified
-            serviceName = "";
-        } else {
-            // Get the Service name from the Binding URI
-            serviceName = bindingURI.substring(componentURI.length() + 1);
-        }
-
+        
         ComponentService targetService = null;
+        
         if (targetComponent != null) {
+            if (bindingURI.startsWith("/")) {
+                bindingURI = bindingURI.substring(1);
+            }
+    
+            final String componentURI = targetComponent.getURI();
+            final String serviceName;
+            if (componentURI.equals(bindingURI)) {
+                // No service specified
+                serviceName = "";
+            } else {
+                // Get the Service name from the Binding URI
+                serviceName = bindingURI.substring(componentURI.length() + 1);
+            }
+
             if ("".equals(serviceName)) {
                 targetService = ComponentContextHelper.getSingleService(targetComponent);
             } else {
