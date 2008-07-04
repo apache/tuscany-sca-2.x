@@ -588,7 +588,15 @@ class BaseWireBuilderImpl {
                 // - if it doesn't it is assumed to be an external reference
                 Component targetComponent = null;
                 ComponentService targetComponentService = null;
-                String path = URI.create(uri).getPath();
+                String path = null;
+                
+                try {
+                    path = URI.create(uri).getPath();
+                } catch(Exception ex){
+                    // just assume that no target is identified if
+                    // a URI related exception is thrown
+                }
+                
                 if (path != null) {
                     if (path.startsWith("/")) {
                         path = path.substring(1);
