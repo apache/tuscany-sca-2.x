@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
@@ -827,25 +828,35 @@ public abstract class BaseConfigurationBuilderImpl {
                 newComponentService.setService(promotedService.getService());
                 // set the bindings using the top level bindings to override the 
                 // lower level bindings
-                if (compositeService.getBindings().size() > 0){
+                if (bindingsSpecifiedManually(compositeService.getBindings())){
                     newComponentService.getBindings()
                         .addAll(compositeService.getBindings());
                 } else {
-                    newComponentService.getBindings()
-                    .addAll(promotedService.getBindings());
+                    for (Binding binding : promotedService.getBindings()){
+                        try {
+                            newComponentService.getBindings().add((Binding)binding.clone());
+                        } catch(CloneNotSupportedException ex){
+                            // this binding can't be used in the promoted service
+                        }
+                    }                    
                 }
                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
                 if (compositeService.getInterfaceContract() != null && compositeService
                     .getInterfaceContract().getCallbackInterface() != null) {
                     newComponentService.setCallback(assemblyFactory.createCallback());
                     if ((compositeService.getCallback() != null) &&
-                            (compositeService.getCallback().getBindings().size() > 0)){
+                        (bindingsSpecifiedManually(compositeService.getCallback().getBindings()))){
                         newComponentService.getCallback().getBindings()
                             .addAll(compositeService.getCallback().getBindings());
                     } else if ((promotedService.getCallback() != null) &&
-                            (promotedService.getCallback().getBindings().size() > 0)){
-                        newComponentService.getBindings()
-                            .addAll(promotedService.getBindings());
+                               (bindingsSpecifiedManually(promotedService.getCallback().getBindings()))){
+                        for (Binding binding : promotedService.getCallback().getBindings()){
+                            try {
+                                newComponentService.getCallback().getBindings().add((Binding)binding.clone());
+                            } catch(CloneNotSupportedException ex){
+                                // this binding can't be used in the promoted service
+                            }
+                        }                          
                     }
                 }
 
@@ -904,20 +915,28 @@ public abstract class BaseConfigurationBuilderImpl {
                             newComponentService.setName("$promoted$." + componentService.getName());
                             promotedComponent.getServices().add(newComponentService);
                             newComponentService.setService(promotedService.getService());
+                            
                             // set the bindings using the top level bindings to override the 
                             // lower level bindings
-                            if (componentService.getBindings().size() > 0){
+                            if (bindingsSpecifiedManually(componentService.getBindings())){
                                 newComponentService.getBindings()
                                     .addAll(componentService.getBindings());
-                            } else if (compositeService.getBindings().size() > 0){
+                            } else if (bindingsSpecifiedManually(compositeService.getBindings())){
                                 newComponentService.getBindings()
                                     .addAll(compositeService.getBindings());
                             } else {
-                                newComponentService.getBindings()
-                                .addAll(promotedService.getBindings());
+                                for (Binding binding : promotedService.getBindings()){
+                                    try {
+                                        newComponentService.getBindings().add((Binding)binding.clone());
+                                    } catch(CloneNotSupportedException ex){
+                                        // this binding can't be used in the promoted service
+                                    }
+                                }
                             }
+                            
                             newComponentService.setInterfaceContract(componentService
                                 .getInterfaceContract());
+                            
                             if (componentService.getInterfaceContract() != null && 
                                 componentService.getInterfaceContract().getCallbackInterface() != null) {
                                 
@@ -926,17 +945,22 @@ public abstract class BaseConfigurationBuilderImpl {
                                 // set the bindings using the top level bindings to override the 
                                 // lower level bindings
                                 if ((componentService.getCallback() != null) &&
-                                    (componentService.getCallback().getBindings().size() > 0)){
+                                    (bindingsSpecifiedManually(componentService.getCallback().getBindings()))){
                                     newComponentService.getCallback().getBindings()
                                         .addAll(componentService.getCallback().getBindings());
                                 } else if ((compositeService.getCallback() != null) &&
-                                           (compositeService.getCallback().getBindings().size() > 0)){
+                                           (bindingsSpecifiedManually(compositeService.getCallback().getBindings()))){
                                     newComponentService.getCallback().getBindings()
                                         .addAll(compositeService.getCallback().getBindings());
                                 } else if ((promotedService.getCallback() != null) &&
-                                           (promotedService.getCallback().getBindings().size() > 0)){
-                                    newComponentService.getBindings()
-                                        .addAll(promotedService.getBindings());
+                                           (bindingsSpecifiedManually(promotedService.getCallback().getBindings()))){
+                                    for (Binding binding : promotedService.getCallback().getBindings()){
+                                        try {
+                                            newComponentService.getCallback().getBindings().add((Binding)binding.clone());
+                                        } catch(CloneNotSupportedException ex){
+                                            // this binding can't be used in the promoted service
+                                        }
+                                    }                                    
                                 }
                             }
 
@@ -951,6 +975,28 @@ public abstract class BaseConfigurationBuilderImpl {
         }
     }
 
+    /**
+     * If the bindings are specified in the composite file return true as they should 
+     * otherwise return false
+     *  
+     * @param bindings
+     * @return true if the bindings were specified manually
+     */
+    private boolean bindingsSpecifiedManually(List<Binding> bindings){
+
+        if (bindings.size() > 1){
+            return true;
+        } else if ((bindings.size() == 1) &&
+                   (bindings.get(0) instanceof AutomaticBinding) &&
+                   (((AutomaticBinding)bindings.get(0)).getIsAutomatic() == true )){
+            return false;
+        } else if (bindings.size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * @param composite
      */
@@ -1022,6 +1068,12 @@ public abstract class BaseConfigurationBuilderImpl {
     
     private SCABinding createSCABinding() {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
+        
+        // mark the bindings that are added automatically so that theu can 
+        // can be disregarded for overriding purposes
+        if (scaBinding instanceof AutomaticBinding){
+            ((AutomaticBinding)scaBinding).setIsAutomatic(true);
+        }
         
         if ( policyDefinitions != null ) {
             for ( IntentAttachPointType attachPointType : policyDefinitions.getBindingTypes() ) {

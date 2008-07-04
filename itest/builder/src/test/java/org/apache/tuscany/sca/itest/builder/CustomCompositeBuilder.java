@@ -121,6 +121,7 @@ public class CustomCompositeBuilder {
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
         domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        //domainCompositeBuilder = new CompositeBuilderNonWiringImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
     }
     
     public void loadContribution(String compositeURL, String sourceURI, String sourceURL) throws Exception {
