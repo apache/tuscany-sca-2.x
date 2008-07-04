@@ -22,7 +22,7 @@
 	targetNamespace="http://calc"
 	name="Calculator">
 
-    <export.resource xmlns:ns="http://ns"/>
+    <!-- export.resource xmlns:ns="http://ns"/-->
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.warning.CalculatorService"/>
