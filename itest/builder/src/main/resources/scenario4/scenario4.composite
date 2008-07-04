@@ -1,0 +1,21 @@
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+        targetNamespace="http://scenario4"
+        xmlns:tns="http://scenario4"
+        name="CompositeA">
+
+    <service name="Service1" promote="ComponentB/Service2">
+        <!-- bindings and/or interfaces may or may not be specified explicitly here -->
+    </service>
+
+    <component name="ComponentB">
+        <implementation.composite name="tns:CompositeC" />
+        <service name="Service2">
+            <!-- bindings and/or interfaces may or may not be specified explicitly here -->
+        </service>
+        <service name="Service2a">
+            <!-- bindings and/or interfaces may or may not be specified explicitly here -->
+        </service>
+    </component>
+
+</composite>
+

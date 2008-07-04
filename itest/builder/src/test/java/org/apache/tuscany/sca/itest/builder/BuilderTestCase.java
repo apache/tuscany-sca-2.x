@@ -58,9 +58,34 @@ public class BuilderTestCase extends TestCase {
     }
 
     public void testScenario1() throws Exception {
+        System.out.println("====>Running testScenario1");
         customBuilder = new CustomCompositeBuilder();
-        customBuilder.loadContribution("src/main/resources/scenario1.composite", 
-                                       "TestContribution", "src/main/resources/");
+        customBuilder.loadContribution("src/main/resources/scenario1/scenario1.composite", 
+                                       "TestContribution", "src/main/resources/scenario1/");
+        printResults();
+    }
+
+    public void testScenario2() throws Exception {
+        System.out.println("====>Running testScenario2");
+        customBuilder = new CustomCompositeBuilder();
+        customBuilder.loadContribution("src/main/resources/scenario2/scenario2.composite", 
+                                       "TestContribution", "src/main/resources/scenario2/");
+        printResults();
+    }
+
+    public void testScenario3() throws Exception {
+        System.out.println("====>Running testScenario3");
+        customBuilder = new CustomCompositeBuilder();
+        customBuilder.loadContribution("src/main/resources/scenario3/scenario3.composite", 
+                                       "TestContribution", "src/main/resources/scenario3/");
+        printResults();
+    }
+
+    public void testScenario4() throws Exception {
+        System.out.println("====>Running testScenario4");
+        customBuilder = new CustomCompositeBuilder();
+        customBuilder.loadContribution("src/main/resources/scenario4/scenario4.composite", 
+                                       "TestContribution", "src/main/resources/scenario4/");
         printResults();
     }
 
