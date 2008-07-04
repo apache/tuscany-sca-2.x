@@ -167,7 +167,6 @@ public class JMSResourceFactory {
             try {
                 o = getInitialContext().lookup(name);
             } catch (NamingException ex) {
-            	ex.printStackTrace();
                 // ignore
             }
         }
