@@ -50,7 +50,7 @@ public class BindingOverrideTestCase{
     }
 
     @Test
-    @Ignore("TUSCANY-2352")
+    //@Ignore("TUSCANY-2352")
     public void test() throws Exception {
         Assert.assertEquals("Target: Hello Target: Hello Fred!!", targetClient.hello("Fred"));
     }

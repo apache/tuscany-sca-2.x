@@ -129,11 +129,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Build composite service binding-related information
         compositeServiceBindingBuilder.build(composite);
         
-        // Wire the components
-        componentWireBuilder.build(composite);
-
         // Configure composite services
         compositeServiceConfigurationBuilder.build(composite);
+        
+        // Wire the components
+        componentWireBuilder.build(composite);
 
         // Wire the composite references
         compositeReferenceWireBuilder.build(composite);
