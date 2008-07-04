@@ -228,7 +228,6 @@ The following components come under Apache Software License 2.0
  apache-activemq-4.1.1.jar
  addressing-1.3.mar
  annogen-0.1.0.jar
- annotations-api-6.0.14.jar
  aopalliance-1.0.jar
  axiom-api-1.2.5.jar
  axiom-dom-1.2.5.jar
@@ -239,7 +238,6 @@ The following components come under Apache Software License 2.0
  axis2-kernel-1.3.jar
  axis2-mtompolicy-1.3.jar
  bsf-all-3.0-beta2.jar
- catalina-6.0.14.jar
  cglib-nodep-2.1_3.jar
  commons-collections-3.1.jar
  commons-codec-1.3.jar
@@ -249,9 +247,8 @@ The following components come under Apache Software License 2.0
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
  commons-logging-1.1.jar
- coyote-6.0.14.jar
- derby-10.1.3.1.jar
- geronimo-activation_1.1_spec-1.0-M1.jar
+ derby-10.3.1.4.jar
+ geronimo-activation_1.1_spec-1.1.jar
  geronimo-common-1.2-beta.jar
  geronimo-commonj_1.1_spec-1.0.jar
  geronimo-connector-1.2-beta.jar
@@ -279,11 +276,10 @@ The following components come under Apache Software License 2.0
  httpcore-4.0-alpha5.jar
  httpcore-nio-4.0-alpha5.jar
  httpcore-niossl-4.0-alpha5.jar
- jettison-1.0-RC2.jar
+ jettison-1.0.jar
  jetty-6.1.7.jar
  jetty-util-6.1.7.jar
  json-rpc-1.0.jar
- juli-6.0.14.jar
  log4j-1.2.12.jar
  logkit-1.0.1.jar
  neethi-2.0.2.jar
@@ -303,23 +299,23 @@ The following components come under Apache Software License 2.0
  ode-utils-1.1.jar
  openjpa-all-0.9.7-incubating.jar
  openjpa-persistence-0.9.7-incubating.jar
- org.apache.felix.bundlerepository-1.0.2.jar
- org.apache.felix.framework-1.0.3.jar
- org.apache.felix.main-1.0.3.jar
- org.apache.felix.shell-1.0.0.jar
- org.apache.felix.shell.tui-1.0.0.jar
+ org.apache.felix.bundlerepository-1.0.3.jar
+ org.apache.felix.framework-1.0.4.jar
+ org.apache.felix.main-1.0.4.jar
+ org.apache.felix.shell-1.0.1.jar
+ org.apache.felix.shell.tui-1.0.1.jar
  rampart-core-1.3.jar
  rampart-policy-1.3.jar
  rampart-trust-1.3.jar
  regexp-1.3.jar
- spring-beans-2.0.6.jar
- spring-context-2.0.6.jar
- spring-core-2.0.6.jar
+ spring-beans-2.0.8.jar
+ spring-context-2.0.8.jar
+ spring-core-2.0.8.jar
  tranql-connector-1.1.jar
- tuscany-sdo-api-r2.1-1.0-incubating.jar
- tuscany-sdo-impl-1.0-incubating.jar
- tuscany-sdo-lib-1.0-incubating.jar
- tuscany-sdo-tools-1.0-incubating.jar
+ tuscany-sdo-api-r2.1-1.1-incubating.jar
+ tuscany-sdo-impl-1.1-incubating.jar
+ tuscany-sdo-lib-1.1-incubating.jar
+ tuscany-sdo-tools-1.1-incubating.jar
  woden-1.0-incubating-M7b.jar
  wss4j-1.5.3.jar
  wstx-asl-3.2.1.jar
@@ -1485,14 +1481,13 @@ JPython version 1.1.x
 The jars; 
 activation-1.1.jar, 
 jaxb-api-2.1.jar, 
-jaxb-impl-2.1.6.jar, 
-jaxb-xjc-2.1.4.jar, 
+jaxb-impl-2.1.7.jar, 
+jaxb-xjc-2.1.7.jar, 
 jaxb2-reflection-2.1.4.jar,
 jsr181-api-1.0-MR1.jar, 
 jsr250-api-1.0.jar, 
-jaxws-api-2.1-1.jar, 
+jaxws-api-2.1.jar, 
 mail-1.4.jar, 
-saaj-api-1.3.jar, 
 servlet-api-2.5.jar, 
 stax-api-1.0-commons-cli-1.0.jar2.jar
 
@@ -1974,7 +1969,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
 ===============================================================================
 
-backport-util-concurrent-2.2.jar:
+backport-util-concurrent-3.0.jar:
 
 The software comprising backport-util-concurrent is based in large
 part on the code from JSR166, and the package dl.util.concurrent.
@@ -2363,4 +2358,5 @@ Authors.
 
 No other rights are granted by implication, estoppel or otherwise.
 ================================================================================
+
 
