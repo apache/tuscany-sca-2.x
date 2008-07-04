@@ -105,6 +105,13 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-manager</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-xml</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
