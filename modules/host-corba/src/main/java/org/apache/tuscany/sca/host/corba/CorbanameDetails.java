@@ -19,28 +19,48 @@
 
 package org.apache.tuscany.sca.host.corba;
 
+import java.util.List;
+
 /**
- * General exception for corba hosts operations
+ * Holds corbaname URI details
  */
-public class CorbaHostException extends Exception {
+public class CorbanameDetails {
 
-    private static final long serialVersionUID = 1L;
+    private String host;
+    private int port;
+    private String nameService;
+    private List<String> namePath;
 
-    public static final String BINDING_IN_USE = "Binding name is already in use";
-    public static final String NO_SUCH_OBJECT = "There is no object under given location";
-    public static final String NO_SUCH_HOST = "Couldn't find specified host";
-    public static final String NO_SUCH_PORT = "Couldn't connect to specified port";
-    public static final String WRONG_NAME = "Characters used in binding name are illegal";
-
-    public CorbaHostException(String message) {
-        super(message);
+    public String getHost() {
+        return host;
     }
 
-    public CorbaHostException(Exception cause) {
-        super(cause);
+    public void setHost(String host) {
+        this.host = host;
     }
 
-    public CorbaHostException(String message, Exception cause) {
-        super(message, cause);
+    public int getPort() {
+        return port;
     }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getNameService() {
+        return nameService;
+    }
+
+    public void setNameService(String nameService) {
+        this.nameService = nameService;
+    }
+
+    public List<String> getNamePath() {
+        return namePath;
+    }
+
+    public void setNamePath(List<String> namePath) {
+        this.namePath = namePath;
+    }
+
 }

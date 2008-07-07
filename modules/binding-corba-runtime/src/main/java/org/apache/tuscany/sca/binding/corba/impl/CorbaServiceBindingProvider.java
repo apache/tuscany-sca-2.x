@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.corba.impl;
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
+import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -57,10 +58,15 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void start() {
         try {
-            this.orb = host.createORB(binding.getHost(), binding.getPort(), false);
+
             servant = new DynaCorbaServant(service, binding);
             servant.setIds(new String[] {binding.getId()});
-            host.registerServant(orb, binding.getName(), servant);
+            if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
+                host.registerServant(binding.getURI(), servant);
+            } else {
+                orb = host.createORB(binding.getHost(), binding.getPort(), false);
+                host.registerServant(orb, binding.getName(), servant);
+            }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -72,7 +78,11 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void stop() {
         try {
-            host.unregisterServant(orb, binding.getName());
+            if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
+                host.unregisterServant(binding.getURI());
+            } else if (orb != null) {
+                host.unregisterServant(orb, binding.getName());
+            }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

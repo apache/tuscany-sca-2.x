@@ -21,15 +21,13 @@ package org.apache.tuscany.sca.binding.corba.impl;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
-import org.apache.tuscany.sca.host.corba.CorbaHostException;
+import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -40,17 +38,11 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
     private CorbaHost host;
     private RuntimeComponentReference reference;
     private Object remoteObject;
-    private ORB orb;
 
     public CorbaReferenceBindingProvider(CorbaBinding binding, CorbaHost host, RuntimeComponentReference reference) {
         this.binding = binding;
         this.host = host;
         this.reference = reference;
-        try {
-            this.orb = host.createORB(binding.getHost(), binding.getPort(), false);
-        } catch (CorbaHostException e) {
-            throw new ServiceRuntimeException(e);
-        }
     }
 
     /**
@@ -59,7 +51,11 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
     public Invoker createInvoker(Operation operation) {
         try {
             if (remoteObject == null) {
-                remoteObject = host.lookup(orb, binding.getName());
+                if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
+                    remoteObject = host.lookup(binding.getURI());
+                } else {
+                    remoteObject = host.lookup(binding.getName(), binding.getHost(), binding.getPort());
+                }
             }
             return new CorbaInvoker(remoteObject);
         } catch (Exception e) {

@@ -356,5 +356,13 @@ public class ScenarioOneTestCase {
         // interface.
         testClientUsingGeneratedInterface("TG2TS2");
     }
+    
+    /**
+     * Tests using reference obtained by corbaname URI
+     */
+    @Test
+    public void test_serviceAndReferenceByURI() {
+        testClientUsingUserProvidedInterface("UriBinding");
+    }
 
 }
