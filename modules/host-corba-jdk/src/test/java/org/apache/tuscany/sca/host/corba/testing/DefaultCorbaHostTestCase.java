@@ -28,6 +28,7 @@ import java.net.Socket;
 
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
+import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.host.corba.jdk.DefaultCorbaHost;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
@@ -46,8 +47,8 @@ import org.omg.CORBA.ORB;
 public class DefaultCorbaHostTestCase {
 
     private static final String LOCALHOST = "localhost";
-    private static final int DEFAULT_PORT = 11100; //1050;
-    
+    private static final int DEFAULT_PORT = 11100; // 1050;
+
     private static CorbaHost host;
 
     private static TransientNameServer server;
@@ -72,25 +73,73 @@ public class DefaultCorbaHostTestCase {
         server.stop();
     }
 
+    private static String getURI(String name, String host, int port) {
+        return "corbaname::" + host + ":" + port + "#" + name;
+    }
+
     /**
-     * Tests registering, getting and unregistering CORBA object
+     * Tests registering and lookup CORBA services
      */
     @Test
     public void test_registerServant() {
         try {
+            /**
+             * Tests using servant registered with name, host, port
+             */
             ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
             TestInterface servant = new TestInterfaceServant();
-            host.registerServant(orb, "Test", servant);
+            String objName = "Nested/Test";
+            String uri = CorbaHostUtils.createCorbanameURI(objName, LOCALHOST, DEFAULT_PORT);
+            host.registerServant(orb, objName, servant);
 
-            TestInterface ref = TestInterfaceHelper.narrow(host.lookup(orb, "Test"));
+            // lookup using name, host and port
+            TestInterface ref = TestInterfaceHelper.narrow(host.lookup(objName, LOCALHOST, DEFAULT_PORT));
             assertEquals(2, ref.getInt(2));
 
-            host.unregisterServant(orb, "Test");
-
-            //register servant once again to check if previous name was released 
-            host.registerServant(orb, "Test", servant);
+            // lookup using corbaname URI
+            ref = TestInterfaceHelper.narrow(host.lookup(uri));
+            assertEquals(2, ref.getInt(2));
         } catch (Exception e) {
             e.printStackTrace();
+            fail();
+        }
+    }
+
+    /**
+     * Tests unregistering servants
+     */
+    @Test
+    public void test_unregisterServant() {
+        try {
+            String objName = "Unregistering/Test";
+            ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
+            String uri = CorbaHostUtils.createCorbanameURI(objName, LOCALHOST, DEFAULT_PORT);
+            TestInterface servant = new TestInterfaceServant();
+
+            // creating and releasing using name, host, port
+            host.registerServant(orb, objName, servant);
+            host.unregisterServant(orb, objName);
+            host.registerServant(orb, objName, servant);
+            host.unregisterServant(orb, objName);
+
+            // creating and releasing using corbaname URI
+            host.registerServant(uri, servant);
+            host.unregisterServant(uri);
+            host.registerServant(uri, servant);
+            host.unregisterServant(uri);
+
+            // creating using name, host, port, releasing using corbaname URI
+            host.registerServant(orb, objName, servant);
+            host.unregisterServant(uri);
+            host.registerServant(uri, servant);
+            host.unregisterServant(uri);
+
+            // creating using corbaname URI, releasing using name, host, port
+            host.registerServant(uri, servant);
+            host.unregisterServant(orb, objName);
+            host.registerServant(orb, objName, servant);
+            host.unregisterServant(orb, objName);
+        } catch (Exception e) {
             fail();
         }
     }
@@ -100,11 +149,26 @@ public class DefaultCorbaHostTestCase {
      */
     @Test
     public void test_nameAlreadyRegistered() {
+        // test using name, host, port
         try {
             ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
             TestInterface servant = new TestInterfaceServant();
-            host.registerServant(orb, "Test", servant);
-            host.registerServant(orb, "Test", servant);
+            host.registerServant(orb, "AlreadyRegisteredTest1", servant);
+            host.registerServant(orb, "AlreadyRegisteredTest1", servant);
+            fail();
+        } catch (CorbaHostException e) {
+            assertTrue(e.getMessage().equals(CorbaHostException.BINDING_IN_USE));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        // test using URI
+        try {
+            TestInterface servant = new TestInterfaceServant();
+            String uri = CorbaHostUtils.createCorbanameURI("AlreadyRegisteredTest2", LOCALHOST, DEFAULT_PORT);
+            host.registerServant(uri, servant);
+            host.registerServant(uri, servant);
             fail();
         } catch (CorbaHostException e) {
             assertTrue(e.getMessage().equals(CorbaHostException.BINDING_IN_USE));
@@ -119,9 +183,20 @@ public class DefaultCorbaHostTestCase {
      */
     @Test
     public void test_getNonExistingObject() {
+        // try to fetch object with corbaname URI
         try {
-            ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
-            host.lookup(orb, "NonExistingReference");
+            host.lookup(getURI("NonExistingOne", LOCALHOST, DEFAULT_PORT));
+            fail();
+        } catch (CorbaHostException e) {
+            assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        // try to fetch object with name, host, port params
+        try {
+            host.lookup("NonExistingOne", LOCALHOST, DEFAULT_PORT);
             fail();
         } catch (CorbaHostException e) {
             assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
@@ -136,9 +211,22 @@ public class DefaultCorbaHostTestCase {
      */
     @Test
     public void test_unregisterNonExistentObject() {
+        // test using name, host, port
         try {
             ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
             host.unregisterServant(orb, "NonExistingReference2");
+            fail();
+        } catch (CorbaHostException e) {
+            assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        // test using URI
+        try {
+            String uri = CorbaHostUtils.createCorbanameURI("NonExistingReference1", LOCALHOST, DEFAULT_PORT);
+            host.unregisterServant(uri);
             fail();
         } catch (CorbaHostException e) {
             assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
@@ -202,20 +290,24 @@ public class DefaultCorbaHostTestCase {
             fail();
         }
     }
-    
+
     @Test
-    // @Ignore("Fix stopping ORB")
     public void test_ensureORBStopped() {
         try {
             int innerORBPort = 11102;
-            TransientNameServer innerServer = new TransientNameServer(LOCALHOST, innerORBPort, TransientNameService.DEFAULT_SERVICE_NAME);
+            TransientNameServer innerServer =
+                new TransientNameServer(LOCALHOST, innerORBPort, TransientNameService.DEFAULT_SERVICE_NAME);
             innerServer.start();
             innerServer.stop();
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+            }
             new Socket(LOCALHOST, innerORBPort);
             fail();
         } catch (Exception e) {
             if (e instanceof ConnectException) {
-                assertTrue(true);    
+                assertTrue(true);
             } else {
                 e.printStackTrace();
             }

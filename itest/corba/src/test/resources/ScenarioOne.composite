@@ -91,4 +91,21 @@
         </reference>
     </component>
     
+    <!-- TUSCANY CORBA SERVICE 3 (TS3) - CORBA service using registered using URI -->
+    <component name="ScenarionOneServiceURI">
+    	<implementation.java class="org.apache.tuscany.sca.test.corba.types.TScenarioOneServant" />
+    </component>
+    <service name="ScenarionOneServiceGenerated" promote="ScenarionOneServiceGenerated">
+    	<interface.java interface="org.apache.tuscany.sca.test.corba.generated.ScenarioOneOperations"/>
+        <tuscany:binding.corba uri="corbaname::localhost:5060#NamedWithURI"/>
+    </service>
+    
+    <!-- reference 7 - ... -->
+    <component name="UriBinding">
+        <implementation.java class="org.apache.tuscany.sca.test.corba.types.TScenarioOneComponent" />
+        <reference name="scenarioOne">
+			<tuscany:binding.corba uri="corbaname::localhost:5060#NamedWithURI"/>        
+        </reference>
+    </component>
+    
 </composite>
