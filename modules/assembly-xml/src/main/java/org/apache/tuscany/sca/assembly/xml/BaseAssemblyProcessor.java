@@ -740,8 +740,12 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
         PolicySet resolvedPolicySet = null;
         for (PolicySet policySet : policySets) {
-            resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
-            resolvedPolicySets.add(resolvedPolicySet);
+            if (policySet.isUnresolved()) {
+                resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
+                resolvedPolicySets.add(resolvedPolicySet);
+            } else {
+                resolvedPolicySets.add(policySet);
+            }
         }
         policySets.clear();
         policySets.addAll(resolvedPolicySets);
