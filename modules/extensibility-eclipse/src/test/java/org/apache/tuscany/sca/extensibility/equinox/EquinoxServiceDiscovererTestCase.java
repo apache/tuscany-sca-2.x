@@ -88,22 +88,22 @@ public class EquinoxServiceDiscovererTestCase {
         testBundle = context.installBundle("test-bundle", is);
         is.close();
         discoverer = new EquinoxServiceDiscoverer(context);
-        File dep = new File("target/test-classes/dependency");
+        File dep = new File("target/bundles");
         List<Bundle> bundles = new ArrayList<Bundle>();
         for (File f : dep.listFiles()) {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
-            bis.mark(8192);
             JarInputStream jis = new JarInputStream(bis);
             Manifest manifest = jis.getManifest();
             if (manifest == null || manifest.getMainAttributes().getValue("Bundle-Name") == null) {
                 bis.close();
                 continue;
             }
-            bis.reset();
+            bis.close();
+            bis = new BufferedInputStream(new FileInputStream(f));
             Bundle b = context.installBundle(f.getName(), bis);
             System.out.println("Installed "+b.getSymbolicName() + " [" + getState(b) + "]");
             bundles.add(b);
-            is.close();
+            bis.close();
         }
         for (Bundle b : bundles) {
             b.start();
