@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.extensibility;
 
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Map;
 
@@ -30,107 +29,40 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public class ServiceDeclaration {
-
-    private WeakReference<ClassLoader> classLoader;
-
-    private String className;
-
-    private Map<String, String> attributes;
-
+public interface ServiceDeclaration {
     /**
-     * Service declaration constructor
-     * 
-     * @param className Service implementation class name
-     * @param classLoader ClassLoader corresponding to this service
-     *                implementation
-     * @param attributes Optional attributes for this service declaration
-     */
-    public ServiceDeclaration(String className, ClassLoader classLoader, Map<String, String> attributes) {
-
-        this.className = className;
-        this.classLoader = new WeakReference<ClassLoader>(classLoader);
-        this.attributes = attributes;
-    }
-
-    /**
-     * Load this service implementation class
-     * 
-     * @return Class
+     * Load a java class in the same context as the service definition
+     * @param className The class name
+     * @return The loaded class
      * @throws ClassNotFoundException
      */
-    @SuppressWarnings("unchecked")
-    public Class<?> loadClass() throws ClassNotFoundException {
-
-        return Class.forName(className, true, classLoader.get());
-    }
-
+    Class<?> loadClass(String className) throws ClassNotFoundException;
     /**
-     * Load another class using the ClassLoader of this service implementation
-     * 
-     * @param anotherClassName
-     * @return Class
-     * @throws ClassNotFoundException
+     * Get the java class for the service impl
+     * @return The java class
      */
-    public Class<?> loadClass(String anotherClassName) throws ClassNotFoundException {
-
-        return Class.forName(anotherClassName, true, classLoader.get());
-    }
-
+    Class<?> loadClass() throws ClassNotFoundException;
     /**
-     * Return the resource corresponding to this service implementation class
-     * 
-     * @return resource URL
+     * Get all attributes (name=value pairs) defined for the given entry
+     * @return All attributes keyed by name
      */
-    public URL getResource() {
-        return classLoader.get().getResource(className);
-    }
-
+    Map<String, String> getAttributes();
+    
+    URL getLocation();
+    
+    String getClassName();
+    
+    URL getResource(String name);
+    
     /**
-     * ClassLoader associated with this service declaration
-     * 
-     * @return ClassLoader
+     * The service descriptor might be hashed
+     * @param obj Another object
+     * @return
      */
-    public ClassLoader getClassLoader() {
-        return classLoader.get();
-    }
-
+    boolean equals(Object obj);
     /**
-     * Service implementation class corresponding to this declaration
-     * 
-     * @return The Service implementation class corresponding to this declaration 
+     * The service descriptor might be hashed
+     * @return
      */
-    public String getClassName() {
-        return className;
-    }
-
-    /**
-     * Attributes specified for this declaration
-     * 
-     * @return attributes
-     */
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * Equals method used to ensure that each service declaration is stored only
-     * once in a set of declarations.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ServiceDeclaration))
-            return false;
-        ServiceDeclaration s = (ServiceDeclaration)o;
-        if (!className.equals(s.className))
-            return false;
-        else if (!classLoader.equals(s.classLoader))
-            return false;
-        else if (attributes == null)
-            return s.attributes == null;
-        else
-            return attributes.equals(s.attributes);
-
-    }
-
+    int hashCode();
 }

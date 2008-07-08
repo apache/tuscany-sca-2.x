@@ -22,8 +22,6 @@ import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.SOAP12_IN
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -39,16 +37,9 @@ import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Port;
-import javax.wsdl.PortType;
-import javax.wsdl.Service;
-import javax.wsdl.WSDLException;
-import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
-import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Address;
-import javax.wsdl.extensions.soap12.SOAP12Binding;
-import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -80,8 +71,6 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -101,7 +90,7 @@ public class Axis2ServiceClient {
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
-    Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
     public Axis2ServiceClient(RuntimeComponent component,
@@ -109,7 +98,7 @@ public class Axis2ServiceClient {
                               WebServiceBinding wsBinding,
                               ServletHost servletHost,
                               MessageFactory messageFactory,
-                              Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
+                              List<PolicyHandlerTuple> policyHandlerClassnames) {
 
         this.component = component;
         this.contract = contract;

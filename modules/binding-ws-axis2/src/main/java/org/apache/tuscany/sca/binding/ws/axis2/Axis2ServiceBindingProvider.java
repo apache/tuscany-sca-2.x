@@ -19,15 +19,12 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
@@ -46,7 +43,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
                                        WebServiceBinding wsBinding,
                                        ServletHost servletHost,
                                        ModelFactoryExtensionPoint modelFactories,
-                                       Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames,
+                                       List<PolicyHandlerTuple> policyHandlerClassnames,
                                        DataBindingExtensionPoint dataBindings) {
 
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 

@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -27,7 +26,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
@@ -48,7 +46,7 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
 
     private ModelFactoryExtensionPoint modelFactories;
     private ServletHost servletHost;
-    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    private List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private DataBindingExtensionPoint dataBindings;
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {

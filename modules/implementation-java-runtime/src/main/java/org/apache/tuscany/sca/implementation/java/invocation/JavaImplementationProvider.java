@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
@@ -64,7 +63,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                       ComponentContextFactory componentContextFactory,
                                       RequestContextFactory requestContextFactory,
-                                      Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
+                                      List<PolicyHandlerTuple> policyHandlerClassNames) {
         super();
         this.implementation = implementation;
         this.requestContextFactory = requestContextFactory;

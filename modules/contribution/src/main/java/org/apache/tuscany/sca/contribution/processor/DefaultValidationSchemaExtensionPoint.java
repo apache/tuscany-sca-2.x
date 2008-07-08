@@ -68,7 +68,7 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
         
         // Find each schema
         for (ServiceDeclaration schemaDeclaration: schemaDeclarations) {
-            URL url = schemaDeclaration.getResource();
+            URL url = schemaDeclaration.getResource(schemaDeclaration.getClassName());
             if (url == null) {
                 throw new IllegalArgumentException(new FileNotFoundException(schemaDeclaration.getClassName()));
             }

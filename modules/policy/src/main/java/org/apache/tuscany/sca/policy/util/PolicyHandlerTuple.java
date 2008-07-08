@@ -21,17 +21,40 @@ package org.apache.tuscany.sca.policy.util;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+
 /**
  * PolicyHanlder tuples stored in policy handler services files
  *
  * @version $Rev$ $Date$
  */
 public class PolicyHandlerTuple {
+    private ServiceDeclaration declaration;
     private String policyHandlerClassName;
     private QName providedIntentName;
     private String policyModelClassName;
     private String appliesTo;
-    
+
+    public PolicyHandlerTuple(ServiceDeclaration declaration,
+                              String handlerClassName,
+                              QName providedIntentName,
+                              String policyModelClassName,
+                              String appliesTo) {
+        this.declaration = declaration;
+        this.policyHandlerClassName = handlerClassName;
+        this.providedIntentName = providedIntentName;
+        this.policyModelClassName = policyModelClassName;
+        this.appliesTo = appliesTo;
+    }
+
+    public ServiceDeclaration getDeclaration() {
+        return declaration;
+    }
+
+    public void setDeclaration(ServiceDeclaration declaration) {
+        this.declaration = declaration;
+    }
+
     public String getAppliesTo() {
         return appliesTo;
     }
@@ -40,15 +63,6 @@ public class PolicyHandlerTuple {
         this.appliesTo = appliesTo;
     }
 
-    public PolicyHandlerTuple(String handlerClassName,
-                              QName providedIntentName,
-                              String policyModelClassName,
-                              String appliesTo) {
-        this.policyHandlerClassName = handlerClassName;
-        this.providedIntentName = providedIntentName;
-        this.policyModelClassName = policyModelClassName;
-        this.appliesTo = appliesTo;
-    }
     
     public String getPolicyHandlerClassName() {
         return policyHandlerClassName;

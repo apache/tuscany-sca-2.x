@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,21 +43,14 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
-import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.deployment.util.Utils;
@@ -129,7 +121,7 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
     private JMSSender jmsSender;
     private JMSListener jmsListener;
-    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    private List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
     private Map<String, Port> urlMap = new HashMap<String, Port>();
     private Map<String, String> addressMap = new HashMap<String, String>();
@@ -165,7 +157,7 @@ public class Axis2ServiceProvider {
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
                                 MessageFactory messageFactory,
-                                Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
+                                List<PolicyHandlerTuple> policyHandlerClassnames) {
 
         this.component = component; 
         this.contract = contract; 

@@ -38,23 +38,24 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  */
 public class DiscoveryUtils {
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public static <T> List<T> discoverActivators(Class<T> activatorClass, ExtensionPointRegistry registry) {
         List<T> activators;
-		try {
-			Set<ServiceDeclaration> activatorClasses = ServiceDiscovery.getInstance().getServiceDeclarations(activatorClass);
-			activators = new ArrayList<T>();
-			for (ServiceDeclaration declaration : activatorClasses) {
-			    try {
-			    	Class<T> c = (Class<T>)declaration.loadClass();
-			        activators.add(c.cast(instantiateActivator(c, registry)));
-			    } catch (Throwable e) {
-			        e.printStackTrace(); // TODO: log
-			    }
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            Set<ServiceDeclaration> activatorClasses =
+                ServiceDiscovery.getInstance().getServiceDeclarations(activatorClass);
+            activators = new ArrayList<T>();
+            for (ServiceDeclaration declaration : activatorClasses) {
+                try {
+                    Class<T> c = (Class<T>)declaration.loadClass();
+                    activators.add(c.cast(instantiateActivator(c, registry)));
+                } catch (Throwable e) {
+                    e.printStackTrace(); // TODO: log
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return activators;
     }
 
@@ -63,18 +64,18 @@ public class DiscoveryUtils {
         if (cs.length != 1) {
             throw new RuntimeException("Activator must have only one constructors");
         }
-        
+
         Class<?>[] paramTypes = cs[0].getParameterTypes();
         Object[] extensions = new Object[paramTypes.length];
 
-        for (int i=0; i< paramTypes.length; i++) {
+        for (int i = 0; i < paramTypes.length; i++) {
             if ("org.apache.tuscany.sca.host.http.ServletHost".equals(paramTypes[i].getName())) {
                 extensions[i] = getServletHost(registry);
             } else {
                 extensions[i] = registry.getExtensionPoint(paramTypes[i]);
             }
         }
-        
+
         try {
 
             return cs[0].newInstance(extensions);
@@ -108,6 +109,5 @@ public class DiscoveryUtils {
             throw new RuntimeException(e);
         }
     }
-
 
 }

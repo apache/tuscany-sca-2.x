@@ -188,11 +188,11 @@ public interface JavaImplementation extends BaseJavaImplementation {
     /**
      * @return the map of a policy handler class names
      */
-    Map<ClassLoader, List<PolicyHandlerTuple>> getPolicyHandlerClassNames();
+    List<PolicyHandlerTuple> getPolicyHandlerClassNames();
 
     /**
      * @param policyHandlerClassNames Map of policyhandler class names
      */
-    void setPolicyHandlerClassNames(Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames);
+    void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames);
 
 }

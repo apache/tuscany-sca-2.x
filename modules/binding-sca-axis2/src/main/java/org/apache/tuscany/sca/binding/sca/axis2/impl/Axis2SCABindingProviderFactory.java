@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -41,7 +40,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class Axis2SCABindingProviderFactory implements BindingProviderFactory<DistributedSCABinding> {
     
     private ExtensionPointRegistry extensionPoints;
-    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    private List<PolicyHandlerTuple> policyHandlerClassnames = null;
 
     public Axis2SCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
