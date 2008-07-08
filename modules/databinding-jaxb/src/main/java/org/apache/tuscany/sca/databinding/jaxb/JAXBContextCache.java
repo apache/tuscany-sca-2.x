@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -255,6 +256,7 @@ public class JAXBContextCache {
 
         if (classSet.contains(Source[].class)) {
             classSet.remove(Image[].class);
+            classSet.remove(DataHandler[].class);
         } 
         
         if(classSet.isEmpty()) {
