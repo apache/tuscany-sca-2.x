@@ -89,7 +89,7 @@ public class DefaultCorbaHostTestCase {
             ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
             TestInterface servant = new TestInterfaceServant();
             String objName = "Nested/Test";
-            String uri = CorbaHostUtils.createCorbanameURI(objName, LOCALHOST, DEFAULT_PORT);
+            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, objName);
             host.registerServant(orb, objName, servant);
 
             // lookup using name, host and port
@@ -113,7 +113,7 @@ public class DefaultCorbaHostTestCase {
         try {
             String objName = "Unregistering/Test";
             ORB orb = host.createORB(LOCALHOST, DEFAULT_PORT, false);
-            String uri = CorbaHostUtils.createCorbanameURI(objName, LOCALHOST, DEFAULT_PORT);
+            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, objName);
             TestInterface servant = new TestInterfaceServant();
 
             // creating and releasing using name, host, port
@@ -166,7 +166,7 @@ public class DefaultCorbaHostTestCase {
         // test using URI
         try {
             TestInterface servant = new TestInterfaceServant();
-            String uri = CorbaHostUtils.createCorbanameURI("AlreadyRegisteredTest2", LOCALHOST, DEFAULT_PORT);
+            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, "AlreadyRegisteredTest2");
             host.registerServant(uri, servant);
             host.registerServant(uri, servant);
             fail();
@@ -225,7 +225,7 @@ public class DefaultCorbaHostTestCase {
 
         // test using URI
         try {
-            String uri = CorbaHostUtils.createCorbanameURI("NonExistingReference1", LOCALHOST, DEFAULT_PORT);
+            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, "NonExistingReference1");
             host.unregisterServant(uri);
             fail();
         } catch (CorbaHostException e) {

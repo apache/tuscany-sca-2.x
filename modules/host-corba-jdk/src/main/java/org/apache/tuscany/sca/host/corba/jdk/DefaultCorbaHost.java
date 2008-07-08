@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
-import org.apache.tuscany.sca.host.corba.CorbanameDetails;
+import org.apache.tuscany.sca.host.corba.CorbanameURL;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NameComponent;
@@ -88,7 +88,7 @@ public class DefaultCorbaHost implements CorbaHost {
     }
 
     public void registerServant(String uri, Object servantObject) throws CorbaHostException {
-        CorbanameDetails details = CorbaHostUtils.getServiceDetails(uri);
+        CorbanameURL details = CorbaHostUtils.getServiceDetails(uri);
         ORB orb = createORB(details.getHost(), details.getPort(), false);
         registerServantCommon(orb, details.getNameService(), details.getNamePath(), servantObject);
     }
@@ -96,7 +96,7 @@ public class DefaultCorbaHost implements CorbaHost {
     public void registerServant(ORB orb, String name, Object servantObject) throws CorbaHostException {
         validateName(name);
         List<String> namePath = tokenizeNamePath(name);
-        registerServantCommon(orb, CorbaHostUtils.DEFAULT_NAME_SERVICE, namePath, servantObject);
+        registerServantCommon(orb, CorbanameURL.DEFAULT_NAME_SERVICE, namePath, servantObject);
     }
 
     private void registerServantCommon(ORB orb, String nameService, List<String> namePath, Object servantObject)
@@ -130,7 +130,7 @@ public class DefaultCorbaHost implements CorbaHost {
     }
 
     public void unregisterServant(String uri) throws CorbaHostException {
-        CorbanameDetails details = CorbaHostUtils.getServiceDetails(uri);
+        CorbanameURL details = CorbaHostUtils.getServiceDetails(uri);
         ORB orb = createORB(details.getHost(), details.getPort(), false);
         unregisterServantCommon(orb, details.getNamePath());
     }
@@ -143,7 +143,7 @@ public class DefaultCorbaHost implements CorbaHost {
 
     private void unregisterServantCommon(ORB orb, List<String> namePath) throws CorbaHostException {
         try {
-            NamingContext namingCtx = getNamingContext(orb, CorbaHostUtils.DEFAULT_NAME_SERVICE);
+            NamingContext namingCtx = getNamingContext(orb, CorbanameURL.DEFAULT_NAME_SERVICE);
             for (int i = 0; i < namePath.size() - 1; i++) {
                 NameComponent nc = new NameComponent(namePath.get(i), "");
                 namingCtx = NamingContextHelper.narrow(namingCtx.resolve(new NameComponent[] {nc}));
@@ -157,7 +157,7 @@ public class DefaultCorbaHost implements CorbaHost {
 
     public Object lookup(String name, String host, int port) throws CorbaHostException {
         validateName(name);
-        return lookup(CorbaHostUtils.createCorbanameURI(name, host, port));
+        return lookup(CorbaHostUtils.createCorbanameURI(host, port, name));
     }
 
     public Object lookup(String uri) throws CorbaHostException {
