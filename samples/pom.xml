@@ -86,6 +86,7 @@
                 <module>implementation-pojo-extension</module>
                 <module>loanapplication</module>
                 <module>osgi-supplychain</module>
+                <module>photo-gallery</module>
                 <module>quote-xquery</module>
                 <module>simple-bigbank</module>
                 <module>simple-bigbank-spring</module>
