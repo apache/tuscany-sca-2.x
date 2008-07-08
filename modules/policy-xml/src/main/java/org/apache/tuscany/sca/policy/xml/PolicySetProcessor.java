@@ -371,13 +371,13 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             for (Intent providedIntent : policySet.getProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
                     Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
-                    if (resolvedProvidedIntent != null) {
+                    if (!resolvedProvidedIntent.isUnresolved()) {
                         providedIntents.add(resolvedProvidedIntent);
                     } else {
                     	error("ProvidedIntentNotFound", policySet, providedIntent, policySet);
+                    	return;
                         //throw new ContributionResolveException("Provided Intent - " + providedIntent
                                                            //+ " not found for PolicySet " + policySet);
-
                     }
                 } else {
                     providedIntents.add(providedIntent);
@@ -394,11 +394,11 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             Intent mappedIntent = entry.getKey();
             if (mappedIntent.isUnresolved()) {
                 Intent resolvedMappedIntent = resolver.resolveModel(Intent.class, mappedIntent);
-    
-                if (resolvedMappedIntent != null) {
+                if (!resolvedMappedIntent.isUnresolved()) {
                     mappedPolicies.put(resolvedMappedIntent, entry.getValue());
                 } else {
                 	error("MappedIntentNotFound", policySet, mappedIntent, policySet);
+                	return;
                     //throw new ContributionResolveException("Mapped Intent - " + mappedIntent
                                                    //+ " not found for PolicySet " + policySet);    
                 }
@@ -417,10 +417,11 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
             if (referredPolicySet.isUnresolved()) {
                 PolicySet resolvedReferredPolicySet = resolver.resolveModel(PolicySet.class, referredPolicySet);
-                if (resolvedReferredPolicySet != null) {
+                if (!resolvedReferredPolicySet.isUnresolved()) {
                     referredPolicySets.add(resolvedReferredPolicySet);
                 } else {
                 	error("ReferredPolicySetNotFound", policySet, referredPolicySet, policySet);
+                	return;
                     //throw new ContributionResolveException("Referred PolicySet - " + referredPolicySet
                                                              //+ "not found for PolicySet - " + policySet);
                 }
@@ -453,9 +454,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             //resolve the policy attachments
             resolvePolicies(policySet, resolver);
              
-            if ( !policySet.isUnresolved() ) {
+            /*if ( !policySet.isUnresolved() ) {
                  resolver.addModel(policySet);
-            }
+            }*/
         }
      }   
  }

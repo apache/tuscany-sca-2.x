@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.definitions.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -40,6 +43,7 @@ import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -173,12 +177,28 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         // start by adding all of the top level artifacts into the resolver as there
         // are many cross artifact references in a definitions file and we don't want
         // to be dependent on the order things appear
+    	
+    	List<Intent> simpleIntents = new ArrayList<Intent>();
+    	List<ProfileIntent> profileIntents = new ArrayList<ProfileIntent>();
+    	List<QualifiedIntent> qualifiedIntents = new ArrayList<QualifiedIntent>();
+        List<PolicySet> simplePolicySets = new ArrayList<PolicySet>();
+        List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
         
         for (Intent policyIntent : scaDefns.getPolicyIntents()) {
-            resolver.addModel(policyIntent);
-        }
+        	if (policyIntent instanceof ProfileIntent)
+        	    profileIntents.add((ProfileIntent)policyIntent);
+        	else if (policyIntent instanceof QualifiedIntent)
+        	    qualifiedIntents.add((QualifiedIntent)policyIntent);
+        	else simpleIntents.add(policyIntent);
+        	
+        	resolver.addModel(policyIntent);
+        }        
         
         for (PolicySet policySet : scaDefns.getPolicySets()) {
+            if (policySet.getReferencedPolicySets().isEmpty())
+                simplePolicySets.add(policySet);
+            else referredPolicySets.add(policySet);
+            
             resolver.addModel(policySet);
         }
         
@@ -193,15 +213,20 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         // now resolve everything to ensure that any references between
         // artifacts are satisfied
         
-        for (int count = 0, size = scaDefns.getPolicyIntents().size(); count < size; count++) {
-            Intent intent = scaDefns.getPolicyIntents().get(count);
-            extensionProcessor.resolve(intent, resolver);
-        }
+        for (Intent policyIntent : simpleIntents)
+            extensionProcessor.resolve(policyIntent, resolver);
         
-        for (int count = 0, size = scaDefns.getPolicySets().size(); count < size; count++) {
-            PolicySet policySet = scaDefns.getPolicySets().get(count);
+        for (ProfileIntent policyIntent : profileIntents)
+            extensionProcessor.resolve(policyIntent, resolver);
+        
+        for (QualifiedIntent policyIntent : qualifiedIntents)
+            extensionProcessor.resolve(policyIntent, resolver);
+        
+        for (PolicySet policySet : simplePolicySets)
             extensionProcessor.resolve(policySet, resolver);
-        }
+        
+        for (PolicySet policySet : referredPolicySets) 
+            extensionProcessor.resolve(policySet, resolver);        
         
         for (int count = 0, size = scaDefns.getBindingTypes().size(); count < size; count++) {
             IntentAttachPointType bindingType = scaDefns.getBindingTypes().get(count);

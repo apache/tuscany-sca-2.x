@@ -24,9 +24,16 @@
             xmlns:p="http://sample/policy">
     <!-- POLICY SETS -->
     <sca:policySet name="EncryptionPolicy"
-       provides="sca:confidentiality"
-       appliesTo="e:binding.echo"
-       >
+       provides="confidentiality"
+       appliesTo="e:binding.echo">
         <p:echoBindingPolicy name="Encryption" strategy="echo.provider.policy.ReverseEncryptionStrategy" />
     </sca:policySet>
+	
+	<sca:intent name="confidentiality"
+ 	   constrains="sca:binding">
+ 	   <description>
+ 	   Communitcation thro this binding must prevent
+ 	   unauthorized users from reading the messages.
+ 	   </description>
+    </sca:intent>
 </sca:definitions>

@@ -30,8 +30,7 @@
 					
 <!-- Intents and Policysets to assume targetnamespace -->									
 <intent name="TestIntentOne" 
- 			 constrains="sca:binding"
- 			 >
+ 			 constrains="sca:binding">
  			 <description>
  			 	Test Intent
  			 </description>
@@ -39,7 +38,7 @@
  
   <intent name="TestIntentTwo" 
  			 constrains="sca:binding"
- 			 requires="TestIntentOne">
+ 			 requires="test:TestIntentOne">
  			 <description>
  			 	Protect messages from unauthorized reading or modification
  			 </description>

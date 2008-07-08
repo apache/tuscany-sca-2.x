@@ -23,15 +23,6 @@
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
  <!-- WS Security POLICY SETS -->
- <!-- A policyset that uses WS Policy -->
- <sca:intent name="wsAuthentication" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 Communitcation thro this binding required Authentication.
- 			 </description>
- </sca:intent>	
- 
- <!-- WS Security POLICY SETS -->
   <sca:policySet name="wsAuthenticationPolicy"
  	provides="sca:authentication"
  	appliesTo="//sca:binding.ws"

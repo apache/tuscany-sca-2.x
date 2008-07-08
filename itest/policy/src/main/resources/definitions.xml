@@ -44,8 +44,7 @@
     </sca:intent>
 
     <sca:intent name="TestIntent_1.Qualifier_1" />
-
-
+    <sca:intent name="TestIntent_4.Qualifier_1" />
 
     <!-- PolicySets -->
     <sca:policySet name="TestPolicySet_1_implementation" provides="ip:TestIntent_1"

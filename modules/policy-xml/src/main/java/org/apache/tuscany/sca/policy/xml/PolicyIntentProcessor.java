@@ -247,10 +247,24 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
             for (Intent requiredIntent : policyIntent.getRequiredIntents()) {
                 if (requiredIntent.isUnresolved()) {
                     Intent resolvedRequiredIntent = resolver.resolveModel(Intent.class, requiredIntent);
-                    if (resolvedRequiredIntent != null) {
+                    // At this point, when the required intent is not resolved, it does not mean 
+                    // its undeclared, chances are that their dependency are not resolved yet. 
+                    // Lets try to resolve them first.
+                    if (resolvedRequiredIntent.isUnresolved()) {
+                        if (resolvedRequiredIntent instanceof ProfileIntent) {
+                            if ((((ProfileIntent)resolvedRequiredIntent).getRequiredIntents()).contains(policyIntent)) {
+                                error("CyclicReferenceFound", resolver, requiredIntent, policyIntent);
+                                return;
+                            }
+                            resolveDependent(resolvedRequiredIntent, resolver);
+                        }
+                    }
+                
+                    if (!resolvedRequiredIntent.isUnresolved()) {
                         requiredIntents.add(resolvedRequiredIntent);
                     } else {
                     	error("RequiredIntentNotFound", resolver, requiredIntent, policyIntent);
+                    	return;
                         //throw new ContributionResolveException("Required Intent - " + requiredIntent
                                                     //+ " not found for ProfileIntent " + policyIntent);
                     }
@@ -270,17 +284,34 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
             Intent qualifiableIntent = policyIntent.getQualifiableIntent();
             if (qualifiableIntent.isUnresolved()) {
                 Intent resolvedQualifiableIntent = resolver.resolveModel(Intent.class, qualifiableIntent);
-    
-                if (resolvedQualifiableIntent != null) {
+                // At this point, when the qualifiable intent is not resolved, it does not mean 
+                // its undeclared, chances are that their dependency are not resolved yet. 
+                // Lets try to resolve them first.
+                if (resolvedQualifiableIntent.isUnresolved()) {
+                    if (resolvedQualifiableIntent instanceof QualifiedIntent) {
+                        resolveDependent(resolvedQualifiableIntent, resolver);
+                    }
+                }
+                
+                if (!resolvedQualifiableIntent.isUnresolved()) {
                     policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
                 } else {
                 	error("QualifiableIntentNotFound", resolver, qualifiableIntent, policyIntent);
                     //throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
                                                     //+ " not found for QualifiedIntent " + policyIntent);
-                }
-    
+                }    
             }
         }
+    }
+    
+    public void resolveDependent(Intent policyIntent, ModelResolver resolver) throws ContributionResolveException {
+        if (policyIntent instanceof ProfileIntent)
+            resolveProfileIntent((ProfileIntent)policyIntent, resolver);
+        
+        if (policyIntent instanceof QualifiedIntent)
+            resolveQualifiedIntent((QualifiedIntent)policyIntent, resolver);
+        
+        resolveContrainedArtifacts(policyIntent, resolver);
     }
     
     public void resolve(T policyIntent, ModelResolver resolver) throws ContributionResolveException {
@@ -360,11 +391,12 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
             List<Intent> excludedIntents = new ArrayList<Intent>();
             for (Intent excludedIntent : policyIntent.getExcludedIntents()) {
                 if (excludedIntent.isUnresolved()) {
-                    Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent);
-                    if (resolvedExcludedIntent != null) {
+                    Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent);                                     
+                    if (!resolvedExcludedIntent.isUnresolved()) {
                         excludedIntents.add(resolvedExcludedIntent);
                     } else {
                     	error("ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
+                    	return;
                         //throw new ContributionResolveException("Excluded Intent " + excludedIntent
                                                          //+ " not found for intent " + policyIntent);
                     }
