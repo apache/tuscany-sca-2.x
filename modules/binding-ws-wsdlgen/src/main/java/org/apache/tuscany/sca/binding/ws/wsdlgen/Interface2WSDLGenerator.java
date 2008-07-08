@@ -152,7 +152,7 @@ public class Interface2WSDLGenerator {
         throw new WSDLGenerationException(problem.toString(), null, problem);
     }
     
-    private void addDataType(Map<String, List<DataType>> map, DataType type) {
+    private void addDataType(Map<XMLTypeHelper, List<DataType>> map, DataType type, Map<String, XMLTypeHelper> helpers) {
         if (type == null) {
             return;
         }
@@ -164,33 +164,34 @@ public class Interface2WSDLGenerator {
             DataType dt = (DataType)type.getLogical();
             db = dt.getDataBinding();
         }
-        List<DataType> types = map.get(db);
+        XMLTypeHelper helper = helpers.get(db);
+        List<DataType> types = map.get(helper);
         if (types == null) {
             types = new ArrayList<DataType>();
-            map.put(db, types);
+            map.put(helper, types);
         }
         types.add(type);
     }
     
-    private Map<String, List<DataType>> getDataTypes(Interface intf, boolean useWrapper) {
-        Map<String, List<DataType>> dataTypes = new HashMap<String, List<DataType>>();
+    private Map<XMLTypeHelper, List<DataType>> getDataTypes(Interface intf, boolean useWrapper, Map<String, XMLTypeHelper> helpers) {
+        Map<XMLTypeHelper, List<DataType>> dataTypes = new HashMap<XMLTypeHelper, List<DataType>>();
         for (Operation op : intf.getOperations()) {
             WrapperInfo wrapper = op.getWrapper();
             if (useWrapper && wrapper != null) {
                 DataType dt1 = wrapper.getInputWrapperType();
-                addDataType(dataTypes, dt1);
+                addDataType(dataTypes, dt1, helpers);
                 DataType dt2 = wrapper.getOutputWrapperType();
-                addDataType(dataTypes, dt2);
+                addDataType(dataTypes, dt2, helpers);
             } else {
                 for (DataType dt1 : op.getInputType().getLogical()) {
-                    addDataType(dataTypes, dt1);
+                    addDataType(dataTypes, dt1, helpers);
                 }
                 DataType dt2 = op.getOutputType();
-                addDataType(dataTypes, dt2);
+                addDataType(dataTypes, dt2, helpers);
             }
             for (DataType<DataType> dt3 : op.getFaultTypes()) {
                 DataType dt4 = dt3.getLogical();
-                addDataType(dataTypes, dt4);
+                addDataType(dataTypes, dt4, helpers);
             }
         }
         return dataTypes;
@@ -244,8 +245,8 @@ public class Interface2WSDLGenerator {
         // call each helper in turn to populate the wsdl.types element
         XmlSchemaCollection schemaCollection = new XmlSchemaCollection(); 
 
-        for (Map.Entry<String, List<DataType>> en: getDataTypes(interfaze, false).entrySet()) {
-            XMLTypeHelper helper = helpers.get(en.getKey());
+        for (Map.Entry<XMLTypeHelper, List<DataType>> en: getDataTypes(interfaze, false, helpers).entrySet()) {
+            XMLTypeHelper helper = en.getKey();
             if (helper == null) {
                 continue;
             }
