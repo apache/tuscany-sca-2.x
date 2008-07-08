@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.policy.util;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -31,43 +30,34 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class PolicyHandlerUtils {
-    public static PolicyHandler findPolicyHandler(PolicySet policySet, 
-                                                 Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) 
-                                throws IllegalAccessException, ClassNotFoundException, InstantiationException {
-        
+    public static PolicyHandler findPolicyHandler(PolicySet policySet, List<PolicyHandlerTuple> policyHandlerClassNames)
+        throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+
         PolicyHandler handler = null;
-        
-        for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
-            for ( PolicyHandlerTuple handlerTuple : policyHandlerClassNames.get(classLoader) ) {
-                //System.out.println(handlerTuple);
-                for ( Intent intent : policySet.getProvidedIntents() ) {
-                    if ( intent.getName().equals(handlerTuple.getProvidedIntentName())) {
-                        for ( Object policy : policySet.getPolicies() ) {
-                            if ( policy.getClass().getName().equals(handlerTuple.getPolicyModelClassName())) {
-                                if ( handlerTuple.getAppliesTo() != null  ) {
-                                    if ( handlerTuple.getAppliesTo().equals(policySet.getAppliesTo() )) {
-                                        handler = 
-                                            (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
-                                                                         true, 
-                                                                         classLoader).newInstance();
-                                            handler.setApplicablePolicySet(policySet);
-                                            return handler;
-                                    }
-                                } else {
-                                    handler = 
-                                        (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
-                                                                     true, 
-                                                                     classLoader).newInstance();
-                                        handler.setApplicablePolicySet(policySet);
-                                        return handler;
+
+        for (PolicyHandlerTuple handlerTuple : policyHandlerClassNames) {
+            //System.out.println(handlerTuple);
+            for (Intent intent : policySet.getProvidedIntents()) {
+                if (intent.getName().equals(handlerTuple.getProvidedIntentName())) {
+                    for (Object policy : policySet.getPolicies()) {
+                        if (policy.getClass().getName().equals(handlerTuple.getPolicyModelClassName())) {
+                            if (handlerTuple.getAppliesTo() != null) {
+                                if (handlerTuple.getAppliesTo().equals(policySet.getAppliesTo())) {
+                                    handler = (PolicyHandler)handlerTuple.getDeclaration().loadClass().newInstance();
+                                    handler.setApplicablePolicySet(policySet);
+                                    return handler;
                                 }
+                            } else {
+                                handler = (PolicyHandler)handlerTuple.getDeclaration().loadClass().newInstance();
+                                handler.setApplicablePolicySet(policySet);
+                                return handler;
                             }
                         }
                     }
                 }
             }
         }
-        
+
         return handler;
     } 
    

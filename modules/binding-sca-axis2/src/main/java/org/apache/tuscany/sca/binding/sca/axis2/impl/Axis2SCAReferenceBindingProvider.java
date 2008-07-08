@@ -21,15 +21,14 @@ package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -71,7 +70,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                             RuntimeComponentReference reference,
                                             DistributedSCABinding binding,
                                             ExtensionPointRegistry extensionPoints,
-                                            Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
+                                            List<PolicyHandlerTuple> policyHandlerClassnames) {
 
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         ServletHost servletHost = servletHosts.getServletHosts().get(0);

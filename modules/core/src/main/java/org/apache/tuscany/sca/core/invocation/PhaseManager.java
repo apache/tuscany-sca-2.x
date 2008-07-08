@@ -144,7 +144,7 @@ public class PhaseManager {
 
         for (ServiceDeclaration d : services) {
             if (log.isLoggable(Level.FINE)) {
-                log.fine(d.getResource() + ": " + d.getAttributes());
+                log.fine(d.getLocation() + ": " + d.getAttributes());
             }
             String name = d.getAttributes().get("name");
             if (name == null) {

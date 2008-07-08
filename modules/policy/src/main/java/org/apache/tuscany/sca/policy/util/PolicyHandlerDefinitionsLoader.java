@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  */
 public class PolicyHandlerDefinitionsLoader {
     
-    public static Map<ClassLoader, List<PolicyHandlerTuple>> loadPolicyHandlerClassnames()  {
+    public static List<PolicyHandlerTuple> loadPolicyHandlerClassnames()  {
         // Get the processor service declarations
         Set<ServiceDeclaration> sds;
         try {
@@ -47,15 +47,10 @@ public class PolicyHandlerDefinitionsLoader {
             throw new IllegalStateException(e);
         }
         
-        Map<ClassLoader, List<PolicyHandlerTuple>> handlerTuples = new Hashtable<ClassLoader, List<PolicyHandlerTuple>>();
+        List<PolicyHandlerTuple> handlerTupleList = new ArrayList<PolicyHandlerTuple>();
+        
+        Map<Object, List<PolicyHandlerTuple>> handlerTuples = new Hashtable<Object, List<PolicyHandlerTuple>>();
         for (ServiceDeclaration sd : sds) {
-            ClassLoader cl = sd.getClassLoader();
-            
-            List<PolicyHandlerTuple> handlerTupleList = handlerTuples.get(cl);
-            if ( handlerTupleList == null ) {
-                handlerTupleList = new ArrayList<PolicyHandlerTuple>();
-                handlerTuples.put(cl, handlerTupleList);
-            }
             Map<String, String> attributes = sd.getAttributes();
             String intentName = attributes.get("intent");
             QName intentQName = getQName(intentName);
@@ -64,10 +59,10 @@ public class PolicyHandlerDefinitionsLoader {
             if ( appliesTo != null && !appliesTo.startsWith("/") ) {
                 appliesTo = "//" + appliesTo;
             }
-            handlerTupleList.add(new PolicyHandlerTuple(sd.getClassName(), intentQName, policyModelClassName, appliesTo));
+            handlerTupleList.add(new PolicyHandlerTuple(sd, sd.getClassName(), intentQName, policyModelClassName, appliesTo));
         }
 
-        return handlerTuples;
+        return handlerTupleList;
     }
     
     private static QName getQName(String qname) { 

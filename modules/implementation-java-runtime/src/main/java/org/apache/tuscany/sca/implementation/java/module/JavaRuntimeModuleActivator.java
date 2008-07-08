@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -77,7 +76,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
-        Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
+        List<PolicyHandlerTuple> policyHandlerClassNames = null;
         policyHandlerClassNames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
         
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactories);

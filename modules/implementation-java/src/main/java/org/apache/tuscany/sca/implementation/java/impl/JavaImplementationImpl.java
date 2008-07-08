@@ -51,7 +51,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
-    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
+    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
     
     protected JavaImplementationImpl() {
         super();
@@ -157,11 +157,11 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
         this.maxIdleTime = maxIdleTime;
     }
 
-    public Map<ClassLoader, List<PolicyHandlerTuple>> getPolicyHandlerClassNames() {
+    public List<PolicyHandlerTuple> getPolicyHandlerClassNames() {
         return policyHandlerClassNames;
     }
 
-    public void setPolicyHandlerClassNames(Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
+    public void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames) {
         this.policyHandlerClassNames = policyHandlerClassNames;
     }
  

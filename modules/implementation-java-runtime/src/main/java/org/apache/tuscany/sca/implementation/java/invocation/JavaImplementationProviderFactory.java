@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -42,14 +41,14 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
     private ProxyFactory proxyService;
     private ComponentContextFactory componentContextFactory;
     private RequestContextFactory requestContextFactory;
-    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
+    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
 
     public JavaImplementationProviderFactory(ProxyFactory proxyService,
                                              DataBindingExtensionPoint dataBindingRegistry,
                                              JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                              ComponentContextFactory componentContextFactory,
                                              RequestContextFactory requestContextFactory,
-                                             Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
+                                             List<PolicyHandlerTuple> policyHandlerClassNames) {
         super();
         this.proxyService = proxyService;
         this.dataBindingRegistry = dataBindingRegistry;
