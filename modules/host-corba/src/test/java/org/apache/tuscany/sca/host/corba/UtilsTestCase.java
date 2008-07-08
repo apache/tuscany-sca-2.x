@@ -26,13 +26,11 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.host.corba.CorbanameDetails;
-import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.junit.Test;
 
 public class UtilsTestCase {
 
-    private void assertDetailsAreOk(CorbanameDetails details, String host, int port, String nameService, List<String> namePath) {
+    private void assertDetailsAreOk(CorbanameURL details, String host, int port, String nameService, List<String> namePath) {
         assertTrue(details.getHost().equals(host));
         assertTrue(details.getNameService().equals(nameService));
         assertTrue(details.getPort() == port);
@@ -45,7 +43,7 @@ public class UtilsTestCase {
     @Test
     public void test_validCorbaname() {
         String testUri = null;
-        CorbanameDetails details = null;
+        CorbanameURL details = null;
         List<String> namePath = null;
         
         testUri = "corbaname:ignore:host:1234/Service#Reference";
@@ -58,43 +56,43 @@ public class UtilsTestCase {
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, "host", CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, "host", CorbanameURL.DEFAULT_PORT, "Service", namePath);
         
         testUri = "corbaname:ignore:host/Service#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, "host", CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, "host", CorbanameURL.DEFAULT_PORT, "Service", namePath);
         
         testUri = "corbaname:ignore:/Service#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, "Service", namePath);
         
         testUri = "corbaname:ignore/Service#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, "Service", namePath);
 
         testUri = "corbaname:/Service#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, "Service", namePath);
         
         testUri = "corbaname/Service#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, "Service", namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, "Service", namePath);
         
         testUri = "corbaname#Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
         namePath = new ArrayList<String>();
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, CorbaHostUtils.DEFAULT_NAME_SERVICE, namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, CorbanameURL.DEFAULT_NAME_SERVICE, namePath);
 
         testUri = "corbaname#Parent/Mid/Reference";
         details = CorbaHostUtils.getServiceDetails(testUri);
@@ -102,7 +100,7 @@ public class UtilsTestCase {
         namePath.add("Parent");
         namePath.add("Mid");
         namePath.add("Reference");
-        assertDetailsAreOk(details, CorbaHostUtils.DEFAULT_HOST, CorbaHostUtils.DEFAULT_PORT, CorbaHostUtils.DEFAULT_NAME_SERVICE, namePath);
+        assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, CorbanameURL.DEFAULT_NAME_SERVICE, namePath);
     }
     
     @Test
@@ -128,7 +126,7 @@ public class UtilsTestCase {
     
     @Test
     public void test_creatingCorbanameURI() {
-        String uri = CorbaHostUtils.createCorbanameURI("SomeName", "SomeHost", 1000);
-        assertEquals("corbaname::SomeHost:1000#SomeName", uri);
+        String uri = CorbaHostUtils.createCorbanameURI("SomeHost", 1000, "SomeName");
+        assertEquals("corbaname::SomeHost:1000/NameService#SomeName", uri);
     }
 }
