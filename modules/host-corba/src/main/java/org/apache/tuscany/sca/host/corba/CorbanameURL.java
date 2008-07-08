@@ -157,6 +157,20 @@ public class CorbanameURL {
     public List<String> getNamePath() {
         return namePath;
     }
+    
+    public String getName() {
+        if (namePath != null) {
+            StringBuffer buf = new StringBuffer();
+            for (int i = 0; i < namePath.size(); i++) {
+                buf.append(namePath.get(i));
+                if (i < namePath.size() - 1) {
+                    buf.append("/");
+                }
+            }
+            return buf.toString();
+        }
+        return null;
+    }
 
     public void setNamePath(List<String> namePath) {
         this.namePath = namePath;
