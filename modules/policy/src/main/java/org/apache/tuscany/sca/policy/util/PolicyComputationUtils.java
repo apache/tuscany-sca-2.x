@@ -231,15 +231,13 @@ public class PolicyComputationUtils {
     private static byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets)
         throws XPathExpressionException, TransformerConfigurationException, TransformerException {
         
-        int prefixCount = 1;
-
         for (PolicySet policySet : policySets) {
             if (policySet.getAppliesTo() != null) {
-                addApplicablePolicySets(policySet, doc, prefixCount);
+                addApplicablePolicySets(policySet, doc);
             }
 
             if (policySet.getAlwaysAppliesTo() != null) {
-                addAlwaysApplicablePolicySets(policySet, doc, prefixCount);
+                addAlwaysApplicablePolicySets(policySet, doc);
             }
         }
 
@@ -265,8 +263,7 @@ public class PolicyComputationUtils {
     }
 
     private static void addAlwaysApplicablePolicySets(PolicySet policySet,
-                                                      Document doc,
-                                                      int prefixCount) throws XPathExpressionException {
+                                                      Document doc) throws XPathExpressionException {
         XPathExpression expression = policySet.getAlwaysAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
 
@@ -275,14 +272,11 @@ public class PolicyComputationUtils {
                 Node aResultNode = result.item(counter);
 
                 String alwaysApplicablePolicySets = null;
-                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
-                String policySetsAttrPrefix = "sca";
 
-                policySetPrefix =
-                    declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName()
-                        .getNamespaceURI());
-                policySetsAttrPrefix =
-                    declareNamespace((Element)aResultNode, policySetsAttrPrefix, SCA10_NS);
+                String policySetPrefix =
+                    declareNamespace((Element)aResultNode, policySet.getName().getNamespaceURI());
+                String policySetsAttrPrefix =
+                    declareNamespace((Element)aResultNode, SCA10_NS);
                 if (aResultNode.getAttributes().getNamedItem(POLICY_SETS_ATTR) != null) {
                     alwaysApplicablePolicySets =
                         aResultNode.getAttributes().getNamedItem(POLICY_SETS_ATTR).getNodeValue();
@@ -305,8 +299,7 @@ public class PolicyComputationUtils {
     }
 
     private static void addApplicablePolicySets(PolicySet policySet,
-                                         Document doc,
-                                         int prefixCount) throws XPathExpressionException {
+                                         Document doc) throws XPathExpressionException {
         XPathExpression expression = policySet.getAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
 
@@ -315,15 +308,11 @@ public class PolicyComputationUtils {
                 Node aResultNode = result.item(counter);
 
                 String applicablePolicySets = null;
-                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
-                String appPolicyAttrPrefix = APPLICABLE_POLICYSET_ATTR_PREFIX;
 
-                policySetPrefix =
-                    declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName()
-                        .getNamespaceURI());
-                appPolicyAttrPrefix =
+                String policySetPrefix =
+                    declareNamespace((Element)aResultNode, policySet.getName().getNamespaceURI());
+                String appPolicyAttrPrefix =
                     declareNamespace((Element)aResultNode,
-                                     appPolicyAttrPrefix,
                                      APPLICABLE_POLICYSET_ATTR_NS);
                 if (aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS,
                                                                APPLICABLE_POLICYSET_ATTR) != null) {
@@ -385,20 +374,12 @@ public class PolicyComputationUtils {
 
     }
     
-    private static String declareNamespace(Element element, String prefix, String ns) {
+    private static String declareNamespace(Element element, String ns) {
         if (ns == null) {
             ns = "";
         }
-        if (prefix == null) {
-            prefix = "";
-        }
-        String qname = null;
-        if ("".equals(prefix)) {
-            qname = "xmlns";
-        } else {
-            qname = "xmlns:" + prefix;
-        }
         Node node = element;
+        String prefix = "";
         boolean declared = false;
         while (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
             if ( node.lookupPrefix(ns) != null ) {
@@ -419,6 +400,14 @@ public class PolicyComputationUtils {
             }
         }
         if (!declared) {
+            // Find an available prefix
+            for (int i=1; ; i++) {
+                prefix = POLICYSET_PREFIX + i;
+                if (element.lookupNamespaceURI(prefix) == null) {
+                    break;
+                }
+            }
+            String qname = "xmlns:" + prefix;
             org.w3c.dom.Attr attr = element.getOwnerDocument().createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, qname);
             attr.setValue(ns);
             element.setAttributeNodeNS(attr);
