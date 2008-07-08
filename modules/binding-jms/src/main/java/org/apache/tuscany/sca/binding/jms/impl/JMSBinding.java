@@ -18,14 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.jms.impl;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jms.DeliveryMode;
-
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 
 /**
  * Models a binding to a JMS resource.
@@ -136,7 +132,7 @@ public class JMSBinding implements Binding {
     // </headers>?
     // private String jmsType = null;
     // private String jmsCorrelationId = null;
-    private int jmsDeliveryMode = DeliveryMode.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
+    private int jmsDeliveryMode = JMSBindingConstants.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
     private int jmsTimeToLive = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
     private int jmsPriority = JMSBindingConstants.DEFAULT_PRIORITY;
     // 
@@ -421,20 +417,12 @@ public class JMSBinding implements Binding {
         return requestMessageProcessorName;
     }
 
-    public JMSMessageProcessor getRequestMessageProcessor() {
-        return (JMSMessageProcessor)instantiate(null, requestMessageProcessorName);
-    }
-
     public void setResponseMessageProcessorName(String name) {
         this.responseMessageProcessorName = name;
     }
 
     public String getResponseMessageProcessorName() {
         return responseMessageProcessorName;
-    }
-
-    public JMSMessageProcessor getResponseMessageProcessor() {
-        return (JMSMessageProcessor)instantiate(null, responseMessageProcessorName);
     }
 
     public String getOperationSelectorPropertyName() {
@@ -451,56 +439,6 @@ public class JMSBinding implements Binding {
 
     public void setOperationSelectorName(String operationSelectorName) {
         this.operationSelectorName = operationSelectorName;
-    }
-
-    /**
-     * Used to create instances of the JMSResourceFactory and RequestMessageProcessor and ResponseMessageProcessor from
-     * string based class name provided in the configuration
-     * 
-     * @param cl ClassLoader
-     * @param className the string based class name to load and instantiate
-     * @return the new object
-     */
-    private Object instantiate(ClassLoader cl, String className) {
-        Object instance;
-        if (cl == null) {
-            cl = this.getClass().getClassLoader();
-        }
-
-        try {
-            Class clazz;
-
-            try {
-                clazz = cl.loadClass(className);
-            } catch (ClassNotFoundException e) {
-                clazz = this.getClass().getClassLoader().loadClass(className);
-            }
-
-            Constructor constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
-            instance = constructor.newInstance(this);
-
-        } catch (Throwable e) {
-            throw new JMSBindingException("Exception instantiating OperationAndDataBinding class", e);
-        }
-
-        return instance;
-    }
-
-    /**
-     * The validation rules for the JMS model are relatively complicated to they all live together here
-     */
-    public void validate() throws JMSBindingException {
-        /*
-         * first fix up anything now the model has been read
-         */
-
-        /*
-         * Now some cross field validation
-         */
-
-        // connection factory doesn't contradict destination type
-        // connection factory and activation Specification are mutually exclusive
-        // TODO check Specification for all validations
     }
 
     // TODO...

@@ -82,7 +82,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-jms</artifactId>
+            <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

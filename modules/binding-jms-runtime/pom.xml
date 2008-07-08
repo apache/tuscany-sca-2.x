@@ -25,15 +25,53 @@
         <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-binding-jms</artifactId>
-    <name>Apache Tuscany SCA JMS Binding Model</name>
+    <artifactId>tuscany-binding-jms-runtime</artifactId>
+    <name>Apache Tuscany SCA JMS Binding Runtime</name>
 
     <dependencies>
             
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-assembly-xml</artifactId>
+            <artifactId>tuscany-binding-jms</artifactId>
             <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-axiom</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -43,7 +81,20 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+           <groupId>org.apache.geronimo.specs</groupId>
+           <artifactId>geronimo-jms_1.1_spec</artifactId>
+           <version>1.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>org.apache.geronimo.specs</groupId>
+                   <artifactId>geronimo-jms_1.1_spec</artifactId>
+               </exclusion>
+           </exclusions>
+        </dependency>         
+
     </dependencies>
+    
 
     <build>
         <plugins>
@@ -56,7 +107,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jms</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.jms*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.jms.provider*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

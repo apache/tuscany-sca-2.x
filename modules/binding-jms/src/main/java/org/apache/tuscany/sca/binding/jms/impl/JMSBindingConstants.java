@@ -24,7 +24,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
 
 /**
  * Constants for the JMS binding.
@@ -56,10 +55,15 @@ public interface JMSBindingConstants {
     String DEFAULT_JNDI_URL = "tcp://localhost:61616";
     int DEFAULT_TIME_TO_LIVE = 20000; // in milliseconds
     int DEFAULT_PRIORITY = 1;
+    int NON_PERSISTENT = 1; // Maps to javax.jms.DeliveryMode
     String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
-    String DEFAULT_MP_CLASSNAME = XMLTextMessageProcessor.class.getName();
+    String XML_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor";
+    String TEXT_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.TextMessageProcessor";
+    String OBJECT_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.ObjectMessageProcessor";
+    String DEFAULT_MP_CLASSNAME = XML_MP_CLASSNAME;
     String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
     String FAULT_PROPERTY = "org.apache.tuscany.sca.fault";
+    
 
 }

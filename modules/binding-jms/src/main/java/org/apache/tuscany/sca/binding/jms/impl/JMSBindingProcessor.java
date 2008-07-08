@@ -32,9 +32,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
-import org.apache.tuscany.sca.binding.jms.provider.ObjectMessageProcessor;
-import org.apache.tuscany.sca.binding.jms.provider.TextMessageProcessor;
-import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -203,11 +200,11 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         String messageProcessorName = reader.getAttributeValue(null, "messageProcessor");
         if (messageProcessorName != null && messageProcessorName.length() > 0) {
             if ("XMLTextMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = XMLTextMessageProcessor.class.getName();
+                messageProcessorName = JMSBindingConstants.XML_MP_CLASSNAME;
             } else if ("TextMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = TextMessageProcessor.class.getName();
+                messageProcessorName = JMSBindingConstants.TEXT_MP_CLASSNAME;
             } else if ("ObjectMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = ObjectMessageProcessor.class.getName();
+                messageProcessorName = JMSBindingConstants.OBJECT_MP_CLASSNAME;
             }
             jmsBinding.setRequestMessageProcessorName(messageProcessorName);
             jmsBinding.setResponseMessageProcessorName(messageProcessorName);
@@ -256,7 +253,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             }
         }
 
-        jmsBinding.validate();
+        validate();
 
         return jmsBinding;
     }
@@ -425,6 +422,23 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
 
     private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
     	warning("DoesntProcessOperationProperties", jmsBinding);
+    }
+
+    /**
+     * The validation rules for the JMS model are relatively complicated to they all live together here
+     */
+    public void validate() throws JMSBindingException {
+        /*
+         * first fix up anything now the model has been read
+         */
+
+        /*
+         * Now some cross field validation
+         */
+
+        // connection factory doesn't contradict destination type
+        // connection factory and activation Specification are mutually exclusive
+        // TODO check Specification for all validations
     }
 
 }
