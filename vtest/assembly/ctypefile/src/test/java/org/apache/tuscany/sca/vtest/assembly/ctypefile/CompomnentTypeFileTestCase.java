@@ -24,7 +24,6 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +33,7 @@ public class CompomnentTypeFileTestCase {
 
     protected static String compositeName = "typefile.composite";
     protected static AService aService = null;
+    protected static BService bService2 = null;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -41,6 +41,7 @@ public class CompomnentTypeFileTestCase {
             System.out.println("Setting up");
             ServiceFinder.init(compositeName);
             aService = ServiceFinder.getService(AService.class, "AComponent/AService");
+            bService2 = ServiceFinder.getService(BService.class, "BComponent2/BService");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -99,9 +100,12 @@ public class CompomnentTypeFileTestCase {
      * elements and Property elements.
      */
     @Test
-    @Ignore("TUSCANY-2390")
     public void typeFile3() throws Exception {
-        Assert.assertEquals("SomePropertyValue", aService.getBProperty());
+        Assert.assertEquals("compositeValue", aService.getBProperty());
+    }
+
+    public void typeFile31() throws Exception {
+        Assert.assertEquals("componentTypeValue", bService2.getSomeProperty());
     }
 
 }
