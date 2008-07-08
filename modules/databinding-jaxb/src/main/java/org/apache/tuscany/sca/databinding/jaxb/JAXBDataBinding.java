@@ -125,8 +125,8 @@ public class JAXBDataBinding extends BaseDataBinding {
 
     @Override
     public XMLTypeHelper getXMLTypeHelper() {
-        return new JAXBTypeHelper();
-        // return xmlTypeHelper;
+        // return new JAXBTypeHelper();
+        return xmlTypeHelper;
     }
 
 }
