@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -266,6 +267,7 @@ public class Interface2WSDLGenerator {
         // generate schema elements for wrappers that aren't defined in the schemas
         if (wrappers.size() > 0) {
             int i = 0;
+            int index = 0;
             Map<String, XSDefinition> wrapperXSDs = new HashMap<String, XSDefinition>();
             Map<Element, Map<String, String>> prefixMaps = new HashMap<Element, Map<String, String>>();
             for (Map.Entry<QName, List<ElementInfo>> entry: wrappers.entrySet()) {
@@ -292,6 +294,9 @@ public class Interface2WSDLGenerator {
                     xsDef.setUnresolved(true);
                     xsDef.setNamespace(targetNS);
                     xsDef.setDocument(schemaDoc);
+                    // TUSCANY-2465: Set the system id to avoid schema conflict
+                    xsDef.setLocation(URI.create("xsd_" + index + ".xsd"));
+                    index++;
                     wrapperXSDs.put(targetNS, xsDef);
                 }
                 Element wrapper = schemaDoc.createElementNS(SCHEMA_NS, "xs:element");
