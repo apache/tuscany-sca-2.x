@@ -18,33 +18,27 @@
  */
 package org.apache.tuscany.sca.test.osgi.harness;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
+import junit.framework.AssertionFailedError;
 
 import org.apache.tuscany.sca.test.osgi.runtime.impl.OSGiTestRuntime;
 import org.apache.tuscany.sca.test.util.OSGiRuntimeLoader;
 import org.apache.tuscany.sca.test.util.TuscanyLoader;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -53,7 +47,6 @@ import org.osgi.framework.BundleContext;
  * Harness can be used to run Tuscany samples with Tuscany running in OSGi
  */
 public class OSGiTuscanyTestHarness {
-    
 
     private OSGiTestRuntime osgiRuntime;
     protected Bundle tuscanyRuntime;
@@ -61,10 +54,10 @@ public class OSGiTuscanyTestHarness {
     private Bundle testBundle;
 
     public void setUp() throws Exception {
-        
+
         osgiRuntime = OSGiRuntimeLoader.startOSGiTestRuntime();
         bundleContext = osgiRuntime.getBundleContext();
-        
+
         // Uninstall any previously installed test bundles
         for (Bundle bundle : bundleContext.getBundles()) {
             if ("org.apache.tuscany.sca.test.samples".equals(bundle.getSymbolicName())) {
@@ -72,7 +65,6 @@ public class OSGiTuscanyTestHarness {
             }
         }
     }
-    
 
     public void tearDown() throws Exception {
         if (tuscanyRuntime != null) {
@@ -80,15 +72,15 @@ public class OSGiTuscanyTestHarness {
         }
         OSGiRuntimeLoader.shutdownOSGiRuntime();
     }
-    
+
     public BundleContext getBundleContext() {
         return bundleContext;
     }
-   
+
     public void runTest(String... testDirs) throws Exception {
-        
+
         String mainTestDir = testDirs[0];
-        
+
         File testDir = new File(mainTestDir + "/target/test-classes");
         if (!testDir.exists()) {
             System.err.println("Test directory " + testDir + " does not exist");
@@ -98,9 +90,9 @@ public class OSGiTuscanyTestHarness {
         System.out.println("Run tests from : " + mainTestDir);
 
         long startTime = System.currentTimeMillis();
-        
+
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(bundleContext);
-        
+
         String[] dirs = new String[testDirs.length + 2];
         int i = 0;
         dirs[i++] = mainTestDir + "/target/test-classes";
@@ -108,46 +100,44 @@ public class OSGiTuscanyTestHarness {
         for (int j = 0; j < testDirs.length; j++) {
             dirs[i++] = testDirs[j] + "/target/classes";
         }
-        
+
         String manifestFile = "target/test-classes/META-INF/MANIFEST.MF";
-        
-        testBundle = createAndInstallBundle(
-                 "file:" + mainTestDir + "/target/classes",    // Bundle location: used to get File URLs for DefaultSCADomain
-                 manifestFile,                                 // Test bundle manifest file
-                 dirs                                          // Directory entries to be added to bundle
-                 );
-    
-        
+
+        testBundle = createAndInstallBundle("file:" + mainTestDir + "/target/classes", // Bundle location: used to get File URLs for DefaultSCADomain
+                                            manifestFile, // Test bundle manifest file
+                                            dirs // Directory entries to be added to bundle
+            );
 
         long endTime = System.currentTimeMillis();
-        
-        System.out.println("Loaded Tuscany, time taken = " + (endTime-startTime) + " ms" );
-        
+
+        System.out.println("Loaded Tuscany, time taken = " + (endTime - startTime) + " ms");
+
         testBundle.start();
-        
+
         Class<?> testClass = testBundle.loadClass(this.getClass().getName());
         Method testMethod = testClass.getMethod("runAllTestsFromBundle", Bundle.class);
         Object testObject = testClass.newInstance();
         testMethod.invoke(testObject, testBundle);
-        
+
         testBundle.stop();
         testBundle.uninstall();
     }
-    
+
     // Create and install a bundle with the specified manifest file
     // The bundle contains all files from the list of directories specified
-    public Bundle createAndInstallBundle(String bundleLocation, String manifestFileName,
-            String[] dirNames) throws Exception {
+    public Bundle createAndInstallBundle(String bundleLocation, String manifestFileName, String[] dirNames)
+        throws Exception {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         File manifestFile = new File(manifestFileName);
         Manifest manifest = new Manifest();
         manifest.read(new FileInputStream(manifestFile));
-        manifest.getMainAttributes().putValue("Bundle-Version", (String)tuscanyRuntime.getHeaders().get("Bundle-Version"));
+        manifest.getMainAttributes().putValue("Bundle-Version",
+                                              (String)tuscanyRuntime.getHeaders().get("Bundle-Version"));
 
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
-        
+
         for (int i = 0; i < dirNames.length; i++) {
             File dir = new File(dirNames[i]);
             addFilesToJar(dir, dirNames[i], jarOut);
@@ -160,16 +150,16 @@ public class OSGiTuscanyTestHarness {
         return bundleContext.installBundle(bundleLocation, inStream);
 
     }
-     
+
     // Add all the files from a build directory into a jar file
     // This method is used to create bundles on the fly
     private void addFilesToJar(File dir, String rootDirName, JarOutputStream jarOut) throws Exception {
-        
+
         if (dir.getName().equals(".svn"))
             return;
-        
+
         File[] files = dir.listFiles();
-        
+
         if (files == null)
             return;
 
@@ -181,7 +171,7 @@ public class OSGiTuscanyTestHarness {
             if (files[i].getName().endsWith("MANIFEST.MF"))
                 continue;
 
-            String entryName = files[i].getPath().substring(rootDirName.length()+1);
+            String entryName = files[i].getPath().substring(rootDirName.length() + 1);
             entryName = entryName.replaceAll("\\\\", "/");
             if (files[i].isDirectory()) {
                 entryName += "/";
@@ -199,122 +189,55 @@ public class OSGiTuscanyTestHarness {
             }
         }
     }
-    
 
     public void runAllTestsFromBundle(Bundle bundle) throws Exception {
-        
-        TestResult testResult = new TestResult();
+        int failures = 0;
         Enumeration entries = bundle.findEntries("/", "*TestCase.class", true);
         while (entries.hasMoreElements()) {
             URL entry = (URL)entries.nextElement();
             String className = entry.getFile();
-            className = className.substring(1, className.length()-6); // remove leading / and trailing .class
+            className = className.substring(1, className.length() - 6); // remove leading / and trailing .class
             className = className.replaceAll("/", ".");
             Class testClass = bundle.loadClass(className);
-            runTestCase(testClass, testResult);
-        }    
-        
-        Assert.assertEquals(0, testResult.errorCount());
+            failures += runTestCase(testClass).getFailureCount();
+        }
+
+        Assert.assertEquals(0, failures);
 
     }
-    
 
-    public void runTestCase(Class testClass, TestResult testResult) throws Exception {
-        
-        boolean isJunitTest = TestCase.class.isAssignableFrom(testClass);
-        if (testClass.getName().endsWith("TestCase") &&
-                    !testClass.getPackage().getName().startsWith("org.apache.tuscany.sca.test.osgi")) {
-            Object test = (Object)testClass.newInstance();
+    public Result runTestCase(Class testClass) throws Exception {
 
-            System.out.println("Running test " + test + " ");
-            int ran = 0;
-            int failed = 0;
-            ArrayList<Method> testMethods = new ArrayList<Method>();
-            Method setupMethod = null;
-            Method tearDownMethod = null;
-            Method setupClassMethod = null;
-            Method tearDownClassMethod = null;
-            Method[] methods = testClass.getDeclaredMethods();
-            for (final Method method : methods) {
-                if ((isJunitTest && method.getName().startsWith("test"))
-                        || method.getAnnotation(Test.class) != null) {
-                    testMethods.add(method);
+        if (testClass.getName().endsWith("TestCase") && !testClass.getName()
+            .startsWith("org.apache.tuscany.sca.test.osgi.")) {
+            JUnitCore core = new JUnitCore();
+            System.out.println("Running test " + testClass.getName() + " ");
+            Result result = core.run(Request.aClass(testClass));
+            // long duration = result.getRunTime();
+            int runs = result.getRunCount();
+            int failures = 0, errors = 0;
+            int ignores = result.getIgnoreCount();
 
-                } else if ((isJunitTest && method.getName().equals("setUp"))
-                        || method.getAnnotation(Before.class) != null) {
-
-                    setupMethod = method;
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        public Object run() {
-                            method.setAccessible(true);
-                            return null;
-                        }
-                    });
-
-                } else if ((isJunitTest && method.getName().equals("tearDown"))
-                        || method.getAnnotation(After.class) != null) {
-
-                    tearDownMethod = method;
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        public Object run() {
-                            method.setAccessible(true);
-                            return null;
-                        }
-                    });
-
-                } else if (method.getAnnotation(BeforeClass.class) != null) {
-
-                    setupClassMethod = method;
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        public Object run() {
-                            method.setAccessible(true);
-                            return null;
-                        }
-                    });
-
-                } else if (method.getAnnotation(AfterClass.class) != null) {
-
-                    tearDownClassMethod = method;
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        public Object run() {
-                            method.setAccessible(true);
-                            return null;
-                        }
-                    });
-
+            for (Failure f : result.getFailures()) {
+                if (f.getException() instanceof AssertionFailedError) {
+                    failures++;
+                } else {
+                    errors++;
                 }
             }
-            try {
-                if (setupClassMethod != null)
-                    setupClassMethod.invoke(null);
-                for (Method testMethod : testMethods) {
 
-                    ran++;
-                    failed++;
-                    try {
-                        if (setupMethod != null)
-                            setupMethod.invoke(test);
+            System.out.println("Test Runs: " + runs
+                + ", Failures: "
+                + failures
+                + ", Errors: "
+                + errors
+                + ", Ignores: "
+                + ignores);
 
-                        testMethod.invoke(test);
-                        failed--;
+            return result;
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw e;
-                    } finally {
-                        if (tearDownMethod != null)
-                            tearDownMethod.invoke(test);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw e;
-            } finally {
+        }
+        return new Result();
 
-                System.out.println("Ran: " + ran + ", Passed: " + (ran - failed) + ", Failed: " + failed);
-                if (tearDownClassMethod != null)
-                    tearDownClassMethod.invoke(null);
-            }
-        }    
     }
 }
