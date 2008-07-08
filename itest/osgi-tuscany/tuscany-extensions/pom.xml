@@ -97,7 +97,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jms</artifactId>
+            <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>

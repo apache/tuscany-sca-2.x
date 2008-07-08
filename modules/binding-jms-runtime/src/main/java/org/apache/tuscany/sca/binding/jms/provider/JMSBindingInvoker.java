@@ -60,8 +60,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
-        requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
-        responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
+        requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
+        responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         try {
             requestDest = lookupDestination();
             replyDest = lookupResponseDestination();

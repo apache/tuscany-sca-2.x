@@ -60,8 +60,8 @@ public class JMSBindingListener implements MessageListener {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;
-        requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
-        responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
+        requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
+        responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         correlationScheme = jmsBinding.getCorrelationScheme();
     }
 

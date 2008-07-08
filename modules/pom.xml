@@ -59,6 +59,7 @@
                 <module>binding-http</module>
                 <module>binding-http-runtime</module>
                 <module>binding-jms</module>
+                <module>binding-jms-runtime</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-jsonrpc-runtime</module>
                 <module>binding-notification</module>

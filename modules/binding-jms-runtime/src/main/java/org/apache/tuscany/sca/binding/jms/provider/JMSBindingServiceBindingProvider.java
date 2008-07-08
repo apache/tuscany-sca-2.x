@@ -69,7 +69,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             jmsBinding.setDestinationName(service.getName());
         }
 
-        if (XMLTextMessageProcessor.class.isAssignableFrom(jmsBinding.getRequestMessageProcessor().getClass())) {
+        if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
             setXMLDataBinding(service);
         }
 
