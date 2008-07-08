@@ -163,10 +163,12 @@ public class DefaultCorbaHost implements CorbaHost {
     public Object lookup(String uri) throws CorbaHostException {
         Object result = null;
         try {
-            ORB orb = ORB.init(new String[0], null);
-            result = orb.string_to_object(uri);
+            CorbanameURL url = new CorbanameURL(uri);
+            ORB orb = createORB(url.getHost(), url.getPort(), false);
+            NamingContextExt context = getNamingContext(orb, url.getNameService());
+            result = context.resolve_str(url.getName());
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             handleException(e);
         }
         if (result == null) {

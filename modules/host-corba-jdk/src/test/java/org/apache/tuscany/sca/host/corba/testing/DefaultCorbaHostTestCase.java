@@ -188,9 +188,10 @@ public class DefaultCorbaHostTestCase {
             host.lookup(getURI("NonExistingOne", LOCALHOST, DEFAULT_PORT));
             fail();
         } catch (CorbaHostException e) {
-            assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
+            // The message is JDK-specific
+            // assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             fail();
         }
 
@@ -199,7 +200,7 @@ public class DefaultCorbaHostTestCase {
             host.lookup("NonExistingOne", LOCALHOST, DEFAULT_PORT);
             fail();
         } catch (CorbaHostException e) {
-            assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
+            // assertTrue(e.getMessage().equals(CorbaHostException.NO_SUCH_OBJECT));
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -249,7 +250,7 @@ public class DefaultCorbaHostTestCase {
         } catch (CorbaHostException e) {
             // Expected
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             fail(e.getMessage());
         }
     }
