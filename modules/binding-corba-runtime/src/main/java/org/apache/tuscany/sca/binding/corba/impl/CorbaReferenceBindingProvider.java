@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.corba.impl;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
-import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -51,11 +50,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
     public Invoker createInvoker(Operation operation) {
         try {
             if (remoteObject == null) {
-                if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
-                    remoteObject = host.lookup(binding.getURI());
-                } else {
-                    remoteObject = host.lookup(binding.getName(), binding.getHost(), binding.getPort());
-                }
+                remoteObject = host.lookup(binding.getCorbaname());    
             }
             return new CorbaInvoker(remoteObject);
         } catch (Exception e) {

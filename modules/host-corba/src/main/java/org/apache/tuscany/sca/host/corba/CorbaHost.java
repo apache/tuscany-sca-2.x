@@ -34,14 +34,6 @@ public interface CorbaHost {
      * @return
      */
     ORB createORB(String host, int port, boolean server) throws CorbaHostException;
-    /**
-     * Registers servant in name server.
-     * @param orb The ORB instance
-     * @param name binding name
-     * @param serviceObject
-     * @throws CorbaHostException
-     */
-    void registerServant(ORB orb, String name, Object serviceObject) throws CorbaHostException;
 
     /**
      * Registers servant in name server.
@@ -50,14 +42,6 @@ public interface CorbaHost {
      * @throws CorbaHostException
      */
     void registerServant(String uri, Object serviceObject) throws CorbaHostException;
-    
-    /**
-     * Removes servant from name server
-     * @param orb The ORB instance
-     * @param name binding name
-     * @throws CorbaHostException
-     */
-    void unregisterServant(ORB orb, String name) throws CorbaHostException;
 
     /**
      * Removes servant from name server
@@ -66,16 +50,6 @@ public interface CorbaHost {
      * @throws CorbaHostException
      */
     void unregisterServant(String uri) throws CorbaHostException;
-    
-    /**
-     * Gets reference to object
-     * @param name binding name
-     * @param host ORB host name
-     * @param port ORB port
-     * @return
-     * @throws CorbaHostException
-     */
-    Object lookup(String name, String host, int port) throws CorbaHostException;
     
     /**
      * Gets reference to object

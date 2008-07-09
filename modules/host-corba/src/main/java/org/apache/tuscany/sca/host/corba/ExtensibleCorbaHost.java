@@ -37,22 +37,9 @@ public class ExtensibleCorbaHost implements CorbaHost {
         return getCorbaHost().lookup(uri);
     }
 
-    public Object lookup(String name, String host, int port) throws CorbaHostException {
-        return getCorbaHost().lookup(name, host, port);
-    }
-
-    public void registerServant(ORB orb, String name, Object serviceObject) throws CorbaHostException {
-        getCorbaHost().registerServant(orb, name, serviceObject);
-    }
-
     public void registerServant(String uri, Object serviceObject) throws CorbaHostException {
         getCorbaHost().registerServant(uri, serviceObject);
     }
-
-    public void unregisterServant(ORB orb, String name) throws CorbaHostException {
-        getCorbaHost().unregisterServant(orb, name);
-    }
-
 
     public void unregisterServant(String uri) throws CorbaHostException {
         getCorbaHost().unregisterServant(uri);

@@ -41,4 +41,6 @@ public interface CorbaBinding extends Binding {
     String getId();
     
     void setId(String id);
+    
+    String getCorbaname();
 }
