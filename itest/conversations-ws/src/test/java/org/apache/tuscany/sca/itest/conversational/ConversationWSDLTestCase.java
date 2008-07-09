@@ -25,9 +25,9 @@ import java.io.File;
 
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

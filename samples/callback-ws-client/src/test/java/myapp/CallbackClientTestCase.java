@@ -20,7 +20,6 @@ package myapp;
 
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,22 +32,22 @@ public class CallbackClientTestCase {
     private SCANode2 node;
 
     @Before
-	public void startServer() throws Exception {
+    public void startServer() throws Exception {
         try {
-            node = SCANode2Factory.newInstance().createSCANode("jar:file:../callback-ws-service/target/sample-callback-ws-service.jar!/callbackws.composite", new SCAContribution("server", "../callback-ws-service/target/sample-callback-ws-service.jar"));
+            node = SCANode2Factory.newInstance().createSCANodeFromClassLoader(null, getClass().getClassLoader());
             node.start();
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
-	}
+    }
 
-	@Test
-	public void testClient() throws Exception {
-		MyClientImpl.main(null);
-	}
-    
-	@After
-	public void stopServer() throws Exception {
+    @Test
+    public void testClient() throws Exception {
+        MyClientImpl.run(node);
+    }
+
+    @After
+    public void stopServer() throws Exception {
         node.stop();
-	}
+    }
 }

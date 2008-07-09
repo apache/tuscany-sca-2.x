@@ -66,18 +66,38 @@ public abstract class SCANode2Factory {
     }
 
     /**
-     * Creates a new SCA node.
+     * Create a SCA node based on the discovery of the contribution on the classpath for the 
+     * given classloader. This method should be treated a convinient shortcut with the following
+     * assumptions:
+     * <ul>
+     * <li>This is a standalone application and there is a deployable composite file on the classpath.
+     * <li>There is only one contribution which contains the deployable composite file physically in its packaging hierarchy.
+     * </ul> 
+     * @param compositeURI The URI of the composite file relative to the root of the enclosing contribution
+     * @param classLoader The ClassLoader used to load the composite file as a resource. If the value is null,
+     * then thread context classloader will be used
+     * @return A newly created SCA node
+     */
+    public abstract SCANode2 createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader);
+    
+    /**
+     * Creates a new SCA node from the configuration URL
      * 
-     * @param configurationURI the URI of the node configuration 
+     * @param configurationURL the URL of the node configuration which is the ATOM feed
+     * that contains the URI of the composite and a collection of URLs for the contributions
+     *  
      * @return a new SCA node.
      */
-    public abstract SCANode2 createSCANode(String configurationURI);
+    public abstract SCANode2 createSCANodeFromURL(String configurationURL);
 
     /**
      * Creates a new SCA node.
      * 
      * @param compositeURI the URI of the composite to use 
-     * @param contributions the URI of the contributions that provides the composites and related artifacts 
+     * @param contributions the URI of the contributions that provides the composites and related 
+     * artifacts. If the list is empty, then we will use the thread context classloader to discover
+     * the contribution on the classpath
+     *   
      * @return a new SCA node.
      */
     public abstract SCANode2 createSCANode(String compositeURI, SCAContribution... contributions);
@@ -91,32 +111,5 @@ public abstract class SCANode2Factory {
      * @return a new SCA node.
      */
     public abstract SCANode2 createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions);
-
-    /**
-     * Represents an SCA contribution uri + location.
-     */
-    public static final class SCAContribution {
-        private String uri;
-        private String location;
-        
-        /**
-         * Constructs a new SCA contribution.
-         * 
-         * @param uri
-         * @param location
-         */
-        public SCAContribution(String uri, String location) {
-            this.uri = uri;
-            this.location = location;
-        }
-        
-        public String getURI() {
-            return uri;
-        }
-        
-        public String getLocation() {
-            return location;
-        }
-    }
     
 }

@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.itest.databindings.jaxb.topdown;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -59,7 +58,6 @@ import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransfor
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -80,8 +78,7 @@ public class StandardTypesDatabindingTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/wsdl/wrapped/standard-types-service.composite").toURL().toString(),
-                new SCAContribution("TestContribution", new File("src/main/resources/wsdl/wrapped").toURL().toString()));
+        node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/standard-types-service.composite", null);
         node.start();
         domain = (SCAClient)node;
     }

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -34,11 +33,8 @@ import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -64,11 +60,7 @@ public class OneWayTestCase {
     public void setUp() throws Exception {
         
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/OneWayContribution/META-INF/sca-deployables/oneWay.composite").toURL().toString(),
-                                         new SCAContribution("TestContribution", 
-                                                                     new File("src/main/resources/OneWayContribution").toURL().toString()));
-                
-         
+        node = nodeFactory.createSCANodeFromClassLoader("OneWayContribution/META-INF/sca-deployables/oneWay.composite", null);
         node.start();
         
     }

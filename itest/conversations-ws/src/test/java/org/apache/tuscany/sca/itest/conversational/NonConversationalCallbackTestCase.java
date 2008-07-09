@@ -30,9 +30,9 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceSta
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
 import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

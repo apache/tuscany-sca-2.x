@@ -23,9 +23,9 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 
 /**
  * This shows how to test the Calculator service component.

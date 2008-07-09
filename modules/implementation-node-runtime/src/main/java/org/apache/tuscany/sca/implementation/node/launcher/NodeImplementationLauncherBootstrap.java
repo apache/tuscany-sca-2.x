@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.implementation.node.launcher;
 
 import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
@@ -91,7 +91,7 @@ public class NodeImplementationLauncherBootstrap {
      */
     public NodeImplementationLauncherBootstrap(String configurationURI) throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = new NodeFacade(nodeFactory.createSCANode(configurationURI));
+        node = new NodeFacade(nodeFactory.createSCANodeFromURL(configurationURI));
     }
 
     /**

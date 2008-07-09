@@ -19,15 +19,12 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.topdown;
 
-import java.io.File;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesServiceClient;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,8 +43,7 @@ public class PrimitivesDatabindingTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/wsdl/wrapped/primitivesservice.composite").toURL().toString(),
-                new SCAContribution("TestContribution", new File("src/main/resources/wsdl/wrapped").toURL().toString()));
+        node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/primitivesservice.composite", null);
         node.start();
         domain = (SCAClient)node;
     }

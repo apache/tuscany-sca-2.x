@@ -113,7 +113,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         
         // Create the SCA node
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(nodeConfiguration);
+        node = nodeFactory.createSCANodeFromURL(nodeConfiguration);
         
         // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);
