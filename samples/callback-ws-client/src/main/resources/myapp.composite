@@ -28,7 +28,7 @@
                     callbackInterface="myserver.MyServiceCallback" />
             <binding.ws uri="http://localhost:8086/MyServiceComponent" />
             <callback>
-                <binding.ws />
+                <binding.ws uri="http://localhost:8087/MyServiceComponentCB"/>
             </callback>
         </reference>
     </component>
