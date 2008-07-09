@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.binding.gdata.impl;
 
 import java.util.ArrayList;
@@ -39,6 +38,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  */
 class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAttachPoint {
 
+    private String password;
+    private String login;
     private String name;
     private String uri;
     private String title;
@@ -70,7 +71,7 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
     public String getTitle() {
         return title;
     }
-    
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -87,7 +88,7 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
-    
+
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
@@ -95,51 +96,65 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
     public IntentAttachPointType getType() {
         return intentAttachPointType;
     }
-    
+
     public void setType(IntentAttachPointType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
-    }
-
-    //FIXME Temporary to get access to the target binding information
+    }    //FIXME Temporary to get access to the target binding information
     // To be removed when the distributed domain supports wiring of other
     // bindings than the SCA binding
-    private Binding targetBinding; 
-    private Component targetComponent; 
-    private ComponentService targetComponentService; 
-    
+    private Binding targetBinding;
+    private Component targetComponent;
+    private ComponentService targetComponentService;
+
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     public Binding getTargetBinding() {
         return targetBinding;
     }
-    
+
     public void setTargetBinding(Binding binding) {
         this.targetBinding = binding;
     }
-    
+
     public Component getTargetComponent() {
         return targetComponent;
     }
-    
+
     public void setTargetComponent(Component component) {
         this.targetComponent = component;
     }
-    
+
     public ComponentService getTargetComponentService() {
         return targetComponentService;
     }
-    
+
     public void setTargetComponentService(ComponentService service) {
-        this.targetComponentService = service; 
+        this.targetComponentService = service;
     }
 
     public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
+        this.policySets = policySets;
     }
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+
+    public String getLogin() {
+        return this.login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
