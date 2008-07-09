@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.binding.gdata;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -27,17 +26,24 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 public interface GDataBinding extends Binding {
-    
+
     /**
      * Returns the title of the Atom collection.
      * @return
      */
     String getTitle();
-    
+
     /**
      * Sets the title of the Atom collection.
      * @param title
      */
     void setTitle(String title);
+
+    String getLogin();
+
+    void setLogin(String login);
     
+    String getPassword();
+    
+    void setPassword(String password);
 }
