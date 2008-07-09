@@ -84,6 +84,11 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
     public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Intent policyIntent = null;
         String policyIntentName = reader.getAttributeValue(null, NAME);
+        if (policyIntentName == null) {
+            error("IntentNameMissing", reader);
+            return (T)policyIntent;
+        }
+        
         // Read an <sca:intent>
         if (reader.getAttributeValue(null, REQUIRES) != null) {
             policyIntent = policyFactory.createProfileIntent();

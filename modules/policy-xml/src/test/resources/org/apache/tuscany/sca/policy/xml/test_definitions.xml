@@ -102,7 +102,9 @@
     </intentMap>
 </policySet>
 
-<policySet name="SecurityPolicy" provides="test:confidentiality"
+<policySet name="SecurityPolicy" 
+    provides="test:confidentiality"
+	appliesTo="binding.ws"
 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
     <intentMap provides="test:confidentiality" default="message">
@@ -149,7 +151,7 @@
 
 <policySet name="ConfidentialityPolicies"
  provides="test:confidentiality"
- bindings="binding.ws"
+ appliesTo="binding.ws"
  xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <intentMap provides="test:confidentiality"  default="transport">
