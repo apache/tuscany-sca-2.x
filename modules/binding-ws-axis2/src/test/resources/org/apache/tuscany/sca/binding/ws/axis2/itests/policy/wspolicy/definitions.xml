@@ -24,7 +24,7 @@
  
  <!-- WS Security POLICY SETS -->
  <!-- A policyset that uses WS Policy -->
- <sca:policySet name="wsAuthenticationPolicy"
+ <sca:policySet name="wsSecurityPolicyForAuthentication"
  	provides="sca:authentication"
  	appliesTo="sca:binding.ws">
  	<wsp:Policy wsu:Id="UTOverTransport" 
