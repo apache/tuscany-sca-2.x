@@ -56,16 +56,22 @@ public class Jsr237WorkScheduler implements WorkScheduler {
      * @param jsr237WorkManager JSR 237 work manager.
      */
     public Jsr237WorkScheduler() {
-        
+    }
+
+    private synchronized WorkManager getWorkManager() {
+        if (jsr237WorkManager != null) {
+            return jsr237WorkManager;
+        }
         try {
-            InitialContext ctx  = new InitialContext();
-            jsr237WorkManager = (WorkManager) ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
+            InitialContext ctx = new InitialContext();
+            jsr237WorkManager = (WorkManager)ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
         } catch (NamingException e) {
             // ignore
         }
         if (jsr237WorkManager == null) {
             jsr237WorkManager = new ThreadPoolWorkManager(10);
         }
+        return jsr237WorkManager;
     }
 
     /**
@@ -94,10 +100,10 @@ public class Jsr237WorkScheduler implements WorkScheduler {
         Jsr237Work<T> jsr237Work = new Jsr237Work<T>(work);
         try {
             if (listener == null) {
-                jsr237WorkManager.schedule(jsr237Work);
+                getWorkManager().schedule(jsr237Work);
             } else {
                 Jsr237WorkListener<T> jsr237WorkListener = new Jsr237WorkListener<T>(listener, work);
-                jsr237WorkManager.schedule(jsr237Work, jsr237WorkListener);
+                getWorkManager().schedule(jsr237Work, jsr237WorkListener);
             }
         } catch (IllegalArgumentException ex) {
             if (listener != null) {

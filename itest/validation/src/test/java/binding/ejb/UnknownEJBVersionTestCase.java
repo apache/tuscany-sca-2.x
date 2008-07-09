@@ -50,6 +50,9 @@ public class UnknownEJBVersionTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
+        System.clearProperty("java.naming.factory.initial");
+        System.clearProperty("java.naming.provider.url");
+        System.clearProperty("managed");
         //node.stop();
     }
 

@@ -31,33 +31,37 @@ import domain.CustomCompositeBuilder;
  */
 public class UnknownEJBSessionTypeTestCase extends TestCase {
 
-	private CustomCompositeBuilder customDomain;
+    private CustomCompositeBuilder customDomain;
 
     @Override
     protected void setUp() throws Exception {
-    	System.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+        System.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
         System.setProperty("java.naming.provider.url", "ejbd://localhost:8085");
-        System.setProperty("managed", "false");  
-        
+        System.setProperty("managed", "false");
+
         customDomain = CustomCompositeBuilder.getInstance();
         try {
-        	customDomain.loadContribution("src/main/resources/bindingejb/UnknownEJBSessionType/account.composite", 
-        			"TestContribution", "src/main/resources/bindingejb/UnknownEJBSessionType/");
-        } catch (Exception ex){
+            customDomain.loadContribution("src/main/resources/bindingejb/UnknownEJBSessionType/account.composite",
+                                          "TestContribution",
+                                          "src/main/resources/bindingejb/UnknownEJBSessionType/");
+        } catch (Exception ex) {
             //throw ex;
         }
     }
 
     @Override
     protected void tearDown() throws Exception {
+        System.clearProperty("java.naming.factory.initial");
+        System.clearProperty("java.naming.provider.url");
+        System.clearProperty("managed");
         //node.stop();
     }
 
     public void testCalculator() {
-    	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
-    	assertNotNull(problem);
-        assertEquals("UnknownEJBSessionType", problem.getMessageId()); 
+        Monitor monitor = customDomain.getMonitorInstance();
+        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+
+        assertNotNull(problem);
+        assertEquals("UnknownEJBSessionType", problem.getMessageId());
     }
 }
