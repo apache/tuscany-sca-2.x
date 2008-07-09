@@ -23,7 +23,6 @@ import java.net.Socket;
 
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,18 +35,18 @@ public class CallbackServerTestCase {
     private SCANode2 node;
 
     @Before
-	public void startServer() throws Exception {
-        node = SCANode2Factory.newInstance().createSCANode("target/classes/callbackws.composite", new SCAContribution("test", "target/classes"));
+    public void startServer() throws Exception {
+        node = SCANode2Factory.newInstance().createSCANodeFromClassLoader("callbackws.composite", null);
         node.start();
-	}
+    }
 
-	@Test
-	public void testPing() throws IOException {
-		new Socket("127.0.0.1", 8086);
-	}
-    
-	@After
-	public void stopServer() throws Exception {
+    @Test
+    public void testPing() throws IOException {
+        new Socket("127.0.0.1", 8086);
+    }
+
+    @After
+    public void stopServer() throws Exception {
         node.stop();
-	}
+    }
 }

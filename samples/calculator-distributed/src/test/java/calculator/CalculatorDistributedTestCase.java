@@ -54,9 +54,9 @@ public class CalculatorDistributedTestCase {
             manager.start();
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            nodeC  = nodeFactory.createSCANode("http://localhost:9990/node-config/NodeC");
-            nodeB  = nodeFactory.createSCANode("http://localhost:9990/node-config/NodeB");
-            nodeA  = nodeFactory.createSCANode("http://localhost:9990/node-config/NodeA");
+            nodeC  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeC");
+            nodeB  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeB");
+            nodeA  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeA");
 
             nodeC.start();
             nodeB.start();

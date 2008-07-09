@@ -24,9 +24,9 @@ import java.io.File;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
 
