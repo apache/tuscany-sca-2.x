@@ -22,11 +22,9 @@ package org.apache.tuscany.sca.binding.corba.impl;
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
-import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.omg.CORBA.ORB;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -38,8 +36,7 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
     private CorbaHost host;
     private RuntimeComponentService service;
     private DynaCorbaServant servant;
-    private ORB orb;
-
+    
     public CorbaServiceBindingProvider(CorbaBinding binding, CorbaHost host, RuntimeComponentService service) {
         this.binding = binding;
         this.host = host;
@@ -58,15 +55,9 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void start() {
         try {
-
             servant = new DynaCorbaServant(service, binding);
             servant.setIds(new String[] {binding.getId()});
-            if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
-                host.registerServant(binding.getURI(), servant);
-            } else {
-                orb = host.createORB(binding.getHost(), binding.getPort(), false);
-                host.registerServant(orb, binding.getName(), servant);
-            }
+            host.registerServant(binding.getCorbaname(), servant);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -78,11 +69,7 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void stop() {
         try {
-            if (CorbaHostUtils.isValidCorbanameURI(binding.getURI())) {
-                host.unregisterServant(binding.getURI());
-            } else if (orb != null) {
-                host.unregisterServant(orb, binding.getName());
-            }
+             host.unregisterServant(binding.getCorbaname());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

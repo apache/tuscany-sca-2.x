@@ -19,11 +19,8 @@
 
 package org.apache.tuscany.sca.host.corba.jdk;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,12 +53,6 @@ public class DefaultCorbaHost implements CorbaHost {
         }
     }
 
-    private void validateName(String name) throws IllegalArgumentException {
-        if (name == null || name.length() == 0) {
-            throw new IllegalArgumentException("Object name shouldn't be null");
-        }
-    }
-
     private NamingContextExt getNamingContext(ORB orb, String nameService) throws Exception {
         org.omg.CORBA.Object objRef = orb.resolve_initial_references(nameService);
         return NamingContextExtHelper.narrow(objRef);
@@ -78,34 +69,13 @@ public class DefaultCorbaHost implements CorbaHost {
         }
     }
 
-    private List<String> tokenizeNamePath(String name) {
-        List<String> namePath = new ArrayList<String>();
-        StringTokenizer path = new StringTokenizer(name, "/");
-        while (path.hasMoreTokens()) {
-            namePath.add(path.nextToken());
-        }
-        return namePath;
-    }
-
     public void registerServant(String uri, Object servantObject) throws CorbaHostException {
         CorbanameURL details = CorbaHostUtils.getServiceDetails(uri);
         ORB orb = createORB(details.getHost(), details.getPort(), false);
-        registerServantCommon(orb, details.getNameService(), details.getNamePath(), servantObject);
-    }
-
-    public void registerServant(ORB orb, String name, Object servantObject) throws CorbaHostException {
-        validateName(name);
-        List<String> namePath = tokenizeNamePath(name);
-        registerServantCommon(orb, CorbanameURL.DEFAULT_NAME_SERVICE, namePath, servantObject);
-    }
-
-    private void registerServantCommon(ORB orb, String nameService, List<String> namePath, Object servantObject)
-        throws CorbaHostException {
-
         try {
-            NamingContext namingCtx = getNamingContext(orb, nameService);
-            for (int i = 0; i < namePath.size() - 1; i++) {
-                NameComponent nc = new NameComponent(namePath.get(i), "");
+            NamingContext namingCtx = getNamingContext(orb, details.getNameService());
+            for (int i = 0; i < details.getNamePath().size() - 1; i++) {
+                NameComponent nc = new NameComponent(details.getNamePath().get(i), "");
                 NameComponent[] path = new NameComponent[] {nc};
                 try {
                     namingCtx = NamingContextHelper.narrow(namingCtx.resolve(path));
@@ -113,7 +83,7 @@ public class DefaultCorbaHost implements CorbaHost {
                     namingCtx = namingCtx.bind_new_context(path);
                 }
             }
-            NameComponent finalName = new NameComponent(namePath.get(namePath.size() - 1), "");
+            NameComponent finalName = new NameComponent(details.getNamePath().get(details.getNamePath().size() - 1), "");
             try {
                 namingCtx.resolve(new NameComponent[] {finalName});
                 // no exception means that some object is already registered
@@ -132,34 +102,14 @@ public class DefaultCorbaHost implements CorbaHost {
     public void unregisterServant(String uri) throws CorbaHostException {
         CorbanameURL details = CorbaHostUtils.getServiceDetails(uri);
         ORB orb = createORB(details.getHost(), details.getPort(), false);
-        unregisterServantCommon(orb, details.getNamePath());
-    }
-
-    public void unregisterServant(ORB orb, String name) throws CorbaHostException {
-        validateName(name);
-        List<String> namePath = tokenizeNamePath(name);
-        unregisterServantCommon(orb, namePath);
-    }
-
-    private void unregisterServantCommon(ORB orb, List<String> namePath) throws CorbaHostException {
         try {
-            NamingContext namingCtx = getNamingContext(orb, CorbanameURL.DEFAULT_NAME_SERVICE);
-            for (int i = 0; i < namePath.size() - 1; i++) {
-                NameComponent nc = new NameComponent(namePath.get(i), "");
-                namingCtx = NamingContextHelper.narrow(namingCtx.resolve(new NameComponent[] {nc}));
-            }
-            NameComponent finalName = new NameComponent(namePath.get(namePath.size() - 1), "");
-            namingCtx.unbind(new NameComponent[] {finalName});
+            NamingContextExt namingCtx = getNamingContext(orb, details.getNameService());
+            namingCtx.unbind(namingCtx.to_name(details.getName()));
         } catch (Exception e) {
             handleException(e);
         }
     }
-
-    public Object lookup(String name, String host, int port) throws CorbaHostException {
-        validateName(name);
-        return lookup(CorbaHostUtils.createCorbanameURI(host, port, name));
-    }
-
+    
     public Object lookup(String uri) throws CorbaHostException {
         Object result = null;
         try {

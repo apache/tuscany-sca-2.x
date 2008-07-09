@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
+import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -122,6 +123,10 @@ public class CorbaBindingImpl implements CorbaBinding, PolicySetAttachPoint {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCorbaname() {
+        return CorbaHostUtils.isValidCorbanameURI(getURI()) ? getURI(): CorbaHostUtils.createCorbanameURI(getHost(), getPort(), getName());
     }
 
 }
