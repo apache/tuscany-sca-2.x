@@ -108,6 +108,7 @@
                 <module>extension-helper</module>
                 <module>host-corba</module>
                 <module>host-corba-jdk</module>
+                <module>host-corba-jee</module>
                 <module>host-ejb</module>
                 <module>host-embedded</module>
                 <module>host-http</module>

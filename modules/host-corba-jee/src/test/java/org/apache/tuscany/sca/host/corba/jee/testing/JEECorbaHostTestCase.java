@@ -17,40 +17,40 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.corba.testing;
+package org.apache.tuscany.sca.host.corba.jee.testing;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
-import java.net.ConnectException;
-import java.net.Socket;
+import javax.naming.Context;
 
-import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
-import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
-import org.apache.tuscany.sca.host.corba.jdk.DefaultCorbaHost;
+import org.apache.tuscany.sca.host.corba.jee.JEECorbaHost;
+import org.apache.tuscany.sca.host.corba.jee.testing.general.TestInterface;
+import org.apache.tuscany.sca.host.corba.jee.testing.general.TestInterfaceHelper;
+import org.apache.tuscany.sca.host.corba.jee.testing.servants.TestInterfaceServant;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
-import org.apache.tuscany.sca.host.corba.testing.general.TestInterface;
-import org.apache.tuscany.sca.host.corba.testing.general.TestInterfaceHelper;
-import org.apache.tuscany.sca.host.corba.testing.servants.TestInterfaceServant;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * General tests
+ * General tests for JEECorbaHost. Uses host-corba-jdk as mock for JEE
+ * environment ORB.
  */
-public class DefaultCorbaHostTestCase {
+public class JEECorbaHostTestCase {
 
-    private static final String LOCALHOST = "localhost";
-    private static final int DEFAULT_PORT = 11100; // 1050;
-
-    private static CorbaHost host;
-
+    public static final String LOCALHOST = "localhost";
+    public static final int DEFAULT_PORT = 11100;
+    private static JEECorbaHost host;
     private static TransientNameServer server;
+    private static String factoryClassName;
+
+    private String createCorbanameURI(String name) {
+        return "corbaname:#" + name;
+    }
 
     @BeforeClass
     public static void start() {
@@ -60,7 +60,10 @@ public class DefaultCorbaHostTestCase {
             if (t == null) {
                 fail("The naming server cannot be started");
             }
-            host = new DefaultCorbaHost();
+            factoryClassName = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
+            host = new JEECorbaHost();
+            host.start();
         } catch (Throwable e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -70,6 +73,11 @@ public class DefaultCorbaHostTestCase {
     @AfterClass
     public static void stop() {
         server.stop();
+        if (factoryClassName != null) {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY, factoryClassName);
+        } else {
+            System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
+        }
     }
 
     /**
@@ -78,7 +86,7 @@ public class DefaultCorbaHostTestCase {
     @Test
     public void test_registerServant() {
         try {
-            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, "Nested/Test");
+            String uri = createCorbanameURI("Nested/Test");
             TestInterface servant = new TestInterfaceServant();
             host.registerServant(uri, servant);
             TestInterface ref = TestInterfaceHelper.narrow(host.lookup(uri));
@@ -95,8 +103,7 @@ public class DefaultCorbaHostTestCase {
     @Test
     public void test_unregisterServant() {
         try {
-            String objName = "Unregistering/Test";
-            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, objName);
+            String uri = createCorbanameURI("Unregistering/Test");
             TestInterface servant = new TestInterfaceServant();
 
             // creating and releasing using corbaname URI
@@ -118,7 +125,7 @@ public class DefaultCorbaHostTestCase {
         // test using URI
         try {
             TestInterface servant = new TestInterfaceServant();
-            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, "AlreadyRegisteredTest2");
+            String uri = createCorbanameURI("AlreadyRegisteredTest2");
             host.registerServant(uri, servant);
             host.registerServant(uri, servant);
             fail();
@@ -137,7 +144,7 @@ public class DefaultCorbaHostTestCase {
     public void test_getNonExistingObject() {
         // try to fetch object with corbaname URI
         try {
-            host.lookup(CorbaHostUtils.createCorbanameURI("NonExistingOne", DEFAULT_PORT, LOCALHOST));
+            host.lookup(createCorbanameURI("NonExistingOne"));
             fail();
         } catch (CorbaHostException e) {
             // The message is JDK-specific
@@ -155,7 +162,7 @@ public class DefaultCorbaHostTestCase {
     public void test_unregisterNonExistentObject() {
         // test using URI
         try {
-            String uri = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT, "NonExistingReference1");
+            String uri = createCorbanameURI("NonExistingReference1");
             host.unregisterServant(uri);
             fail();
         } catch (CorbaHostException e) {
@@ -167,79 +174,35 @@ public class DefaultCorbaHostTestCase {
     }
 
     /**
-     * Tests registering under invalid host
+     * Tests unregistering servants on host stop
      */
     @Test
-    public void test_invalidHost() {
+    public void test_unregisterOnStop() {
         try {
-            String url = CorbaHostUtils.createCorbanameURI("not_" + LOCALHOST, DEFAULT_PORT, "Name");
-            TestInterface servant = new TestInterfaceServant();
-            host.registerServant(url, servant);
-            fail();
-        } catch (CorbaHostException e) {
-            // Expected
-        } catch (Exception e) {
-            // e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
-    /**
-     * Tests registering under invalid port
-     */
-    @Test
-    public void test_invalidPort() {
-        try {
-            String url = CorbaHostUtils.createCorbanameURI(LOCALHOST, DEFAULT_PORT + 1, "Name");
-            TestInterface servant = new TestInterfaceServant();
-            host.registerServant(url, servant);
-            fail();
-        } catch (CorbaHostException e) {
-            // Expected
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
-    /**
-     * Tests registering under invalid name
-     */
-    @Test
-    @Ignore("SUN JDK 6 is happy with all kind of names")
-    public void test_invalidBindingName() {
-        try {
-            TestInterface servant = new TestInterfaceServant();
-            host.registerServant("---", servant);
-            fail();
-        } catch (CorbaHostException e) {
-            assertTrue(e.getMessage().equals(CorbaHostException.WRONG_NAME));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
-
-    @Test
-    public void test_ensureORBStopped() {
-        try {
-            int innerORBPort = 11102;
-            TransientNameServer innerServer =
-                new TransientNameServer(LOCALHOST, innerORBPort, TransientNameService.DEFAULT_SERVICE_NAME);
-            innerServer.start();
-            innerServer.stop();
+            String uri1 = createCorbanameURI("TempService1");
+            String uri2 = createCorbanameURI("TempService2");
+            JEECorbaHost innerHost = new JEECorbaHost();
+            innerHost.start();
+            TestInterfaceServant servant = new TestInterfaceServant();
+            innerHost.registerServant(uri1, servant);
+            innerHost.registerServant(uri2, servant);
+            innerHost.stop();
             try {
-                Thread.sleep(500);
-            } catch (Exception e) {
+                innerHost.lookup(uri1);
+                fail();
+            } catch (CorbaHostException e) {
+                assertEquals(CorbaHostException.NO_SUCH_OBJECT, e.getMessage());
             }
-            new Socket(LOCALHOST, innerORBPort);
-            fail();
+            try {
+                innerHost.lookup(uri2);
+                fail();
+            } catch (CorbaHostException e) {
+                assertEquals(CorbaHostException.NO_SUCH_OBJECT, e.getMessage());
+            }
         } catch (Exception e) {
-            if (e instanceof ConnectException) {
-                assertTrue(true);
-            } else {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+            fail();
         }
     }
+
 }
