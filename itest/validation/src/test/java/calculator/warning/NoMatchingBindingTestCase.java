@@ -20,13 +20,19 @@ package calculator.warning;
 
 import java.io.File;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * This shows how to test the Calculator service component.
@@ -38,19 +44,14 @@ public class NoMatchingBindingTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        try {
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            node = nodeFactory.createSCANode(new File("src/main/resources/NoMatchingBinding/Calculator.composite").toURL().toString(),
-            		                 new SCAContribution("TestContribution", 
-            		                                     new File("src/main/resources/NoMatchingBinding").toURL().toString()));
-    
-            node.start();
-            calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
-        } catch (Exception ex){
-            // do nothing
-            return;
-        }
-        Assert.fail();
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        node =
+            nodeFactory.createSCANode(new File("src/main/resources/NoMatchingBinding/Calculator.composite").toURL()
+                .toString(), new SCAContribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
+                .toURL().toString()));
+
+        node.start();
+        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override
@@ -59,16 +60,15 @@ public class NoMatchingBindingTestCase extends TestCase {
     }
 
     public void testCalculator() throws Exception {
-        /*
+
         ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-        
+
         assertNotNull(problem);
         assertEquals("NoMatchingBinding", problem.getMessageId());
-        */
- 
+
     }
 }
