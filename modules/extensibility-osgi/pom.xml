@@ -54,7 +54,7 @@
 					<instructions>
 						<Bundle-Version>${tuscany.version}
 						</Bundle-Version>
-						<Bundle-SymbolicName>org.apache.tuscany.sca.extensibility
+						<Bundle-SymbolicName>org.apache.tuscany.sca.extensibility.osgi
 						</Bundle-SymbolicName>
 						<Bundle-Description>${pom.name}</Bundle-Description>
 						<Export-Package>org.apache.tuscany.sca.extensibility.osgi*</Export-Package>

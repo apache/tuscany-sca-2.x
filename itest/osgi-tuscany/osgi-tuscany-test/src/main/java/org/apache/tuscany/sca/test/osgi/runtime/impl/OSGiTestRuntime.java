@@ -110,5 +110,50 @@ public abstract class OSGiTestRuntime {
             instance = null;
         }
     }
+    
+    
+    /**
+     * @return the list of packages to be exported by the system bundle
+     */
+    protected String getSystemPackages() {
+        String systemPackages =
+            "org.osgi.framework; version=1.3.0," +
+            "org.osgi.service.packageadmin; version=1.2.0, " +
+            "org.osgi.service.startlevel; version=1.0.0, " +
+            "org.osgi.service.url; version=1.0.0, " +
+            "org.osgi.util.tracker; version=1.3.2, " +
+            "javax.xml, " +
+            "javax.xml.datatype, " +               
+            "javax.xml.namespace, " +
+            "javax.xml.parsers, " +
+            "javax.xml.transform, " +
+            "javax.xml.transform.dom, " +
+            "javax.xml.transform.sax, " +
+            "javax.xml.transform.stream, " +
+            "javax.xml.validation, " +
+            "javax.xml.xpath, " +
+            "javax.sql," +
+            "org.w3c.dom, " +
+            "org.xml.sax, " +
+            "org.xml.sax.ext, " +
+            "org.xml.sax.helpers, " +
+            "javax.security.auth, " +
+            "javax.security.auth.login, " +
+            "javax.security.auth.callback, " +
+            "javax.naming, " +
+            "javax.naming.spi, " +
+            "javax.naming.directory, " +
+            "javax.management, " + 
+            "javax.imageio, " +
+            "sun.misc, " +
+            "javax.net, " +
+            "javax.crypto, " +
+            "javax.rmi, " +
+            "javax.transaction, " +
+            "javax.transaction.xa";
+        
+        return systemPackages;
+    
+    }
 
 }

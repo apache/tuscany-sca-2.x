@@ -48,6 +48,7 @@ public class EquinoxTestRuntime extends OSGiTestRuntime  {
                     
         Method startupMethod = eclipseStarterClass.getMethod("startup", String [].class, Runnable.class);
         
+        System.setProperty("org.osgi.framework.system.packages", getSystemPackages());
         // Equinox version 3.2 upwards have a startup method which returns BundleContext
         bundleContext = (BundleContext) startupMethod.invoke(null, 
                 new String[] {/*"-clean", */"-console", "-configuration", "target/configuration"}, 
