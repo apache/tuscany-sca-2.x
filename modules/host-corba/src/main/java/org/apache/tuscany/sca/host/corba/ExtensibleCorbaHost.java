@@ -52,8 +52,4 @@ public class ExtensibleCorbaHost implements CorbaHost {
         return hosts.getCorbaHosts().get(0);
     }
 
-    public ORB createORB(String host, int port, boolean server) throws CorbaHostException {
-        return getCorbaHost().createORB(host, port, server);
-    }
-
 }

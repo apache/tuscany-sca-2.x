@@ -26,14 +26,6 @@ import org.omg.CORBA.Object;
  * CORBA Service hosting interface
  */
 public interface CorbaHost {
-    /**
-     * Create an ORB instance
-     * @param host The host name
-     * @param port The port number
-     * @param server Is it for server side
-     * @return
-     */
-    ORB createORB(String host, int port, boolean server) throws CorbaHostException;
 
     /**
      * Registers servant in name server.
