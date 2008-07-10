@@ -51,7 +51,7 @@ public class UnableToMapPoliciesTestCase extends TestCase {
 
     public void testCalculator() {
         Monitor monitor = customDomain.getMonitorInstance();
-        assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("UnableToMapPolicies"));
+        assertTrue(((DefaultLoggingMonitorImpl)monitor).isMessageLogged("ReferredPolicySetNotFound"));
         /*Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();        
         assertNotNull(problem);
         assertEquals("UnableToMapPolicies", problem.getMessageId());*/  
