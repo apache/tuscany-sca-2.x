@@ -35,6 +35,11 @@
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-monitor-logging</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-assembly</artifactId>
             <version>${pom.version}</version>
         </dependency>

@@ -14,7 +14,8 @@ Import-Package: org.osgi.framework,
         org.apache.tuscany.sca.core.assembly,
         org.apache.tuscany.sca.assembly.builder,
         org.osoa.sca,
-        org.osoa.sca.annotations
+        org.osoa.sca.annotations,
+        javax.xml.bind.annotation
 Export-Package: supplychain.client
 Bundle-Activator: supplychain.client.SupplyChainClient
 

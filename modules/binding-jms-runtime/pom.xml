@@ -105,7 +105,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jms</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jms.runtime</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.binding.jms.provider*</Export-Package>
                     </instructions>
