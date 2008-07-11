@@ -296,7 +296,7 @@ public class JMSBindingReferenceQueueCreateModeTestCaseFIXME {
 
         // Try and create the JMS Binding Invoker for the JMS Binding
         try {
-            new JMSBindingInvoker(jmsBinding, operation, null);
+            new JMSBindingInvoker(jmsBinding, operation, null, null);
 
             // Check whether we were expecting an exception
             if (expectingRequestException || expectingResponseException) {
