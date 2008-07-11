@@ -46,8 +46,7 @@ public class NoMatchingBindingTestCase extends TestCase {
     protected void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
         node =
-            nodeFactory.createSCANode(new File("src/main/resources/NoMatchingBinding/Calculator.composite").toURL()
-                .toString(), new SCAContribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
+            nodeFactory.createSCANode("Calculator.composite", new SCAContribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
                 .toURL().toString()));
 
         node.start();
