@@ -114,7 +114,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
                     jmsBinding.setResponseDestinationName(reference.getName());
                 }    
         */        
-        JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory);
+        JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
         jmsBindingInvokers.add(invoker);
         return invoker;
     }

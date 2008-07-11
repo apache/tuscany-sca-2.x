@@ -26,7 +26,9 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.Topic;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
@@ -53,6 +55,8 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private MessageConsumer consumer;
     private WorkScheduler workScheduler;
     private boolean running;
+
+	private Destination destination;
 
     public JMSBindingServiceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentService service,
@@ -122,7 +126,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private void registerListerner() throws NamingException, JMSException {
 
         Session session = jmsResourceFactory.createSession();
-        Destination destination = lookupDestinationQueue();
+        destination = lookupDestinationQueue();
 
         consumer = session.createConsumer(destination);
 
@@ -223,5 +227,19 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         }
 
         return destination;
+    }
+    
+    public String getDestinationName() {
+    	try {
+        	if (destination instanceof Queue) {
+            	return ((Queue)destination).getQueueName();
+        	} else if (destination instanceof Topic){
+            	return ((Topic)destination).getTopicName();
+        	} else {
+        	    return null;
+        	}
+    	} catch (JMSException e) {
+    		throw new JMSBindingException(e);
+    	}
     }
 }

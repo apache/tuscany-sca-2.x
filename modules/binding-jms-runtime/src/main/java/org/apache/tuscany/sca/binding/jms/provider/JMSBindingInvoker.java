@@ -32,8 +32,12 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -52,8 +56,9 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected JMSMessageProcessor responseMessageProcessor;
     protected Destination requestDest;
     protected Destination replyDest;
+	private String callbackDestName;
 
-    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory) {
+    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
 
         this.operation = operation;
         operationName = operation.getName();
@@ -65,13 +70,38 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         try {
             requestDest = lookupDestination();
             replyDest = lookupResponseDestination();
+
+            if (hasCallback()) {
+            	callbackDestName = getCallbackDestinationName(reference);            	
+            }
+            
         } catch (NamingException e) {
             throw new JMSBindingException(e);
         }
 
     }
 
-    /**
+    protected String getCallbackDestinationName(RuntimeComponentReference reference) {
+    	RuntimeComponentService s = (RuntimeComponentService) reference.getCallbackService();
+    	JMSBinding b = s.getBinding(JMSBinding.class);
+    	if (b != null) {
+    		JMSBindingServiceBindingProvider bp = (JMSBindingServiceBindingProvider) s.getBindingProvider(b);
+    		return bp.getDestinationName();
+    	}
+		return null;
+	}
+
+	protected boolean hasCallback() {
+    	if (operation.getInterface() instanceof JavaInterface) {
+    		JavaInterface jiface = (JavaInterface) operation.getInterface();
+    		if (jiface.getCallbackClass() != null) {
+    			return true;
+    		}
+    	}
+    	return false;
+	}
+
+	/**
      * Looks up the Destination Queue for the JMS Binding
      * 
      * @return The Destination Queue
@@ -177,29 +207,31 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         return dest;
     }
 
-    public org.apache.tuscany.sca.invocation.Message invoke(org.apache.tuscany.sca.invocation.Message msg) {
+    public org.apache.tuscany.sca.invocation.Message invoke(org.apache.tuscany.sca.invocation.Message tuscanyMsg) {
         try {
-            Object resp = invokeTarget((Object[])msg.getBody(), (short)0);
-            msg.setBody(resp);
+        	
+            Object resp = invokeTarget(tuscanyMsg);
+            tuscanyMsg.setBody(resp);
+
         } catch (InvocationTargetException e) {
-            msg.setFaultBody(e.getCause());
+            tuscanyMsg.setFaultBody(e.getCause());
         } catch (ServiceRuntimeException e) {
             if (e.getCause() instanceof InvocationTargetException) {
                 if ((e.getCause().getCause() instanceof RuntimeException)) {
-                    msg.setFaultBody(e.getCause());
+                    tuscanyMsg.setFaultBody(e.getCause());
                 } else {
-                    msg.setFaultBody(e.getCause().getCause());
+                    tuscanyMsg.setFaultBody(e.getCause().getCause());
                 }
             } else {
-                msg.setFaultBody(e);
+                tuscanyMsg.setFaultBody(e);
             }
         } catch (Throwable e) {
-            msg.setFaultBody(e);
+            tuscanyMsg.setFaultBody(e);
         }
-        return msg;
+        return tuscanyMsg;
     }
 
-    public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
+    public Object invokeTarget(org.apache.tuscany.sca.invocation.Message tuscanyMsg) throws InvocationTargetException {
         try {
             Session session = jmsResourceFactory.createSession();
             try {
@@ -211,7 +243,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
                     replyToDest = (replyDest != null) ? replyDest : session.createTemporaryQueue();
                 }
 
-                Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
+                Message requestMsg = sendRequest(tuscanyMsg, session, replyToDest);
+
                 if (replyToDest == null) {
                     return null;
                 } else {
@@ -229,12 +262,14 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         }
     }
 
-    protected Message sendRequest(Object payload, Session session, Destination replyToDest) throws JMSException {
+    protected Message sendRequest(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Session session, Destination replyToDest) throws JMSException {
 
-        Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, payload);
+        Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, tuscanyMsg.getBody());
 
         requestMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
         requestMsg.setJMSPriority(jmsBinding.getPriority());
+
+        setCallbackHeaders(tuscanyMsg, requestMsg);
 
         requestMessageProcessor.setOperationName(operationName, requestMsg);
         requestMsg.setJMSReplyTo(replyToDest);
@@ -247,6 +282,23 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         }
         return requestMsg;
     }
+
+	private void setCallbackHeaders(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Message jmsMsg) throws JMSException {
+
+        ReferenceParameters parameters = tuscanyMsg.getFrom().getReferenceParameters();
+
+//        if (parameters.getCallbackReference() != null) {
+//        	jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_EPR_PROPERTY, parameters.getCallbackReference().getBinding().getURI());
+//        }
+
+        if (parameters.getCallbackID() != null) {
+        	jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY, parameters.getCallbackID().toString());
+        }
+
+        if (callbackDestName != null) {
+        	jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, callbackDestName);
+        }
+	}
 
     protected Message receiveReply(Session session, Destination replyToDest, String requestMsgId) throws JMSException,
         NamingException {
