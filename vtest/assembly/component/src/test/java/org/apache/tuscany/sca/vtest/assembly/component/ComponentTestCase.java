@@ -82,4 +82,69 @@ public class ComponentTestCase {
         cleanupDomain();
     }
 
+    /**
+     * Lines 154-158:
+     * <p>
+     * A component element has zero or one implementation element as its child,
+     * which points to the implementation used by the component. A component
+     * with no implementation element is not runnable, but components of this
+     * kind may be useful during a "top-down" development process as a means of
+     * defining the characteristics required of the implementation before the
+     * implementation is written.
+     */
+    @Test
+    public void components4() throws Exception {
+        initDomain("zeroimplelements.composite");
+        cleanupDomain();
+    }
+
+    /**
+     * Lines 159-160:
+     * <p>
+     * The component element can have zero or more service elements as children
+     * which are used to configure the services of the component.
+     */
+    @Test
+    public void components5() throws Exception {
+        initDomain("serviceelement.composite");
+        cleanupDomain();
+    }
+
+    /**
+     * Lines 174-179:
+     * <p>
+     * A service has zero or one interface, which describes the operations
+     * provided by the service. The interface is described by an interface
+     * element which is a child element of the service element. If no interface
+     * is specified, then the interface specified for the service by the
+     * implementation is in effect. If an interface is specified it must provide
+     * a compatible subset of the interface provided by the implementation, i.e.
+     * provide a subset of the operations defined by the implementation for the
+     * service.
+     */
+    @Test
+    public void components6() throws Exception {
+        initDomain("servicewithinterface.composite");
+        CService service = ServiceFinder.getService(CService.class, "CComponent");
+        Assert.assertEquals("Some State", service.getState());
+        cleanupDomain();
+    }
+
+    /**
+     * Lines 180-182:
+     * <p>
+     * A service element has one or more binding elements as children. If no
+     * bindings are specified, then the bindings specified for the service by
+     * the implementation are in effect. If bindings are specified, then those
+     * bindings override the bindings specified by the implementation.
+     */
+    @Test
+    public void components7() throws Exception {
+        initDomain("servicewithbinding.composite");
+        CService service = ServiceFinder.getService(CService.class, "CComponent");
+        Assert.assertEquals("Some State", service.getState());
+        cleanupDomain();
+    }
+    
+    
 }
