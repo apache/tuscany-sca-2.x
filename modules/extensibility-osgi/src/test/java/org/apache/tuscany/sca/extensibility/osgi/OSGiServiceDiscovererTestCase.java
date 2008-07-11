@@ -95,10 +95,18 @@ public class OSGiServiceDiscovererTestCase {
     @Test
     public void testDiscovery() {
         Set<ServiceDeclaration> descriptors =
-            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory");
+            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory", false);
         Assert.assertEquals(1, descriptors.size());
-        descriptors = discoverer.discover("notthere");
+        descriptors = discoverer.discover("notthere", false);
         Assert.assertEquals(0, descriptors.size());
     }
 
+    @Test
+    public void testDiscoveryFirst() {
+        Set<ServiceDeclaration> descriptors =
+            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory", true);
+        Assert.assertEquals(1, descriptors.size());
+        descriptors = discoverer.discover("notthere", true);
+        Assert.assertEquals(0, descriptors.size());
+    }    
 }

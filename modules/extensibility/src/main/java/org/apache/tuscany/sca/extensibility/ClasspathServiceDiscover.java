@@ -29,6 +29,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -117,11 +118,20 @@ public class ClasspathServiceDiscover implements ServiceDiscoverer {
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
 
-    protected List<URL> getResources(final String name) throws IOException {
+    protected List<URL> getResources(final String name, final boolean firstOnly) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<List<URL>>() {
                 public List<URL> run() throws IOException {
-                    return Collections.list(getClassLoader().getResources(name));
+                    if (firstOnly) {
+                        URL url = getClassLoader().getResource(name);
+                        if (url != null) {
+                            return Arrays.asList(url);
+                        } else {
+                            return Collections.emptyList();
+                        }
+                    } else {
+                        return Collections.list(getClassLoader().getResources(name));
+                    }
                 }
             });
         } catch (PrivilegedActionException e) {
@@ -168,13 +178,13 @@ public class ClasspathServiceDiscover implements ServiceDiscoverer {
         return attributes;
     }
 
-    public Set<ServiceDeclaration> discover(String serviceName) {
+    public Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly) {
         Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
         String name = "META-INF/services/" + serviceName;
         boolean debug = logger.isLoggable(Level.FINE);
         try {
-            for (final URL url : getResources(name)) {
+            for (final URL url : getResources(name, firstOnly)) {
                 if (debug) {
                     logger.fine("Reading service provider file: " + url.toExternalForm());
                 }
@@ -215,6 +225,9 @@ public class ClasspathServiceDiscover implements ServiceDiscoverer {
                             }
                             ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, className, attributes);
                             descriptors.add(descriptor);
+                            if (firstOnly) {
+                                return descriptors;
+                            }
                         }
                     }
                 } finally {

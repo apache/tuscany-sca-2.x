@@ -174,7 +174,7 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<ServiceDeclaration> discover(String serviceName) {
+    public Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly) {
         boolean debug = logger.isLoggable(Level.FINE);
         Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
@@ -229,6 +229,9 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
                                 ServiceDeclarationImpl descriptor =
                                     new ServiceDeclarationImpl(bundle, url, className, attributes);
                                 descriptors.add(descriptor);
+                                if (firstOnly) {
+                                    return descriptors;
+                                }
                             }
                         }
                     } finally {
