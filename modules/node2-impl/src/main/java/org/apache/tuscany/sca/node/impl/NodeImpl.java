@@ -47,12 +47,14 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -489,12 +491,16 @@ public class NodeImpl implements SCANode2, SCAClient {
             analyseProblems();
         }
         
-        // Resolve the metadata within the context of the first contribution
-        Contribution mainContribution = contributions.get(contributions.size() - 1);
+        // Resolve the metadata within the context of the contribution
         if (metadata != null) {
             StAXArtifactProcessor<ContributionMetadata> processor =
                 artifactProcessors.getProcessor(ContributionMetadata.class);
-            processor.resolve(metadata, mainContribution.getModelResolver());
+            for (Contribution c : contributions) {
+                processor.resolve(metadata, c.getModelResolver());
+                if (!metadata.isUnresolved()) {
+                    break;
+                }
+            }
             List<Composite> composites = metadata.getDeployables();
             configuration.setComposite(composites.get(0));
         }
@@ -505,21 +511,32 @@ public class NodeImpl implements SCANode2, SCAClient {
         if (configuration.getComposite().getName() == null) {
             URI uri = URI.create(configuration.getComposite().getURI());
             if (uri.getScheme() == null) {
-                uri = new File(configuration.getComposite().getURI()).toURI();
+                // For relative URI, try to resolve it within the contributions
+                Artifact file = resolveCompositeArtifact(contributions, uri.toString());
+                if (file == null) {
+                    throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
+                }
+                uri = URI.create(file.getLocation());
             }
             URL compositeURL = uri.toURL();
             logger.log(Level.INFO, "Loading composite: " + compositeURL);
             InputStream is = compositeURL.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             composite = compositeProcessor.read(reader);
+            reader.close();
         } else {
             composite = configuration.getComposite();
         }
 
         analyseProblems();
 
-        // Resolve it within the context of the first contribution
-        compositeProcessor.resolve(composite, mainContribution.getModelResolver());
+        // Resolve it within the context of the contribution
+        for (Contribution c : contributions) {
+            compositeProcessor.resolve(composite, c.getModelResolver());
+            if (!composite.isUnresolved()) {
+                break;
+            }
+        }
 
         analyseProblems();
 
@@ -542,6 +559,31 @@ public class NodeImpl implements SCANode2, SCAClient {
         runtime.buildComposite(composite);
 
         analyseProblems();
+    }
+    
+    /**
+     * Search all contributions to resolve the relative composite URI
+     * @param contributions
+     * @param compositeURI
+     * @return
+     */
+    private Artifact resolveCompositeArtifact(List<Contribution> contributions, String compositeURI) {
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        // Remove the leading /
+        if (compositeURI != null && compositeURI.startsWith("/")) {
+            compositeURI = compositeURI.substring(1);
+        }
+        Artifact compositeFile = contributionFactory.createArtifact();
+        compositeFile.setUnresolved(true);
+        compositeFile.setURI(compositeURI);
+        for (Contribution c : contributions) {
+            ModelResolver resolver = c.getModelResolver();
+            Artifact resolved = resolver.resolveModel(Artifact.class, compositeFile);
+            if (resolved != null && !resolved.isUnresolved()) {
+                return resolved;
+            }
+        }
+        return null;
     }
 
     private void analyseProblems() throws Exception {
