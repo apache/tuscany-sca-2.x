@@ -28,8 +28,7 @@ import java.util.logging.Logger;
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
  * Services are described using configuration files in META-INF/services.
  * Service description specifies a class name followed by optional properties.
- * Multi-ClassLoader environments are supported through a ClassLoader
- * registration API
+ * 
  *
  * @version $Rev$ $Date$
  */
@@ -48,12 +47,6 @@ public class ServiceDiscovery {
      * @return
      */
     public static ServiceDiscovery getInstance() {
-//
-//        if (instance == null) {
-//            instance = new ServiceDiscovery();
-//            instance.registeredClassLoaders = new HashSet<ClassLoader>();
-//            instance.registeredClassLoaders.add(ServiceDiscovery.class.getClassLoader());
-//        }
         return instance;
     }
     
@@ -98,8 +91,7 @@ public class ServiceDiscovery {
      * @throws IOException
      */
     public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
-        // Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
-        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(name);
+        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(name, false);
         return services;
     }
 
@@ -124,52 +116,9 @@ public class ServiceDiscovery {
      * @throws ClassNotFoundException
      */
     public Class<?> loadFirstServiceClass(Class<?> serviceInterface) throws IOException, ClassNotFoundException {
-        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(serviceInterface.getName());
+        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(serviceInterface.getName(), true);
         if(services.isEmpty()) {
             return null;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
         return services.iterator().next().loadClass();
     }

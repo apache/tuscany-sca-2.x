@@ -44,12 +44,23 @@ public class ClasspathServiceDiscovererTestCase {
     @Test
     public void testDiscovery() {
         Set<ServiceDeclaration> discriptors =
-            discover.discover("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint");
+            discover.discover("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint", false);
         Assert.assertEquals(1, discriptors.size());
         discriptors =
-            discover.discover("notthere");
+            discover.discover("notthere", false);
         Assert.assertEquals(0, discriptors.size());
     }
+    
+    @Test
+    public void testDiscoveryFirst() {
+        Set<ServiceDeclaration> discriptors =
+            discover.discover("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint", true);
+        Assert.assertEquals(1, discriptors.size());
+        discriptors =
+            discover.discover("notthere", true);
+        Assert.assertEquals(0, discriptors.size());
+    }
+
 
     /**
      * @throws java.lang.Exception

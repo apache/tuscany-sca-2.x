@@ -22,13 +22,15 @@ package org.apache.tuscany.sca.extensibility;
 import java.util.Set;
 
 /**
- * 
+ * A SPI that allows different implementations of discovering service declarations
  */
 public interface ServiceDiscoverer {
     /**
      * Discover the service descriptors by name
-     * @param serviceName
+     * @param serviceName The name of the service
+     * @param firstOnly A flag to indicate if only the first instance is to be discovered
+     *  
      * @return A set of service descriptors
      */
-    Set<ServiceDeclaration> discover(String serviceName);
+    Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly);
 }
