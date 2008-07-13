@@ -112,4 +112,21 @@ public abstract class SCANode2Factory {
      */
     public abstract SCANode2 createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions);
     
+    /**
+     * Creates and starts a new SCA node from a single composite with the
+     * contribution being the folder that contains the composite.
+     * 
+     * This method provides the equivalent of doing:
+     * <code>
+     *      File compositeFile = new File(compositeURI);
+     *      File compositeFolder = compositeFile.getParentFile();
+     *      SCAContribution contribution = new SCAContribution(compositeFolder.getName(), compositeFolder.toURL().toString());
+     *      SCANode2 node = SCANode2Factory.newInstance().createSCANode(compositeFile.getName(), contribution);
+     *      node.start();
+     * </code>
+     * 
+     * @param compositeURI the URI of the composite to use
+     * @return a new and started SCA node 
+     */
+    public abstract SCANode2 createSCANode(String compositeURI);
 }
