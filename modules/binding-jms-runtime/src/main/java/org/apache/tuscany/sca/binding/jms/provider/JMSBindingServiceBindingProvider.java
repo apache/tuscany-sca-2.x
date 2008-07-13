@@ -69,8 +69,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
-            // use the SCA service name as the default destination name
-            jmsBinding.setDestinationName(service.getName());
+        	if (!service.isCallback()) {
+                // use the SCA service name as the default destination name
+                jmsBinding.setDestinationName(service.getName());
+        	}
         }
 
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
@@ -127,6 +129,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         Session session = jmsResourceFactory.createSession();
         destination = lookupDestinationQueue();
+        if (destination == null) {
+    	    // TODO: temporary callback queues don't work yet as i can't see how to get the
+    	    //       serice side to look up the temporary destination name
+        	destination = session.createTemporaryQueue();
+        }
 
         consumer = session.createConsumer(destination);
 
@@ -160,7 +167,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
                     }
                 }});
         }
-        logger.log(Level.INFO, "JMS service '" + service.getName() + "' listening on destination " + jmsBinding.getDestinationName());
+        logger.log(Level.INFO, 
+        		"JMS " + (service.isCallback() ? "callback service" : "service") + 
+        		" '" + service.getName() + "' listening on destination " + 
+        		((destination instanceof Queue) ? ((Queue)destination).getQueueName() : ((Topic)destination).getTopicName()));
     }
 
     /**
@@ -181,7 +191,15 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
      *             existence/non-existence is not compatible with the create mode specified on the binding
      */
     private Destination lookupDestinationQueue() throws NamingException, JMSBindingException {
-        Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
+    	
+    	if (service.isCallback() && JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(jmsBinding.getDestinationName())) {
+    	    // if its a callback service returning null indicates to use a temporary queue 
+    	    // TODO: temporary callback queues don't work yet as i can't see how to get the
+    	    //       serice side to look up the temporary destination name
+    		return null;
+    	}
+
+    	Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
 
         String qCreateMode = jmsBinding.getDestinationCreate();
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {

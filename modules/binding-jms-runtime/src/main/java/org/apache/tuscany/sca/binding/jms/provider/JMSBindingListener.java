@@ -28,7 +28,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.Topic;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
@@ -127,21 +129,35 @@ public class JMSBindingListener implements MessageListener {
         tuscanyMsg.setBody(requestPayload);
         tuscanyMsg.setOperation(operation);
 
-        setCallbackProperties(requestJMSMsg, tuscanyMsg);
+        setCallbackProperties(requestJMSMsg, tuscanyMsg, operation);
 
         return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
     }
 
-	protected void setCallbackProperties(Message requestJMSMsg, MessageImpl tuscanyMsg) throws JMSException {
+	protected void setCallbackProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
 		if (service.getInterfaceContract().getCallbackInterface() != null) {
 
 			EndpointReference from = new EndpointReferenceImpl(null);
 			tuscanyMsg.setFrom(from);
+			
+			from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
+			
             ReferenceParameters parameters = from.getReferenceParameters();
             
             String callbackdestName = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
+            if (callbackdestName == null && operation.isNonBlocking()) {
+            	// if the request has a replyTo but this service operation is oneway but the service uses callbacks
+            	// then use the replyTo as the callback destination
+                Destination replyTo = requestJMSMsg.getJMSReplyTo();
+                if (replyTo != null) {
+                	callbackdestName = (replyTo instanceof Queue) ? ((Queue)replyTo).getQueueName() : ((Topic)replyTo).getTopicName();
+                }
+            }
+
             if (callbackdestName != null) {
-                parameters.setCallbackReference(new EndpointReferenceImpl(callbackdestName));
+            	// append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
+            	// as otherwise the invoker should use the uri from the service callback binding
+                parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
             }
 
             String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);        
