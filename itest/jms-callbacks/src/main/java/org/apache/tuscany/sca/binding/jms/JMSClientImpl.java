@@ -27,10 +27,10 @@ import org.osoa.sca.annotations.Service;
 @Service(JMSClient.class)
 public class JMSClientImpl implements JMSClient, JMSServiceCallback {
 
-	@Reference protected JMSService myService;
+    @Reference protected JMSService myService;
 
-	public static String result;
-	public static Object lock = new Object();
+    public static String result;
+    public static Object lock = new Object();
 	
     public void aClientMethod() {
         System.out.println("aClientMethod " + this + " on thread " + Thread.currentThread());
@@ -44,8 +44,7 @@ public class JMSClientImpl implements JMSClient, JMSServiceCallback {
         
         // wakeup the waiting testcase
         synchronized (lock) {
-        	lock.notifyAll();
-		}
+            lock.notifyAll();
+	}
     }
-
 }
