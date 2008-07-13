@@ -27,9 +27,8 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
- * MessageProcessor for sending/receiving javax.jms.TextMessage with
- * the JMSBinding.
- *
+ * MessageProcessor for sending/receiving javax.jms.TextMessage with the JMSBinding.
+ * 
  * @version $Rev$ $Date$
  */
 public class TextMessageProcessor extends AbstractMessageProcessor {
@@ -46,7 +45,7 @@ public class TextMessageProcessor extends AbstractMessageProcessor {
                 throw new IllegalStateException("expecting JMS TextMessage: " + msg);
             }
 
-            return new Object[]{((TextMessage)msg).getText()};
+            return new Object[] {((TextMessage)msg).getText()};
 
         } catch (JMSException e) {
             throw new JMSBindingException(e);

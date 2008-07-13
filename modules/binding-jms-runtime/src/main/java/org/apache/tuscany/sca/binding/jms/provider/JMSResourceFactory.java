@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JMSResourceFactory {
@@ -60,7 +60,7 @@ public class JMSResourceFactory {
 
     /*
      * This is a simple implementation where a connection is created per binding Ideally the resource factory should be
-     * able to leverage the host environment to provide connection pooling if it can. E.g. if Tuscany is running inside
+     * able to leverage the host environment to provide connection pooling if it can. E.g. if Tuscany is running inside 
      * an AppServer Then we could leverage the JMS resources it provides
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
@@ -115,7 +115,7 @@ public class JMSResourceFactory {
     private synchronized Context getInitialContext() throws NamingException {
         if (context == null) {
             Properties props = new Properties();
-            
+
             if (initialContextFactoryName != null) {
                 props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
             }
@@ -132,30 +132,29 @@ public class JMSResourceFactory {
 
     /**
      * If using the WAS JMS Client with a non-IBM JRE then an additional
-     * environment property needs to be set to initialize the ORB correctly.
-     * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804 
+     * environment property needs to be set to initialize the ORB correctly. 
+     * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804
      */
     private void initJREEnvironment(Properties props) {
-    	if ("com.ibm.websphere.naming.WsnInitialContextFactory".equals(props.get(Context.INITIAL_CONTEXT_FACTORY))) {
-        	String vendor = System.getProperty("java.vendor");
-    		if (vendor == null || !vendor.contains("IBM")) {
-            	props.setProperty("com.ibm.CORBA.ORBInit","com.ibm.ws.sib.client.ORB");
-    		}
-    	}
-	}
+        if ("com.ibm.websphere.naming.WsnInitialContextFactory".equals(props.get(Context.INITIAL_CONTEXT_FACTORY))) {
+            String vendor = System.getProperty("java.vendor");
+            if (vendor == null || !vendor.contains("IBM")) {
+                props.setProperty("com.ibm.CORBA.ORBInit", "com.ibm.ws.sib.client.ORB");
+            }
+        }
+    }
 
-	public Destination lookupDestination(String jndiName) throws NamingException {
+    public Destination lookupDestination(String jndiName) throws NamingException {
         return (Destination)jndiLookUp(jndiName);
     }
 
     /**
-     * You can create a destination in ActiveMQ (and have it appear in JNDI) by putting "dynamicQueues/" in front of the
-     * queue name being looked up
+     * You can create a destination in ActiveMQ (and have it appear in JNDI) by putting "dynamicQueues/" in front of the queue name being looked up
      */
     public Destination createDestination(String jndiName) throws NamingException {
         return lookupDestination("dynamicQueues/" + jndiName);
     }
-    
+
     protected Object jndiLookUp(String name) {
         Object o = null;
         try {

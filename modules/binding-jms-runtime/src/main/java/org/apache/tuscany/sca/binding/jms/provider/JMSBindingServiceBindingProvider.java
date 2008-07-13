@@ -56,12 +56,9 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private WorkScheduler workScheduler;
     private boolean running;
 
-	private Destination destination;
+    private Destination destination;
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component,
-                                            RuntimeComponentService service,
-                                            JMSBinding binding,
-                                            WorkScheduler workScheduler) {
+    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding, WorkScheduler workScheduler) {
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
@@ -69,10 +66,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
-        	if (!service.isCallback()) {
+            if (!service.isCallback()) {
                 // use the SCA service name as the default destination name
                 jmsBinding.setDestinationName(service.getName());
-        	}
+            }
         }
 
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
@@ -130,9 +127,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         Session session = jmsResourceFactory.createSession();
         destination = lookupDestinationQueue();
         if (destination == null) {
-    	    // TODO: temporary callback queues don't work yet as i can't see how to get the
-    	    //       serice side to look up the temporary destination name
-        	destination = session.createTemporaryQueue();
+            destination = session.createTemporaryQueue();
         }
 
         consumer = session.createConsumer(destination);
@@ -144,7 +139,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             jmsResourceFactory.startConnection();
 
         } catch (javax.jms.IllegalStateException e) {
-            
+
             // setMessageListener not allowed in JEE container so use Tuscany threads
 
             jmsResourceFactory.startConnection();
@@ -152,25 +147,28 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
                 public void run() {
                     try {
                         while (running) {
-                           final Message msg = consumer.receive();
-                           workScheduler.scheduleWork(new Runnable() {
-                               public void run() {
-                                   try {
-                                       listener.onMessage(msg);
-                                   } catch (Exception e) {
-                                       e.printStackTrace();
-                                   }
-                               }});
+                            final Message msg = consumer.receive();
+                            workScheduler.scheduleWork(new Runnable() {
+                                public void run() {
+                                    try {
+                                        listener.onMessage(msg);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }});
+                }
+            });
         }
-        logger.log(Level.INFO, 
-        		"JMS " + (service.isCallback() ? "callback service" : "service") + 
-        		" '" + service.getName() + "' listening on destination " + 
-        		((destination instanceof Queue) ? ((Queue)destination).getQueueName() : ((Topic)destination).getTopicName()));
+        logger.log(Level.INFO, "JMS " + (service.isCallback() ? "callback service" : "service")
+            + " '"
+            + service.getName()
+            + "' listening on destination "
+            + ((destination instanceof Queue) ? ((Queue)destination).getQueueName() : ((Topic)destination).getTopicName()));
     }
 
     /**
@@ -187,19 +185,17 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
      * 
      * @return The Destination queue.
      * @throws NamingException Failed to lookup JMS queue
-     * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current
-     *             existence/non-existence is not compatible with the create mode specified on the binding
+     * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current existence/non-existence is not
+     *                 compatible with the create mode specified on the binding
      */
     private Destination lookupDestinationQueue() throws NamingException, JMSBindingException {
-    	
-    	if (service.isCallback() && JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(jmsBinding.getDestinationName())) {
-    	    // if its a callback service returning null indicates to use a temporary queue 
-    	    // TODO: temporary callback queues don't work yet as i can't see how to get the
-    	    //       serice side to look up the temporary destination name
-    		return null;
-    	}
 
-    	Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
+        if (service.isCallback() && JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(jmsBinding.getDestinationName())) {
+            // if its a callback service returning null indicates to use a temporary queue
+            return null;
+        }
+
+        Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
 
         String qCreateMode = jmsBinding.getDestinationCreate();
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {
@@ -246,18 +242,18 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         return destination;
     }
-    
+
     public String getDestinationName() {
-    	try {
-        	if (destination instanceof Queue) {
-            	return ((Queue)destination).getQueueName();
-        	} else if (destination instanceof Topic){
-            	return ((Topic)destination).getTopicName();
-        	} else {
-        	    return null;
-        	}
-    	} catch (JMSException e) {
-    		throw new JMSBindingException(e);
-    	}
+        try {
+            if (destination instanceof Queue) {
+                return ((Queue)destination).getQueueName();
+            } else if (destination instanceof Topic) {
+                return ((Topic)destination).getTopicName();
+            } else {
+                return null;
+            }
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        }
     }
 }
