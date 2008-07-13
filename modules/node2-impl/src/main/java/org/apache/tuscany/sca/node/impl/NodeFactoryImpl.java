@@ -19,9 +19,13 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Default implementation of an SCA node factory.
@@ -50,5 +54,28 @@ public class NodeFactoryImpl extends SCANode2Factory {
     @Override
     public SCANode2 createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions) {
         return new NodeImpl(compositeURI, compositeContent, contributions);
+    }
+
+    @Override
+    public SCANode2 createSCANode(String compositeURI) {
+        try {
+
+            File compositeFile = new File(compositeURI);
+            if (!compositeFile.exists()) {
+                throw new IllegalArgumentException("composite not found: " + compositeURI);
+            }
+
+            File compositeFolder = compositeFile.getParentFile();
+            SCAContribution contribution = new SCAContribution(compositeFolder.getName(), compositeFolder.toURL().toString());
+
+            SCANode2 node = createSCANode(compositeFile.getName(), contribution);
+
+            node.start();
+
+            return node;
+
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 }
