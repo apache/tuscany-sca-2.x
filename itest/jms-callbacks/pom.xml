@@ -71,10 +71,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-impl</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--  uses ActiveMQ 5.1 as 4.1 Session.createQueue does not work using
+              a temporary queue name -->
+        <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>4.1.1</version>
-            <scope>runtime</scope>
+            <version>5.1.0</version>
+            <scope>test</scope>
         </dependency>
                 
     </dependencies>
