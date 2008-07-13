@@ -26,13 +26,13 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
  * Utility methods to load JMS message processors.
- *
+ * 
  * @version $Rev: $ $Date: $
  */
 public class JMSMessageProcessorUtil {
 
     /**
-     * Used to create instances of the JMSResourceFactory and RequestMessageProcessor and ResponseMessageProcessor from
+     * Used to create instances of the JMSResourceFactory and RequestMessageProcessor and ResponseMessageProcessor from 
      * string based class name provided in the configuration
      * 
      * @param cl ClassLoader

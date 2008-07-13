@@ -47,9 +47,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
     private JMSResourceFactory jmsResourceFactory;
 
-    public JMSBindingReferenceBindingProvider(RuntimeComponent component,
-                                              RuntimeComponentReference reference,
-                                              JMSBinding binding) {
+    public JMSBindingReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
         this.reference = reference;
         this.jmsBinding = binding;
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
@@ -77,9 +75,9 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     public Invoker createInvoker(Operation operation) {
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
-        	if (!reference.isCallback()) {
+            if (!reference.isCallback()) {
                 throw new JMSBindingException("No destination specified for reference " + reference.getName());
-        	}
+            }
         }
 
         JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);

@@ -34,9 +34,8 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
- * MessageProcessor for sending/receiving XML javax.jms.TextMessage with
- * the JMSBinding.
- *
+ * MessageProcessor for sending/receiving XML javax.jms.TextMessage with the JMSBinding.
+ * 
  * @version $Rev$ $Date$
  */
 public class XMLTextMessageProcessor extends AbstractMessageProcessor {
@@ -54,9 +53,9 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             if (xml != null) {
                 XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
                 StAXOMBuilder builder = new StAXOMBuilder(reader);
-                os = new Object[] { builder.getDocumentElement() };
+                os = new Object[] {builder.getDocumentElement()};
             } else {
-                os = new Object[]{};
+                os = new Object[] {};
             }
             return os;
 

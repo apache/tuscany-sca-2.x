@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Listener for the JMSBinding.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JMSBindingListener implements MessageListener {
@@ -60,9 +60,7 @@ public class JMSBindingListener implements MessageListener {
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
 
-    public JMSBindingListener(JMSBinding jmsBinding,
-                              JMSResourceFactory jmsResourceFactory,
-                              RuntimeComponentService service) throws NamingException {
+    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;
@@ -121,8 +119,7 @@ public class JMSBindingListener implements MessageListener {
         }
 
         if (operation == null) {
-            throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName
-                : ON_MESSAGE_METHOD_NAME));
+            throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME));
         }
 
         MessageImpl tuscanyMsg = new MessageImpl();
@@ -134,38 +131,41 @@ public class JMSBindingListener implements MessageListener {
         return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
     }
 
-	protected void setCallbackProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
-		if (service.getInterfaceContract().getCallbackInterface() != null) {
+    protected void setCallbackProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
+        if (service.getInterfaceContract().getCallbackInterface() != null) {
 
-			EndpointReference from = new EndpointReferenceImpl(null);
-			tuscanyMsg.setFrom(from);
-			
-			from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
-			
+            EndpointReference from = new EndpointReferenceImpl(null);
+            tuscanyMsg.setFrom(from);
+
+            from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO:
+            // whats
+            // this
+            // for?
+
             ReferenceParameters parameters = from.getReferenceParameters();
-            
+
             String callbackdestName = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
             if (callbackdestName == null && operation.isNonBlocking()) {
-            	// if the request has a replyTo but this service operation is oneway but the service uses callbacks
-            	// then use the replyTo as the callback destination
+                // if the request has a replyTo but this service operation is oneway but the service uses callbacks
+                // then use the replyTo as the callback destination
                 Destination replyTo = requestJMSMsg.getJMSReplyTo();
                 if (replyTo != null) {
-                	callbackdestName = (replyTo instanceof Queue) ? ((Queue)replyTo).getQueueName() : ((Topic)replyTo).getTopicName();
+                    callbackdestName = (replyTo instanceof Queue) ? ((Queue)replyTo).getQueueName() : ((Topic)replyTo).getTopicName();
                 }
             }
 
             if (callbackdestName != null) {
-            	// append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
-            	// as otherwise the invoker should use the uri from the service callback binding
+                // append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
+                // as otherwise the invoker should use the uri from the service callback binding
                 parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
             }
 
-            String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);        
+            String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
             if (callbackID != null) {
                 parameters.setCallbackID(callbackID);
             }
         }
-	}
+    }
 
     protected void sendReply(Message requestJMSMsg, Object responsePayload, boolean isFault) {
         try {

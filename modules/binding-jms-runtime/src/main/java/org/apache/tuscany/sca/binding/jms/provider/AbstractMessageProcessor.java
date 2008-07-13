@@ -30,7 +30,7 @@ import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Base MessageProcessor for the JMSBinding.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
@@ -44,7 +44,7 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#getOperationName(javax.jms.Message)
      */
     public String getOperationName(Message message) {
@@ -59,7 +59,7 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#setOperationName(javax.jms.Message, java.lang.String)
      */
     public void setOperationName(String operationName, Message message) {
@@ -74,7 +74,7 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Session, java.lang.Object)
      */
     public Message insertPayloadIntoJMSMessage(Session session, Object o) {
@@ -83,13 +83,13 @@ public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Message)
      */
     public Object extractPayloadFromJMSMessage(Message msg) {
         try {
             if (msg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
-                throw new ServiceRuntimeException("remote service exception, see nested exception",(Throwable)((ObjectMessage)msg).getObject());
+                throw new ServiceRuntimeException("remote service exception, see nested exception", (Throwable)((ObjectMessage)msg).getObject());
             }
         } catch (JMSException e) {
             throw new JMSBindingException(e);

@@ -44,15 +44,11 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
         workScheduler = utilities.getUtility(WorkScheduler.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   JMSBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
         return new JMSBindingReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               JMSBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
         return new JMSBindingServiceBindingProvider(component, service, binding, workScheduler);
     }
 
