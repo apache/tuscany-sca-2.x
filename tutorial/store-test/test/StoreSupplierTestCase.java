@@ -55,13 +55,13 @@ public class StoreSupplierTestCase {
         domainManager.start();
         
         NodeLauncher nodeLauncher = NodeLauncher.newInstance();
-        storeSupplierNode = nodeLauncher.createNode("http://localhost:9990/node-config/StoreSupplierNode");
+        storeSupplierNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/StoreSupplierNode");
         storeSupplierNode.start();
         
-        storeCatalogsNode = nodeLauncher.createNode("http://localhost:9990/node-config/CatalogsNode");
+        storeCatalogsNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/CatalogsNode");
         storeCatalogsNode.start();
         
-        storeClientNode = nodeLauncher.createNode("http://localhost:9990/node-config/StoreClientNode");
+        storeClientNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/StoreClientNode");
         storeClientNode.start();
         
     }
