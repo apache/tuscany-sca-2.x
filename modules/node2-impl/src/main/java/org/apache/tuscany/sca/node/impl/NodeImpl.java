@@ -105,39 +105,6 @@ public class NodeImpl implements SCANode2, SCAClient {
     /** 
      * Constructs a new SCA node.
      *  
-     * @param configuration the the node configuration information.
-     */
-    NodeImpl(ConfiguredNodeImplementation configuration) {
-        configurationName = configuration.getURI();
-        logger.log(Level.INFO, "Creating node: " + configuration.getURI());
-
-        try {
-            // Initialize the runtime
-            initRuntime();
-
-            URL configurationURL = new URL(configuration.getURI());
-
-            // Resolve contribution URLs
-            for (Contribution contribution : configuration.getContributions()) {
-                URL contributionURL = new URL(configurationURL, contribution.getLocation());
-                contribution.setLocation(contributionURL.toString());
-            }
-
-            // Resolve composite URL
-            URL compositeURL = new URL(configurationURL, configuration.getComposite().getURI());
-            configuration.getComposite().setURI(compositeURL.toString());
-
-            // Configure the node
-            configureNode(configuration);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    /** 
-     * Constructs a new SCA node.
-     *  
      * @param configurationURI the URI of the node configuration information.
      */
     NodeImpl(String configurationURI) {
@@ -391,8 +358,7 @@ public class NodeImpl implements SCANode2, SCAClient {
                 configuration = findNodeConfiguration(compositeURI, null);
             } else {
                 // Create a node configuration
-                NodeImplementationFactory nodeImplementationFactory =
-                    modelFactories.getFactory(NodeImplementationFactory.class);
+                NodeImplementationFactory nodeImplementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
                 configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
                 // Read the composite model
@@ -488,10 +454,11 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
             contributions.add(contributionService.contribute(contribution.getURI(), contributionURL, false));
-            analyseProblems();
+            analyzeProblems();
         }
         
         // Resolve the metadata within the context of the contribution
+        //FIXME This doesn't seem to make sense here 
         if (metadata != null) {
             StAXArtifactProcessor<ContributionMetadata> processor =
                 artifactProcessors.getProcessor(ContributionMetadata.class);
@@ -505,40 +472,51 @@ public class NodeImpl implements SCANode2, SCAClient {
             configuration.setComposite(composites.get(0));
         }
 
-
         // Load the specified composite
-        StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
-        if (configuration.getComposite().getName() == null) {
-            URI uri = URI.create(configuration.getComposite().getURI());
-            if (uri.getScheme() == null) {
-                // For relative URI, try to resolve it within the contributions
-                Artifact file = resolveCompositeArtifact(contributions, uri.toString());
-                if (file == null) {
-                    throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
-                }
-                uri = URI.create(file.getLocation());
+        Contribution contribution;
+        URL compositeURL;
+        
+        URI uri = URI.create(configuration.getComposite().getURI());
+        if (uri.getScheme() == null) {
+            
+            // If the composite URI is a relative URI, try to resolve it within the contributions
+            contribution = contribution(contributions, uri.toString());
+            if (contribution == null) {
+                throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
             }
-            URL compositeURL = uri.toURL();
+            compositeURL = new URL(location(contribution, uri.toString()));
+            
+        } else {
+            
+            // If the composite URI is an absolute URI, use it as is
+            compositeURL = uri.toURL();
+            
+            // And resolve the composite within the scope of the last contribution
+            if (contributions.size() != 0) {
+                contribution = contributions.get(contributions.size() -1);
+            } else {
+                contribution = null;
+            }
+        }
+            
+        // Read the composite
+        StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
+        composite = configuration.getComposite();
+        if (composite.getName() == null) {
             logger.log(Level.INFO, "Loading composite: " + compositeURL);
             InputStream is = compositeURL.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             composite = compositeProcessor.read(reader);
             reader.close();
-        } else {
-            composite = configuration.getComposite();
+
+            analyzeProblems();
         }
 
-        analyseProblems();
-
-        // Resolve it within the context of the contribution
-        for (Contribution c : contributions) {
-            compositeProcessor.resolve(composite, c.getModelResolver());
-            if (!composite.isUnresolved()) {
-                break;
-            }
+        // Resolve the given composite within the scope of the selected contribution
+        if (contribution != null) {
+            compositeProcessor.resolve(composite, contribution.getModelResolver());
+            analyzeProblems();
         }
-
-        analyseProblems();
 
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
@@ -558,21 +536,45 @@ public class NodeImpl implements SCANode2, SCAClient {
         // Build the composite
         runtime.buildComposite(composite);
 
-        analyseProblems();
+        analyzeProblems();
     }
     
     /**
-     * Search all contributions to resolve the relative composite URI
+     * Returns the artifact representing the given composite.
+     * 
+     * @param contribution
+     * @param compositeURI
+     * @return
+     */
+    private String location(Contribution contribution, String uri) {
+        if (uri != null && uri.startsWith("/")) {
+            uri = uri.substring(1);
+        }
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        Artifact compositeFile = contributionFactory.createArtifact();
+        compositeFile.setUnresolved(true);
+        compositeFile.setURI(uri);
+        ModelResolver resolver = contribution.getModelResolver();
+        Artifact resolved = resolver.resolveModel(Artifact.class, compositeFile);
+        if (resolved != null && !resolved.isUnresolved()) {
+            return resolved.getLocation();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the contribution containing the given composite.
+     * 
      * @param contributions
      * @param compositeURI
      * @return
      */
-    private Artifact resolveCompositeArtifact(List<Contribution> contributions, String compositeURI) {
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        // Remove the leading /
+    private Contribution contribution(List<Contribution> contributions, String compositeURI) {
         if (compositeURI != null && compositeURI.startsWith("/")) {
             compositeURI = compositeURI.substring(1);
         }
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Artifact compositeFile = contributionFactory.createArtifact();
         compositeFile.setUnresolved(true);
         compositeFile.setURI(compositeURI);
@@ -580,13 +582,13 @@ public class NodeImpl implements SCANode2, SCAClient {
             ModelResolver resolver = c.getModelResolver();
             Artifact resolved = resolver.resolveModel(Artifact.class, compositeFile);
             if (resolved != null && !resolved.isUnresolved()) {
-                return resolved;
+                return c;
             }
         }
         return null;
     }
 
-    private void analyseProblems() throws Exception {
+    private void analyzeProblems() throws Exception {
 
         for (Problem problem : monitor.getProblems()) {
             if ((problem.getSeverity() == Severity.ERROR) && (!problem.getMessageId().equals("SchemaError"))) {
