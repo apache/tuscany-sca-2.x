@@ -104,7 +104,7 @@ public class NodeLauncher {
      * then thread context classloader will be used
      * @return A newly created SCA node
      */
-    public <T> T createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
+    public <T> T createNodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
         return (T)node(null, compositeURI, null, null, classLoader);
     }
     

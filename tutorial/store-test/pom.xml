@@ -174,7 +174,6 @@
           <resource>
               <directory>${basedir}</directory>
               <excludes>
-                  <exclude>**/*.java</exclude>
                   <exclude>**/.*/**</exclude>
                   <exclude>pom.xml</exclude>
                   <exclude>build.xml</exclude>
