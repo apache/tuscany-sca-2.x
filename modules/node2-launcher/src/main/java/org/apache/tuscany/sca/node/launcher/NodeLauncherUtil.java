@@ -312,7 +312,7 @@ final class NodeLauncherUtil {
      * @param contributions
      * @throws LauncherException
      */
-    static Object node(String configurationURI, String compositeURI, String compositeContent, NodeLauncher.Contribution[] contributions) throws LauncherException {
+    static Object node(String configurationURI, String compositeURI, String compositeContent, Contribution[] contributions, ClassLoader contributionClassLoader) throws LauncherException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             
@@ -339,10 +339,16 @@ final class NodeLauncherUtil {
                 // Construct the node with a configuration URI
                 bootstrap = bootstrapClass.getConstructor(String.class).newInstance(configurationURI);
                 
+            } else if (contributionClassLoader != null) {
+                
+                // Construct the node with a compositeURI and a classloader
+                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, ClassLoader.class);
+                bootstrap = constructor.newInstance(compositeURI, contributionClassLoader);
+
             } else if (compositeContent != null) {
                 
-                // Construct the node with a composite URI and the URIs and
-                // locations of a list of contributions
+                // Construct the node with a composite URI, the composite content and
+                // the URIs and locations of a list of contributions
                 Constructor<?> constructor = bootstrapClass.getConstructor(String.class, String.class, String[].class, String[].class);
                 String[] uris = new String[contributions.length];
                 String[] locations = new String[contributions.length];
@@ -351,6 +357,7 @@ final class NodeLauncherUtil {
                     locations[i] = contributions[i].getLocation();
                 }
                 bootstrap = constructor.newInstance(compositeURI, compositeContent, uris, locations);
+            
             } else {
                 
                 // Construct the node with a composite URI and the URIs and

@@ -33,7 +33,7 @@ public class LaunchCalculatorNodeA {
         try {
             
             NodeLauncher nodeLauncher = NodeLauncher.newInstance();
-            node = nodeLauncher.createNode("http://localhost:9990/node-config/NodeA");
+            node = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/NodeA");
 
             node.start();
             
