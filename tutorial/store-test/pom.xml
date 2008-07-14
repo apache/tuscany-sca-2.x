@@ -175,6 +175,7 @@
               <directory>${basedir}</directory>
               <excludes>
                   <exclude>**/.*/**</exclude>
+                  <exclude>**/*.java</exclude>
                   <exclude>pom.xml</exclude>
                   <exclude>build.xml</exclude>
                   <exclude>target/**</exclude>
