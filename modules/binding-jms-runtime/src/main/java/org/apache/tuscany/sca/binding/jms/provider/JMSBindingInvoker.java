@@ -54,8 +54,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected JMSResourceFactory jmsResourceFactory;
     protected JMSMessageProcessor requestMessageProcessor;
     protected JMSMessageProcessor responseMessageProcessor;
-    protected Destination requestDest;
-    protected Destination replyDest;
+    protected Destination bindingRequestDest;
+    protected Destination bindingReplyDest;
     protected RuntimeComponentReference reference;
 
     public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
@@ -71,8 +71,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         try {
 
-            requestDest = lookupDestination();
-            replyDest = lookupResponseDestination();
+            bindingRequestDest = lookupDestination();
+            bindingReplyDest = lookupResponseDestination();
 
         } catch (NamingException e) {
             throw new JMSBindingException(e);
@@ -243,8 +243,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         if (operation.isNonBlocking()) {
             replyToDest = null;
         } else {
-            if (replyDest != null) {
-                replyToDest = replyDest;
+            if (bindingReplyDest != null) {
+                replyToDest = bindingReplyDest;
             } else {
                 replyToDest = session.createTemporaryQueue();
             }
@@ -288,7 +288,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
                 requestDestination = lookupDestination();
             }
         } else {
-            requestDestination = requestDest;
+            requestDestination = bindingRequestDest;
         }
 
         return requestDestination;
