@@ -97,6 +97,17 @@ public class NodeImplementationLauncherBootstrap {
     /**
      * Bootstrap a new SCA node.
      * 
+     * @param configurationURI
+     * @param contributionClassLoader
+     */
+    public NodeImplementationLauncherBootstrap(String compositeURI, ClassLoader contributionClassLoader) throws Exception {
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        node = new NodeFacade(nodeFactory.createSCANodeFromClassLoader(compositeURI, contributionClassLoader));
+    }
+
+    /**
+     * Bootstrap a new SCA node.
+     * 
      * @param compositeURI
      * @param uris
      * @param locations

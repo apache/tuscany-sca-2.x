@@ -50,66 +50,62 @@ public class NodeLauncher {
     }
 
     /**
-     * Creates a new node.
+     * Creates a new SCA node from the configuration URL
      * 
-     * @param configurationURI
-     * @return a new node
+     * @param configurationURL the URL of the node configuration which is the ATOM feed
+     * that contains the URI of the composite and a collection of URLs for the contributions
+     *  
+     * @return a new SCA node.
      * @throws LauncherException
      */
-    public <T> T createNode(String configurationURI) throws LauncherException {
-        return (T)node(configurationURI, null, null, null);
+    public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
+        return (T)node(configurationURL, null, null, null, null);
     }
     
     /**
-     * Represents an SCA contribution uri + location.
-     */
-    public static final class Contribution {
-        private String uri;
-        private String location;
-        
-        /**
-         * Constructs a new SCA contribution.
-         * 
-         * @param uri
-         * @param location
-         */
-        public Contribution(String uri, String location) {
-            this.uri = uri;
-            this.location = location;
-        }
-        
-        public String getURI() {
-            return uri;
-        }
-        
-        public String getLocation() {
-            return location;
-        }
-    }
-    
-    /**
-     * Creates a new Node.
+     * Creates a new SCA Node.
      * 
-     * @param compositeURI
-     * @param contributions
-     * @return a new node
+     * @param compositeURI the URI of the composite to use 
+     * @param contributions the URI of the contributions that provides the composites and related 
+     * artifacts. If the list is empty, then we will use the thread context classloader to discover
+     * the contribution on the classpath
+     *   
+     * @return a new SCA node.
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, Contribution...contributions) throws LauncherException {
-        return (T)node(null, compositeURI, null, contributions);
+        return (T)node(null, compositeURI, null, contributions, null);
     }
     
     /**
-     * Creates a new Node.
+     * Creates a new SCA Node.
      * 
-     * @param compositeURI
-     * @param compositeContent
-     * @param contributions
-     * @return a new node
+     * @param compositeURI the URI of the composite to use 
+     * @param compositeContent the XML content of the composite to use 
+     * @param contributions the URI of the contributions that provides the composites and related artifacts 
+     * @return a new SCA node.
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, String compositeContent, Contribution...contributions) throws LauncherException {
-        return (T)node(null, compositeURI, compositeContent, contributions);
+        return (T)node(null, compositeURI, compositeContent, contributions, null);
+    }
+    
+    /**
+     * Create a SCA node based on the discovery of the contribution on the classpath for the 
+     * given classloader. This method should be treated a convenient shortcut with the following
+     * assumptions:
+     * <ul>
+     * <li>This is a standalone application and there is a deployable composite file on the classpath.
+     * <li>There is only one contribution which contains the deployable composite file physically in its packaging hierarchy.
+     * </ul> 
+     * 
+     * @param compositeURI The URI of the composite file relative to the root of the enclosing contribution
+     * @param classLoader The ClassLoader used to load the composite file as a resource. If the value is null,
+     * then thread context classloader will be used
+     * @return A newly created SCA node
+     */
+    public <T> T createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
+        return (T)node(null, compositeURI, null, null, classLoader);
     }
     
     public static void main(String[] args) throws Exception {
@@ -119,7 +115,7 @@ public class NodeLauncher {
         NodeLauncher launcher = newInstance();
         String configurationURI = args[0];
         logger.info("SCA Node configuration: " + configurationURI);
-        Object node = launcher.createNode(configurationURI);
+        Object node = launcher.createNodeFromURL(configurationURI);
         
         // Start the node
         try {

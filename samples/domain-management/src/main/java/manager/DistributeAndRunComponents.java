@@ -281,10 +281,10 @@ public class DistributeAndRunComponents {
             // Create the SCA node, give it the composite and the list of contributions
             // to use
             List<Contribution> dependencies = nodeDependencies.get(node);
-            org.apache.tuscany.sca.node.launcher.NodeLauncher.Contribution[] contributions = new org.apache.tuscany.sca.node.launcher.NodeLauncher.Contribution[dependencies.size()];
+            org.apache.tuscany.sca.node.launcher.Contribution[] contributions = new org.apache.tuscany.sca.node.launcher.Contribution[dependencies.size()];
             for (int c =0, n = dependencies.size(); c < n; c++) {
                 Contribution dependency = dependencies.get(c);
-                contributions[c] = new org.apache.tuscany.sca.node.launcher.NodeLauncher.Contribution(dependency.getURI(), dependency.getLocation());
+                contributions[c] = new org.apache.tuscany.sca.node.launcher.Contribution(dependency.getURI(), dependency.getLocation());
             }
             SCANode2 runtimeNode = launcher.createNode("http://sample/" + node.getName(), print(runnable), contributions);
             

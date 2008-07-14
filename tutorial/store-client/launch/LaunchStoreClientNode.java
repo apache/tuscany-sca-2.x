@@ -29,7 +29,7 @@ public class LaunchStoreClientNode {
 
     public static void main(String[] args) throws Exception {
         NodeLauncher nodeLauncher = NodeLauncher.newInstance();
-        SCANode2 storeClientNode = nodeLauncher.createNode("http://localhost:9990/node-config/StoreClientNode");
+        SCANode2 storeClientNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/StoreClientNode");
         storeClientNode.start();
         SCAClient client = (SCAClient)storeClientNode;
         
