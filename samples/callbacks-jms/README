@@ -1,0 +1,73 @@
+Callback JMS Sample
+===================
+This sample demonstrates SCA callbacks over the JMS binding. It implements the example
+described in the INFOQ article:
+
+ "Can I call you back about that?" Building Asynchronous Services using Service Component Architecture
+   See: http://www.infoq.com/articles/async-sca
+
+It implements a service for placing an order for some widgets, where the service is asynchronous
+and the client is informed of progress via a callback interface.
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-callbacks-jms.jar callbacks.CallbacksTestCase
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-callbacks-jms.jar callbacks.CallbacksTestCase
+
+Sample Overview
+---------------
+
+The only changes over the sample code described in the INFOQ article are to add the @Remotable annotation
+to the service and callback interfaces, add the @Oneway annotation to the placeOrder and placeOrderResponse
+methods, and the composite XML is changed to use <binding.jms> instead of <binding.ws>. 
+
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant as 
+follows
+
+cd callbacks-jms
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] client placing order: callbacks.OrderRequest@c72243
+     [java] service received order: callbacks.OrderRequest@1f94884
+     [java] client callback received order response: callbacks.OrderResponse@14ab51b
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. 
+
+cd callbacks-jms
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running callbacks.CallbacksTestCase
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.272 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+This shows that the Junit test cases have run successfully. 
