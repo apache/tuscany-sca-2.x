@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -62,7 +63,10 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
             for (ComponentService componentService : component.getServices()) {
                 for (Binding binding : componentService.getBindings()) {
                     if (binding instanceof BindingBuilderExtension) {
-                        ((BindingBuilderExtension)binding).getBuilder().build(component, componentService, binding, monitor);
+                        BindingBuilder builder = ((BindingBuilderExtension)binding).getBuilder();
+                        if (builder != null) {
+                            builder.build(component, componentService, binding, monitor);
+                        }
                     }
                 }
             }
