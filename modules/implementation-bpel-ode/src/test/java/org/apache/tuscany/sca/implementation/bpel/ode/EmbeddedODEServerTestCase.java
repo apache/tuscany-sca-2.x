@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.bpel;
+package org.apache.tuscany.sca.implementation.bpel.ode;
 
 import java.io.File;
 import java.io.StringReader;

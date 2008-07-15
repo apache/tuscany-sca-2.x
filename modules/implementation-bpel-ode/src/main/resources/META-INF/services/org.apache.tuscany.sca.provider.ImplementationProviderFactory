@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-org.apache.tuscany.sca.implementation.bpel.provider.BPELImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.bpel.BPELImplementation
+org.apache.tuscany.sca.implementation.bpel.ode.provider.BPELImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.bpel.BPELImplementation

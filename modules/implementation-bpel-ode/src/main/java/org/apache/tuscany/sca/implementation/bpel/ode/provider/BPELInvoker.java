@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.bpel.provider;
+package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Future;
