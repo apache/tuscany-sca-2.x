@@ -260,7 +260,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         requestMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
         requestMsg.setJMSPriority(jmsBinding.getPriority());
 
-        setCallbackHeaders(tuscanyMsg, requestMsg);
+        setHeaders(tuscanyMsg, requestMsg);
 
         requestMessageProcessor.setOperationName(operationName, requestMsg);
         requestMsg.setJMSReplyTo(replyToDest);
@@ -294,7 +294,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         return requestDestination;
     }
 
-    protected void setCallbackHeaders(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Message jmsMsg) throws JMSException {
+    protected void setHeaders(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Message jmsMsg) throws JMSException {
         if (hasCallback()) {
 
             ReferenceParameters parameters = tuscanyMsg.getFrom().getReferenceParameters();
@@ -306,6 +306,11 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             String callbackDestName = getCallbackDestinationName(reference);
             if (callbackDestName != null) {
                 jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, callbackDestName);
+            }
+            
+            Object conversationID = parameters.getConversationID();
+            if (conversationID != null) {
+                jmsMsg.setStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY, conversationID.toString());
             }
 
         }
