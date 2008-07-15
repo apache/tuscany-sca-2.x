@@ -56,9 +56,24 @@
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-impl</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-commons</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>3.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
