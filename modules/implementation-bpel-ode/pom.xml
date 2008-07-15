@@ -430,9 +430,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.bpel</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.bpel.ode</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.implementation.bpel*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.implementation.bpel.ode*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

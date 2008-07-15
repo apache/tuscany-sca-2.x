@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.bpel.provider;
+package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 
 import javax.transaction.TransactionManager;
 
