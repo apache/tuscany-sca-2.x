@@ -126,21 +126,18 @@ public class JMSBindingListener implements MessageListener {
         tuscanyMsg.setBody(requestPayload);
         tuscanyMsg.setOperation(operation);
 
-        setCallbackProperties(requestJMSMsg, tuscanyMsg, operation);
+        setHeaderProperties(requestJMSMsg, tuscanyMsg, operation);
 
         return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
     }
 
-    protected void setCallbackProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
+    protected void setHeaderProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
         if (service.getInterfaceContract().getCallbackInterface() != null) {
 
             EndpointReference from = new EndpointReferenceImpl(null);
             tuscanyMsg.setFrom(from);
 
-            from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO:
-            // whats
-            // this
-            // for?
+            from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
 
             ReferenceParameters parameters = from.getReferenceParameters();
 
@@ -163,6 +160,11 @@ public class JMSBindingListener implements MessageListener {
             String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
             if (callbackID != null) {
                 parameters.setCallbackID(callbackID);
+            }
+
+            String conversationID = requestJMSMsg.getStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY);
+            if (conversationID != null) {
+                parameters.setConversationID(conversationID);
             }
         }
     }

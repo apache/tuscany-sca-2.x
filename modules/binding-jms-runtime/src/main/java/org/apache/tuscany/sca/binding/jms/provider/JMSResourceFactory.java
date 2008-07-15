@@ -29,6 +29,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
@@ -144,8 +145,44 @@ public class JMSResourceFactory {
         }
     }
 
-    public Destination lookupDestination(String jndiName) throws NamingException {
-        return (Destination)jndiLookUp(jndiName);
+    public Destination lookupDestination(String destName) throws NamingException {
+        if (JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(destName)) {
+            return null;
+        }
+        
+        Destination dest = (Destination)jndiLookUp(destName);
+        if (dest == null) {
+            dest = lookupPhysical(destName);
+        }
+        return dest;
+    }
+
+    protected Destination lookupPhysical(String jndiName) {
+
+        // TODO: the SCA JMS spec says a destination name may be a non-jndi plain destination name 
+        
+//        Session session = null;
+//        try {
+//
+//            Destination dest;
+//            session = createSession();
+//            dest = session.createQueue(jndiName);
+//            return dest;
+//
+//        } catch (JMSException e) {
+//            throw new JMSBindingException(e);
+//        } catch (NamingException e) {
+//            throw new JMSBindingException(e);
+//        } finally {
+//            if (session != null) {
+//                try {
+//                    session.close();
+//                } catch (JMSException e) {
+//                    throw new JMSBindingException(e);
+//                }
+//            }
+//        }
+        return null;
     }
 
     /**
