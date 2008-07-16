@@ -20,38 +20,116 @@
 <head>
 <title>Photo Gallery</title>
 
-<script type="text/javascript" src="gallery.js"></script>
+<link href="styles.css" rel="stylesheet">
 
+<script type="text/javascript" src="gallery.js"></script>
 <script language="JavaScript">
 
 	//@Reference
 	var album = new Reference("album");
 		
 	var albumItems;
+	var currPos = 0;
 
-	function album_getResponse(items) {
-        var albumPictures = "";
-		for (var i=0; i<items.length; i++) {
-			albumPictures += '<img src="' + items[i] + '"> <br>';
+	function album_getResponse(items, exception) {
+		if(exception) {
+			alert(exception.msg);
+			return;
 		}
-		document.getElementById('album').innerHTML=albumPictures;
 		albumItems = items;
+		showAlbum();
 	}
-		
+
+   function showImage(pos) {
+   	var img = document.createElement("img");
+	img.onload = function(evt) {
+		document.getElementById("albumImage").src = this.src;
+        document.getElementById("albumImage").width=this.width;
+        document.getElementById("albumImage").height=this.height;
+    }
+    img.src = albumItems[pos];
+    return false;   	
+   }
+   
+   function showAlbum() {
+      if(albumItems.length > 0) {
+		showImage(currPos);
+	  }	
+   }
+   
+   function goNext() {
+   	 if(currPos < albumItems.length) {
+	 	currPos++;
+		showImage(currPos);
+	 }
+   }
+   
+   function goPrevious() {
+   	if(currPos > 0) {
+		currPos--;
+		showImage(currPos);
+	}
+   }	
 		
 	function init() {
-		album.getPictures(album_getResponse);
+		try {
+			album.getPictures(album_getResponse);
+		} catch(exception) {
+			alert(e);
+		}
 	}
+	
+	
+	index_off= new Image(31,31); index_off.src = "index.gif";
+    index_on = new Image(31,31); index_on.src = "index_on.gif";
+    next_off = new Image(31,31); next_off.src = "next.gif";
+	next_on  = new Image(31,31); next_on.src = "next_on.gif";
+	prev_off = new Image(31,31); prev_off.src = "prev.gif";
+	prev_on  = new Image(31,31); prev_on.src = "prev_on.gif";
 	
 </script>
 
 </head>
 
 <body onload="init()">
-<h1>Photo Gallery</h1>
+<br>
+<h1><center>Apache Tuscany Photo Gallery</center></h1>
+<br>
+<br>
   <div id="gallery">
-	<div id="album" ></div>
+	<div id="album">
+		<!--img id="albumImage" border="0" src=""-->
+	</div>
 	<br>
   </div>
+  
+  <center>
+
+  <table style="height:54px;" cellspacing="0" cellpadding="0" border="0">
+     <tr>
+     	<td valign="middle">
+     	   <!-- Navigation Header -->
+		   <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+             <tr>
+             	<td style="width:31px;"><a href="javascript:showAlbum()" onmouseover="document.index.src=index_on.src" onmouseout="document.index.src=index_off.src"><img src="index.gif" width="31" height="31" border="0" title="Index page" name="index" alt=""></a></td>
+                <td style="width:31px;"><a href="javascript:goPrevious()" onmouseover="document.previous.src=prev_on.src" onmouseout="document.previous.src=prev_off.src"><img src="prev.gif" width="31" height="31" border="0" title="Previous image" name="previous" alt=""></a></td>
+                <td style="width:31px;"><a href="javascript:goNext()" onmouseover="document.next.src=next_on.src" onmouseout="document.next.src=next_off.src"><img src="next.gif" width="31" height="31" border="0" title="Next image" name="next" alt=""></a></td>
+                <td style="width:31px;"><a href="javascript:void(0)" onmouseover="show_over();" onmouseout="show_out();" onmousedown="show_down();" ondblclick="change_delay();"><img src="show_slide.gif" width="31" height="31" border="0" title="Start/Stop slideshow - DoubleClick to change speed" name="show" alt=""></a></td>
+             </tr>
+		   </table>
+		</td>
+	</tr>
+  </table>
+
+  <table style="width:720px;" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+     	<td align="center"> <!-- Image without original -->
+        <img id="albumImage" src="space.gif" class="slideImage" width="720" height="540" ondragstart="return false" onselectstart="return false" oncontextmenu="return false" galleryimg="no" usemap="#imagemap" alt="">
+		</td>
+    </tr>
+  </table>
+		   
+  </center>
+  
 </body>
 </html>
