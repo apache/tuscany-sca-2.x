@@ -69,7 +69,7 @@ public class OSGiServiceDiscovererTestCase {
 
         // Now create an instance of the framework with
         // our configuration properties and activator.
-        Felix felix = new Felix(configMap, list);
+        felix = new Felix(configMap, list);
 
         // Now start Felix instance.
         felix.start();
