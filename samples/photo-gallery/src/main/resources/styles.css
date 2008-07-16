@@ -1,0 +1,121 @@
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #888888;
+	background-color: #000000;
+	margin-top: 0px;
+}
+
+html {
+	scrollbar-face-color:#444444;
+	scrollbar-highlight-color:#000000;
+	scrollbar-3dlight-color:#000000;
+	scrollbar-darkshadow-color:#000000;
+	scrollbar-shadow-color:#000000;
+	scrollbar-arrow-color:#888888;
+	scrollbar-track-color:#000000;
+}
+
+a:link {
+	text-decoration: none;
+ 	color: #AAAAAA;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #AAAAAA;
+}
+
+a:hover {
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+.current {
+	font-weight: bold;
+ 	color: #AAAAAA;
+	background-color: #666666;
+}
+
+.cthumb {
+	background-color: #666666;
+	border: 0px; border-width: 0px;
+}
+
+.thumb {
+	background-color: #333333;
+	border: 0px; border-width: 0px;
+}
+
+.image { margin: 0px; border-width: 1px; border: 1px solid;}
+a:link .image { border-color: #aaaaaa; color: #aaaaaa;}
+a:visited .image { border-color: #666666; color: #666666;}
+a:hover .image { border-color: #ffffff; color: #ffffff;}
+
+.slideImage { border-width: 0px; border: 0px solid; border-color: #ffffff;}
+a:link .slideImage { border-color: #ffffff;}
+a:visited .slideImage { border-color: #ffffff;}
+
+.title {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000000;
+}
+
+.title a:link {
+	text-decoration: none;
+	color: #000000;
+}
+
+.title a:visited {
+	text-decoration: none;
+	color: #000000;
+}
+
+.title a:hover {
+	text-decoration: none;
+	color: #ffffff;
+}
+
+.infotable {
+	border: 1px solid #444444;
+	border-collapse: collapse;
+}
+
+.infotable td {
+	border: 1px solid #444444;
+}
+
+.infotable table td {
+	border: 0px;
+}
+
+.dirname {
+	font-size: 12px;
+	font-weight: bold;
+	color: #AAAAAA;
+}
+
+.comment {
+	color: #CCCCCC;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.smalltxt {
+	color: #888888;
+	font-size: 11px;
+}
+
+.xsmalltxt {
+	color: #888888;
+	font-size: 9px;
+}
+
+.newlabel {
+	font-size: 8px;
+	font-weight: bold;
+	color: #EEEEEE;
+	background-color: #558800;
+}
