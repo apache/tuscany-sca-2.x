@@ -46,7 +46,7 @@ public class JMSMessageProcessorUtil {
         }
 
         try {
-            Class clazz;
+            Class<?> clazz;
 
             try {
                 clazz = cl.loadClass(className);
@@ -54,7 +54,7 @@ public class JMSMessageProcessorUtil {
                 clazz = binding.getClass().getClassLoader().loadClass(className);
             }
 
-            Constructor constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
+            Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
             instance = constructor.newInstance(binding);
 
         } catch (Throwable e) {
