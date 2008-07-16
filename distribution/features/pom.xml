@@ -22,13 +22,13 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <relativePath>../sca/pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
         <version>1.4-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.tuscany.sca</groupId>
-    <artifactId>tuscany-modular-distribution</artifactId>
+    <artifactId>tuscany-distribution-features</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Modular Distribution</name>
+    <name>Apache Tuscany SCA Distribution Features</name>
 
     <build>
         <defaultGoal>install</defaultGoal>
