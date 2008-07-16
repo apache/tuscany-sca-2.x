@@ -59,6 +59,7 @@ public class JMSBindingListener implements MessageListener {
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
+    private List<Operation> serviceOperations;
 
     public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service) throws NamingException {
         this.jmsBinding = jmsBinding;
@@ -67,6 +68,8 @@ public class JMSBindingListener implements MessageListener {
         requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         correlationScheme = jmsBinding.getCorrelationScheme();
+        serviceOperations = service.getInterfaceContract().getInterface().getOperations();
+
     }
 
     public void onMessage(Message requestJMSMsg) {
@@ -93,24 +96,39 @@ public class JMSBindingListener implements MessageListener {
         String operationName = requestMessageProcessor.getOperationName(requestJMSMsg);
         Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(requestJMSMsg);
 
-        List<Operation> opList = service.getInterfaceContract().getInterface().getOperations();
+        Operation operation = getTargetOperation(operationName);
 
+        MessageImpl tuscanyMsg = new MessageImpl();
+        tuscanyMsg.setBody(requestPayload);
+        tuscanyMsg.setOperation(operation);
+
+        setHeaderProperties(requestJMSMsg, tuscanyMsg, operation);
+
+        return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
+    }
+
+    protected Operation getTargetOperation(String operationName) {
         Operation operation = null;
 
-        if (opList.size() == 1) {
+        if (serviceOperations.size() == 1) {
+
             // SCA JMS Binding Specification - Rule 1.5.1 line 203
-            operation = opList.get(0);
+            operation = serviceOperations.get(0);
+
         } else if (operationName != null) {
+
             // SCA JMS Binding Specification - Rule 1.5.1 line 205
-            for (Operation op : opList) {
+            for (Operation op : serviceOperations) {
                 if (op.getName().equals(operationName)) {
                     operation = op;
                     break;
                 }
             }
+
         } else {
+
             // SCA JMS Binding Specification - Rule 1.5.1 line 207
-            for (Operation op : opList) {
+            for (Operation op : serviceOperations) {
                 if (op.getName().equals(ON_MESSAGE_METHOD_NAME)) {
                     operation = op;
                     break;
@@ -122,24 +140,22 @@ public class JMSBindingListener implements MessageListener {
             throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME));
         }
 
-        MessageImpl tuscanyMsg = new MessageImpl();
-        tuscanyMsg.setBody(requestPayload);
-        tuscanyMsg.setOperation(operation);
-
-        setHeaderProperties(requestJMSMsg, tuscanyMsg, operation);
-
-        return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
+        return operation;
     }
 
     protected void setHeaderProperties(Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
+
+        EndpointReference from = new EndpointReferenceImpl(null);
+        tuscanyMsg.setFrom(from);
+        from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
+        ReferenceParameters parameters = from.getReferenceParameters();
+
+        String conversationID = requestJMSMsg.getStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY);
+        if (conversationID != null) {
+            parameters.setConversationID(conversationID);
+        }
+
         if (service.getInterfaceContract().getCallbackInterface() != null) {
-
-            EndpointReference from = new EndpointReferenceImpl(null);
-            tuscanyMsg.setFrom(from);
-
-            from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
-
-            ReferenceParameters parameters = from.getReferenceParameters();
 
             String callbackdestName = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
             if (callbackdestName == null && operation.isNonBlocking()) {
@@ -160,11 +176,6 @@ public class JMSBindingListener implements MessageListener {
             String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
             if (callbackID != null) {
                 parameters.setCallbackID(callbackID);
-            }
-
-            String conversationID = requestJMSMsg.getStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY);
-            if (conversationID != null) {
-                parameters.setConversationID(conversationID);
             }
         }
     }
