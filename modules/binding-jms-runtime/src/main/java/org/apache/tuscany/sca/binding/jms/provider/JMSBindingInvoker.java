@@ -212,7 +212,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         return tuscanyMsg;
     }
 
-    public Object invokeTarget(org.apache.tuscany.sca.invocation.Message tuscanyMsg) throws InvocationTargetException {
+    protected Object invokeTarget(org.apache.tuscany.sca.invocation.Message tuscanyMsg) throws InvocationTargetException {
         try {
             Session session = jmsResourceFactory.createSession();
             try {
