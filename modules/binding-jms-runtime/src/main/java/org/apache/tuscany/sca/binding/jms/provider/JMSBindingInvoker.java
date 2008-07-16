@@ -257,9 +257,6 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, tuscanyMsg.getBody());
 
-        requestMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
-        requestMsg.setJMSPriority(jmsBinding.getPriority());
-
         setHeaders(tuscanyMsg, requestMsg);
 
         requestMessageProcessor.setOperationName(operationName, requestMsg);
@@ -295,9 +292,18 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     protected void setHeaders(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Message jmsMsg) throws JMSException {
-        if (hasCallback()) {
 
-            ReferenceParameters parameters = tuscanyMsg.getFrom().getReferenceParameters();
+        jmsMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
+        jmsMsg.setJMSPriority(jmsBinding.getPriority());
+
+        ReferenceParameters parameters = tuscanyMsg.getFrom().getReferenceParameters();
+
+        Object conversationID = parameters.getConversationID();
+        if (conversationID != null) {
+            jmsMsg.setStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY, conversationID.toString());
+        }
+
+        if (hasCallback()) {
 
             if (parameters.getCallbackID() != null) {
                 jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY, parameters.getCallbackID().toString());
@@ -307,12 +313,6 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             if (callbackDestName != null) {
                 jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, callbackDestName);
             }
-            
-            Object conversationID = parameters.getConversationID();
-            if (conversationID != null) {
-                jmsMsg.setStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY, conversationID.toString());
-            }
-
         }
     }
 
