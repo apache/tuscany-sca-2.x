@@ -26,17 +26,15 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>tuscany-binding-gdata-extension-gsoc</artifactId>
+	<artifactId>tuscany-binding-gdata-runtime-gsoc</artifactId>
 	<name>Apache Tuscany SCA Gdata Binding Extension</name>
 
-	<repositories>
-		<repository>
-			<id>com.google.gdata</id>
-			<url>
-				http://people.apache.org/~lresende/google-gdata/maven/
-			</url>
-		</repository>
-	</repositories>
+    <repositories>
+       <repository>
+          <id>com.google.gdata</id>
+          <url>http://people.apache.org/~lresende/google-gdata/maven/</url>
+       </repository>
+    </repositories>
 
 	<dependencies>
 		<dependency>
