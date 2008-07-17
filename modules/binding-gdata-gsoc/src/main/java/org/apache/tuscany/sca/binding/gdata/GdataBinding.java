@@ -40,4 +40,10 @@ public interface GdataBinding extends Binding {
      */
     void setTitle(String title);
     
+    String getUsername();    
+    String getPassword();  
+    String getServiceType();
+    void setUsername(String username);    
+    void setPassword(String password);   
+    void setServiceType(String serviceType);  
 }

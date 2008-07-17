@@ -42,6 +42,9 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
+import com.google.gdata.client.GoogleService;
+import com.google.gdata.util.AuthenticationException;
+
 /**
  * Implementation of the Atom binding provider.
  * 
@@ -52,6 +55,7 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
     private RuntimeComponentReference reference;
     private GdataBinding binding;
     private String authorizationHeader;
+    private GoogleService googleService;
     private HttpClient httpClient;
     private Mediator mediator;
     private DataType<?> itemClassType;
@@ -65,11 +69,12 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
      * @param reference
      * @param binding
      * @param mediator
+     * @throws AuthenticationException 
      */
     GdataReferenceBindingProvider(RuntimeComponent component,
                                   RuntimeComponentReference reference,
                                   GdataBinding binding,
-                                  Mediator mediator) {
+                                  Mediator mediator) throws AuthenticationException {
         this.reference = reference;
         this.binding = binding;
         this.mediator = mediator;
@@ -77,6 +82,23 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
         // Prepare authorization header
         String authorization = "admin" + ":" + "admin";
         authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
+        
+        
+        // Prepare gdata header
+        String serviceType = binding.getServiceType();
+        String usernane = binding.getUsername();
+        String password = binding.getPassword();
+        
+        System.out.println("[Debug Info] binding.getServiceType()" + serviceType);
+        System.out.println("[Debug Info] binding.getName()" +usernane);
+        System.out.println("[Debug Info] binding.getPassword()" + password);    
+        
+        googleService = new GoogleService(serviceType, "");
+        if(binding.getUsername().equals("admin") == false && binding.getPassword().equals("admin")==false){
+            googleService.setUserCredentials(binding.getUsername(),binding.getPassword());     
+        }
+         
+
 
         // Create an HTTP client
         HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -102,57 +124,53 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
             qname = new QName(qname.getNamespaceURI(), itemClass.getSimpleName());
             itemClassType = new DataTypeImpl<XMLType>("java:complexType", itemClass, new XMLType(qname, null));
 
-            // To-change
-            // org.apache.abdera.model.Entry --> com.google.gdata.data.Entry;
-
             if (itemClassType.getPhysical() == com.google.gdata.data.Entry.class) {
                 supportsFeedEntries = true;
             }
 
-            // //System.out.println("GdataReferenceBindingProvider.createInvoker---operation=get");
-            return new GdataBindingInvoker.GetInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
-                                                      this);
+            return new GdataBindingInvoker.GetInvoker(operation, binding.getURI(), googleService, httpClient, authorizationHeader, this);
 
         } else if (operationName.equals("post")) {
 
-            // //System.out.println("GdataReferenceBindingProvider CreateInvoker
-            // --- post");
-            return new GdataBindingInvoker.PostInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
-                                                       this);
+            return new GdataBindingInvoker.PostInvoker(operation, binding.getURI(), googleService, httpClient, authorizationHeader, this);
 
         } else if (operationName.equals("put")) {
 
-            return new GdataBindingInvoker.PutInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
+            return new GdataBindingInvoker.PutInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                       this);
         } else if (operationName.equals("delete")) {
-            return new GdataBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
+            return new GdataBindingInvoker.DeleteInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                          this);
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
 
             // //System.out.println("GdataReferenceBindingProvider
             // CreateInvoker: getFeed or getAll");
 
-            return new GdataBindingInvoker.GetAllInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
+            return new GdataBindingInvoker.GetAllInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                          this);
 
         } else if (operationName.equals("postMedia")) {
-            return new GdataBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient,
+            return new GdataBindingInvoker.PostMediaInvoker(operation, binding.getURI(),  googleService, httpClient,
                                                             authorizationHeader, this);
         } else if (operationName.equals("putMedia")) {
-            return new GdataBindingInvoker.PutMediaInvoker(operation, binding.getURI(), httpClient,
+            return new GdataBindingInvoker.PutMediaInvoker(operation, binding.getURI(),  googleService, httpClient,
                                                            authorizationHeader, this);
         } else if (operationName.equals("query")) {
-            return new GdataBindingInvoker.QueryInvoker(operation, binding.getURI(), httpClient, authorizationHeader,
+            return new GdataBindingInvoker.QueryInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                         this);
         }
 
-        return new GdataBindingInvoker(operation, binding.getURI(), httpClient, authorizationHeader, this);
+        return new GdataBindingInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
     }
 
+    
+    
     public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
 
+    
+    
     public void start() {
 
         // Configure the HTTP client credentials

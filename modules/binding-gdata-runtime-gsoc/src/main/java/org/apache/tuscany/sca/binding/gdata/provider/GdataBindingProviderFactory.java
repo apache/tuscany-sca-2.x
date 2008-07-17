@@ -36,6 +36,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+import com.google.gdata.util.AuthenticationException;
+
 /**
  * Implementation of a Binding provider factory for the Atom binding.
  */
@@ -58,7 +60,14 @@ public class GdataBindingProviderFactory implements BindingProviderFactory<Gdata
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    GdataBinding binding) {
-        return new GdataReferenceBindingProvider(component, reference, binding, mediator);
+        try {
+            return new GdataReferenceBindingProvider(component, reference, binding, mediator);
+        } catch (AuthenticationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null; //Google authentication error! : This exception needs to be handled into a better way
+        }
+        
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,

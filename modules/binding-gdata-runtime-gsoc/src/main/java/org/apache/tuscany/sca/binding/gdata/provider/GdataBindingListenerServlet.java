@@ -38,16 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
-import org.apache.abdera.model.Collection;
-import org.apache.abdera.model.Document; // import
-                                            // org.apache.abdera.model.Feed;
-// import org.apache.abdera.model.Link;
-import org.apache.abdera.model.Service;
-import org.apache.abdera.model.Workspace;
 import org.apache.abdera.parser.ParseException;
-import org.apache.abdera.parser.Parser;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.data.collection.Entry;
@@ -74,10 +65,7 @@ import com.google.gdata.util.ServiceException;
 class GdataBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(GdataBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
-
-    private static final Factory abderaFactory = Abdera.getNewFactory();
-    private static final Parser abderaParser = Abdera.getNewParser();
-
+     
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
     private Invoker getAllInvoker;
@@ -114,10 +102,10 @@ class GdataBindingListenerServlet extends HttpServlet {
             invocationChain.setAllowsPassByReference(true);
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
+           
             if (operationName.equals("getFeed")) {
 
-                System.out.println("[Debug Info]GdataBindingListenerServlet constructor --- operation: getFeed");
-
+                //System.out.println("[Debug Info]GdataBindingListenerServlet constructor --- operation: getFeed");
                 getFeedInvoker = invocationChain.getHeadInvoker();
 
             } else if (operationName.equals("getAll")) {
@@ -125,18 +113,26 @@ class GdataBindingListenerServlet extends HttpServlet {
                 getAllInvoker = invocationChain.getHeadInvoker();
 
             } else if (operationName.equals("query")) {
+                
                 queryInvoker = invocationChain.getHeadInvoker();
+                
             } else if (operationName.equals("get")) {
-                System.out.println("[Debug Info]GdataBindingListenerServlet Constructor --- opeartion: get");
+                
+                //System.out.println("[Debug Info]GdataBindingListenerServlet Constructor --- opeartion: get");
                 getInvoker = invocationChain.getHeadInvoker();
                 getOperation = operation;
+                
             } else if (operationName.equals("put")) {
+                
                 putInvoker = invocationChain.getHeadInvoker();
+                
             } else if (operationName.equals("putMedia")) {
+                
                 putMediaInvoker = invocationChain.getHeadInvoker();
+                
             } else if (operationName.equals("post")) {
 
-                System.out.println("[Debug Info]GdataBindingListenerServlet Constructor --- opeartion: post");
+                //System.out.println("[Debug Info]GdataBindingListenerServlet Constructor --- opeartion: post");
                 postInvoker = invocationChain.getHeadInvoker();
 
             } else if (operationName.equals("postMedia")) {
@@ -146,13 +142,12 @@ class GdataBindingListenerServlet extends HttpServlet {
             }
         }
 
-        System.out.println("[Debug Info]GdataBindingListenerServlet constructor --- I am good here 00");
+        //System.out.println("[Debug Info]GdataBindingListenerServlet constructor --- I am good here 00");
 
         // Determine the collection item type
         itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
         Class<?> itemClass = getOperation.getOutputType().getPhysical();
-
-        // if (itemClass == org.apache.abdera.model.Entry.class) {
+       
         if (itemClass == com.google.gdata.data.Entry.class) {
             supportsFeedEntries = true;
         }
@@ -161,9 +156,10 @@ class GdataBindingListenerServlet extends HttpServlet {
         qname = new QName(qname.getNamespaceURI(), itemClass.getSimpleName());
         itemClassType = new DataTypeImpl<XMLType>("java:complexType", itemClass, new XMLType(qname, null));
 
-        System.out.println("[Debug Info]GdataBindingListenerServlet constructor --- initilized!");
+        System.out.println("[Debug Info]GdataBindingListenerServlet --- initilized!");
     }
 
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -182,21 +178,13 @@ class GdataBindingListenerServlet extends HttpServlet {
 
         // Handle an Atom request
         if (path != null && path.equals("/atomsvc")) {
-            /*
-             * <?xml version='1.0' encoding='UTF-8'?> <service
-             * xmlns="http://www.w3.org/2007/app"
-             * xmlns:atom="http://www.w3.org/2005/Atom"> <workspace> <atom:title
-             * type="text">resource</atom:title> <collection
-             * href="http://luck.ibm.com:8084/customer"> <atom:title
-             * type="text">entries</atom:title>
-             * <accept>application/atom+xml;type=entry</accept> <categories />
-             * </collection> </workspace> </service>
-             */
 
+            //FIXME: This needs to be fixed, for /atomsvc
+            
+            /*            
             System.out.println("GdataBindingListenerServlet doGet(): I am good here brach 01");
             // Return the Atom service document
             response.setContentType("application/atomsvc+xml; charset=utf-8");
-
             Service service = abderaFactory.newService();
             // service.setText("service");
 
@@ -222,6 +210,7 @@ class GdataBindingListenerServlet extends HttpServlet {
             } catch (IOException ioe) {
                 throw new ServletException(ioe);
             }
+            */
 
         } else if (path == null || path.length() == 0 || path.equals("/")) {
 
@@ -234,8 +223,7 @@ class GdataBindingListenerServlet extends HttpServlet {
 
             if (supportsFeedEntries) {
 
-                System.out
-                    .println("[Debug Info]GdataBindingListenerServlet doGet() --- supportsFeedEntries: " + supportsFeedEntries);
+                System.out.println("[Debug Info]GdataBindingListenerServlet doGet() --- supportsFeedEntries: " + supportsFeedEntries);
 
                 // The service implementation supports feed entries, invoke its
                 // getFeed operation
@@ -253,7 +241,7 @@ class GdataBindingListenerServlet extends HttpServlet {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
 
-                System.out.println("response msg class:" + responseMessage.getBody().getClass());
+                //System.out.println("response msg class:" + responseMessage.getBody().getClass());
 
                 feed = (com.google.gdata.data.Feed)responseMessage.getBody();
 
@@ -275,9 +263,9 @@ class GdataBindingListenerServlet extends HttpServlet {
                 } else {
                     responseMessage = getAllInvoker.invoke(requestMessage);
 
-                    System.out
-                        .println("GdataBindingListner.doGet(): get msg from getAllInvoker.invoke()" + responseMessage
-                            .getBody().toString());
+                    //System.out
+                    //    .println("GdataBindingListner.doGet(): get msg from getAllInvoker.invoke()" + responseMessage
+                    //        .getBody().toString());
 
                 }
                 if (responseMessage.isFault()) {
@@ -364,7 +352,7 @@ class GdataBindingListenerServlet extends HttpServlet {
                 // mediator, abderaFactory);
             }
 
-            // Write the Atom entry
+            // Write the Gdata entry
             if (feedEntry != null) {
 
                 // Write a GData entry using Atom representation
@@ -423,15 +411,8 @@ class GdataBindingListenerServlet extends HttpServlet {
                 try {
                     ParseSource source = new ParseSource(request.getReader());
                     feedEntry = com.google.gdata.data.Entry.readEntry(source, com.google.gdata.data.Entry.class, null);
-
-                    /*
-                     * Document<org.apache.abdera.model.Entry> doc =
-                     * abderaParser.parse(request.getReader()); feedEntry =
-                     * doc.getRoot();
-                     */
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
-
                 } catch (com.google.gdata.util.ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -537,6 +518,7 @@ class GdataBindingListenerServlet extends HttpServlet {
         return writer;
     }
 
+    
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -550,6 +532,8 @@ class GdataBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = request.getRequestURI().substring(request.getServletPath().length());
 
+        System.out.println("[Debug Info] localServlet doPut --- path: " + path);
+        
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
 
@@ -558,17 +542,29 @@ class GdataBindingListenerServlet extends HttpServlet {
             if (contentType != null && contentType.startsWith("application/atom+xml")) {
 
                 // Read the entry from the request
-                org.apache.abdera.model.Entry feedEntry;
+                com.google.gdata.data.Entry feedEntry = null;
                 try {
-                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(request.getReader());
-                    feedEntry = doc.getRoot();
+                    ParseSource source = new ParseSource(request.getReader());
+                    feedEntry = com.google.gdata.data.Entry.readEntry(source, com.google.gdata.data.Entry.class, null);
+                
+                    System.out.println("[Debug Info] localServlet doPut --- feedEntry title: " + feedEntry.getTitle().getPlainText());
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
+                } catch (com.google.gdata.util.ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ServiceException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
+                
+                
 
                 // Let the component implementation create it
                 if (supportsFeedEntries) {
 
+                    System.out.println("[Debug Info] localServlet doPut --- supportsFeedEntries: " + supportsFeedEntries);
+                    
                     // The service implementation supports feed entries, pass
                     // the entry to it
                     Message requestMessage = messageFactory.createMessage();
@@ -599,6 +595,27 @@ class GdataBindingListenerServlet extends HttpServlet {
                         }
                     }
                 }
+                
+                // Write the Gdata entry
+                if (feedEntry != null) {
+
+                    // Write a GData entry using Atom representation
+                    response.setContentType("application/atom+xml; charset=utf-8");
+
+                    // Generate the corresponding Atom representation of the feed
+                    StringWriter stringWriter = new StringWriter();
+                    com.google.gdata.util.common.xml.XmlWriter w =
+                        new com.google.gdata.util.common.xml.XmlWriter(stringWriter);
+                    feedEntry.generateAtom(w, new ExtensionProfile());
+                    w.flush();
+
+                    // Write the Atom representation(XML) into Http response content
+                    OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
+                    PrintWriter out = new PrintWriter(response.getOutputStream());
+                    out.println(stringWriter.toString());
+                    out.close();
+
+                }
 
             } else if (contentType != null) {
 
@@ -623,6 +640,9 @@ class GdataBindingListenerServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
+    
+    
+    
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -659,6 +679,8 @@ class GdataBindingListenerServlet extends HttpServlet {
         }
     }
 
+    
+    
     /**
      * Process the authorization header
      * 

@@ -19,16 +19,21 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
+import com.google.gdata.data.Entry;
+import com.google.gdata.data.Feed;
+
 public interface CustomerClient {
 
-    // void testCustomerCollection() throws Exception;
+    Feed clientGetFeed() throws Exception;
 
-    void testGetFeed() throws Exception;
-
-    void testGetEntry() throws Exception;
-
-    void testPost() throws Exception;
-
-    // void testCustomerGetEntry() throws Exception;
+    Entry clientGetEntry(String entryID) throws Exception;
+    
+    Entry clientPost(Entry entry) throws Exception;
+    
+    void clientDelete(String entryID) throws Exception;
+    
+    void clientPut(String entryID, String newTitle) throws Exception;
+    
+    //void testQuery() throws Exception;
 
 }

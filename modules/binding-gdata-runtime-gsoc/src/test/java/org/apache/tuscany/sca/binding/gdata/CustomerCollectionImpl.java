@@ -24,18 +24,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.binding.gdata.collection.Collection;
-import org.osoa.sca.annotations.Scope;
-
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.PlainTextConstruct;
 
+import org.apache.tuscany.sca.binding.gdata.collection.Collection;
+import org.osoa.sca.annotations.Scope;
+
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {
 
-    // private final Abdera abdera = new Abdera();
+
     private Map<String, Entry> entries = new HashMap<String, Entry>();
 
     /**
@@ -46,33 +46,21 @@ public class CustomerCollectionImpl implements Collection {
 
         for (int i = 0; i < 4; i++) {
             // id is supposed to be generated in a random way, but for the
-            // purpose of testing
-            // I just make them as static ids
+            // purpose of testing, we just make them as static ids
+            
             // String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
 
             String id = "urn:uuid:customer-" + String.valueOf(i);
-
             Entry entry = new Entry();
             entry.setId(id);
             entry.setTitle(new PlainTextConstruct("EntryTitle_" + i));
             entry.setContent(new PlainTextConstruct("content_" + i));
             entry.setUpdated(DateTime.now());
-
             // FIXME: The following three lines of code need to be fixed to add
-            // HTML links.
-
+            // HTML links.            
             // entry.addHtmlLink(""+id, "application/atom+xml", "title");
             // entry.addHtmlLink(""+id, "", "edit");
             // entry.addHtmlLink(""+id, "", "alternate");
-
-            /*
-             * Entry entry = abdera.getFactory().newEntry(); entry.setId(id);
-             * entry.setTitle("title_" + String.valueOf(i));
-             * entry.addAuthor("author_" + String.valueOf(i)); entry.addLink("" +
-             * id, "edit"); entry.addLink("" + id, "alternate");
-             * entry.setUpdated(new Date());
-             */
-
             entries.put(id, entry);
             System.out.println(">>> id=" + id);
         }
@@ -83,10 +71,8 @@ public class CustomerCollectionImpl implements Collection {
 
         String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
         entry.setId(id);
-        /*
-         * entry.addLink("" + id, "edit"); entry.addLink("" + id, "alternate");
-         * entry.setUpdated(new Date());
-         */
+
+        //entry.addLink("" + id, "edit"); entry.addLink("" + id, "alternate");
         entry.setUpdated(DateTime.now());
         // entry.addHtmlLink("http://www.google.com", "languageType", "edit");
         // entry.addHtmlLink("http://www.google.com", "languageType",
@@ -103,39 +89,28 @@ public class CustomerCollectionImpl implements Collection {
     }
 
     public void put(String id, Entry entry) {
-        System.out.println(">>> ResourceCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
-
-        // entry.setUpdated(new Date());
+        System.out.println(">>> ResourceCollectionImpl.put id=" + id + " entry=" + entry.getTitle().getPlainText());
         entry.setUpdated(DateTime.now());
-
         entries.put(id, entry);
     }
+    
 
     public void delete(String id) {
         System.out.println(">>> ResourceCollectionImpl.delete id=" + id);
         entries.remove(id);
     }
 
-    @SuppressWarnings("unchecked")
+    
     public Feed getFeed() {
         System.out.println(">>> ResourceCollectionImpl.get collection");
-
-        /*
-         * Feed feed = this.abdera.getFactory().newFeed();
-         * feed.setTitle("customers"); feed.setSubtitle("This is a sample
-         * feed"); feed.setUpdated(new Date()); feed.addLink("");
-         * feed.addLink("", "self");
-         */
-
+        
         Feed feed = new Feed();
-        feed.setTitle(new PlainTextConstruct("Feedtitle"));
+        feed.setTitle(new PlainTextConstruct("Feedtitle(LocalHostServlet)"));
         feed.setSubtitle(new PlainTextConstruct("Subtitle: This is a sample feed"));
         feed.setUpdated(DateTime.now());
-
         // FIXME: The following two lines of code need to be fixed
         // feed.addHtmlLink("", "", "");
         // feed.addHtmlLink("", "languageType", "self");
-
         ArrayList<Entry> entryList = new ArrayList<Entry>();
         for (Entry entry : entries.values()) {
             entryList.add(entry);
@@ -145,6 +120,7 @@ public class CustomerCollectionImpl implements Collection {
         return feed;
     }
 
+    
     public Feed query(String queryString) {
         System.out.println(">>> ResourceCollectionImpl.query collection " + queryString);
         return getFeed();

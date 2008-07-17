@@ -41,6 +41,9 @@ class GdataBindingImpl implements GdataBinding, OptimizableBinding, PolicySetAtt
     private String name;
     private String uri;
     private String title;
+    private String username;
+    private String password;
+    private String serviceType;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
@@ -57,6 +60,18 @@ class GdataBindingImpl implements GdataBinding, OptimizableBinding, PolicySetAtt
     public String getURI() {
         return uri;
     }
+    
+    public String getUsername(){
+        return username;
+    }
+    
+    public String getPassword(){
+        return password;
+    }
+    
+    public String getServiceType(){
+        return serviceType;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -65,6 +80,19 @@ class GdataBindingImpl implements GdataBinding, OptimizableBinding, PolicySetAtt
     public void setURI(String uri) {
         this.uri = uri;
     }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
 
     public String getTitle() {
         return title;
