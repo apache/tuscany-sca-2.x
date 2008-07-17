@@ -59,8 +59,37 @@ public class JSONRPCServiceTestCase extends TestCase {
         WebResponse response = wc.getResource(request);
 
         assertEquals(200, response.getResponseCode());
+        
         JSONObject jsonResp = new JSONObject(response.getText());
         assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
+    }
+    
+    public void testRuntimeException() throws Exception{
+    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoRuntimeException\", \"params\": [], \"id\": 2}");
+    	
+    	WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        assertEquals(200, response.getResponseCode());
+        
+        JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
+        
+        assertEquals("Runtime Exception", jsonErr.getString("msg"));
+    }
+    
+    public void testBusinessException() throws Exception{
+    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoBusinessException\", \"params\": [], \"id\": 3}");
+    	
+    	WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        assertEquals(200, response.getResponseCode());
+        
+        JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
+        
+        assertEquals("Business Exception", jsonErr.getString("msg"));
     }
 
 

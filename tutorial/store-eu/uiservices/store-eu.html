@@ -35,7 +35,11 @@
 	
 	var catalogItems;
 
-	function catalog_getResponse(items) {
+	function catalog_getResponse(items, exception) {
+		if(exception){
+			alert(exception.message);
+			return;
+		}
 		var catalog = "";
 		for (var i=0; i<items.length; i++) {
 			var item = items[i].name + ' - ' + items[i].price;
@@ -58,13 +62,23 @@
 			}
 			document.getElementById("shoppingCart").innerHTML = list;
 
-			if (entries.length != 0) {			
-				shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
+			if (entries.length != 0) {	
+				try {
+					shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
+				}
+				carch(e) {
+					alert(e);
+				}
+					
 			}
 		}
 	}
 	
-	function shoppingTotal_getTotalResponse(total) {
+	function shoppingTotal_getTotalResponse(total,exception) {
+		if(exception){
+			alert(exception.message);
+			return;
+		}
 		document.getElementById('total').innerHTML = total;
 	}
 	
@@ -106,8 +120,14 @@
 	}	
 
 	function init() {
-		catalog.get(catalog_getResponse);
-		shoppingCart.get("", shoppingCart_getResponse);
+		try	{
+			catalog.get(catalog_getResponse);
+			shoppingCart.get("", shoppingCart_getResponse);
+		}
+		catch(e) {
+			alert(e);
+		}
+			
 	}
 	
 </script>

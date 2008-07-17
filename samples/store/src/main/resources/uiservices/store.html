@@ -35,20 +35,25 @@
 	
 	var catalogItems;
 
-	function catalog_getResponse(items) {
-		var catalog = "";
-		for (var i=0; i<items.length; i++) {
-			var item = items[i].name + ' - ' + items[i].price;
-			catalog += '<input name="items" type="checkbox" value="' + 
-						item + '">' + item + ' <br>';
+	function catalog_getResponse(items,exception) {
+		if(exception){
+			alert(exception.message);
+			return;
 		}
-		document.getElementById('catalog').innerHTML=catalog;
-		catalogItems = items;
+		var catalog = "";
+		
+			for (var i=0; i<items.length; i++) {
+				var item = items[i].name + ' - ' + items[i].price;
+				catalog += '<input name="items" type="checkbox" value="' + 
+							item + '">' + item + ' <br>';
+			}
+			document.getElementById('catalog').innerHTML=catalog;
+			catalogItems = items;
 	}
 	
 	function shoppingCart_getResponse(feed) {
 		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
+			var entries = feed.getElementsByTagName("entry"); 
 			var list = "";
 			for (var i=0; i<entries.length; i++) {
 				var content = entries[i].getElementsByTagName("content")[0];
@@ -59,12 +64,21 @@
 			document.getElementById("shoppingCart").innerHTML = list;
 
 			if (entries.length != 0) {			
-				shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
+					try	{
+						shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
+					}
+					catch(e){
+						alert(e);
+					}
 			}
 		}
 	}
 	
-	function shoppingTotal_getTotalResponse(total) {
+	function shoppingTotal_getTotalResponse(total,exception) {
+		if(exception) { 
+			alert(exception.message); 
+			return;
+		}
 		document.getElementById('total').innerHTML = total;
 	}
 	
@@ -77,6 +91,7 @@
 		var j = 0;
 		for (var i=0; i<items.length; i++)
 			if (items[i].checked) {
+					
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>item</title><content type="text/xml">' +
                 	'<Item xmlns="http://services/">' +
                 	'<name xmlns="">' + catalogItems[i].name + '</name>' + '<price xmlns="">' + catalogItems[i].price + '</price>' +
@@ -106,9 +121,15 @@
 	}	
 
 	function init() {
-		catalog.get(catalog_getResponse);
-		shoppingCart.get("", shoppingCart_getResponse);
-	}
+			
+			try	{
+				catalog.get(catalog_getResponse);
+				shoppingCart.get("", shoppingCart_getResponse);
+			}
+			catch(e){
+				alert(e);
+			}
+		}
 	
 </script>
 

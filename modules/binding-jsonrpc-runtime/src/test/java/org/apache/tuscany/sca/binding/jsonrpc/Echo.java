@@ -26,4 +26,8 @@ package org.apache.tuscany.sca.binding.jsonrpc;
 public interface Echo {
     
     String echo(String msg);
+    
+    void echoRuntimeException() throws RuntimeException;
+    
+    void echoBusinessException() throws BusinessException;
 }
