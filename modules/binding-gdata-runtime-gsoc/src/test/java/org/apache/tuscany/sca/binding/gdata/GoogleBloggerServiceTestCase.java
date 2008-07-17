@@ -19,29 +19,24 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.PlainTextConstruct;
 
-public class Test_GdataBinding_GoogleBloggerService extends TestCase{
+public class GoogleBloggerServiceTestCase extends TestCase{
 
     private SCADomain scaDomainConsumer = null;
     private CustomerClient testService = null;
     
     
-    public Test_GdataBinding_GoogleBloggerService(){
+    public GoogleBloggerServiceTestCase(){
 
     }
     

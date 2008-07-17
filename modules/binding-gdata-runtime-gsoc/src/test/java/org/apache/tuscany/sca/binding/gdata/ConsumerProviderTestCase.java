@@ -28,7 +28,7 @@ import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.PlainTextConstruct;
 
-public class Test_GdataBinding_LocalhostServlet extends TestCase {
+public class ConsumerProviderTestCase extends TestCase {
 
     private SCADomain scaDomainProvider = null;
     private SCADomain scaDomainConsumer = null;
