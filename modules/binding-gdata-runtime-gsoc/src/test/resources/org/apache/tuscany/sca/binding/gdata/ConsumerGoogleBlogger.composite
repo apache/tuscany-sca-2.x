@@ -25,7 +25,7 @@
     <component name="CustomerClient">
         <implementation.java class="org.apache.tuscany.sca.binding.gdata.CustomerClientImpl"/>
         <reference name="resourceCollection">
-        	<tuscany:binding.gdata uri="http://localhost:8084/customer" serviceType="localServiceBinding" username="admin" password="admin"/>
+        	<tuscany:binding.gdata uri="http://haibotuscany.blogspot.com/feeds/posts/default" serviceType="blogger" username="haibotuscany@gmail.com" password="gsocgsocgsoc"/>
         </reference>
     </component>
 

@@ -19,27 +19,25 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
-import org.apache.abdera.Abdera;
-import org.apache.tuscany.sca.binding.gdata.collection.Collection;
-import org.osoa.sca.annotations.Reference;
-
-import com.google.gdata.data.DateTime;
+import com.google.gdata.data.Feed;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.PlainTextConstruct;
 
-public class CustomerClientImpl implements CustomerClient {
+import org.apache.tuscany.sca.binding.gdata.collection.Collection;
+import org.apache.tuscany.sca.binding.gdata.collection.NotFoundException;
+import org.osoa.sca.annotations.Reference;
 
-    protected final Abdera abdera = new Abdera();
+public class CustomerClientImpl implements CustomerClient {
 
     @Reference
     public Collection resourceCollection;
 
-    // Test Collection.getFeed()
-    public void testGetFeed() throws Exception {
-        // Get all the entries from the provider
-        System.out.println("\n\n+++++++++++ get the feed from the provider service +++++++++++");
-        com.google.gdata.data.Feed feed = resourceCollection.getFeed();
-        System.out.println("\n\n\n!!!Fetched feed title:  " + feed.getTitle().getPlainText());
+    // Call Collection.getFeed()
+    public Feed clientGetFeed() throws Exception {
+        // Get all the entries from the provider, return in a single feed
+        System.out.println(">>> get the feed from the provider service");
+        Feed feed = resourceCollection.getFeed();
+        System.out.println("\n\n!!! Fetched feed title:  " + feed.getTitle().getPlainText());
         int i = 0;
         for (Object o : feed.getEntries()) {
             com.google.gdata.data.Entry e = (com.google.gdata.data.Entry)o;
@@ -47,109 +45,65 @@ public class CustomerClientImpl implements CustomerClient {
             System.out.println(" id = " + e.getId() + "\t title = " + e.getTitle().getPlainText());
             i++;
         }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("\n\n\n");
+        return feed;
     }
-
-    // Test Collection.get(entryID)
-    public void testGetEntry() throws Exception {
-
+        
+    
+    // Call Collection.get(entryID)
+    public Entry clientGetEntry(String entryID) throws Exception {
         // Get an existing entry based on its id
-        System.out.println("+++++++++++ get an existing entry from the provider service +++++++++++");
-        System.out.println(">>> get an entry based on its id");
-        Entry entry = resourceCollection.get("urn:uuid:customer-0");
-        System.out.println("\n\n\n!!! Entry retrieved with id=" + entry.getId()
+        System.out.println(">>> get an existing entry from the provider service");
+        Entry entry = resourceCollection.get(entryID);
+        System.out.println("\n\n!!! Entry retrieved with id=" + entry.getId()
             + " title="
             + entry.getTitle().getPlainText());
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("\n\n\n");
-
+        return entry;
     }
 
-    // Test Collection.post(newEntry)
-    public void testPost() throws Exception {
-
+       
+    // Call Collection.post(newEntry)
+    public Entry clientPost(Entry newEntry) throws Exception {
         // Put a new entry to the provider
-        System.out.println("+++++++++++ post a new entry to the provider service +++++++++++");
-        Entry newEntry = new Entry();
-        newEntry.setTitle(new PlainTextConstruct("NewEntry title"));
-        newEntry.setContent(new PlainTextConstruct("NewEntry Content"));
-        System.out.println(">>> post a new entry:  title=" + newEntry.getTitle().getPlainText());
+        System.out.println(">>> post a new entry to the provider service");
         Entry confirmedNewEntry = resourceCollection.post(newEntry);
         System.out.println("!!! New entry posted with id=" + confirmedNewEntry.getId()
             + " title="
-            + confirmedNewEntry.getTitle());
+            + confirmedNewEntry.getTitle().getPlainText());        
+        System.out.println("\n");
+        return confirmedNewEntry;
+    }
+
+    
+    // Call Collection.delete(newEntry)
+    public void clientDelete(String entryID) throws Exception {
+        // Put a new entry to the provider
+        System.out.println(">>> delete an existing entry from the provider service");
+        System.out.println(">>> delete id=" + "urn:uuid:customer-1");
+        resourceCollection.delete(entryID);
+        System.out.println("!!! entry with id" + entryID);
+        System.out.println("\n");
+    }
+    
+    
+    
+    // Call Collection.put(entry, updatedTitle)
+    public void clientPut(String entryID, String newTitle) throws Exception {
+
+        System.out.println("clientPut");
+        // Put a new entry to the provider
+        System.out.println(">>> put id=" + entryID + " title=updatedTitle");
+        Entry entry = resourceCollection.get(entryID);
+        
+        //change the title of this entry
+        entry.setTitle(new PlainTextConstruct(newTitle));
+        resourceCollection.put(entryID, entry);
+        System.out.println("!!! Updated entry with id=" + entry.getId() + " title=" + entry.getTitle());
         System.out.println("\n");
     }
 
-    /*
-     * public void testCustomerCollection() throws Exception { //Put a new entry
-     * to the provider System.out.println("\n\n+++++++++++ post a new entry to
-     * the provider service +++++++++++"); Entry newEntry =
-     * newEntry("newtitle"); newEntry.addAuthor("newAuthor");
-     * System.out.println(">>> post a new entry: title=" + newEntry.getTitle() + "
-     * author=" + newEntry.getAuthor().getName()); newEntry =
-     * resourceCollection.post(newEntry); System.out.println("!!! New entry
-     * posted with id=" + newEntry.getId() + " title=" + newEntry.getTitle());
-     * System.out.println("\n"); //Put a new entry to the provider
-     * System.out.println("+++++++++++ post a new entry to the provider service
-     * +++++++++++"); newEntry = newEntry("newtitleTemp");
-     * newEntry.addAuthor("newAuthorTemp"); System.out.println(">>> post a new
-     * entry: title=" + newEntry.getTitle() + " author=" +
-     * newEntry.getAuthor().getName()); newEntry =
-     * resourceCollection.post(newEntry); System.out.println("!!! New entry
-     * posted with id=" + newEntry.getId() + " title=" + newEntry.getTitle());
-     * System.out.println("\n"); //Get an existing entry based on its id
-     * System.out.println("+++++++++++ get an existing entry from the provider
-     * service +++++++++++"); System.out.println(">>> get an entry based on its
-     * id"); Entry entry = resourceCollection.get(newEntry.getId().toString());
-     * System.out.println("!!! Entry retrieved with id=" + entry.getId() + "
-     * title=" + entry.getTitle()); System.out.println("\n"); //Update an
-     * existing entry based on its id System.out.println("+++++++++++ update an
-     * existing entry in the provider service +++++++++++");
-     * System.out.println(">>> put id=" + entry.getId() + "
-     * title=updatedTitle"); resourceCollection.put(entry.getId().toString(),
-     * updateEntry(entry, "updatedTitle")); System.out.println("!!! Updated
-     * entry with id=" + entry.getId() + " title=" + entry.getTitle());
-     * System.out.println("\n"); System.out.println("+++++++++++ delete an
-     * existing entry from the provider service +++++++++++");
-     * System.out.println(">>> delete id=" + entry.getId());
-     * resourceCollection.delete(entry.getId().toString());
-     * System.out.println("!!! entry deleted"); //Get all the entries from the
-     * provider System.out.println("\n\n+++++++++++ get all the entries from the
-     * provider service +++++++++++"); Feed feed = resourceCollection.getFeed();
-     * int i=0; for (Object o : feed.getEntries()) { Entry e = (Entry)o;
-     * System.out.print("Entry" + i + "\t"); System.out.println(" id = " +
-     * e.getId() + "\t title = " + e.getTitle()+ "\t author = " +
-     * e.getAuthor().getName()); i++; } }
-     */
-
-    private Entry newEntry(String value) {
-        /*
-         * Entry entry = this.abdera.newEntry(); entry.setTitle(value); Content
-         * content = this.abdera.getFactory().newContent();
-         * content.setContentType(Content.Type.TEXT); content.setValue(value);
-         * entry.setContentElement(content);
-         */
-
-        Entry entry = new Entry();
-        entry.setTitle(new PlainTextConstruct(value));
-        entry.setContent(new PlainTextConstruct(value));
-        entry.setUpdated(DateTime.now());
-        // entry.addHtmlLink("http://www.google.com", "languageType", "title");
-        return entry;
-    }
-
-    private Entry updateEntry(Entry entry, String value) {
-        /*
-         * entry.setTitle(value); Content content =
-         * this.abdera.getFactory().newContent();
-         * content.setContentType(Content.Type.TEXT); content.setValue(value);
-         * entry.setContentElement(content);
-         */
-        entry.setTitle(new PlainTextConstruct("Entry title: " + value));
-        entry.setContent(new PlainTextConstruct(value));
-        return entry;
-    }
-
+    
+    // Call Collection.query(entry, updatedTitle)
+    public void clientQuery() throws Exception {
+    }   
+   
 }

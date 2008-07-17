@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +15,27 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
-	   targetNamespace="http://customer"
-	   name="Consumer">
-    
-    <component name="CustomerClient">
-        <implementation.java class="org.apache.tuscany.sca.binding.gdata.CustomerClientImpl"/>
-        <reference name="resourceCollection">
-        	<tuscany:binding.gdata uri="http://localhost:8084/customer" serviceType="localServiceBinding" username="admin" password="admin"/>
-        </reference>
-    </component>
+ */
 
-</composite>
+package org.apache.tuscany.sca.binding.gdata;
+
+import java.io.IOException;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+public class StartLocalhostServlet {
+
+    public static void main(String[] args) {
+
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Provider.composite");
+        System.out.println("Provider.composite ready...");
+
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        scaDomain.close();
+    }
+}

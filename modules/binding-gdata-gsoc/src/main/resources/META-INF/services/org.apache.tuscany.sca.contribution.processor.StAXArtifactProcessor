@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#binding.gdata,model=org.apache.tuscany.sca.binding.gdata.GdataBinding,factory=org.apache.tuscany.sca.binding.gdata.GdataBindingFactory
+org.apache.tuscany.sca.binding.gdata.impl.GdataBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#binding.gdata,model=org.apache.tuscany.sca.binding.gdata.GdataBinding,factory=org.apache.tuscany.sca.binding.gdata.GdataBindingFactory

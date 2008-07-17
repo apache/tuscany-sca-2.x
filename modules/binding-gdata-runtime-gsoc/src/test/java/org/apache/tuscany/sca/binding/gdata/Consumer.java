@@ -21,21 +21,40 @@ package org.apache.tuscany.sca.binding.gdata;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import com.google.gdata.data.Entry;
+import com.google.gdata.data.Feed;
+import com.google.gdata.data.PlainTextConstruct;
+
 public class Consumer {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Consumer.composite");
+        //Initialize the GData client service (Reference Binding test)
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/ConsumerGoogleBlogger.composite");
+        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");          
+        
+        
+        Feed feed = testService.clientGetFeed();
+        
+        System.out.println("#Entries(Before post): "+ testService.clientGetFeed().getEntries().size());
+        
+        /*
+        String entryID = "tag:blogger.com,1999:blog-4520949313432095990.post-973462497533349425";
+        Entry entry = testService.clientGetEntry(entryID);
+        System.out.println("Entry id: " + entry.getId());
+        */
+        
+        Entry myEntry = new Entry();
+        myEntry.setTitle(new PlainTextConstruct("titleByConsumer2"));
+        myEntry.setContent(new PlainTextConstruct("contentByConsmer2"));
+        testService.clientPost(myEntry);
+        
+        System.out.println("#Entries(After post): "+ testService.clientGetFeed().getEntries().size());
+        
+        String entryID = "tag:blogger.com,1999:blog-4520949313432095990.post-973462497533349425";
+        Entry entry = testService.clientGetEntry(entryID);
+        System.out.println("Entry id: " + entry.getId());
 
-        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
-
-        //testService.testCustomerCollection();
-
-        testService.testGetFeed(); // Tested, worked
-        testService.testGetEntry(); // Tested, worked
-        testService.testPost(); // Tested, worked
-        testService.testGetFeed(); // Tested, worked
-
-        scaDomain.close();
+       
     }
 }
