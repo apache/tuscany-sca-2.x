@@ -56,6 +56,8 @@
                 <module>binding-atom-abdera</module>
                 <module>binding-gdata</module>
                 <module>binding-gdata-runtime</module>
+                <module>binding-gdata-gsoc</module>
+                <module>binding-gdata-runtime-gsoc</module>
                 <module>binding-http</module>
                 <module>binding-http-runtime</module>
                 <module>binding-jms</module>
