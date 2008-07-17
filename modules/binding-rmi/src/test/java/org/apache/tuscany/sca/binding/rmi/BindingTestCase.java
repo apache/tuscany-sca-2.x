@@ -53,7 +53,7 @@ public class BindingTestCase {
             msg = helloWorldRmiService.sayRmiHi(null, "Apache World");
             Assert.fail("HelloException should have been thrown");
         } catch (HelloException e) {
-
+            System.out.println("Expected exception :" + e.getClass().getName());
         }
     }
 
