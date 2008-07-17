@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import org.osoa.sca.ServiceRuntimeException;
 
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
+import com.metaparadigm.jsonrpc.JSONRPCResult;
 import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 /**
@@ -166,7 +167,6 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         response.setContentType("text/plain;charset=utf-8");
         OutputStream out = response.getOutputStream();
         byte[] bout = smd.getBytes("UTF-8");
-
         out.write(bout);
         out.flush();
         out.close();
@@ -232,30 +232,27 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         RuntimeWire wire = componentService.getRuntimeWire(binding, serviceContract);
         Operation jsonOperation = findOperation(method);
         Object result = null;
-        JSONObject jsonResponse = new JSONObject();
+      
         try {
-            result = wire.invoke(jsonOperation, args);
-            try {
+        	JSONObject jsonResponse = new JSONObject();
+        	result = wire.invoke(jsonOperation, args);
+
+        	try {
                 jsonResponse.put("result", result);
                 jsonResponse.putOpt("id", id);
+                //get response to send to client
+                return jsonResponse.toString().getBytes("UTF-8");
             } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
+                throw new ServiceRuntimeException("Unable to create JSON response", e);
             }
         } catch (InvocationTargetException e) {
-            try {
-                jsonResponse.put("error", e.getCause());
-                jsonResponse.putOpt("id", id);
-            } catch (Exception e1) {
-                throw new ServiceRuntimeException(e);
-            }
+           	 JSONRPCResult errorResult = new JSONRPCResult(JSONRPCResult.CODE_REMOTE_EXCEPTION, id, e.getCause() );
+             return errorResult.toString().getBytes("UTF-8");
         } catch(RuntimeException e) {
-            e.printStackTrace();
-            throw e;
+             JSONRPCResult errorResult = new JSONRPCResult(JSONRPCResult.CODE_REMOTE_EXCEPTION, id, e.getCause());
+             return errorResult.toString().getBytes("UTF-8");
         }
-        
-        //get response to send to client
-        return jsonResponse.toString().getBytes("UTF-8");
-    }
+   }
 
     /**
      * Find the operation from the component service contract

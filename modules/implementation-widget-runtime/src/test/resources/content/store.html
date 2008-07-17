@@ -34,7 +34,11 @@
 	//@Property
 	var locale = Property("locale");
 
-	function catalog_getResponse(items) {
+	function catalog_getResponse(items,exception) {
+		if(exception){
+			alert(exception.message);
+			return;
+		}
 		var catalog = "";
 		for (var i=0; i<items.length; i++)
 			catalog += '<input name="items" type="checkbox" value="' + 

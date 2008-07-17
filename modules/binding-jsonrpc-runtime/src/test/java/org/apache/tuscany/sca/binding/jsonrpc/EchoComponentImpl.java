@@ -31,4 +31,14 @@ public class EchoComponentImpl implements Echo {
         System.out.println("Echo: "+ msg);
         return "echo: " + msg;
     }
+
+	public void echoBusinessException() throws BusinessException {
+		throw new BusinessException("Business Exception");
+		
+	}
+
+	public void echoRuntimeException() throws RuntimeException {
+		throw new RuntimeException("Runtime Exception");
+		
+	}
 }
