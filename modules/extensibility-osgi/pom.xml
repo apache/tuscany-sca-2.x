@@ -52,12 +52,11 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Bundle-Version>${tuscany.version}
-						</Bundle-Version>
-						<Bundle-SymbolicName>org.apache.tuscany.sca.extensibility.osgi
-						</Bundle-SymbolicName>
+						<Bundle-Version>${tuscany.version}</Bundle-Version>
+						<Bundle-SymbolicName>org.apache.tuscany.sca.extensibility.osgi</Bundle-SymbolicName>
 						<Bundle-Description>${pom.name}</Bundle-Description>
-						<Export-Package>org.apache.tuscany.sca.extensibility.osgi*</Export-Package>
+                        <!-- This bundle will be the gateway to all exported packages -->
+                        <DynamicImport-Package>*</DynamicImport-Package>
 					</instructions>
 				</configuration>
 			</plugin>

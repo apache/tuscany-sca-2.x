@@ -75,8 +75,7 @@
                         <Bundle-SymbolicName>org.apache.tuscany.sca.extensibility.equinox
                         </Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.extensibility.equinox*
-                        </Export-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

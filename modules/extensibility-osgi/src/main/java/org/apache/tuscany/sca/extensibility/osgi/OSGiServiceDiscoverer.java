@@ -112,7 +112,7 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
 
     }
 
-    private static String toString(Bundle b) {
+    public static String toString(Bundle b) {
         StringBuffer sb = new StringBuffer();
         sb.append(b.getBundleId()).append(" ").append(b.getSymbolicName());
         int s = b.getState();

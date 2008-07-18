@@ -136,6 +136,7 @@
                 <module>implementation-java-runtime</module>
                 <module>implementation-node</module>
                 <module>implementation-node-runtime</module>
+                <module>implementation-node-osgi-runtime</module>
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
                 <module>implementation-resource</module>
