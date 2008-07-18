@@ -16,21 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+import org.apache.tuscany.sca.itest.databindings.jaxb.AService;
+import org.osoa.sca.annotations.Service;
 
-public class Utils {
+/**
+ * This class implements AService.
+ */
+@Service(AService.class)
+public class AServiceImpl implements AService {
 
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
+    public String getGreetings(String name) {
+        return "Hello " + name;
     }
-
 }

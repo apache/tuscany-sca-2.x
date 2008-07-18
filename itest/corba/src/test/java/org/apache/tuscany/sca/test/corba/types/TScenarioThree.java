@@ -17,20 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+package org.apache.tuscany.sca.test.corba.types;
 
-public class Utils {
+/**
+ * Operations for ScenarioThree.
+ */
+public interface TScenarioThree {
 
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
-    }
+    int getIntField();
+
+    void setIntField(int intField);
+
+    void overloadedName();
+
+    void overloadedName(String arg1);
+
+    void overloadedName(String arg1, int arg2);
+
+    int caseDifferent();
+
+    int CaseDifferent();
 
 }

@@ -17,20 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+package org.apache.tuscany.sca.test.corba.types;
 
-public class Utils {
+import org.apache.tuscany.sca.test.corba.generated._ScenarioTwoImplBase;
 
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
+/**
+ * Servant for generated interface. 
+ */
+public class ScenarioTwoServant extends _ScenarioTwoImplBase {
+
+    private static final long serialVersionUID = 1L;
+
+    private String stringField = "";
+
+    public String stringField() {
+        return stringField;
+    }
+
+    public void stringField(String newStringField) {
+        this.stringField = newStringField;
     }
 
 }

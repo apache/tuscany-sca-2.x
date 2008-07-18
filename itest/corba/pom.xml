@@ -27,51 +27,35 @@
     </parent>
     <artifactId>itest-corba-binding</artifactId>
     <name>Apache Tuscany SCA CORBA Binding Integration Tests</name>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-	
-	<dependency>
-		<groupId>org.apache.tuscany.sca</groupId>
-		<artifactId>tuscany-binding-corba</artifactId>
-		<version>1.4-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.apache.tuscany.sca</groupId>
-		<artifactId>tuscany-binding-corba-runtime</artifactId>
-		<version>1.4-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.apache.tuscany.sca</groupId>
-		<artifactId>tuscany-host-corba</artifactId>
-		<version>1.4-SNAPSHOT</version>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-corba-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
-	
-	<dependency>
-		<groupId>org.apache.tuscany.sca</groupId>
-		<artifactId>tuscany-host-corba-jdk</artifactId>
-		<version>1.4-SNAPSHOT</version>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-corba-jdk</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
-
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.2</version>
-		<scope>compile</scope>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>compile</scope>
         </dependency>
-	
     </dependencies>
 </project>

@@ -73,7 +73,7 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
                 operation.setName(methods[i].getName());
             }
         }
-        TestInterface iface = new TestInterface(operations);
+        TestInterface iface = new TestInterface(operations, invocationTarget.getClass());
         interfaceContract = new TestInterfaceContract();
         interfaceContract.setInterface(iface);
     }

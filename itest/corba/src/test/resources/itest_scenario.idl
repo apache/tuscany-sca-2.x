@@ -30,6 +30,8 @@ module org {
 					module corba {
 						module generated { 
 						
+							// objects for ScenarioOne
+						
 							enum Color {red, yellow, green};
 							
 							typedef sequence<string> StringSequence;
@@ -61,6 +63,14 @@ module org {
 							
 								RichStruct setRichStruct(in RichStruct richStruct) raises (WrongColor, UnexpectedException);
 							
+							};
+							
+							// objects for ScenarioTwo
+							
+							interface ScenarioTwo {
+								
+								attribute string stringField;
+								
 							};
 						};
 					};

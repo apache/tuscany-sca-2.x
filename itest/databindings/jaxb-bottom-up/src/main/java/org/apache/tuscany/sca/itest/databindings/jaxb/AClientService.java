@@ -16,21 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+import org.osoa.sca.annotations.Remotable;
 
-public class Utils {
-
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
-    }
-
+/**
+ * The interface for AClientService.
+ */
+@Remotable
+public interface AClientService {
+    public String getGreetingsForward(String name);
 }

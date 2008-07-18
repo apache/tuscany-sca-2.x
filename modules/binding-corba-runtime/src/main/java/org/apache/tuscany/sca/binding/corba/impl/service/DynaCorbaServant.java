@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.corba.impl.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +32,10 @@ import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeCreator;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.TypeHelpersProxy;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
+import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.omg.CORBA.MARSHAL;
 import org.omg.CORBA.portable.InputStream;
@@ -46,19 +49,63 @@ import org.omg.CORBA.portable.ResponseHandler;
  */
 public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 
-    private static String[] DEFAULT_IDS = {"IDL:default:1.0"};
     private RuntimeComponentService service;
     private Binding binding;
-    private String[] ids = DEFAULT_IDS;
-    private Map<String, OperationTypes> operationsCache = new HashMap<String, OperationTypes>();
+    private String[] ids;
+    private Map<Operation, OperationTypes> operationsCache = new HashMap<Operation, OperationTypes>();
+    private Class<?> javaClass;
+    private Map<String, Method> operationsMap;
+    private Map<Method, Operation> methodOperationMapping;
 
     public DynaCorbaServant(RuntimeComponentService service, Binding binding) throws RequestConfigurationException {
         this.service = service;
         this.binding = binding;
+        this.javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+        this.operationsMap = OperationMapper.mapOperationToMethod(javaClass);
         cacheOperationTypes(service.getInterfaceContract().getInterface().getOperations());
-
+        createMethod2OperationMapping();
+        setDefaultIds();
     }
 
+    /**
+     * Maps Java methods to Tuscany operations
+     */
+    private void createMethod2OperationMapping() {
+        // for every operation find all methods with the same name, then
+        // compare operations and methods parameters
+        this.methodOperationMapping = new HashMap<Method, Operation>();
+        for (Operation operation : service.getInterfaceContract().getInterface().getOperations()) {
+            List<DataType> inputTypes = operation.getInputType().getLogical();
+            Method[] methods = javaClass.getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(operation.getName()) && inputTypes.size() == methods[i]
+                    .getParameterTypes().length) {
+                    Class<?>[] parameterTypes = methods[i].getParameterTypes();
+                    int j = 0;
+                    boolean parameterMatch = true;
+                    for (DataType dataType : inputTypes) {
+                        if (!dataType.getPhysical().equals(parameterTypes[j])) {
+                            parameterMatch = false;
+                            break;
+                        }
+                        j++;
+                    }
+                    if (parameterMatch) {
+                        // match found
+                        methodOperationMapping.put(methods[i], operation);
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Caches TypeTree for every operation in backed component
+     * @param operations
+     * @throws RequestConfigurationException
+     */
     private void cacheOperationTypes(List<Operation> operations) throws RequestConfigurationException {
         for (Operation operation : operations) {
             try {
@@ -80,41 +127,39 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 
                 }
                 operationTypes.setInputType(inputInstances);
-                operationsCache.put(operation.getName(), operationTypes);
+                operationsCache.put(operation, operationTypes);
             } catch (RequestConfigurationException e) {
                 throw e;
             }
         }
     }
 
+    /**
+     * Sets CORBA object ID
+     * @param ids
+     */
     public void setIds(String[] ids) {
         for (int i = 0; i < ids.length; i++) {
             if (ids[i] == null || ids[i].length() == 0) {
-                this.ids = DEFAULT_IDS;
+                // if invalid id was passed then set to default 
+                setDefaultIds();
                 return;
             }
         }
         this.ids = ids;
     }
 
-    public OutputStream _invoke(String method, InputStream in, ResponseHandler rh) {
-
+    public OutputStream _invoke(String operationName, InputStream in, ResponseHandler rh) {
         Operation operation = null;
-
-        List<Operation> operations = service.getInterfaceContract().getInterface().getOperations();
+        Method method = operationsMap.get(operationName);
         // searching for proper operation
-        for (Operation oper : operations) {
-            if (oper.getName().equals(method)) {
-                operation = oper;
-                break;
-            }
-        }
+        operation = methodOperationMapping.get(method);
         if (operation == null) {
             // operation wasn't found
             throw new org.omg.CORBA.BAD_OPERATION(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
         } else {
             List<Object> inputInstances = new ArrayList<Object>();
-            OperationTypes types = operationsCache.get(operation.getName());
+            OperationTypes types = operationsCache.get(operation);
             try {
                 // retrieving in arguments
                 for (TypeTree tree : types.getInputType()) {
@@ -129,19 +174,19 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
             try {
                 // invocation and sending result
                 Object result = service.getRuntimeWire(binding).invoke(operation, inputInstances.toArray());
+                OutputStream out = rh.createReply();
                 if (types.getOutputType() != null) {
-                    OutputStream out = rh.createReply();
                     TypeTree tree = types.getOutputType();
                     TypeHelpersProxy.write(tree.getRootNode(), out, result);
-                    return out;
                 }
+                return out;
             } catch (InvocationTargetException ie) {
                 // handling user exception
                 try {
                     OutputStream out = rh.createExceptionReply();
                     Class<?> exceptionClass = ie.getTargetException().getClass();
                     TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass);
-                    String exceptionId = Utils.getExceptionId(exceptionClass);
+                    String exceptionId = Utils.getTypeId(exceptionClass);
                     out.write_string(exceptionId);
                     TypeHelpersProxy.write(tree.getRootNode(), out, ie.getTargetException());
                     return out;
@@ -161,6 +206,14 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
     @Override
     public String[] _ids() {
         return ids;
+    }
+
+    /**
+     * Sets servant ID to default, based on Java class name
+     */
+    private void setDefaultIds() {
+        String id = Utils.getTypeId(javaClass);
+        this.ids = new String[] {id};
     }
 
 }

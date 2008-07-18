@@ -16,21 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+import javax.jws.soap.SOAPBinding;
 
-public class Utils {
+import org.osoa.sca.annotations.Remotable;
 
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
-    }
-
+/**
+ * The interface for AService.
+ */
+@Remotable
+@SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+public interface AService {
+    public String getGreetings(String name);
 }
