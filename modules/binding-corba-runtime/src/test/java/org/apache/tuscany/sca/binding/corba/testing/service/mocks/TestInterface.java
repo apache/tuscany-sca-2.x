@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.binding.corba.testing.service.mocks;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.interfacedef.Interface;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -30,12 +32,14 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * Mock TestInterface implementation. Only few methods needs to be implemented.
  */
-public class TestInterface implements Interface {
+public class TestInterface implements JavaInterface {
 
     private List<Operation> operations;
+    private Class<?> javaClass;
 
-    public TestInterface(List<Operation> opearations) {
+    public TestInterface(List<Operation> opearations, Class<?> javaClass) {
         this.operations = opearations;
+        this.javaClass = javaClass;
     }
 
     public List<Operation> getOperations() {
@@ -92,6 +96,43 @@ public class TestInterface implements Interface {
 
     public Object clone() {
         return null;
+    }
+
+    public Class<?> getCallbackClass() {
+        return null;
+    }
+
+    public Class<?> getJavaClass() {
+        return javaClass;
+    }
+
+    public String getName() {
+        return null;
+    }
+
+    public QName getQName() {
+        return null;
+    }
+
+    public void setCallbackClass(Class<?> arg0) {
+    }
+
+    public void setJavaClass(Class<?> javaClass) {
+        this.javaClass = javaClass;
+    }
+
+    public void setName(String arg0) {   
+    }
+
+    public void setQName(QName arg0) {
+        
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean arg0) {   
     }
 
 }

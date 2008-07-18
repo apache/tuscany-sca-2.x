@@ -19,10 +19,15 @@
 
 package org.apache.tuscany.sca.binding.corba.impl;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
+import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -37,11 +42,15 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
     private CorbaHost host;
     private RuntimeComponentReference reference;
     private Object remoteObject;
+    private Class<?> referenceClass;
+    private Map<Method, String> operationsMap = null; 
 
     public CorbaReferenceBindingProvider(CorbaBinding binding, CorbaHost host, RuntimeComponentReference reference) {
         this.binding = binding;
         this.host = host;
         this.reference = reference;
+        this.referenceClass = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
+        operationsMap = OperationMapper.mapMethodToOperation(referenceClass);
     }
 
     /**
@@ -52,7 +61,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
             if (remoteObject == null) {
                 remoteObject = host.lookup(binding.getCorbaname());    
             }
-            return new CorbaInvoker(remoteObject);
+            return new CorbaInvoker(remoteObject, referenceClass, operationsMap);
         } catch (Exception e) {
         }
         return null;

@@ -33,9 +33,11 @@ import org.omg.CORBA.Object;
 public class InterfaceMethodInterceptor implements MethodInterceptor {
 
     private Object reference;
+    private Class<?> javaClass;
 
-    public InterfaceMethodInterceptor(Object reference) {
+    public InterfaceMethodInterceptor(Object reference, Class<?> javaClass) {
         this.reference = reference;
+        this.javaClass = javaClass;
     }
 
     /**
@@ -47,6 +49,7 @@ public class InterfaceMethodInterceptor implements MethodInterceptor {
                                       java.lang.Object[] arguments,
                                       MethodProxy arg3) throws Throwable {
         DynaCorbaRequest request = new DynaCorbaRequest(reference, method.getName());
+        request.setReferenceClass(javaClass);
         for (int i = 0; i < arguments.length; i++) {
             request.addArgument(arguments[i]);
         }

@@ -558,8 +558,6 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
 
         try {
@@ -568,8 +566,6 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
 
         try {
@@ -578,17 +574,13 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
-
+        
         try {
             request = new DynaCorbaRequest(refArraysSetter, "whatever");
             request.setOutputType(SomeStruct.class);
         } catch (Exception e) {
             fail();
-        } finally {
-            request.release();
         }
     }
 
@@ -604,8 +596,6 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
 
         try {
@@ -614,8 +604,6 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
 
         try {
@@ -624,8 +612,6 @@ public class CorbaTypesTestCase {
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
-        } finally {
-            request.release();
         }
 
         try {
@@ -633,8 +619,6 @@ public class CorbaTypesTestCase {
             request.setOutputType(Color.class);
         } catch (Exception e) {
             fail();
-        } finally {
-            request.release();
         }
     }
 

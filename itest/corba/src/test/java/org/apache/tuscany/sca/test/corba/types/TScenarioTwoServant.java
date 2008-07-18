@@ -17,20 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.impl.types.util;
+package org.apache.tuscany.sca.test.corba.types;
 
-public class Utils {
+/**
+ * Servant for user provided interface.
+ */
+public class TScenarioTwoServant implements TScenarioTwo {
 
-    /**
-     * Creates CORBA id for Java class
-     * @param forClass
-     * @return
-     */
-    public static String getTypeId(Class<?> forClass) {
-        String result = forClass.getName().replace('.', '/');
-        result = result.replaceAll("Package", "");
-        result = "IDL:" + result + ":1.0";
-        return result;
+    private static String stringField = "";
+
+    public String getStringField() {
+        return stringField;
+    }
+
+    public void setStringField(String stringField) {
+        TScenarioTwoServant.stringField = stringField;
     }
 
 }

@@ -59,7 +59,7 @@ public class InterfaceInstanceCreator {
             enhancer.setCallbackTypes(new Class[] {NoOp.class, MethodInterceptor.class});
             Class<?> newClass = enhancer.createClass();
             Enhancer.registerStaticCallbacks(newClass, new Callback[] {NoOp.INSTANCE,
-                                                                       new InterfaceMethodInterceptor(reference)});
+                                                                       new InterfaceMethodInterceptor(reference, forClass)});
             result = newClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();

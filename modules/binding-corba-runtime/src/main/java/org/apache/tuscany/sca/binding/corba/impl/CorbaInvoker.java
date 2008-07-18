@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.corba.impl;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
@@ -34,9 +37,13 @@ import org.osoa.sca.ServiceRuntimeException;
 public class CorbaInvoker implements Invoker {
 
     private Object remoteObject;
+    private Class<?> referenceClass;
+    private Map<Method, String> operationsMap;
 
-    public CorbaInvoker(Object remoteObject) {
+    public CorbaInvoker(Object remoteObject, Class<?> referenceClass, Map<Method, String> operationsMap) {
         this.remoteObject = remoteObject;
+        this.referenceClass = referenceClass;
+        this.operationsMap = operationsMap;
     }
 
     /**
@@ -45,6 +52,8 @@ public class CorbaInvoker implements Invoker {
     public Message invoke(Message msg) {
         try {
             DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, msg.getOperation().getName());
+            request.setReferenceClass(referenceClass);
+            request.setOperationsMap(operationsMap);
             if (msg.getOperation().getOutputType() != null) {
                 request.setOutputType(msg.getOperation().getOutputType().getPhysical());
             }

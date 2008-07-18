@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.reference;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
@@ -28,6 +31,7 @@ import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeCreator;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.TypeHelpersProxy;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
+import org.apache.tuscany.sca.binding.corba.impl.util.MethodFinder;
 import org.omg.CORBA.BAD_OPERATION;
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.Object;
@@ -44,10 +48,13 @@ public class DynaCorbaRequest {
 
     private TypeTree returnTree;
     private Map<String, TypeTree> exceptions = new HashMap<String, TypeTree>();
-    private OutputStream outputStream;
     private InputStream inputStream;
     private ObjectImpl remoteObject;
     private String operation;
+    private List<java.lang.Object> arguments = new ArrayList<java.lang.Object>();
+    private List<TypeTree> argumentsTypes = new ArrayList<TypeTree>();
+    private Class<?> referenceClass;
+    private Map<Method, String> operationsMap;
 
     /**
      * Creates request.
@@ -56,20 +63,48 @@ public class DynaCorbaRequest {
      * @param operation operation to invoke
      */
     public DynaCorbaRequest(Object remoteObject, String operation) {
-        outputStream = ((ObjectImpl)remoteObject)._request(operation, true);
         this.remoteObject = (ObjectImpl)remoteObject;
         this.operation = operation;
-
     }
 
     /**
-     * Adds operation argument
+     * Sets class which will be backed by this reference request 
+     * @param referenceClass
+     */
+    public void setReferenceClass(Class<?> referenceClass) {
+        this.referenceClass = referenceClass;
+    }
+
+    /**
+     * Sets method to operation names mapping
+     * @param operationsMap
+     */
+    public void setOperationsMap(Map<Method, String> operationsMap) {
+        this.operationsMap = operationsMap;
+    }
+
+    /**
+     * Adds operation argument - stores arguments and caches its TypeTree
      * 
      * @param argument
      */
     public void addArgument(java.lang.Object argument) throws RequestConfigurationException {
         TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
-        TypeHelpersProxy.write(tree.getRootNode(), outputStream, argument);
+        argumentsTypes.add(tree);
+        arguments.add(argument);
+    }
+
+    /**
+     * Passing stored arguments to CORBA communication output stream
+     * 
+     * @param outputStream
+     * @throws RequestConfigurationException
+     */
+    private void passArguments(OutputStream outputStream) throws RequestConfigurationException {
+        for (int i = 0; i < arguments.size(); i++) {
+            TypeTree tree = argumentsTypes.get(i);
+            TypeHelpersProxy.write(tree.getRootNode(), outputStream, arguments.get(i));
+        }
     }
 
     /**
@@ -88,7 +123,7 @@ public class DynaCorbaRequest {
      */
     public void addExceptionType(Class<?> forClass) throws RequestConfigurationException {
         TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
-        String exceptionId = Utils.getExceptionId(forClass);
+        String exceptionId = Utils.getTypeId(forClass);
         exceptions.put(exceptionId, tree);
     }
 
@@ -142,12 +177,35 @@ public class DynaCorbaRequest {
     }
 
     /**
+     * Gets operation name which is includes mapping rules
+     * @return
+     */
+    private String getFinalOperationName() {
+        String result = operation;
+        if (referenceClass != null) {
+            Class<?>[] argumentTypes = new Class<?>[arguments.size()];
+            for (int i = 0; i < arguments.size(); i++) {
+                argumentTypes[i] = arguments.get(i).getClass();
+            }
+            Method method = MethodFinder.findMethod(referenceClass, operation, argumentTypes);
+            String newOperation = (String)operationsMap.get(method);
+            if (newOperation != null) {
+                result = newOperation;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Invokes previously configured request
      * 
      * @return
      */
     public DynaCorbaResponse invoke() throws Exception {
         DynaCorbaResponse response = new DynaCorbaResponse();
+        String finalOperationName = getFinalOperationName();
+        OutputStream outputStream = ((ObjectImpl)remoteObject)._request(finalOperationName, true);
+        passArguments(outputStream);
         try {
             inputStream = remoteObject._invoke(outputStream);
             if (inputStream != null && returnTree != null) {
@@ -164,8 +222,11 @@ public class DynaCorbaRequest {
         }
         return response;
     }
-    
-    public void release() {
+
+    /**
+     * Releases request resources
+     */
+    private void release() {
         remoteObject._releaseReply(inputStream);
     }
 
