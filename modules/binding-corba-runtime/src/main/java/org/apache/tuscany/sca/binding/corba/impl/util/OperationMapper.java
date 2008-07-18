@@ -34,7 +34,6 @@ import org.omg.CORBA.portable.IDLEntity;
 
 /**
  * @version $Rev$ $Date$
- * @see UtilInitializer
  */
 public final class OperationMapper {
 
@@ -47,7 +46,9 @@ public final class OperationMapper {
         while (!stack.isEmpty()) {
             Class<?> intf = stack.removeFirst();
             allInterfaces.add(intf);
-            stack.addAll(0, Arrays.asList(intf.getInterfaces()));
+            for (Class<?> i : intf.getInterfaces()) {
+                stack.add(0, i);
+            }
         }
 
         return allInterfaces;
