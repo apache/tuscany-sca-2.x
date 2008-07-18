@@ -41,11 +41,11 @@
             elementFormDefault="unqualified"
             targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
             xmlns:xs="http://www.w3.org/2001/XMLSchema">
-            <xs:element name="getGreetingsArray">
+            <xs:element name="getGreetings">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0"
-                            name="arg0" nillable="true" type="xs:string" />
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="xs:string" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -57,27 +57,11 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="getGreetingsVarArgs">
+            <xs:element name="getGreetingsArray">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="0"
                             name="arg0" nillable="true" type="xs:string" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getGreetings">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="arg0"
-                            nillable="true" type="xs:string" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getGreetingsVarArgsResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return"
-                            nillable="true" type="xs:string" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -89,11 +73,26 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="getGreetingsVarArgs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0"
+                            name="arg0" nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsVarArgsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:schema>
     </wsdl:types>
-    <wsdl:message name="getGreetingsArray">
-        <wsdl:part name="getGreetingsArray"
-            element="tns:getGreetingsArray">
+    <wsdl:message name="getGreetings">
+        <wsdl:part name="getGreetings" element="tns:getGreetings">
         </wsdl:part>
     </wsdl:message>
     <wsdl:message name="getGreetingsResponse">
@@ -101,23 +100,24 @@
             element="tns:getGreetingsResponse">
         </wsdl:part>
     </wsdl:message>
-    <wsdl:message name="getGreetingsVarArgs">
-        <wsdl:part name="getGreetingsVarArgs"
-            element="tns:getGreetingsVarArgs">
-        </wsdl:part>
-    </wsdl:message>
-    <wsdl:message name="getGreetings">
-        <wsdl:part name="getGreetings" element="tns:getGreetings">
-        </wsdl:part>
-    </wsdl:message>
-    <wsdl:message name="getGreetingsVarArgsResponse">
-        <wsdl:part name="getGreetingsVarArgsResponse"
-            element="tns:getGreetingsVarArgsResponse">
+    <wsdl:message name="getGreetingsArray">
+        <wsdl:part name="getGreetingsArray"
+            element="tns:getGreetingsArray">
         </wsdl:part>
     </wsdl:message>
     <wsdl:message name="getGreetingsArrayResponse">
         <wsdl:part name="getGreetingsArrayResponse"
             element="tns:getGreetingsArrayResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsVarArgs">
+        <wsdl:part name="getGreetingsVarArgs"
+            element="tns:getGreetingsVarArgs">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsVarArgsResponse">
+        <wsdl:part name="getGreetingsVarArgsResponse"
+            element="tns:getGreetingsVarArgsResponse">
         </wsdl:part>
     </wsdl:message>
     <wsdl:portType name="HelloService">
