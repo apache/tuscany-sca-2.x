@@ -31,43 +31,24 @@ import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.osoa.sca.annotations.Scope;
 
-
-
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {
-	private final Abdera abdera = new Abdera();
+    private final Abdera abdera = new Abdera();
     private Map<String, Entry> entries = new HashMap<String, Entry>();
 
     /**
-     * Default constructor that initializes collection with couple customer entries
+     * Default constructor that initializes collection with couple customer
+     * entries
      */
     public CustomerCollectionImpl() {
-
-        for (int i = 0; i < 4; i++) {
-            String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-            
-            Entry entry = abdera.getFactory().newEntry();
-            entry.setId(id);
-            entry.setTitle("customer " + "Jane Doe_" + String.valueOf(i));
-            
-            Content content = this.abdera.getFactory().newContent();
-            content.setContentType(Content.Type.TEXT);
-            content.setValue("Jane Doe_" + String.valueOf(i));
-            
-            entry.setContentElement(content);
-            
-            entry.addLink("" + id, "edit");
-            entry.addLink("" + id, "alternate");
-    
-            entry.setUpdated(new Date());
-
-            entries.put(id, entry);
-            System.out.println(">>> id=" + id);
-        }
+        // Used for testing.
+        // for (int i = 0; i < 4; i++) {
+        // testPut( "Jane Doe_" + String.valueOf( i ));
+        // }
     }
 
     public Entry post(Entry entry) {
-        System.out.println(">>> ResourceCollectionImpl.post entry=" + entry.getTitle());
+        System.out.println(">>> CustomerCollectionImpl.post entry=" + entry.getTitle());
 
         String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
         entry.setId(id);
@@ -79,49 +60,72 @@ public class CustomerCollectionImpl implements Collection {
 
         entries.put(id, entry);
 
-        System.out.println(">>> ResourceCollectionImpl.post return id=" + id);
+        System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
 
         return entry;
     }
 
     public Entry get(String id) {
-        System.out.println(">>> ResourceCollectionImpl.get id=" + id);
+        System.out.println(">>> CustomerCollectionImpl.get id=" + id);
         return entries.get(id);
     }
 
     public void put(String id, Entry entry) {
-        System.out.println(">>> ResourceCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
+        System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
 
         entry.setUpdated(new Date());
         entries.put(id, entry);
     }
 
     public void delete(String id) {
-        System.out.println(">>> ResourceCollectionImpl.delete id=" + id);
+        System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
         entries.remove(id);
     }
 
     @SuppressWarnings("unchecked")
     public Feed getFeed() {
-        System.out.println(">>> ResourceCollectionImpl.get collection");
+        System.out.println(">>> CustomerCollectionImpl.getFeed");
 
         Feed feed = this.abdera.getFactory().newFeed();
         feed.setTitle("customers");
         feed.setSubtitle("This is a sample feed");
         feed.setUpdated(new Date());
         feed.addLink("");
-        feed.addLink("","self");
+        feed.addLink("", "self");
 
         for (Entry entry : entries.values()) {
-        	feed.addEntry(entry);
+            feed.addEntry(entry);
         }
 
         return feed;
     }
 
     public Feed query(String queryString) {
-        System.out.println(">>> ResourceCollectionImpl.query collection " + queryString);
+        System.out.println(">>> CustomerCollectionImpl.query collection " + queryString);
         return getFeed();
+    }
+
+    // This method used for testing.
+    protected void testPut(String value) {
+        String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
+
+        Entry entry = abdera.getFactory().newEntry();
+        entry.setId(id);
+        entry.setTitle("customer " + value);
+
+        Content content = this.abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
+        content.setValue(value);
+
+        entry.setContentElement(content);
+
+        entry.addLink("" + id, "edit");
+        entry.addLink("" + id, "alternate");
+
+        entry.setUpdated(new Date());
+
+        entries.put(id, entry);
+        System.out.println(">>> id=" + id);
     }
 
 }
