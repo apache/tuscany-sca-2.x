@@ -31,34 +31,34 @@ public class CustomerClientImpl implements CustomerClient {
     protected final Abdera abdera = new Abdera();
     
     @Reference
-    public Collection resourceCollection;
+    public Collection customerCollection;
 
     public void testCustomerCollection() throws Exception {
 
         Entry newEntry = newEntry("Sponge Bob");
         System.out.println(">>> post entry=" + newEntry.getTitle());
-        newEntry = resourceCollection.post(newEntry);
+        newEntry = customerCollection.post(newEntry);
         System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
         newEntry = newEntry("Jane Bond");
         System.out.println(">>> post entry=" + newEntry.getTitle());
-        newEntry = resourceCollection.post(newEntry);
+        newEntry = customerCollection.post(newEntry);
         System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
         System.out.println(">>> get id=" + newEntry.getId());
-        Entry entry = resourceCollection.get(newEntry.getId().toString());
+        Entry entry = customerCollection.get(newEntry.getId().toString());
         System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
-        resourceCollection.put(entry.getId().toString(), updateEntry(entry, "James Bond"));
+        customerCollection.put(entry.getId().toString(), updateEntry(entry, "James Bond"));
         System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> delete id=" + entry.getId());
-        resourceCollection.delete(entry.getId().toString());
+        customerCollection.delete(entry.getId().toString());
         System.out.println("<<< delete id=" + entry.getId());
 
         System.out.println(">>> get collection");
-        Feed feed = resourceCollection.getFeed();
+        Feed feed = customerCollection.getFeed();
         System.out.println("<<< get collection");
         for (Object o : feed.getEntries()) {
             Entry e = (Entry)o;
@@ -66,6 +66,10 @@ public class CustomerClientImpl implements CustomerClient {
         }
     }
 
+    public Collection getCustomerCollection() {
+    	return customerCollection;
+    }
+    
     private Entry newEntry(String value) {
 
         Entry entry = this.abdera.newEntry();

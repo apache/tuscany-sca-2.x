@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.binding.atom;
 
+import org.apache.tuscany.sca.binding.atom.collection.Collection;
+
 public interface CustomerClient {
 
     void testCustomerCollection() throws Exception;
+ 
+    Collection getCustomerCollection();
 }

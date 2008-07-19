@@ -24,7 +24,7 @@
     
     <component name="CustomerClient">
         <implementation.java class="org.apache.tuscany.sca.binding.atom.CustomerClientImpl"/>
-        <reference name="resourceCollection">
+        <reference name="customerCollection">
         	<tuscany:binding.atom uri="http://localhost:8084/customer"/>
         </reference>
     </component>
