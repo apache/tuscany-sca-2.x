@@ -43,7 +43,7 @@ import org.junit.Test;
 /**
  * General tests
  */
-public class DefaultCorbaHostTestCaseFIXME {
+public class DefaultCorbaHostTestCase {
 
     private static final String LOCALHOST = "localhost";
     private static final int DEFAULT_PORT = 11100; // 1050;
