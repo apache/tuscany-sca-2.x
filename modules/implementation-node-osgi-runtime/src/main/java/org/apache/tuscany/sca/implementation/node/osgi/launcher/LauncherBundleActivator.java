@@ -96,6 +96,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
             }
         }
         this.bundleContext.removeBundleListener(this);
+        tuscanyBundles.clear();
         this.bundleContext = null;
     }
 
@@ -118,9 +119,6 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                 }
                 try {
                     Bundle bundle = createAndInstallBundle(bundleContext, file);
-                    if (bundle != null) {
-                        tuscanyBundles.add(bundle);
-                    }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
@@ -181,7 +179,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         Bundle bundle = findBundle(bundleContext, symbolicName, version);
         if (bundle != null) {
             logger.info("Bundle is already installed: " + symbolicName);
-            return null;
+            return bundle;
         }
 
         String bundleLocation = bundleFile.toURI().toString();
@@ -209,6 +207,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         try {
             bundle = bundleContext.installBundle(bundleLocation, inStream);
             logger.info("Bundle installed in " + (System.currentTimeMillis() - start) + " ms: " + bundleLocation);
+            tuscanyBundles.add(bundle);
             return bundle;
         } finally {
             inStream.close();
