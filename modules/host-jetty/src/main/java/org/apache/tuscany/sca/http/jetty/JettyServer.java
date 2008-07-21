@@ -393,7 +393,7 @@ public class JettyServer implements ServletHost {
                     throw new IllegalStateException(e);
                 }
                 mappings.remove(mapping);
-                //logger.info("Removed Servlet mapping: " + path);
+                logger.info("Removed Servlet mapping: " + path);
                 break;
             }
         }
