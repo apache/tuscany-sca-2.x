@@ -513,7 +513,7 @@ public class TomcatServer implements ServletHost {
                 // Hack to handle destruction of Servlets without Servlet context 
             }
             
-            //logger.info("Removed Servlet mapping: " + suri);
+            logger.info("Removed Servlet mapping: " + suri);
             
             // Stop the port if there's no servlets on it anymore
             String[] contextNames = port.getConnector().getMapper().getContextNames();
