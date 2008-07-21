@@ -18,34 +18,36 @@
  */
 package test;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class OuterTestCase extends TestCase {
+public class OuterTestCase {
 
     private SCADomain domain;
     private Aggregator aggregator;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         domain = SCADomain.newInstance("Outer.composite");
         aggregator = domain.getService(Aggregator.class, "Inner");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         domain.close();
     }
 
+    @Ignore("TUSCANY-2484")
+    @Test
     public void test() throws Exception {
-        try {
-            String result = aggregator.getAggregatedData();
-            assertTrue(result.contains("InnerSource"));
-            assertTrue(result.contains("OuterSource"));
-            System.out.println(result);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        String result = aggregator.getAggregatedData();
+        Assert.assertTrue(result.contains("InnerSource"));
+        Assert.assertTrue(result.contains("OuterSource"));
+        System.out.println(result);
     }
 }
