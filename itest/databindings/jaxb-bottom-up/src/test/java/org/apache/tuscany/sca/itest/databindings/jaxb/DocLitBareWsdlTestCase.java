@@ -39,9 +39,10 @@ public class DocLitBareWsdlTestCase {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        try { 
+        try {
             domain = SCADomain.newInstance("doclitbarewsdl.composite");
-        } catch(Throwable e) {
+        } catch (Throwable e) {
+            // @Ignore("TUSCANY-2398")
             e.printStackTrace();
         }
     }
@@ -51,15 +52,17 @@ public class DocLitBareWsdlTestCase {
      */
     @AfterClass
     public static void tearDown() {
-        domain.close();
+        if (domain != null) {
+            domain.close();
+        }
     }
 
     @Ignore("TUSCANY-2398")
     @Test
     public void testDocLitBareWsdl() throws Exception {
-    	AClientService client = domain.getService(AClientService.class, "AClientComponent");
+        AClientService client = domain.getService(AClientService.class, "AClientComponent");
         String name = "Pandu";
         String resp = client.getGreetingsForward(name);
-        Assert.assertEquals("Hello "+name, resp);
+        Assert.assertEquals("Hello " + name, resp);
     }
 }
