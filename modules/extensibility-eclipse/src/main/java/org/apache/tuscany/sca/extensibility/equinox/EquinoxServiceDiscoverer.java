@@ -28,6 +28,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.security.SecureClassLoader;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +50,11 @@ import org.osgi.framework.BundleContext;
 public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoverer.class.getName());
     private BundleContext context;
+    private ClassLoader classLoader;
 
     public EquinoxServiceDiscoverer(BundleContext context) {
         this.context = context;
+        this.classLoader = new ClassLoaderImpl();
     }
 
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
@@ -110,6 +114,72 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return sb.toString();
         }
 
+    }
+
+    public class ClassLoaderImpl extends SecureClassLoader {
+    
+        public ClassLoaderImpl() {
+            super(EquinoxServiceDiscoverer.class.getClassLoader());
+        }
+    
+        /**
+         * Open a back-door to expose the META-INF/services resources
+         */
+        @Override
+        protected URL findResource(String name) {
+            int index = name.lastIndexOf('/');
+            if (index == -1) {
+                return null;
+            }
+            String path = name.substring(0, index);
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+    
+            if (!path.startsWith("META-INF/services")) {
+                return null;
+            }
+    
+            for (Bundle bundle : context.getBundles()) {
+                URL url = bundle.getEntry(name);
+                if (url != null) {
+                    return url;
+                }
+            }
+    
+            return null;
+        }
+    
+        /**
+         * Open a back-door to expose the META-INF/services resources
+         */
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            int index = name.lastIndexOf('/');
+            if (index == -1) {
+                return null;
+            }
+            String path = name.substring(0, index);
+            String file = name.substring(index + 1);
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+    
+            if (!path.startsWith("META-INF/services")) {
+                return null;
+            }
+    
+            Set<URL> urlSet = new HashSet<URL>();
+    
+            for (Bundle bundle : context.getBundles()) {
+                Enumeration<URL> urls = bundle.findEntries(path, file, false);
+                if (urls != null) {
+                    urlSet.addAll(Collections.list(urls));
+                }
+            }
+            return Collections.enumeration(urlSet);
+        }
+    
     }
 
     private static String toString(Bundle b) {
@@ -250,6 +320,14 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return descriptors;
 
+    }
+
+    /**
+     * This class loader can be set as the thread context class loader for non-OSGi code
+     * @return
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
 }

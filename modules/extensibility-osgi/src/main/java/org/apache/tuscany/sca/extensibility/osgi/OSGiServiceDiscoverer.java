@@ -57,6 +57,12 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
         this.classLoader = new ClassLoaderImpl();
     }
 
+    /**
+     * This class loader provides resource access to META-INF/services/... which is used by
+     * many frameworks. OSGi Import-Package and DynmaicImport-Package headers do not support
+     * split packages. Another option is to use Require-Bundle header. We can collect the list
+     * of bundles and add them as required bundles to a special gateway bundle.
+     */
     public class ClassLoaderImpl extends SecureClassLoader {
 
         public ClassLoaderImpl() {
