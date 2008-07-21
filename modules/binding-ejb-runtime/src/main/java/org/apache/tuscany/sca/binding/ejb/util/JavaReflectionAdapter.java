@@ -36,7 +36,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public final class JavaReflectionAdapter {
+final class JavaReflectionAdapter {
 
     private static Map<Class, JavaReflectionAdapter> adapters =
         Collections.synchronizedMap(new WeakHashMap<Class, JavaReflectionAdapter>());
@@ -78,7 +78,7 @@ public final class JavaReflectionAdapter {
      * 
      * @param clazz
      */
-    public static synchronized JavaReflectionAdapter createJavaReflectionAdapter(Class clazz) {
+    static synchronized JavaReflectionAdapter createJavaReflectionAdapter(Class clazz) {
         JavaReflectionAdapter adapter = (JavaReflectionAdapter)adapters.get(clazz);
         if (adapter == null) {
             adapter = new JavaReflectionAdapter(clazz);
@@ -94,7 +94,7 @@ public final class JavaReflectionAdapter {
      * @return
      * @throws NoSuchMethodException
      */
-    public Method getMethod(String methodName) throws NoSuchMethodException {
+    Method getMethod(String methodName) throws NoSuchMethodException {
 
         Method method = (Method)methodMap.get(methodName);
         if (method == null) {
@@ -108,7 +108,7 @@ public final class JavaReflectionAdapter {
      * 
      * @return
      */
-    public Map getMethods() {
+    Map getMethods() {
         return methodMap;
     }
 
@@ -122,7 +122,7 @@ public final class JavaReflectionAdapter {
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public Object invoke(Method method, Object object, Object[] args) throws InvocationTargetException,
+    Object invoke(Method method, Object object, Object[] args) throws InvocationTargetException,
         IllegalAccessException {
         Class[] parameterTypes = method.getParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
@@ -142,7 +142,7 @@ public final class JavaReflectionAdapter {
      * @param value
      * @return
      */
-    public boolean setProperty(Object bean, String propertyName, Object value) {
+    boolean setProperty(Object bean, String propertyName, Object value) {
         try {
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, bean.getClass());
             Method writeMethod = propertyDescriptor.getWriteMethod();

@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil;
  *
  * @version $Rev$ $Date$
  */
-public class InterfaceInfo implements Serializable {
+class InterfaceInfo implements Serializable {
 
     private static final Map<Class, InterfaceInfo> INTERFACES =
         Collections.synchronizedMap(new WeakHashMap<Class, InterfaceInfo>());
@@ -45,7 +45,7 @@ public class InterfaceInfo implements Serializable {
 
     private Map<String, MethodInfo> methods = new HashMap<String, MethodInfo>();
 
-    public InterfaceInfo(final Class iface) {
+    InterfaceInfo(final Class iface) {
         super();
         if (iface == null) {
             throw new IllegalArgumentException("The interface cannot be null");
@@ -71,7 +71,7 @@ public class InterfaceInfo implements Serializable {
         }
     }
 
-    public static final synchronized InterfaceInfo getInstance(final Class iface) {
+    static final synchronized InterfaceInfo getInstance(final Class iface) {
         InterfaceInfo info = (InterfaceInfo)INTERFACES.get(iface);
         if (info == null) {
             info = new InterfaceInfo(iface);
@@ -83,21 +83,21 @@ public class InterfaceInfo implements Serializable {
     /**
      * @return
      */
-    public Map<String, MethodInfo> getMethods() {
+    Map<String, MethodInfo> getMethods() {
         return methods;
     }
 
     /**
      * @return
      */
-    public MethodInfo getMethod(String name) {
+    MethodInfo getMethod(String name) {
         return (MethodInfo)methods.get(name);
     }
 
     /**
      * @return
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 

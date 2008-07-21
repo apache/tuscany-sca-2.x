@@ -40,7 +40,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public final class EJBObjectFactory {
+final class EJBObjectFactory {
 
     private EJBObjectFactory() {
     }
@@ -58,7 +58,7 @@ public final class EJBObjectFactory {
      * of the pregenerated EJB stub classes be available in the classpath.
      * <p>
      */
-    public static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException,
+    static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException,
         RemoteException, CreateException {
 
         EJBLocator locator = namingEndpoint.getLocator();
@@ -80,7 +80,7 @@ public final class EJBObjectFactory {
      * @return
      * @throws RemoteException
      */
-    protected static Object getEJBStub(Object homeObject, InterfaceInfo ejbInterface) throws RemoteException,
+    private static Object getEJBStub(Object homeObject, InterfaceInfo ejbInterface) throws RemoteException,
         CreateException {
 
         Object stub = null;
@@ -127,7 +127,7 @@ public final class EJBObjectFactory {
      * @return
      * @throws RemoteException
      */
-    protected static Object createEJBLocalObject(Object homeObject) throws RemoteException {
+    static private Object createEJBLocalObject(Object homeObject) throws RemoteException {
 
         Object stub = null;
         try {
@@ -153,7 +153,7 @@ public final class EJBObjectFactory {
      * @return
      * @throws RemoteException
      */
-    protected static Object createEJBObjectFromHome(Object homeObject) throws RemoteException {
+    private static Object createEJBObjectFromHome(Object homeObject) throws RemoteException {
 
         Object stub = null;
         try {
@@ -180,7 +180,7 @@ public final class EJBObjectFactory {
      * @throws CreateException
      * @throws RemoteException
      */
-    protected static Object createEJBObject(ObjectImpl ejbHomeObject) throws CreateException, RemoteException {
+    private static Object createEJBObject(ObjectImpl ejbHomeObject) throws CreateException, RemoteException {
 
         try {
             org.omg.CORBA_2_3.portable.InputStream in = null;

@@ -68,7 +68,7 @@ public class EJBHandler {
     }
 
     // locates the stub
-    public EJBHandler(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
+    private EJBHandler(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
         try {
             this.ejbStub = EJBStubHelper.lookup(namingEndpoint, ejbInterface);
             this.interfaceInfo = ejbInterface;
@@ -194,7 +194,7 @@ public class EJBHandler {
      * @throws RemoteException
      * @throws ServiceBusinessException
      */
-    protected Object invokeLocalCORBACall(final ObjectImpl stub, String methodName, Object[] args)
+    private Object invokeLocalCORBACall(final ObjectImpl stub, String methodName, Object[] args)
         throws RemoteException {
 
         final String operation = getOperation(methodName);
@@ -252,7 +252,7 @@ public class EJBHandler {
      * @throws RemoteException
      * @throws ServiceBusinessException
      */
-    protected Object invokeRemoteCORBACall(ObjectImpl stub, String methodName, Object[] args) throws RemoteException {
+    private Object invokeRemoteCORBACall(ObjectImpl stub, String methodName, Object[] args) throws RemoteException {
 
         try {
             String operation = getOperation(methodName);
@@ -323,7 +323,7 @@ public class EJBHandler {
      * @param value
      * @param type
      */
-    protected void writeValue(OutputStream out, Object value, Class type) {
+    private void writeValue(OutputStream out, Object value, Class type) {
         org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil.writeObject(type, value, out);
     }
 
@@ -332,7 +332,7 @@ public class EJBHandler {
      * @param type
      * @return
      */
-    protected Object readValue(InputStream in, Class type) {
+    private Object readValue(InputStream in, Class type) {
         return org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil.readObject(type, in);
     }
 }
