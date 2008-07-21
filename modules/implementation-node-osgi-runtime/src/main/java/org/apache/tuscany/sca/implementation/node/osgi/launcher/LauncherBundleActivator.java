@@ -27,20 +27,54 @@ import java.util.zip.ZipEntry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 
 /**
  * Bundle activator which installs Tuscany modules and 3rd party jars into an OSGi runtime.
  *
  */
-public class LauncherBundleActivator implements BundleActivator, Constants {
-
+public class LauncherBundleActivator implements BundleActivator, Constants, BundleListener {
     private static Logger logger = Logger.getLogger(LauncherBundleActivator.class.getName());
-    private ArrayList<Bundle> tuscanyBundles = new ArrayList<Bundle>();
-
     private static final String[] immutableJars = {"bcprov"};
 
+    private BundleContext bundleContext;
+    private List<Bundle> tuscanyBundles = new ArrayList<Bundle>();
+
+    public static String toString(Bundle b, boolean verbose) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(b.getBundleId()).append(" ").append(b.getSymbolicName());
+        int s = b.getState();
+        if ((s & Bundle.UNINSTALLED) != 0) {
+            sb.append(" UNINSTALLED");
+        }
+        if ((s & Bundle.INSTALLED) != 0) {
+            sb.append(" INSTALLED");
+        }
+        if ((s & Bundle.RESOLVED) != 0) {
+            sb.append(" RESOLVED");
+        }
+        if ((s & Bundle.STARTING) != 0) {
+            sb.append(" STARTING");
+        }
+        if ((s & Bundle.STOPPING) != 0) {
+            sb.append(" STOPPING");
+        }
+        if ((s & Bundle.ACTIVE) != 0) {
+            sb.append(" ACTIVE");
+        }
+
+        if (verbose) {
+            sb.append(" ").append(b.getLocation());
+            sb.append(" ").append(b.getHeaders());
+        }
+        return sb.toString();
+    }
+
     public void start(BundleContext bundleContext) throws Exception {
+        this.bundleContext = bundleContext;
+        this.bundleContext.addBundleListener(this);
         installTuscany(bundleContext);
     }
 
@@ -49,18 +83,20 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
             try {
                 bundle.stop();
             } catch (Exception e) {
-                // Ignore error
+                logger.severe(e.toString());
             }
         }
 
         for (Bundle bundle : tuscanyBundles) {
             try {
+                logger.info("Uninstalling bundle: " + toString(bundle, false));
                 bundle.uninstall();
             } catch (Exception e) {
-                // Ignore error
+                logger.severe(e.toString());
             }
         }
-
+        this.bundleContext.removeBundleListener(this);
+        this.bundleContext = null;
     }
 
     public void installTuscany(BundleContext bundleContext) {
@@ -82,12 +118,14 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
                 }
                 try {
                     Bundle bundle = createAndInstallBundle(bundleContext, file);
-                    tuscanyBundles.add(bundle);
+                    if (bundle != null) {
+                        tuscanyBundles.add(bundle);
+                    }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
-            
+
             long end = System.currentTimeMillis();
             logger.info("Tuscany bundles are installed in " + (end - start) + " ms.");
 
@@ -130,11 +168,25 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
     public Bundle createAndInstallBundle(BundleContext bundleContext, File bundleFile) throws Exception {
         logger.info("Installing bundle: " + bundleFile);
         long start = System.currentTimeMillis();
-        String bundleLocation = bundleFile.toURI().toString();
-        Manifest manifest = createBundleManifest(bundleFile);
 
+        Manifest manifest = readManifest(bundleFile);
+        boolean isOSGiBundle = manifest != null && manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME) != null;
+
+        if (!isOSGiBundle) {
+            manifest = updateBundleManifest(bundleFile, manifest);
+        }
+
+        String symbolicName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+        String version = manifest.getMainAttributes().getValue(BUNDLE_VERSION);
+        Bundle bundle = findBundle(bundleContext, symbolicName, version);
+        if (bundle != null) {
+            logger.info("Bundle is already installed: " + symbolicName);
+            return null;
+        }
+
+        String bundleLocation = bundleFile.toURI().toString();
         InputStream inStream = null;
-        if (manifest != null) {
+        if (!isOSGiBundle) {
             // We need to repackage the bundle
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             JarOutputStream jarOut = new JarOutputStream(out, manifest);
@@ -155,13 +207,30 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
         }
 
         try {
-            Bundle bundle = bundleContext.installBundle(bundleLocation, inStream);
+            bundle = bundleContext.installBundle(bundleLocation, inStream);
             logger.info("Bundle installed in " + (System.currentTimeMillis() - start) + " ms: " + bundleLocation);
             return bundle;
         } finally {
             inStream.close();
         }
 
+    }
+
+    private Bundle findBundle(BundleContext bundleContext, String symbolicName, String version) {
+        Bundle[] bundles = bundleContext.getBundles();
+        if (version == null) {
+            version = "0.0.0";
+        }
+        for (Bundle b : bundles) {
+            String v = (String)b.getHeaders().get(BUNDLE_VERSION);
+            if (v == null) {
+                v = "0.0.0";
+            }
+            if (b.getSymbolicName().equals(symbolicName) && v.equals(version)) {
+                return b;
+            }
+        }
+        return null;
     }
 
     private void addFileToJar(File file, JarOutputStream jarOut) throws IOException {
@@ -192,8 +261,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
         jarIn.close();
     }
 
-    private Manifest createBundleManifest(File jarFile) throws Exception {
-
+    private Manifest readManifest(File jarFile) throws IOException {
         if (!jarFile.exists()) {
             return null;
         }
@@ -205,11 +273,14 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
         if (manifest == null) {
             // Create a new one if no Manifest is found
             manifest = new Manifest();
-        } else {
-            Attributes attributes = manifest.getMainAttributes();
-            if (attributes.getValue(BUNDLE_SYMBOLICNAME) != null) {
-                return null;
-            }
+        }
+        return manifest;
+    }
+
+    private Manifest updateBundleManifest(File jarFile, Manifest manifest) throws Exception {
+
+        if (!jarFile.exists()) {
+            return null;
         }
 
         // Check if we have an associated .mf file
@@ -252,12 +323,12 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
         if (attributes.getValue(BUNDLE_MANIFESTVERSION) == null) {
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
         }
-        
+
         if (isImmutableJar && attributes.getValue(BUNDLE_CLASSPATH) == null) {
             attributes.putValue(BUNDLE_CLASSPATH, ".," + jarFileName);
         }
 
-        jar = new JarInputStream(new FileInputStream(jarFile));
+        JarInputStream jar = new JarInputStream(new FileInputStream(jarFile));
         HashSet<String> packages = getPackagesInJar(jarFileName, jar);
         jar.close();
         String version = getJarVersion(jarFileName);
@@ -339,6 +410,13 @@ public class LauncherBundleActivator implements BundleActivator, Constants {
             }
         }
         return version;
+    }
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
+    public void bundleChanged(BundleEvent event) {
     }
 
 }
