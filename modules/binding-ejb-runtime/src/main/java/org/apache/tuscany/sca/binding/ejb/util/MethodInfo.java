@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public class MethodInfo implements Serializable {
+class MethodInfo implements Serializable {
 
     /** Automatically generated javadoc for: serialVersionUID */
     private static final long serialVersionUID = -5557260979514687514L;
@@ -59,7 +59,7 @@ public class MethodInfo implements Serializable {
         signatures.put("V", void.class);
     }
 
-    public MethodInfo(Method method) {
+    MethodInfo(Method method) {
         this.method = method;
         this.name = method.getName();
         // this.declaringClass = method.getDeclaringClass().getName();
@@ -77,7 +77,7 @@ public class MethodInfo implements Serializable {
         IDLName = this.name;
     }
 
-    protected MethodInfo(String name, String returnType, String[] parameterTypes, String[] exceptionTypes) {
+    MethodInfo(String name, String returnType, String[] parameterTypes, String[] exceptionTypes) {
         this.name = name;
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
@@ -119,28 +119,28 @@ public class MethodInfo implements Serializable {
     /**
      * @return
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
     /**
      * @return
      */
-    public String[] getParameterTypes() {
+    String[] getParameterTypes() {
         return parameterTypes;
     }
 
     /**
      * @return
      */
-    public String getReturnType() {
+    String getReturnType() {
         return returnType;
     }
 
     /**
      * @return
      */
-    public String[] getExceptionTypes() {
+    String[] getExceptionTypes() {
         return exceptionTypes;
     }
 
@@ -169,21 +169,21 @@ public class MethodInfo implements Serializable {
     /**
      * @return Returns the iDLName.
      */
-    public String getIDLName() {
+    String getIDLName() {
         return IDLName;
     }
 
     /**
      * @param name The iDLName to set.
      */
-    public void setIDLName(String name) {
+    void setIDLName(String name) {
         IDLName = name;
     }
 
     /**
      * @return the method
      */
-    public Method getMethod() {
+    Method getMethod() {
         return method;
     }
 }

@@ -38,7 +38,7 @@ import org.omg.CosNaming.NamingContextExt;
  *
  * @version $Rev$ $Date$
  */
-public class EJBLocator {
+class EJBLocator {
 
     /*
      * Root Context Initial Reference Key ------------
@@ -75,9 +75,9 @@ public class EJBLocator {
 
     private ORB orb = null;
     private ObjectLocator locator = null;
-    boolean managed = true;
+    private boolean managed = true;
 
-    public EJBLocator(boolean managed) {
+    EJBLocator(boolean managed) {
         this.managed = managed;
         if (!managed) {
             String url = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -89,13 +89,13 @@ public class EJBLocator {
         }
     }
 
-    public EJBLocator(String hostName, int port) {
+    EJBLocator(String hostName, int port) {
         this.hostName = (hostName == null) ? DEFAULT_HOST : hostName;
         this.port = port > 0 ? port : DEFAULT_NAMING_PORT;
         this.root = SERVER_ROOT;
     }
 
-    public EJBLocator(String hostName, int port, String root) {
+    EJBLocator(String hostName, int port, String root) {
         this(hostName, port);
         if (ROOTS.contains(root)) {
             this.root = root;
@@ -104,7 +104,7 @@ public class EJBLocator {
         }
     }
 
-    public EJBLocator(String corbaName, boolean managed) {
+    EJBLocator(String corbaName, boolean managed) {
         this.managed = managed;
         if (corbaName.startsWith("corbaname:iiop:")) {
             processCorbaURL(corbaName);

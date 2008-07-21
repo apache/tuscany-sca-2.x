@@ -26,7 +26,7 @@ import javax.naming.NamingException;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.ServiceUnavailableException;
 
-public final class EJBStubHelper {
+final class EJBStubHelper {
 
     private static Object stub;
     private static ServiceRuntimeException exception;
@@ -40,11 +40,11 @@ public final class EJBStubHelper {
      * @return
      */
 
-    public static Object lookup(NamingEndpoint endpoint, InterfaceInfo ejbInterface) {
+    static Object lookup(NamingEndpoint endpoint, InterfaceInfo ejbInterface) {
         return getStub(endpoint, ejbInterface);
     }
 
-    public static Object getStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
+    private static Object getStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) {
         try {
             stub = EJBObjectFactory.createStub(namingEndpoint, ejbInterface);
         } catch (NamingException e) {
