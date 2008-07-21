@@ -64,7 +64,9 @@ public class LauncherBundleActivatorTestCase {
             + "javax.xml.transform.stream, "
             + "javax.xml.validation, "
             + "javax.xml.xpath, "
+            // Force the classes to be imported from the system bundle
             + "javax.xml.stream, "
+            + "javax.xml.stream.util, "
             + "javax.sql,"
             + "org.w3c.dom, "
             + "org.xml.sax, "
@@ -108,10 +110,10 @@ public class LauncherBundleActivatorTestCase {
         // Now start Felix instance.
         felix.start();
         BundleContext context = felix.getBundleContext();
-//        discoverer = new OSGiServiceDiscoverer(context);
-//        ServiceDiscovery.setServiceDiscoverer(discoverer);
+        //        discoverer = new OSGiServiceDiscoverer(context);
+        //        ServiceDiscovery.setServiceDiscoverer(discoverer);
 
-        System.setProperty("TUSCANY_HOME", "target");
+        System.setProperty("TUSCANY_HOME", "target/tuscany");
         activator = new LauncherBundleActivator();
         activator.start(context);
     }
@@ -140,26 +142,34 @@ public class LauncherBundleActivatorTestCase {
         }
         Bundle b1 = bundles.get("org.apache.tuscany.sca.extensibility.osgi");
         Class<?> discovererClass = b1.loadClass(OSGiServiceDiscoverer.class.getName());
-        Thread.currentThread().setContextClassLoader(discovererClass.getClassLoader());
-        
         Constructor<?> ctor = discovererClass.getConstructor(BundleContext.class);
         Object discoverer = ctor.newInstance(felix.getBundleContext());
 
-        Class<?> serviceDiscoveryClass = b1.loadClass(ServiceDiscovery.class.getName());
-        Method set = serviceDiscoveryClass.getMethod("setServiceDiscoverer", discovererClass.getInterfaces()[0]);
-        set.invoke(null, discoverer);
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        Method getCL = discovererClass.getMethod("getClassLoader");
+        ClassLoader cl = (ClassLoader)getCL.invoke(discoverer);
+        Thread.currentThread().setContextClassLoader(cl);
 
-        Bundle b2 = bundles.get("org.apache.tuscany.sca.node2.api");
-        // b2.start();
-        Class<?> factory = b2.loadClass(className);
-        Method newInstance = factory.getMethod("newInstance");
-        Object instance = newInstance.invoke(null);
-        Method create = instance.getClass().getMethod("createSCANodeFromClassLoader", String.class, ClassLoader.class);
-        Object node = create.invoke(instance, "HelloWorld.composite", getClass().getClassLoader());
-        Method start = node.getClass().getMethod("start");
-        start.invoke(node);
-        Method stop = node.getClass().getMethod("stop");
-        stop.invoke(node);
+        try {
+            Class<?> serviceDiscoveryClass = b1.loadClass(ServiceDiscovery.class.getName());
+            Method set = serviceDiscoveryClass.getMethod("setServiceDiscoverer", discovererClass.getInterfaces()[0]);
+            set.invoke(null, discoverer);
+
+            Bundle b2 = bundles.get("org.apache.tuscany.sca.node2.api");
+            // b2.start();
+            Class<?> factory = b2.loadClass(className);
+            Method newInstance = factory.getMethod("newInstance");
+            Object instance = newInstance.invoke(null);
+            Method create =
+                instance.getClass().getMethod("createSCANodeFromClassLoader", String.class, ClassLoader.class);
+            Object node = create.invoke(instance, "HelloWorld.composite", getClass().getClassLoader());
+            Method start = node.getClass().getMethod("start");
+            start.invoke(node);
+            Method stop = node.getClass().getMethod("stop");
+            stop.invoke(node);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
 
     }
 
