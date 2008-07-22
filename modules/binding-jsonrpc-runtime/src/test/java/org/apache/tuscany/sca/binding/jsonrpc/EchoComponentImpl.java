@@ -18,6 +18,14 @@
  */
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 
 /**
@@ -39,6 +47,44 @@ public class EchoComponentImpl implements Echo {
 
 	public void echoRuntimeException() throws RuntimeException {
 		throw new RuntimeException("Runtime Exception");
+	}
+	
+	public int echoInt(int param) {
+		int value = param;
+		return value;
+	}
+	
+	public boolean echoBoolean(boolean param) {
+		boolean value = param;
+		return value;
+	}
+	
+	public Map echoMap(HashMap param) {
+		Map map = new HashMap();
+		map = param;
+		return map;
+	}
+	
+	public TestBean echoBean(TestBean testBean1) {
+		TestBean testBean = new TestBean();
+		testBean.setTestString(testBean1.getTestString());
+		testBean.setTestInt(testBean1.getTestInt());
+		return testBean;
+	}
+	
+	public List echoList(ArrayList param){
+		List list = new ArrayList();
+		for(Iterator itr = param.iterator();itr.hasNext();)
+		{
+			list.add(itr.next());
+		}
+		return list;
+	}
+	
+	public Set echoSet(HashSet param){
+		Set set = new HashSet();
+		set  = param;
+		return set;
 		
 	}
 }

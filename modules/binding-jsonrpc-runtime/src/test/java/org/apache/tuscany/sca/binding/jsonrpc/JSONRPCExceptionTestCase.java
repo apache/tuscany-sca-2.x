@@ -36,7 +36,7 @@ import com.meterware.httpunit.WebResponse;
 /**
  * @version $Rev$ $Date$
  */
-public class JSONRPCServiceTestCase{
+public class JSONRPCExceptionTestCase{
 
     private static final String SERVICE_PATH = "/EchoService";
 
@@ -53,18 +53,34 @@ public class JSONRPCServiceTestCase{
     public void tearDown() throws Exception {
     	domain.close();
     }
-
+    
     @Test
-    public void testJSONRPCBinding() throws Exception {
-        JSONObject jsonRequest = new JSONObject("{ \"method\": \"echo\", \"params\": [\"Hello JSON-RPC\"], \"id\": 1}");
-
-        WebConversation wc = new WebConversation();
+    public void testRuntimeException() throws Exception{
+    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoRuntimeException\", \"params\": [], \"id\": 2}");
+    	
+    	WebConversation wc = new WebConversation();
         WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
         
-        JSONObject jsonResp = new JSONObject(response.getText());
-        Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
+        JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
+        
+        Assert.assertEquals("Runtime Exception", jsonErr.getString("msg"));
+    }
+    
+    @Test
+    public void testBusinessException() throws Exception{
+    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoBusinessException\", \"params\": [], \"id\": 3}");
+    	
+    	WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        
+        JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
+        
+        Assert.assertEquals("Business Exception", jsonErr.getString("msg"));
     }   
 }
