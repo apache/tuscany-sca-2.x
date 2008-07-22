@@ -222,14 +222,11 @@ class WidgetImplementationInvoker implements Invoker {
                     if (binding instanceof OptimizableBinding) {
                         Binding targetBinding = ((OptimizableBinding)binding).getTargetBinding();
                         if (targetBinding != null) {
-                            targetURI = URI.create(targetBinding.getURI()).getPath();
+                            targetURI = targetBinding.getURI();
                         }
                     }
                     if (targetURI == null) {
-                        targetURI = URI.create(binding.getURI()).getPath();
-                        if (!targetURI.startsWith("/")) {
-                            targetURI = "/" + targetURI;
-                        }
+                        targetURI = binding.getURI();
                     }
                     
                     if(proxyClient.equals("JSONRpcClient")) {
