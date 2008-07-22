@@ -93,6 +93,7 @@
                 <module>simple-callback</module>
                 <module>simple-callback-ws</module>
                 <module>store</module>
+                <module>store-distributed</module>
                 <module>supplychain</module>
                 <module>web-resource</module>
             </modules>
