@@ -51,21 +51,21 @@ public class HelloServiceClientImpl {
         return service.getGreetingsArray(names);
     }
 
-//    public List<String> getGreetingsListForward(List<String> names) {
-//        return service.getGreetingsList(names);
-//    }
+    public List<String> getGreetingsListForward(List<String> names) {
+        return service.getGreetingsList(names);
+    }
 
-//    public Map<String, String> getGreetingsMapForward(Map<String, String> namesMap) {
-//        return service.getGreetingsMap(namesMap);
-//    }
+    public Map<String, String> getGreetingsMapForward(Map<String, String> namesMap) {
+        return service.getGreetingsMap(namesMap);
+    }
 
-//    public ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names) {
-//        return service.getGreetingsArrayList(names);
-//    }
+    public ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names) {
+        return service.getGreetingsArrayList(names);
+    }
 
-//    public HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap) {
-//        return service.getGreetingsHashMap(namesMap);
-//    }
+    public HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap) {
+        return service.getGreetingsHashMap(namesMap);
+    }
 
     public String getGreetingsVarArgsForward(String... names) {
         return service.getGreetingsVarArgs(names[0], names[1], names[2]);

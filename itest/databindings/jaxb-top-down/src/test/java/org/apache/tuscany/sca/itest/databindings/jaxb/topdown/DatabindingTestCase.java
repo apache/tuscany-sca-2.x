@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.topdown;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceClient;
@@ -27,7 +32,6 @@ import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -82,10 +86,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsList.
      */
     @Test
-    @Ignore
     public void testW2WList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
-        //performTestList(helloServiceClient);
+        performTestList(helloServiceClient);
     }
 
     /**
@@ -93,10 +96,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsArrayList.
      */
     @Test
-    @Ignore
     public void testW2WArrayList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
-        //performTestArrayList(helloServiceClient);
+        performTestArrayList(helloServiceClient);
     }
 
     /**
@@ -104,10 +106,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsMap.
      */
     @Test
-    @Ignore
     public void testW2WMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
-        //performTestMap(helloServiceClient);
+        performTestMap(helloServiceClient);
     }
 
     /**
@@ -115,10 +116,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsHashMap.
      */
     @Test
-    @Ignore
     public void testW2WHashMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
-        //performTestHashMap(helloServiceClient);
+        performTestHashMap(helloServiceClient);
     }
 
     /**
@@ -156,10 +156,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsList.
      */
     @Test
-    @Ignore
     public void testJ2WList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
-        //performTestList(helloServiceClient);
+        performTestList(helloServiceClient);
     }
 
     /**
@@ -167,10 +166,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsArrayList.
      */
     @Test
-    @Ignore
     public void testJ2WArrayList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
-        //performTestArrayList(helloServiceClient);
+        performTestArrayList(helloServiceClient);
     }
 
     /**
@@ -178,10 +176,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsMap.
      */
     @Test
-    @Ignore
     public void testJ2WMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
-        //performTestMap(helloServiceClient);
+        performTestMap(helloServiceClient);
     }
 
     /**
@@ -189,10 +186,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsHashMap.
      */
     @Test
-    @Ignore
     public void testJ2WHashMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
-        //performTestHashMap(helloServiceClient);
+        performTestHashMap(helloServiceClient);
     }
 
     /**
@@ -230,10 +226,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsList.
      */
     @Test
-    @Ignore
     public void testW2JList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
-        //performTestList(helloServiceClient);
+        performTestList(helloServiceClient);
     }
 
     /**
@@ -241,10 +236,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsArrayList.
      */
     @Test
-    @Ignore
     public void testW2JArrayList() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
-        //performTestArrayList(helloServiceClient);
+        performTestArrayList(helloServiceClient);
     }
 
     /**
@@ -252,10 +246,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsMap.
      */
     @Test
-    @Ignore
     public void testW2JMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
-        //performTestMap(helloServiceClient);
+        performTestMap(helloServiceClient);
     }
 
     /**
@@ -263,10 +256,9 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsHashMap.
      */
     @Test
-    @Ignore
     public void testW2JHashMap() throws Exception {
         HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
-        //performTestHashMap(helloServiceClient);
+        performTestHashMap(helloServiceClient);
     }
 
     /**
@@ -293,7 +285,7 @@ public class DatabindingTestCase {
         }
     }
 
-/*    private void performTestList(HelloServiceClient helloServiceClient) {
+    private void performTestList(HelloServiceClient helloServiceClient) {
         List<String> namesList = new ArrayList<String>();
         namesList.add("Me");
         namesList.add("Pandu");
@@ -340,7 +332,7 @@ public class DatabindingTestCase {
             Assert.assertEquals("Hello "+entry.getKey(), respMap.get(entry.getKey()));
         }
     }
-*/
+
     private void performTestVarArgs(HelloServiceClient helloServiceClient) {
         String[] names = { "Me", "You", "Pandu" }; // Do not change the array size from 3.
         String expected = "Hello Me You Pandu";
