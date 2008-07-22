@@ -34,9 +34,9 @@ import org.osoa.sca.annotations.Remotable;
 public interface HelloService {
     String getGreetings(String name);
     String[] getGreetingsArray(String[] names);
-    //List<String> getGreetingsList(List<String> names);
-    //ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
-    //Map<String, String> getGreetingsMap(Map<String, String> namesMap);
-    //HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
+    List<String> getGreetingsList(List<String> names);
+    ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
+    Map<String, String> getGreetingsMap(Map<String, String> namesMap);
+    HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
     String getGreetingsVarArgs(String... names);
 }

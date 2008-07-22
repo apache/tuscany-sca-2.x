@@ -33,9 +33,9 @@ import java.util.Map;
 public interface HelloServiceClient {
     String getGreetingsForward(String name);
     String[] getGreetingsArrayForward(String[] names);
-    //List<String> getGreetingsListForward(List<String> names);
-    //ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names);
-    //Map<String, String> getGreetingsMapForward(Map<String, String> namesMap);
-    //HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap);
+    List<String> getGreetingsListForward(List<String> names);
+    ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names);
+    Map<String, String> getGreetingsMapForward(Map<String, String> namesMap);
+    HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap);
     String getGreetingsVarArgsForward(String... names);
 }
