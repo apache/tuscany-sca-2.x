@@ -70,6 +70,7 @@
                 <module>binding-rss-rome</module>
                 <module>binding-sca</module>
                 <module>binding-sca-axis2</module>
+                <module>binding-sca-corba</module>
                 <module>binding-sca-xml</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>

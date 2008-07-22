@@ -56,8 +56,30 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
     private Class<?> javaClass;
     private Map<String, Method> operationsMap;
     private Map<Method, Operation> methodOperationMapping;
-
+    private boolean scaBindingRules;
+    
+    /**
+     * Creates servant with CORBA binding mapping rules in default
+     * 
+     * @param service backed service
+     * @param binding binding object
+     * @throws RequestConfigurationException
+     */
     public DynaCorbaServant(RuntimeComponentService service, Binding binding) throws RequestConfigurationException {
+        // use CORBA binding rules by default 
+        this(service, binding, false);
+    }
+    
+    /**
+     * Creates servant object
+     * 
+     * @param service backed service
+     * @param binding binding object
+     * @param scaBindingRules apply SCA default binding mapping rules
+     * @throws RequestConfigurationException
+     */
+    public DynaCorbaServant(RuntimeComponentService service, Binding binding, boolean scaBindingRules) throws RequestConfigurationException {
+        this.scaBindingRules = scaBindingRules;
         this.service = service;
         this.binding = binding;
         this.javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
@@ -114,14 +136,14 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
                 // cache output type tree
                 if (operation.getOutputType() != null && operation.getOutputType().getPhysical() != null
                     && !operation.getOutputType().getPhysical().equals(void.class)) {
-                    TypeTree outputType = TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical());
+                    TypeTree outputType = TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical(), scaBindingRules);
                     operationTypes.setOutputType(outputType);
                 }
                 // cache input types trees
                 if (operation.getInputType() != null) {
                     for (DataType<List<DataType>> type : operation.getInputType().getLogical()) {
                         Class<?> forClass = type.getPhysical();
-                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass);
+                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass, scaBindingRules);
                         inputInstances.add(inputType);
                     }
 
@@ -185,7 +207,7 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
                 try {
                     OutputStream out = rh.createExceptionReply();
                     Class<?> exceptionClass = ie.getTargetException().getClass();
-                    TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass);
+                    TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass, scaBindingRules);
                     String exceptionId = Utils.getTypeId(exceptionClass);
                     out.write_string(exceptionId);
                     TypeHelpersProxy.write(tree.getRootNode(), out, ie.getTargetException());

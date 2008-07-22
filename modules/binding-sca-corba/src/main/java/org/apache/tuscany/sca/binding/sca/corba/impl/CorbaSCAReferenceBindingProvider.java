@@ -17,12 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.impl;
+package org.apache.tuscany.sca.binding.sca.corba.impl;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.binding.corba.CorbaBinding;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.corba.impl.CorbaInvoker;
 import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -34,18 +36,22 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.omg.CORBA.Object;
 
 /**
- * @version $Rev$ $Date$
+ * Reference binding provider for SCA default binding over CORBA binding
  */
-public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
+public class CorbaSCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private CorbaBinding binding;
+    private static final Logger logger = Logger.getLogger(CorbaSCAReferenceBindingProvider.class.getName());
+
+    private SCABinding binding;
     private CorbaHost host;
     private RuntimeComponentReference reference;
     private Object remoteObject;
     private Class<?> referenceClass;
-    private Map<Method, String> operationsMap = null; 
+    private Map<Method, String> operationsMap = null;
 
-    public CorbaReferenceBindingProvider(CorbaBinding binding, CorbaHost host, RuntimeComponentReference reference) {
+    public CorbaSCAReferenceBindingProvider(SCABinding binding,
+                                            CorbaHost host,
+                                            RuntimeComponentReference reference) {
         this.binding = binding;
         this.host = host;
         this.reference = reference;
@@ -53,44 +59,32 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
         operationsMap = OperationMapper.mapMethodToOperation(referenceClass);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.ReferenceBindingProvider#createInvoker(org.apache.tuscany.sca.interfacedef.Operation)
-     */
-    public Invoker createInvoker(Operation operation) {
-        try {
-            if (remoteObject == null) {
-                remoteObject = host.lookup(binding.getCorbaname());    
-            }
-            return new CorbaInvoker(remoteObject, referenceClass, operationsMap, false);
-        } catch (Exception e) {
-        }
-        return null;
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.provider.ReferenceBindingProvider#getBindingInterfaceContract()
-     */
     public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.ReferenceBindingProvider#start()
-     */
-    public void start() {
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.provider.ReferenceBindingProvider#stop()
-     */
-    public void stop() {
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.provider.ReferenceBindingProvider#supportsOneWayInvocation()
-     */
     public boolean supportsOneWayInvocation() {
         return false;
+    }
+
+    public Invoker createInvoker(Operation operation) {
+        try {
+            if (remoteObject == null) {
+                remoteObject = host.lookup(binding.getURI());
+            }
+            return new CorbaInvoker(remoteObject, referenceClass, operationsMap, true);
+        } catch (Exception e) {
+            logger.warning(e.getMessage());
+        }
+        return null;
+    }
+
+    public void start() {
+
+    }
+
+    public void stop() {
+
     }
 
 }
