@@ -18,12 +18,14 @@
  */
 
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
+import org.apache.tuscany.sca.binding.ws.other.Other;
 
 /**
  *
  * @version $Rev$ $Date$
  */
 public class TestJavaClass {
+    public Other other;
     public String name;
     public int number;
     public float balance;

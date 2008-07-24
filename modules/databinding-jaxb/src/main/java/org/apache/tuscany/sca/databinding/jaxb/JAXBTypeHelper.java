@@ -23,6 +23,8 @@ import java.beans.Introspector;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,6 +190,13 @@ public class JAXBTypeHelper implements XMLTypeHelper {
             definition.setUnresolved(true);
             definition.setDocument((Document)entry.getValue().getNode());
             definition.setNamespace(entry.getKey());
+            URI location = null;
+            try {
+                location = new URI(entry.getValue().getSystemId());
+            } catch (URISyntaxException e) {
+                // ignore: use null value
+            }    
+            definition.setLocation(location);
             definitions.add(definition);
         }
     }
