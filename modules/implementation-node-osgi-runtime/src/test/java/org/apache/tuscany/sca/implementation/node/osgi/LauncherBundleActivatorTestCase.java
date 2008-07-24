@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.node.osgi;
 
+import hello.HelloWorld;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -165,6 +167,11 @@ public class LauncherBundleActivatorTestCase {
             Object node = create.invoke(instance, "HelloWorld.composite", getClass().getClassLoader());
             Method start = node.getClass().getMethod("start");
             start.invoke(node);
+            
+            Method getService = node.getClass().getMethod("getService", Class.class, String.class);
+            HelloWorld hw = (HelloWorld) getService.invoke(node, HelloWorld.class, "HelloWorld");
+            hw.hello("OSGi");
+            
             Method stop = node.getClass().getMethod("stop");
             stop.invoke(node);
         } finally {
