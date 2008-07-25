@@ -507,8 +507,10 @@ public class Axis2ServiceProvider {
 
     private void addSchemas(WSDLDefinition wsdlDef, AxisService axisService) {
         for (XSDefinition xsDef : wsdlDef.getXmlSchemas()) {
-            axisService.addSchema(xsDef.getSchema());
-            updateSchemaRefs(xsDef.getSchema(), axisService.getName());
+            if (xsDef.getSchema() != null) {
+                axisService.addSchema(xsDef.getSchema());
+                updateSchemaRefs(xsDef.getSchema(), axisService.getName());
+            }
         }
         for (WSDLDefinition impDef : wsdlDef.getImportedDefinitions()) {
             addSchemas(impDef, axisService);
