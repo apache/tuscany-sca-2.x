@@ -54,16 +54,28 @@ web-resource/
     main/
       java/
         feed/
-          FeedAggregatorImpl.java         - implementation of the Feed
+          AggregatorImpl.java             - implementation of the Feed
                                             aggregator component
           SampleServer.java               - starts the SCA Runtime and 
                                             publishes the aggregated feeds
+          Sort.java						  - utilty interface 
+          SortImpl.java					  - implementation of the Sort component
       resources/
         FeedAggregator.composite          - the SCA assembly for this sample
   feed-aggregator.png                     - a pictorial representation of the 
                                             sample .composite file
   build.xml                               - the Ant build file
-  pom.xml                                 - the Maven build file        
+  pom.xml                                 - the Maven build file 
+  
+  
+Details of how this sample works
+--------------------------------
+1. AggregatorImpl is used to implement the two main components here (RSSAggregator & AtomAggregator).
+2. AggregatorImpl directly implements the Tuscany Atom Collection interface. It is a component 
+   that provides an Atom feed to respond (see tuscany/modules/binding-atom-abdera) 
+3. The AggregatorImpl component is not explicitly configured using nested <service> element nor its 
+   implementation class is annotated with @Service annotation. Instead, the Tuscany Atom Collection interface 
+   defines its services using @Remotable annotation.
 
 Building And Running The Sample Using Ant
 -----------------------------------------
