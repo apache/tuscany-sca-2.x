@@ -21,24 +21,8 @@
 	name="helloworld">
 
     <wsdl:types>
-        <schema elementFormDefault="qualified" targetNamespace="http://helloworld" xmlns="http://www.w3.org/2001/XMLSchema">
-
-            <element name="getGreetings">
-                <complexType>
-                    <sequence>
-                        <element name="name" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="getGreetingsResponse">
-                <complexType>
-                    <sequence>
-                        <element name="getGreetingsReturn" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-            
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://helloworld" schemaLocation="Hello.xsd"/>
         </schema>
     </wsdl:types>
 
