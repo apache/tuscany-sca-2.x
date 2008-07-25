@@ -21,7 +21,7 @@
         xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://helloworld"
 	xmlns:hw="http://helloworld"
-    name="helloworldws">
+    name="helloworld">
 
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl" />
