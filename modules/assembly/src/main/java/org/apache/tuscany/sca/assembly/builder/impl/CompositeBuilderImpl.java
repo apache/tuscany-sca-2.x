@@ -42,15 +42,19 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 public class CompositeBuilderImpl implements CompositeBuilder {
     private static final Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
-    private CompositeBuilder componentWireBuilder;
+    private CompositeBuilder componentReferenceWireBuilder;
+    private CompositeBuilder componentReferencePromotionWireBuilder;
     private CompositeBuilder compositeReferenceWireBuilder;
     private CompositeBuilder compositeCloneBuilder;
     private CompositeBuilder componentConfigurationBuilder;
     private CompositeBuilder compositeServiceConfigurationBuilder;
+    private CompositeBuilder compositeReferenceConfigurationBuilder;
+    private CompositeBuilder compositeBindingURIBuilder;
+    private CompositeBuilder componentServicePromotionBuilder;
+    private CompositeBuilder compositeServicePromotionBuilder;
     private CompositeBuilder compositePromotionBuilder;
     private CompositeBuilder compositePolicyBuilder;
     private CompositeBuilder componentServiceBindingBuilder;
-    private CompositeBuilder compositeServiceBindingBuilder;
     private CompositeBuilder componentReferenceBindingBuilder;
     
     /**
@@ -94,15 +98,19 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }       
         
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor); 
-        componentWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
-        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
+        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
         compositeCloneBuilder = new CompositeCloneBuilderImpl(monitor);
         componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
-        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory);
+        compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
+        compositeBindingURIBuilder = new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
+        compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(monitor);
-        compositeServiceBindingBuilder = new CompositeServiceBindingBuilderImpl(monitor);
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(monitor);
     }
 
@@ -119,28 +127,40 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Connect composite services/references to promoted services/references
         compositePromotionBuilder.build(composite);
-        
+
         // Compute the policies across the model hierarchy
         compositePolicyBuilder.build(composite);
+
+        // Configure composite services
+        compositeServiceConfigurationBuilder.build(composite);
+        
+        // Configure composite references
+        compositeReferenceConfigurationBuilder.build(composite);
+
+        // Configure binding URIs
+        compositeBindingURIBuilder.build(composite);
+
+        // Create promoted component services
+        componentServicePromotionBuilder.build(composite);
+
+        // Create promoted composite services
+        compositeServicePromotionBuilder.build(composite);
 
         // Build component service binding-related information
         componentServiceBindingBuilder.build(composite);
 
-        // Build composite service binding-related information
-        compositeServiceBindingBuilder.build(composite);
-        
-        // Configure composite services
-        compositeServiceConfigurationBuilder.build(composite);
-        
         // Wire the components
-        componentWireBuilder.build(composite);
+        componentReferenceWireBuilder.build(composite);
+
+        // Wire the promoted component references
+        componentReferencePromotionWireBuilder.build(composite);
 
         // Wire the composite references
         compositeReferenceWireBuilder.build(composite);
 
         // Build component reference binding-related information
         componentReferenceBindingBuilder.build(composite);
-        
+
         // Fuse nested composites
         //FIXME do this later
         //cloneBuilder.fuseCompositeImplementations(composite);

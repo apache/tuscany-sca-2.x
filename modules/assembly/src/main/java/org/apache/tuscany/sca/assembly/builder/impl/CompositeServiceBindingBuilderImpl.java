@@ -61,7 +61,7 @@ public class CompositeServiceBindingBuilderImpl implements CompositeBuilder {
         for (Service service : composite.getServices()) {
             for (Binding binding : service.getBindings()) {
                 if (binding instanceof BindingBuilderExtension) {
-                    Component component = BaseConfigurationBuilderImpl.getPromotedComponent((CompositeService)service);
+                    Component component = ServiceConfigurationUtil.getPromotedComponent((CompositeService)service);
                     ((BindingBuilderExtension)binding).getBuilder().build(component, service, binding, monitor);
                 }
             }

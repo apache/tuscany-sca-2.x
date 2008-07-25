@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -95,5 +96,12 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     public void setPolicySets(List<PolicySet> policySets) {
         this.policySets = policySets; 
     }
+    
+    /**
+     * By default return the interface contract for the service
+     */
+    public InterfaceContract getInterfaceContract(Binding binding){
+        return getInterfaceContract();
+    }     
 
 }

@@ -38,13 +38,13 @@
     </component>
 
     <reference name="EchoReference" promote="ComponentB/echoReference">
-        <!-- 
-            <interface.java interface="dbecho.Echo"/>
-        -->
+        <interface.java interface="dbecho.Echo"/>
+    <!-- Replaced interface.wsdl by interface.java because TUSCANY-2324 fix uses the interface specified here
         <interface.wsdl interface="http://example.com/echo.wsdl#wsdl.interface(EchoPortType)"
             wsdli:wsdlLocation="http://example.com/echo.wsdl wsdl/echo.wsdl">
             <db:databinding xmlns:db="http://tuscany.apache.org/xmlns/sca/databinding/1.0" name="org.apache.axiom.om.OMElement" />
         </interface.wsdl>
+    -->
         <e:binding.echo/>
     </reference>
 

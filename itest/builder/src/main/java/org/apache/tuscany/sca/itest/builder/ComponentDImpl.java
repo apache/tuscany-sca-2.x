@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.itest.builder;
 
+import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -27,6 +30,9 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(interfaces={Service3.class, Service3a.class})
 public class ComponentDImpl implements Service3, Service3a {
+
+    @Reference
+    protected Service3a reference3;
 
     public String getGreetings(String name) {
         return "Hello, " + name + "!";

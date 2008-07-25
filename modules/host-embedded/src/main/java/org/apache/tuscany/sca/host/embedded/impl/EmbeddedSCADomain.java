@@ -203,7 +203,7 @@ public class EmbeddedSCADomain extends SCADomain {
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
                         if (serviceName != null) {
-                            serviceName = "$promoted$." + serviceName;
+                            serviceName = "$promoted$." + component.getName() + "." + serviceName;
                         }
                         componentContext =
                             ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();

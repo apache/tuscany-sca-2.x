@@ -101,7 +101,9 @@
     </component>
 
     <reference name="availQuoteProvider" promote="QuoteJoinExternalReferencesComponent/availQuoteProvider">
+        <!-- removed because it doesn't work with TUSCANY-2324 fix
         <interface.java interface="xquery.quote.AvailQuoteProviderService" />
+        -->
         <binding.ws wsdlElement="http://quote.xquery#wsdl.port(AvailQuoteProviderService/AvailQuoteProviderSoapPort)" />
     </reference>
     <reference name="quoteJoinWs" promote="QuoteJoinLocalComponent/quoteJoinWs">

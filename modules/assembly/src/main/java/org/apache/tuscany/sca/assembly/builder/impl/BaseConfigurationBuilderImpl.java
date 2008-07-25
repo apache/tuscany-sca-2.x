@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -90,7 +91,7 @@ public abstract class BaseConfigurationBuilderImpl {
     protected void configureComponents(Composite composite) throws CompositeBuilderException {
         configureComponents(composite, null);
         configureSourcedProperties(composite, null);
-        configureBindingURIs(composite, null, null);
+        //configureBindingURIs(composite, null, null);
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 SCABinding scaBinding = createSCABinding();
                 service.getBindings().add(scaBinding);
             }
-
+/*
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
                 
@@ -150,6 +151,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     }
                 }
             }
+*/
         }
 
         // Initialize reference bindings
@@ -159,7 +161,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 SCABinding scaBinding = createSCABinding();
                 reference.getBindings().add(scaBinding);
             }
-
+/*
             // Set binding names
             for (Binding binding : reference.getBindings()) {
                 if (binding.getName() == null) {
@@ -174,6 +176,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     }
                 }
             }
+*/
         }
 
         // Initialize all component services and references
@@ -247,7 +250,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     SCABinding scaBinding = createSCABinding();
                     componentService.getBindings().add(scaBinding);
                 }
-
+/*
                 // Set binding names
                 for (Binding binding : componentService.getBindings()) {
                     
@@ -263,6 +266,7 @@ public abstract class BaseConfigurationBuilderImpl {
                         }
                     }
                 }
+*/
             }
 
             // Initialize reference bindings
@@ -273,7 +277,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     SCABinding scaBinding = createSCABinding();
                     componentReference.getBindings().add(scaBinding);
                 }
-
+/*
                 // Set binding names
                 for (Binding binding : componentReference.getBindings()) {
                     if (binding.getName() == null) {
@@ -287,6 +291,7 @@ public abstract class BaseConfigurationBuilderImpl {
                         }
                     }
                 }
+*/
             }
         }
     }
@@ -796,208 +801,6 @@ public abstract class BaseConfigurationBuilderImpl {
     }
 
     /**
-     * Activate composite services in nested composites.
-     * 
-     * @param composite
-     * @param problems
-     */
-    protected void configureCompositeServices(Composite composite) {
-
-        // Process nested composites recursively
-        configureNestedCompositeServices(composite);
-
-        // Process top level composite services
-        for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-
-            // Get the inner most promoted service
-            ComponentService promotedService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
-            if (promotedService != null) {
-                Component promotedComponent = getPromotedComponent(compositeService);
-
-                // Default to use the interface from the promoted service
-                if (compositeService.getInterfaceContract() == null && promotedService.getInterfaceContract() != null) {
-                    compositeService.setInterfaceContract(promotedService.getInterfaceContract());
-                }
-
-                // Create a new component service to represent this composite
-                // service on the promoted component
-                ComponentService newComponentService = assemblyFactory.createComponentService();
-                newComponentService.setName("$promoted$." + compositeService.getName());
-                promotedComponent.getServices().add(newComponentService);
-                newComponentService.setService(promotedService.getService());
-                // set the bindings using the top level bindings to override the 
-                // lower level bindings
-                if (bindingsSpecifiedManually(compositeService.getBindings())){
-                    newComponentService.getBindings()
-                        .addAll(compositeService.getBindings());
-                } else {
-                    for (Binding binding : promotedService.getBindings()){
-                        try {
-                            newComponentService.getBindings().add((Binding)binding.clone());
-                        } catch(CloneNotSupportedException ex){
-                            // this binding can't be used in the promoted service
-                        }
-                    }                    
-                }
-                newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                if (compositeService.getInterfaceContract() != null && compositeService
-                    .getInterfaceContract().getCallbackInterface() != null) {
-                    newComponentService.setCallback(assemblyFactory.createCallback());
-                    if ((compositeService.getCallback() != null) &&
-                        (bindingsSpecifiedManually(compositeService.getCallback().getBindings()))){
-                        newComponentService.getCallback().getBindings()
-                            .addAll(compositeService.getCallback().getBindings());
-                    } else if ((promotedService.getCallback() != null) &&
-                               (bindingsSpecifiedManually(promotedService.getCallback().getBindings()))){
-                        for (Binding binding : promotedService.getCallback().getBindings()){
-                            try {
-                                newComponentService.getCallback().getBindings().add((Binding)binding.clone());
-                            } catch(CloneNotSupportedException ex){
-                                // this binding can't be used in the promoted service
-                            }
-                        }                          
-                    }
-                }
-
-                // Change the composite service to now promote the newly
-                // created component service directly
-                compositeService.setPromotedComponent(promotedComponent);
-                compositeService.setPromotedService(newComponentService);
-            }
-        }
-    }
-
-    /**
-     * Activate composite services in nested composites.
-     * 
-     * @param composite
-     * @param problems
-     */
-    private void configureNestedCompositeServices(Composite composite) {
-
-        // Process nested composites recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-
-                // First process nested composites
-                configureNestedCompositeServices((Composite)implementation);
-
-                // Process the component services declared on components
-                // in this composite
-                for (ComponentService componentService : component.getServices()) {
-                    Service implService = componentService.getService();
-                    if (implService != null && implService instanceof CompositeService) {
-                        CompositeService compositeService = (CompositeService)implService;
-
-                        // Get the inner most promoted service
-                        ComponentService promotedService =
-                            ServiceConfigurationUtil.getPromotedComponentService(compositeService);
-                        if (promotedService != null) {
-                            Component promotedComponent = getPromotedComponent(compositeService);
-
-                            // Default to use the interface from the promoted
-                            // service
-                            if (compositeService.getInterfaceContract() == null) {
-                                compositeService.setInterfaceContract(promotedService
-                                    .getInterfaceContract());
-                            }
-                            if (componentService.getInterfaceContract() == null) {
-                                componentService.setInterfaceContract(promotedService
-                                    .getInterfaceContract());
-                            }
-
-                            // Create a new component service to represent this
-                            // composite service on the promoted component
-                            ComponentService newComponentService =
-                                assemblyFactory.createComponentService();
-                            newComponentService.setName("$promoted$." + componentService.getName());
-                            promotedComponent.getServices().add(newComponentService);
-                            newComponentService.setService(promotedService.getService());
-                            
-                            // set the bindings using the top level bindings to override the 
-                            // lower level bindings
-                            if (bindingsSpecifiedManually(componentService.getBindings())){
-                                newComponentService.getBindings()
-                                    .addAll(componentService.getBindings());
-                            } else if (bindingsSpecifiedManually(compositeService.getBindings())){
-                                newComponentService.getBindings()
-                                    .addAll(compositeService.getBindings());
-                            } else {
-                                for (Binding binding : promotedService.getBindings()){
-                                    try {
-                                        newComponentService.getBindings().add((Binding)binding.clone());
-                                    } catch(CloneNotSupportedException ex){
-                                        // this binding can't be used in the promoted service
-                                    }
-                                }
-                            }
-                            
-                            newComponentService.setInterfaceContract(componentService
-                                .getInterfaceContract());
-                            
-                            if (componentService.getInterfaceContract() != null && 
-                                componentService.getInterfaceContract().getCallbackInterface() != null) {
-                                
-                                newComponentService.setCallback(assemblyFactory.createCallback());
-                                
-                                // set the bindings using the top level bindings to override the 
-                                // lower level bindings
-                                if ((componentService.getCallback() != null) &&
-                                    (bindingsSpecifiedManually(componentService.getCallback().getBindings()))){
-                                    newComponentService.getCallback().getBindings()
-                                        .addAll(componentService.getCallback().getBindings());
-                                } else if ((compositeService.getCallback() != null) &&
-                                           (bindingsSpecifiedManually(compositeService.getCallback().getBindings()))){
-                                    newComponentService.getCallback().getBindings()
-                                        .addAll(compositeService.getCallback().getBindings());
-                                } else if ((promotedService.getCallback() != null) &&
-                                           (bindingsSpecifiedManually(promotedService.getCallback().getBindings()))){
-                                    for (Binding binding : promotedService.getCallback().getBindings()){
-                                        try {
-                                            newComponentService.getCallback().getBindings().add((Binding)binding.clone());
-                                        } catch(CloneNotSupportedException ex){
-                                            // this binding can't be used in the promoted service
-                                        }
-                                    }                                    
-                                }
-                            }
-
-                            // Change the composite service to now promote the
-                            // newly created component service directly
-                            compositeService.setPromotedComponent(promotedComponent);
-                            compositeService.setPromotedService(newComponentService);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * If the bindings are specified in the composite file return true as they should 
-     * otherwise return false
-     *  
-     * @param bindings
-     * @return true if the bindings were specified manually
-     */
-    private boolean bindingsSpecifiedManually(List<Binding> bindings){
-
-        if (bindings.size() > 1){
-            return true;
-        } else if ((bindings.size() == 1) &&
-                   (bindings.get(0) instanceof AutomaticBinding) &&
-                   (((AutomaticBinding)bindings.get(0)).getIsAutomatic() == true )){
-            return false;
-        } else if (bindings.size() == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    /**
      * @param composite
      */
     private void configureSourcedProperties(Composite composite, List<ComponentProperty> propertySettings) {
@@ -1027,34 +830,6 @@ public abstract class BaseConfigurationBuilderImpl {
         }
     }
 
-    /**
-     * Follow a service promotion chain down to the inner most (non composite)
-     * component.
-     * 
-     * @param compositeService
-     * @return
-     */
-    protected static Component getPromotedComponent(CompositeService compositeService) {
-        ComponentService componentService = compositeService.getPromotedService();
-        if (componentService != null) {
-            Service service = componentService.getService();
-            if (componentService.getName() != null && service instanceof CompositeService) {
-
-                // Continue to follow the service promotion chain
-                return getPromotedComponent((CompositeService)service);
-
-            } else {
-
-                // Found a non-composite service
-                return compositeService.getPromotedComponent();
-            }
-        } else {
-
-            // No promoted service
-            return null;
-        }
-    }
-
     private ComponentProperty getComponentPropertyByName(String propertyName, List<ComponentProperty> properties) {
         if (properties != null) {
             for (ComponentProperty aProperty : properties) {
@@ -1069,8 +844,8 @@ public abstract class BaseConfigurationBuilderImpl {
     private SCABinding createSCABinding() {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
         
-        // mark the bindings that are added automatically so that theu can 
-        // can be disregarded for overriding purposes
+        // mark the bindings that are added automatically so that they can 
+        // be disregarded for overriding purposes
         if (scaBinding instanceof AutomaticBinding){
             ((AutomaticBinding)scaBinding).setIsAutomatic(true);
         }
@@ -1084,6 +859,16 @@ public abstract class BaseConfigurationBuilderImpl {
         }
         
         return scaBinding;
+    }
+
+    /**
+     * Called by CompositeBindingURIBuilderImpl
+     *  
+     * @param composite the composite to be configured
+     */
+    protected void configureBindingURIsAndNames(Composite composite) throws CompositeBuilderException {
+        configureBindingURIs(composite, null, null);
+        configureBindingNames(composite);
     }
 
     /**
@@ -1103,7 +888,13 @@ public abstract class BaseConfigurationBuilderImpl {
       * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
       * from any associated policies and from the default information for each binding type.
       * 
-      * TODO: Share the  URL calculation algorithm with the configureComponents() method above
+      * NOTE: This method repeats some of the processing performed by the configureComponents()
+      *       method above.  The duplication is needed because NodeConfigurationServiceImpl
+      *       calls this method without previously calling configureComponents().  In the
+      *       normal builder sequence used by CompositeBuilderImpl, both of these methods
+      *       are called.
+      *
+      * TODO: Share the URL calculation algorithm with the configureComponents() method above
       *       although keeping the configureComponents() methods signature as is because when
       *       a composite is actually build in a node the node default information is currently
       *       available
@@ -1204,23 +995,96 @@ public abstract class BaseConfigurationBuilderImpl {
             } 
         }
     }
+
+    /**
+     * Add default names for callback bindings and reference bindings.  Needs to be
+     * separate from configureBindingURIs() because configureBindingURIs() is called
+     * by NodeConfigurationServiceImpl as well as by CompositeBuilderImpl.
+     */
+    private void configureBindingNames(Composite composite) {
+        
+        // Process nested composites recursively
+        for (Component component : composite.getComponents()) {
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+
+                // Process nested composite
+                configureBindingNames((Composite)implementation);
+            }
+        }  
+        
+        // Initialize composite service callback binding names
+        for (Service service : composite.getServices()) {
+
+            if (service.getCallback() != null) {
+                for (Binding binding : service.getCallback().getBindings()) {
+                    constructBindingName(service, binding);
+                }
+            }
+        }
+        
+        // Initialize composite reference binding names
+        for (Reference reference : composite.getReferences()) {
+
+            for (Binding binding : reference.getBindings()) {  
+                constructBindingName(reference, binding);
+            }
+
+            if (reference.getCallback() != null) {
+                for (Binding binding : reference.getCallback().getBindings()) {
+                    constructBindingName(reference, binding);
+                }
+            }
+        }
+        
+        // Initialize component service and reference binding names
+        for (Component component : composite.getComponents()) {
+
+            // Initialize component service callback binding names
+            for (ComponentService service : component.getServices()) {
+
+                if (service.getCallback() != null) {
+                    for (Binding binding : service.getCallback().getBindings()) {
+                        constructBindingName(service, binding);
+                    }
+                }
+            } 
+        
+            // Initialize component reference binding names
+            for (ComponentReference reference : component.getReferences()) {
+
+                // Initialize binding names
+                for (Binding binding : reference.getBindings()) {  
+                    constructBindingName(reference, binding);
+                }
+
+                if (reference.getCallback() != null) {
+                    for (Binding binding : reference.getCallback().getBindings()) {
+                        constructBindingName(reference, binding);
+                    }
+                }
+            }
+        }
+    }
     
     /**
-     * If a binding name is not provided by the user construct it based on the service name
+     * If a binding name is not provided by the user, construct it based on the service
+     * or reference name
      * 
-     * @param service
+     * @param contract the service or reference
      * @param binding
      */
-    private void constructBindingName(Service service, Binding binding) throws CompositeBuilderException{
+    private void constructBindingName(Contract contract, Binding binding) {
         
         // set the default binding name if one is required        
-        // if there is no name on the binding then set it to the service name 
+        // if there is no name on the binding then set it to the service or reference name 
         if (binding.getName() == null){
-            binding.setName(service.getName());
+            binding.setName(contract.getName());
         }
             
         // Check that multiple bindings do not have the same name
-        for (Binding otherBinding : service.getBindings()) {
+        for (Binding otherBinding : contract.getBindings()) {
             if (otherBinding == binding) {
                 // Skip the current binding
                 continue;
@@ -1230,7 +1094,8 @@ public abstract class BaseConfigurationBuilderImpl {
                 continue;
             }
             if (binding.getName().equals(otherBinding.getName())) {
-                warning("MultipleBindingsForService", binding, service.getName(), binding.getName());
+                warning(contract instanceof Service ? "MultipleBindingsForService" : "MultipleBindingsForReference",
+                        binding, contract.getName(), binding.getName());
             }
         }
     }

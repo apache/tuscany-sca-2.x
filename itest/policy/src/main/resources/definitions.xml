@@ -72,6 +72,7 @@
         <wsp:Policy />
     </sca:policySet>
 
+    <sca:intent name="TestIntent_4.Qualifier_1" />
 
     <sca:policySet name="TestPolicySet_2_implementation" provides="ip:TestIntent_2"
         appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">

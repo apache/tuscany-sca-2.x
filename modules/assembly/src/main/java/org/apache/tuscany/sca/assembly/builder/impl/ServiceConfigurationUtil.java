@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Service;
@@ -56,4 +57,32 @@ abstract class ServiceConfigurationUtil {
             return null;
         }
     }
+
+    /**
+     * Follow a service promotion chain down to the innermost (non-composite) component.
+     * 
+     * @param compositeService
+     * @return
+     */
+    static Component getPromotedComponent(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (componentService.getName() != null && service instanceof CompositeService) {
+
+                // Continue to follow the service promotion chain
+                return getPromotedComponent((CompositeService)service);
+
+            } else {
+
+                // Found a non-composite service
+                return compositeService.getPromotedComponent();
+            }
+        } else {
+
+            // No promoted service
+            return null;
+        }
+    }
+
 }
