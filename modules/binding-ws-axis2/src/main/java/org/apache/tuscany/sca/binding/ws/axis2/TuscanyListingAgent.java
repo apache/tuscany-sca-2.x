@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.PolicyInclude;
 import org.apache.axis2.transport.http.ListingAgent;
+import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.axis2.util.ExternalPolicySerializer;
 import org.apache.axis2.util.JavaUtils;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -90,7 +92,8 @@ public class TuscanyListingAgent extends ListingAgent {
     /**
      * Override ?xsd processing so that WSDL documents with XSD imports
      * and includes work correctly.  When we move to Axis2 1.4, we may
-     * be able to use SchemaSupplier to do this in a cleaner way.
+     * be able to use SchemaSupplier to do this in a cleaner way.  Also
+     * ensure that the correct IP address and port are returned by ?wsdl.
      */
     @Override
     public void processListService(HttpServletRequest req,
@@ -99,6 +102,27 @@ public class TuscanyListingAgent extends ListingAgent {
 
         String url = req.getRequestURL().toString();
         String query = req.getQueryString();
+
+        // for ?wsdl requests, need to update the WSDL with correct IPaddr and port 
+        int wsdl = query.indexOf("wsdl");
+        if (wsdl >= 0) {
+            String serviceName = extractServiceName(url);
+            HashMap services = configContext.getAxisConfiguration().getServices();
+            if ((services != null) && !services.isEmpty()) {
+                AxisService axisService = (AxisService)services.get(serviceName);
+                Parameter wsld4jdefinition = axisService.getParameter(WSDLConstants.WSDL_4_J_DEFINITION);
+                Definition definition = (Definition)wsld4jdefinition.getValue();
+                for (Object s : definition.getServices().values()) {
+                    for (Object p : ((Service)s).getPorts().values()) {
+                        String endpointURL = Axis2ServiceProvider.getPortAddress((Port)p);
+                        String modifiedURL = setIPAddress(endpointURL, url);
+                        Axis2ServiceProvider.setPortAddress((Port)p, modifiedURL);
+                    }
+                }
+            }
+        }
+
+        // handle ?xsd requests here
         int xsd = query.indexOf("xsd");
         if (xsd >= 0) {
             String serviceName = extractServiceName(url);
@@ -127,6 +151,7 @@ public class TuscanyListingAgent extends ListingAgent {
                 }
             }
         }
+
         // in all other cases, delegate to the Axis2 code
         super.processListService(req, res);
     }
@@ -190,6 +215,23 @@ public class TuscanyListingAgent extends ListingAgent {
                 }
             }
             configContext.setContextRoot(contextRoot);
+        }
+    }
+
+    private static String setIPAddress(String wsdlURI, String requestURI) {
+        try {
+            URI wsdlURIObj = new URI(wsdlURI);
+            String wsdlHost = wsdlURIObj.getHost();
+            int wsdlPort = wsdlURIObj.getPort();
+            String wsdlAddr = wsdlHost + (wsdlPort != -1 ? ":" + Integer.toString(wsdlPort) : "");
+            URI requestURIObj = new URI(requestURI);
+            String ipAddr = HttpUtils.getIpAddress();
+            int requestPort = requestURIObj.getPort();
+            String newAddr = ipAddr + (requestPort != -1 ? ":" + Integer.toString(requestPort) : "");
+            return wsdlURI.replace(wsdlAddr, newAddr);
+        } catch (Exception e) {
+            // URI string not in expected format, so return the WSDL URI unmodified
+            return wsdlURI;
         }
     }
 
