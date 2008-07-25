@@ -72,6 +72,7 @@
                 <exclude>*/.externalToolBuilders/**/*</exclude>
                 <exclude>*/work</exclude>
                 <exclude>*/work/**/*</exclude>
+                <exclude>**/activemq-test.log</exclude>
                 <exclude>**/derby.log</exclude>
                 <exclude>**/target/war/**</exclude>
                 <exclude>*/target/mvn-eclipse-cache.properties</exclude>

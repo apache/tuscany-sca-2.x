@@ -79,9 +79,12 @@
     		<exclude>**/var/journal</exclude>
     		<exclude>**/build.out*</exclude>
     		<exclude>velocity.log</exclude>
+    		<exclude>derby.log</exclude>
     		<exclude>distribution/target-last-successful</exclude>
     		<exclude>distribution/target-last-successful/**/*</exclude>
     		<exclude>itest/velocity.log</exclude>
+                <exclude>itest/bpel/helloworld-ws/work</exclude>
+                <exclude>itest/bpel/helloworld-ws/work/**/*</exclude>
                 <exclude>itest/callablereferences/work</exclude>
                 <exclude>itest/callablereferences/work/**/*</exclude>
                 <exclude>itest/callablereferences-ws/work</exclude>
@@ -107,6 +110,16 @@
                 <exclude>itest/transaction/derbydb/**/*</exclude>
                 <exclude>itest/ws-void-args-return/work</exclude>
                 <exclude>itest/ws-void-args-return/work/**/*</exclude>
+                <exclude>vtest/wsbinding/nowsdl/defaultbinding/work</exclude>
+                <exclude>vtest/wsbinding/nowsdl/defaultbinding/work/**/*</exclude>
+                <exclude>vtest/wsbinding/nowsdl/multisoapbindings/work</exclude>
+                <exclude>vtest/wsbinding/nowsdl/multisoapbindings/work/**/*</exclude>
+                <exclude>vtest/wsbinding/nowsdl/promoted/work</exclude>
+                <exclude>vtest/wsbinding/nowsdl/promoted/work/**/*</exclude>
+                <exclude>vtest/wsbinding/nowsdl/soapversion/work</exclude>
+                <exclude>vtest/wsbinding/nowsdl/soapversion/work/**/*</exclude>
+                <exclude>vtest/wsbinding/service/work</exclude>
+                <exclude>vtest/wsbinding/service/work/**/*</exclude>
                 <exclude>modules/domain-impl/work</exclude>
                 <exclude>modules/domain-impl/work/**/*</exclude>
                 <exclude>modules/host-tomcat/work</exclude>
