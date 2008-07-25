@@ -151,13 +151,19 @@ public class WSDLServiceGenerator {
                                                         AbstractContract contract,
                                                         Monitor monitor) {
 
+        //[nash] changes to the builder sequence avoid calling this for a CompositeService
+        assert !(contract instanceof CompositeService);
+        /*
         // For every promoted composite service, the underlying component
         // gets a copy of the service with the name prefixed by "$promoted$."
         String contractName = (contract instanceof CompositeService ? "$promoted$." : "") + contract.getName();
+        */
+        String contractName = contract.getName();
 
         List<Port> ports = new ArrayList<Port>();
         WSDLDefinition wsdlDefinition = wsBinding.getWSDLDefinition();
         if (wsdlDefinition == null) {
+            error(monitor, "NoWsdlInterface", wsBinding, component.getName(), contract.getName());
             return null;
         }
         Definition def = wsdlDefinition.getDefinition();

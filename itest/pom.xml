@@ -59,6 +59,7 @@
             </activation>
             <modules>
                 <module>bpel</module>
+                <module>builder</module>
                 <module>callablereferences</module>
                 <module>callablereferences-ws</module>
                 <module>callback-api</module>

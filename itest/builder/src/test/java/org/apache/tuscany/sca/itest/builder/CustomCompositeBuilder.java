@@ -76,7 +76,12 @@ public class CustomCompositeBuilder {
     private List<SCADefinitions> policyDefinitions;
     private Monitor monitor;
     private Composite domainComposite;
-    
+    private boolean nonWiring;
+
+    protected CustomCompositeBuilder(boolean nonWiring) {
+        this.nonWiring = nonWiring;
+    }
+
     private void init() {
         
         // Create extension point registry 
@@ -120,8 +125,11 @@ public class CustomCompositeBuilder {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
-        //domainCompositeBuilder = new CompositeBuilderNonWiringImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        if (nonWiring) {
+            domainCompositeBuilder = new CompositeBuilderNonWiringImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        } else {
+            domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        }
     }
     
     public void loadContribution(String compositeURL, String sourceURI, String sourceURL) throws Exception {

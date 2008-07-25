@@ -47,16 +47,8 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
     }
     
     private void buildReferenceBindings(Composite composite) {
-        
-        // build bindings recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                buildReferenceBindings((Composite)implementation);
-            }
-        }
     
-        // find all the component reference bindings     
+        // find all the component reference bindings (starting at top level)     
         for (Component component : composite.getComponents()) {
             for (ComponentReference componentReference : component.getReferences()) {
                 for (Binding binding : componentReference.getBindings()) {
@@ -64,6 +56,14 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
                         ((BindingBuilderExtension)binding).getBuilder().build(component, componentReference, binding, monitor);
                     }
                 }
+            }
+        }
+        
+        // build bindings recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                buildReferenceBindings((Composite)implementation);
             }
         }
     }

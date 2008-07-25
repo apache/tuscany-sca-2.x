@@ -19,6 +19,7 @@
 -->
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
     xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+    xmlns:test="http://tuscany.apache.org/xmlns/sca/1.0"
     xmlns:calc="http://calculator">
     
     <!-- Extension Types Metadata -->
@@ -46,7 +47,7 @@
  
   <intent name="TestIntentTwo" 
  			 constrains="sca:binding"
- 			 requires="TestIntentOne">
+ 			 requires="test:TestIntentOne">
  			 <description>
  			 	Protect messages from unauthorized reading or modification
  			 </description>
@@ -91,6 +92,7 @@
  </policySet>
 
 <policySet name="SecurityPolicy" provides="test:confidentiality"
+    appliesTo="binding.ws"
 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
     <intentMap provides="test:confidentiality" default="message">
@@ -137,7 +139,7 @@
 
 <policySet name="ConfidentialityPolicies"
  provides="test:confidentiality"
- bindings="binding.ws"
+ appliesTo="binding.ws"
  xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <intentMap provides="test:confidentiality"  default="transport">

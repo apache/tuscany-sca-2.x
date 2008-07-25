@@ -19,32 +19,176 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.List;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that handles the configuration of composite services.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeServiceConfigurationBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
+public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilder {
+    private AssemblyFactory assemblyFactory;
 
-    public CompositeServiceConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
-                                             SCABindingFactory scaBindingFactory,
-                                             InterfaceContractMapper interfaceContractMapper,
-                                             SCADefinitions policyDefinitions,
-                                             Monitor monitor) {
-        super(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+    public CompositeServiceConfigurationBuilderImpl(AssemblyFactory assemblyFactory) {
+        this.assemblyFactory = assemblyFactory;
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
-        configureCompositeServices(composite);
+
+        // Process nested composites recursively
+        configureNestedCompositeServices(composite);
+
+        // Process top level composite services
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+
+            // Get the next lower level promoted service
+            ComponentService promotedService = compositeService.getPromotedService();
+            if (promotedService != null) {
+
+                // Set the bindings using the top level bindings to override the lower level bindings
+                if (!bindingsSpecifiedManually(compositeService.getBindings()) &&
+                    bindingsSpecifiedManually(promotedService.getBindings())) {
+                    compositeService.getBindings().clear();
+                    for (Binding binding : promotedService.getBindings()) {
+                        try {
+                            compositeService.getBindings().add((Binding)binding.clone());
+                        } catch (CloneNotSupportedException ex) {
+                            // this binding can't be used in the promoted service
+                        }
+                    }                    
+                }
+                if (compositeService.getInterfaceContract() != null &&
+                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                    if (!(compositeService.getCallback() != null &&
+                          bindingsSpecifiedManually(compositeService.getCallback().getBindings())) &&
+                        promotedService.getCallback() != null &&
+                        bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                        if (compositeService.getCallback() != null) {
+                            compositeService.getCallback().getBindings().clear();
+                        } else {
+                            compositeService.setCallback(assemblyFactory.createCallback());
+                        }
+                        for (Binding binding : promotedService.getCallback().getBindings()) {
+                            try {
+                                compositeService.getCallback().getBindings().add((Binding)binding.clone());
+                            } catch (CloneNotSupportedException ex) {
+                                // this binding can't be used in the promoted service
+                            }
+                        }                          
+                    }
+                }
+            }
+        }
+    }
+
+    private void configureNestedCompositeServices(Composite composite) {
+
+        // Process nested composites recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+
+                // First process nested composites
+                configureNestedCompositeServices((Composite)implementation);
+
+                // Process the component services declared on components in this composite
+                for (ComponentService componentService : component.getServices()) {
+                    Service implService = componentService.getService();
+                    if (implService != null && implService instanceof CompositeService) {
+                        CompositeService compositeService = (CompositeService)implService;
+
+                        // Get the next lower level promoted service
+                        ComponentService promotedService = compositeService.getPromotedService();
+                        if (promotedService != null) {
+
+                            // Set the bindings using the top level bindings to override the lower level bindings
+                            if (!bindingsSpecifiedManually(compositeService.getBindings()) &&
+                                bindingsSpecifiedManually(promotedService.getBindings()) ) {
+                                compositeService.getBindings().clear();
+                                for (Binding binding : promotedService.getBindings()) {
+                                    try {
+                                        compositeService.getBindings().add((Binding)binding.clone());
+                                    } catch (CloneNotSupportedException ex) {
+                                        // this binding can't be used in the promoted service
+                                    }
+                                }                    
+                            }
+                            if (!bindingsSpecifiedManually(componentService.getBindings()) &&
+                                bindingsSpecifiedManually(compositeService.getBindings()) ) {
+                                componentService.getBindings().clear();
+                                componentService.getBindings().addAll(compositeService.getBindings());
+                            }
+                            if (componentService.getInterfaceContract() != null &&
+                                componentService.getInterfaceContract().getCallbackInterface() != null) {
+                                if (!(compositeService.getCallback() != null &&
+                                      bindingsSpecifiedManually(compositeService.getCallback().getBindings())) &&
+                                    promotedService.getCallback() != null &&
+                                    bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                                    if (compositeService.getCallback() != null) {
+                                        compositeService.getCallback().getBindings().clear();
+                                    } else {
+                                        compositeService.setCallback(assemblyFactory.createCallback());
+                                    }
+                                    for (Binding binding : promotedService.getCallback().getBindings()) {
+                                        try {
+                                            compositeService.getCallback().getBindings().add((Binding)binding.clone());
+                                        } catch (CloneNotSupportedException ex) {
+                                            // this binding can't be used in the promoted service
+                                        }
+                                    }                          
+                                }
+                                if (!(componentService.getCallback() != null &&
+                                      bindingsSpecifiedManually(componentService.getCallback().getBindings())) &&
+                                    compositeService.getCallback() != null &&
+                                    bindingsSpecifiedManually(compositeService.getCallback().getBindings())) {
+                                    if (componentService.getCallback() != null) {
+                                        componentService.getCallback().getBindings().clear();
+                                    } else {
+                                        componentService.setCallback(assemblyFactory.createCallback());
+                                    }
+                                    componentService.getCallback().getBindings().addAll(
+                                            compositeService.getCallback().getBindings());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * If the bindings are specified in the composite file return true as they should 
+     * otherwise return false
+     *  
+     * @param bindings
+     * @return true if the bindings were specified manually
+     */
+    private boolean bindingsSpecifiedManually(List<Binding> bindings) {
+
+        if (bindings.size() > 1) {
+            return true;
+        } else if (bindings.size() == 1 &&
+                   bindings.get(0) instanceof AutomaticBinding &&
+                   ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
+            return false;
+        } else if (bindings.size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
 }

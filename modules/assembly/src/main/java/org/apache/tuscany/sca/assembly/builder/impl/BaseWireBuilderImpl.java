@@ -424,6 +424,7 @@ class BaseWireBuilderImpl {
                             endpoint.setTargetName(targetComponent.getName());
                             endpoint.setSourceComponent(null); // TODO - fixed up at start
                             endpoint.setSourceComponentReference(componentReference);
+                            endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                             endpoint.setTargetComponent(targetComponent);
                             endpoint.setTargetComponentService(targetComponentService);
                             endpoint.getCandidateBindings().addAll(componentReference.getBindings());
@@ -477,7 +478,8 @@ class BaseWireBuilderImpl {
                         Endpoint endpoint = endpointFactory.createEndpoint();
                         endpoint.setTargetName(targetComponent.getName());
                         endpoint.setSourceComponent(null); // TODO - fixed up at start
-                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setSourceComponentReference(componentReference);     
+                        endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                         endpoint.setTargetComponent(targetComponent);
                         endpoint.setTargetComponentService(targetComponentService);
                         endpoint.getCandidateBindings().addAll(componentReference.getBindings());
@@ -498,7 +500,8 @@ class BaseWireBuilderImpl {
                     Endpoint endpoint = endpointFactory.createEndpoint();
                     endpoint.setTargetName(name);
                     endpoint.setSourceComponent(null); // TODO - fixed up at start
-                    endpoint.setSourceComponentReference(componentReference);                    
+                    endpoint.setSourceComponentReference(componentReference);  
+                    endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                     endpoint.getCandidateBindings().addAll(componentReference.getBindings());
                     endpoints.add(endpoint);
                     
@@ -536,7 +539,8 @@ class BaseWireBuilderImpl {
                         Endpoint endpoint = endpointFactory.createEndpoint();
                         endpoint.setTargetName(targetComponent.getName());
                         endpoint.setSourceComponent(null); // TODO - fixed up at start
-                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setSourceComponentReference(componentReference);  
+                        endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                         endpoint.setTargetComponent(targetComponent);
                         endpoint.setTargetComponentService(targetComponentService);
                         endpoint.getCandidateBindings().addAll(componentReference.getBindings());
@@ -560,7 +564,8 @@ class BaseWireBuilderImpl {
                     Endpoint endpoint = endpointFactory.createEndpoint();
                     endpoint.setTargetName(name);
                     endpoint.setSourceComponent(null); // TODO - fixed up at start
-                    endpoint.setSourceComponentReference(componentReference);                    
+                    endpoint.setSourceComponentReference(componentReference);  
+                    endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                     endpoint.getCandidateBindings().addAll(componentReference.getBindings());
                     endpoints.add(endpoint);                    
                     
@@ -625,7 +630,8 @@ class BaseWireBuilderImpl {
                         Endpoint endpoint = endpointFactory.createEndpoint();
                         endpoint.setTargetName(targetComponent.getName());
                         endpoint.setSourceComponent(null); // TODO - fixed up at start
-                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setSourceComponentReference(componentReference); 
+                        endpoint.setInterfaceContract(componentReference.getInterfaceContract());
                         endpoint.setTargetComponent(targetComponent);
                         endpoint.setTargetComponentService(targetComponentService);
                         endpoint.getCandidateBindings().add(binding);
@@ -639,16 +645,14 @@ class BaseWireBuilderImpl {
                     }
                 } else {
                     
-                    /* TODO - don't enable this yet as we have tests that 
-                              use relative URIs in bindings that don't refer to 
-                              targets 
+                    // create endpoints for manually configured bindings
                     Endpoint endpoint = endpointFactory.createEndpoint();
                     endpoint.setTargetName(uri);
                     endpoint.setSourceComponent(null); // TODO - fixed up at start
-                    endpoint.setSourceComponentReference(componentReference);                        
-                    endpoint.getCandidateBindings().add(binding);
+                    endpoint.setSourceComponentReference(componentReference);   
+                    endpoint.setInterfaceContract(componentReference.getInterfaceContract());
+                    endpoint.setSourceBinding(binding);
                     endpoints.add(endpoint); 
-                    */
                 }
             }
         }
@@ -679,8 +683,16 @@ class BaseWireBuilderImpl {
 
             componentReference.getEndpoints().addAll(endpoints);
             
+            // the result of calculating the endpoints is either that bindings have been 
+            // configured manually using a URI or that targets have been provided and the 
+            // endpoint remains unresolved. So all endpoints should be either resved or uresolved.
+            boolean endpointsRequireAutomaticResolution = false;
+            for(Endpoint endpoint : endpoints){
+                endpointsRequireAutomaticResolution = endpoint.isUnresolved();
+            }
+            
             // build each endpoint 
-            if (!endpoints.isEmpty()) { 
+            if (endpointsRequireAutomaticResolution) { 
 
                 for(Endpoint endpoint : endpoints){
                     endpointBuilder.build(endpoint);
@@ -938,218 +950,6 @@ class BaseWireBuilderImpl {
     
         // Clear the list of wires
         composite.getWires().clear();
-    }
-
-    /**
-     * Wire composite references in nested composites.
-     * 
-     * @param composite
-     * @param problems
-     */
-    protected void wireCompositeReferences(Composite composite) {
-    
-        // Process nested composites recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                wireCompositeReferences((Composite)implementation);
-            }
-        }
-    
-        // Process composite references declared in this composite
-        for (Reference reference : composite.getReferences()) {
-            CompositeReference compositeReference = (CompositeReference)reference;
-            List<ComponentReference> promotedReferences = getPromotedComponentReferences(compositeReference);
-            for (ComponentReference promotedReference : promotedReferences) {
-    
-                reconcileReferenceBindings(compositeReference, promotedReference);
-                if (compositeReference.getInterfaceContract() != null && // can be null in unit tests
-                compositeReference.getInterfaceContract().getCallbackInterface() != null) {
-                    SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
-                    if (promotedReference.getCallback() != null) {
-                        promotedReference.getCallback().getBindings().clear();
-                    } else {
-                        promotedReference.setCallback(assemblyFactory.createCallback());
-                    }
-                    if (scaCallbackBinding != null) {
-                        promotedReference.getCallback().getBindings().add(scaCallbackBinding);
-                    }
-                    if (compositeReference.getCallback() != null) {
-                        promotedReference.getCallback().getBindings().addAll(compositeReference.getCallback()
-                            .getBindings());
-                    }
-                }
-            }
-        }
-    
-        // Process the component references declared on components
-        // in this composite
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                for (ComponentReference componentReference : component.getReferences()) {
-                    Reference implReference = componentReference.getReference();
-                    if (implReference != null && implReference instanceof CompositeReference) {
-                        CompositeReference compositeReference = (CompositeReference)implReference;
-                        List<ComponentReference> promotedReferences =
-                            getPromotedComponentReferences(compositeReference);
-                        for (ComponentReference promotedReference : promotedReferences) {
-    
-                            // Override the configuration of the promoted reference
-                            reconcileReferenceBindings(componentReference, promotedReference);
-                            if (componentReference.getInterfaceContract() != null && // can be null in unit tests
-                            componentReference.getInterfaceContract().getCallbackInterface() != null) {
-                                SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
-                                if (promotedReference.getCallback() != null) {
-                                    promotedReference.getCallback().getBindings().clear();
-                                } else {
-                                    promotedReference.setCallback(assemblyFactory.createCallback());
-                                }
-                                if (scaCallbackBinding != null) {
-                                    promotedReference.getCallback().getBindings().add(scaCallbackBinding);
-                                }
-                                if (componentReference.getCallback() != null) {
-                                    promotedReference.getCallback().getBindings().addAll(componentReference
-                                        .getCallback().getBindings());
-                                }
-                            }
-    
-                            // Wire the promoted reference to the actual
-                            // non-composite component services
-                            if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference
-                                .getMultiplicity() == Multiplicity.ONE_ONE) {
-                                // promotedReference.getTargets().clear();
-                            }
-                            for (ComponentService target : componentReference.getTargets()) {
-                                if (target.getService() instanceof CompositeService) {
-    
-                                    // Wire to the actual component service
-                                    // promoted by a composite service
-                                    CompositeService compositeService = (CompositeService)target.getService();
-                                    // Find the promoted component service
-                                    ComponentService componentService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
-                                    if (componentService != null) {
-                                        promotedReference.getTargets().add(componentService);
-                                    }
-                                } else {
-    
-                                    // Wire to a non-composite target service
-                                    promotedReference.getTargets().add(target);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (ComponentReference componentReference : component.getReferences()) {
-    
-                    // Wire the component reference to the actual
-                    // non-composite component services
-                    List<ComponentService> targets = componentReference.getTargets();
-                    for (int i = 0, n = targets.size(); i < n; i++) {
-                        ComponentService target = targets.get(i);
-                        if (target.getService() instanceof CompositeService) {
-    
-                            // Wire to the actual component service
-                            // promoted by a composite service
-                            CompositeService compositeService = (CompositeService)target.getService();
-                            ComponentService componentService = compositeService.getPromotedService();
-                            if (componentService != null) {
-                                targets.set(i, componentService);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Follow a reference promotion chain down to the inner most (non composite)
-     * component references.
-     * 
-     * @param compositeReference
-     * @return
-     */
-    private List<ComponentReference> getPromotedComponentReferences(CompositeReference compositeReference) {
-        List<ComponentReference> componentReferences = new ArrayList<ComponentReference>();
-        collectPromotedComponentReferences(compositeReference, componentReferences);
-        return componentReferences;
-    }
-
-    /**
-     * Follow a reference promotion chain down to the inner most (non composite)
-     * component references.
-     * 
-     * @param compositeReference
-     * @param componentReferences
-     * @return
-     */
-    private void collectPromotedComponentReferences(CompositeReference compositeReference,
-                                                    List<ComponentReference> componentReferences) {
-        for (ComponentReference componentReference : compositeReference.getPromotedReferences()) {
-            Reference reference = componentReference.getReference();
-            if (reference instanceof CompositeReference) {
-    
-                // Continue to follow the reference promotion chain
-                collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
-    
-            } else if (reference != null) {
-    
-                // Found a non-composite reference
-                componentReferences.add(componentReference);
-            }
-        }
-    }
-
-    /**
-     * Override the bindings for a promoted reference from an outer component
-     * reference
-     * 
-     * @param reference
-     * @param promotedReference
-     */
-    private void reconcileReferenceBindings(Reference reference, ComponentReference promotedReference) {
-        List<Binding> bindings = new ArrayList<Binding>();
-        
-        // collect the top level bindings first
-        for (Binding binding : reference.getBindings()) {
-            if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
-                bindings.add(binding);
-            }
-        }
-        
-        // if there are not top level bindings to override the promoted bindings
-        // then collect the promoted bindings
-        if (bindings.size() == 0){
-            for (Binding binding : promotedReference.getBindings()) {
-                if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
-                    bindings.add(binding);
-                }
-            }
-        }
-        
-        promotedReference.getBindings().clear();
-        promotedReference.getBindings().addAll(bindings);
-        
-        if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
-            if (promotedReference.getBindings().size() > 1) {
-                warning("ComponentReferenceMoreWire", promotedReference, promotedReference.getName());                
-            }
-        }
-        Set<Binding> callbackBindings = new HashSet<Binding>();
-        if (promotedReference.getCallback() != null) {
-            callbackBindings.addAll(promotedReference.getCallback().getBindings());
-        }
-        if (reference.getCallback() != null) {
-            callbackBindings.addAll(reference.getCallback().getBindings());
-        }
-        promotedReference.setCallback(assemblyFactory.createCallback());
-        for (Binding binding : callbackBindings) {
-            if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
-                promotedReference.getCallback().getBindings().add(binding);
-            }
-        }
     }
     
     private void addPoliciesFromPromotedService(CompositeService compositeService) {

@@ -146,6 +146,10 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
         return interfaceContract;
     }
 
+    public InterfaceContract getInterfaceContract(Binding binding) {
+        return getInterfaceContract();
+    }     
+
     public String getName() {
         return null;
     }

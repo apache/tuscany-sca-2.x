@@ -22,11 +22,13 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
  * Represents a component reference
@@ -88,4 +90,23 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public List<Endpoint> getEndpoints(){
         return endpoints;
     }
+    
+    /**
+     * Use endpoint information to work out what the interface contract for the
+     * binding is. 
+     */
+    public InterfaceContract getInterfaceContract(Binding binding){
+        InterfaceContract interfaceContract = null;
+        
+        for (Endpoint theEndpoint : endpoints){
+            if (theEndpoint.getSourceBinding() == binding){
+                interfaceContract = theEndpoint.getInterfaceContract();
+            }
+        }
+        
+        if (interfaceContract == null){
+            interfaceContract = getInterfaceContract();
+        }
+        return interfaceContract;
+    } 
 }

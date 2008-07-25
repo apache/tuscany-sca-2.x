@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -190,14 +191,14 @@ public class BindingWSDLGenerator {
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
 
-        if (contract.getInterfaceContract() == null) {
+        if (((Contract)contract).getInterfaceContract(wsBinding) == null) {
             // can happen if incorrect component service name
             fatal(monitor, "MissingInterfaceContract", wsBinding, component.getName(), contract.getName()); 
         }
 
         InterfaceContract icontract = wsBinding.getBindingInterfaceContract();
         if (icontract == null) {
-            icontract = contract.getInterfaceContract().makeUnidirectional(false);
+            icontract = ((Contract)contract).getInterfaceContract(wsBinding).makeUnidirectional(false);
             if (icontract instanceof JavaInterfaceContract) {
                 ModelResolver resolver = component instanceof ResolverExtension ?
                                              ((ResolverExtension)component).getModelResolver() : null;

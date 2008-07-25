@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 /**
  * The assembly model object for an endpoint.
@@ -47,6 +48,8 @@ public class EndpointImpl implements Endpoint {
     private ComponentService targetComponentService;
     private Binding targetBinding;
     private Binding targetCallbackBinding;
+    
+    private InterfaceContract interfaceContract;
     
     protected EndpointImpl() {
     }
@@ -140,4 +143,12 @@ public class EndpointImpl implements Endpoint {
     public void setTargetCallbackBinding(Binding targetCallbackBinding){
         this.targetCallbackBinding = targetCallbackBinding;   
     } 
+    
+    public InterfaceContract getInterfaceContract() {
+        return interfaceContract;
+    }
+    
+    public void setInterfaceContract(InterfaceContract interfaceContract) {
+        this.interfaceContract = interfaceContract;
+    }
 }

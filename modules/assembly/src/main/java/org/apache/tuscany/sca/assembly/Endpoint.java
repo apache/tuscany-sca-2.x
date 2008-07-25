@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+
 /**
  * Represents an endpoint (primarily a combination of a target service name and a set of
  * candidate bindings)
@@ -147,5 +149,19 @@ public interface Endpoint extends Base, Cloneable {
      * 
      * @param binding target binding
      */
-    void setTargetBinding(Binding binding);       
+    void setTargetBinding(Binding binding); 
+    
+    /**
+     * Returns the interface contract defining the interface 
+     * 
+     * @return the interface contract
+     */
+    InterfaceContract getInterfaceContract();
+    
+    /**
+     * Sets the interface contract defining the interface 
+     * 
+     * @param interfaceContract the interface contract
+     */
+    void setInterfaceContract(InterfaceContract interfaceContract);    
 }
