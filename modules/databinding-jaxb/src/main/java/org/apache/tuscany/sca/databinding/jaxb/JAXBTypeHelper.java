@@ -155,7 +155,9 @@ public class JAXBTypeHelper implements XMLTypeHelper {
         @Override
         public Result createOutput(String ns, String file) throws IOException {
             DOMResult result = new DOMResult();
-            result.setSystemId(ns + file);
+            // TUSCANY-2498: Set the system id to "" so that the xsd:import doesn't produce 
+            // an illegal schemaLocation attr 
+            result.setSystemId("");
             results.put(ns, result);
             return result;
         }
