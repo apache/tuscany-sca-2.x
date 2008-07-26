@@ -134,12 +134,15 @@ public abstract class OSGiTestRuntime {
             "javax.xml.xpath, " +
             "javax.sql," +
             "org.w3c.dom, " +
+            "org.w3c.dom.bootstrap, " +
+            "org.w3c.dom.ls, " +
             "org.xml.sax, " +
             "org.xml.sax.ext, " +
             "org.xml.sax.helpers, " +
             "javax.security.auth, " +
             "javax.security.auth.login, " +
             "javax.security.auth.callback, " +
+            "javax.security.cert, " +
             "javax.naming, " +
             "javax.naming.spi, " +
             "javax.naming.directory, " +
@@ -147,6 +150,7 @@ public abstract class OSGiTestRuntime {
             "javax.imageio, " +
             "sun.misc, " +
             "javax.net, " +
+            "javax.net.ssl, " +
             "javax.crypto, " +
             "javax.rmi, " +
             "javax.transaction, " +
