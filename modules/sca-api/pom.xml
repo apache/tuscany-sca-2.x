@@ -40,7 +40,7 @@
 
                 <configuration>
                     <instructions>
-                        <Bundle-Version>2.0</Bundle-Version>
+                        <Bundle-Version>1.4</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.api</Bundle-SymbolicName>
                         <Bundle-Description>${pom.description}</Bundle-Description>
                         <Export-Package>org.osoa.sca*</Export-Package>
