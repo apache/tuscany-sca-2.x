@@ -73,7 +73,7 @@ class SCAParentApplicationContext implements ApplicationContext {
     } // end constructor
 
     public Object getBean(String name) throws BeansException {
-        return getBean(name, null);
+        return getBean(name, (Class) null);
     }
 
     /**
@@ -117,6 +117,10 @@ class SCAParentApplicationContext implements ApplicationContext {
         throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
 
     } // end method getBean( String, Class )
+
+    public Object getBean(String name, Object[] args) throws BeansException {
+         return getBean(name, ((Class)null));
+    }
 
     /**
      * Creates a proxy Bean for a reference
@@ -181,6 +185,10 @@ class SCAParentApplicationContext implements ApplicationContext {
 
     public AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException {
         return null;
+    }
+
+    public String getId() {
+          return this.toString();
     }
 
     public String getDisplayName() {
