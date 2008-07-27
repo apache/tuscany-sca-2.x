@@ -493,13 +493,13 @@ public class SpringXMLComponentTypeLoader {
                         je = jf.getJarEntry(appCtxPath);
                         if (je != null) {
                             // TODO return a Spring specific Resource type for jars
-                            return new UrlResource(new URL("jar:" + locationFile.toURL() + "!/" + appCtxPath));
+                            return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + appCtxPath));
                         }
                     }
                 }
                 je = jf.getJarEntry(APPLICATION_CONTEXT);
                 if (je != null) {
-                    return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!" + APPLICATION_CONTEXT));
+                    return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + APPLICATION_CONTEXT));
                 }
             } catch (IOException e) {
                 // bad archive
