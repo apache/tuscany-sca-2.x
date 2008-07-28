@@ -21,8 +21,11 @@ package org.apache.tuscany.sca.implementation.web;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,15 +47,22 @@ public class ComponentContextServlet extends HttpServlet {
     public static final String COMPONENT_CONTEXT_SCRIPT_URI = "org.apache.tuscany.sca.componentContext.js";
 
     @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        
+    }
+
+    @Override
     public void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException  {
         response.setContentType("text/plain;charset=utf-8");
-        OutputStream out = response.getOutputStream();
+        PrintWriter out = response.getWriter();
 
-        doScriptInit(out);
+        out.write(HEADER);
+
+        doScriptInit(req, response);
 
         doScriptReferences(out);
 
-        out.write(FOOTER.getBytes("UTF-8"));
+        out.write(FOOTER);
 
         out.flush();
         out.close();
@@ -61,30 +71,29 @@ public class ComponentContextServlet extends HttpServlet {
     /**
      * Calls each ContextScriptProcessor once to insert any required initilization code into componentContext.js  
      */
-    protected void doScriptInit(OutputStream out) throws IOException, UnsupportedEncodingException {
-        out.write(HEADER.getBytes("UTF-8"));
+    protected void doScriptInit(HttpServletRequest req, HttpServletResponse response) throws IOException, UnsupportedEncodingException {
 
         for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
-            csp.scriptInit(out);
+            csp.scriptInit(req, response);
         }
     }
 
     /**
      * Calls each ContextScriptProcessor for each SCA reference to insert code for the reference into componentContext.js  
      */
-    protected void doScriptReferences(OutputStream out) throws IOException, UnsupportedEncodingException {
+    protected void doScriptReferences(PrintWriter out) throws IOException, UnsupportedEncodingException {
 
-        out.write("// SCA References\n".getBytes("UTF-8"));
+        out.write("// SCA References\n");
         
         for (ComponentReference cr : WebSingleton.INSTANCE.getRuntimeComponent().getReferences()) {
             String ref = "// SCA Reference " + cr.getName() + "\n";
-            out.write(ref.getBytes("UTF-8"));
+            out.write(ref);
             for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
                 csp.scriptReference(cr, out);
             }
         }
 
-        out.write("\n// SCA References end.\n".getBytes("UTF-8"));
+        out.write("\n// SCA References end.\n");
     }
 
     /**
