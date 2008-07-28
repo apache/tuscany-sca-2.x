@@ -38,6 +38,8 @@ class WebImplementationImpl implements WebImplementation {
     private List<Reference> references = new ArrayList<Reference>(); 
     private String uri;
     private boolean unresolved;
+    
+    private String webURI;
 
     /**
      * Constructs a new Web implementation.
@@ -80,5 +82,13 @@ class WebImplementationImpl implements WebImplementation {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
+    }
+
+    public String getWebURI() {
+        return webURI;
+    }
+
+    public void setWebURI(String webURI) {
+        this.webURI = webURI;
     }
 }

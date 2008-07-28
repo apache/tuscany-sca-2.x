@@ -23,7 +23,7 @@
 	name="TestWeb">
 
     <component name="TestWeb">
-        <implementation.web uri="MyWebapp"/>
+        <implementation.web web-uri="MyWebapp"/>
     </component>
 
 </composite>
