@@ -22,7 +22,7 @@
            name="Helloworld"
 
     <component name="WebClient>
-        <implementation.web uri=""/>
+        <implementation.web web-uri=""/>
         <reference name="helloworldService" target="HelloworldService"/>
     </component>
 
