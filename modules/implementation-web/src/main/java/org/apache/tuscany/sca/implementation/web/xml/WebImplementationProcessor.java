@@ -72,10 +72,13 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
         WebImplementation implementation = implementationFactory.createWebImplementation();
         implementation.setUnresolved(true);
 
-        // Read the uri attribute
-        String webappURI = getString(reader, "uri");
-        if (webappURI != null) {
-            implementation.setURI(webappURI);
+        // Read the webapp uri attribute
+        String webURI = getString(reader, "web-uri");
+        if (webURI != null) {
+            implementation.setWebURI(webURI);
+
+            // Set the URI of the component type 
+            implementation.setURI(webURI);
         }
 
         // Skip to end element
@@ -111,7 +114,7 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
         
         // Write <implementation.web>
         writeStart(writer, IMPLEMENTATION_WEB.getNamespaceURI(), IMPLEMENTATION_WEB.getLocalPart(),
-                   new XAttr("uri", implementation.getURI()));
+                   new XAttr("web-uri", implementation.getWebURI()));
         
         writeEnd(writer);
     }

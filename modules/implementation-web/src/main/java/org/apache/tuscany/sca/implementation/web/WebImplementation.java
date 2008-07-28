@@ -31,12 +31,12 @@ public interface WebImplementation extends Implementation {
      * Returns the webapp URI.
      * @return the webapp URI
      */
-    String getURI();
+    String getWebURI();
     
     /**
      * Sets the Webapp URI.
      * @param uri the webapp URI
      */
-    void setURI(String webappURI);
+    void setWebURI(String webappURI);
 
 }

@@ -59,7 +59,7 @@ public class WriteTestCase extends TestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
         
-        assertTrue(bos.toString().contains("MyWebapp"));
+        assertTrue(bos.toString().contains("web-uri=\"MyWebapp\""));
 
     }
 

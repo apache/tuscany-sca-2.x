@@ -75,7 +75,7 @@ public class ReadTestCase extends TestCase {
 
         compositeBuilder.build(composite);
         
-        assertTrue(((WebImplementation) composite.getComponents().get(0).getImplementation()).getURI().equals("MyWebapp"));
+        assertTrue(((WebImplementation) composite.getComponents().get(0).getImplementation()).getWebURI().equals("MyWebapp"));
     }
 
 }
