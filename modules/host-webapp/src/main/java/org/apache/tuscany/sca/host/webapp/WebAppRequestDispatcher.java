@@ -87,6 +87,9 @@ class WebAppRequestDispatcher implements RequestDispatcher {
      */
     protected String fiddlePath(String path, String servletPath) {
         StringTokenizer st = new StringTokenizer(path, "/");
+        if (st.countTokens() == 1) {
+            return path;
+        }
         String root = "";
         while (st.hasMoreTokens()){
                 String s = st.nextToken();
