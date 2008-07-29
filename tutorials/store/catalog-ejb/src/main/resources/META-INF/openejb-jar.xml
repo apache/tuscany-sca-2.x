@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<openejb-jar xmlns="http://www.openejb.org/xml/ns/openejb-jar-2.1"
+    xmlns:sys="http://geronimo.apache.org/xml/ns/deployment-1.2">
+    <sys:environment>
+        <sys:moduleId>
+            <sys:groupId>${pom.groupId}</sys:groupId>
+            <sys:artifactId>${pom.artifactId}</sys:artifactId>
+            <sys:version>${version}</sys:version>
+            <sys:type>jar</sys:type>
+        </sys:moduleId>
+        <sys:dependencies>
+            <sys:dependency>
+                <sys:groupId>org.apache.geronimo.configs</sys:groupId>
+                <sys:artifactId>j2ee-corba-yoko</sys:artifactId>
+                <!-- 
+                <sys:version>2.0.2</sys:version>
+                 -->
+                <sys:type>car</sys:type>
+            </sys:dependency>
+        </sys:dependencies>
+        <sys:hidden-classes />
+        <sys:non-overridable-classes />
+    </sys:environment>
+
+    <enterprise-beans>
+        <session>
+            <ejb-name>VegetablesCatalogEJB</ejb-name>
+            <jndi-name>VegetablesCatalogEJB</jndi-name>
+            <tss-link>IdentityTokenNoSecurity</tss-link>
+        </session>
+    </enterprise-beans>
+
+    <!--
+        NOTE: for geronimo 2.0.2, please make sure the following system module is started
+        before the deployment of the EJB jar 
+        org.apache.geronimo.configs/openejb-corba-deployer/2.0.2/car   
+    -->
+    <gbean name="IdentityTokenNoSecurity" class="org.apache.geronimo.corba.TSSBean">
+        <attribute name="POAName">IdentityTokenNoSecurity</attribute>
+        <reference name="Server">
+            <name>UnprotectedServer</name>
+        </reference>
+        <xml-attribute name="tssConfig">
+            <tss:tss xmlns:tss="http://openejb.apache.org/xml/ns/corba-tss-config-2.1"
+                xmlns:sec="http://geronimo.apache.org/xml/ns/security-1.2">
+                <tss:compoundSecMechTypeList>
+                    <tss:compoundSecMech>
+                        <tss:sasMech>
+                            <tss:identityTokenTypes>
+                                <tss:ITTAnonymous />
+                                <tss:ITTPrincipalNameGSSUP
+                                    principal-class="org.apache.geronimo.security.realm.providers.GeronimoUserPrincipal" />
+                                <tss:ITTDistinguishedName />
+                                <tss:ITTX509CertChain />
+                            </tss:identityTokenTypes>
+                        </tss:sasMech>
+                    </tss:compoundSecMech>
+                </tss:compoundSecMechTypeList>
+            </tss:tss>
+        </xml-attribute>
+    </gbean>
+</openejb-jar>

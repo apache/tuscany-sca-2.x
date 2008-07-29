@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+		targetNamespace="http://store"
+		name="store-eu">
+		
+    <component name="StoreEU">
+        <t:implementation.widget location="uiservices/store-eu.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="/ui"/> 
+        </service>
+		<reference name="catalog" target="StoreEUCatalog">
+		 	<t:binding.jsonrpc/>
+		 </reference>
+		 <reference name="shoppingCart" target="StoreEUShoppingCart/Cart">
+		 	<t:binding.atom/>
+		 </reference>
+		 <reference name="shoppingTotal" target="StoreEUShoppingCart/Total">
+		 	<t:binding.jsonrpc/>
+		 </reference>
+    </component>
+    
+	<component name="StoreEUCatalog">
+		<implementation.java class="services.merger.MergedCatalogImpl"/> 
+		<property name="currencyCode">EUR</property>
+		<service name="Catalog">
+			<t:binding.jsonrpc/>
+			<binding.ws uri="/CatalogWebService"/>
+   		</service>
+		<reference name="fruitsCatalog" target="FruitsCatalogWebService">
+			<binding.ws/>
+		</reference>	
+		<reference name="vegetablesCatalog" target="VegetablesCatalogWebService">
+			<binding.ws/>
+		</reference>	
+		<reference name="currencyConverter" target="CurrencyConverterWebService">
+			<binding.ws/>
+		</reference>	
+	</component>
+ 	
+	<component name="StoreEUShoppingCart">
+		<implementation.java class="services.db.ShoppingCartTableImpl"/>
+		<property name="database">../store-eu/target/cart-eu-db</property>
+		<service name="Cart">
+			<t:binding.atom uri="/ShoppingCart/Cart"/>
+		</service>    	
+		<service name="Total">
+			<t:binding.jsonrpc/>
+		</service>    	
+	</component>
+    
+</composite>
