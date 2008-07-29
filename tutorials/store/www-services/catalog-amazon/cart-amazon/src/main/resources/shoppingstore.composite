@@ -1,0 +1,20 @@
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+			targetNamespace="http://webservices.amazon.com/AWSECommerceService/2007-05-14"
+			xmlns:tns="http://webservices.amazon.com/AWSECommerceService/2007-05-14"
+			xmlns:db="http://tuscany.apache.org/xmlns/databinding/1.0"
+           name="ShoppingStore">
+    
+    <component name="ShoppingStoreServiceComponent">
+	    <service name="ShoppingStoreService" >
+	        <interface.wsdl interface="http://webservices.amazon.com/AWSECommerceService/2007-05-14#wsdl.interface(AWSECommerceServicePortType)" />
+	        <binding.ws />
+	        <db:databinding name="jaxb" />
+	    </service>
+    	<implementation.java class="shoppingstore.services.proxy.ShoppingStoreServiceImpl" />
+		<reference name="cartService" target="CartServiceComponent"></reference>
+    </component>
+
+	<component name="CartServiceComponent">
+        <implementation.java class="shoppingstore.services.cart.CartServiceImpl" />
+    </component>
+</composite>
