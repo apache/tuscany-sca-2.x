@@ -86,7 +86,7 @@ function suggest(input, suggestFunction) {
     		}
     		items += '<tr><td class="suggestItem" ' +
     		'onmouseover="hilightSuggestion(this, true)" onmouseout="hilightSuggestion(this, false)" ' +
-    		'onclick="selectSuggestion(this, \'' + values[i] + '\')">' + values[i] + '</td></tr>';
+    		'onmousedown="selectSuggestion(this, \'' + values[i] + '\')">' + values[i] + '</td></tr>';
     	}
     	if (items.length != 0) {
     		items += '</table>';
