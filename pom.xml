@@ -165,7 +165,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
-                <module>tutorial-store</module>
+                <module>tutorials</module>
             </modules>
         </profile>
 
@@ -177,7 +177,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
-                <module>tutorial-store</module>
+                <module>tutorials</module>
                 <module>demos</module>
                 <module>distribution</module>
             </modules>
@@ -191,7 +191,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
-                <module>tutorial-store</module>
+                <module>tutorials</module>
             </modules>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
@@ -228,7 +228,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
-                <module>tutorial-store</module>
+                <module>tutorials</module>
                 <module>demos</module>
                 <module>distribution</module>
             </modules>
@@ -239,7 +239,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
-                <module>tutorial-store</module>
+                <module>tutorials</module>
                 <module>demos</module>
             </modules>
             <build>
