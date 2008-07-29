@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-tutorial</artifactId>
+        <artifactId>tuscany-tutorial-store</artifactId>
         <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tutorial-catalog-amazon</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tuscany SCA Tutorial Amazon Catalog</name>
+    <name>Apache Tuscany SCA Store Tutorial Amazon Catalog</name>
 
     <dependencies>
         <dependency>

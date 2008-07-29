@@ -245,9 +245,9 @@
         </fileSet>
         <!-- Add all the tutorials to the tutorials directory -->
         <fileSet>
-            <directory>../tutorial-store</directory>
+            <directory>../tutorials</directory>
 
-            <outputDirectory>tuscany-sca-${tuscany.version}/tutorial</outputDirectory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/tutorials</outputDirectory>
             <includes>
                 <include>**/*</include>
             </includes>
@@ -272,16 +272,16 @@
                 <exclude>*/**/*.ruleset</exclude>
                 <exclude>target</exclude>
                 <exclude>target/**/*</exclude>
-                <exclude>catalog-webapp/target/war</exclude>
-                <exclude>catalog-webapp/target/war/**/*</exclude>
-                <exclude>catalog-webapp/target/tutorial-catalog-webapp</exclude>
-                <exclude>catalog-webapp/target/tutorial-catalog-webapp/**/*</exclude>
-                <exclude>store-db/target/cart-db/</exclude>
-                <exclude>store-db/target/cart-db/**/*</exclude>
-                <exclude>store-eu/target/cart-eu-db/</exclude>
-                <exclude>store-eu/target/cart-eu-db/**/*</exclude>
-                <exclude>store-supplier/target/cart-db/</exclude>
-                <exclude>store-supplier/target/cart-db/**/*</exclude>
+                <exclude>store/catalog-webapp/target/war</exclude>
+                <exclude>store/catalog-webapp/target/war/**/*</exclude>
+                <exclude>store/catalog-webapp/target/tutorial-catalog-webapp</exclude>
+                <exclude>store/catalog-webapp/target/tutorial-catalog-webapp/**/*</exclude>
+                <exclude>store/store-db/target/cart-db/</exclude>
+                <exclude>store/store-db/target/cart-db/**/*</exclude>
+                <exclude>store/store-eu/target/cart-eu-db/</exclude>
+                <exclude>store/store-eu/target/cart-eu-db/**/*</exclude>
+                <exclude>store/store-supplier/target/cart-db/</exclude>
+                <exclude>store/store-supplier/target/cart-db/**/*</exclude>
             </excludes>
         </fileSet>
         <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
