@@ -37,7 +37,7 @@
             </activation>
             <modules>
                 <module>store</module>
-                <module>photo-gallery</module>
+                <!-- <module>photo-gallery</module> -->
             </modules>
         </profile>
 
