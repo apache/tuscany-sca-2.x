@@ -17,27 +17,29 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.test.corba.types;
+package org.apache.tuscany.sca.binding.corba.impl.service;
 
-import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
+import java.util.List;
 
 /**
- * Implementation of ScenarioFour service
+ * Target proxy interface for service bindings
  */
-public class ScenarioFourImpl implements ScenarioFour {
+public interface InvocationProxy {
 
-    public ScenarioFourStruct setStruct(ScenarioFourStruct struct) {
-        return struct;
-    }
-
-    public void exceptionTest() throws ScenarioFourException {
-        ScenarioFourException exception = new ScenarioFourException();
-        exception.setContent(ScenarioFourException.DEFAULT_CONTENT);
-        throw exception;
-    }
-
-    public ScenarioFourSdo passScenarioFourStruct(ScenarioFourSdo scenarioFourSdo) {
-        return scenarioFourSdo;
-    }
-
+    /**
+     * Gets operations types for target
+     * @param operationName
+     * @return
+     */
+    public OperationTypes getOperationTypes(String operationName);
+    
+    /**
+     * Invokes target operation
+     * @param operationName
+     * @param arguments
+     * @return
+     * @throws InvocationException
+     */
+    public Object invoke(String operationName, List<Object> arguments) throws InvocationException;
+    
 }

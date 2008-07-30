@@ -26,12 +26,16 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourFactory;
+import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
 import org.apache.tuscany.sca.test.corba.types.ScenarioFour;
 import org.apache.tuscany.sca.test.corba.types.ScenarioFourComponent;
+import org.apache.tuscany.sca.test.corba.types.ScenarioFourException;
 import org.apache.tuscany.sca.test.corba.types.ScenarioFourStruct;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 /**
  * Tests SCA default binding over CORBA binding
@@ -42,6 +46,8 @@ public class ScenarioFourTestCase {
     private static int ORB_INITIAL_PORT = 5060;
     private static SCADomain domain;
     private static TransientNameServer server;
+    private static ScenarioFourComponent scenarioFourComponent;
+    private static ScenarioFour scenarioFour;
 
     /**
      * Sets up name service, creates and registers traditional CORBA service,
@@ -63,6 +69,8 @@ public class ScenarioFourTestCase {
             }
             // obtain domain
             domain = SCADomain.newInstance("ScenarioFour.composite");
+            scenarioFourComponent = domain.getService(ScenarioFourComponent.class, "ScenarioFour");
+            scenarioFour = scenarioFourComponent.getScenarioFour();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,16 +84,17 @@ public class ScenarioFourTestCase {
         server.stop();
     }
 
+    /**
+     * General tests for passing JAXB objects
+     */
     @Test
-    public void test_generalTest() {
+    public void test_generalJAXB() {
         try {
-            ScenarioFourComponent soc = domain.getService(ScenarioFourComponent.class, "ScenarioFour");
-            ScenarioFour so = soc.getScenarioFour();
             ScenarioFourStruct input = new ScenarioFourStruct();
             input.field1 = "Test";
             input.field2 = 1;
             input.field3 = new double[1];
-            ScenarioFourStruct output = so.setStruct(input);
+            ScenarioFourStruct output = scenarioFour.setStruct(input);
             assertTrue(input.equals(output));
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,4 +102,36 @@ public class ScenarioFourTestCase {
         }
     }
     
+    /**
+     * Test for JAXB exceptions
+     */
+    @Test
+    public void test_exceptionsJAXB() {
+        try {
+            scenarioFour.exceptionTest();
+            fail();
+        } catch (ScenarioFourException e) {
+            assertTrue(ScenarioFourException.DEFAULT_CONTENT.equals(e.getContent()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+    
+    /**
+     * General test for passing SDO objects
+     */
+    @Test
+    public void test_generalSDO() {
+        try {
+            ScenarioFourSdo scenarioFourSdo = ScenarioFourFactory.INSTANCE.createScenarioFourSdo();
+            scenarioFourSdo.setMessage("Test1");
+            scenarioFourSdo.setSymbol("Test2");
+            ScenarioFourSdo result = scenarioFour.passScenarioFourStruct(scenarioFourSdo);
+            assertTrue(scenarioFourSdo.getMessage().equals(result.getMessage()) && scenarioFourSdo.getSymbol().equals(result.getSymbol()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }    
 }

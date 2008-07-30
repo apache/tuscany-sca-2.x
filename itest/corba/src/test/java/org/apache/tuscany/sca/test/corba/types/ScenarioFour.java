@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
+import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -28,5 +29,9 @@ import org.osoa.sca.annotations.Remotable;
 public interface ScenarioFour {
 
     ScenarioFourStruct setStruct(ScenarioFourStruct struct);
+
+    void exceptionTest() throws ScenarioFourException;
+
+    ScenarioFourSdo passScenarioFourStruct(ScenarioFourSdo scenarioFourSdo);
 
 }

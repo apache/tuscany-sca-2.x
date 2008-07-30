@@ -38,22 +38,24 @@ public class CorbaSCABindingProviderFactory implements BindingProviderFactory<Di
 
     private CorbaHostExtensionPoint chep;
     private CorbaHost host;
+    private ExtensionPointRegistry extensions;
 
-    public CorbaSCABindingProviderFactory(ExtensionPointRegistry registry) {
-        chep = registry.getExtensionPoint(CorbaHostExtensionPoint.class);
+    public CorbaSCABindingProviderFactory(ExtensionPointRegistry extensions) {
+        this.extensions = extensions;
+        chep = extensions.getExtensionPoint(CorbaHostExtensionPoint.class);
         host = new ExtensibleCorbaHost(chep);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    DistributedSCABinding binding) {
-        return new CorbaSCAReferenceBindingProvider(binding.getSCABinding(), host, reference);
+        return new CorbaSCAReferenceBindingProvider(binding.getSCABinding(), host, component, reference, extensions);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                DistributedSCABinding binding) {
-        return new CorbaSCAServiceBindingProvider(binding.getSCABinding(), host, service);
+        return new CorbaSCAServiceBindingProvider(binding.getSCABinding(), host, component, service, extensions);
     }
 
     public Class<DistributedSCABinding> getModelType() {
