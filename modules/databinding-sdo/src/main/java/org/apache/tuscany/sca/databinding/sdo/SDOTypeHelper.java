@@ -159,11 +159,24 @@ public class SDOTypeHelper implements XMLTypeHelper {
             }
             // make sure all the required types are defined in the resolved schema
             for (Type type : entry.getValue()) {
-                QName typeName = new QName(type.getURI(), type.getName());
-                if (resolved.getXmlSchemaType(typeName) == null) {
-                    //FIXME: create a checked exception and propagate it back up to the activator
-                    throw new RuntimeException("No XSD found for " + typeName.toString());
+                String name = xsdHelper.getLocalName(type);
+                QName typeName = null;
+                if (name.endsWith("_._type")) {
+                    // FIXME: Anonymous tyype
+                    name = name.substring(0, name.length() - "_._type".length());
+                    typeName = new QName(type.getURI(), name);
+                    if (resolved.getXmlSchemaElement(typeName) == null) {
+                        //FIXME: create a checked exception and propagate it back up to the activator
+                        throw new RuntimeException("No XSD found for " + typeName.toString());
+                    }
+                } else {
+                    typeName = new QName(type.getURI(), name);
+                    if (resolved.getXmlSchemaType(typeName) == null) {
+                        //FIXME: create a checked exception and propagate it back up to the activator
+                        throw new RuntimeException("No XSD found for " + typeName.toString());
+                    }
                 }
+
             }
             definitions.add(resolved);
         }
