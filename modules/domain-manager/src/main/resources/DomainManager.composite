@@ -27,19 +27,6 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/home"/>
         </service>
-        <reference name="toolbarGadget" target="ToolbarGadget">
-        	<t:binding.http/>
-        </reference>
-        <reference name="homeGadget" target="HomeGadget">
-        	<t:binding.http/>
-        </reference>
-    </component>
-    
-    <component name="ToolbarGadget">
-        <t:implementation.widget location="toolbar-gadget.html"/>
-        <service name="Widget">
-        	<t:binding.http uri="http://localhost:9990/ui/toolbar-gadget"/>
-        </service>
     </component>
     
     <component name="HomeGadget">
@@ -54,12 +41,6 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/workspace"/>
         </service>
-        <reference name="toolbarGadget" target="ToolbarGadget">
-        	<t:binding.http/>
-        </reference>
-        <reference name="workspaceGadget" target="WorkspaceGadget">
-        	<t:binding.http/>
-        </reference>
     </component>
     
     <component name="WorkspaceGadget">
@@ -77,12 +58,6 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/files"/>
         </service>
-        <reference name="toolbarGadget" target="ToolbarGadget">
-        	<t:binding.http/>
-        </reference>
-        <reference name="filesGadget" target="FilesGadget">
-        	<t:binding.http/>
-        </reference>
     </component>
     
     <component name="FilesGadget">
@@ -100,12 +75,6 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/composite"/>
         </service>
-        <reference name="toolbarGadget" target="ToolbarGadget">
-        	<t:binding.http/>
-        </reference>
-        <reference name="compositeGadget" target="DomainCompositeGadget">
-        	<t:binding.http/>
-        </reference>
     </component>
     
     <component name="DomainCompositeGadget">
@@ -126,12 +95,6 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
         </service>
-        <reference name="toolbarGadget" target="ToolbarGadget">
-        	<t:binding.http/>
-        </reference>
-        <reference name="cloudGadget" target="CloudGadget">
-        	<t:binding.http/>
-        </reference>
     </component>
     
     <component name="CloudGadget">
