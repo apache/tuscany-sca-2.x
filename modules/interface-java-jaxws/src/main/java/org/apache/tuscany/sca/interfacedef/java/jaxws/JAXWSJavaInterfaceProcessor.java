@@ -203,6 +203,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                             QName qname = new QName(inputNS, inputName);
                             DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
                             dataBindingExtensionPoint.introspectType(dt, operation);
+                            // TUSCANY-2505
+                            if (dt.getLogical() instanceof XMLType) {
+                                XMLType xmlType = (XMLType)dt.getLogical();
+                                xmlType.setElementName(qname);
+                            }
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
@@ -235,9 +240,14 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         try {
                             Class<?> wrapperClass =
                                 Class.forName(outputWrapperClassName, false, clazz.getClassLoader());
-                            QName qname = new QName(inputNS, inputName);
+                            QName qname = new QName(outputNS, outputName);
                             DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
                             dataBindingExtensionPoint.introspectType(dt, operation);
+                            // TUSCANY-2505
+                            if (dt.getLogical() instanceof XMLType) {
+                                XMLType xmlType = (XMLType)dt.getLogical();
+                                xmlType.setElementName(qname);
+                            }
                             return dt;
                         } catch (ClassNotFoundException e) {
                             GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());

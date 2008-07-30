@@ -40,14 +40,14 @@
                     </sequence>
                 </complexType>
             </element>
-            <element name="stockQuoteOfferResponse">
-                <complexType>
-                    <sequence>
-                        <element name="stockQuoteOfferReturn" minOccurs="0" type="tns:StockOffer"/>
-                    </sequence>
-                </complexType>
+            <!--  TUSCANY 2505, make the responseWrapper non-anonymous -->
+            <element name="stockQuoteOfferResponse" type="tns:StockQuoteOfferResponseType">
             </element>
-            
+             <complexType name="StockQuoteOfferResponseType">
+                <sequence>
+                    <element name="stockQuoteOfferReturn" minOccurs="0" type="tns:StockOffer" />
+                </sequence>
+            </complexType>            
             <!-- Faults -->
             <element name="InvalidSymbolFault">
                 <complexType>

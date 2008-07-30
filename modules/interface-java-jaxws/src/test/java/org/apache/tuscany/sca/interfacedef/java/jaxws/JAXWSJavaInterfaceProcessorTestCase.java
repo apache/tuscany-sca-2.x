@@ -22,12 +22,20 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.xml.namespace.QName;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.jaxb.DefaultXMLAdapterExtensionPoint;
+import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+
+import com.example.stock.StockExceptionTest;
 
 /**
  *
@@ -42,7 +50,20 @@ public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        interfaceProcessor = new JAXWSJavaInterfaceProcessor();
+        DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint();
+        XMLAdapterExtensionPoint xa = new DefaultXMLAdapterExtensionPoint();
+        interfaceProcessor = new JAXWSJavaInterfaceProcessor(db, new JAXWSFaultExceptionMapper(db, xa), xa);
+    }
+
+    public void testWrapper() throws Exception {
+        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
+        JavaInterface contract = iFactory.createJavaInterface(StockExceptionTest.class);
+
+        interfaceProcessor.visitInterface(contract);
+        Operation op = contract.getOperations().get(0);
+        Assert.assertTrue(!op.isWrapperStyle());
+        Assert.assertEquals(new QName("http://www.example.com/stock", "stockQuoteOffer"), op.getWrapper().getInputWrapperElement().getQName());
+        Assert.assertEquals(new QName("http://www.example.com/stock", "stockQuoteOfferResponse"), op.getWrapper().getOutputWrapperElement().getQName());
     }
 
     /**
