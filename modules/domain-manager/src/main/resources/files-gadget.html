@@ -1,0 +1,111 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<html>
+<head>
+<title>SCA Domain - Contribution File Server</title>
+
+<script type="text/javascript" src="../files-gadget/files-gadget.js"></script>
+<script type="text/javascript" src="utils.js"></script>
+
+<script language="JavaScript">
+
+	//@Reference
+	var files = new Reference("files");
+	
+	function getFiles() {
+		files.get("", getFilesResponse);
+	}
+	
+	function getFilesResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			var list = '<table width="100%"><tr><th>Files</th></tr>';
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				list += '<tr><td><input name="files" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + location + '\">' + id + '</a></td></tr>';
+			}
+			list += "</table>";
+			document.getElementById("files").innerHTML = list;
+		}
+	}				
+
+	function deleteFile() {
+		var list = array(document.filesForm.files);
+		for (var i=0; i < list.length; i++) {
+			if (list[i].checked) {
+			    var id = list[i].value;
+				files.del(id, deleteFileResponse);
+			}
+		}
+	}
+
+	function deleteFileResponse() {
+	    getFiles();
+	}
+
+	function uploadFile() {
+		document.uploadFileForm.submit();
+	}
+
+	function init() {
+		getFiles();
+	}
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="manager.css">
+</head>
+
+<body onload="init()">
+  <div id="fileServer">
+  
+  <span class=hd1>
+  SCA Domain<br><br>
+  File Server&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
+  </span>
+  <br><br>
+  This is a simple ATOM-based file server useful to share files if you don't have an FTP, SVN or Maven repository.
+  <br><br>
+  
+  <form name="filesForm">
+    <div id="files" ></div>
+    <br/>
+    <input type="button" onClick="deleteFile()"  value="Delete" />
+  </form>
+
+  <br><br>
+  
+  <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
+    <table width="100%">
+    <tr><th>Upload File</th></tr>
+    <tr><td>Upload a file to the server.</td></tr>
+    </table>
+    <br>
+    <table border="0">
+    <tr><td>File:</td><td><input type="file" name="file" size="50"/></td></tr>
+    </table>
+    <br/>
+    <input type="button" onClick="uploadFile()" value="Upload" />
+  </form>    
+      
+  </div>
+</body>
+</html>

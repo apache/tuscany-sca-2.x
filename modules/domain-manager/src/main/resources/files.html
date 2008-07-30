@@ -20,54 +20,35 @@
 <head>
 <title>SCA Domain - Contribution File Server</title>
 
-<script type="text/javascript" src="files.js"></script>
-<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="../files/files.js"></script>
 
 <script language="JavaScript">
 
 	//@Reference
-	var files = new Reference("files");
-	
-	function getFiles() {
-		files.get("", getFilesResponse);
-	}
-	
-	function getFilesResponse(feed) {
-		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
-			var list = '<table width="100%"><tr><th>Files</th></tr>';
-			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				list += '<tr><td><input name="files" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a></td></tr>';
-			}
-			list += "</table>";
-			document.getElementById("files").innerHTML = list;
-		}
-	}				
+	var toolbarGadget = new Reference("toolbarGadget");
 
-	function deleteFile() {
-		var list = array(document.filesForm.files);
-		for (var i=0; i < list.length; i++) {
-			if (list[i].checked) {
-			    var id = list[i].value;
-				files.del(id, deleteFileResponse);
-			}
-		}
+	//@Reference
+	var filesGadget = new Reference("filesGadget");
+
+	function toolbarGadget_getResponse(html) {
+		var gadget = document.getElementById('toolbarGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
-	function deleteFileResponse() {
-	    getFiles();
-	}
-
-	function uploadFile() {
-		document.uploadFileForm.submit();
+	function filesGadget_getResponse(html) {
+		var gadget = document.getElementById('filesGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
 	function init() {
-		toolbar();	
-		getFiles();
+		toolbarGadget.get('', toolbarGadget_getResponse);
+		filesGadget.get('', filesGadget_getResponse);
 	}
 
 </script>
@@ -76,39 +57,8 @@
 </head>
 
 <body onload="init()">
-  <div id="toolbar"></div>
-
-  <div id="fileServer">
+  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
   <br>
-  <span class=hd1>
-  SCA Domain<br><br>
-  File Server&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
-  </span>
-  <br><br>
-  This is a simple ATOM-based file server useful to share files if you don't have an FTP, SVN or Maven repository.
-  <br><br>
-  
-  <form name="filesForm">
-    <div id="files" ></div>
-    <br/>
-    <input type="button" onClick="deleteFile()"  value="Delete" />
-  </form>
-
-  <br><br>
-  
-  <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
-    <table width="100%">
-    <tr><th>Upload File</th></tr>
-    <tr><td>Upload a file to the server.</td></tr>
-    </table>
-    <br>
-    <table border="0">
-    <tr><td>File:</td><td><input type="file" name="file" size="50"/></td></tr>
-    </table>
-    <br/>
-    <input type="button" onClick="uploadFile()" value="Upload" />
-  </form>    
-      
-  </div>
+  <iframe id="filesGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
 </body>
 </html>

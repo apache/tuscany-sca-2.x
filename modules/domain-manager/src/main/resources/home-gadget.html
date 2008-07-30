@@ -20,35 +20,12 @@
 <head>
 <title>SCA Domain - Home</title>
 
-<script type="text/javascript" src="../home/home.js"></script>
+<script type="text/javascript" src="../home-gadget/home-gadget.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
-	//@Reference
-	var toolbarGadget = new Reference("toolbarGadget");
-
-	//@Reference
-	var homeGadget = new Reference("homeGadget");
-
-	function toolbarGadget_getResponse(html) {
-		var gadget = document.getElementById('toolbarGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
-	function homeGadget_getResponse(html) {
-		var gadget = document.getElementById('homeGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
 	function init() {
-		toolbarGadget.get('', toolbarGadget_getResponse);
-		homeGadget.get('', homeGadget_getResponse);
 	}
 
 </script>
@@ -57,8 +34,24 @@
 </head>
 
 <body onload="init()">
-  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
-  <br>
-  <iframe id="homeGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
+  <div id="home">
+  
+  <span class=hd1>
+  SCA Domain
+  </span>
+  
+  <br><br><br><br><br>
+  
+  <form>
+  <table border="0" align="center">
+  <tr><td valign="top"><span style="font-size:150%; color: blue">Search:</span></td><td><input type="text" name="search" size="50"/></td></tr>
+  <tr><td></td><td align="center"><input type="button" name="search" value="Search" /></td></tr>
+  </table>
+  </form>
+
+  <br><br><br><br><br><br><br>
+  <center>This page is under construction, searching the domain is not implemented yet.</center>
+  
+  </div>
 </body>
 </html>

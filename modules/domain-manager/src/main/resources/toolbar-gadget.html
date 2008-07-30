@@ -18,37 +18,22 @@
 -->
 <html>
 <head>
-<title>SCA Domain - Home</title>
+<title>SCA Domain - Toolbar</title>
 
-<script type="text/javascript" src="../home/home.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
-	//@Reference
-	var toolbarGadget = new Reference("toolbarGadget");
-
-	//@Reference
-	var homeGadget = new Reference("homeGadget");
-
-	function toolbarGadget_getResponse(html) {
-		var gadget = document.getElementById('toolbarGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
-	function homeGadget_getResponse(html) {
-		var gadget = document.getElementById('homeGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
 	function init() {
-		toolbarGadget.get('', toolbarGadget_getResponse);
-		homeGadget.get('', homeGadget_getResponse);
+		var tools = new Array();
+		tools[0] = new Tool("Contributions", "../workspace");
+		tools[1] = new Tool("Composites", "../composite");
+		tools[2] = new Tool("Cloud", "../cloud");
+		tools[3] = new Tool("Files", "../files");
+		
+		var home = new Tool("Home", "../home");
+			
+		document.getElementById('toolbar').innerHTML = toolbar(home, tools);
 	}
 
 </script>
@@ -57,8 +42,6 @@
 </head>
 
 <body onload="init()">
-  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
-  <br>
-  <iframe id="homeGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
+  <div id="toolbar"></div>
 </body>
 </html>

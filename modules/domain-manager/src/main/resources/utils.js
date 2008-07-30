@@ -141,7 +141,7 @@ function Tool(name, href) {
 Tool.prototype.print = function() {
     var loc = '' + location;
 	if (loc.match(this.href) == null) {
-		return '<a href="' + this.href + '">' + this.name + '</a>';
+		return '<a href="' + this.href + '" target="_parent">' + this.name + '</a>';
 	} else {
 		return '<span>' + this.name + '</span>';
 	}
@@ -150,7 +150,7 @@ Tool.prototype.print = function() {
 /**
  * Initialize the toolbar
  */
-function toolbar() {
+function toolbar(home, tools) {
 	var toolbar = '<table width="100%" cellpadding="0" cellspacing="0" class=tbar><tr>' +
 	'<td class=ltbar><table border="0" cellspacing="0" cellpadding="0"><tr>';
    
@@ -163,7 +163,7 @@ function toolbar() {
    	'<td class=rtbar>' + home.print() + '</td></tr></table></td>' +
    	'</tr></table>';
 
-	document.getElementById('toolbar').innerHTML = toolbar;
+   	return toolbar;
 }
 
 /**
@@ -184,14 +184,3 @@ function array(obj) {
   		return a;
   	}
 }
-
-/**
- * Populate the default toolbar
- */
-var tools = new Array();
-tools[0] = new Tool("Contributions", "/ui/workspace");
-tools[1] = new Tool("Composites", "/ui/composite");
-tools[2] = new Tool("Cloud", "/ui/cloud");
-tools[3] = new Tool("Files", "/ui/files");
-
-var home = new Tool("Home", "/ui/home");
