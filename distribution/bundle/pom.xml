@@ -459,6 +459,15 @@
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-wsdl2java</artifactId>
             <version>${pom.version}</version>
+            <exclusions>
+
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+
+            </exclusions>
         </dependency>
 
   <!-- dependencies to keep in the shaded pom.xml -->
