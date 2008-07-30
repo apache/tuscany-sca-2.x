@@ -20,9 +20,13 @@
 package org.apache.tuscany.sca.binding.corba.impl;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
+import org.apache.tuscany.sca.binding.corba.impl.service.ComponentInvocationProxy;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
+import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
+import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ServiceRuntimeException;
@@ -55,7 +59,9 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void start() {
         try {
-            servant = new DynaCorbaServant(service, binding);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(binding), javaClass);
+            servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             servant.setIds(new String[] {binding.getId()});
             host.registerServant(binding.getCorbaname(), servant);
         } catch (Exception e) {

@@ -19,35 +19,55 @@
 
 package org.apache.tuscany.sca.binding.sca.corba.impl;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
+import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ServiceRuntimeException;
+
 
 /**
  * Service binding provider for SCA default binding over CORBA binding
  */
 public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
-    
+
     private SCABinding binding;
     private CorbaHost host;
     private RuntimeComponentService service;
     private DynaCorbaServant servant;
-
+    private MessageFactory messageFactory;
+    private InterfaceContract wsdlInterfaceContract;
 
     public CorbaSCAServiceBindingProvider(SCABinding binding,
                                           CorbaHost host,
-                                          RuntimeComponentService service) {
+                                          RuntimeComponent component,
+                                          RuntimeComponentService service,
+                                          ExtensionPointRegistry extensions) {
         this.binding = binding;
         this.host = host;
         this.service = service;
+        
+        messageFactory = extensions.getExtensionPoint(MessageFactory.class);
+        
+        WebServiceBindingFactory wsFactory = extensions.getExtensionPoint(WebServiceBindingFactory.class);
+        WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+        BindingWSDLGenerator.generateWSDL(component, service, wsBinding, extensions, null);
+        wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
+        wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        return wsdlInterfaceContract;
     }
 
     public boolean supportsOneWayInvocation() {
@@ -56,19 +76,20 @@ public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
 
     public void start() {
         try {
-            servant = new DynaCorbaServant(service, binding, true);
+            InvocationProxy proxy = new CorbaSCAInvocationProxy(service.getRuntimeWire(binding), service.getInterfaceContract().getInterface(), messageFactory);
+            servant = new DynaCorbaServant(proxy, "IDL:org/apache/tuscany/sca/binding/sca/corba/Service:1.0");
             host.registerServant(binding.getURI(), servant);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
-        }        
+        }
     }
 
     public void stop() {
         try {
             host.unregisterServant(binding.getURI());
-       } catch (Exception e) {
-           throw new ServiceRuntimeException(e);
-       }
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
 
     }
 

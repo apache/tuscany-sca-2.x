@@ -30,7 +30,10 @@ import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.impl.service.ComponentInvocationProxy;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
+import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
+import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
 import org.apache.tuscany.sca.binding.corba.testing.enums.Color;
 import org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager;
 import org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper;
@@ -58,6 +61,7 @@ import org.apache.tuscany.sca.binding.corba.testing.servants.TestObjectServant;
 import org.apache.tuscany.sca.binding.corba.testing.service.mocks.TestRuntimeComponentService;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -138,7 +142,9 @@ public class CorbaServantTestCase {
         try {
             PrimitivesSetter primitivesSetter = new PrimitivesSetterServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(primitivesSetter);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids =
                 new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/PrimitivesSetter:1.0"};
             servant.setIds(ids);
@@ -187,7 +193,9 @@ public class CorbaServantTestCase {
         try {
             ArraysSetter arraysSetter = new ArraysSetterServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(arraysSetter);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/ArraysSetter:1.0"};
             servant.setIds(ids);
             java.lang.Object result = null;
@@ -244,7 +252,9 @@ public class CorbaServantTestCase {
         try {
             TestObject to = new TestObjectServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(to);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
             servant.setIds(ids);
             bindServant(servant, "TestObject");
@@ -279,7 +289,9 @@ public class CorbaServantTestCase {
         try {
             TestObjectServant tos = new TestObjectServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(tos);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
             servant.setIds(ids);
             bindServant(servant, "TestObject");
@@ -298,7 +310,9 @@ public class CorbaServantTestCase {
         try {
             InvalidTestObjectServant tos = new InvalidTestObjectServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(tos);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
             servant.setIds(ids);
             bindServant(servant, "InvalidTestObject");
@@ -328,7 +342,9 @@ public class CorbaServantTestCase {
         try {
             CalcServant calc = new CalcServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0"};
             servant.setIds(ids);
             bindServant(servant, "Calc");
@@ -347,7 +363,9 @@ public class CorbaServantTestCase {
         try {
             CalcServant calc = new CalcServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/exceptions/Calc:1.0"};
             servant.setIds(ids);
             bindServant(servant, "Calc");
@@ -372,7 +390,9 @@ public class CorbaServantTestCase {
         try {
             EnumManagerServant ems = new EnumManagerServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(ems);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/enums/EnumManager:1.0"};
             servant.setIds(ids);
             bindServant(servant, "Enum");
@@ -390,7 +410,9 @@ public class CorbaServantTestCase {
         try {
             NonCorbaServant ncs = new NonCorbaServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(ncs);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             bindServant(servant, "NonCorbaServant");
             // it's non corba servant so we don't have stubs to test them
             DynaCorbaRequest request = new DynaCorbaRequest(bindReference("NonCorbaServant"), "setString");
@@ -406,7 +428,9 @@ public class CorbaServantTestCase {
         try {
             NonCorbaServant ncs = new NonCorbaServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(ncs);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             bindServant(servant, "NonCorbaServant");
             // it's non corba servant so we don't have stubs to test them
             DynaCorbaRequest request = new DynaCorbaRequest(bindReference("NonCorbaServant"), "throwException");
@@ -431,7 +455,9 @@ public class CorbaServantTestCase {
         try {
             CalcServant calc = new CalcServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(calc);
-            DynaCorbaServant servant = new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/TestObject:1.0"};
             servant.setIds(ids);
             bindServant(servant, "Calc");
@@ -459,7 +485,9 @@ public class CorbaServantTestCase {
             InvalidTypesServant its = new InvalidTypesServant();
             TestRuntimeComponentService service = new TestRuntimeComponentService(its);
             //expecting exception...
-            new DynaCorbaServant(service, null);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             fail();
         } catch (Exception e) {
             if (e instanceof RequestConfigurationException) {

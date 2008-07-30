@@ -19,19 +19,20 @@
 
 package org.apache.tuscany.sca.binding.sca.corba.impl;
 
-import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.corba.impl.CorbaInvoker;
-import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.omg.CORBA.Object;
 
@@ -44,23 +45,27 @@ public class CorbaSCAReferenceBindingProvider implements ReferenceBindingProvide
 
     private SCABinding binding;
     private CorbaHost host;
-    private RuntimeComponentReference reference;
     private Object remoteObject;
     private Class<?> referenceClass;
-    private Map<Method, String> operationsMap = null;
+    private InterfaceContract wsdlInterfaceContract; 
 
     public CorbaSCAReferenceBindingProvider(SCABinding binding,
                                             CorbaHost host,
-                                            RuntimeComponentReference reference) {
+                                            RuntimeComponent component,
+                                            RuntimeComponentReference reference,
+                                            ExtensionPointRegistry extensions) {
         this.binding = binding;
         this.host = host;
-        this.reference = reference;
-        this.referenceClass = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-        operationsMap = OperationMapper.mapMethodToOperation(referenceClass);
+        
+        WebServiceBindingFactory wsFactory = extensions.getExtensionPoint(WebServiceBindingFactory.class);
+        WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+        BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, extensions, null);
+        wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
+        wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
+        return wsdlInterfaceContract;
     }
 
     public boolean supportsOneWayInvocation() {
@@ -72,7 +77,7 @@ public class CorbaSCAReferenceBindingProvider implements ReferenceBindingProvide
             if (remoteObject == null) {
                 remoteObject = host.lookup(binding.getURI());
             }
-            return new CorbaInvoker(remoteObject, referenceClass, operationsMap, true);
+            return new CorbaSCAInvoker(remoteObject, referenceClass, null, true);
         } catch (Exception e) {
             logger.warning(e.getMessage());
         }

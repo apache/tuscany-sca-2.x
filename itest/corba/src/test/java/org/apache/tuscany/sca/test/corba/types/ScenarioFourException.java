@@ -19,25 +19,19 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
-import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
+public class ScenarioFourException extends Exception {
 
-/**
- * Implementation of ScenarioFour service
- */
-public class ScenarioFourImpl implements ScenarioFour {
+    public static final String DEFAULT_CONTENT = "Test";
+    
+    private static final long serialVersionUID = 1L;
+    private String content;
 
-    public ScenarioFourStruct setStruct(ScenarioFourStruct struct) {
-        return struct;
+    public String getContent() {
+        return content;
     }
 
-    public void exceptionTest() throws ScenarioFourException {
-        ScenarioFourException exception = new ScenarioFourException();
-        exception.setContent(ScenarioFourException.DEFAULT_CONTENT);
-        throw exception;
-    }
-
-    public ScenarioFourSdo passScenarioFourStruct(ScenarioFourSdo scenarioFourSdo) {
-        return scenarioFourSdo;
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }
