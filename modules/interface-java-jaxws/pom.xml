@@ -162,7 +162,7 @@
                 <executions>
                     <execution>
                         <id>wsimport</id>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>wsimport</goal>
                         </goals>

@@ -343,6 +343,11 @@
                    <groupId>javax.servlet</groupId>
                    <artifactId>servlet-api</artifactId>
                </exclusion>
+                <!-- Exclude XmlSchema 1.3.1 -->
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
@@ -379,6 +384,12 @@
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
                 </exclusion>
+                <!-- Exclude XmlSchema 1.3.1 -->
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
+
             </exclusions>
         </dependency>
 
@@ -419,6 +430,14 @@
                     <groupId>stax</groupId>
                     <artifactId>stax-api</artifactId>
                 </exclusion>
+
+
+                <!-- Exclude XmlSchema 1.3.1 -->
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
+
             </exclusions>
         </dependency>
         <dependency>

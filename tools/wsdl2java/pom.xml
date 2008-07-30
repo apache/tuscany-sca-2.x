@@ -160,6 +160,12 @@
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-codegen</artifactId>
             <version>1.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -225,7 +231,7 @@
                 <executions>
                     <execution>
                         <id>generate-sdo</id>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/CreditScoreDocLit.wsdl</schemaFile>
                             <javaPackage>org.example.creditscore.doclit</javaPackage>
