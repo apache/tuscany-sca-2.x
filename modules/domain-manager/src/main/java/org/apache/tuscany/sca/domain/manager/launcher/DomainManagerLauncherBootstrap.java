@@ -20,8 +20,9 @@
 package org.apache.tuscany.sca.domain.manager.launcher;
 
 import org.apache.tuscany.sca.domain.manager.impl.DomainManagerConfiguration;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
  * Bootstrap class for the SCA domain manager.
@@ -37,7 +38,7 @@ public class DomainManagerLauncherBootstrap {
     public static class NodeFacade implements SCANode2 {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCADomain domainManager;
+        private SCANode2 node;
         private String rootDirectory;
         
         private NodeFacade(String rootDirectory) {
@@ -50,10 +51,12 @@ public class DomainManagerLauncherBootstrap {
             boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                domainManager = SCADomain.newInstance("DomainManager.composite");
+                SCANode2Factory factory = SCANode2Factory.newInstance();
+                node = factory.createSCANodeFromClassLoader("DomainManager.composite", getClass().getClassLoader());
+                node.start();
 
                 // Set the domain manager's root directory
-                DomainManagerConfiguration domainManagerConfiguration = domainManager.getService(DomainManagerConfiguration.class, "DomainManagerConfigurationComponent");
+                DomainManagerConfiguration domainManagerConfiguration = ((SCAClient) node).getService(DomainManagerConfiguration.class, "DomainManagerConfigurationComponent");
                 domainManagerConfiguration.setRootDirectory(rootDirectory);
                 
                 started = true;
@@ -67,7 +70,7 @@ public class DomainManagerLauncherBootstrap {
         public void stop() {
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                domainManager.close();
+                node.stop();
             } finally {
                 Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
