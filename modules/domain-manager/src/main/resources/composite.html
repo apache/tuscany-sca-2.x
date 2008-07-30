@@ -20,238 +20,45 @@
 <head>
 <title>SCA Domain - Domain Composite</title>
 
-<script type="text/javascript" src="composite.js"></script>
-<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="../composite/composite.js"></script>
 
 <script language="JavaScript">
 
 	//@Reference
-	var domainComposite = new Reference("domainComposite");
-	
+	var toolbarGadget = new Reference("toolbarGadget");
+
 	//@Reference
-	var workspace = new Reference("workspace");
-	
-	function getComposites() {
-		domainComposite.get("", getCompositesResponse);
-	}
-	
-	function contributionURI(id) {
-	       var i = id.indexOf(';');
-	       return id.substring(10, i);
-	}
-	
-	function compositeName(id) {
-	       var i = id.indexOf(';');
-	       return id.substring(i + 1);
-	}
-		
-	function getCompositesResponse(feed) {
-		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
-			var composites = "";
-			composites += '<table width="100%">';
-			composites += '<tr><th>Composite</th>' +
-			'<th>Contribution</th>' +
-			'<th>Components</th>' +
-			'</tr>';
-			//'<th>Composite Configuration</th>' +
-			
-			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var link = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				var uri = contributionURI(id);
-				var qname = compositeName(id);
+	var compositeGadget = new Reference("compositeGadget");
 
-				var content = "";
-				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
-					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				}
-				var components = '';
-				var bs = content.indexOf('<span id="components">');
-				if (bs != -1) {
-					var es = content.indexOf('</span>', bs); 
-					components = content.substring(bs, es + 7);
-				} else {
-					bs = content.indexOf('<span id="problem"');
-					if (bs != -1) {
-						var es = content.indexOf('</span>', bs); 
-						components = content.substring(bs, es + 7);
-					}
-				}
-				
-				composites += '<tr>'
-				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';
-				composites += '<a href=\"' + link + '\">' + qname + '</a></td>';
-				composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
-				composites += '<td class=tdw>' + components + '</td>';
-				//composites += '<td><a href="/composite-config/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
-				composites += '</tr>';
-			}
-			composites += '</table>';
-			document.getElementById("composites").innerHTML = composites;
-		}
+	function toolbarGadget_getResponse(html) {
+		var gadget = document.getElementById('toolbarGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
-	function deleteComposite() {
-		var composites  = array(document.domainCompositeForm.composites);
-		for (var i = 0; i < composites.length; i++) {
-			if (composites[i].checked) {
-			    var id = composites[i].value;
-				domainComposite.del(id, deleteCompositeResponse);
-			}
-		}
-	}
-
-	function deleteCompositeResponse() {
-	    getComposites();
-	}	
-
-	function addComposite() {
-		var id  = 'composite:' +
-			document.newCompositeForm.contributionURI.value + ';' +
-			document.newCompositeForm.compositeNamespace.value + ';' +
-			document.newCompositeForm.compositeName.value;
-		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
-				'<title>' + id +'</title>' +
-              	'<id>' + id + '</id>' +
-               	'</entry>';
-		domainComposite.post(entry, addCompositeResponse);
-	}
-
-	function addCompositeResponse() {
-		document.newCompositeForm.compositeNamespace.value = "";
-		document.newCompositeForm.compositeName.value = "";
-		document.newCompositeForm.contributionURI.value = "";
-	    getComposites();
-	}
-	
-	var contributedComposites = new Array();
-	
-	function getContributions() {
-		workspace.get("", getContributionsResponse);
-	}
-	
-	function getContributionsResponse(feed) {
-		if (feed != null) {
-			contributedComposites = new Array();
-			var entries = feed.getElementsByTagName("entry");              
-			for (var i=0; i<entries.length; i++) {
-				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
-					var content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-					var bs = content.indexOf('<span id="deployables">');
-					if (bs != -1) {
-						var es = content.indexOf('</span>', bs); 
-						content = content.substring(bs, es + 7);
-						for (;;) {
-							var bc = content.indexOf('composite:');
-							if (bc == -1) {
-								break;
-							}
-							var ec = content.indexOf('">', bc);
-							if (ec == -1) {
-								break;
-							}
-							var uri = content.substring(bc, ec);
-							contributedComposites[uri] = uri;
-							content = content.substring(ec +1);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	function suggestCompositeNamespaces() {
-		var namespaces = new Array();
-		for (var uri in contributedComposites) {
-			var qname = compositeName(uri);
-			var ns = qname.substring(0, qname.indexOf(';'));
-			namespaces[ns] = ns;
-		}
-		return array(namespaces);
-	}	
-
-	function suggestCompositeNames() {
-		var inputns = document.newCompositeForm.compositeNamespace.value;
-		var names = new Array();
-		for (var uri in contributedComposites) {
-			var qname = compositeName(uri);
-			var sc = qname.indexOf(';');
-			var ns = qname.substring(0, sc);
-			var name = qname.substring(sc + 1);
-			if (ns == inputns || inputns == "") {
-				names[name] = name;
-			}
-		}
-		return array(names);
-	}	
-
-	function suggestContributionURIs() {
-		var inputns = document.newCompositeForm.compositeNamespace.value;
-		var inputname = document.newCompositeForm.compositeName.value;
-		var uris = new Array();
-		for (var uri in contributedComposites) {
-			var qname = compositeName(uri);
-			var sc = qname.indexOf(';');
-			var ns = qname.substring(0, sc);
-			var name = qname.substring(sc + 1);
-			if ((ns == inputns || inputns == "") && (name == inputname || inputname == "")) {
-				var curi = contributionURI(uri);
-				uris[curi] = curi;
-			}
-		}
-		return array(uris);
+	function compositeGadget_getResponse(html) {
+		var gadget = document.getElementById('compositeGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
 	function init() {
-		toolbar();
-		getComposites();
-		getContributions();
-		suggest(document.newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
-		suggest(document.newCompositeForm.compositeName, suggestCompositeNames);
-		suggest(document.newCompositeForm.contributionURI, suggestContributionURIs);
+		toolbarGadget.get('', toolbarGadget_getResponse);
+		compositeGadget.get('', compositeGadget_getResponse);
 	}
-		
+
 </script>
 
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
 <body onload="init()">
-  <div id="toolbar"></div>
-
-  <div id="domainComposite">
+  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
   <br>
-  <span class=hd1>
-  SCA Domain<br><br>
-  Domain Composite&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
-  </span>
-  <br><br>
-  Here is the list of SCA composites currently included as top-level composites in your SCA domain.
-  <br><br>
-  
-  <form name="domainCompositeForm">
-    <div id="composites" ></div>
-    <br>
-    <input type="button" onClick="deleteComposite()"  value="Delete" />
-  </form>
-  
-  <br><br>
-  
-  <form name="newCompositeForm">
-    <table width="100%">
-    <tr><th>Add Composite</th></tr>
-    <tr><td>Add an SCA composite describing your SCA service components.</td></tr>
-    </table>
-    <br>
-	<table>    
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://your/namespace</td></tr> 
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. yourcomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
-    </table>
-    <input type="button" onClick="addComposite()" value="Add" />
-  </form>
-  
-  </div>
+  <iframe id="compositeGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
 </body>
 </html>

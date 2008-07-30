@@ -100,6 +100,14 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
         this.intentAttachPointType = intentAttachPointType;
     }
 
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
+    
     //FIXME Temporary to get access to the target binding information
     // To be removed when the distributed domain supports wiring of other
     // bindings than the SCA binding
@@ -135,11 +143,4 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
         this.targetComponentService = service; 
     }
 
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
 }

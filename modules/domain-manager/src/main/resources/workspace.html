@@ -20,187 +20,45 @@
 <head>
 <title>SCA Domain - Contributions</title>
 
-<script type="text/javascript" src="workspace.js"></script>
-<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="../workspace/workspace.js"></script>
 
 <script language="JavaScript">
 
 	//@Reference
-	var workspace = new Reference("workspace");
-	
-	function getContributions() {
-		workspace.get("", getContributionsResponse);
-	}
-	
-	function getContributionsResponse(feed) {
-		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
-			var contributions = "";
-			contributions += '<table width="100%">';
-			contributions += '<tr><th>Contribution</th><th>Dependencies</td><th>Deployable Composites</th></tr>';
-			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				var content = '';
-				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
-					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				}
-				
-				contributions += '<tr>';
-				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a></td>';
+	var toolbarGadget = new Reference("toolbarGadget");
 
-				var dependencies = '';
-				var bs = content.indexOf('<span id="dependencies">');
-				if (bs != -1) {
-					var es = content.indexOf('</span>', bs); 
-					dependencies = content.substring(bs, es + 7);
-				}
-											
-				var deployables = '';
-				var bs = content.indexOf('<span id="deployables">');
-				if (bs != -1) {
-					var es = content.indexOf('</span>', bs); 
-					deployables = content.substring(bs, es + 7);
-				}
-				
-				var problems = "";
-				var bs = content.indexOf('<span id="problems" ');
-				if (bs != -1) {
-					var es = content.indexOf('</span>', bs);
-					if (dependencies.length != 0) {
-					  problems = '<br>';
-					} 
-					problems += content.substring(bs, es + 7);
-				}
-											
-				contributions += '<td class=tdw>' + dependencies + problems + ' </td>';
-				contributions += '<td class=tdw>' + deployables + '</td>';
-				contributions += '</tr>';
-			}
-			contributions += '</table>';
-			document.getElementById("contributions").innerHTML = contributions;
-		}
-	}				
+	//@Reference
+	var workspaceGadget = new Reference("workspaceGadget");
 
-	var suggestedContributions = new Array();
-	
-	function getSuggestedContributions() {
-		workspace.get("?suggestions=true", getSuggestedContributionsResponse);
-	}
-	
-	function getSuggestedContributionsResponse(feed) {
-		suggestedContributions = new Array();
-		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
-			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[1].getAttribute("href");
-				suggestedContributions[i] = id + ':' + location;	
-			}
-		}
-	}				
-
-	function deleteContribution() {
-		var contributions  = array(document.workspaceForm.contributions);
-		for (var i=0; i < contributions.length; i++) {
-			if (contributions[i].checked) {
-			    var id = contributions[i].value;
-				workspace.del(id, deleteContributionResponse);
-			}
-		}
+	function toolbarGadget_getResponse(html) {
+		var gadget = document.getElementById('toolbarGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
-	function deleteContributionResponse() {
-	    getContributions();
-	}	
-
-	function addContribution() {
-		var id  = document.newContributionForm.contributionID.value;
-		var location  = document.newContributionForm.contributionLocation.value;
-		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
-				'<title>Contribution - ' + id +'</title>' +
-              	'<id>' + id + '</id>' +
-              	'<link href="' + location + '" />' +
-               	'</entry>';
-		workspace.post(entry, addContributionResponse);
-	}
-
-	function addContributionResponse() {
-		document.newContributionForm.contributionID.value = "";
-		document.newContributionForm.contributionLocation.value = "";
-	    getContributions();
-	}
-
-	function suggestContributionIDs() {
-		var ids = new Array();
-		for (var i=0; i<suggestedContributions.length; i++) {
-			var uri = suggestedContributions[i];
-			var id = uri.substring(0, uri.indexOf(':'));
-			ids[id] = id;
-		}
-		return array(ids);
-	}
-
-	function suggestContributionLocations() {
-		var locations = new Array();
-		for (var i=0; i<suggestedContributions.length; i++) {
-			var uri = suggestedContributions[i];
-			var id = uri.substring(0, uri.indexOf(':'));
-			if (id == document.newContributionForm.contributionID.value) {
-				var location = uri.substring(uri.indexOf(':') +1);
-				locations[location] = location;
-			}
-		}
-		return array(locations);
+	function workspaceGadget_getResponse(html) {
+		var gadget = document.getElementById('workspaceGadget');
+		var content = gadget.contentWindow.document;
+		content.open();
+		content.write(html);
+		content.close();
 	}
 
 	function init() {
-		toolbar();
-		getContributions();
-		getSuggestedContributions();
-		suggest(document.newContributionForm.contributionID, suggestContributionIDs);
-		suggest(document.newContributionForm.contributionLocation, suggestContributionLocations);
+		toolbarGadget.get('', toolbarGadget_getResponse);
+		workspaceGadget.get('', workspaceGadget_getResponse);
 	}
-	
+
 </script>
 
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
 <body onload="init()">
-  <div id="toolbar"></div>
-
-  <div id="workspace">
+  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
   <br>
-  <span class=hd1>
-  SCA Domain<br><br>
-  Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>  </span>
-  <br><br>
-  Here is the list of SCA contributions currently available in your SCA domain.
-  <br><br>
-
-  <form name="workspaceForm">
-    <div id="contributions" ></div>
-    <br>
-    <input type="button" onClick="deleteContribution()"  value="Delete" />
-  </form>
-
-  <br><br>
-  
-  <form name="newContributionForm">
-    <table width="100%">
-    <tr><th>Add Contribution</th></tr>
-    <tr><td>Add an SCA contribution containing your application artifacts to the SCA domain.</td></tr>
-    </table>
-    <br>
-    <table>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr> 
-    <tr><td>Location:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/yourjar.jar, file:/yourdir, file:/yourjar.jar</td></tr>
-    </table>
-    <input type="button" onClick="addContribution()" value="Add" />
-  </form>
-  
-  </div>
+  <iframe id="workspaceGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
 </body>
 </html>

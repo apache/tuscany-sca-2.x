@@ -22,37 +22,96 @@
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
     name="DomainManager">
 
-    <component name="HomeUI">
+    <component name="HomePage">
         <t:implementation.widget location="home.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/home"/>
         </service>
+        <reference name="toolbarGadget" target="ToolbarGadget">
+        	<t:binding.http/>
+        </reference>
+        <reference name="homeGadget" target="HomeGadget">
+        	<t:binding.http/>
+        </reference>
     </component>
     
-    <component name="ContributionUI">
+    <component name="ToolbarGadget">
+        <t:implementation.widget location="toolbar-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/toolbar-gadget"/>
+        </service>
+    </component>
+    
+    <component name="HomeGadget">
+        <t:implementation.widget location="home-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/home-gadget"/>
+        </service>
+    </component>
+    
+    <component name="WorkspacePage">
         <t:implementation.widget location="workspace.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/workspace"/>
+        </service>
+        <reference name="toolbarGadget" target="ToolbarGadget">
+        	<t:binding.http/>
+        </reference>
+        <reference name="workspaceGadget" target="WorkspaceGadget">
+        	<t:binding.http/>
+        </reference>
+    </component>
+    
+    <component name="WorkspaceGadget">
+        <t:implementation.widget location="workspace-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/workspace-gadget"/>
         </service>
 		 <reference name="workspace" target="ContributionCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
     
-    <component name="FilesUI">
+    <component name="FilesPage">
         <t:implementation.widget location="files.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/files"/>
+        </service>
+        <reference name="toolbarGadget" target="ToolbarGadget">
+        	<t:binding.http/>
+        </reference>
+        <reference name="filesGadget" target="FilesGadget">
+        	<t:binding.http/>
+        </reference>
+    </component>
+    
+    <component name="FilesGadget">
+        <t:implementation.widget location="files-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/files-gadget"/>
         </service>
 		 <reference name="files" target="FileCollectionComponent">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
     
-    <component name="DomainCompositeUI">
+    <component name="DomainCompositePage">
         <t:implementation.widget location="composite.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/composite"/>
+        </service>
+        <reference name="toolbarGadget" target="ToolbarGadget">
+        	<t:binding.http/>
+        </reference>
+        <reference name="compositeGadget" target="DomainCompositeGadget">
+        	<t:binding.http/>
+        </reference>
+    </component>
+    
+    <component name="DomainCompositeGadget">
+        <t:implementation.widget location="composite-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/composite-gadget"/>
         </service>
 		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
@@ -62,10 +121,23 @@
 		 </reference>
     </component>
 
-    <component name="CloudUI">
+    <component name="CloudPage">
         <t:implementation.widget location="cloud.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
+        </service>
+        <reference name="toolbarGadget" target="ToolbarGadget">
+        	<t:binding.http/>
+        </reference>
+        <reference name="cloudGadget" target="CloudGadget">
+        	<t:binding.http/>
+        </reference>
+    </component>
+    
+    <component name="CloudGadget">
+        <t:implementation.widget location="cloud-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/cloud-gadget"/>
         </service>
 		 <reference name="cloudComposite" target="CloudCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>

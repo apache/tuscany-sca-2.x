@@ -18,7 +18,7 @@
  */
 
 body {
-	white-space: nowrap
+	white-space: nowrap; overflow: hidden;
 }
 
 table {
@@ -34,6 +34,10 @@ th {
 
 td {
 	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: nowrap; vertical-align: text-top
+}
+
+iframe {
+	border: 0px; margin: 0px; padding: 0px; position: absolute; overflow: hidden;
 }
 
 input {
@@ -97,3 +101,4 @@ suggestTable {
 	padding-left: 2px; padding-top: 0px; padding-bottom: 0px; padding-right: 2px; white-space: nowrap; vertical-align: text-top;
 	background-color: #598edd; color: #e5ecf9;
 }
+
