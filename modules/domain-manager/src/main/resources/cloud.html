@@ -20,45 +20,19 @@
 <head>
 <title>SCA Domain - Cloud</title>
 
-<script type="text/javascript" src="../cloud/cloud.js"></script>
-
-<script language="JavaScript">
-
-	//@Reference
-	var toolbarGadget = new Reference("toolbarGadget");
-
-	//@Reference
-	var cloudGadget = new Reference("cloudGadget");
-
-	function toolbarGadget_getResponse(html) {
-		var gadget = document.getElementById('toolbarGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
-	function cloudGadget_getResponse(html) {
-		var gadget = document.getElementById('cloudGadget');
-		var content = gadget.contentWindow.document;
-		content.open();
-		content.write(html);
-		content.close();
-	}
-
-	function init() {
-		toolbarGadget.get('', toolbarGadget_getResponse);
-		cloudGadget.get('', cloudGadget_getResponse);
-	}
-
-</script>
-
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
-<body onload="init()">
-  <iframe id="toolbarGadget" style="top: 0px; left: 0px; width: 100%;"></iframe>
+<body>
+  <iframe id="toolbarGadget" src="toolbar-gadget.html" style="top: 0px; left: 0px; width: 100%;"></iframe>
+  <br><br>
+  
+  <span class=hd1>
+  SCA Domain<br><br>
+  Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  </span>
   <br>
-  <iframe id="cloudGadget" style="left: 0px; width: 100%; height: 100%;"></iframe>
+  
+  <iframe id="cloudGadget" src="cloud-gadget.html" style="left: 0px; width: 100%; height: 100%;"></iframe>
 </body>
 </html>
