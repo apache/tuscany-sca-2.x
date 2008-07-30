@@ -22,41 +22,47 @@
 
 <project name="sample-jaxws" default="compile">
 	&buildDependency;
-    <target name="compile">
-        <mkdir dir="target/classes"/>
-        <javac destdir="target/classes" debug="on" source="1.5" target="1.5">
-            <src path="src\main\java"/>
-            <classpath>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
-            </classpath>
-        </javac>
-        <copy todir="target/classes">
-            <fileset dir="src\main\resources"/>
-        </copy>
-        <jar destfile="target/sample-zipcode-jaxws.jar" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="zipcode.ZipCodeClient"/>
-            </manifest>
-        </jar>
-    </target>
+    <target name="compile" depends="download-wsdl">
+		<mkdir dir="target/classes"/>
+		<javac destdir="target/classes" debug="on" source="1.5" target="1.5">
+			<src path="src\main\java"/>
+			<classpath>
+				<fileset refid="tuscany.jars"/>
+				<fileset refid="3rdparty.jars"/>
+			</classpath>
+		</javac>
+		<copy todir="target/classes">
+			<fileset dir="src\main\resources"/>
+		</copy>
+		<jar destfile="target/sample-zipcode-jaxws.jar" basedir="target/classes">
+			<manifest>
+				<attribute name="Main-Class" value="zipcode.ZipCodeClient"/>
+			</manifest>
+		</jar>
+	</target>
 
-    <target name="package" depends="compile"/>
+	<target name="download-wsdl">
+		<mkdir dir="src/main/resources/wsdl/" />
+		<get src="http://www.webservicex.net/uszip.asmx?wsdl" dest="src/main/resources/wsdl/uszip.wsdl" verbose="true" usetimestamp="true" />
+		<get src="http://www.webservicex.net/WeatherForecast.asmx?wsdl" dest="src/main/resources/wsdl/WeatherForecast.wsdl" verbose="true" usetimestamp="true" />
+	</target>
+	
+	<target name="package" depends="compile" />
 
-    <target name="run">
-        <java classname="zipcode.ZipCodeClient" fork="true">
-            <classpath>
-                <pathelement location="target/sample-zipcode-jaxws.jar"/>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
-            </classpath>
-        </java>
-    </target>
+	<target name="run">
+		<java classname="zipcode.ZipCodeClient" fork="true">
+			<classpath>
+				<pathelement location="target/sample-zipcode-jaxws.jar"/>
+				<fileset refid="tuscany.jars"/>
+				<fileset refid="3rdparty.jars"/>
+			</classpath>
+		</java>
+	</target>
 
-    <target name="clean">
-        <delete includeemptydirs="true">
-            <fileset dir="target"/>
-        </delete>
-    </target>
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="target"/>
+		</delete>
+	</target>
 
 </project>
