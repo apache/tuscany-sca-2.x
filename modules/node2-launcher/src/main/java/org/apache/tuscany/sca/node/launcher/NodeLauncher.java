@@ -129,7 +129,14 @@ public class NodeLauncher {
         logger.info("Press enter to shutdown.");
         try {
             System.in.read();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            
+            // Wait forever
+            Object lock = new Object();
+            synchronized(lock) {
+                lock.wait();
+            }
+        }
 
         // Stop the node
         try {
