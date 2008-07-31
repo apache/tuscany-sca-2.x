@@ -163,7 +163,12 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
         }
 
         public Class<?> loadClass(String className) throws ClassNotFoundException {
-            return bundle.loadClass(className);
+            try {
+                return bundle.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                logger.severe(e.getMessage() + ": " + OSGiServiceDiscoverer.toString(bundle));
+                throw e;
+            }
         }
 
         public URL getLocation() {
