@@ -18,16 +18,16 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           targetNamespace="http://samples">
-           name="Helloworld"
+           targetNamespace="http://samples"
+           name="Helloworld">
 
-    <component name="WebClient>
+    <component name="WebClient">
         <implementation.web web-uri=""/>
         <reference name="helloworldService" target="HelloworldService"/>
     </component>
 
     <component name="HelloworldService">
-        <implementation.java class="samples.HelloworldServiceImpl"/>
+        <implementation.java class="sample.HelloworldServiceImpl"/>
     </component>
 
 </composite>
