@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -230,6 +229,8 @@ public abstract class BaseBeanGenerator implements Opcodes {
             if (isNillable) {
                 av0.visit("nillable", Boolean.TRUE);
             }
+            // FIXME:
+            // av0.visit("required", Boolean.FALSE);
             av0.visitEnd();
         }
 
@@ -457,7 +458,10 @@ public abstract class BaseBeanGenerator implements Opcodes {
             this.type = javaClass;
             this.genericSignature = CodeGenerationHelper.getJAXWSSignature(type);
             this.element = isElement; 
-            this.nillable = (type instanceof GenericArrayType);
+            // FIXME: How to test nillable?
+            // this.nillable = (type instanceof GenericArrayType) || Collection.class.isAssignableFrom(javaClass) || javaClass.isArray();
+            // TUSCANY-2389: Set the nillable consistent with what wsgen produces
+            this.nillable = javaClass.isArray();
         }
 
         public String getName() {
