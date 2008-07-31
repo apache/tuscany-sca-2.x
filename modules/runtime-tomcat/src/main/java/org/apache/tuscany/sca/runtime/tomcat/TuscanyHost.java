@@ -148,6 +148,8 @@ public class TuscanyHost extends StandardHost {
         filterMap.addURLPattern("/*");
         scaApp.addFilterMap(filterMap);
 
+        scaApp.setAnnotationProcessor(new TuscanyAnnotationProcessor());
+        
         scaApps.add(scaApp);
     }
 
