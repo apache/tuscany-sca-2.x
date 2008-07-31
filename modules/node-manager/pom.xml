@@ -128,7 +128,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.node.manager</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.node.manager*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.implementation.node.manager*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
