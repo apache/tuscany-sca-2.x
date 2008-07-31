@@ -22,26 +22,25 @@
 
 <script type="text/javascript" src="utils.js"></script>
 
-<script language="JavaScript">
-
-	function init() {
-		var tools = new Array();
-		tools[0] = new Tool("Contributions", "../workspace");
-		tools[1] = new Tool("Composites", "../composite");
-		tools[2] = new Tool("Cloud", "../cloud");
-		tools[3] = new Tool("Files", "../files");
-		
-		var home = new Tool("Home", "../home");
-			
-		document.getElementById('toolbar').innerHTML = toolbar(home, tools);
-	}
-
-</script>
-
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
-<body onload="init()">
+<body>
   <div id="toolbar"></div>
 </body>
+
+<script type="text/javascript">
+	var gadget = gadget(window, document);
+
+	var tools = new Array();
+	tools[0] = new Tool("Contributions", "../workspace");
+	tools[1] = new Tool("Composites", "../composite");
+	tools[2] = new Tool("Cloud", "../cloud");
+	tools[3] = new Tool("Files", "../files");
+	
+	var home = new Tool("Home", "../home");
+		
+	gadget.getElementById('toolbar').innerHTML = toolbar(home, tools);
+
+</script>
 </html>

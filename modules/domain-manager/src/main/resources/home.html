@@ -20,20 +20,38 @@
 <head>
 <title>SCA Domain - Home</title>
 
-<script type="text/javascript" src="../home/home.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
 <body>
-  <iframe id="toolbarGadget" src="toolbar-gadget.html" style="top: 0px; left: 0px; width: 100%;"></iframe>
-  <br><br>
+  <div id="toolbarGadgetDiv"></div>
+  <br>
   
   <span class=hd1>
   SCA Domain
   </span>
   <br><br><br><br><br><br>
   
-  <iframe id="homeGadget" src="home-gadget.html" style="left: 0px; width: 100%; height: 100%;"></iframe>
+  <div id="homeGadgetDiv"></div>
+  
+  <br><br><br><br><br><br><br>
+  <center>This page is under construction, searching the domain is not implemented yet.</center>
+  
+  <iframe id="toolbarGadget" src="toolbar-gadget.html" style="visibility: hidden;"></iframe>
+  <iframe id="homeGadget" src="home-gadget.html" style="visibility: hidden;"></iframe>
 </body>
+
+<script type="text/javascript">
+	function ongadget(win, doc) {
+		if (doc == content(toolbarGadget)) {
+			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+		} else if (doc == content(homeGadget)) {
+			homeGadgetDiv.innerHTML = doc.body.innerHTML;
+		}
+		return document;
+	}
+</script>
+
 </html>

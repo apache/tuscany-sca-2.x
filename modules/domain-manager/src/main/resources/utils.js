@@ -184,3 +184,33 @@ function array(obj) {
   		return a;
   	}
 }
+
+/**
+ * Utility function thats dumps a Javascript object to the console
+ */
+function dump(o) {
+	for (f in o) {
+		try {
+			console.log(f + '=' + o[f]);
+		} catch (e) {}
+	}
+}
+
+function content(win) {
+	if (win.document != 'undefined' && win.document != null) {
+		return win.document;
+	} else if (win.contentDocument != 'undefined' && win.contentDocument != null) {
+		return win.contentDocument;
+	} else {
+		return null;
+	}
+}
+
+function gadget(win, doc) {
+	if (win.parent.ongadget != null && win.parent.ongadget != 'undefined') {
+		return win.parent.ongadget(win, doc);
+	} else {
+		return doc;
+	}
+}
+ 

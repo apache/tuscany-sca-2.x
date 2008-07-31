@@ -23,62 +23,11 @@
 <script type="text/javascript" src="../files-gadget/files-gadget.js"></script>
 <script type="text/javascript" src="utils.js"></script>
 
-<script language="JavaScript">
-
-	//@Reference
-	var files = new Reference("files");
-	
-	function getFiles() {
-		files.get("", getFilesResponse);
-	}
-	
-	function getFilesResponse(feed) {
-		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
-			var list = '<table width="100%"><tr><th>Files</th></tr>';
-			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				list += '<tr><td><input name="files" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a></td></tr>';
-			}
-			list += "</table>";
-			document.getElementById("files").innerHTML = list;
-		}
-	}				
-
-	function deleteFile() {
-		var list = array(document.filesForm.files);
-		for (var i=0; i < list.length; i++) {
-			if (list[i].checked) {
-			    var id = list[i].value;
-				files.del(id, deleteFileResponse);
-			}
-		}
-	}
-
-	function deleteFileResponse() {
-	    getFiles();
-	}
-
-	function uploadFile() {
-		document.uploadFileForm.submit();
-	}
-
-	function init() {
-		getFiles();
-	}
-
-</script>
-
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
-<body onload="init()">
+<body>
   <div id="fileServer">
-  
-  This is a simple ATOM-based file server useful to share files if you don't have an FTP, SVN or Maven repository.
-  <br><br>
   
   <form name="filesForm">
     <div id="files" ></div>
@@ -103,4 +52,51 @@
       
   </div>
 </body>
+
+<script type="text/javascript">
+	var gadget = gadget(window, document);
+
+	//@Reference
+	var files = new Reference("files");
+	
+	function getFiles() {
+		files.get("", getFilesResponse);
+	}
+	
+	function getFilesResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			var list = '<table width="100%"><tr><th>Files</th></tr>';
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				list += '<tr><td><input name="files" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + location + '\">' + id + '</a></td></tr>';
+			}
+			list += "</table>";
+			gadget.getElementById("files").innerHTML = list;
+		}
+	}				
+
+	function deleteFile() {
+		var list = array(gadget.filesForm.files);
+		for (var i=0; i < list.length; i++) {
+			if (list[i].checked) {
+			    var id = list[i].value;
+				files.del(id, deleteFileResponse);
+			}
+		}
+	}
+
+	function deleteFileResponse() {
+	    getFiles();
+	}
+
+	function uploadFile() {
+		gadget.uploadFileForm.submit();
+	}
+
+	getFiles();
+
+</script>
 </html>

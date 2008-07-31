@@ -23,7 +23,39 @@
 <script type="text/javascript" src="../composite-gadget/composite-gadget.js"></script>
 <script type="text/javascript" src="utils.js"></script>
 
-<script language="JavaScript">
+<link rel="stylesheet" type="text/css" href="manager.css">
+</head>
+
+<body>
+  <div id="domainComposite">
+  
+  <form name="domainCompositeForm">
+    <div id="composites" ></div>
+    <br>
+    <input type="button" onClick="deleteComposite()"  value="Delete" />
+  </form>
+  
+  <br><br>
+  
+  <form name="newCompositeForm">
+    <table width="100%">
+    <tr><th>Add Composite</th></tr>
+    <tr><td>Add an SCA composite describing your SCA service components.</td></tr>
+    </table>
+    <br>
+	<table>    
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://your/namespace</td></tr> 
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. yourcomposite</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
+    </table>
+    <input type="button" onClick="addComposite()" value="Add" />
+  </form>
+  
+  </div>
+</body>
+
+<script type="text/javascript">
+	var gadget = gadget(window, document);
 
 	//@Reference
 	var domainComposite = new Reference("domainComposite");
@@ -88,12 +120,12 @@
 				composites += '</tr>';
 			}
 			composites += '</table>';
-			document.getElementById("composites").innerHTML = composites;
+			gadget.getElementById("composites").innerHTML = composites;
 		}
 	}
 
 	function deleteComposite() {
-		var composites  = array(document.domainCompositeForm.composites);
+		var composites  = array(gadget.domainCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
@@ -108,9 +140,9 @@
 
 	function addComposite() {
 		var id  = 'composite:' +
-			document.newCompositeForm.contributionURI.value + ';' +
-			document.newCompositeForm.compositeNamespace.value + ';' +
-			document.newCompositeForm.compositeName.value;
+			gadget.newCompositeForm.contributionURI.value + ';' +
+			gadget.newCompositeForm.compositeNamespace.value + ';' +
+			gadget.newCompositeForm.compositeName.value;
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
 				'<title>' + id +'</title>' +
               	'<id>' + id + '</id>' +
@@ -119,9 +151,9 @@
 	}
 
 	function addCompositeResponse() {
-		document.newCompositeForm.compositeNamespace.value = "";
-		document.newCompositeForm.compositeName.value = "";
-		document.newCompositeForm.contributionURI.value = "";
+		gadget.newCompositeForm.compositeNamespace.value = "";
+		gadget.newCompositeForm.compositeName.value = "";
+		gadget.newCompositeForm.contributionURI.value = "";
 	    getComposites();
 	}
 	
@@ -172,7 +204,7 @@
 	}	
 
 	function suggestCompositeNames() {
-		var inputns = document.newCompositeForm.compositeNamespace.value;
+		var inputns = gadget.newCompositeForm.compositeNamespace.value;
 		var names = new Array();
 		for (var uri in contributedComposites) {
 			var qname = compositeName(uri);
@@ -187,8 +219,8 @@
 	}	
 
 	function suggestContributionURIs() {
-		var inputns = document.newCompositeForm.compositeNamespace.value;
-		var inputname = document.newCompositeForm.compositeName.value;
+		var inputns = gadget.newCompositeForm.compositeNamespace.value;
+		var inputname = gadget.newCompositeForm.compositeName.value;
 		var uris = new Array();
 		for (var uri in contributedComposites) {
 			var qname = compositeName(uri);
@@ -203,47 +235,11 @@
 		return array(uris);
 	}
 
-	function init() {
-		getComposites();
-		getContributions();
-		suggest(document.newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
-		suggest(document.newCompositeForm.compositeName, suggestCompositeNames);
-		suggest(document.newCompositeForm.contributionURI, suggestContributionURIs);
-	}
+	getComposites();
+	getContributions();
+	suggest(gadget.newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
+	suggest(gadget.newCompositeForm.compositeName, suggestCompositeNames);
+	suggest(gadget.newCompositeForm.contributionURI, suggestContributionURIs);
 		
 </script>
-
-<link rel="stylesheet" type="text/css" href="manager.css">
-</head>
-
-<body onload="init()">
-  <div id="domainComposite">
-  
-  Here is the list of SCA composites currently included as top-level composites in your SCA domain.
-  <br><br>
-  
-  <form name="domainCompositeForm">
-    <div id="composites" ></div>
-    <br>
-    <input type="button" onClick="deleteComposite()"  value="Delete" />
-  </form>
-  
-  <br><br>
-  
-  <form name="newCompositeForm">
-    <table width="100%">
-    <tr><th>Add Composite</th></tr>
-    <tr><td>Add an SCA composite describing your SCA service components.</td></tr>
-    </table>
-    <br>
-	<table>    
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://your/namespace</td></tr> 
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. yourcomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
-    </table>
-    <input type="button" onClick="addComposite()" value="Add" />
-  </form>
-  
-  </div>
-</body>
 </html>
