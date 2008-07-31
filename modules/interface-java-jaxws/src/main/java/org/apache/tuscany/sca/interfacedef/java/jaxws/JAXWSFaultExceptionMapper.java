@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.ServiceRuntimeException;
@@ -250,7 +251,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean introspectFaultDataType(DataType<DataType> exceptionType, Operation operation, final boolean generatingFaultBean) {
+    public boolean introspectFaultDataType(DataType<DataType> exceptionType, final Operation operation, final boolean generatingFaultBean) {
         QName faultName = null;
         boolean result = false;
 
@@ -303,7 +304,10 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
                     } catch (ClassNotFoundException e) {
                         if (generatingFaultBean) {
                             Class<? extends Throwable> t = (Class<? extends Throwable>)cls;
-                            GeneratedClassLoader cl = new GeneratedClassLoader(t.getClassLoader());
+                            ClassLoader parent =
+                                operation == null ? t.getClassLoader() : ((JavaInterface)operation.getInterface())
+                                    .getJavaClass().getClassLoader();
+                            GeneratedClassLoader cl = new GeneratedClassLoader(parent);
                             GeneratedDataTypeImpl dt = new GeneratedDataTypeImpl(xmlAdapterExtensionPoint, t, cl);
                             return dt;
                         } else {

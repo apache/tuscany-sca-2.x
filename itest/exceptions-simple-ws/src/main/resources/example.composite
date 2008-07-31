@@ -37,4 +37,20 @@
             <binding.ws wsdlElement="http://example.com/#wsdl.port(ExampleService/ExampleServiceSOAP11port_http)" />
         </service>  
     </component>
+    
+    <component name="ExampleClientMinimalComponent">
+        <implementation.java class="com.example.ExampleClientMinimalImpl" />
+        <reference name="myService">
+			<interface.java interface="com.example.ExampleServiceMinimal"/>
+			<binding.ws uri="http://localhost:8085/ExampleMinimalComponent" />        
+       </reference>
+    </component>
+        
+	<component name="ExampleMinimalComponent">
+		<implementation.java class="com.example.ExampleServiceMinimalImpl" />
+		<service name="ExampleServiceMinimal">
+			<interface.java interface="com.example.ExampleServiceMinimal"/>
+			<binding.ws uri="http://localhost:8085/ExampleMinimalComponent" />
+		</service>
+	</component>    
 </composite>
