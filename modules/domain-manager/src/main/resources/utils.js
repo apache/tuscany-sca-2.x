@@ -167,7 +167,7 @@ function toolbar(home, tools) {
 }
 
 /**
- * Utility function returning an non-sparse array from an array or an object. 
+ * Return an non-sparse array from an array or an object. 
  */ 
 function array(obj) {
     if (obj.length == undefined) {
@@ -186,7 +186,7 @@ function array(obj) {
 }
 
 /**
- * Utility function thats dumps a Javascript object to the console
+ * Dump a Javascript object to the console
  */
 function dump(o) {
 	for (f in o) {
@@ -196,6 +196,9 @@ function dump(o) {
 	}
 }
 
+/**
+ * Return the content document of the given window.
+ */
 function content(win) {
 	if (win.document != 'undefined' && win.document != null) {
 		return win.document;
@@ -206,11 +209,20 @@ function content(win) {
 	}
 }
 
+/**
+ * Install a gadget
+ */
 function gadget(win, doc) {
-	if (win.parent.ongadget != null && win.parent.ongadget != 'undefined') {
-		return win.parent.ongadget(win, doc);
+	var ongadget = null;
+	try {
+		if (win.parent.ongadget != null && win.parent.ongadget != 'undefined') {
+			ongadget = win.parent.ongadget;
+		}
+	} catch (e) {
+	}
+	if (ongadget != null) {
+		return ongadget(win, doc);
 	} else {
 		return doc;
 	}
 }
- 
