@@ -23,7 +23,44 @@
 <script type="text/javascript" src="../cloud-gadget/cloud-gadget.js"></script>
 <script type="text/javascript" src="utils.js"></script>
 
-<script language="JavaScript">
+<link rel="stylesheet" type="text/css" href="manager.css">
+</head>
+
+<body>
+  <div id="cloudComposite">
+  
+  <form name="cloudCompositeForm">
+    <div id="composites" ></div>
+    <br>
+    <input type="button" onClick="startNode()"  value="Start" />
+    <input type="button" onClick="stopNode()"  value="Stop" />
+    &nbsp;&nbsp;
+    <input type="button" onClick="deleteNode()"  value="Delete" />
+  </form>
+
+  <br><br>
+  
+  <form name="newNodeForm">
+    <table width="100%">
+    <tr><th>Add a Node</th></tr>
+    <tr><td>Add a node to the cloud. The node will run the SCA components declared in the specified composite.</td></tr>
+    </table>
+    <br>
+    <table>
+    <tr><td>Node name:</td><td><input type="text" name="nodeName" size="50"/></td><td>e.g. YourNode</td></tr>
+    <tr><td>Node URI:</td><td><input type="text" name="nodeURI" size="50"/></td></td><td>e.g. http://yourhost:8080</td></tr>
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td></td><td>e.g. http://your/namespace</td></tr>
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. yourcomposite</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
+    </table>
+    <input type="button" onClick="addNode()" value="Add" />
+  </form>
+  
+  </div>
+</body>
+
+<script type="text/javascript">
+	var gadget = gadget(window, document);
 
 	//@Reference
 	var cloudComposite = new Reference("cloudComposite");
@@ -112,7 +149,7 @@
 				composites += '</tr>';
 			}
 			composites += '</table>';
-			document.getElementById("composites").innerHTML = composites;
+			gadget.getElementById("composites").innerHTML = composites;
 
 			processCollection.get("", getProcessesResponse);
 		}
@@ -129,7 +166,7 @@
 			}
 
 			for (var i = 0; i < nodeNames.length; i++) {
-				var element = document.getElementById('status_' + nodeNames[i]);
+				var element = gadget.getElementById('status_' + nodeNames[i]);
 				var nodeName = nodeNames[i];
 				if (nodeStatus[nodeName] == null) {
 					element.innerHTML = '<span>stopped</span>';
@@ -141,7 +178,7 @@
 	}
 
 	function deleteNode() {
-		var composites  = array(document.cloudCompositeForm.composites);
+		var composites  = array(gadget.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
@@ -155,11 +192,11 @@
 	}	
 
 	function addNode() {
-		var nodeName = document.newNodeForm.nodeName.value;
-		var nodeURI = document.newNodeForm.nodeURI.value;			
-		var compositeNamespace = document.newNodeForm.compositeNamespace.value;
-		var compositeName = document.newNodeForm.compositeName.value;
-		var contributionURI = document.newNodeForm.contributionURI.value;
+		var nodeName = gadget.newNodeForm.nodeName.value;
+		var nodeURI = gadget.newNodeForm.nodeURI.value;			
+		var compositeNamespace = gadget.newNodeForm.compositeNamespace.value;
+		var compositeName = gadget.newNodeForm.compositeName.value;
+		var contributionURI = gadget.newNodeForm.contributionURI.value;
 		var id  = 'composite:' +
 			'http://tuscany.apache.org/cloud' + ';' +
 			'http://tuscany.apache.org/cloud' + ';' +
@@ -190,16 +227,16 @@
 	}
 
 	function addNodeResponse() {
-		document.newNodeForm.nodeName.value = "";
-		document.newNodeForm.nodeURI.value = "";
-		document.newNodeForm.compositeNamespace.value = "";
-		document.newNodeForm.compositeName.value = "";
-		document.newNodeForm.contributionURI.value = "";
+		gadget.newNodeForm.nodeName.value = "";
+		gadget.newNodeForm.nodeURI.value = "";
+		gadget.newNodeForm.compositeNamespace.value = "";
+		gadget.newNodeForm.compositeName.value = "";
+		gadget.newNodeForm.contributionURI.value = "";
 	    getNodes();
 	}	
 
 	function startNode() {
-		var composites  = array(document.cloudCompositeForm.composites);
+		var composites  = array(gadget.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = nodeNames[i];
@@ -215,7 +252,7 @@
 	function startNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
-		var composites  = array(document.cloudCompositeForm.composites);
+		var composites  = array(gadget.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -224,7 +261,7 @@
 	}	
 
 	function stopNode() {
-		var composites  = array(document.cloudCompositeForm.composites);
+		var composites  = array(gadget.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = nodeNames[i];
@@ -236,7 +273,7 @@
 	function stopNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
-		var composites  = array(document.cloudCompositeForm.composites);
+		var composites  = array(gadget.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -271,7 +308,7 @@
 	}	
 
 	function suggestCompositeNames() {
-		var inputns = document.newNodeForm.compositeNamespace.value;
+		var inputns = gadget.newNodeForm.compositeNamespace.value;
 		var names = new Array();
 		for (var uri in deployedComposites) {
 			var qname = compositeName(uri);
@@ -286,8 +323,8 @@
 	}	
 
 	function suggestContributionURIs() {
-		var inputns = document.newNodeForm.compositeNamespace.value;
-		var inputname = document.newNodeForm.compositeName.value;
+		var inputns = gadget.newNodeForm.compositeNamespace.value;
+		var inputname = gadget.newNodeForm.compositeName.value;
 		var uris = new Array();
 		for (var uri in deployedComposites) {
 			var qname = compositeName(uri);
@@ -302,53 +339,11 @@
 		return array(uris);
 	}
 
-	function init() {
-		getNodes();
-		getComposites();
-		suggest(document.newNodeForm.compositeNamespace, suggestCompositeNamespaces);
-		suggest(document.newNodeForm.compositeName, suggestCompositeNames);
-		suggest(document.newNodeForm.contributionURI, suggestContributionURIs);
-	}
-
+	getNodes();
+	getComposites();
+	suggest(gadget.newNodeForm.compositeNamespace, suggestCompositeNamespaces);
+	suggest(gadget.newNodeForm.compositeName, suggestCompositeNames);
+	suggest(gadget.newNodeForm.contributionURI, suggestContributionURIs);
+	
 </script>
-
-<link rel="stylesheet" type="text/css" href="manager.css">
-</head>
-
-<body onload="init()">
-  <div id="cloudComposite">
-  
-  Here is the list of SCA nodes configured in your SCA domain cloud.
-  <br><br>
-
-  <form name="cloudCompositeForm">
-    <div id="composites" ></div>
-    <br>
-    <input type="button" onClick="startNode()"  value="Start" />
-    <input type="button" onClick="stopNode()"  value="Stop" />
-    &nbsp;&nbsp;
-    <input type="button" onClick="deleteNode()"  value="Delete" />
-  </form>
-
-  <br><br>
-  
-  <form name="newNodeForm">
-    <table width="100%">
-    <tr><th>Add a Node</th></tr>
-    <tr><td>Add a node to the cloud. The node will run the SCA components declared in the specified composite.</td></tr>
-    </table>
-    <br>
-    <table>
-    <tr><td>Node name:</td><td><input type="text" name="nodeName" size="50"/></td><td>e.g. YourNode</td></tr>
-    <tr><td>Node URI:</td><td><input type="text" name="nodeURI" size="50"/></td></td><td>e.g. http://yourhost:8080</td></tr>
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td></td><td>e.g. http://your/namespace</td></tr>
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. yourcomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
-    </table>
-    <input type="button" onClick="addNode()" value="Add" />
-  </form>
-  
-  </div>
-</body>
-
 </html>

@@ -20,19 +20,37 @@
 <head>
 <title>SCA Domain - Domain Composite</title>
 
+<script type="text/javascript" src="utils.js"></script>
+
 <link rel="stylesheet" type="text/css" href="manager.css">
 </head>
 
 <body>
-  <iframe id="toolbarGadget" src="toolbar-gadget.html" style="top: 0px; left: 0px; width: 100%;"></iframe>
-  <br><br>
+  <div id="toolbarGadgetDiv"></div>
+  <br>
   
   <span class=hd1>
   SCA Domain<br><br>
   Domain Composite&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
   </span>
   <br>
+  Here is the list of SCA composites currently included as top-level composites in your SCA domain.
+  <br><br>
   
-  <iframe id="compositeGadget" src="composite-gadget.html" style="left: 0px; width: 100%; height: 100%;"></iframe>
+  <div id="compositeGadgetDiv"></div>
+  
+  <iframe id="toolbarGadget" src="toolbar-gadget.html"></iframe>
+  <iframe id="compositeGadget" src="composite-gadget.html"></iframe>
 </body>
+
+<script type="text/javascript">
+	function ongadget(win, doc) {
+		if (doc == content(toolbarGadget)) {
+			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+		} else if (doc == content(compositeGadget)) {
+			compositeGadgetDiv.innerHTML = doc.body.innerHTML;
+		}
+		return document;
+	}
+</script>
 </html>

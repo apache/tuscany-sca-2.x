@@ -18,7 +18,7 @@
  */
 
 body {
-	white-space: nowrap; overflow: hidden;
+	white-space: nowrap; margin: 2px;
 }
 
 table {
@@ -37,7 +37,7 @@ td {
 }
 
 iframe {
-	border: 0px; margin: 0px; padding: 0px; position: absolute; overflow: hidden;
+	visibility: hidden;
 }
 
 input {
