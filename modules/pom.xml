@@ -137,7 +137,6 @@
                 <module>implementation-java-runtime</module>
                 <module>implementation-node</module>
                 <module>implementation-node-runtime</module>
-                <module>implementation-node-osgi-runtime</module>
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
                 <module>implementation-resource</module>
@@ -152,6 +151,9 @@
                 <module>node2-api</module>
                 <module>node2-impl</module>
                 <module>node2-launcher</module>
+                <!--
+                <module>node2-launcher-osgi</module>
+                -->
                 <module>node2-launcher-webapp</module>
                 <module>node-manager</module>
                 <module>osgi-runtime</module>
