@@ -23,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
-import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourFactory;
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
@@ -43,30 +41,16 @@ import org.junit.Test;
 public class ScenarioFourTestCase {
 
     // note that those values are also used in resources/*.composite file
-    private static int ORB_INITIAL_PORT = 5060;
     private static SCADomain domain;
-    private static TransientNameServer server;
     private static ScenarioFourComponent scenarioFourComponent;
     private static ScenarioFour scenarioFour;
 
     /**
-     * Sets up name service, creates and registers traditional CORBA service,
-     * obtains SCADomain
+     * Initial configuration
      */
     @BeforeClass
     public static void setUp() {
         try {
-            try {
-                server =
-                    new TransientNameServer("localhost", ORB_INITIAL_PORT, TransientNameService.DEFAULT_SERVICE_NAME);
-                Thread t = server.start();
-                if (t == null) {
-                    Assert.fail("The naming server cannot be started");
-                }
-            } catch (Throwable e) {
-                e.printStackTrace();
-                Assert.fail(e.getMessage());
-            }
             // obtain domain
             domain = SCADomain.newInstance("ScenarioFour.composite");
             scenarioFourComponent = domain.getService(ScenarioFourComponent.class, "ScenarioFour");
@@ -77,11 +61,11 @@ public class ScenarioFourTestCase {
     }
 
     /**
-     * Kills previously spawned name service.
+     * Test cleanup
      */
     @AfterClass
     public static void tearDown() {
-        server.stop();
+        // do nothing
     }
 
     /**
@@ -133,5 +117,20 @@ public class ScenarioFourTestCase {
             e.printStackTrace();
             fail();
         }
-    }    
+    }
+    
+    /**
+     * Tests reusing local name server with multiple bindings 
+     */
+    @Test
+    public void test_nameServerReuse() {
+        try {
+            ScenarioFour scenarioFour = domain.getService(ScenarioFourComponent.class, "ScenarioFourReuse").getScenarioFour();
+            ScenarioFourStruct struct = new ScenarioFourStruct();
+            scenarioFour.setStruct(struct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 }

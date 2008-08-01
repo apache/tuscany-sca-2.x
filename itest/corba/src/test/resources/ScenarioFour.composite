@@ -30,13 +30,26 @@
     </component>
 	<service name="ScenarioFour" promote="ScenarioFourService">
     	<interface.java interface="org.apache.tuscany.sca.test.corba.types.ScenarioFour"/>
-        <binding.sca uri="corbaname::localhost:5060#ScenarioFour"/>
+        <binding.sca uri="corbaname::localhost:5080#ScenarioFour"/>
     </service>
     
     <component name="ScenarioFour">
         <implementation.java class="org.apache.tuscany.sca.test.corba.types.ScenarioFourComponent" />
         <reference name="scenarioFour">
-			<binding.sca uri="corbaname::localhost:5060#ScenarioFour"/>        
+			<binding.sca uri="corbaname::localhost:5080#ScenarioFour"/>        
+        </reference>
+    </component>
+    
+    <!-- doubled service and reference to test reuse of name server --> 
+    <service name="ScenarioFourDoubled" promote="ScenarioFourService">
+    	<interface.java interface="org.apache.tuscany.sca.test.corba.types.ScenarioFour"/>
+        <binding.sca uri="corbaname::localhost:5080#ScenarioFourReuse"/>
+    </service>
+    
+    <component name="ScenarioFourReuse">
+        <implementation.java class="org.apache.tuscany.sca.test.corba.types.ScenarioFourComponent" />
+        <reference name="scenarioFour">
+			<binding.sca uri="corbaname::localhost:5080#ScenarioFourReuse"/>        
         </reference>
     </component>
     

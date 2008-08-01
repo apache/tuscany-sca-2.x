@@ -75,9 +75,7 @@ public class CorbaSCAInvocationProxy implements InvocationProxy {
                     break;
                 }
             }
-            if (componentOperation == null) {
-                // TODO: throw an exception - no such operation
-            } else {
+            if (componentOperation != null) {
                 Message msg = messageFactory.createMessage();
                 msg.setOperation(componentOperation);
                 Object[] args = new Object[1];

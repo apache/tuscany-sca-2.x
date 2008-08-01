@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.host.corba;
 
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 /**
@@ -50,6 +49,14 @@ public class ExtensibleCorbaHost implements CorbaHost {
             throw new CorbaHostException("No registered CORBA hosts");
         }
         return hosts.getCorbaHosts().get(0);
+    }
+
+    public void createLocalNameServer(int port) throws CorbaHostException {
+        getCorbaHost().createLocalNameServer(port);
+    }
+    
+    public void releaseLocalNameServer(int port) throws CorbaHostException {
+        getCorbaHost().releaseLocalNameServer(port);
     }
 
 }

@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.host.corba;
 
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 /**
@@ -29,6 +28,7 @@ public interface CorbaHost {
 
     /**
      * Registers servant in name server.
+     * 
      * @param uri corbaname URI
      * @param serviceObject
      * @throws CorbaHostException
@@ -37,18 +37,35 @@ public interface CorbaHost {
 
     /**
      * Removes servant from name server
+     * 
      * @param orb The ORB instance
      * @param name binding name
      * @throws CorbaHostException
      */
     void unregisterServant(String uri) throws CorbaHostException;
-    
+
     /**
      * Gets reference to object
+     * 
      * @param name binding name
      * @return objects reference
      * @throws CorbaHostException
      */
     Object lookup(String uri) throws CorbaHostException;
 
+    /**
+     * Provides name server under given port.
+     * 
+     * @param port
+     * @throws CorbaHostException
+     */
+    void createLocalNameServer(int port) throws CorbaHostException;
+
+    /**
+     * Stops name server but only if every client released previously created NS.
+     * 
+     * @param port
+     * @throws CorbaHostException
+     */
+    void releaseLocalNameServer(int port) throws CorbaHostException;
 }

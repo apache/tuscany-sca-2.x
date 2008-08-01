@@ -19,15 +19,28 @@
 
 package org.apache.tuscany.sca.binding.sca.corba.impl;
 
+/**
+ * Exception holder for SCA default binding over CORBA. Holds fault message in
+ * XML
+ */
 public class WrappedSCAException extends Exception {
 
     private static final long serialVersionUID = 1L;
     public String fault;
 
+    /**
+     * Creates exception holder with null fault message. This no argument
+     * constructor is needed by CORBA binding.
+     */
     public WrappedSCAException() {
 
     }
 
+    /**
+     * Creates exception holder with fault message
+     * 
+     * @param fault XML fault message
+     */
     public WrappedSCAException(String fault) {
         this.fault = fault;
     }

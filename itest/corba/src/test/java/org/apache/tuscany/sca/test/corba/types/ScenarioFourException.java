@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
+/**
+ * Exception for ScenarioFour tests
+ */
 public class ScenarioFourException extends Exception {
 
     public static final String DEFAULT_CONTENT = "Test";
