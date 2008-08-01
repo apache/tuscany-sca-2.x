@@ -60,6 +60,7 @@
                 <module>callback-ws-client</module>
                 <module>callback-ws-service</module>
                 <module>chat-webapp</module>
+                <module>customer-dojo</module>
                 <module>databinding-echo</module>
                 <!--module>domain-webapp</module-->
                 <module>domain-management</module>
