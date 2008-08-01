@@ -39,11 +39,39 @@ public interface GDataBinding extends Binding {
      */
     void setTitle(String title);
 
-    String getLogin();
+    /*
+     * Returns the username of a Google account
+     * @return
+     */
+    String getUsername();
 
-    void setLogin(String login);
-    
+    /*
+     * Sets the username of a Google account
+     * @param username
+     */
+    void setUsername(String username);
+
+    /*
+     * Returns the password of a Google account
+     * @return
+     */
     String getPassword();
-    
+
+    /*
+     * Sets the password of a Google account
+     * @param password
+     */
     void setPassword(String password);
+
+    /*
+     * Retruns the name of the Google service to which we are connecting. Sample names of services might include "cl" (Calendar), "mail" (GMail), or "blogger" (Blogger)
+     * @return
+     */
+    String getServiceType();
+
+    /*
+     * Sets the name of the Google service to which we are connecting. Sample names of services might include "cl" (Calendar), "mail" (GMail), or "blogger" (Blogger)
+     * @param serviceType
+     */
+    void setServiceType(String serviceType);
 }

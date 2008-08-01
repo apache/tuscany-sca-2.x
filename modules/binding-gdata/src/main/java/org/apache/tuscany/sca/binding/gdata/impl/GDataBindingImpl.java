@@ -39,8 +39,9 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAttachPoint {
 
     private String password;
-    private String login;
+    private String username;
     private String name;
+    private String serviceType;
     private String uri;
     private String title;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -142,12 +143,12 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
         this.requiredIntents = intents;
     }
 
-    public String getLogin() {
-        return this.login;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -156,5 +157,13 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getServiceType() {
+        return this.serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }
