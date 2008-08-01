@@ -27,7 +27,6 @@ import javax.naming.NamingException;
 
 import org.apache.AnnotationProcessor;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.util.DefaultAnnotationProcessor;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.osoa.sca.annotations.Reference;
@@ -38,8 +37,6 @@ import org.osoa.sca.annotations.Reference;
 public class TuscanyAnnotationProcessor implements AnnotationProcessor {
 
     private StandardContext scaApp;
-    
-    DefaultAnnotationProcessor x;
 
     public TuscanyAnnotationProcessor(StandardContext scaApp) {
        this.scaApp = scaApp;
