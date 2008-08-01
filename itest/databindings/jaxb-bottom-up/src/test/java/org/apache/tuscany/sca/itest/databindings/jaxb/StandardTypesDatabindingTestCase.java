@@ -567,7 +567,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    // @Ignore("TUSCANY-2389")
     public void testWSNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
