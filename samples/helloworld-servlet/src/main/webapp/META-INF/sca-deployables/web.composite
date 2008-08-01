@@ -23,10 +23,10 @@
 
     <component name="WebClient">
         <implementation.web web-uri=""/>
-        <reference name="helloworldService" target="HelloworldService"/>
+        <reference name="helloworldService" target="helloworldService"/>
     </component>
 
-    <component name="HelloworldService">
+    <component name="helloworldService">
         <implementation.java class="sample.HelloworldServiceImpl"/>
     </component>
 

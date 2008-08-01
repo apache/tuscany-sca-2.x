@@ -21,7 +21,6 @@ package sample;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,17 +35,6 @@ public class HelloworldServlet extends HttpServlet {
     @Reference
     protected HelloworldService helloworldService;
 
-    @Override
-    public void init(ServletConfig config) {
-    	/*
-    	 * TODO: obviously Tuscany should be creating the service, either
-    	 * from the @Reference annotation or perhaps for non-SCA runtimes something like:
-    	 *    ComponentContext context = ComponentContext.getContext(config);
-    	 *    helloworldService = context.getService("helloworldService", HelloworldService.class);
-    	 */
-    	helloworldService = new HelloworldServiceImpl();
-    }
-	
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
