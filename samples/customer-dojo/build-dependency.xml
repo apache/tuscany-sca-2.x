@@ -1,0 +1,110 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+    <fileset id="tuscany.jars" dir="../../modules">
+        <include name="tuscany-assembly-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-assembly-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-assembly-xsd-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-http-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-http-runtime-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-jsonrpc-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-jsonrpc-runtime-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-sca-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-sca-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-impl-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-java-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-namespace-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-core-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-core-databinding-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-core-spi-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-data-api-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-databinding-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-databinding-jaxb-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-databinding-json-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-definitions-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-definitions-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-endpoint-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-extensibility-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-host-embedded-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-host-http-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-host-jetty-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-runtime-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-resource-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-resource-runtime-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-java-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-java-jaxws-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-java-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-monitor-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-policy-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-policy-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-sca-api-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-xsd-1.4-SNAPSHOT.jar"/>
+    </fileset>
+    <fileset id="3rdparty.jars" dir="../../lib">
+        <include name="XmlSchema-1.3.2.jar"/>
+        <include name="activation-1.1.jar"/>
+        <include name="ant-1.6.5.jar"/>
+        <include name="asm-all-3.1.jar"/>
+        <include name="axiom-api-1.2.5.jar"/>
+        <include name="axiom-impl-1.2.5.jar"/>
+        <include name="cglib-nodep-2.1_3.jar"/>
+        <include name="commons-collections-3.2.jar"/>
+        <include name="commons-lang-2.1.jar"/>
+        <include name="commons-logging-1.1.jar"/>
+        <include name="commons-pool-1.3.jar"/>
+        <include name="derby-10.1.2.1.jar"/>
+        <include name="geronimo-commonj_1.1_spec-1.0.jar"/>
+        <include name="geronimo-jms_1.1_spec-1.0.1.jar"/>
+        <include name="geronimo-jpa_3.0_spec-1.1.jar"/>
+        <include name="geronimo-jta_1.1_spec-1.1.jar"/>
+        <include name="hsqldb-1.8.0.1.jar"/>
+        <include name="jaxb-api-2.1.jar"/>
+        <include name="jaxb-impl-2.1.7.jar"/>
+        <include name="jaxen-1.1-beta-9.jar"/>
+        <include name="jaxws-api-2.1.jar"/>
+        <include name="jettison-1.0.1.jar"/>
+        <include name="jetty-6.1.7.jar"/>
+        <include name="jetty-util-6.1.7.jar"/>
+        <include name="json-rpc-1.0.jar"/>
+        <include name="jsr181-api-1.0-MR1.jar"/>
+        <include name="jsr250-api-1.0.jar"/>
+        <include name="log4j-1.2.13.jar"/>
+        <include name="mail-1.4.jar"/>
+        <include name="openjpa-1.0.0.jar"/>
+        <include name="openjpa-jdbc-1.0.0.jar"/>
+        <include name="openjpa-jdbc-5-1.0.0.jar"/>
+        <include name="openjpa-kernel-1.0.0.jar"/>
+        <include name="openjpa-kernel-5-1.0.0.jar"/>
+        <include name="openjpa-lib-1.0.0.jar"/>
+        <include name="openjpa-persistence-1.0.0.jar"/>
+        <include name="openjpa-persistence-jdbc-1.0.0.jar"/>
+        <include name="openjpa-xmlstore-1.0.0.jar"/>
+        <include name="serp-1.13.1.jar"/>
+        <include name="servlet-api-2.5.jar"/>
+        <include name="stax-api-1.0-2.jar"/>
+        <include name="stax-api-1.0.1.jar"/>
+        <include name="wstx-asl-3.2.1.jar"/>
+        <include name="xml-apis-1.3.03.jar"/>
+    </fileset>
+
