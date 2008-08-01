@@ -27,7 +27,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-node2-osgi-launcher</artifactId>
+    <artifactId>tuscany-node2-launcher-osgi</artifactId>
     <name>Apache Tuscany SCA Node OSGi Launcher</name>
 
     <dependencies>   
