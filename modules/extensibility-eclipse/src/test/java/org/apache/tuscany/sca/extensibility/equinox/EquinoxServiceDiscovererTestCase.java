@@ -25,9 +25,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -35,7 +33,6 @@ import java.util.jar.Manifest;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +45,7 @@ import org.osgi.framework.BundleContext;
 public class EquinoxServiceDiscovererTestCase {
     private static EquinoxServiceDiscoverer discoverer;
     private static Bundle testBundle;
+    private static EquinoxOSGiHost host;
 
     private static String getState(Bundle b) {
         StringBuffer sb = new StringBuffer();
@@ -79,10 +77,8 @@ public class EquinoxServiceDiscovererTestCase {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        String args[] = {};
-        Map props = new HashMap();
-        EclipseStarter.setInitialProperties(props);
-        BundleContext context = EclipseStarter.startup(args, null);
+        host = new EquinoxOSGiHost();
+        BundleContext context = host.start();
 
         InputStream is = EquinoxServiceDiscovererTestCase.class.getResourceAsStream("/test-bundle.jar");
         testBundle = context.installBundle("test-bundle", is);
@@ -129,7 +125,7 @@ public class EquinoxServiceDiscovererTestCase {
             // Uninstall the bundle to clean up the cache
             testBundle.uninstall();
         }
-        EclipseStarter.shutdown();
+        host.stop();
     }
 
     @Test
