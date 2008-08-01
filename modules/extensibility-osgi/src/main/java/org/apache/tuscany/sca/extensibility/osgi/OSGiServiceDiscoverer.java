@@ -253,6 +253,10 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
         }
         return attributes;
     }
+    
+    public BundleContext getBundleContext() {
+        return context;
+    }
 
     /**
      * This class loader can be set as the thread context class loader for non-OSGi code
