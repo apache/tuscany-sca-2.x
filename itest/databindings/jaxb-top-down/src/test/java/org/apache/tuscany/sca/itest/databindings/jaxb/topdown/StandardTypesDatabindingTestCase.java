@@ -283,7 +283,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    @Ignore("TUSCANY-2389")
     public void testW2WNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
@@ -574,7 +573,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    @Ignore("TUSCANY-2389")
     public void testJ2WNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
@@ -865,7 +863,6 @@ public class StandardTypesDatabindingTestCase {
      * Service method invoked is getNewObjectArray.
      */
     @Test
-    @Ignore("TUSCANY-2389")
     public void testW2JNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
             domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
