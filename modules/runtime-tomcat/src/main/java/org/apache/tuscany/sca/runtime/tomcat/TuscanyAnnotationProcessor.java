@@ -71,7 +71,6 @@ public class TuscanyAnnotationProcessor implements AnnotationProcessor {
     }
 
     protected void injectFieldResource(Object instance, Field field, Reference annotation) throws IllegalArgumentException, IllegalAccessException {
-        System.out.println("TuscanyAnnotationProcessor.injectFieldResource" + annotation);
 
         String serviceName = annotation.name();
         if (serviceName == null || serviceName.length() < 1) {
@@ -87,7 +86,6 @@ public class TuscanyAnnotationProcessor implements AnnotationProcessor {
     }
 
     protected void injectMethodResource(Object instance, Method method, Reference annotation) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        System.out.println("TuscanyAnnotationProcessor.injectMethodResource" + annotation);
 
         String serviceName = annotation.name();
         if (serviceName == null || serviceName.length() < 1) {
