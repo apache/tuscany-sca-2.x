@@ -26,12 +26,24 @@ import java.lang.reflect.Method;
 import javax.naming.NamingException;
 
 import org.apache.AnnotationProcessor;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.util.DefaultAnnotationProcessor;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.osoa.sca.annotations.Reference;
 
 /**
  * A Tuscany specific Tomcat annotation processor for processing SCA annotations
  */
 public class TuscanyAnnotationProcessor implements AnnotationProcessor {
+
+    private StandardContext scaApp;
+    
+    DefaultAnnotationProcessor x;
+
+    public TuscanyAnnotationProcessor(StandardContext scaApp) {
+       this.scaApp = scaApp;
+    }
 
     public void postConstruct(Object instance) throws IllegalAccessException, InvocationTargetException {
     }
@@ -61,12 +73,41 @@ public class TuscanyAnnotationProcessor implements AnnotationProcessor {
 
     }
 
-    protected void injectFieldResource(Object instance, Field field, Reference annotation) {
+    protected void injectFieldResource(Object instance, Field field, Reference annotation) throws IllegalArgumentException, IllegalAccessException {
         System.out.println("TuscanyAnnotationProcessor.injectFieldResource" + annotation);
+
+        String serviceName = annotation.name();
+        if (serviceName == null || serviceName.length() < 1) {
+            serviceName = field.getName();
+        }
+
+        Object service = getSCADomain().getService(field.getType(), serviceName);
+
+        boolean accessibility = field.isAccessible();
+        field.setAccessible(true);
+        field.set(instance, service);
+        field.setAccessible(accessibility);
     }
 
-    protected void injectMethodResource(Object instance, Method method, Reference annotation) {
+    protected void injectMethodResource(Object instance, Method method, Reference annotation) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         System.out.println("TuscanyAnnotationProcessor.injectMethodResource" + annotation);
+
+        String serviceName = annotation.name();
+        if (serviceName == null || serviceName.length() < 1) {
+            StringBuilder setterName = new StringBuilder(method.getName());
+            setterName.setCharAt(4, Character.toLowerCase(setterName.charAt(4)));
+            serviceName = setterName.substring(4);
+        }
+
+        Object service = getSCADomain().getService(method.getParameterTypes()[0], serviceName);
+
+        boolean accessibility = method.isAccessible();
+        method.setAccessible(true);
+        method.invoke(instance, service);
+        method.setAccessible(accessibility);
     }
 
+    protected SCADomain getSCADomain() {
+        return (SCADomain)scaApp.getServletContext().getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
+    }
 }
