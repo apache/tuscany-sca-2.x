@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,26 +16,17 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-
-package org.apache.tuscany.sca.binding.gdata;
-
-import com.google.gdata.client.Query;
-import com.google.gdata.data.Entry;
-import com.google.gdata.data.Feed;
-
-public interface CustomerClient {
-
-    Feed clientGetFeed() throws Exception;
-
-    Entry clientGetEntry(String entryID) throws Exception;
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+	   targetNamespace="http://customer"
+	   name="Consumer">
     
-    Entry clientPost(Entry entry) throws Exception;
-    
-    void clientDelete(String entryID) throws Exception;
-    
-    void clientPut(String entryID, String newTitle) throws Exception;
-    
-    Feed clientQuery(Query query) throws Exception;
+    <component name="CustomerClient">
+        <implementation.java class="org.apache.tuscany.sca.binding.gdata.CustomerClientImpl"/>
+        <reference name="resourceCollection">
+        	<tuscany:binding.gdata uri="http://www.google.com/m8/feeds/contacts/default/base" serviceType="cp" username="haibotuscany@gmail.com" password="gsocgsocgsoc"/>
+        </reference>
+    </component>
 
-}
+</composite>

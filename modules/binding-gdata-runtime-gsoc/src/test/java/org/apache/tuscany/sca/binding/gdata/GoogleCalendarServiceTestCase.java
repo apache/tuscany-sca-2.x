@@ -34,12 +34,12 @@ import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.PlainTextConstruct;
 
-public class GoogleBloggerServiceTestCase extends TestCase{
+public class GoogleCalendarServiceTestCase extends TestCase{
 
     private SCADomain scaDomainConsumer = null;
     private CustomerClient testService = null;    
     
-    public GoogleBloggerServiceTestCase(){
+    public GoogleCalendarServiceTestCase(){
 
     }
     
@@ -48,7 +48,7 @@ public class GoogleBloggerServiceTestCase extends TestCase{
         System.out.println("Method Test Start-----------------------------------------------------------------------");
         
         //Initialize the GData client service (Reference Binding test)
-        scaDomainConsumer = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/ConsumerGoogleBlogger.composite");
+        scaDomainConsumer = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/ConsumerGoogleCalendar.composite");
         testService = scaDomainConsumer.getService(CustomerClient.class, "CustomerClient");  
     }
 
@@ -62,13 +62,13 @@ public class GoogleBloggerServiceTestCase extends TestCase{
     public void testClientGetFeed() throws Exception {
         Feed feed = testService.clientGetFeed();
         System.out.println("feed title: " + feed.getTitle().getPlainText());        
-        assertEquals("gdata binding tuscany test", feed.getTitle().getPlainText());
+        assertEquals("gsoc gosc", feed.getTitle().getPlainText());
      }
     
     
     @Test
     public void testClientGetEntry() throws Exception {
-        String entryID = "8308734583601887890";
+        String entryID = "1c76lcl70jg9r0fm18rcbneea8";
         Entry blogEntry = testService.clientGetEntry(entryID);
         System.out.println("Entry ID: " + blogEntry.getId());
         assertTrue(blogEntry.getId().endsWith(entryID));
@@ -78,8 +78,8 @@ public class GoogleBloggerServiceTestCase extends TestCase{
     
     @Test
     public void testClientPut() throws Exception {  
-        String entryID = "2889832689497686762";          
-        String newBlogEntryTitle = "updatedTitleByTestCase2";
+        String entryID = "1c76lcl70jg9r0fm18rcbneea8";          
+        String newBlogEntryTitle = "updatedTitleByGoogleContactsConsumerTestCase";
         testService.clientPut(entryID, newBlogEntryTitle);      //update the title
         Thread.sleep(300);            
         Entry updatedEntry = testService.clientGetEntry(entryID);         
@@ -90,10 +90,10 @@ public class GoogleBloggerServiceTestCase extends TestCase{
 
     @Test
     public void testClientPost() throws Exception {
-        String blogEntryTitle = "titleByBloogerTestcase000";
+        String blogEntryTitle = "titleByGoogleCalendarTestcase";
         Entry newEntry = new Entry();
         newEntry.setTitle(new PlainTextConstruct(blogEntryTitle));
-        newEntry.setContent(new PlainTextConstruct("contentByBloggerTestCase000"));
+        newEntry.setContent(new PlainTextConstruct("contentByGoogleCalendarTestCase"));
         Entry postedEntry = testService.clientPost(newEntry);        
         assertEquals(blogEntryTitle, postedEntry.getTitle().getPlainText());
     }
@@ -108,11 +108,14 @@ public class GoogleBloggerServiceTestCase extends TestCase{
         System.out.println("testClientDelete");
         //We create a new post, and then delete it
         Entry newEntry = new Entry();
-        newEntry.setTitle(new PlainTextConstruct("blogEntryShouldNotApear"));
-        newEntry.setContent(new PlainTextConstruct("contentByBloggerShouldNotAppear"));
+        newEntry.setTitle(new PlainTextConstruct("calendarEntryShouldNotApear"));
+        newEntry.setContent(new PlainTextConstruct("calendarByBloggerShouldNotAppear"));
         Entry postedEntry = testService.clientPost(newEntry);
-        Thread.sleep(300);        
-        int idStartPosition = postedEntry.getId().lastIndexOf("-");
+        Thread.sleep(300); 
+        
+        System.out.println("ID: " + postedEntry.getId());
+        
+        int idStartPosition = postedEntry.getId().lastIndexOf("/");
         String postedEntryID = postedEntry.getId().substring(idStartPosition+1);        
         System.out.println("postedEntryID: " + postedEntryID );
         
@@ -123,7 +126,7 @@ public class GoogleBloggerServiceTestCase extends TestCase{
         //Delete this entry
         testService.clientDelete(postedEntryID);
 
-        //Worked: this newly posted entry did not appear in the blogspot website,
+        //Worked: this newly posted entry did not appear in the contact list
         //But we need a Junit assertion here
         //Link:  http://haibotuscany.blogspot.com/feeds/posts/default/
         //FIXME: Need an assertion here
@@ -133,10 +136,15 @@ public class GoogleBloggerServiceTestCase extends TestCase{
     
     @Test
     public void testClientQuery() throws Exception {
-        Query myQuery = new Query(new URL("http://haibotuscany.blogspot.com/feeds/posts/default"));
+        Query myQuery = new Query(new URL("http://www.google.com/calendar/feeds/haibotuscany@gmail.com/private/full"));
         myQuery.setMaxResults(100);
         //myQuery.setUpdatedMin(startTime);
         myQuery.setUpdatedMax(DateTime.now());
+        
+        //Google Calendar service supports full-text search
+        String queryString = "event0";
+        myQuery.setFullTextQuery(queryString);
+        
         Feed resultFeed = testService.clientQuery(myQuery);        
         System.out.println("Query result feed title: " + resultFeed.getTitle().getPlainText());    
         System.out.println("Query result entry number: "+ resultFeed.getEntries().size());

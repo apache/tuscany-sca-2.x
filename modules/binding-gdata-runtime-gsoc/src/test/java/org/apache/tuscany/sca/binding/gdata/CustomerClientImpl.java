@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
+import com.google.gdata.client.Query;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.PlainTextConstruct;
@@ -91,7 +92,7 @@ public class CustomerClientImpl implements CustomerClient {
 
         System.out.println("clientPut");
         // Put a new entry to the provider
-        System.out.println(">>> put id=" + entryID + " title=updatedTitle");
+        System.out.println(">>> put id=" + entryID + " title=" + newTitle);
         Entry entry = resourceCollection.get(entryID);
         
         //change the title of this entry
@@ -102,8 +103,21 @@ public class CustomerClientImpl implements CustomerClient {
     }
 
     
-    // Call Collection.query(entry, updatedTitle)
-    public void clientQuery() throws Exception {
-    }   
+
+    // Call Collection.getFeed()
+    public Feed clientQuery(Query query) throws Exception {
+        // Get all the entries from the provider, return in a single feed
+        System.out.println(">>> query the service");
+        Feed feed = resourceCollection.query(query);
+        System.out.println("\n\n!!! Query result feed title:  " + feed.getTitle().getPlainText());
+        int i = 0;
+        for (Object o : feed.getEntries()) {
+            com.google.gdata.data.Entry e = (com.google.gdata.data.Entry)o;
+            System.out.print("Entry" + i + "\t");
+            System.out.println(" id = " + e.getId() + "\t title = " + e.getTitle().getPlainText());
+            i++;
+        }
+        return feed;
+    }
    
 }

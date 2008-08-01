@@ -24,9 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.gdata.client.Query;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
+import com.google.gdata.data.Link;
 import com.google.gdata.data.PlainTextConstruct;
 
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
@@ -46,8 +48,8 @@ public class CustomerCollectionImpl implements Collection {
 
         for (int i = 0; i < 4; i++) {
             // id is supposed to be generated in a random way, but for the
-            // purpose of testing, we just make them as static ids
-            
+            // purpose of testing, we just make them as static ids  
+        	
             // String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
 
             String id = "urn:uuid:customer-" + String.valueOf(i);
@@ -58,7 +60,12 @@ public class CustomerCollectionImpl implements Collection {
             entry.setUpdated(DateTime.now());
             // FIXME: The following three lines of code need to be fixed to add
             // HTML links.            
-            // entry.addHtmlLink(""+id, "application/atom+xml", "title");
+            Link link = new Link();
+            link.setType(Link.Type.ATOM);
+            link.setRel(Link.Rel.ENTRY_EDIT);
+            link.setHref("http://localhost:8084/customer"  + "/" +  id);        
+            entry.getLinks().add(link);
+            
             // entry.addHtmlLink(""+id, "", "edit");
             // entry.addHtmlLink(""+id, "", "alternate");
             entries.put(id, entry);
@@ -72,8 +79,15 @@ public class CustomerCollectionImpl implements Collection {
         String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
         entry.setId(id);
 
+        Link link = new Link();
+        link.setType(Link.Type.ATOM);
+        link.setRel(Link.Rel.ENTRY_EDIT);
+        link.setHref("http://localhost:8084/customer"  + "/" +  id);        
+        entry.getLinks().add(link);
+        
         //entry.addLink("" + id, "edit"); entry.addLink("" + id, "alternate");
         entry.setUpdated(DateTime.now());
+        
         // entry.addHtmlLink("http://www.google.com", "languageType", "edit");
         // entry.addHtmlLink("http://www.google.com", "languageType",
         // "alternate");
@@ -84,7 +98,7 @@ public class CustomerCollectionImpl implements Collection {
     }
 
     public Entry get(String id) {
-        System.out.println(">>> ResourceCollectionImpl.get id=" + id);
+        System.out.println(">>> ResourceCollectionImpl.get id= " + id);
         return entries.get(id);
     }
 
@@ -120,9 +134,9 @@ public class CustomerCollectionImpl implements Collection {
         return feed;
     }
 
-    
-    public Feed query(String queryString) {
-        System.out.println(">>> ResourceCollectionImpl.query collection " + queryString);
+    //FIXME: need to be modified 
+    public Feed query(Query query) {
+        System.out.println(">>> ResourceCollectionImpl.query collection ");
         return getFeed();
     }
 

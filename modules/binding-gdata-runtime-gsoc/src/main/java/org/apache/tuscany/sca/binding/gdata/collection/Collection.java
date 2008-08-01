@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.gdata.collection;
 
+import com.google.gdata.client.Query;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import org.osoa.sca.annotations.Remotable;
@@ -41,7 +42,7 @@ public interface Collection {
      * @param queryString a query string
      * @return the GData feed
      */
-    Feed query(String queryString);
+    Feed query(Query query);
 
     /**
      * Creates a new entry.

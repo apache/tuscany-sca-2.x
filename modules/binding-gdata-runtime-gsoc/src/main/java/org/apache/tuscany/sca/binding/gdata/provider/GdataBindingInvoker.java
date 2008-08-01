@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.ServiceRuntimeException;
 
 import com.google.gdata.client.GoogleService;
+import com.google.gdata.client.Query;
 import com.google.gdata.data.Feed;
 import com.google.gdata.util.ResourceNotFoundException;
 import com.google.gdata.util.ServiceException;
@@ -142,7 +143,7 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
 
             if (provider.supportsFeedEntries()) {
 
-                // Expect an Atom entry
+                // Expect an GData entry
 
                 System.out.println("[Debug Info]GdataBindingInvoker.PostInvoker --- supportsFeedEntries: " + provider
                     .supportsFeedEntries());
@@ -225,7 +226,14 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
             putMethod.setRequestHeader("Authorization", authorizationHeader);
             try {
                 URL entryURL = new URL(uri + "/" + id);
-                com.google.gdata.data.Entry updatedEntry = googleService.update(entryURL, feedEntry);
+                
+                com.google.gdata.data.Entry toUpdateEntry = googleService.getEntry(entryURL, com.google.gdata.data.Entry.class);
+                
+                System.out.println("EditHtml:" + toUpdateEntry.getEditLink().getHref());
+                
+                URL editURL = new URL(toUpdateEntry.getEditLink().getHref());
+                
+                com.google.gdata.data.Entry updatedEntry = googleService.update(editURL, feedEntry);
 
                 msg.setBody(updatedEntry);
 
@@ -264,10 +272,17 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
             deleteMethod.setRequestHeader("Authorization", authorizationHeader);
 
             try {
-                    URL entryURL = new URL(uri + "/" + id);
-                    googleService.delete(entryURL);
+               URL entryURL = new URL(uri + "/" + id);
+                
+               com.google.gdata.data.Entry toUpdateEntry = googleService.getEntry(entryURL, com.google.gdata.data.Entry.class);
+                
+               System.out.println("EditHtml:" + toUpdateEntry.getEditLink().getHref());
+                
+               URL editURL = new URL(toUpdateEntry.getEditLink().getHref());
+    
+               googleService.delete(editURL);
 
-                } catch (IOException ex) {
+              } catch (IOException ex) {
                     msg.setFaultBody(new ServiceRuntimeException(ex));
                 } catch (ServiceException ex) {
                     msg.setFaultBody(new ServiceRuntimeException(ex));
@@ -293,7 +308,8 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
             super(operation, uri, googleService, httpClient, authorizationHeader, bindingProvider);
         }
 
-        @Override
+        @SuppressWarnings("finally")
+		@Override
         public Message invoke(Message msg) {
 
             // Send an HTTP GET
@@ -302,12 +318,9 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
 
             System.out.println("[Debug Info] GdataBindingInvoker.GetAllInvoker.invoke---feedURL: " + uri);
 
-            boolean parsing = false;
-
             try {
 
                 Feed feed = googleService.getFeed(new URL(uri), Feed.class);
-
                 msg.setBody(feed);
 
             } catch (ResourceNotFoundException ex) {
@@ -337,75 +350,35 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
             super(operation, uri, googleService, httpClient, authorizationHeader, bindingProvider);
         }
 
-        @Override
+        @SuppressWarnings("finally")
+		@Override
         public Message invoke(Message msg) {
-
-            // Get a feed from a query
-            String queryString = (String)((Object[])msg.getBody())[0];
 
             // Send an HTTP GET
             GetMethod getMethod = new GetMethod(uri);
             getMethod.setRequestHeader("Authorization", authorizationHeader);
-            getMethod.setQueryString(queryString);
-            boolean parsing = false;
+
+            Object[] args = (Object[])msg.getBody();
+            Query myQuery = (Query)args[0];
+            
+            System.out.println("[Debug Info] GdataBindingInvoker.QueryInvoker.invoke---feedURL: " + uri);
+
             try {
-                httpClient.executeMethod(getMethod);
-                int status = getMethod.getStatusCode();
 
-                // Read the Atom feed
-                if (status == 200) {
+            	Feed resultFeed = googleService.query(myQuery, Feed.class);
+                msg.setBody(resultFeed);
 
-                    URL feedURL = new URL(getMethod.getURI().toString());
-
-                    System.out.println("GdataBindingInvoker.GetInvoker.invoke---feedURL: " + feedURL);
-
-                    com.google.gdata.data.Feed feed = googleService.getFeed(feedURL, com.google.gdata.data.Feed.class);
-
-                    System.out.println("GetAllInvoker class:   I am good here 04");
-
-                    System.out.println("feed title: " + feed.getTitle().getPlainText());
-
-                    System.out.println("provider.supportsFeedEntries()" + provider.supportsFeedEntries());
-
-                    if (provider.supportsFeedEntries()) {
-
-                        // Returns the Atom feed
-                        msg.setBody(feed);
-
-                    } else {
-
-                        // Returns an array of data entries
-
-                        // FIXME: This part needs to be fixed while working on
-                        // the query operation
-                        List<Entry<Object, Object>> entries = new ArrayList<Entry<Object, Object>>();
-                        for (com.google.gdata.data.Entry feedEntry : feed.getEntries()) {
-                            Entry<Object, Object> entry =
-                                entry(feedEntry, provider.getItemClassType(), provider.getItemXMLType(), provider
-                                    .getMediator());
-                            entries.add(entry);
-                        }
-
-                        msg.setBody(entries.toArray(new Entry[entries.size()]));
-                    }
-
-                } else if (status == 404) {
-                    msg.setFaultBody(new NotFoundException());
-                } else {
-                    msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
-                }
-
-            } catch (Exception e) {
-                msg.setFaultBody(new ServiceRuntimeException(e));
+            } catch (ResourceNotFoundException ex) {
+                msg.setFaultBody(new ResourceNotFoundException("Invalid Resource at " + uri));
+            } catch (ServiceException ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
+            } catch (Exception ex) {
+                msg.setFaultBody(new ServiceRuntimeException(ex));
             } finally {
-                if (!parsing) {
-                    // Release the connection unless the Abdera parser is
-                    // parsing the response, in this case it will release it
-                    getMethod.releaseConnection();
-                }
+                return msg;
             }
 
-            return msg;
+        
         }
     }
 
