@@ -29,6 +29,7 @@ import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
+import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("COMPOSITE")
@@ -50,19 +51,25 @@ public class CustomerCollectionImpl implements Collection {
     public Entry post(Entry entry) {
         System.out.println(">>> CustomerCollectionImpl.post entry=" + entry.getTitle());
 
-        String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-        entry.setId(id);
+        if(!("Exception_Test".equalsIgnoreCase(entry.getTitle())))
+        {
+           String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
+           entry.setId(id);
 
-        entry.addLink("" + id, "edit");
-        entry.addLink("" + id, "alternate");
+           entry.addLink("" + id, "edit");
+           entry.addLink("" + id, "alternate");
+           entry.setUpdated(new Date());
+           entries.put(id, entry);
 
-        entry.setUpdated(new Date());
+            System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
 
-        entries.put(id, entry);
+            return entry;
 
-        System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
-
-        return entry;
+        }
+        else
+        {
+        	throw new IllegalArgumentException("Exception in Post method");
+        }
     }
 
     public Entry get(String id) {
@@ -70,17 +77,26 @@ public class CustomerCollectionImpl implements Collection {
         return entries.get(id);
     }
 
-    public void put(String id, Entry entry) {
+    public void put(String id, Entry entry) throws NotFoundException {
         System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
+        if(entries.containsKey(id)){
+        	entry.setUpdated(new Date());
+            entries.put(id, entry);
+        }
+        else {
+        	throw new NotFoundException();
+        }
+     }
 
-        entry.setUpdated(new Date());
-        entries.put(id, entry);
-    }
-
-    public void delete(String id) {
+    public void delete(String id) throws NotFoundException {
         System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
-        entries.remove(id);
-    }
+        if(entries.containsKey(id)){
+        	entries.remove(id);
+        }
+        else {
+        	throw new NotFoundException();
+		}
+     }
 
     @SuppressWarnings("unchecked")
     public Feed getFeed() {

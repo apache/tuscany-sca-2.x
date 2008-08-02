@@ -120,7 +120,7 @@ public class ConsumerProviderAtomTestCase {
 	        System.out.println(">>> delete id=" + entry.getId());
 	        resourceCollection.delete(entry.getId().toString());
 	        System.out.println("<<< delete id=" + entry.getId());
-
+	        
 	        System.out.println(">>> get collection");
 	        Feed feed = resourceCollection.getFeed();
 	        System.out.println("<<< get collection");
