@@ -16,26 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jsonrpc;
+package echo;
 
-public class TestBean {
-    private String testString;
-    private int testInt;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-    public String getTestString() {
-        return testString;
-    }
+import bean.TestBean;
 
-    public void setTestString(String testString) {
-        this.testString = testString;
-    }
-
-    public int getTestInt() {
-        return testInt;
-    }
-
-    public void setTestInt(int testInt) {
-        this.testInt = testInt;
-    }
-
+/**
+ * Interface of our sample JSONRPC service.
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface Echo {
+    
+    String echo(String msg);
+    
+    void echoRuntimeException() throws RuntimeException;
+    
+    void echoBusinessException() throws EchoBusinessException;
+    
+    int echoInt(int param);
+    
+    boolean echoBoolean(boolean param);
+    
+    Map echoMap(HashMap map);
+    
+    TestBean echoBean(TestBean testBean);
+    
+    List echoList(ArrayList list);
+    
+    Set echoSet(HashSet set);
+    
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jsonrpc;
+package echo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import bean.TestBean;
+
 
 
 
@@ -40,8 +43,8 @@ public class EchoComponentImpl implements Echo {
         return "echo: " + msg;
     }
 
-	public void echoBusinessException() throws BusinessException {
-		throw new BusinessException("Business Exception");
+	public void echoBusinessException() throws EchoBusinessException {
+		throw new EchoBusinessException("Business Exception");
 		
 	}
 
