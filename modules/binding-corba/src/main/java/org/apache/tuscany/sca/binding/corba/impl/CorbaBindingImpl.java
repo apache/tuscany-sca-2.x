@@ -38,7 +38,8 @@ public class CorbaBindingImpl implements CorbaBinding, PolicySetAttachPoint {
     private String host;
     private int port;
     private String id;
-
+    private boolean provideNameServer;
+    
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
@@ -127,6 +128,14 @@ public class CorbaBindingImpl implements CorbaBinding, PolicySetAttachPoint {
 
     public String getCorbaname() {
         return CorbaHostUtils.isValidCorbanameURI(getURI()) ? getURI(): CorbaHostUtils.createCorbanameURI(getHost(), getPort(), getName());
+    }
+
+    public boolean isProvideNameServer() {
+        return provideNameServer;
+    }
+
+    public void setProvideNameServer(boolean provideNameServer) {
+        this.provideNameServer = provideNameServer;
     }
 
 }

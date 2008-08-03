@@ -24,7 +24,9 @@ import org.apache.tuscany.sca.binding.corba.impl.service.ComponentInvocationProx
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
 import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
+import org.apache.tuscany.sca.binding.corba.impl.util.SocketUtil;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
+import org.apache.tuscany.sca.host.corba.CorbanameURL;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -40,11 +42,20 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
     private CorbaHost host;
     private RuntimeComponentService service;
     private DynaCorbaServant servant;
+    private boolean isLocalhost;    
+    private int port;
     
     public CorbaServiceBindingProvider(CorbaBinding binding, CorbaHost host, RuntimeComponentService service) {
         this.binding = binding;
         this.host = host;
         this.service = service;
+        if (binding.isProvideNameServer()) {
+            CorbanameURL details = new CorbanameURL(binding.getCorbaname());
+            isLocalhost = SocketUtil.isLocalhost(details.getHost());
+            if (isLocalhost) {
+                port = details.getPort();
+            }
+        }
     }
 
     /**
@@ -63,6 +74,9 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
             InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(binding), javaClass);
             servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             servant.setIds(new String[] {binding.getId()});
+            if (binding.isProvideNameServer() && isLocalhost) {
+                host.createLocalNameServer(port);
+            }
             host.registerServant(binding.getCorbaname(), servant);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -75,6 +89,9 @@ public class CorbaServiceBindingProvider implements ServiceBindingProvider {
      */
     public void stop() {
         try {
+            if (binding.isProvideNameServer() && isLocalhost) {
+                host.releaseLocalNameServer(port);
+            }
              host.unregisterServant(binding.getCorbaname());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

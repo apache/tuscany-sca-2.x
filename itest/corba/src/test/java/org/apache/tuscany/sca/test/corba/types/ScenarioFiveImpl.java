@@ -17,34 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.xml.Constants;
+package org.apache.tuscany.sca.test.corba.types;
 
 /**
- * @version $Rev$ $Date$
+ * Implementation of ScenarioFive service
  */
-public interface CorbaBinding extends Binding {
-    QName BINDING_CORBA_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "binding.corba");
+public class ScenarioFiveImpl implements ScenarioFive {
 
-    String getHost();
+    public void doNothing() {
+        // does nothing
+    }
 
-    void setHost(String host);
-
-    int getPort();
-
-    void setPort(int port);
-    
-    String getId();
-    
-    void setId(String id);
-    
-    String getCorbaname();
-    
-    boolean isProvideNameServer();
-    
-    void setProvideNameServer(boolean provideNameServer);
 }
