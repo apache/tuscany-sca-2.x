@@ -34,7 +34,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * Tests SCA default binding over CORBA binding
  */
@@ -85,7 +84,7 @@ public class ScenarioFourTestCase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     /**
      * Test for JAXB exceptions
      */
@@ -101,7 +100,7 @@ public class ScenarioFourTestCase {
             fail();
         }
     }
-    
+
     /**
      * General test for passing SDO objects
      */
@@ -112,20 +111,22 @@ public class ScenarioFourTestCase {
             scenarioFourSdo.setMessage("Test1");
             scenarioFourSdo.setSymbol("Test2");
             ScenarioFourSdo result = scenarioFour.passScenarioFourStruct(scenarioFourSdo);
-            assertTrue(scenarioFourSdo.getMessage().equals(result.getMessage()) && scenarioFourSdo.getSymbol().equals(result.getSymbol()));
+            assertTrue(scenarioFourSdo.getMessage().equals(result.getMessage()) && scenarioFourSdo.getSymbol()
+                .equals(result.getSymbol()));
         } catch (Exception e) {
             e.printStackTrace();
             fail();
         }
     }
-    
+
     /**
-     * Tests reusing local name server with multiple bindings 
+     * Tests reusing local name server with multiple bindings
      */
     @Test
     public void test_nameServerReuse() {
         try {
-            ScenarioFour scenarioFour = domain.getService(ScenarioFourComponent.class, "ScenarioFourReuse").getScenarioFour();
+            ScenarioFour scenarioFour =
+                domain.getService(ScenarioFourComponent.class, "ScenarioFourReuse").getScenarioFour();
             ScenarioFourStruct struct = new ScenarioFourStruct();
             scenarioFour.setStruct(struct);
         } catch (Exception e) {
