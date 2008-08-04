@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 /**
  * Tests for JMS binding xml
  */
-public class JMSBindingProcessorTestCaseFIXME extends TestCase {
+public class JMSBindingProcessorTestCase extends TestCase {
     
     private static final String COMPOSITE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
