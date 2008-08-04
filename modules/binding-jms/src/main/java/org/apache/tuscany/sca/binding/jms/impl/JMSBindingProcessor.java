@@ -215,13 +215,12 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         // TODO
         // Read reponseConnection
         // TODO
-        // Read operationProperties
-        // TODO
 
         // Read sub-elements of binding.jms
         boolean endFound = false;
         while (!endFound) {
-            switch (reader.next()) {
+            int fg = reader.next();
+            switch (fg) {
                 case START_ELEMENT:
                     String elementName = reader.getName().getLocalPart();
                     if ("destination".equals(elementName)) {
@@ -247,8 +246,6 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                         endFound = true;
                     } else {
                     	error("UnexpectedElement", reader, x.toString());
-                        //throw new RuntimeException("Incomplete binding.jms definition found unexpected element " 
-                        		                    //+ x.toString());
                     }
             }
         }
@@ -261,7 +258,6 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     protected void parseURI(String uri, JMSBinding jmsBinding) {
         if (!uri.startsWith("jms:")) {
         	error("MustStartWithSchema", jmsBinding, uri);
-            //throw new JMSBindingException("uri must start with the scheme 'jms:' for uri: " + uri);
         	return;
         }
         int i = uri.indexOf('?');            
@@ -326,7 +322,6 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             jmsBinding.setConnectionFactoryName(name);
         } else {
         	error("MissingConnectionFactoryName", reader);
-            //throw new RuntimeException("missing connectionFactory name");
         }
     }
 
@@ -402,6 +397,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                 case END_ELEMENT:
                     QName x = reader.getName();
                     if (x.getLocalPart().equals("response")) {
+//                        reader.next();
                         return;
                     } else {
                     	error("UnexpectedResponseElement", reader, x.toString());
@@ -416,12 +412,217 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     	warning("DoesntProcessResourceAdapter", jmsBinding);
     }
 
+    /**
+     * <headers JMSType=”string”?
+     *          JMSCorrelationId=”string”?
+     *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
+     *          JMSTimeToLive=”long”?      
+     *          JMSPriority=”0 .. 9”?>
+     *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
+     * </headers>?
+     */
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-    	warning("DoesntProcessHeaders", jmsBinding);
+        
+        String jmsType = reader.getAttributeValue(null, "JMSType");
+        if (jmsType != null && jmsType.length() > 0) {
+            jmsBinding.setJMSType(jmsType);
+        }
+
+        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationId");
+        if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
+            jmsBinding.setJMSCorrelationId(jmsCorrelationId);
+        }
+
+        String jmsDeliveryMode = reader.getAttributeValue(null, "JMSDeliveryMode");
+        if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
+            if ("PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+                jmsBinding.setJMSDeliveryMode(true);
+            } else if ("NON_PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+                jmsBinding.setJMSDeliveryMode(false);
+            } else {
+                warning("InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
+            }
+        }
+
+        String jmsTimeToLive = reader.getAttributeValue(null, "JMSTimeToLive");
+        if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
+            jmsBinding.setJMSTimeToLive(Long.parseLong(jmsTimeToLive));
+        }
+
+        String jmsPriority = reader.getAttributeValue(null, "JMSPriority");
+        if (jmsPriority != null && jmsPriority.length() > 0) {
+            int p = Integer.parseInt(jmsPriority);
+            if (p >= 0 && p <= 9) {
+                jmsBinding.setJMSPriority(p);
+            } else {
+                warning("InvalidJMSPriority", jmsBinding, jmsPriority);
+            }
+        }
+
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    if (reader.getName().getLocalPart().equals("property")) {
+                        parseProperty(reader, jmsBinding);
+                    }
+                    break;
+                case END_ELEMENT:
+                    QName x = reader.getName();
+                    if (x.getLocalPart().equals("headers")) {
+                        return;
+                    } else {
+                        error("UnexpectedResponseElement", reader, x.toString());
+                    }
+            }
+        }
+    }
+    
+    private void parseProperty(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+        String name = reader.getAttributeValue(null, "name");
+        String type = reader.getAttributeValue(null, "type");
+        if (name != null && name.length() > 0) {
+            Object value = reader.getElementText();
+            if ("boolean".equalsIgnoreCase(type)) {
+                value = Boolean.parseBoolean((String)value);
+            } else if ("byte".equalsIgnoreCase(type)) {
+                value = Byte.parseByte(((String)value));
+            } else if ("short".equalsIgnoreCase(type)) {
+                value = Short.parseShort((String)value);
+            } else if ("int".equalsIgnoreCase(type)) {
+                value = Integer.parseInt((String)value);
+            } else if ("long".equalsIgnoreCase(type)) {
+                value = Long.parseLong((String)value);
+            } else if ("float".equalsIgnoreCase(type)) {
+                value = Float.parseFloat((String)value);
+            } else if ("double".equalsIgnoreCase(type)) {
+                value = Double.parseDouble((String)value);
+            } else if ("String".equalsIgnoreCase(type)) {
+                // its already a string
+            }
+            jmsBinding.setProperty(name, value);
+        }
     }
 
+    /**
+     * <operationProperties name=”string” nativeOperation=”string”?>
+     *   <property name=”NMTOKEN” type=”NMTOKEN”?>*
+     *   <headers JMSType=”string”?
+     *            JMSCorrelationId=”string”?
+     *            JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
+     *            JMSTimeToLive=”long”?
+     *            JMSPriority=”0 .. 9”?>
+     *       <property name=”NMTOKEN” type=”NMTOKEN”?>*
+     *   </headers>?
+     * </operationProperties>*
+     */
     private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-    	warning("DoesntProcessOperationProperties", jmsBinding);
+        String opName = reader.getAttributeValue(null, "name");
+        if (opName == null || opName.length() < 1) {
+            warning("InvalidJMSOperationProperty", jmsBinding);
+            return;
+        }
+        String nativeOpName = reader.getAttributeValue(null, "nativeOperation");
+        if (nativeOpName != null && nativeOpName.length() > 0) {
+            jmsBinding.setNativeOperationName(opName, nativeOpName);
+        }
+
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    if (reader.getName().getLocalPart().equals("headers")) {
+                        parseOperationHeaders(reader, jmsBinding, opName);
+                    }
+                    break;
+                case END_ELEMENT:
+                    QName x = reader.getName();
+                    if (x.getLocalPart().equals("operationProperties")) {
+                        return;
+                    } else {
+                        error("UnexpectedResponseElement", reader, x.toString());
+                    }
+            }
+        }
+    }
+
+    private void parseOperationHeaders(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
+        String jmsType = reader.getAttributeValue(null, "JMSType");
+        if (jmsType != null && jmsType.length() > 0) {
+            jmsBinding.setOperationJMSType(opName, jmsType);
+        }
+
+        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationId");
+        if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
+            jmsBinding.setOperationJMSCorrelationId(opName, jmsCorrelationId);
+        }
+
+        String jmsDeliveryMode = reader.getAttributeValue(null, "JMSDeliveryMode");
+        if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
+            if ("PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+                jmsBinding.setJMSDeliveryMode(true);
+            } else if ("NON_PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+                jmsBinding.setOperationJMSDeliveryMode(opName, false);
+            } else {
+                warning("InvalidOPJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
+            }
+        }
+
+        String jmsTimeToLive = reader.getAttributeValue(null, "JMSTimeToLive");
+        if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
+            jmsBinding.setOperationJMSTimeToLive(opName, Long.parseLong(jmsTimeToLive));
+        }
+
+        String jmsPriority = reader.getAttributeValue(null, "JMSPriority");
+        if (jmsPriority != null && jmsPriority.length() > 0) {
+            int p = Integer.parseInt(jmsPriority);
+            if (p >= 0 && p <= 9) {
+                jmsBinding.setOperationJMSPriority(opName, p);
+            } else {
+                warning("InvalidOPJMSPriority", jmsBinding, jmsPriority);
+            }
+        }
+
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    if (reader.getName().getLocalPart().equals("property")) {
+                        parseOperationPropertyProperties(reader, jmsBinding, opName);
+                    }
+                    break;
+                case END_ELEMENT:
+                    QName x = reader.getName();
+                    if (x.getLocalPart().equals("headers")) {
+                        return;
+                    } else {
+                        error("UnexpectedResponseElement", reader, x.toString());
+                    }
+            }
+        }
+    }
+
+    private void parseOperationPropertyProperties(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
+        String propName = reader.getAttributeValue(null, "name");
+        String type = reader.getAttributeValue(null, "type");
+        if (propName != null && propName.length() > 0) {
+            Object value = reader.getElementText();
+            if ("boolean".equalsIgnoreCase(type)) {
+                value = Boolean.parseBoolean((String)value);
+            } else if ("byte".equalsIgnoreCase(type)) {
+                value = Byte.parseByte(((String)value));
+            } else if ("short".equalsIgnoreCase(type)) {
+                value = Short.parseShort((String)value);
+            } else if ("int".equalsIgnoreCase(type)) {
+                value = Integer.parseInt((String)value);
+            } else if ("long".equalsIgnoreCase(type)) {
+                value = Long.parseLong((String)value);
+            } else if ("float".equalsIgnoreCase(type)) {
+                value = Float.parseFloat((String)value);
+            } else if ("double".equalsIgnoreCase(type)) {
+                value = Double.parseDouble((String)value);
+            } else if ("String".equalsIgnoreCase(type)) {
+                // its already a string
+            }
+            jmsBinding.setOperationProperty(opName, propName, value);
+        }
     }
 
     /**

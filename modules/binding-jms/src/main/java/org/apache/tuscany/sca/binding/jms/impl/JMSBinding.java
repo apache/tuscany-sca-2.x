@@ -19,7 +19,10 @@
 package org.apache.tuscany.sca.binding.jms.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Binding;
 
@@ -31,9 +34,6 @@ import org.apache.tuscany.sca.assembly.Binding;
 
 public class JMSBinding implements Binding {
 
-    /**
-     * Clone the binding
-     */
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
@@ -45,140 +45,62 @@ public class JMSBinding implements Binding {
     private boolean unresolved = false;
     private List<Object> extensions = new ArrayList<Object>();
 
-    // Properties required to describe the JMS
-    // binding model
+    // Properties required to describe the JMS binding model
 
-    // <binding.jms correlationScheme="string"? Not yet implemented in binding
-    // initialContextFactory="xs:anyURI"?
-    // jndiURL="xs:anyURI"?
-    // requestConnection="QName"? Not yet implemented in binding
-    // responseConnection="QName"? Not yet implemented in binding
-    // operationProperties="QName"? Not yet implemented in binding
-    // ...>
     private String correlationScheme = JMSBindingConstants.CORRELATE_MSG_ID;
     private String initialContextFactoryName;
     private String jndiURL;
-    // private String requestConnection = null;
-    // private String responseConnection = null;
-    // private String operationProperties = null;
-    // 
-    // <destination name="xs:anyURI"
-    // type="string"? Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </destination>?
+
     private String destinationName = JMSBindingConstants.DEFAULT_DESTINATION_NAME;
     private String destinationType = JMSBindingConstants.DESTINATION_TYPE_QUEUE;
     private String destinationCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
-    // 
-    // <connectionFactory name="xs:anyURI" Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </connectionFactory>?
+
     private String connectionFactoryName = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
     private String connectionFactoryCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
-    // 
-    // <activationSpec name="xs:anyURI" Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </activationSpec>?
+
     private String activationSpecName = null;
     private String activationSpecCreate = null;
-    // 
-    // <response>
-    // <destination name="xs:anyURI"
-    // type="string"? Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </destination>?
+
+    private String responseActivationSpecName = null;
+    private String responseActivationSpecCreate = null;
+
     private String responseDestinationName = JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME;
     private String responseDestinationType = JMSBindingConstants.DESTINATION_TYPE_QUEUE;
     private String responseDestinationCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
-    // 
-    // <connectionFactory name="xs:anyURI" Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </connectionFactory>?
+
     private String responseConnectionFactoryName = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
     private String responseConnectionFactoryCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
-    // 
-    // <activationSpec name="xs:anyURI" Not yet implemented in binding
-    // create="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </activationSpec>?
-    private String responseActivationSpecName = null;
-    private String responseActivationSpecCreate = null;
-    // </response>?
-    // 
-    // <resourceAdapter name="NMTOKEN">? Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </resourceAdapter>?
-    // private String resourceAdapterName = null;
-    // 
-    // <headers JMSType="string"? Not yet implemented in binding
-    // JMSCorrelationId="string"? Not yet implemented in binding
-    // JMSDeliveryMode="string"? Not yet implemented in binding
-    // JMSTimeToLive="int"? Not yet implemented in binding
-    // JMSPriority="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </headers>?
-    // private String jmsType = null;
-    // private String jmsCorrelationId = null;
-    private int jmsDeliveryMode = JMSBindingConstants.NON_PERSISTENT; // Maps to javax.jms.DeliveryMode
-    private int jmsTimeToLive = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
-    private int jmsPriority = JMSBindingConstants.DEFAULT_PRIORITY;
-    // 
-    // <operationProperties name="string" Not yet implemented in binding
-    // nativeOperation="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // <headers JMSType="string"? Not yet implemented in binding
-    // JMSCorrelationId="string"? Not yet implemented in binding
-    // JMSDeliveryMode="string"? Not yet implemented in binding
-    // JMSTimeToLive="int"? Not yet implemented in binding
-    // JMSPriority="string"?> Not yet implemented in binding
-    // <property name="NMTOKEN" Not yet implemented in binding
-    // type="NMTOKEN">* Not yet implemented in binding
-    // </headers>?
-    // </operationProperties>*
-    // </binding.jms>
-
-    // Other properties not directly related to the
-    // XML definition of the JMS binding
 
     // Provides the name of the factory that interfaces to the
     // JMS API for us.
     private String jmsResourceFactoryName = JMSBindingConstants.DEFAULT_RF_CLASSNAME;
 
-    // Message processors used to deal with the request
-    // and response messages
+    // Message processors used to deal with the request and response messages
     public String requestMessageProcessorName = JMSBindingConstants.DEFAULT_MP_CLASSNAME;
     public String responseMessageProcessorName = JMSBindingConstants.DEFAULT_MP_CLASSNAME;
 
-    // The JMS message property used to hold the name of the
-    // operation being called
+    // The JMS message property used to hold the name of the operation being called
     private String operationSelectorPropertyName = JMSBindingConstants.DEFAULT_OPERATION_PROP_NAME;
 
-    // If the operation selector is derived automatically from the service
-    // interface it's stored here
+    // If the operation selector is derived automatically from the service interface it's stored here
     private String operationSelectorName = null;
 
-    // TODO .....
     private String replyTo;
+    private String jmsType;
+    private String jmsCorrelationId;
+    private Boolean deliveryModePersistent;
+    private Long timeToLive;
+    private Integer jmsPriority;
 
-    // Methods required by the Tuscany SPI
-
-    /**
-     * No arg constructor used by the JSMBindingFactoryImpl to create JMS binding model objects
-     */
+    private Map<String, Object> properties = new HashMap<String, Object>();
+    private Map<String, Map<String, Object>> operationProperties = new HashMap<String, Map<String,Object>>();
+    private Map<String, String> nativeOperationNames = new HashMap<String, String>();
+    private Map<String, String> operationJMSTypes = new HashMap<String, String>();
+    private Map<String, String> operationJMSCorrelationIds = new HashMap<String, String>();
+    private Map<String, Boolean> operationJMSDeliveryModes = new HashMap<String, Boolean>();
+    private Map<String, Long> operationJMSTimeToLives = new HashMap<String, Long>();
+    private Map<String, Integer> operationJMSPriorities = new HashMap<String, Integer>();
+    
     public JMSBinding() {
         super();
     }
@@ -370,33 +292,6 @@ public class JMSBinding implements Binding {
         this.responseActivationSpecCreate = create;
     }
 
-    public int getDeliveryMode() {
-        return jmsDeliveryMode;
-    }
-
-    public void setDeliveryMode(int deliveryMode) {
-        this.jmsDeliveryMode = deliveryMode;
-    }
-
-    public int getTimeToLive() {
-        return jmsTimeToLive;
-    }
-
-    public void setTimeToLive(int timeToLive) {
-        this.jmsTimeToLive = timeToLive;
-    }
-
-    public int getPriority() {
-        return jmsPriority;
-    }
-
-    public void setPriority(int priority) {
-        this.jmsPriority = priority;
-    }
-
-    // operations to manage the other information required by the
-    // JMS binding
-
     public String getJmsResourceFactoryName() {
         return jmsResourceFactoryName;
     }
@@ -404,10 +299,6 @@ public class JMSBinding implements Binding {
     public void setJmsResourceFactoryName(String jmsResourceFactoryName) {
         this.jmsResourceFactoryName = jmsResourceFactoryName;
     }
-
-//    public JMSResourceFactory getJmsResourceFactory() {
-//        return (JMSResourceFactory)instantiate(null, jmsResourceFactoryName);
-//    }
 
     public void setRequestMessageProcessorName(String name) {
         this.requestMessageProcessorName = name;
@@ -441,14 +332,146 @@ public class JMSBinding implements Binding {
         this.operationSelectorName = operationSelectorName;
     }
 
-    // TODO...
-
     public String getReplyTo() {
         return replyTo;
     }
 
     public void setReplyTo(String replyTo) {
         this.replyTo = replyTo;
+    }
+
+    public String getJMSType() {
+        return jmsType;
+    }
+    public void setJMSType(String jmsType) {
+        this.jmsType = jmsType;
+    }
+
+    public String getJMSCorrelationId() {
+        return jmsCorrelationId;
+    }
+    
+    public void setJMSCorrelationId(String jmsCorrelationId) {
+        this.jmsCorrelationId = jmsCorrelationId;
+    }
+
+    public Boolean isdeliveryModePersistent() {
+        return deliveryModePersistent;
+    }
+    public void setJMSDeliveryMode(boolean persistent) {
+        this.deliveryModePersistent = Boolean.valueOf(persistent);
+    }
+
+    public Integer getJMSPriority() {
+        return jmsPriority;
+    }
+
+    public void setJMSPriority(int jmsPriority) {
+        this.jmsPriority = Integer.valueOf(jmsPriority);
+    }
+
+    public Long getJMSTimeToLive() {
+        return timeToLive.longValue();
+    }
+
+    public void setJMSTimeToLive(long timeToLive) {
+        this.timeToLive = Long.valueOf(timeToLive);
+    }
+
+    public Set<String> getPropertyNames() {
+        return properties.keySet();
+    }
+
+    public Object getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public void setProperty(String name, Object value) {
+        properties.put(name, value);
+    }
+
+    public Map<String, Object> getOperationProperties(String opName) {
+        return operationProperties.get(opName);
+    }
+
+    public void setOperationProperty(String opName, String propName, Object value) {
+        Map<String, Object> props = operationProperties.get(opName);
+        if (props == null) {
+            props = new HashMap<String, Object>();
+            operationProperties.put(opName, props);
+        }
+        props.put(propName, value);
+    }
+
+    public boolean hasNativeOperationName(String opName) {
+        return nativeOperationNames.containsKey(opName);
+    }
+
+    public String getNativeOperationName(String opName) {
+        if (nativeOperationNames.containsKey(opName)) {
+            return nativeOperationNames.get(opName);
+        } else {
+            return opName;
+        }
+    }
+
+    public void setNativeOperationName(String opName, String nativeOpName) {
+        this.nativeOperationNames .put(opName, nativeOpName);
+    }
+
+    public String getOperationJMSType(String opName) {
+        if (operationJMSTypes.containsKey(opName)) {
+            return operationJMSTypes.get(opName);
+        } else {
+            return jmsType;
+        }
+    }
+    public void setOperationJMSType(String opName, String jmsType) {
+        this.operationJMSTypes.put(opName, jmsType);
+    }
+
+    public String getOperationJMSCorrelationId(String opName) {
+        if (operationJMSCorrelationIds.containsKey(opName)) {
+            return operationJMSCorrelationIds.get(opName);
+        } else {
+            return jmsCorrelationId;
+        }
+    }
+    public void setOperationJMSCorrelationId(String opName, String jmsCorrelationId) {
+        operationJMSCorrelationIds.put(opName, jmsCorrelationId);
+    }
+
+    public Boolean getOperationJMSDeliveryMode(String opName) {
+        if (operationJMSDeliveryModes.containsKey(opName)) {
+            return operationJMSDeliveryModes.get(opName);
+        } else {
+            return deliveryModePersistent;
+        }
+    }
+    public void setOperationJMSDeliveryMode(String opName, boolean b) {
+        operationJMSDeliveryModes.put(opName, b);
+    }
+
+    public Long getOperationJMSTimeToLive(String opName) {
+        if (operationJMSTimeToLives.containsKey(opName)) {
+            return operationJMSTimeToLives.get(opName);
+        } else {
+            return timeToLive;
+        }
+    }
+    public void setOperationJMSTimeToLive(String opName, Long ttl) {
+        operationJMSTimeToLives.put(opName, ttl);
+    }
+
+    public Integer getOperationJMSPriority(String opName) {
+        if (operationJMSPriorities.containsKey(opName)) {
+            return operationJMSPriorities.get(opName);
+        } else {
+            return jmsPriority;
+        }
+    }
+    public void setOperationJMSPriority(String opName, int p) {
+        operationJMSPriorities.put(opName, p);
     }
 
 }
