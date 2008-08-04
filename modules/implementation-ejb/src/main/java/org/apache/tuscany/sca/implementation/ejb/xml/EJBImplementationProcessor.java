@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -38,6 +39,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
@@ -56,6 +59,20 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.implementationFactory = modelFactories.getFactory(EJBImplementationFactory.class);
         this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-ejb-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     public QName getArtifactType() {
@@ -87,6 +104,8 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
             } else {
                 implementation.setURI(ejbLink);
             }
+        } else {
+            error("EJBLinkAttributeMissing", reader);
         }
 
         // Skip to end element
