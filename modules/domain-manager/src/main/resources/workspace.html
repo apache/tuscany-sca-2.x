@@ -43,6 +43,12 @@
 </body>
 
 <script type="text/javascript">
+	var toolbarGadgetDiv = elementByID(document, 'toolbarGadgetDiv');
+	var workspaceGadgetDiv = elementByID(document, 'workspaceGadgetDiv');
+
+	var toolbarGadget = elementByID(document, 'toolbarGadget');
+	var workspaceGadget = elementByID(document, 'workspaceGadget');
+
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;

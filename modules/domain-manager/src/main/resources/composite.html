@@ -44,6 +44,12 @@
 </body>
 
 <script type="text/javascript">
+	var toolbarGadgetDiv = elementByID(document, 'toolbarGadgetDiv');
+	var compositeGadgetDiv = elementByID(document, 'compositeGadgetDiv');
+	
+	var toolbarGadget = elementByID(document, 'toolbarGadget');
+	var compositeGadget = elementByID(document, 'compositeGadget');
+	
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
