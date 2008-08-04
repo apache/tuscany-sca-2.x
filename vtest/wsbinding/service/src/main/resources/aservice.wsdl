@@ -115,19 +115,19 @@
 
   <wsdl:service name="AServicePortTypeService">
     <wsdl:port name="AServicePortTypePort" binding="ns0:AServicePortTypeBinding">
-      <soap:address location="http://localhost:8080/AService"/>
+      <soap:address location="http://localhost:8085/AService"/>
     </wsdl:port>
   </wsdl:service>
 
   <wsdl:service name="AService">
     <wsdl:port name="AServiceHttpport" binding="ns0:AServiceHttpBinding">
-      <http:address location="http://localhost:8080/AService/httpport"/>
+      <http:address location="http://localhost:8085/AService/httpport"/>
     </wsdl:port>
     <wsdl:port name="AServiceSOAP12port_http" binding="ns0:AServiceSOAP12Binding">
-      <soap12:address location="http://localhost:8080/AService/soap12port"/>
+      <soap12:address location="http://localhost:8085/AService/soap12port"/>
     </wsdl:port>
     <wsdl:port name="AServiceSOAP11port_http" binding="ns0:AServiceSOAP11Binding">
-      <soap:address location="http://localhost:8080/AService/soap11port"/>
+      <soap:address location="http://localhost:8085/AService/soap11port"/>
     </wsdl:port>
     <wsdl:port name="AServiceSOAP12port_http_null" binding="ns0:AServiceSOAP12Binding">
       <soap12:address location=""/>

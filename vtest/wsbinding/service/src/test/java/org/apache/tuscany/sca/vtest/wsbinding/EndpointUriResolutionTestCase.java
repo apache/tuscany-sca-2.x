@@ -23,6 +23,7 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -114,6 +115,7 @@ public class EndpointUriResolutionTestCase {
      * <p>
      * This method tests that implicit URI is used.
      */
+    @Ignore("TUSCANY-2523 - Port 8080 conflicts with Continuum") 
     @Test
     public void testImplicitUri() throws Exception {
         AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent4");

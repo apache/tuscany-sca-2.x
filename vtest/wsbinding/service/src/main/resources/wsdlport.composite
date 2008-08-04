@@ -31,13 +31,13 @@
     <component name="AClientP11Component">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/soap11port"/>
+            <binding.ws uri="http://localhost:8085/AService/soap11port"/>
         </reference>
     </component> 
     <component name="AClientP12Component">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/soap12port"/>
+            <binding.ws uri="http://localhost:8085/AService/soap12port"/>
         </reference>
     </component> 
 </composite>

@@ -26,7 +26,7 @@
 		<service name="AService">
 		    <binding.ws wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP11Binding)">
                 <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
-                  <wsa:Address>http://localhost:8080/AService/endpointref</wsa:Address>
+                  <wsa:Address>http://localhost:8085/AService/endpointref</wsa:Address>
                 </wsa:EndpointReference>
             </binding.ws>
 		</service>
@@ -34,7 +34,7 @@
     <component name="AClientComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpointref"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref"/>
         </reference>
     </component> 
 </composite>

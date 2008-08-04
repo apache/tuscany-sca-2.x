@@ -24,13 +24,14 @@
     <component name="AComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AServiceImpl"/>
 		<service name="AService">
-		    <binding.ws wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.endpoint(AService/AServiceEndPoint)"/>
+		    <binding.ws wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.endpoint(AService/AServiceEndPoint)"
+                        uri="http://localhost:8085/AService/endpoint"/>
 		</service>
     </component>
     <component name="AClientComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpoint"/>
+            <binding.ws uri="http://localhost:8085/AService/endpoint"/>
         </reference>
     </component> 
 </composite>

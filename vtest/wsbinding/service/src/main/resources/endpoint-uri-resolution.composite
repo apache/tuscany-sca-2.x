@@ -25,27 +25,27 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AServiceImpl"/>
 		<service name="AService">
 		    <binding.ws name="bnd1" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.port(AService/AServiceSOAP12port_http)"
-		                uri="http://localhost:8080/AService/soap12portxxx"/>
+		                uri="http://localhost:8085/AService/soap12portxxx"/>
 		    <binding.ws name="bnd2" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP11Binding)"
-		                uri="http://localhost:8080/AService/endpointrefxxx">
+		                uri="http://localhost:8085/AService/endpointrefxxx">
                 <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
-                  <wsa:Address>http://localhost:8080/AService/endpointref</wsa:Address>
+                  <wsa:Address>http://localhost:8085/AService/endpointref</wsa:Address>
                 </wsa:EndpointReference>
             </binding.ws>
 		    <binding.ws name="bnd3" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.port(AService/AServiceSOAP12port_http_null)"
-		                uri="http://localhost:8080/AService/uriInBinding"/>
-		    <binding.ws name="bnd4" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.port(AService/AServiceSOAP12port_http_null)"/>
-		    <binding.ws name="bnd5" uri="http://localhost:8080/AService/noWsdlElement"/>
+		                uri="http://localhost:8085/AService/uriInBinding"/>
+		    <!-- binding.ws name="bnd4" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.port(AService/AServiceSOAP12port_http_null)"/-->
+		    <binding.ws name="bnd5" uri="http://localhost:8085/AService/noWsdlElement"/>
 		    <binding.ws name="bnd6" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.port(AService/AServiceSOAP12port_http_wsdl)"
-		                uri="http://localhost:8080/AService/endpointref6"/>
+		                uri="http://localhost:8085/AService/endpointref6"/>
 		    <binding.ws name="bnd7" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP11Binding)"
-		                uri="http://localhost:8080/AService/endpointref7">
+		                uri="http://localhost:8085/AService/endpointref7">
                 <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
                   <wsa:Address>inAddress</wsa:Address>
                 </wsa:EndpointReference>
             </binding.ws>
 		    <binding.ws name="bnd8" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP12Binding)"
-		                uri="http://localhost:8080/AService/endpointref8">
+		                uri="http://localhost:8085/AService/endpointref8">
                 <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
                   <wsa:Address></wsa:Address>
                 </wsa:EndpointReference>
@@ -55,49 +55,49 @@
     <component name="AClientComponent1">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/soap12port"/>
+            <binding.ws uri="http://localhost:8085/AService/soap12port"/>
         </reference>
     </component> 
     <component name="AClientComponent2">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpointref"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref"/>
         </reference>
     </component> 
     <component name="AClientComponent3">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/uriInBinding"/>
+            <binding.ws uri="http://localhost:8085/AService/uriInBinding"/>
         </reference>
     </component> 
     <component name="AClientComponent4">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AComponent"/>
+            <binding.ws uri="http://localhost:8085/AComponent"/>
         </reference>
     </component> 
     <component name="AClientComponent5">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/noWsdlElement"/>
+            <binding.ws uri="http://localhost:8085/AService/noWsdlElement"/>
         </reference>
     </component> 
     <component name="AClientComponent6">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpointref6/inWsdl"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref6/inWsdl"/>
         </reference>
     </component> 
     <component name="AClientComponent7">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpointref7/inAddress"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref7/inAddress"/>
         </reference>
     </component> 
     <component name="AClientComponent8">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/endpointref8"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref8"/>
         </reference>
     </component> 
 </composite>
