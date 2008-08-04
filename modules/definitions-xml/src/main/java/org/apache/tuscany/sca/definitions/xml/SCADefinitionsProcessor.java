@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.definitions.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -40,12 +40,12 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * Processor for SCA Definitions
@@ -110,6 +110,9 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                                             setName(new QName(targetNamespace,
                                                               qualifiedIntent.getQualifiableIntent().getName().getLocalPart()));
                                 }
+                                
+                                // FIXME: Workaround for TUSCANY-2499
+                                intent.setUnresolved(false);
                                 
                                 definitions.getPolicyIntents().add(intent);
                             } else if ( extension instanceof PolicySet ) {
