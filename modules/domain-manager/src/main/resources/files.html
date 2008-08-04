@@ -44,11 +44,19 @@
 </body>
 
 <script type="text/javascript">
+	var toolbarGadgetDiv = elementByID(document, 'toolbarGadgetDiv');
+	var filesGadgetDiv = elementByID(document, 'filesGadgetDiv');
+	
+	var toolbarGadget = elementByID(document, 'toolbarGadget');
+	var filesGadget = elementByID(document, 'filesGadget');
+	
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+			return toolbarGadgetDiv;
 		} else if (doc == content(filesGadget)) {
 			filesGadgetDiv.innerHTML = doc.body.innerHTML;
+			return filesGadgetDiv;
 		}
 		return document;
 	}

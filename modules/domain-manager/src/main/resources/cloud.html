@@ -44,6 +44,12 @@
 </body>
 
 <script type="text/javascript">
+	var toolbarGadgetDiv = elementByID(document, 'toolbarGadgetDiv');
+	var cloudGadgetDiv = elementByID(document, 'cloudGadgetDiv');
+	
+	var toolbarGadget = elementByID(document, 'toolbarGadget');
+	var cloudGadget = elementByID(document, 'cloudGadget');
+	
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;

@@ -54,10 +54,13 @@
 </body>
 
 <script type="text/javascript">
-	var gadget = gadget(window, document);
-
 	//@Reference
 	var files = new Reference("files");
+
+	var gadget = gadget(window, document);
+
+	var filesElement = elementByID(gadget, 'files');
+	var uploadFileForm = elementByID(gadget, 'uploadFileForm');
 	
 	function getFiles() {
 		files.get("", getFilesResponse);
@@ -74,7 +77,7 @@
 											'<a href=\"' + location + '\">' + id + '</a></td></tr>';
 			}
 			list += "</table>";
-			gadget.getElementById("files").innerHTML = list;
+			filesElement.innerHTML = list;
 		}
 	}				
 
@@ -93,7 +96,7 @@
 	}
 
 	function uploadFile() {
-		gadget.uploadFileForm.submit();
+		uploadFileForm.submit();
 	}
 
 	getFiles();
