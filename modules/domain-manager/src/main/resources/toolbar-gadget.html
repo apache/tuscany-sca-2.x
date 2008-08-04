@@ -39,8 +39,9 @@
 	tools[3] = new Tool("Files", "../files");
 	
 	var home = new Tool("Home", "../home");
-		
-	gadget.getElementById('toolbar').innerHTML = toolbar(home, tools);
+
+	var toolbarDiv = elementByID(gadget, 'toolbar'); 
+	toolbarDiv.innerHTML = toolbar(home, tools);
 
 </script>
 </html>

@@ -47,8 +47,14 @@
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+			return toolbarGadgetDiv;
 		} else if (doc == content(cloudGadget)) {
 			cloudGadgetDiv.innerHTML = doc.body.innerHTML;
+			cloudGadgetDiv.showStatus = true;
+			cloudGadgetDiv.showComposites = true;
+			cloudGadgetDiv.showContributions = true;
+			cloudGadgetDiv.showConfigurations = true;
+			return cloudGadgetDiv;
 		}
 		return document;
 	}

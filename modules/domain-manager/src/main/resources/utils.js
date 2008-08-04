@@ -210,7 +210,25 @@ function content(win) {
 }
 
 /**
- * Install a gadget
+ * Returns a child element with the given id.
+ */
+function elementByID(node, id) {
+	for (var i in node.childNodes) {
+		var child = node.childNodes[i];
+		if (child.id == id) {
+			return child;
+		} else {
+			child = elementByID(child, id);
+			if (child != null) {
+				return child;
+			}
+		}
+	}
+	return null;
+}
+
+/**
+ * Install a gadget.
  */
 function gadget(win, doc) {
 	var ongadget = null;

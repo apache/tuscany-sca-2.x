@@ -47,8 +47,12 @@
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+			return toolbarGadgetDiv;
 		} else if (doc == content(compositeGadget)) {
 			compositeGadgetDiv.innerHTML = doc.body.innerHTML;
+			compositeGadgetDiv.showContributions = true;
+			compositeGadgetDiv.showComponents = true; 
+			return compositeGadgetDiv;
 		}
 		return document;
 	}
