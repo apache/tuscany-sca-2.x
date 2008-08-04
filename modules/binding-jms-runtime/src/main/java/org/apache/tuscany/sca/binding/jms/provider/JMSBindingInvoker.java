@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -41,7 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Interceptor for the JMS binding.
+ * Invoker for the JMS binding.
  * 
  * @version $Rev$ $Date$
  */
@@ -259,12 +260,16 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         setHeaders(tuscanyMsg, requestMsg);
 
-        requestMessageProcessor.setOperationName(operationName, requestMsg);
         requestMsg.setJMSReplyTo(replyToDest);
 
         Destination requestDest = getRequestDestination(tuscanyMsg, session);
 
         MessageProducer producer = session.createProducer(requestDest);
+
+        if (jmsBinding.getOperationJMSTimeToLive(operationName) != null) {
+            producer.setTimeToLive(jmsBinding.getOperationJMSTimeToLive(operationName));
+        }
+
         try {
             producer.send(requestMsg);
         } finally {
@@ -293,8 +298,23 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
     protected void setHeaders(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Message jmsMsg) throws JMSException {
 
-        jmsMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
-        jmsMsg.setJMSPriority(jmsBinding.getPriority());
+        requestMessageProcessor.setOperationName(jmsBinding.getNativeOperationName(operationName), jmsMsg);
+
+        if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
+            if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
+                jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+            } else {
+                jmsMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            }
+        }
+
+        if (jmsBinding.getOperationJMSPriority(operationName) != null) {
+            jmsMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
+        }
+
+        if (jmsBinding.getOperationJMSType(operationName) != null) {
+            jmsMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
+        }
 
         ReferenceParameters parameters = tuscanyMsg.getFrom().getReferenceParameters();
 
@@ -329,10 +349,18 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected Message receiveReply(Session session, Destination replyToDest, String requestMsgId) throws JMSException, NamingException {
         String msgSelector = "JMSCorrelationID = '" + requestMsgId + "'";
         MessageConsumer consumer = session.createConsumer(replyToDest, msgSelector);
+      
+        long receiveWait;
+        if (jmsBinding.getOperationJMSTimeToLive(operationName) != null) {
+            receiveWait = jmsBinding.getOperationJMSTimeToLive(operationName) * 2;        
+        } else {
+            receiveWait = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;
+        }
+        
         Message replyMsg;
         try {
             jmsResourceFactory.startConnection();
-            replyMsg = consumer.receive(jmsBinding.getTimeToLive());
+            replyMsg = consumer.receive(receiveWait);
         } finally {
             consumer.close();
         }
