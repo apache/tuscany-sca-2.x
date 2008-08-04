@@ -27,7 +27,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.BServiceImpl"/>
 		<service name="BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)"
+                        uri="http://localhost:8085/BComponent1"/>
 		</service>
     </component>
 
@@ -35,7 +36,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.BServiceImpl"/>
 		<service name="BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService2SOAP)"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService2SOAP)"
+                        uri="http://localhost:8085/BComponent2"/>
 		</service>
     </component>
     
@@ -43,7 +45,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.BService2Impl"/>
 		<service name="BService2">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService2"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService2/BService2Port)"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService2/BService2Port)"
+                        uri="http://localhost:8085/BComponent3"/>
 		</service>
     </component>
     
@@ -51,7 +54,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.BServiceImpl"/>
 		<service name="BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService3SOAP12)"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService3SOAP12)"
+                        uri="http://localhost:8085/BComponent4"/>
 		</service>
     </component>
     
@@ -59,7 +63,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.CServiceImpl"/>
 		<service name="CService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.CService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.cservice#wsdl.port(CService/CServiceSOAP)"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.cservice#wsdl.port(CService/CServiceSOAP)"
+                        uri="http://localhost:8085/CComponent"/>
 		</service>
     </component>
 
@@ -67,7 +72,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent1/BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)" uri="http://localhost:8080/BComponent1"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)" uri="http://localhost:8085/BComponent1"/>
         </reference>
     </component>
 
@@ -75,7 +80,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent2/BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService2SOAP)" uri="http://localhost:8080/BComponent2"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService2SOAP)" uri="http://localhost:8085/BComponent2"/>
         </reference>
     </component>
     
@@ -83,7 +88,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.AServiceImpl"/>
         <reference name="b2" target="BComponent3/BService2">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService2"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService2/BService2Port)" uri="http://localhost:8080/BComponent3"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService2/BService2Port)" uri="http://localhost:8085/BComponent3"/>
         </reference>
     </component>
 
@@ -91,7 +96,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent4/BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService3SOAP12)" uri="http://localhost:8080/BComponent4"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService3SOAP12)" uri="http://localhost:8085/BComponent4"/>
         </reference>
     </component>
     
@@ -99,11 +104,11 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl.DServiceImpl"/>
         <reference name="b1" target="BComponent1/BService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)" uri="http://localhost:8080/BComponent1"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.bservice#wsdl.port(BService/BService1SOAP)" uri="http://localhost:8085/BComponent1"/>
         </reference>
         <reference name="c1" target="CComponent/CService">
             <interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.CService"/>
-			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.cservice#wsdl.port(CService/CServiceSOAP)" uri="http://localhost:8080/CComponent"/>
+			<binding.ws wsdlElement="http://vtest.wsbinding.wsdlelement.port.cservice#wsdl.port(CService/CServiceSOAP)" uri="http://localhost:8085/CComponent"/>
         </reference>
     </component>
     

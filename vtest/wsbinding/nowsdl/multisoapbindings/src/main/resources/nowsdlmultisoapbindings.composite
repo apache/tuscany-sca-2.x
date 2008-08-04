@@ -26,8 +26,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.impl.BServiceImpl"/>
 		<service name="BService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.BService"/>
-			<binding.ws name="BServiceSOAP11" requires="soap.1_1" uri="http://localhost:8080/BService/soap11"/>
-			<binding.ws requires="soap.1_2" uri="http://localhost:8080/BService/soap12"/>
+			<binding.ws name="BServiceSOAP11" requires="soap.1_1" uri="http://localhost:8085/BService/soap11"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BService/soap12"/>
 		</service>
     </component>
 
@@ -35,8 +35,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.impl.CServiceImpl"/>
 		<service name="CService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.CService"/>
-			<binding.ws name="CServiceSOAP12" requires="soap.1_2" uri="http://localhost:8080/CService/soap12"/>
-			<binding.ws requires="soap.1_1" uri="http://localhost:8080/CService/soap11"/>
+			<binding.ws name="CServiceSOAP12" requires="soap.1_2" uri="http://localhost:8085/CService/soap12"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/CService/soap11"/>
 		</service>
     </component>
     
@@ -98,14 +98,14 @@
 
 	<service name="BServicePromoted" promote="BComponentPromoted">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.BService"/>
-		<binding.ws name="BServicePromotedSOAP11" requires="soap.1_1" uri="http://localhost:8080/BServicePromoted/soap11"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8080/BServicePromoted/soap12"/>
+		<binding.ws name="BServicePromotedSOAP11" requires="soap.1_1" uri="http://localhost:8085/BServicePromoted/soap11"/>
+		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServicePromoted/soap12"/>
 	</service>
 
 	<service name="CServicePromoted" promote="CComponentPromoted">
    		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.CService"/>
-		<binding.ws name="CServicePromotedSOAP12" requires="soap.1_2" uri="http://localhost:8080/CServicePromoted/soap12"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8080/CServicePromoted/soap11"/>
+		<binding.ws name="CServicePromotedSOAP12" requires="soap.1_2" uri="http://localhost:8085/CServicePromoted/soap12"/>
+		<binding.ws requires="soap.1_1" uri="http://localhost:8085/CServicePromoted/soap11"/>
 	</service>
 
 	<component name="BComponentPromoted">
@@ -118,12 +118,12 @@
 
     <reference name="DComponent3B1" promote="DComponent3/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.BService"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8080/BServicePromoted/soap12"/>
+		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServicePromoted/soap12"/>
     </reference>
     
     <reference name="DComponent3C1" promote="DComponent3/c1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.CService"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8080/CServicePromoted/soap11"/>
+		<binding.ws requires="soap.1_1" uri="http://localhost:8085/CServicePromoted/soap11"/>
     </reference>
     
     <component name="DComponent3">

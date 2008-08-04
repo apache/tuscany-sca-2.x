@@ -25,21 +25,21 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AServiceImpl"/>
 		<service name="AService">
 		    <binding.ws name="bnd11" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP11Binding)"
-		        uri="http://localhost:8080/AService/bnd11"/>
+		        uri="http://localhost:8085/AService/bnd11"/>
 		    <binding.ws name="bnd12" wsdlElement="http://wsbinding.vtest.sca.tuscany.apache.org#wsdl.binding(AServiceSOAP12Binding)"
-		        uri="http://localhost:8080/AService/bnd12"/>
+		        uri="http://localhost:8085/AService/bnd12"/>
 		</service>
     </component>
     <component name="AClientBnd11Component">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/bnd11"/>
+            <binding.ws uri="http://localhost:8085/AService/bnd11"/>
         </reference>
     </component> 
     <component name="AClientBnd12Component">
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.impl.AClientServiceImpl"/>
         <reference name="aService">
-            <binding.ws uri="http://localhost:8080/AService/bnd12"/>
+            <binding.ws uri="http://localhost:8085/AService/bnd12"/>
         </reference>
     </component> 
 </composite>

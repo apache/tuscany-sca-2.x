@@ -26,7 +26,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl.BServiceImpl"/>
 		<service name="BService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.BService"/>
-			<binding.ws/>
+			<binding.ws uri="http://localhost:8085/BComponent"/>
 		</service>
     </component>
 
@@ -34,7 +34,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl.CServiceImpl"/>
 		<service name="CService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.CService"/>
-			<binding.ws/>
+			<binding.ws uri="http://localhost:8085/CComponent"/>
 		</service>
     </component>
 
@@ -42,7 +42,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent/BService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.BService"/>
-			<binding.ws uri="http://localhost:8080/BComponent"/>
+			<binding.ws uri="http://localhost:8085/BComponent"/>
         </reference>
     </component>
 
@@ -50,11 +50,11 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl.DServiceImpl"/>
         <reference name="b1" target="BComponent/BService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.BService"/>
-			<binding.ws uri="http://localhost:8080/BComponent"/>
+			<binding.ws uri="http://localhost:8085/BComponent"/>
         </reference>
         <reference name="c1" target="CComponent/CService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.CService"/>
-			<binding.ws uri="http://localhost:8080/CComponent"/>
+			<binding.ws uri="http://localhost:8085/CComponent"/>
         </reference>
     </component>
     
