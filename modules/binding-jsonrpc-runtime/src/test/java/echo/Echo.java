@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osoa.sca.annotations.Remotable;
+
 import bean.TestBean;
 
 /**
@@ -32,6 +34,7 @@ import bean.TestBean;
  * 
  * @version $Rev$ $Date$
  */
+@Remotable
 public interface Echo {
     
     String echo(String msg);
