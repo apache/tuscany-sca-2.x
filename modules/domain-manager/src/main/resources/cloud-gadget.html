@@ -29,7 +29,7 @@
 <body>
   <div id="cloudComposite">
   
-  <form name="cloudCompositeForm">
+  <form id="cloudCompositeForm">
     <div id="composites" ></div>
     <br>
     <input type="button" onClick="startNode()"  value="Start" />
@@ -40,7 +40,7 @@
 
   <br><br>
   
-  <form name="newNodeForm">
+  <form id="newNodeForm">
     <table width="100%">
     <tr><th>Add a Node</th></tr>
     <tr><td>Add a node to the cloud. The node will run the SCA components declared in the specified composite.</td></tr>
@@ -60,7 +60,6 @@
 </body>
 
 <script type="text/javascript">
-	var gadget = gadget(window, document);
 
 	//@Reference
 	var cloudComposite = new Reference("cloudComposite");
@@ -70,6 +69,11 @@
 	
 	//@Reference
 	var processCollection = new Reference("processCollection");
+	
+	var gadget = gadget(window, document);
+
+	var newNodeForm = elementByID(gadget, 'newNodeForm');
+	var compositesElement = elementByID(gadget, 'composites');
 	
 	function getNodes() {
 		cloudComposite.get("", getNodesResponse);
@@ -99,8 +103,20 @@
 			var entries = feed.getElementsByTagName("entry");
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Node</th><th>Status</th><th>Composite</th>' +
-			'<th>Contribution</th><th>Node Config</th></tr>';
+			composites += '<tr><th>Node</th>';
+			if (gadget.showStatus) {
+				composites += '<th>Status</th>';
+			}
+			if (gadget.showComposites) {
+				composites += '<th>Composite</th>';
+			}
+			if (gadget.showContributions) {
+			composites += '<th>Contribution</th>';
+			}
+			if (gadget.showConfigurations) {
+				composites += '<th>Node Config</th>';
+			}
+			composites += '</tr>';
 			
 			for (var i=0; i<entries.length; i++) {
 				var nodeId = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
@@ -135,21 +151,35 @@
 				if (content.indexOf('<span id="problem"') != -1) {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
 											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
-					composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
-					composites += '<td>' + content + '</td>';
-					composites += '<td>' + uri + '</td>';
+					if (gadget.showStatus) {
+						composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
+					}
+					if (gadget.showComposites) {
+						composites += '<td>' + content + '</td>';
+					}
+					if (gadget.showContributions) {
+						composites += '<td>' + uri + '</td>';
+					}
 				} else {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
 											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
-					composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
-					composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
-					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
+					if (gadget.showStatus) {
+						composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
+					}
+					if (gadget.showComposites) {
+						composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
+					}
+					if (gadget.showContributions) {
+						composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
+					}
 				}
-				composites += '<td><a href="/node-config/' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				if (gadget.showConfigurations) {
+					composites += '<td><a href="/node-config/' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				}
 				composites += '</tr>';
 			}
 			composites += '</table>';
-			gadget.getElementById("composites").innerHTML = composites;
+			compositesElement.innerHTML = composites;
 
 			processCollection.get("", getProcessesResponse);
 		}
@@ -165,13 +195,15 @@
 				nodeStatus[nodeName] = 'started';
 			}
 
-			for (var i = 0; i < nodeNames.length; i++) {
-				var element = gadget.getElementById('status_' + nodeNames[i]);
-				var nodeName = nodeNames[i];
-				if (nodeStatus[nodeName] == null) {
-					element.innerHTML = '<span>stopped</span>';
-				} else {
-					element.innerHTML = '<span><a style="color: green" href="/processes/?node=' + nodeName + '">started</a></span>';
+			if (gadget.showStatus) {
+				for (var i = 0; i < nodeNames.length; i++) {
+					var element = elementByID(gadget, 'status_' + nodeNames[i]);
+					var nodeName = nodeNames[i];
+					if (nodeStatus[nodeName] == null) {
+						element.innerHTML = '<span>stopped</span>';
+					} else {
+						element.innerHTML = '<span><a style="color: green" href="/processes/?node=' + nodeName + '">started</a></span>';
+					}
 				}
 			}
 		}
@@ -192,11 +224,11 @@
 	}	
 
 	function addNode() {
-		var nodeName = gadget.newNodeForm.nodeName.value;
-		var nodeURI = gadget.newNodeForm.nodeURI.value;			
-		var compositeNamespace = gadget.newNodeForm.compositeNamespace.value;
-		var compositeName = gadget.newNodeForm.compositeName.value;
-		var contributionURI = gadget.newNodeForm.contributionURI.value;
+		var nodeName = newNodeForm.nodeName.value;
+		var nodeURI = newNodeForm.nodeURI.value;			
+		var compositeNamespace = newNodeForm.compositeNamespace.value;
+		var compositeName = newNodeForm.compositeName.value;
+		var contributionURI = newNodeForm.contributionURI.value;
 		var id  = 'composite:' +
 			'http://tuscany.apache.org/cloud' + ';' +
 			'http://tuscany.apache.org/cloud' + ';' +
@@ -227,11 +259,11 @@
 	}
 
 	function addNodeResponse() {
-		gadget.newNodeForm.nodeName.value = "";
-		gadget.newNodeForm.nodeURI.value = "";
-		gadget.newNodeForm.compositeNamespace.value = "";
-		gadget.newNodeForm.compositeName.value = "";
-		gadget.newNodeForm.contributionURI.value = "";
+		newNodeForm.nodeName.value = "";
+		newNodeForm.nodeURI.value = "";
+		newNodeForm.compositeNamespace.value = "";
+		newNodeForm.compositeName.value = "";
+		newNodeForm.contributionURI.value = "";
 	    getNodes();
 	}	
 
@@ -308,7 +340,7 @@
 	}	
 
 	function suggestCompositeNames() {
-		var inputns = gadget.newNodeForm.compositeNamespace.value;
+		var inputns = newNodeForm.compositeNamespace.value;
 		var names = new Array();
 		for (var uri in deployedComposites) {
 			var qname = compositeName(uri);
@@ -323,8 +355,8 @@
 	}	
 
 	function suggestContributionURIs() {
-		var inputns = gadget.newNodeForm.compositeNamespace.value;
-		var inputname = gadget.newNodeForm.compositeName.value;
+		var inputns = newNodeForm.compositeNamespace.value;
+		var inputname = newNodeForm.compositeName.value;
 		var uris = new Array();
 		for (var uri in deployedComposites) {
 			var qname = compositeName(uri);
@@ -341,9 +373,9 @@
 
 	getNodes();
 	getComposites();
-	suggest(gadget.newNodeForm.compositeNamespace, suggestCompositeNamespaces);
-	suggest(gadget.newNodeForm.compositeName, suggestCompositeNames);
-	suggest(gadget.newNodeForm.contributionURI, suggestContributionURIs);
+	suggest(newNodeForm.compositeNamespace, suggestCompositeNamespaces);
+	suggest(newNodeForm.compositeName, suggestCompositeNames);
+	suggest(newNodeForm.contributionURI, suggestContributionURIs);
 	
 </script>
 </html>

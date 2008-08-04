@@ -29,7 +29,7 @@
 <body>
   <div id="domainComposite">
   
-  <form name="domainCompositeForm">
+  <form id="domainCompositeForm">
     <div id="composites" ></div>
     <br>
     <input type="button" onClick="deleteComposite()"  value="Delete" />
@@ -37,7 +37,7 @@
   
   <br><br>
   
-  <form name="newCompositeForm">
+  <form id="newCompositeForm">
     <table width="100%">
     <tr><th>Add Composite</th></tr>
     <tr><td>Add an SCA composite describing your SCA service components.</td></tr>
@@ -55,14 +55,17 @@
 </body>
 
 <script type="text/javascript">
-	var gadget = gadget(window, document);
-
 	//@Reference
 	var domainComposite = new Reference("domainComposite");
 	
 	//@Reference
 	var workspace = new Reference("workspace");
 	
+	var gadget = gadget(window, document);
+
+	var newCompositeForm = elementByID(gadget, 'newCompositeForm');
+	var compositesElement = elementByID(gadget, 'composites');
+
 	function getComposites() {
 		domainComposite.get("", getCompositesResponse);
 	}
@@ -82,10 +85,14 @@
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Composite</th>' +
-			'<th>Contribution</th>' +
-			'<th>Components</th>' +
-			'</tr>';
+			composites += '<tr><th>Composite</th>';
+			if (gadget.showContributions) {
+				composites += '<th>Contribution</th>';
+			}
+			if (gadget.showComponents) {
+				composites += '<th>Components</th>';
+			}
+			composites += '</tr>';
 			//'<th>Composite Configuration</th>' +
 			
 			for (var i=0; i<entries.length; i++) {
@@ -114,13 +121,17 @@
 				composites += '<tr>'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';
 				composites += '<a href=\"' + link + '\">' + qname + '</a></td>';
-				composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
-				composites += '<td class=tdw>' + components + '</td>';
+				if (gadget.showContributions) {
+					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
+				}
+				if (gadget.showComponents) {
+					composites += '<td class=tdw>' + components + '</td>';
+				}
 				//composites += '<td><a href="/composite-config/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
-			gadget.getElementById("composites").innerHTML = composites;
+			compositesElement.innerHTML = composites;
 		}
 	}
 
@@ -140,9 +151,9 @@
 
 	function addComposite() {
 		var id  = 'composite:' +
-			gadget.newCompositeForm.contributionURI.value + ';' +
-			gadget.newCompositeForm.compositeNamespace.value + ';' +
-			gadget.newCompositeForm.compositeName.value;
+			newCompositeForm.contributionURI.value + ';' +
+			newCompositeForm.compositeNamespace.value + ';' +
+			newCompositeForm.compositeName.value;
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
 				'<title>' + id +'</title>' +
               	'<id>' + id + '</id>' +
@@ -151,9 +162,9 @@
 	}
 
 	function addCompositeResponse() {
-		gadget.newCompositeForm.compositeNamespace.value = "";
-		gadget.newCompositeForm.compositeName.value = "";
-		gadget.newCompositeForm.contributionURI.value = "";
+		newCompositeForm.compositeNamespace.value = "";
+		newCompositeForm.compositeName.value = "";
+		newCompositeForm.contributionURI.value = "";
 	    getComposites();
 	}
 	
@@ -204,7 +215,7 @@
 	}	
 
 	function suggestCompositeNames() {
-		var inputns = gadget.newCompositeForm.compositeNamespace.value;
+		var inputns = newCompositeForm.compositeNamespace.value;
 		var names = new Array();
 		for (var uri in contributedComposites) {
 			var qname = compositeName(uri);
@@ -219,8 +230,8 @@
 	}	
 
 	function suggestContributionURIs() {
-		var inputns = gadget.newCompositeForm.compositeNamespace.value;
-		var inputname = gadget.newCompositeForm.compositeName.value;
+		var inputns = newCompositeForm.compositeNamespace.value;
+		var inputname = newCompositeForm.compositeName.value;
 		var uris = new Array();
 		for (var uri in contributedComposites) {
 			var qname = compositeName(uri);
@@ -237,9 +248,9 @@
 
 	getComposites();
 	getContributions();
-	suggest(gadget.newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
-	suggest(gadget.newCompositeForm.compositeName, suggestCompositeNames);
-	suggest(gadget.newCompositeForm.contributionURI, suggestContributionURIs);
+	suggest(newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
+	suggest(newCompositeForm.compositeName, suggestCompositeNames);
+	suggest(newCompositeForm.contributionURI, suggestContributionURIs);
 		
 </script>
 </html>

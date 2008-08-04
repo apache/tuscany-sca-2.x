@@ -46,8 +46,12 @@
 	function ongadget(win, doc) {
 		if (doc == content(toolbarGadget)) {
 			toolbarGadgetDiv.innerHTML = doc.body.innerHTML;
+			return toolbarGadgetDiv;
 		} else if (doc == content(workspaceGadget)) {
 			workspaceGadgetDiv.innerHTML = doc.body.innerHTML;
+			workspaceGadgetDiv.showDependencies = true;
+			workspaceGadgetDiv.showDeployables = true;
+			return workspaceGadgetDiv;
 		}
 		return document;
 	}
