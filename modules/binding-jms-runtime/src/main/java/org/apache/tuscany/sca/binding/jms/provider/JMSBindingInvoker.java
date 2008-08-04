@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -332,6 +333,19 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             String callbackDestName = getCallbackDestinationName(reference);
             if (callbackDestName != null) {
                 jmsMsg.setStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY, callbackDestName);
+            }
+        }
+        
+        for (String propName : jmsBinding.getPropertyNames()) {
+            Object value = jmsBinding.getProperty(propName);
+            jmsMsg.setObjectProperty(propName, value);
+        }
+
+        Map<String, Object> operationProperties = jmsBinding.getOperationProperties(operationName);
+        if (operationProperties != null) {
+            for (String propName : operationProperties.keySet()) {
+                Object value = operationProperties.get(propName);
+                jmsMsg.setObjectProperty(propName, value);
             }
         }
     }
