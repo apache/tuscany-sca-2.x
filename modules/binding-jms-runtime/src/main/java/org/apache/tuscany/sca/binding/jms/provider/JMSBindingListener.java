@@ -94,13 +94,16 @@ public class JMSBindingListener implements MessageListener {
     protected Object invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
         String operationName = requestMessageProcessor.getOperationName(requestJMSMsg);
-        Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(requestJMSMsg);
-
         Operation operation = getTargetOperation(operationName);
 
         MessageImpl tuscanyMsg = new MessageImpl();
-        tuscanyMsg.setBody(requestPayload);
         tuscanyMsg.setOperation(operation);
+        if ("onMessage".equals(operation.getName())) {
+            tuscanyMsg.setBody(requestJMSMsg);
+        } else {
+            Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(requestJMSMsg);
+            tuscanyMsg.setBody(requestPayload);
+        }
 
         setHeaderProperties(requestJMSMsg, tuscanyMsg, operation);
 
