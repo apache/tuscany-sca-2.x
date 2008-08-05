@@ -31,7 +31,7 @@
         <implementation.java class="bigbank.account.AccountServiceImpl"/>
 
         <service name="AccountService">
-            <tuscany:binding.jsonrpc uri="/AccountJSONService"/>
+            <tuscany:binding.jsonrpc uri="http://localhost:8085/AccountJSONService"/>
             <binding.ws wsdlElement="http://bigbank#wsdl.port(AccountService/AccountServiceSoap)"/>
             <binding.sca/>
         </service>
@@ -69,8 +69,8 @@
     <component name="AccountFeedComponent">
         <implementation.java class="bigbank.account.feed.AccountFeedImpl"/>
         <service name="Collection">
-            <tuscany:binding.rss uri="/rss"/>
-            <tuscany:binding.atom uri="/atom"/>
+            <tuscany:binding.rss uri="http://localhost:8085/rss"/>
+            <tuscany:binding.atom uri="http://localhost:8085/atom"/>
         </service>
         <reference name="accountService" target="AccountServiceComponent"/>
     </component>
@@ -78,7 +78,7 @@
     <component name="WebResourceComponent">
         <tuscany:implementation.resource location="web"/>
         <service name="Resource">
-            <tuscany:binding.http uri="/"/>
+            <tuscany:binding.http uri="http://localhost:8085/"/>
         </service>
     </component>
 
