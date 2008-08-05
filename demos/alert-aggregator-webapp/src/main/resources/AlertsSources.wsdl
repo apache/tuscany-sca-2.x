@@ -117,7 +117,7 @@
 
     <wsdl:service name="AlertsSourcesService">
         <wsdl:port name="AlertsSourcesPort" binding="tns:AlertsSourcesBinding">
-            <wsdlsoap:address location="http://localhost:8080/services/AlertsSourcesServiceWebServiceBinding" />
+            <wsdlsoap:address location="http://localhost:8085/services/AlertsSourcesServiceWebServiceBinding" />
         </wsdl:port>
     </wsdl:service>
 
