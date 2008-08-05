@@ -108,6 +108,19 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + " </component>"
             + "</composite>";
 
+    private static final String SELECTOR =
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+            + " <component name=\"HelloWorldComponent\">"
+            + "   <implementation.java class=\"services.HelloWorld\"/>"
+            + "      <service name=\"HelloWorldService\">"
+            + "          <binding.jms uri=\"jms:testQueue\" >"
+            + "             <subscriptionHeaders JMSSelector=\"prop1 = 2\" />"
+            + "          </binding.jms>"
+            + "      </service>"
+            + " </component>"
+            + "</composite>";
+
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
     private Monitor monitor;
@@ -185,4 +198,14 @@ public class JMSBindingProcessorTestCase extends TestCase {
         assertEquals(77, ((Integer)op2Props.get("intProp")).intValue());
     }
 
+    public void testSubscriptionHeaders () throws Exception {
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(SELECTOR));
+        
+        Composite composite = (Composite)staxProcessor.read(reader);
+        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        
+        assertNotNull(binding);
+
+        assertEquals("prop1 = 2", binding.getJMSSelector());
+    }
 }

@@ -237,6 +237,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                         parseHeaders(reader, jmsBinding);
                     } else if ("operationProperties".equals(elementName)) {
                         parseOperationProperties(reader, jmsBinding);
+                    } else if ("subscriptionHeaders".equals(elementName)) {
+                        parseSubscriptionHeaders (reader, jmsBinding);
                     }
                     reader.next();
                     break;
@@ -622,6 +624,13 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                 // its already a string
             }
             jmsBinding.setOperationProperty(opName, propName, value);
+        }
+    }
+
+    private void parseSubscriptionHeaders(XMLStreamReader reader, JMSBinding jmsBinding) {
+        String jmsSelector = reader.getAttributeValue(null, "JMSSelector");
+        if (jmsSelector != null && jmsSelector.length() > 0) {
+            jmsBinding.setJMSSelector(jmsSelector);
         }
     }
 
