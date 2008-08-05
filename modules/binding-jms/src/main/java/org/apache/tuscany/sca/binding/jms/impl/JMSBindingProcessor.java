@@ -550,7 +550,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             jmsBinding.setOperationJMSType(opName, jmsType);
         }
 
-        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationId");
+        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationID");
         if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
             jmsBinding.setOperationJMSCorrelationId(opName, jmsCorrelationId);
         }
