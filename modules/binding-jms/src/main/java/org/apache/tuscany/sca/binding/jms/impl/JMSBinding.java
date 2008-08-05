@@ -100,6 +100,7 @@ public class JMSBinding implements Binding {
     private Map<String, Boolean> operationJMSDeliveryModes = new HashMap<String, Boolean>();
     private Map<String, Long> operationJMSTimeToLives = new HashMap<String, Long>();
     private Map<String, Integer> operationJMSPriorities = new HashMap<String, Integer>();
+    private String jmsSelector;
     
     public JMSBinding() {
         super();
@@ -472,6 +473,13 @@ public class JMSBinding implements Binding {
     }
     public void setOperationJMSPriority(String opName, int p) {
         operationJMSPriorities.put(opName, p);
+    }
+
+    public String getJMSSelector() {
+        return jmsSelector;
+    }
+    public void setJMSSelector(String jmsSelector) {
+        this.jmsSelector = jmsSelector;
     }
 
 }
