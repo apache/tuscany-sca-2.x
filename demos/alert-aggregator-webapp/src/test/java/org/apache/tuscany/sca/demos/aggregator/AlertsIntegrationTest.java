@@ -22,9 +22,7 @@ package org.apache.tuscany.sca.demos.aggregator;
 import java.io.ByteArrayInputStream;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -65,7 +63,7 @@ public class AlertsIntegrationTest {
     @Test
     public void testGetAllNewAlerts() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAllNewAlerts\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8085/demo-alert-aggregator-webapp/AlertsServiceJSONRPC",
                                               jsonRequest);
         Assert.assertNotNull(jsonResp);
     }   
@@ -73,7 +71,7 @@ public class AlertsIntegrationTest {
     @Test
     public void testAddAlertSources() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[{\"name\":\"news\",\"id\":\"2\",\"address\":\"www.news.com\",\"feedAddress\":\"http://news.com.com/2547-1_3-0-20.xml\",\"feedType\":\"rss\",\"lastChecked\":\"lastChecked\",\"javaClass\":\"org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl\"}],\"method\":\"addAlertSource\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8085/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);  
         Assert.assertNotNull(jsonResp);
     }
@@ -81,7 +79,7 @@ public class AlertsIntegrationTest {
     @Test
     public void testGetAlertSources() throws Exception {  
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAlertSources\",\"id\":2}");
-        JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
+        JSONObject jsonResp    = callService ("http://localhost:8085/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);                                 
         Assert.assertEquals("BBC News", jsonResp.getJSONObject("result").getJSONObject("source").optJSONArray("list").getJSONObject(0).getString("name")); 
     }    

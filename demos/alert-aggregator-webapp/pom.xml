@@ -281,6 +281,7 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.0-alpha-5</version>
                 <executions>
                     <execution>
                         <id>start-container</id>
@@ -308,14 +309,14 @@
                     <wait>false</wait>
                     <configuration>
                         <properties>
-                            <cargo.servlet.port>8080</cargo.servlet.port>
+                            <cargo.servlet.port>8085</cargo.servlet.port>
                         </properties>
                         <deployables>
                             <deployable>
                                 <location>
                                     ${project.build.directory}/${project.build.finalName}.${project.packaging}
                                 </location>
-                                <pingURL>http://localhost:8080/AlertsSourcesServiceJSONRPC</pingURL>
+                                <pingURL>http://localhost:8085/AlertsSourcesServiceJSONRPC</pingURL>
                             </deployable>
                         </deployables>
                         <home>${project.build.directory}/cargo-jetty</home>
