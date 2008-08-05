@@ -32,11 +32,11 @@
   <form id="domainCompositeForm">
     <div id="composites" ></div>
     <br>
-    <input type="button" onClick="deleteComposite()"  value="Delete" />
+     &gt;<a href="" id="addCompositeLink">Add</a>
+     &nbsp;<a href="" id="deleteCompositeLink">Delete</a>
   </form>
   
-  <br><br>
-  
+  <div id="newComposite" style="visibility: hidden;">
   <form id="newCompositeForm">
     <table width="100%">
     <tr><th>Add Composite</th></tr>
@@ -48,8 +48,9 @@
     <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. yourcomposite</td></tr>
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
     </table>
-    <input type="button" onClick="addComposite()" value="Add" />
+    <input id="addCompositeButton" type="button" value="Add" />
   </form>
+  </div>
   
   </div>
 </body>
@@ -62,10 +63,17 @@
 	var workspace = new Reference("workspace");
 	
 	var gadget = gadget(window, document);
+	if (gadget.showContributions == null) {
+		gadget.showContributions = true;
+	}
 
-	var newCompositeForm = elementByID(gadget, 'newCompositeForm');
+	var domainCompositeForm = elementByID(gadget, 'domainCompositeForm');
 	var compositesElement = elementByID(gadget, 'composites');
+	var newCompositeElement = elementByID(gadget, 'newComposite');
+	var newCompositeForm = elementByID(gadget, 'newCompositeForm');
 
+	var contributedComposites = new Array();
+	
 	function getComposites() {
 		domainComposite.get("", getCompositesResponse);
 	}
@@ -136,13 +144,14 @@
 	}
 
 	function deleteComposite() {
-		var composites  = array(gadget.domainCompositeForm.composites);
+		var composites  = array(domainCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
 				domainComposite.del(id, deleteCompositeResponse);
 			}
 		}
+		return false;
 	}
 
 	function deleteCompositeResponse() {
@@ -167,8 +176,6 @@
 		newCompositeForm.contributionURI.value = "";
 	    getComposites();
 	}
-	
-	var contributedComposites = new Array();
 	
 	function getContributions() {
 		workspace.get("", getContributionsResponse);
@@ -245,6 +252,20 @@
 		}
 		return array(uris);
 	}
+
+	function toggleNewComposite() {
+		var visibility = newCompositeElement.style.visibility;
+		if (visibility == 'hidden') {
+			newCompositeElement.style.visibility = 'visible';
+		} else {
+			newCompositeElement.style.visibility = 'hidden';
+		}
+		return false;
+	}
+
+	elementByID(gadget, 'deleteCompositeLink').onclick = deleteComposite; 
+	elementByID(gadget, 'addCompositeLink').onclick = toggleNewComposite; 
+	elementByID(gadget, 'addCompositeButton').onclick = addComposite; 
 
 	getComposites();
 	getContributions();

@@ -29,15 +29,15 @@
 <body>
   <div id="fileServer">
   
-  <form name="filesForm">
+  <form id="filesForm">
     <div id="files" ></div>
-    <br/>
-    <input type="button" onClick="deleteFile()"  value="Delete" />
+    <br>
+     &gt;<a href="" id="uploadFileLink">Upload</a>
+     &nbsp;<a href="" id="deleteFileLink">Delete</a>
   </form>
 
-  <br><br>
-  
-  <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
+  <div id="uploadFile" style="visibility: hidden;">
+  <form method="post" id="uploadFileForm" enctype='multipart/form-data' action='/files'>
     <table width="100%">
     <tr><th>Upload File</th></tr>
     <tr><td>Upload a file to the server.</td></tr>
@@ -47,8 +47,9 @@
     <tr><td>File:</td><td><input type="file" name="file" size="50"/></td></tr>
     </table>
     <br/>
-    <input type="button" onClick="uploadFile()" value="Upload" />
-  </form>    
+    <input id="uploadFileButton" type="button" value="Upload" />
+  </form>
+  </div>    
       
   </div>
 </body>
@@ -59,7 +60,9 @@
 
 	var gadget = gadget(window, document);
 
+	var filesForm = elementByID(gadget, "filesForm");
 	var filesElement = elementByID(gadget, 'files');
+	var uploadFileElement = elementByID(gadget, 'uploadFile');
 	var uploadFileForm = elementByID(gadget, 'uploadFileForm');
 	
 	function getFiles() {
@@ -82,13 +85,14 @@
 	}				
 
 	function deleteFile() {
-		var list = array(gadget.filesForm.files);
+		var list = array(filesForm.files);
 		for (var i=0; i < list.length; i++) {
 			if (list[i].checked) {
 			    var id = list[i].value;
 				files.del(id, deleteFileResponse);
 			}
 		}
+		return false;
 	}
 
 	function deleteFileResponse() {
@@ -97,7 +101,22 @@
 
 	function uploadFile() {
 		uploadFileForm.submit();
+		return false;
 	}
+
+	function toggleUploadFile() {
+		var visibility = uploadFileElement.style.visibility;
+		if (visibility == 'hidden') {
+			uploadFileElement.style.visibility = 'visible';
+		} else {
+			uploadFileElement.style.visibility = 'hidden';
+		}
+		return false;
+	}
+
+	elementByID(gadget, 'deleteFileLink').onclick = deleteFile; 
+	elementByID(gadget, 'uploadFileLink').onclick = toggleUploadFile; 
+	elementByID(gadget, 'uploadFileButton').onclick = uploadFile; 
 
 	getFiles();
 

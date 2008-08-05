@@ -30,13 +30,13 @@
   <div id="workspace">
   
   <form id="workspaceForm">
-    <div id="contributions" ></div>
-    <br>
-    <input type="button" onClick="deleteContribution()"  value="Delete" />
+	<div id="contributions" ></div>
+  	<br>
+     &gt;<a href="" id="addContributionLink">Add</a>
+     &nbsp;<a href="" id="deleteContributionLink">Delete</a>
   </form>
-
-  <br><br>
-  
+	
+  <div id="newContribution" style="visibility: hidden;">
   <form id="newContributionForm">
     <table width="100%">
     <tr><th>Add Contribution</th></tr>
@@ -47,8 +47,9 @@
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr> 
     <tr><td>Location:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/yourjar.jar, file:/yourdir, file:/yourjar.jar</td></tr>
     </table>
-    <input type="button" onClick="addContribution()" value="Add" />
+    <input id="addContributionButton" type="button" value="Add" />
   </form>
+  </div>
   
   </div>
 </body>
@@ -59,9 +60,16 @@
 	var workspace = new Reference("workspace");
 
 	var gadget = gadget(window, document);
+	if (gadget.showDependencies == null) {
+		gadget.showDependencies = true;
+	}
 
-	var newContributionForm = elementByID(gadget, 'newContributionForm'); 
+	var workspaceForm = elementByID(gadget, 'workspaceForm');
 	var contributionsElement = elementByID(gadget, 'contributions');
+	var newContributionElement = elementByID(gadget, 'newContribution');
+	var newContributionForm = elementByID(gadget, 'newContributionForm');
+
+	var suggestedContributions = new Array();
 	
 	function getContributions() {
 		workspace.get("", getContributionsResponse);
@@ -129,8 +137,6 @@
 		}
 	}				
 	
-	var suggestedContributions = new Array();
-	
 	function getSuggestedContributions() {
 		workspace.get("?suggestions=true", getSuggestedContributionsResponse);
 	}
@@ -148,13 +154,15 @@
 	}				
 	
 	function deleteContribution() {
-		var contributions  = array(gadget.workspaceForm.contributions);
+		var contributions  = array(workspaceForm.contributions);
 		for (var i=0; i < contributions.length; i++) {
 			if (contributions[i].checked) {
 			    var id = contributions[i].value;
+				alert("hey " + id);
 				workspace.del(id, deleteContributionResponse);
 			}
 		}
+		return false;
 	}
 	
 	function deleteContributionResponse() {
@@ -200,6 +208,20 @@
 		}
 		return array(locations);
 	}
+
+	function toggleNewContribution() {
+		var visibility = newContributionElement.style.visibility;
+		if (visibility == 'hidden') {
+			newContributionElement.style.visibility = 'visible';
+		} else {
+			newContributionElement.style.visibility = 'hidden';
+		}
+		return false;
+	}
+
+	elementByID(gadget, 'deleteContributionLink').onclick = deleteContribution; 
+	elementByID(gadget, 'addContributionLink').onclick = toggleNewContribution; 
+	elementByID(gadget, 'addContributionButton').onclick = addContribution; 
 
 	getContributions();
 	getSuggestedContributions();
