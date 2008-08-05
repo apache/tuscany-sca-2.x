@@ -61,7 +61,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms uri=\"jms:testQueue\" >"
-            + "             <headers JMSType=\"myType\" JMSCorrelationId=\"myCorrelId\" JMSDeliveryMode=\"PERSISTENT\" JMSTimeToLive=\"54321\" JMSPriority=\"5\" >"
+            + "             <headers JMSType=\"myType\" JMSCorrelationID=\"myCorrelId\" JMSDeliveryMode=\"PERSISTENT\" JMSTimeToLive=\"54321\" JMSPriority=\"5\" >"
             + "             </headers>" 
             + "          </binding.jms>"
             + "      </service>"
