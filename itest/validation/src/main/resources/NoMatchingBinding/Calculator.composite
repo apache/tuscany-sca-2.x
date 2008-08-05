@@ -35,7 +35,7 @@
     <component name="AddServiceComponent">
         <implementation.java class="calculator.warning.AddServiceImpl"/>
         <service name="AddService">
-            <binding.ws/>
+            <binding.ws uri="http://localhost:8085/AddServiceComponent"/>
         </service>
     </component>    
 
