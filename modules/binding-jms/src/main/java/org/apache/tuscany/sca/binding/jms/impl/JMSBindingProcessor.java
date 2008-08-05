@@ -414,7 +414,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
 
     /**
      * <headers JMSType=”string”?
-     *          JMSCorrelationId=”string”?
+     *          JMSCorrelationID=”string”?
      *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
      *          JMSTimeToLive=”long”?      
      *          JMSPriority=”0 .. 9”?>
@@ -428,7 +428,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             jmsBinding.setJMSType(jmsType);
         }
 
-        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationId");
+        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationID");
         if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
             jmsBinding.setJMSCorrelationId(jmsCorrelationId);
         }
