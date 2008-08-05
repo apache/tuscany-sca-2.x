@@ -32,14 +32,14 @@
   <form id="cloudCompositeForm">
     <div id="composites" ></div>
     <br>
-    <input type="button" onClick="startNode()"  value="Start" />
-    <input type="button" onClick="stopNode()"  value="Stop" />
+    &gt;<a href="" id="addNodeLink">Add</a>
+    &nbsp;<a href="" id="deleteNodeLink">Delete</a>
     &nbsp;&nbsp;
-    <input type="button" onClick="deleteNode()"  value="Delete" />
+    <a href="" id="startNodeLink">Start</a>
+    &nbsp;<a href="" id="stopNodeLink">Stop</a>
   </form>
 
-  <br><br>
-  
+  <div id="newNode" style="visibility: hidden;">
   <form id="newNodeForm">
     <table width="100%">
     <tr><th>Add a Node</th></tr>
@@ -53,8 +53,9 @@
     <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. yourcomposite</td></tr>
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
     </table>
-    <input type="button" onClick="addNode()" value="Add" />
+    <input id="addNodeButton" type="button" value="Add" />
   </form>
+  </div>
   
   </div>
 </body>
@@ -71,9 +72,20 @@
 	var processCollection = new Reference("processCollection");
 	
 	var gadget = gadget(window, document);
+	if (gadget.showStatus == null) {
+		gadget.showStatus = true;
+	}
+	if (gadget.showConfigurations == null) {
+		gadget.showConfigurations = true;
+	}
 
-	var newNodeForm = elementByID(gadget, 'newNodeForm');
+	var cloudCompositeForm = elementByID(gadget, 'cloudCompositeForm');
 	var compositesElement = elementByID(gadget, 'composites');
+	var newNodeElement = elementByID(gadget, 'newNode');
+	var newNodeForm = elementByID(gadget, 'newNodeForm');
+	
+	var nodeNames;
+	var deployedComposites = new Array();
 	
 	function getNodes() {
 		cloudComposite.get("", getNodesResponse);
@@ -95,8 +107,6 @@
     	return name.substring(i + 1);
 	}
 	
-	var nodeNames;
-	
 	function getNodesResponse(feed) {
 		nodeNames = new Array();      
 		if (feed != null) {
@@ -111,7 +121,7 @@
 				composites += '<th>Composite</th>';
 			}
 			if (gadget.showContributions) {
-			composites += '<th>Contribution</th>';
+				composites += '<th>Contribution</th>';
 			}
 			if (gadget.showConfigurations) {
 				composites += '<th>Node Config</th>';
@@ -210,13 +220,14 @@
 	}
 
 	function deleteNode() {
-		var composites  = array(gadget.cloudCompositeForm.composites);
+		var composites  = array(cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
 				cloudComposite.del(id, deleteNodeResponse);
 			}
 		}
+		return false;
 	}
 
 	function deleteNodeResponse() {
@@ -268,7 +279,7 @@
 	}	
 
 	function startNode() {
-		var composites  = array(gadget.cloudCompositeForm.composites);
+		var composites  = array(cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = nodeNames[i];
@@ -279,12 +290,13 @@
 				processCollection.post(entry, startNodeResponse);
 			}
 		}
+		return false;
 	}
 
 	function startNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
-		var composites  = array(gadget.cloudCompositeForm.composites);
+		var composites  = array(cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -293,19 +305,20 @@
 	}	
 
 	function stopNode() {
-		var composites  = array(gadget.cloudCompositeForm.composites);
+		var composites  = array(cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = nodeNames[i];
 				processCollection.del(id, stopNodeResponse);
 			}
 		}
+		return false;
 	}
 
 	function stopNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
-		var composites  = array(gadget.cloudCompositeForm.composites);
+		var composites  = array(cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -313,8 +326,6 @@
 		}
 	}	
 
-	var deployedComposites = new Array();
-	
 	function getComposites() {
 		domainComposite.get("", getCompositesResponse);
 	}
@@ -370,6 +381,22 @@
 		}
 		return array(uris);
 	}
+
+	function toggleNewNode() {
+		var visibility = newNodeElement.style.visibility;
+		if (visibility == 'hidden') {
+			newNodeElement.style.visibility = 'visible';
+		} else {
+			newNodeElement.style.visibility = 'hidden';
+		}
+		return false;
+	}
+
+	elementByID(gadget, 'deleteNodeLink').onclick = deleteNode; 
+	elementByID(gadget, 'addNodeLink').onclick = toggleNewNode; 
+	elementByID(gadget, 'startNodeLink').onclick = startNode; 
+	elementByID(gadget, 'stopNodeLink').onclick = stopNode; 
+	elementByID(gadget, 'addNodeButton').onclick = addNode; 
 
 	getNodes();
 	getComposites();
