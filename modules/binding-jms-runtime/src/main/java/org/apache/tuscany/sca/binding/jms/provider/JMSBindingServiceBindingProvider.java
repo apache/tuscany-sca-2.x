@@ -82,8 +82,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         if (service.getInterfaceContract() != null) {
             try {
                 InterfaceContract ic = (InterfaceContract)service.getInterfaceContract().clone();
-
-                Interface ii = (Interface)ic.getInterface().clone();
+                Interface ii = ic.getInterface();
+                if (ii.getOperations().size() == 1 && "onMessage".equals(ii.getOperations().get(0).getName())) {
+                    return;
+                }
+                ii = (Interface)ii.clone();
                 ii.resetDataBinding("org.apache.axiom.om.OMElement");
                 ic.setInterface(ii);
                 service.setInterfaceContract(ic);
