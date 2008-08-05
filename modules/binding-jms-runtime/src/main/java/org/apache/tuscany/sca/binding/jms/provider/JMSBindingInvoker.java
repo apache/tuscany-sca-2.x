@@ -227,7 +227,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
                     return null;
                 } else {
                     Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
-                    return ((Object[])responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg))[0];
+                    Object[] response = (Object[])responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg);
+                    return (response != null && response.length > 0) ? response[0] : null;
                 }
 
             } finally {
@@ -307,6 +308,10 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             } else {
                 jmsMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
             }
+        }
+
+        if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
+            jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
         }
 
         if (jmsBinding.getOperationJMSPriority(operationName) != null) {
