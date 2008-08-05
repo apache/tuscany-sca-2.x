@@ -343,6 +343,26 @@ public abstract class BaseStAXArtifactProcessor {
             this(null, name, value);
         }
 
+        public XAttr(String uri, String name, Integer value) {
+            this.uri = uri;
+            this.name = name;
+            this.value = value;
+        }
+
+        public XAttr(String name, Integer value) {
+            this(null, name, value);
+        }
+
+        public XAttr(String uri, String name, Double value) {
+            this.uri = uri;
+            this.name = name;
+            this.value = value;
+        }
+
+        public XAttr(String name, Double value) {
+            this(null, name, value);
+        }
+
         public XAttr(String uri, String name, QName value) {
             this.uri = uri;
             this.name = name;
