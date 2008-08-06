@@ -133,7 +133,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             destination = session.createTemporaryQueue();
         }
 
-        consumer = session.createConsumer(destination);
+        if (jmsBinding.getJMSSelector() != null) {
+            consumer = session.createConsumer(destination, jmsBinding.getJMSSelector());
+        } else {
+            consumer = session.createConsumer(destination);
+        }
 
         final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service);
         try {
