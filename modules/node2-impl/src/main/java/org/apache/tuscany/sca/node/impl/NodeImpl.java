@@ -421,6 +421,18 @@ public class NodeImpl implements SCANode2, SCAClient {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
     }
+    
+    /**
+     * Escape the space in URL string
+     * @param uri
+     * @return
+     */
+    private static URI createURI(String uri) {
+        if (uri.indexOf(' ') != -1) {
+            uri = uri.replace(" ", "%20");
+        }
+        return URI.create(uri);
+    }
 
     private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
 
@@ -431,7 +443,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         ContributionService contributionService = runtime.getContributionService();
         List<Contribution> contributions = new ArrayList<Contribution>();
         for (Contribution contribution : configuration.getContributions()) {
-            URI uri = URI.create(contribution.getLocation());
+            URI uri = createURI(contribution.getLocation());
             if (uri.getScheme() == null) {
                 uri = new File(contribution.getLocation()).toURI();
             }
@@ -476,7 +488,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         Contribution contribution;
         URL compositeURL;
         
-        URI uri = URI.create(configuration.getComposite().getURI());
+        URI uri = createURI(configuration.getComposite().getURI());
         if (uri.getScheme() == null) {
             
             // If the composite URI is a relative URI, try to resolve it within the contributions
