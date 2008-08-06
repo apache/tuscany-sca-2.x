@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.corba.jdk;
+package org.apache.tuscany.sca.host.corba.jse;
 
 import java.util.Map;
 import java.util.Properties;
