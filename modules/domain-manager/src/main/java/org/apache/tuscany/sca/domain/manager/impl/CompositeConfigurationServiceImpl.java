@@ -118,6 +118,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
     private URLArtifactProcessor<Contribution> contributionProcessor;
+    private StAXArtifactProcessorExtensionPoint staxProcessors;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private ContributionDependencyBuilder contributionDependencyBuilder;
@@ -148,7 +149,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
         // Get and initialize artifact processors
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
         StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, monitor);
 
@@ -174,18 +175,38 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        String key = path.startsWith("/")? path.substring(1) : path;
+        String key;
+        if (path.startsWith("/")) {
+            if (path.length() > 1) {
+                key = path.substring(1);
+            } else {
+                key ="";
+            }
+        } else {
+            key =path;
+        }
         logger.fine("get " + key);
         
-        // Expect a key in the form
-        // composite:contributionURI;namespace;localName
+        // Expect a key in the form composite:contributionURI;namespace;localName or
+        // a path in the form componentName/componentName/...
         // and return the corresponding resolved composite
-        
-        // Extract the composite qname from the key
-        QName qname = compositeQName(key);
+        String requestedContributionURI = null;
+        QName requestedCompositeName = null;
+        String[] requestedComponentPath = null;
+        if (key.startsWith("composite:")) {
+            
+            // Extract the composite qname from the key
+            requestedContributionURI = contributionURI(key);
+            requestedCompositeName = compositeQName(key);
+            
+        } else if (key.length() != 0) {
+            
+            // Extract the path to the requested component from the key
+            requestedComponentPath = key.split("/");
+        }
         
         // Somewhere to store the composite we expect to write out at the end
-        Composite compositeConfiguration = null;
+        Composite requestedComposite = null;
 
         // Create a domain composite model
         Composite domainComposite = assemblyFactory.createComposite();
@@ -261,14 +282,16 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             }
             
-            // store away the composite we are generating the deployable XML for. 
-            if (qname.equals(deployable.getName())){
-                compositeConfiguration = deployable;
+            // Store away the requested composite  
+            if (requestedCompositeName != null) {
+                if (requestedContributionURI.equals(contributionURI) && requestedCompositeName.equals(deployable.getName())){
+                    requestedComposite = deployable;
+                }
             }
         }
         
-        // Composite not found
-        if (compositeConfiguration == null) {
+        // The requested composite was not found
+        if (requestedCompositeName != null && requestedComposite == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
             return;
         }
@@ -325,30 +348,85 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             return;
         }        
-        
-        // Rebuild the requested composite from the domain composite
-        // we have to reverse the flattening that went on when the domain
-        // composite was built
-        List<Component> tempComponentList = new ArrayList<Component>();
-        tempComponentList.addAll(compositeConfiguration.getComponents());
-        compositeConfiguration.getComponents().clear();
-        for (Component inputComponent : tempComponentList){
-            for (Component deployComponent : domainComposite.getComponents()){
-                if (deployComponent.getName().equals(inputComponent.getName())){
-                    compositeConfiguration.getComponents().add(deployComponent);
+
+        // Return the requested composite
+        if (requestedComposite != null) {
+            
+            // Rebuild the requested composite from the domain composite
+            // we have to reverse the flattening that went on when the domain
+            // composite was built
+            List<Component> tempComponentList = new ArrayList<Component>();
+            tempComponentList.addAll(requestedComposite.getComponents());
+            requestedComposite.getComponents().clear();
+            for (Component inputComponent : tempComponentList){
+                for (Component deployComponent : domainComposite.getComponents()){
+                    if (deployComponent.getName().equals(inputComponent.getName())){
+                        requestedComposite.getComponents().add(deployComponent);
+                    }
                 }
             }
+            
+        } else if (requestedComponentPath != null) {
+            
+            // If a component path was specified, walk the path to get to the requested
+            // component and the composite that implements it
+            Composite nestedComposite = domainComposite;
+            for (String componentName: requestedComponentPath) {
+                Component component = null;
+                for (Component c: nestedComposite.getComponents()) {
+                    if (componentName.equals(c.getName())) {
+                        component = c;
+                        break;
+                    }
+                }
+                if (component == null) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+                    return;
+                } else {
+                    if (component.getImplementation() instanceof Composite) {
+                        nestedComposite = (Composite)component.getImplementation();
+                    } else {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+                        return;
+                    }
+                }
+            }
+            
+            // Return the nested composite
+            requestedComposite = nestedComposite;
+            
+        } else {
+            
+            
+            // Return the whole domain composite
+            requestedComposite = domainComposite;
         }
         
-        // Write the deployable composite
+        // Write the composite in the requested format
+        StAXArtifactProcessor<Composite> processor;
+        String queryString = request.getQueryString();
+        if (queryString != null && queryString.startsWith("format=")) {
+            String format = queryString.substring(7);
+            int s = format.indexOf(';');
+            QName formatName = new QName(format.substring(0, s), format.substring(s +1));
+            processor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(formatName);
+            if (processor == null) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, new IllegalArgumentException(queryString).toString());
+                return;
+            }
+        } else {
+            processor = compositeProcessor;
+        }
         try {
             response.setContentType("text/xml");
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(response.getOutputStream());
-            compositeProcessor.write(compositeConfiguration, writer);
+            processor.write(requestedComposite, writer);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             return;
         }
+        
+        
     }
 
     /**

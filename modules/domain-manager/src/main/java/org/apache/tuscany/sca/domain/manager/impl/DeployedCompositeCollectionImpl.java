@@ -30,25 +30,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -86,10 +75,8 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class,LocalItemCollection.class, Servlet.class})
-public class DeployedCompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
-    private static final long serialVersionUID = -3477992129462720901L;
-
+@Service(interfaces={ItemCollection.class,LocalItemCollection.class})
+public class DeployedCompositeCollectionImpl implements ItemCollection, LocalItemCollection {
     private static final Logger logger = Logger.getLogger(DeployedCompositeCollectionImpl.class.getName());
 
     @Property
@@ -188,54 +175,6 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         throw new NotFoundException(key);
     }
     
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        // Expect a key in the form
-        // composite:contributionURI;namespace;localName
-        // and return the corresponding source file
-        
-        // Get the request path
-        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        String key = path.startsWith("/")? path.substring(1) : path;
-        logger.fine("get " + key);
-        
-        // Get the item describing the composite
-        Item item;
-        try {
-            item = deployableCollection.get(key);
-        } catch (NotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
-            return;
-        }
-
-        // Read the composite file and write to response
-        String uri = item.getAlternate();
-        InputStream is;
-        try {
-            URLConnection connection = new URL(uri).openConnection();
-            connection.setUseCaches(false);
-            connection.connect();
-            is = connection.getInputStream();
-        } catch (FileNotFoundException ex) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
-            return;
-        }
-
-        response.setContentType("text/xml");
-        ServletOutputStream os = response.getOutputStream();
-        byte[] buffer = new byte[4096];
-        for (;;) {
-            int n = is.read(buffer);
-            if (n < 0) {
-                break;
-            }
-            os.write(buffer, 0, n);
-        }
-        is.close();
-        os.flush();
-    }
-
     public String post(String key, Item item) {
         logger.fine("post " + key);
         
