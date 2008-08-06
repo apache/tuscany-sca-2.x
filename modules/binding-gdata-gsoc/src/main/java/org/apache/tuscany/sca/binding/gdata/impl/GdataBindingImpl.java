@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * Implementation of the GData binding model.
  *
  */
-class GdataBindingImpl implements GdataBinding, OptimizableBinding, PolicySetAttachPoint {
+class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
 
     private String name;
     private String uri;
@@ -127,46 +127,16 @@ class GdataBindingImpl implements GdataBinding, OptimizableBinding, PolicySetAtt
         this.intentAttachPointType = intentAttachPointType;
     }
 
-    //FIXME Temporary to get access to the target binding information
-    // To be removed when the distributed domain supports wiring of other
-    // bindings than the SCA binding
-    private Binding targetBinding; 
-    private Component targetComponent; 
-    private ComponentService targetComponentService; 
-    
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-    
-    public Binding getTargetBinding() {
-        return targetBinding;
-    }
-    
-    public void setTargetBinding(Binding binding) {
-        this.targetBinding = binding;
-    }
-    
-    public Component getTargetComponent() {
-        return targetComponent;
-    }
-    
-    public void setTargetComponent(Component component) {
-        this.targetComponent = component;
-    }
-    
-    public ComponentService getTargetComponentService() {
-        return targetComponentService;
-    }
-    
-    public void setTargetComponentService(ComponentService service) {
-        this.targetComponentService = service; 
-    }
-
     public void setPolicySets(List<PolicySet> policySets) {
         this.policySets = policySets; 
     }
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

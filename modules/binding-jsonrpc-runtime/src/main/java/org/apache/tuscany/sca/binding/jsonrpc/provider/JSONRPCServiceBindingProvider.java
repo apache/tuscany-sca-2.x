@@ -109,12 +109,9 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         servletHost.addServletMapping(binding.getURI(), serviceServlet);
         servletMappings.add(binding.getURI());
         
-        // Save the actual binding URI
-        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
-
         // Register service to scaDomain.js
         int port;
-        URI uri = URI.create(binding.getURI());
+        URI uri = URI.create(servletHost.getURLMapping(binding.getURI()).toString());
         port = uri.getPort();
         if (port == -1) {
             port = servletHost.getDefaultPort();

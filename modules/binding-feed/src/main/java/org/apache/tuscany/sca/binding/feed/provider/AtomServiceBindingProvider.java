@@ -79,9 +79,6 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
             servletMapping += "*";
         }
         servletHost.addServletMapping(servletMapping, servlet);
-        
-        // Save the actual binding URI in the binding
-        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
     }
 
     public void stop() {

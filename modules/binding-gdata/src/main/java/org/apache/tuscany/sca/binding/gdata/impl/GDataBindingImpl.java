@@ -21,10 +21,6 @@ package org.apache.tuscany.sca.binding.gdata.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.gdata.GDataBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -36,7 +32,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  *
  * @version $Rev$ $Date$
  */
-class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAttachPoint {
+class GDataBindingImpl implements GDataBinding, PolicySetAttachPoint {
 
     private String password;
     private String username;
@@ -100,39 +96,10 @@ class GDataBindingImpl implements GDataBinding, OptimizableBinding, PolicySetAtt
 
     public void setType(IntentAttachPointType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
-    }    //FIXME Temporary to get access to the target binding information
-    // To be removed when the distributed domain supports wiring of other
-    // bindings than the SCA binding
-    private Binding targetBinding;
-    private Component targetComponent;
-    private ComponentService targetComponentService;
-
+    }
+    
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
-    }
-
-    public Binding getTargetBinding() {
-        return targetBinding;
-    }
-
-    public void setTargetBinding(Binding binding) {
-        this.targetBinding = binding;
-    }
-
-    public Component getTargetComponent() {
-        return targetComponent;
-    }
-
-    public void setTargetComponent(Component component) {
-        this.targetComponent = component;
-    }
-
-    public ComponentService getTargetComponentService() {
-        return targetComponentService;
-    }
-
-    public void setTargetComponentService(ComponentService service) {
-        this.targetComponentService = service;
     }
 
     public void setPolicySets(List<PolicySet> policySets) {
