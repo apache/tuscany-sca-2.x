@@ -24,8 +24,8 @@
         <artifactId>tuscany-modules</artifactId>
         <version>1.4-SNAPSHOT</version>
     </parent>
-    <artifactId>tuscany-host-corba-jdk</artifactId>
-    <name>Apache Tuscany SCA JDK built-in CORBA Host</name>
+    <artifactId>tuscany-host-corba-jse</artifactId>
+    <name>Apache Tuscany SCA JSE built-in CORBA Host</name>
 
     <dependencies>
         <dependency>
@@ -45,9 +45,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.host.corba.jdk</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.host.corba.jse</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.host.corba.jdk*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.host.corba.jse*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
