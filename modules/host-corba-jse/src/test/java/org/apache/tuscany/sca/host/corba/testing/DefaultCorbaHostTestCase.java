@@ -30,7 +30,7 @@ import java.net.SocketException;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
-import org.apache.tuscany.sca.host.corba.jdk.DefaultCorbaHost;
+import org.apache.tuscany.sca.host.corba.jse.DefaultCorbaHost;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.corba.testing.general.TestInterface;
@@ -44,7 +44,7 @@ import org.junit.Test;
 /**
  * General tests
  */
-public class DefaultCorbaHostTestCaseFIXME {
+public class DefaultCorbaHostTestCase {
 
     private static final String LOCALHOST = "localhost";
     private static final int DEFAULT_PORT = 11100; // 1050;
@@ -257,6 +257,7 @@ public class DefaultCorbaHostTestCaseFIXME {
             host.createLocalNameServer(testPort);
             host.createLocalNameServer(testPort);
             host.createLocalNameServer(testPort);
+            Thread.sleep(1000);
             // make test connection to name server
             Socket socket = new Socket("localhost", testPort);
             socket.close();
@@ -267,6 +268,7 @@ public class DefaultCorbaHostTestCaseFIXME {
             socket = new Socket("localhost", testPort);
             socket.close();
             host.releaseLocalNameServer(testPort);
+            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
