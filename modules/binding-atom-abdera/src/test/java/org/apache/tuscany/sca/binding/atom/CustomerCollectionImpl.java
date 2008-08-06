@@ -36,16 +36,13 @@ import org.osoa.sca.annotations.Scope;
 public class CustomerCollectionImpl implements Collection {
     private final Abdera abdera = new Abdera();
     private Map<String, Entry> entries = new HashMap<String, Entry>();
-
+    public Date lastModified = new Date();
+    
     /**
-     * Default constructor that initializes collection with couple customer
-     * entries
+     * Default constructor 
      */
     public CustomerCollectionImpl() {
-        // Used for testing.
-        // for (int i = 0; i < 4; i++) {
-        // testPut( "Jane Doe_" + String.valueOf( i ));
-        // }
+
     }
 
     public Entry post(Entry entry) {
@@ -58,7 +55,9 @@ public class CustomerCollectionImpl implements Collection {
 
            entry.addLink("" + id, "edit");
            entry.addLink("" + id, "alternate");
-           entry.setUpdated(new Date());
+           Date now = new Date();
+           entry.setUpdated(now);
+           lastModified = now;
            entries.put(id, entry);
 
             System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
@@ -80,7 +79,9 @@ public class CustomerCollectionImpl implements Collection {
     public void put(String id, Entry entry) throws NotFoundException {
         System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
         if(entries.containsKey(id)){
-        	entry.setUpdated(new Date());
+        	Date now = new Date();
+        	entry.setUpdated(now);
+        	lastModified = now;
             entries.put(id, entry);
         }
         else {
@@ -92,20 +93,21 @@ public class CustomerCollectionImpl implements Collection {
         System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
         if(entries.containsKey(id)){
         	entries.remove(id);
+        	lastModified = new Date();
         }
         else {
         	throw new NotFoundException();
 		}
      }
 
-    @SuppressWarnings("unchecked")
     public Feed getFeed() {
         System.out.println(">>> CustomerCollectionImpl.getFeed");
 
         Feed feed = this.abdera.getFactory().newFeed();
+        feed.setId("customers" + this.hashCode() ); // provide unique id for feed instance.
         feed.setTitle("customers");
         feed.setSubtitle("This is a sample feed");
-        feed.setUpdated(new Date());
+        feed.setUpdated(lastModified);
         feed.addLink("");
         feed.addLink("", "self");
 
