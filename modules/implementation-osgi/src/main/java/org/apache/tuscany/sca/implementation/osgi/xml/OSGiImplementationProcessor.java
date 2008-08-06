@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -75,7 +76,7 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
+public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementationImpl> {
     
     public static final QName IMPLEMENTATION_OSGI  = new QName(Constants.SCA10_TUSCANY_NS, "implementation.osgi");
     
@@ -136,8 +137,8 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return IMPLEMENTATION_OSGI;
     }
 
-    public Class<OSGiImplementation> getModelType() {
-        return OSGiImplementation.class;
+    public Class<OSGiImplementationImpl> getModelType() {
+        return OSGiImplementationImpl.class;
     }
 
     private String[] tokenize(String str) {
@@ -150,7 +151,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return tokens;
     }
     
-    public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public OSGiImplementationImpl read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_OSGI.equals(reader.getName());
 
         String bundleSymbolicName = reader.getAttributeValue(null, BUNDLE_SYMBOLICNAME);
@@ -211,7 +212,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
         }
             
-        OSGiImplementation implementation = new OSGiImplementation(
+        OSGiImplementationImpl implementation = new OSGiImplementationImpl(
                     modelFactories,
                     bundleSymbolicName,
                     bundleVersion,
@@ -228,7 +229,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     }
     
 
-    public void resolve(OSGiImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(OSGiImplementationImpl impl, ModelResolver resolver) throws ContributionResolveException {
         
         try {
         	
@@ -365,7 +366,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return reference;
     }
 
-    public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(OSGiImplementationImpl model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
         
         //FIXME Implement this method
     }

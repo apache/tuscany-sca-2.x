@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.osgi.invocation;
+package org.apache.tuscany.sca.implementation.osgi.runtime;
 
 
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -46,7 +46,7 @@ import org.osgi.framework.BundleException;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementationInterface> {
+public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementation> {
     
     private DataBindingExtensionPoint dataBindings;
     private JavaPropertyValueObjectFactory propertyFactory;
@@ -83,7 +83,7 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
-        OSGiImplementationInterface implementation) {
+        OSGiImplementation implementation) {
                 
         try {
                 
@@ -104,8 +104,8 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
         
     }
 
-    public Class<OSGiImplementationInterface> getModelType() {
-        return OSGiImplementationInterface.class;
+    public Class<OSGiImplementation> getModelType() {
+        return OSGiImplementation.class;
     }
 
 }

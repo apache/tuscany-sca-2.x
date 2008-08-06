@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-org.apache.tuscany.sca.implementation.osgi.invocation.OSGiImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface
+org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.osgi.OSGiImplementation

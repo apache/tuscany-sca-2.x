@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.osgi.xml;
+package org.apache.tuscany.sca.implementation.osgi.impl;
 
 
 import java.util.Hashtable;
@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 
 
 /**
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiImplementation extends ImplementationImpl implements OSGiImplementationInterface {
+public class OSGiImplementationImpl extends ImplementationImpl implements OSGiImplementation {
     
     private String bundleSymbolicName;
     private String bundleVersion;
@@ -53,7 +53,7 @@ public class OSGiImplementation extends ImplementationImpl implements OSGiImplem
     
     private Object osgiBundle;
     
-    public OSGiImplementation(
+    public OSGiImplementationImpl(
             ModelFactoryExtensionPoint modelFactories,
             String bundleSymbolicName,
             String bundleVersion,
@@ -72,7 +72,7 @@ public class OSGiImplementation extends ImplementationImpl implements OSGiImplem
         this.modelFactories = modelFactories;
     }
 
-    protected void setCallbackProperties(Hashtable<String, List<ComponentProperty>> refCallbackProperties, 
+    public void setCallbackProperties(Hashtable<String, List<ComponentProperty>> refCallbackProperties, 
             Hashtable<String, List<ComponentProperty>> serviceCallbackProperties) {
         
         this.referenceCallbackProperties = refCallbackProperties;
@@ -145,9 +145,9 @@ public class OSGiImplementation extends ImplementationImpl implements OSGiImplem
     @Override
     public boolean equals(Object obj) {
         
-        if (!(obj instanceof OSGiImplementation))
+        if (!(obj instanceof OSGiImplementationImpl))
             return super.equals(obj);
-        OSGiImplementation impl = (OSGiImplementation)obj;
+        OSGiImplementationImpl impl = (OSGiImplementationImpl)obj;
         if (!areEqual(bundleSymbolicName, impl.bundleSymbolicName))
             return false;
         if (!areEqual(bundleVersion, impl.bundleVersion))
