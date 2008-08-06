@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
 
 
 /**
@@ -50,9 +51,9 @@ public class TestModelResolver implements ModelResolver {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             
-            if (unresolved instanceof OSGiImplementation && !(resolved instanceof OSGiImplementation)) {
+            if (unresolved instanceof OSGiImplementationImpl && !(resolved instanceof OSGiImplementationImpl)) {
                 
-                OSGiImplementation impl = ((OSGiImplementation)unresolved);
+                OSGiImplementationImpl impl = ((OSGiImplementationImpl)unresolved);
                 ComponentType componentType = (ComponentType)resolved;
                 
                 List<Property> properties = componentType.getProperties();

@@ -16,34 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.implementation.osgi;
 
-package org.apache.tuscany.sca.implementation.osgi.invocation;
+import java.util.List;
 
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestWithPropertyImpl;
-
+import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * 
- * Test the execution of an OSGi implementation type
+ *
+ * The model representing an OSGi implementation in an SCA assembly model.
  *
  * @version $Rev$ $Date$
  */
-public class OSGiPropertyTestCase extends OSGiTestCase {
-    
-    @Override
-    protected void setUp() throws Exception {
-        
-        className = OSGiTestWithPropertyImpl.class.getName();
-        compositeName = "osgiproptest.composite";
-        
-        OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar", 
-                OSGiTestInterface.class, 
-                OSGiTestWithPropertyImpl.class);        
-        
-    }
-    
-    
+public interface OSGiImplementation extends Implementation, Extensible {
+
+    String getBundleSymbolicName();
+
+    String getBundleVersion();
+
+    String[] getImports();
+
+    List<ComponentProperty> getReferenceProperties(String referenceName);
+
+    List<ComponentProperty> getServiceProperties(String serviceName);
 
 }

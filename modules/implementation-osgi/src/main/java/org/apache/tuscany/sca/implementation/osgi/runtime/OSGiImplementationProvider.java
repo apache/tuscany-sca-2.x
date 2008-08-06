@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.osgi.invocation;
+package org.apache.tuscany.sca.implementation.osgi.runtime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,9 +58,9 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
-import org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -103,7 +103,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     // Maximum milliseconds to wait for services to be registered into OSGi service registry
     private static final long SERVICE_TIMEOUT_MILLIS = 300000; 
   
-    private OSGiImplementation implementation;
+    private OSGiImplementationImpl implementation;
     private OSGiAnnotations osgiAnnotations;
     private BundleContext bundleContext;
     
@@ -139,7 +139,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
 
     public OSGiImplementationProvider(RuntimeComponent definition,
-            OSGiImplementationInterface impl,
+            OSGiImplementation impl,
             DataBindingExtensionPoint dataBindingRegistry,
             JavaPropertyValueObjectFactory propertyValueFactory,
             ProxyFactory proxyFactory,
@@ -149,7 +149,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             InterfaceContractMapper mapper) throws BundleException {
         
         
-        this.implementation = (OSGiImplementation)impl;
+        this.implementation = (OSGiImplementationImpl)impl;
         this.runtimeComponent = definition;
         this.dataBindingRegistry = dataBindingRegistry;
         this.propertyValueFactory = propertyValueFactory;
@@ -200,7 +200,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         return runtimeComponent;
     }
     
-    protected OSGiImplementation getImplementation() {
+    protected OSGiImplementationImpl getImplementation() {
         return implementation;
     }
     

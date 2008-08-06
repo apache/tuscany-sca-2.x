@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi.invocation;
+package org.apache.tuscany.sca.implementation.osgi.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
