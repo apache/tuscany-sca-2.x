@@ -49,7 +49,7 @@
 	
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-host-corba-jdk</artifactId>
+			<artifactId>tuscany-host-corba-jse</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
