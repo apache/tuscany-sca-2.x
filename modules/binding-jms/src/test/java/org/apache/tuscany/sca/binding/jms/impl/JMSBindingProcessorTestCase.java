@@ -115,7 +115,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms uri=\"jms:testQueue\" >"
-            + "             <subscriptionHeaders JMSSelector=\"prop1 = 2\" />"
+            + "             <SubscriptionHeaders JMSSelector=\"prop1 = 2\" />"
             + "          </binding.jms>"
             + "      </service>"
             + " </component>"

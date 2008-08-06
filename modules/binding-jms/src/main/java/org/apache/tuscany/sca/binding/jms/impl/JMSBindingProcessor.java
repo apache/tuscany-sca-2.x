@@ -80,6 +80,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         </activationSpec>?
  *     </response>?
  * 
+ *     <complexType name="SubscriptionHeaders"> 
+ *         <attribute name="JMSSelector" type="string"/> 
+ *     </complexType>
+ *
  *     <resourceAdapter name="NMTOKEN">?
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </resourceAdapter>?
@@ -237,8 +241,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                         parseHeaders(reader, jmsBinding);
                     } else if ("operationProperties".equals(elementName)) {
                         parseOperationProperties(reader, jmsBinding);
-                    } else if ("subscriptionHeaders".equals(elementName)) {
-                        parseSubscriptionHeaders (reader, jmsBinding);
+                    } else if ("SubscriptionHeaders".equals(elementName)) {
+                        parseSubscriptionHeaders(reader, jmsBinding);
                     }
                     reader.next();
                     break;
