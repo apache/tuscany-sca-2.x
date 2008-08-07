@@ -446,22 +446,21 @@ public class SpringXMLComponentTypeLoader {
         throws ContributionReadException {
         File manifestFile = null;
         File appXmlFile;
-        File locationFile = new File(locationAttr);
-
-        if (!locationFile.exists()) {
-            // FIXME hack
-            URL url = cl.getResource(locationAttr);
-            if (url != null) {
-                return new UrlResource(url);
-            }
+        File locationFile = null;
+        
+        URL url = cl.getResource(locationAttr);
+        if (url != null) {
+            String path = url.getPath();
+            locationFile = new File(path);            
+        } else {
             throw new ContributionReadException(
-                                                "SpringXMLLoader getApplicationContextResource: " + "unable to find resource file "
-                                                    + locationFile.toString());
+                    "SpringXMLLoader getApplicationContextResource: " + "unable to find resource file " 
+                        + locationAttr);
         }
 
         if (locationFile.isDirectory()) {
             try {
-                manifestFile = new File(locationFile, "META-INF/MANIFEST.MF");
+                manifestFile = new File(locationFile, "META-INF"+ File.separator +"MANIFEST.MF");
                 if (manifestFile.exists()) {
                     Manifest mf = new Manifest(new FileInputStream(manifestFile));
                     Attributes mainAttrs = mf.getMainAttributes();
@@ -474,44 +473,51 @@ public class SpringXMLComponentTypeLoader {
                     }
                 }
                 // no manifest-specified Spring context, use default
-                appXmlFile = new File(locationFile, APPLICATION_CONTEXT);
+                appXmlFile = new File(locationFile, "META-INF" + File.separator + "spring" 
+                                                        + File.separator + APPLICATION_CONTEXT);
                 if (appXmlFile.exists()) {
                     return new UrlResource(appXmlFile.toURL());
                 }
             } catch (IOException e) {
                 throw new ContributionReadException("Error reading manifest " + manifestFile);
             }
-        } else {
-            try {
-                JarFile jf = new JarFile(locationFile);
-                JarEntry je;
-                Manifest mf = jf.getManifest();
-                if (mf != null) {
-                    Attributes mainAttrs = mf.getMainAttributes();
-                    String appCtxPath = mainAttrs.getValue("Spring-Context");
-                    if (appCtxPath != null) {
-                        je = jf.getJarEntry(appCtxPath);
-                        if (je != null) {
-                            // TODO return a Spring specific Resource type for jars
-                            return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + appCtxPath));
+        } else {            
+            if (locationFile.isFile() && locationFile.getName().indexOf(".jar") < 0) {
+                return new UrlResource(url);
+            }
+            else {
+                try {
+                    JarFile jf = new JarFile(locationFile);
+                    JarEntry je;
+                    Manifest mf = jf.getManifest();
+                    if (mf != null) {
+                        Attributes mainAttrs = mf.getMainAttributes();
+                        String appCtxPath = mainAttrs.getValue("Spring-Context");
+                        if (appCtxPath != null) {
+                            je = jf.getJarEntry(appCtxPath);
+                            if (je != null) {
+                                // TODO return a Spring specific Resource type for jars
+                                return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + appCtxPath));
+                            }
                         }
                     }
+                    je = jf.getJarEntry("META-INF" + File.separator + "spring" 
+                                                + File.separator + APPLICATION_CONTEXT);
+                    if (je != null) {
+                        return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + APPLICATION_CONTEXT));
+                    }
+                } catch (IOException e) {
+                    // bad archive
+                    // TODO: create a more appropriate exception type
+                    throw new ContributionReadException(
+                                                        "SpringXMLLoader getApplicationContextResource: " + " IO exception reading context file.",
+                                                        e);
                 }
-                je = jf.getJarEntry(APPLICATION_CONTEXT);
-                if (je != null) {
-                    return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + APPLICATION_CONTEXT));
-                }
-            } catch (IOException e) {
-                // bad archive
-                // TODO: create a more appropriate exception type
-                throw new ContributionReadException(
-                                                    "SpringXMLLoader getApplicationContextResource: " + " IO exception reading context file.",
-                                                    e);
             }
         }
 
-        throw new ContributionReadException("SpringXMLLoader getApplicationContextResource: " + APPLICATION_CONTEXT
-            + "not found");
+        throw new ContributionReadException("SpringXMLLoader getApplicationContextResource: " 
+                                        + "META-INF/spring/" + APPLICATION_CONTEXT + "not found");
     } // end method getApplicationContextResource
 
     /**
