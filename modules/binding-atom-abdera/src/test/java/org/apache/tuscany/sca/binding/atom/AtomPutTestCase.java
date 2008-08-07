@@ -21,7 +21,7 @@ public class AtomPutTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println(">>>AtomBindingIntegratedTestCase.init entry");
+        System.out.println(">>>AtomPutTestCase.init entry");
         scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
         scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
         testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
@@ -30,7 +30,7 @@ public class AtomPutTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // System.out.println(">>>AtomBindingIntegratedTestCase.destroy entry");
+        // System.out.println(">>>AtomPutTestCase.destroy entry");
         scaConsumerDomain.close();
         scaProviderDomain.close();
     }
