@@ -213,7 +213,13 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         BPELProcessDefinition theProcess = impl.getProcessDefinition();
         List<BPELPartnerLinkElement> partnerLinks = theProcess.getPartnerLinks();
         
+        // TODO - debugging the continuum build
+        System.out.println("XXXX BPEL Processing partner links");
+        
         for( BPELPartnerLinkElement pLink : partnerLinks ) {
+            // TODO - debugging the continuum build
+            System.out.println("XXXX BPEL Partner link name " +  pLink.getName());
+            System.out.println("XXXX BPEL Partner link toString() " +  pLink.toString());
         	// check that the partner link has been designated as service or reference in SCA terms
         	if ( pLink.isSCATyped() ) {
         		String SCAName = pLink.getSCAName(); 
@@ -253,10 +259,16 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         
+        // TODO - debugging the continuum build
+        System.out.println("XXXX BPEL Reference name: " + name);
+        
         // Establish whether there is just a call interface or a call + callback interface
         PortType callPT = null;
         PortType callbackPT = null;
         if( myRolePT != null ) {
+            // TODO - debugging the continuum build
+            System.out.println("XXXX BPEL Reference myRolePT.toString(): X" + myRolePT.toString() + "X");
+            System.out.println("XXXX BPEL Reference myRolePT qname: X" + myRolePT.getQName() + "X");
         	callPT = myRolePT;
         	// If the 2 port types are not the same one, there is a callback...
         	if( partnerRolePT != null ) {
@@ -265,6 +277,9 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         		} // end if
         	} // end if
         } else if ( partnerRolePT != null ) {
+            // TODO - debugging the continuum build
+            System.out.println("XXXX BPEL Reference partnerRolePT.toString(): X" + partnerRolePT.toString() + "X");
+            System.out.println("XXXX BPEL Reference partnerRolePT qname: X" + partnerRolePT.getQName() + "X");
         	callPT = partnerRolePT;
         } // end if
         // No interfaces mean an error - throw an exception
@@ -331,10 +346,17 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Set the name of the service to the supplied name 
         service.setName(name);
         
+        // TODO - debugging the continuum build
+        System.out.println("XXXX BPEL Reference name: " + name);
+        
         // Establish whether there is just a call interface or a call + callback interface
         PortType callPT = null;
         PortType callbackPT = null;
         if( myRolePT != null ) {
+            // TODO - debugging the continuum build
+            System.out.println("XXXX BPEL Service myRolePT.toString(): X" + myRolePT.toString() + "X");
+            System.out.println("XXXX BPEL Service myRolePT qname: X" + myRolePT.getQName() + "X");
+
         	callPT = myRolePT;
         	// If the 2 port types are not the same one, there is a callback...
         	if( partnerRolePT != null ) {
@@ -343,6 +365,10 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         		} // end if
         	} // end if
         } else if ( partnerRolePT != null ) {
+            // TODO - debugging the continuum build
+            System.out.println("XXXX BPEL Reference partnerRolePT.toString(): X" + partnerRolePT.toString() + "X");
+            System.out.println("XXXX BPEL Reference partnerRolePT qname: X" + partnerRolePT.getQName() + "X");
+
         	callPT = partnerRolePT;
         } // end if
         // No interfaces mean an error - throw an exception
