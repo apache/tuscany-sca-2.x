@@ -91,6 +91,9 @@
                 <module>quote-xquery</module>
                 <module>simple-bigbank</module>
                 <module>simple-bigbank-spring</module>
+                <module>spring-bigbank-checkaccount</module>
+                <module>spring-bigbank-calculator</module>
+                <module>spring-bigbank-stockquote</module>
                 <module>simple-callback</module>
                 <module>simple-callback-ws</module>
                 <module>store</module>
