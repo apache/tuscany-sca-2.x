@@ -24,16 +24,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -90,6 +92,12 @@ class WidgetImplementationInvoker implements Invoker {
 
             // Report exception as a fault
             msg.setFaultBody(e);
+            
+        } catch (URISyntaxException e) {
+
+            // Report exception as a fault
+            msg.setFaultBody(e);
+            
         } catch (IOException e) {
 
             // Report exception as a fault
@@ -102,7 +110,7 @@ class WidgetImplementationInvoker implements Invoker {
      * This helper class concatenates the necessary JavaScript client code into a
      * single JavaScript per component
      */
-    private InputStream generateWidgetCode() throws IOException {
+    private InputStream generateWidgetCode() throws IOException, URISyntaxException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(bos);
 
@@ -204,7 +212,7 @@ class WidgetImplementationInvoker implements Invoker {
      * @param pw
      * @throws IOException
      */
-    private void generateJavaScriptReferenceFunction (PrintWriter pw) throws IOException {
+    private void generateJavaScriptReferenceFunction (PrintWriter pw) throws IOException, URISyntaxException {
         
         pw.println("var referenceMap = new Object();");
         for(ComponentReference reference : component.getReferences()) {
@@ -215,18 +223,16 @@ class WidgetImplementationInvoker implements Invoker {
                 String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
                 if(proxyClient != null) {
                     
-                    //FIXME Eventually the binding URI should be initialized from the SCA domain
-                    // for now point to the target binding model directly, assuming that it's available
-                    // in the same node
-                    String targetURI = null;
-                    if (binding instanceof OptimizableBinding) {
-                        Binding targetBinding = ((OptimizableBinding)binding).getTargetBinding();
-                        if (targetBinding != null) {
-                            targetURI = targetBinding.getURI();
+                    // Convert the local host to the acutal name of local host
+                    URI targetURI = URI.create(binding.getURI());
+                    if ("localhost".equals(targetURI.getHost())) {
+                        try {
+                            String host = InetAddress.getLocalHost().getHostName();
+                            targetURI = new URI(targetURI.getScheme(), targetURI.getUserInfo(),
+                                                host, targetURI.getPort(),
+                                                targetURI.getPath(), targetURI.getQuery(), targetURI.getFragment());
+                        } catch (UnknownHostException e) {
                         }
-                    }
-                    if (targetURI == null) {
-                        targetURI = binding.getURI();
                     }
                     
                     if(proxyClient.equals("JSONRpcClient")) {
