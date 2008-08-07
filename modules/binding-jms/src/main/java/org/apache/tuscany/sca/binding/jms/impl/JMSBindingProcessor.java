@@ -524,7 +524,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         String opName = reader.getAttributeValue(null, "name");
         if (opName == null || opName.length() < 1) {
-            warning("InvalidJMSOperationProperty", jmsBinding);
+            warning("MissingJMSOperationPropertyName", jmsBinding);
             return;
         }
         String nativeOpName = reader.getAttributeValue(null, "nativeOperation");
