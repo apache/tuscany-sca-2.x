@@ -27,7 +27,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-implementation-web</artifactId>
+    <artifactId>tuscany-implementation-web-runtime</artifactId>
     <name>Apache Tuscany SCA implementation.web Extension</name>
 
     <dependencies>
