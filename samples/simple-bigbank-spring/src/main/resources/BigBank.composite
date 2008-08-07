@@ -18,18 +18,54 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
-	targetNamespace="http://bigbank"
-	xmlns:s="http://stockquote"
-	name="BigBank">
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+    targetNamespace="http://bigbank"
+    xmlns:bb="http://bigbank"
+    xmlns:bbsv="http://bigbank/savings"
+    xmlns:bbst="http://bigbank/stock"
+    xmlns:bbck="http://bigbank/checkings"
+    xmlns:s="http://stockquote"
+    name="BigBank">
 
     <component name="AccountServiceComponent">
-        <implementation.spring location="Account-spring-context.xml"/>
-        <reference name="stockQuoteService" target="StockQuoteServiceComponent"/>
+        <implementation.spring location="spring-context/Account-spring-context.xml"/>
+
+        <reference name="savingsAccountService" target="SavingsAccountServiceComponent"/>
+        
+        <!--reference name="checkingAccountService" target="CheckingAccountServiceComponent"/-->
+        <reference name="checkingAccountService">
+          <interface.java interface="bigbank.account.checking.CheckingAccountService"/>
+          <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+                       jndiURL="tcp://localhost:61619">
+              <destination name="RequestQueue" create="always"/>
+              <response>
+                  <destination name="ResponseQueue" create="always"/>
+              </response> 
+          </binding.jms>
+        </reference>
+        
+        <reference name="stockAccountService" target="StockAccountServiceComponent"/>
+        
+        <reference name="calculatorService">
+            <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+        </reference>      
+        
+        <reference name="stockQuoteService">
+            <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
+        </reference>
     </component>
 
-    <component name="StockQuoteServiceComponent">
-        <implementation.composite name="s:StockQuote"/>
+    <component name="SavingsAccountServiceComponent">
+        <implementation.composite name="bbsv:SavingsAccountDept"/>
+    </component>
+
+    <!--component name="CheckingAccountServiceComponent">
+        <implementation.composite name="bbck:CheckingsAccountDept"/>
+    </component-->
+
+    <component name="StockAccountServiceComponent">
+        <implementation.composite name="bbst:StockAccountDept"/>
     </component>
 
 </composite>

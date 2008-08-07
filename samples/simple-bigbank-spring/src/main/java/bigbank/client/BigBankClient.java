@@ -35,7 +35,7 @@ public class BigBankClient {
         AccountService accountService = scaDomain.getService(AccountService.class,
                                                           "AccountServiceComponent");
 
-        System.out.println("Account summary: " + accountService.getAccountReport("Foo") );
+        System.out.println("Account summary: " + accountService.getAccountReport("Customer_01") );
 
         scaDomain.close();
     }  

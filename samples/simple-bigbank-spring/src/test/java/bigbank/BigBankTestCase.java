@@ -45,6 +45,11 @@ public class BigBankTestCase extends TestCase {
     }
 
     public void test() throws Exception {
-        System.out.println("Account summary: " + accountService.getAccountReport("Foo") );
+//        try {
+//          System.out.println("Account summary: " + accountService.getAccountReport("Customer_01") );
+//        }
+//        catch (Exception e) {
+//           
+//        }
     }
 }
