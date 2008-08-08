@@ -21,7 +21,7 @@ package launch;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class Launch {
+public class LaunchGallery {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCADomain scaDomain = SCADomain.newInstance("photo-gallery.composite");
