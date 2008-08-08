@@ -31,14 +31,14 @@ import org.junit.Test;
  * Test Case for ClasspathServiceDiscover
  */
 public class ClasspathServiceDiscovererTestCase {
-    private static ClasspathServiceDiscover discover;
+    private static ClasspathServiceDiscoverer discover;
 
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        discover = new ClasspathServiceDiscover(ClasspathServiceDiscover.class.getClassLoader());
+        discover = new ClasspathServiceDiscoverer(ClasspathServiceDiscoverer.class.getClassLoader());
     }
 
     @Test
