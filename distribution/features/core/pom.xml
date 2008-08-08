@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-distribution-base</artifactId>
-    <name>Apache Tuscany SCA Base Distribution</name>
+    <artifactId>tuscany-distribution-core</artifactId>
+    <name>Apache Tuscany SCA Core Distribution</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -218,7 +218,7 @@
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>apache-tuscany-sca-base-1.4-SNAPSHOT</finalName>
+                            <finalName>apache-tuscany-sca-core-1.4-SNAPSHOT</finalName>
                         </configuration>
                     </execution>
                 </executions>

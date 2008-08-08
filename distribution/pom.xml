@@ -302,25 +302,6 @@
             </plugin>
             -->
 
-	    <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ant-plugin</artifactId>
-                ####
-                <version>1.1</version>
-                ####
-                <executions>
-                    <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>ant</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -342,61 +323,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-	    <!-- Temporarily remove to avoid out of memory
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>ant</groupId>
-                        <artifactId>ant-trax</artifactId>
-                        <version>1.6.5</version>
-                    </dependency>
-                </dependencies>
-
-                <executions>
-                    <execution>
-                        <id>process-sources-xsl</id>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <xslt style="${basedir}/src/main/xsl/srcbuild_paths.xsl" in="build.xml" out="${basedir}/target/srcbuild_paths.xml">
-                                </xslt>
-
-                                <pathconvert property="cp" refid="maven.runtime.classpath" />
-                                <condition property="output.cp" value="set TUSCANY_CLASSPATH=${cp}">
-                                    <os family="windows" />
-                                </condition>
-                                <condition property="output.ext" value=".bat">
-                                    <os family="windows" />
-                                </condition>
-                                <property name="output.cp" value="export TUSCANY_CLASSPATH=${cp}" />
-                                <property name="output.ext" value="" />
-
-                                <echo file="${basedir}/target/srcbuild_env${output.ext}" message="${output.cp}" />
-                                <echo file="${basedir}/target/version.properties" message="tuscany.version=${pom.version}" />
-                                #########
-                                ### THIS WAS ALREADY COMMENTED
-                                <copy file="${basedir}/src/main/assembly/jbi.xml" tofile="${basedir}/target/jbi.xml" overwrite="yes">
-                                    <filterset>
-                                        <filter token="TUSCANY_VERSION" value="${pom.version}" />
-                                    </filterset>
-                                </copy>
-                                ###
-                                <delete file="build.xml" />
-                            </tasks>
-
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
         </plugins>
 
     </build>
