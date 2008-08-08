@@ -33,4 +33,13 @@ public interface ServiceDiscoverer {
      * @return A set of service descriptors
      */
     Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly);
+    
+    /**
+     * Get the context for the service discoverer
+     * @param <T> It can be a ClassLoader for JSE or BundleContext for OSGi
+     * @return The context
+     */
+    <T> T getContext();
+    
+    ClassLoader getContextClassLoader();
 }

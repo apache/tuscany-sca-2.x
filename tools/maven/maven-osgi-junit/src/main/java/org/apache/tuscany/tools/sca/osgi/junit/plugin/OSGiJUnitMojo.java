@@ -20,17 +20,23 @@ package org.apache.tuscany.tools.sca.osgi.junit.plugin;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.tuscany.sca.node.osgi.launcher.FelixOSGiHost;
 import org.apache.tuscany.sca.node.osgi.launcher.LauncherBundleActivator;
@@ -63,22 +69,109 @@ public class OSGiJUnitMojo extends AbstractMojo {
     protected File basedir;
 
     /**
-     * @component
+     * Used to look up Artifacts in the remote repository.
+     * 
+     * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
+     * @required
+     * @readonly
      */
-    protected ArtifactResolver resolver;
+    protected org.apache.maven.artifact.factory.ArtifactFactory factory;
 
-    protected ArtifactRepository localRepository;
+    /**
+     * Used to look up Artifacts in the remote repository.
+     * 
+     * @parameter expression="${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
+     * @required
+     * @readonly
+     */
+    protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+
+    /**
+     * Location of the local repository.
+     * 
+     * @parameter expression="${localRepository}"
+     * @readonly
+     * @required
+     */
+    protected org.apache.maven.artifact.repository.ArtifactRepository local;
+
+    /**
+     * List of Remote Repositories used by the resolver
+     * 
+     * @parameter expression="${project.remoteArtifactRepositories}"
+     * @readonly
+     * @required
+     */
+    protected java.util.List remoteRepos;
+
+    /**
+     * @parameter
+     */
+    protected String osgiRuntime;
+
+    protected Artifact getArtifact(String groupId, String artifactId) throws MojoExecutionException {
+        Artifact artifact;
+        VersionRange vr;
+        try {
+            vr = VersionRange.createFromVersionSpec(project.getVersion());
+        } catch (InvalidVersionSpecificationException e1) {
+            vr = VersionRange.createFromVersion(project.getVersion());
+        }
+        artifact = factory.createDependencyArtifact(groupId, artifactId, vr, "jar", null, Artifact.SCOPE_TEST);
+
+        try {
+            resolver.resolve(artifact, remoteRepos, local);
+        } catch (ArtifactResolutionException e) {
+            throw new MojoExecutionException("Unable to resolve artifact.", e);
+        } catch (ArtifactNotFoundException e) {
+            throw new MojoExecutionException("Unable to find artifact.", e);
+        }
+
+        return artifact;
+    }
 
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
             return;
         }
 
-        String home = new File(basedir, "target/tuscany").toString();
-        System.setProperty("TUSCANY_HOME", home);
-        getLog().info(home);
+        Log log = getLog();
+        List<URL> jarFiles = new ArrayList<URL>();
+        for (Object o : project.getArtifacts()) {
+            Artifact a = (Artifact)o;
+            try {
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding: " + a);
+                }
+                jarFiles.add(a.getFile().toURI().toURL());
+            } catch (MalformedURLException e) {
+                getLog().error(e);
+            }
+        }
+
+        /*
+         * Add org.apache.tuscany.sca:tuscany-extensibility-osgi module
+         */
+        String aid = "equinox".equals(osgiRuntime) ? "tuscany-extensibility-equinox" : "tuscany-extensibility-osgi";
+        Artifact ext = getArtifact("org.apache.tuscany.sca", aid);
+        try {
+            URL url = ext.getFile().toURI().toURL();
+            if (!jarFiles.contains(url)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Adding: " + ext);
+                }
+                jarFiles.add(url);
+            }
+        } catch (MalformedURLException e) {
+            getLog().error(e);
+        }
+
+        //        String home = new File(basedir, "target/tuscany").toString();
+        //        System.setProperty("TUSCANY_HOME", home);
+        //        getLog().info(home);
         try {
             FelixOSGiHost host = new FelixOSGiHost();
+            host.setActivator(new LauncherBundleActivator(jarFiles));
             BundleContext context = host.start();
 
             for (Bundle b : context.getBundles()) {
@@ -102,9 +195,10 @@ public class OSGiJUnitMojo extends AbstractMojo {
             host.stop();
         } catch (Throwable e) {
             throw new MojoExecutionException(e.getMessage(), e);
-        } finally {
-            System.clearProperty("TUSCANY_HOME");
         }
+        //        finally {
+        //            System.clearProperty("TUSCANY_HOME");
+        //        }
 
     }
 
@@ -148,6 +242,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
     public int runTestCase(ClassLoader testClassLoader, Class testClass) throws Exception {
 
         if (testClass.getName().endsWith("TestCase")) {
+            getLog().info("Running: " + testClass.getName());
             Class coreClass = Class.forName("org.junit.runner.JUnitCore", true, testClassLoader);
             Object core = coreClass.newInstance();
             Class reqClass = Class.forName("org.junit.runner.Request", true, testClassLoader);
@@ -168,10 +263,10 @@ public class OSGiJUnitMojo extends AbstractMojo {
                 } else {
                     errors++;
                 }
-                ((Throwable)ex).printStackTrace();
+                getLog().error((Throwable)ex);
             }
 
-            System.out.println("Test Runs: " + runs
+            getLog().info("Test Runs: " + runs
                 + ", Failures: "
                 + failures
                 + ", Errors: "

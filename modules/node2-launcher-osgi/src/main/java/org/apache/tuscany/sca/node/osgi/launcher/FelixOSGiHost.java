@@ -40,6 +40,7 @@ import org.osgi.framework.Constants;
 public class FelixOSGiHost implements OSGiHost {
 
     private Felix felix;
+    private LauncherBundleActivator activator;
     private ClassLoader tccl;
 
     private final static String systemPackages =
@@ -82,6 +83,17 @@ public class FelixOSGiHost implements OSGiHost {
             + "javax.transaction, "
             + "javax.transaction.xa";
 
+    public LauncherBundleActivator getActivator() {
+        if (activator == null) {
+            activator = new LauncherBundleActivator();
+        }
+        return activator;
+    }
+
+    public void setActivator(LauncherBundleActivator activator) {
+        this.activator = activator;
+    }
+
     public BundleContext start() {
         try {
             startup();
@@ -116,7 +128,7 @@ public class FelixOSGiHost implements OSGiHost {
         configMap.put(BundleCache.CACHE_PROFILE_DIR_PROP, "target/.felix");
         List<BundleActivator> list = new ArrayList<BundleActivator>();
 
-        list.add(new LauncherBundleActivator());
+        list.add(getActivator());
 
         // Now create an instance of the framework with
         // our configuration properties and activator.
@@ -139,7 +151,7 @@ public class FelixOSGiHost implements OSGiHost {
                     Method getter = discovererClass.getMethod("getServiceDiscoverer");
                     Object discoverer = getter.invoke(null);
 
-                    Method getCL = discoverer.getClass().getMethod("getClassLoader");
+                    Method getCL = discoverer.getClass().getMethod("getContextClassLoader");
                     ClassLoader cl = (ClassLoader)getCL.invoke(discoverer);
                     return cl;
                 } catch (Exception e) {
