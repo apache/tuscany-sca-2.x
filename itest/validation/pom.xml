@@ -88,6 +88,12 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-ejb</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                	<groupId>org.apache.openejb</groupId>
+                	<artifactId>javaee-api</artifactId>
+                </exclusion>            
+            </exclusions>            
         </dependency>
 
         
@@ -120,6 +126,12 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                	<groupId>org.apache.openejb</groupId>
+                	<artifactId>javaee-api</artifactId>
+                </exclusion>            
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -147,7 +159,7 @@
             <scope>test</scope>
         </dependency>
         
-        <dependency>
+        <!-- dependency>
             <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-openejb</artifactId>
             <version>2.1.1</version>
@@ -189,15 +201,64 @@
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-impl</artifactId>
                 </exclusion>
-
+                <exclusion>
+                	<groupId>org.apache.openejb</groupId>
+                	<artifactId>javaee-api</artifactId>
+                </exclusion>
             </exclusions>
-
+        </dependency-->
+        
+        <!-- dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>           
         </dependency>
         
-
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency-->
     </dependencies>
 
     <build>
        <finalName>${artifactId}</finalName>
+       
+       <!-- plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.1</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Djava.endorsed.dirs=target/endorsed</argLine>
+                </configuration>
+            </plugin>       
+       </plugins-->
     </build>
 </project>
