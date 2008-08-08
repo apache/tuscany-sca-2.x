@@ -78,7 +78,9 @@ public class BPELPartnerLinkElement {
     }
     
     private PortType getRolePortType( String theRole ) {
-    	if( theRole == null ) return null;
+    	if( theRole == null || theRole.length() == 0 ) {
+    		return null;
+    	} //end if
     	if ( theRole.equals( pLinkType.getRole1Name() ) ) {
     		return pLinkType.getRole1pType();
     	} else if ( theRole.equals( pLinkType.getRole2Name() ) ) {
