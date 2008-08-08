@@ -25,7 +25,7 @@
         <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-extensibility-eclipse</artifactId>
+    <artifactId>tuscany-extensibility-equinox</artifactId>
     <name>Apache Tuscany SCA Extensibility for Eclipse Equinox</name>
     <dependencies>
         <dependency>
