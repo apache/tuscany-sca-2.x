@@ -101,6 +101,13 @@ final class NodeLauncherUtil {
             }
 
             Object node = bootstrapClass.getMethod("getNode").invoke(bootstrap);
+            try {
+                Class<?> type = Class.forName("org.apache.tuscany.sca.node.SCANode2Factory");
+                type = type.getDeclaredClasses()[0];
+                return type.getMethod("createProxy", Class.class, Object.class).invoke(null, type, node);
+            } catch (ClassNotFoundException e) {
+                // Ignore
+            }
             return node;
 
         } catch (Exception e) {
@@ -165,13 +172,13 @@ final class NodeLauncherUtil {
             Thread.currentThread().setContextClassLoader(tccl);
         }
     }
-    
+
     static OSGiHost startOSGi() {
         OSGiHost host = new FelixOSGiHost();
         host.start();
         return host;
     }
-    
+
     static void stopOSGi(OSGiHost host) {
         host.stop();
     }

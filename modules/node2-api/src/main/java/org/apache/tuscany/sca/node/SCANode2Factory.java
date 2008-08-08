@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.node;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -30,8 +32,85 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public abstract class SCANode2Factory {
-    
-        
+
+    public static class NodeProxy implements SCANode2, SCAClient {
+        private Object node;
+
+        private NodeProxy(Object node) {
+            super();
+            this.node = node;
+        }
+
+        public static <T> T createProxy(Class<T> type, Object node) {
+            try {
+                return type.getDeclaredConstructor(Object.class).newInstance(node);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            try {
+                return (R)node.getClass().getMethod("cast", Object.class).invoke(node, target);
+            } catch (Throwable e) {
+                handleException(e);
+                return null;
+            }
+        }
+
+        public <B> B getService(Class<B> businessInterface, String serviceName) {
+            try {
+                return (B)node.getClass().getMethod("getService", Class.class, String.class).invoke(node,
+                                                                                                    businessInterface,
+                                                                                                    serviceName);
+            } catch (Throwable e) {
+                handleException(e);
+                return null;
+            }
+        }
+
+        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+            try {
+                return (ServiceReference<B>)node.getClass().getMethod("getServiceReference", Class.class, String.class)
+                    .invoke(node, businessInterface, serviceName);
+            } catch (Throwable e) {
+                handleException(e);
+                return null;
+            }
+        }
+
+        public void start() {
+            try {
+                node.getClass().getMethod("start").invoke(node);
+            } catch (Throwable e) {
+                handleException(e);
+            }
+        }
+
+        public void stop() {
+            try {
+                node.getClass().getMethod("stop").invoke(node);
+            } catch (Throwable e) {
+                handleException(e);
+            }
+        }
+
+        private static void handleException(Throwable ex) {
+            if (ex instanceof InvocationTargetException) {
+                ex = ((InvocationTargetException)ex).getTargetException();
+            }
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException)ex;
+            }
+            if (ex instanceof Error) {
+                throw (Error)ex;
+            } else {
+                throw new RuntimeException(ex);
+            }
+        }
+
+    }
+
     /**
      * Returns a new SCA node factory instance.
      *  
@@ -39,30 +118,35 @@ public abstract class SCANode2Factory {
      */
     public static SCANode2Factory newInstance() {
         SCANode2Factory scaNodeFactory = null;
-        
+
         try {
             final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String className =  "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";  
-                            
-            Class<?> cls = Class.forName(className, true, classLoader);
-            
-            Constructor<?> constructor = null;
-            
+            // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
             try {
-                constructor = cls.getConstructor();
-            } catch (NoSuchMethodException e) {
-                // ignore
+                Class<?> discoveryClass =
+                    Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery", true, classLoader);
+                Object instance = discoveryClass.getMethod("getInstance").invoke(null);
+                Class<?> factoryImplClass =
+                    (Class<?>)discoveryClass.getMethod("loadFirstServiceClass", Class.class)
+                        .invoke(instance, SCANode2Factory.class);
+                if (factoryImplClass != null) {
+                    scaNodeFactory = (SCANode2Factory)factoryImplClass.newInstance();
+                    return scaNodeFactory;
+                }
+            } catch (ClassNotFoundException e) {
+                // Ignore 
             }
-            
-            if (constructor != null) {
-                scaNodeFactory = (SCANode2Factory)constructor.newInstance();
-            } 
-            
+
+            // Fail back to default impl
+            String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
+
+            Class<?> cls = Class.forName(className, true, classLoader);
+            scaNodeFactory = (SCANode2Factory)cls.newInstance();
             return scaNodeFactory;
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
-        }  
+        }
     }
 
     /**
@@ -79,7 +163,7 @@ public abstract class SCANode2Factory {
      * @return A newly created SCA node
      */
     public abstract SCANode2 createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader);
-    
+
     /**
      * Creates a new SCA node from the configuration URL
      * 
@@ -110,23 +194,8 @@ public abstract class SCANode2Factory {
      * @param contributions the URI of the contributions that provides the composites and related artifacts 
      * @return a new SCA node.
      */
-    public abstract SCANode2 createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions);
-    
-    /**
-     * Creates and starts a new SCA node from a single composite with the
-     * contribution being the folder that contains the composite.
-     * 
-     * This method provides the equivalent of doing:
-     * <code>
-     *      File compositeFile = new File(compositeURI);
-     *      File compositeFolder = compositeFile.getParentFile();
-     *      SCAContribution contribution = new SCAContribution(compositeFolder.getName(), compositeFolder.toURL().toString());
-     *      SCANode2 node = SCANode2Factory.newInstance().createSCANode(compositeFile.getName(), contribution);
-     *      node.start();
-     * </code>
-     * 
-     * @param compositeURI the URI of the composite to use
-     * @return a new and started SCA node 
-     */
-    public abstract SCANode2 createSCANode(String compositeURI);
+    public abstract SCANode2 createSCANode(String compositeURI,
+                                           String compositeContent,
+                                           SCAContribution... contributions);
+
 }

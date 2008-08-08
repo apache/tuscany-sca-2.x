@@ -3,7 +3,6 @@ package org.apache.tuscany.sca.node.osgi.launcher;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,6 +40,8 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
     private BundleContext bundleContext;
     private List<Bundle> tuscanyBundles = new ArrayList<Bundle>();
+    
+    private List<URL> jarFiles = new ArrayList<URL>();
 
     public static String toString(Bundle b, boolean verbose) {
         StringBuffer sb = new StringBuffer();
@@ -103,7 +104,9 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
         for (Bundle bundle : tuscanyBundles) {
             try {
-                logger.info("Uninstalling bundle: " + toString(bundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Uninstalling bundle: " + toString(bundle, false));
+                }
                 bundle.uninstall();
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -132,7 +135,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                     continue;
                 }
                 try {
-                    Bundle bundle = createAndInstallBundle(bundleContext, file);
+                    Bundle bundle = createAndInstallBundle(bundleContext, url);
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
@@ -177,8 +180,10 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         return null;
     }
 
-    public Bundle createAndInstallBundle(BundleContext bundleContext, File bundleFile) throws Exception {
-        logger.info("Installing bundle: " + bundleFile);
+    public Bundle createAndInstallBundle(BundleContext bundleContext, URL bundleFile) throws Exception {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Installing bundle: " + bundleFile);
+        }
         long start = System.currentTimeMillis();
 
         Manifest manifest = readManifest(bundleFile);
@@ -192,11 +197,13 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         String version = manifest.getMainAttributes().getValue(BUNDLE_VERSION);
         Bundle bundle = findBundle(bundleContext, symbolicName, version);
         if (bundle != null) {
-            logger.info("Bundle is already installed: " + symbolicName);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Bundle is already installed: " + symbolicName);
+            }
             return bundle;
         }
 
-        String bundleLocation = bundleFile.toURI().toString();
+        String bundleLocation = bundleFile.toString();
         InputStream inStream = null;
         if (!isOSGiBundle) {
             // We need to repackage the bundle
@@ -215,12 +222,14 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
             inStream = new ByteArrayInputStream(out.toByteArray());
         } else {
             // The file itself is already a bundle
-            inStream = new FileInputStream(bundleFile);
+            inStream = bundleFile.openStream();
         }
 
         try {
             bundle = bundleContext.installBundle(bundleLocation, inStream);
-            logger.info("Bundle installed in " + (System.currentTimeMillis() - start) + " ms: " + bundleLocation);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Bundle installed in " + (System.currentTimeMillis() - start) + " ms: " + bundleLocation);
+            }
             tuscanyBundles.add(bundle);
             return bundle;
         } finally {
@@ -245,12 +254,19 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         }
         return null;
     }
+    
+    private String getFileName(URL url) {
+        String name = url.getPath();
+        int index = name.lastIndexOf('/');
+        return name.substring(index+1);
+    }
 
-    private void addFileToJar(File file, JarOutputStream jarOut) throws IOException {
-        JarEntry ze = new JarEntry(file.getName());
+    private void addFileToJar(URL file, JarOutputStream jarOut) throws IOException {
+        JarEntry ze = new JarEntry(getFileName(file));
         jarOut.putNextEntry(ze);
-        FileInputStream inStream = new FileInputStream(file);
+        InputStream inStream = file.openStream();
         copy(inStream, jarOut);
+        inStream.close();
     }
 
     private void copy(InputStream in, OutputStream out) throws IOException {
@@ -261,8 +277,8 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         }
     }
 
-    private void copyJar(File file, JarOutputStream jarOut) throws IOException {
-        JarInputStream jarIn = new JarInputStream(new FileInputStream(file));
+    private void copyJar(URL in, JarOutputStream jarOut) throws IOException {
+        JarInputStream jarIn = new JarInputStream(in.openStream());
         ZipEntry ze;
         while ((ze = jarIn.getNextEntry()) != null) {
             // Skip the MANIFEST.MF
@@ -274,11 +290,8 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         jarIn.close();
     }
 
-    private Manifest readManifest(File jarFile) throws IOException {
-        if (!jarFile.exists()) {
-            return null;
-        }
-        JarInputStream jar = new JarInputStream(new FileInputStream(jarFile));
+    private Manifest readManifest(URL jarFile) throws IOException {
+        JarInputStream jar = new JarInputStream(jarFile.openStream());
         // Read the Manifest from the jar file
         Manifest manifest = jar.getManifest();
         jar.close();
@@ -290,25 +303,23 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         return manifest;
     }
 
-    private Manifest updateBundleManifest(File jarFile, Manifest manifest) throws Exception {
-
-        if (!jarFile.exists()) {
-            return null;
-        }
+    private Manifest updateBundleManifest(URL jarFile, Manifest manifest) throws Exception {
 
         // Check if we have an associated .mf file
-        String name = jarFile.getName();
+        String name = jarFile.toString();
         int index = name.lastIndexOf('.');
         if (index != -1) {
-            File mf = new File(jarFile.getParentFile(), name.substring(0, index) + ".mf");
-            if (mf.isFile()) {
-                FileInputStream is = new FileInputStream(mf);
-                manifest.read(is);
-                is.close();
+            URL mf = new URL(name.substring(0, index) + ".mf");
+            try {
+                InputStream in = mf.openStream();
+                manifest.read(in);
+                in.close();
+            } catch(IOException e) {
+                // Ignore
             }
         }
 
-        String jarFileName = jarFile.getName();
+        String jarFileName = getFileName(jarFile);
         boolean isImmutableJar = false;
         for (String immutableJar : immutableJars) {
             if (jarFileName.startsWith(immutableJar)) {
@@ -319,7 +330,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
         Attributes attributes = manifest.getMainAttributes();
         if (attributes.getValue(BUNDLE_SYMBOLICNAME) == null) {
-            String bundleSymbolicName = jarFile.getName();
+            String bundleSymbolicName = jarFileName;
             if (bundleSymbolicName.endsWith(".jar")) {
                 bundleSymbolicName = bundleSymbolicName.substring(0, bundleSymbolicName.length() - 4);
             }
@@ -341,7 +352,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
             attributes.putValue(BUNDLE_CLASSPATH, ".," + jarFileName);
         }
 
-        JarInputStream jar = new JarInputStream(new FileInputStream(jarFile));
+        JarInputStream jar = new JarInputStream(jarFile.openStream());
         HashSet<String> packages = getPackagesInJar(jarFileName, jar);
         jar.close();
         String version = getJarVersion(jarFileName);

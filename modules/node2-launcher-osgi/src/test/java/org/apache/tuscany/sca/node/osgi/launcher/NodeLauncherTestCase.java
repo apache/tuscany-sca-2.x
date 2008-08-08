@@ -21,10 +21,11 @@ package org.apache.tuscany.sca.node.osgi.launcher;
 
 import hello.HelloWorld;
 
-import java.lang.reflect.Method;
-
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -50,19 +51,17 @@ public class NodeLauncherTestCase {
     @Test
     public void testLaunch() throws Exception {
         NodeLauncher launcher = NodeLauncher.newInstance();
-        Object node = launcher.createNodeFromClassLoader("HelloWorld.composite", getClass().getClassLoader());
-        Method start = node.getClass().getMethod("start");
-        start.invoke(node);
+        SCANode2 node = launcher.createNodeFromClassLoader("HelloWorld.composite", getClass().getClassLoader());
+        node.start();
 
-        Method getService = node.getClass().getMethod("getService", Class.class, String.class);
-        HelloWorld hw = (HelloWorld)getService.invoke(node, HelloWorld.class, "HelloWorld");
+        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
         hw.hello("OSGi");
 
-        Method stop = node.getClass().getMethod("stop");
-        stop.invoke(node);
+        node.stop();
     }
-    
+
     @Test
+    @Ignore("contribution-osgi issue")
     public void testLaunchDomain() throws Exception {
         DomainManagerLauncher.main(new String[] {});
     }
