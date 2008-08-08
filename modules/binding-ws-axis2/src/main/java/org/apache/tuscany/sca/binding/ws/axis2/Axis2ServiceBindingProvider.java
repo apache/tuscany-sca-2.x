@@ -46,6 +46,10 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
                                        List<PolicyHandlerTuple> policyHandlerClassnames,
                                        DataBindingExtensionPoint dataBindings) {
 
+        if (servletHost == null) {
+            throw new ServiceRuntimeException("No Servlet host is avaible for HTTP web services");
+        }
+
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
         this.wsBinding = wsBinding;
 

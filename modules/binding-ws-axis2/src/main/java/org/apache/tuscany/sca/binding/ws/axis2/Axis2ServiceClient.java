@@ -69,7 +69,6 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -96,7 +95,6 @@ public class Axis2ServiceClient {
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
                               WebServiceBinding wsBinding,
-                              ServletHost servletHost,
                               MessageFactory messageFactory,
                               List<PolicyHandlerTuple> policyHandlerClassnames) {
 
