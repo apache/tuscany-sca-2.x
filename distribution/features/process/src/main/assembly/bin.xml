@@ -22,9 +22,11 @@
     <id></id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
+        <!--
         <format>dir</format>
         <format>tar.gz</format>
-        <!-- <format>zip</format> -->
+        -->
+        <format>zip</format>
     </formats>
 
     <fileSets>
