@@ -55,7 +55,7 @@ public class ServiceDiscovery {
 
     public static ServiceDiscoverer getServiceDiscoverer() {
         if (discoverer == null) {
-            discoverer = new ClasspathServiceDiscover();
+            discoverer = new ClasspathServiceDiscoverer();
         }
         return discoverer;
     }

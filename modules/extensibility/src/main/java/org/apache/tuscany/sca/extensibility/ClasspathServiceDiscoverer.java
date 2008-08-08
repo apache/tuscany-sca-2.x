@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 /**
  * 
  */
-public class ClasspathServiceDiscover implements ServiceDiscoverer {
+public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
 
     public class ServiceDeclarationImpl implements ServiceDeclaration {
         private URL url;
@@ -84,8 +84,8 @@ public class ClasspathServiceDiscover implements ServiceDiscoverer {
             return getClassLoader().loadClass(className);
         }
 
-        private ClasspathServiceDiscover getOuterType() {
-            return ClasspathServiceDiscover.this;
+        private ClasspathServiceDiscoverer getOuterType() {
+            return ClasspathServiceDiscoverer.this;
         }
 
         public String toString() {
@@ -106,15 +106,15 @@ public class ClasspathServiceDiscover implements ServiceDiscoverer {
     }
 
     private WeakReference<ClassLoader> classLoaderReference;
-    private static final Logger logger = Logger.getLogger(ClasspathServiceDiscover.class.getName());
+    private static final Logger logger = Logger.getLogger(ClasspathServiceDiscoverer.class.getName());
 
-    public ClasspathServiceDiscover() {
+    public ClasspathServiceDiscoverer() {
         // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader classLoader = ClasspathServiceDiscover.class.getClassLoader();
+        ClassLoader classLoader = ClasspathServiceDiscoverer.class.getClassLoader();
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
 
-    public ClasspathServiceDiscover(ClassLoader classLoader) {
+    public ClasspathServiceDiscoverer(ClassLoader classLoader) {
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
 
