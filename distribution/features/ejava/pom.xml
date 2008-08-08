@@ -35,7 +35,7 @@
         <!-- Base distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-base</artifactId>
+            <artifactId>tuscany-distribution-core</artifactId>
             <type>jar</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>

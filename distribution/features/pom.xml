@@ -43,7 +43,7 @@
             </activation>
             <modules>
                 <module>all</module>
-                <module>base</module>
+                <module>core</module>
                 <module>ejava</module>
                 <module>manager</module>
                 <module>process</module>
@@ -56,7 +56,7 @@
             <id>eclipse</id>
             <modules>
                 <module>all</module>
-                <module>base</module>
+                <module>core</module>
                 <module>ejava</module>
                 <module>manager</module>
                 <module>process</module>
@@ -69,7 +69,7 @@
             <id>distribution</id>
             <modules>
                 <module>all</module>
-                <module>base</module>
+                <module>core</module>
                 <module>ejava</module>
                 <module>manager</module>
                 <module>process</module>
