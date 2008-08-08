@@ -37,7 +37,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>features/feature</module>
+                <module>features/core</module>
                 <module>plugins/core</module>
                 <module>site/updatesite</module>
             </modules>

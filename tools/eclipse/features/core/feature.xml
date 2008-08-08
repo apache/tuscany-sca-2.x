@@ -18,14 +18,14 @@
     * under the License.    
 -->
 <feature
-      id="org.apache.tuscany.sca.feature"
-      label="Apache Tuscany SCA Tools"
+      id="org.apache.tuscany.sca.feature.core"
+      label="Apache Tuscany SCA Tools Core Feature"
       version="1.4.0"
       provider-name="Apache Software Foundation">
    <install-handler handler="org.eclipse.update.core.DefaultInstallHandler"/>
 
    <description url="http://incubator.apache.org/tuscany">
-      Apache Tuscany SCA Tools.
+      Apache Tuscany SCA Tools Core Feature.
    </description>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0">

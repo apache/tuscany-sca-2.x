@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>org.apache.tuscany.sca.feature</name>
+  <name>org.apache.tuscany.sca.feature.core</name>
   <comment>The Apache Software Foundation provides support for the Apache community of open-source software projects.
     The Apache projects are characterized by a collaborative, consensus based development process, an open and
     pragmatic software license, and a desire to create high quality software that leads the way in its field.

@@ -49,7 +49,7 @@
             <outputDirectory>tuscany-sca-${tuscany.version}-updatesite/features</outputDirectory>
             <unpack>false</unpack>
             <includes>
-                <include>org.apache.tuscany.sca:org.apache.tuscany.sca.feature</include>
+                <include>org.apache.tuscany.sca:org.apache.tuscany.sca.feature.core</include>
             </includes>
             <scope>runtime</scope>
         </dependencySet>

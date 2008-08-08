@@ -7,7 +7,7 @@
     and users.</comment>
   <projects>
     <project>org.apache.tuscany.sca.core</project>
-    <project>org.apache.tuscany.sca.feature</project>
+    <project>org.apache.tuscany.sca.feature.core</project>
   </projects>
   <buildSpec>
     <buildCommand>
