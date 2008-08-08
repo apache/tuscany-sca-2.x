@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.web.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -34,7 +35,7 @@ import org.apache.tuscany.sca.implementation.web.WebImplementation;
 class WebImplementationImpl implements WebImplementation {
 
     private List<Property> properties = new ArrayList<Property>(); 
-    private List<Service> services = new ArrayList<Service>(); 
+    // private List<Service> services = new ArrayList<Service>(); 
     private List<Reference> references = new ArrayList<Reference>(); 
     private String uri;
     private boolean unresolved;
@@ -57,7 +58,8 @@ class WebImplementationImpl implements WebImplementation {
     }
 
     public List<Service> getServices() {
-        return services;
+        // The Web implementation does not offer services
+        return Collections.emptyList();
     }
     
     public List<Reference> getReferences() {
@@ -65,7 +67,7 @@ class WebImplementationImpl implements WebImplementation {
     }
 
     public void setConstrainingType(ConstrainingType constrainingType) {
-        // The EJB implementation does not support constrainingTypes
+        // The Web implementation does not support constrainingTypes
     }
 
     public String getURI() {
