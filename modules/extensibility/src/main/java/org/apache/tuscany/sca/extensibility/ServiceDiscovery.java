@@ -20,8 +20,11 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -49,21 +52,21 @@ public class ServiceDiscovery {
     public static ServiceDiscovery getInstance() {
         return instance;
     }
-    
+
     public static ServiceDiscoverer getServiceDiscoverer() {
         if (discoverer == null) {
             discoverer = new ClasspathServiceDiscover();
         }
         return discoverer;
     }
-    
+
     public static void setServiceDiscoverer(ServiceDiscoverer sd) {
         if (discoverer != null) {
             throw new IllegalStateException("The ServiceDiscoverer cannot be reset");
         }
         discoverer = sd;
     }
-    
+
     /**
      * Register a ClassLoader with this discovery mechanism. Tuscany extension
      * ClassLoaders are registered here.
@@ -73,7 +76,7 @@ public class ServiceDiscovery {
     public synchronized void registerClassLoader(ClassLoader classLoader) {
         registeredClassLoaders.add(classLoader);
     }
-    
+
     /**
      * Unregister a ClassLoader with this discovery mechanism. 
      * 
@@ -115,9 +118,22 @@ public class ServiceDiscovery {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public Class<?> loadFirstServiceClass(Class<?> serviceInterface) throws IOException, ClassNotFoundException {
+    public Class<?> loadFirstServiceClass(final Class<?> serviceInterface) throws IOException, ClassNotFoundException {
+        // Try System property first
+        String className = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty(serviceInterface.getName());
+            }
+        });
+        if (className != null) {
+            try {
+                return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+            } catch (ClassNotFoundException e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
+            }
+        }
         Set<ServiceDeclaration> services = getServiceDiscoverer().discover(serviceInterface.getName(), true);
-        if(services.isEmpty()) {
+        if (services.isEmpty()) {
             return null;
         }
         return services.iterator().next().loadClass();

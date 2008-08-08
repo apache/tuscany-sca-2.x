@@ -27,13 +27,18 @@ import org.osgi.framework.BundleContext;
  * The Bundle Activator that creates the OSGi-based service discoverer 
  */
 public class OSGiServiceDiscoveryActivator implements BundleActivator {
+    private static BundleContext bundleContext;
 
     public void start(BundleContext context) throws Exception {
-        OSGiServiceDiscoverer discoverer = new OSGiServiceDiscoverer(context);
-        ServiceDiscovery.setServiceDiscoverer(discoverer);
+        if (bundleContext == null) {
+            bundleContext = context;
+            OSGiServiceDiscoverer discoverer = new OSGiServiceDiscoverer(bundleContext);
+            ServiceDiscovery.setServiceDiscoverer(discoverer);
+        }
     }
 
-    public void stop(BundleContext arg0) throws Exception {
+    public void stop(BundleContext context) throws Exception {
+        bundleContext = null;
         // ServiceDiscovery.setServiceDiscoverer(discoverer);
     }
 
