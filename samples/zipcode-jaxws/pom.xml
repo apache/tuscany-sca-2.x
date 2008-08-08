@@ -108,12 +108,12 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <mkdir dir="${basedir}/src/main/resources/wsdl/" />
+                                <mkdir dir="${project.build.outputDirectory}/wsdl/" />
                                 <get src="http://www.webservicex.net/uszip.asmx?wsdl"
-                                    dest="${basedir}/src/main/resources/wsdl/uszip.wsdl" verbose="true"
+                                    dest="${project.build.outputDirectory}/wsdl/uszip.wsdl" verbose="true"
                                     usetimestamp="true" />
                                 <get src="http://www.webservicex.net/WeatherForecast.asmx?wsdl"
-                                    dest="${basedir}/src/main/resources/wsdl/WeatherForecast.wsdl" verbose="true"
+                                    dest="${project.build.outputDirectory}/wsdl/WeatherForecast.wsdl" verbose="true"
                                     usetimestamp="true" />
                             </tasks>
                         </configuration>
