@@ -20,9 +20,7 @@
 package org.apache.tuscany.sca.monitor.logging.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +75,10 @@ public class DefaultLoggingMonitorImpl implements Monitor {
         return problemCache;
     }
     
-    public Problem getLastLoggedProblem(){
+    public Problem getLastLoggedProblem() {
+        if (problemCache.isEmpty()) {
+            return null;
+        }
         return problemCache.get(problemCache.size() - 1);
     }
     
