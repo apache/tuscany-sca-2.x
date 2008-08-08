@@ -40,8 +40,17 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
     private BundleContext bundleContext;
     private List<Bundle> tuscanyBundles = new ArrayList<Bundle>();
-    
-    private List<URL> jarFiles = new ArrayList<URL>();
+
+    private List<URL> jarFiles;
+
+    public LauncherBundleActivator() {
+        super();
+    }
+
+    public LauncherBundleActivator(List<URL> jarFiles) {
+        super();
+        this.jarFiles = jarFiles;
+    }
 
     public static String toString(Bundle b, boolean verbose) {
         StringBuffer sb = new StringBuffer();
@@ -124,10 +133,12 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
             // FIXME: SDO bundles dont have the correct dependencies
             System.setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
-            File tuscanyInstallDir = findTuscanyInstallDir(bundleContext.getBundle());
+            List<URL> urls = jarFiles;
+            if (urls == null) {
+                File tuscanyInstallDir = findTuscanyInstallDir(bundleContext.getBundle());
 
-            List<URL> urls =
-                JarFileFinder.findJarFiles(tuscanyInstallDir, new JarFileFinder.StandAloneJARFileNameFilter());
+                urls = JarFileFinder.findJarFiles(tuscanyInstallDir, new JarFileFinder.StandAloneJARFileNameFilter());
+            }
 
             for (URL url : urls) {
                 File file = new File(url.toURI());
@@ -254,11 +265,11 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         }
         return null;
     }
-    
+
     private String getFileName(URL url) {
         String name = url.getPath();
         int index = name.lastIndexOf('/');
-        return name.substring(index+1);
+        return name.substring(index + 1);
     }
 
     private void addFileToJar(URL file, JarOutputStream jarOut) throws IOException {
@@ -314,7 +325,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                 InputStream in = mf.openStream();
                 manifest.read(in);
                 in.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 // Ignore
             }
         }

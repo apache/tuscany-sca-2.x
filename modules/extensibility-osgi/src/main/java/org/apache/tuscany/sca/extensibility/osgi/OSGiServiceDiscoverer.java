@@ -262,8 +262,12 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
      * This class loader can be set as the thread context class loader for non-OSGi code
      * @return
      */
-    public ClassLoader getClassLoader() {
+    public ClassLoader getContextClassLoader() {
         return classLoader;
+    }
+    
+    public <T> T getContext() {
+        return (T) context;
     }
 
     @SuppressWarnings("unchecked")

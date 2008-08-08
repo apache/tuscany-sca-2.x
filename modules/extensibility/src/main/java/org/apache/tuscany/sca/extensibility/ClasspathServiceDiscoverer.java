@@ -81,7 +81,7 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
         }
 
         public Class<?> loadClass(String className) throws ClassNotFoundException {
-            return getClassLoader().loadClass(className);
+            return getContextClassLoader().loadClass(className);
         }
 
         private ClasspathServiceDiscoverer getOuterType() {
@@ -90,7 +90,7 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
 
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            sb.append("ClassLoader: ").append(getClassLoader());
+            sb.append("ClassLoader: ").append(getContextClassLoader());
             sb.append(" Attributes: ").append(attributes);
             return sb.toString();
         }
@@ -98,7 +98,7 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
         public URL getResource(final String name) {
             return AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 public URL run() {
-                    return getClassLoader().getResource(name);
+                    return getContextClassLoader().getResource(name);
                 }
             });
         }
@@ -123,14 +123,14 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<List<URL>>() {
                 public List<URL> run() throws IOException {
                     if (firstOnly) {
-                        URL url = getClassLoader().getResource(name);
+                        URL url = getContextClassLoader().getResource(name);
                         if (url != null) {
                             return Arrays.asList(url);
                         } else {
                             return Collections.emptyList();
                         }
                     } else {
-                        return Collections.list(getClassLoader().getResources(name));
+                        return Collections.list(getContextClassLoader().getResources(name));
                     }
                 }
             });
@@ -139,8 +139,12 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
         }
     }
 
-    private ClassLoader getClassLoader() {
+    public ClassLoader getContextClassLoader() {
         return classLoaderReference.get();
+    }
+    
+    public <T> T getContext() {
+        return (T) getContextClassLoader();
     }
 
     /**
