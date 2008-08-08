@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -35,8 +34,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tuscany.sca.node.osgi.launcher.FelixOSGiHost;
 import org.apache.tuscany.sca.node.osgi.launcher.LauncherBundleActivator;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Request;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -151,9 +148,9 @@ public class OSGiJUnitMojo extends AbstractMojo {
     public int runTestCase(ClassLoader testClassLoader, Class testClass) throws Exception {
 
         if (testClass.getName().endsWith("TestCase")) {
-            Class coreClass = Class.forName(JUnitCore.class.getName(), true, testClassLoader);
+            Class coreClass = Class.forName("org.junit.runner.JUnitCore", true, testClassLoader);
             Object core = coreClass.newInstance();
-            Class reqClass = Class.forName(Request.class.getName(), true, testClassLoader);
+            Class reqClass = Class.forName("org.junit.runner.Request", true, testClassLoader);
             Method aClass = reqClass.getMethod("aClass", Class.class);
             Object req = aClass.invoke(null, testClass);
             Method run = coreClass.getMethod("run", reqClass);
@@ -163,7 +160,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
             List failureList = (List)result.getClass().getMethod("getFailures").invoke(result);
 
             int failures = 0, errors = 0;
-            Class errorClass = Class.forName(AssertionFailedError.class.getName(), true, testClassLoader);
+            Class errorClass = Class.forName("junit.framework.AssertionFailedError", true, testClassLoader);
             for (Object f : failureList) {
                 Object ex = f.getClass().getMethod("getException").invoke(f);
                 if (errorClass.isInstance(ex)) {
