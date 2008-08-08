@@ -218,7 +218,7 @@
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>apache-tuscany-sca-core-1.4-SNAPSHOT</finalName>
+                            <finalName>apache-tuscany-sca-1.4-SNAPSHOT</finalName>
                         </configuration>
                     </execution>
                 </executions>

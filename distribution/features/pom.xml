@@ -28,7 +28,7 @@
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-distribution-features</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Distribution Features</name>
+    <name>Apache Tuscany SCA Feature Distributions</name>
 
     <build>
         <defaultGoal>install</defaultGoal>
