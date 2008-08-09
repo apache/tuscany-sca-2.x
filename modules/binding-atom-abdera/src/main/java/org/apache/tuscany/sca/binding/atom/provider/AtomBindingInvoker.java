@@ -86,7 +86,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Get an entry
             String id = (String)((Object[])msg.getBody())[0];
 
@@ -100,7 +99,8 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200) {
-                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Document<org.apache.abdera.model.Entry> doc = 
+                    	abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
                     parsing = true;
                     org.apache.abdera.model.Entry feedEntry = doc.getRoot();
                     
@@ -148,7 +148,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Post an entry
             Object[] args = (Object[])msg.getBody();
             org.apache.abdera.model.Entry feedEntry;
@@ -173,7 +172,8 @@ class AtomBindingInvoker implements Invoker {
                 // Write the Atom entry
                 StringWriter writer = new StringWriter();
                 feedEntry.writeTo(writer);
-                postMethod.setRequestHeader("Content-type", "application/atom+xml; charset=utf-8");
+                // postMethod.setRequestHeader("Content-type", "application/atom+xml; charset=utf-8");
+                postMethod.setRequestHeader("Content-type", "application/atom+xml;type=entry");
                 postMethod.setRequestEntity(new StringRequestEntity(writer.toString()));
 
                 httpClient.executeMethod(postMethod);
@@ -228,7 +228,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Put an entry
             Object[] args = (Object[])msg.getBody();
             String id;
@@ -250,6 +249,7 @@ class AtomBindingInvoker implements Invoker {
             // Send an HTTP PUT
             PutMethod putMethod = new PutMethod(uri + "/" + id);
             putMethod.setRequestHeader("Authorization", authorizationHeader);
+
             try {
 
                 // Write the Atom entry
@@ -260,7 +260,7 @@ class AtomBindingInvoker implements Invoker {
 
                 httpClient.executeMethod(putMethod);
                 int status = putMethod.getStatusCode();
-                if (status == 200 || status == 201) {
+                if (status == 200 || status == 201 || status == 412) {
 
                     msg.setBody(null);
 
@@ -291,7 +291,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Delete an entry
             String id = (String)((Object[])msg.getBody())[0];
 
@@ -331,7 +330,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Get a feed
 
             // Send an HTTP GET
@@ -341,6 +339,7 @@ class AtomBindingInvoker implements Invoker {
             try {
                 httpClient.executeMethod(getMethod);
                 int status = getMethod.getStatusCode();
+                // AtomBindingInvoker.printResponseHeader( getMethod );
 
                 // Read the Atom feed
                 if (status == 200) {
@@ -396,7 +395,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
             // Get a feed from a query
             String queryString = (String)((Object[])msg.getBody())[0];
 
