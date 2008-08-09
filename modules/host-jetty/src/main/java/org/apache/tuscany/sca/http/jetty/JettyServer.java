@@ -23,6 +23,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.KeyStore;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,9 +65,15 @@ public class JettyServer implements ServletHost {
     private static final Logger logger = Logger.getLogger(JettyServer.class.getName());
 
     private final Object joinLock = new Object();
-    private String keystore;
-    private String certPassword;
-    private String keyPassword;
+    private String trustStore;
+    private String truststorePassword;
+    private String keyStore;
+    private String keyStorePassword;
+
+    private String keyStoreType;
+    private String trustStoreType;
+
+    
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
     private int defaultPort = 8080;
@@ -101,6 +110,18 @@ public class JettyServer implements ServletHost {
 
     public JettyServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                trustStore = System.getProperty("javax.net.ssl.trustStore");
+                truststorePassword = System.getProperty("javax.net.ssl.trustStorePassword");
+                keyStore = System.getProperty("javax.net.ssl.keyStore");
+                keyStorePassword = System.getProperty("javax.net.ssl.keyStorePassword");
+
+                keyStoreType = System.getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
+                trustStoreType = System.getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
+                return null;
+            }
+        });
     }
     
     public void setDefaultPort(int port) {
@@ -113,18 +134,6 @@ public class JettyServer implements ServletHost {
 
     public void setSendServerVersion(boolean sendServerVersion) {
         this.sendServerVersion = sendServerVersion;
-    }
-
-    public void setKeystore(String keystore) {
-        this.keystore = keystore;
-    }
-
-    public void setCertPassword(String certPassword) {
-        this.certPassword = certPassword;
-    }
-
-    public void setKeyPassword(String keyPassword) {
-        this.keyPassword = keyPassword;
     }
 
     /**
@@ -144,6 +153,23 @@ public class JettyServer implements ServletHost {
         } catch (Exception e) {
             throw new ServletMappingException(e);
         }
+    }
+    
+    private void configureSSL(SslSocketConnector connector) {
+        connector.setProtocol("TLS");
+        connector.setKeystore(keyStore);
+        connector.setKeyPassword(keyStorePassword);
+        connector.setKeystoreType(keyStoreType);
+
+        connector.setTruststore(trustStore);
+        connector.setTrustPassword(truststorePassword);
+        connector.setTruststoreType(trustStoreType);
+
+        connector.setPassword(keyStorePassword);
+        if (trustStore != null) {
+            connector.setNeedClientAuth(true);
+        }
+
     }
 
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
@@ -168,14 +194,12 @@ public class JettyServer implements ServletHost {
                 Server server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());
                 if ("https".equals(scheme)) {
-                    Connector httpConnector = new SelectChannelConnector();
-                    httpConnector.setPort(portNumber);
+//                    Connector httpConnector = new SelectChannelConnector();
+//                    httpConnector.setPort(portNumber);
                     SslSocketConnector sslConnector = new SslSocketConnector();
                     sslConnector.setPort(portNumber);
-                    sslConnector.setKeystore(keystore);
-                    sslConnector.setPassword(certPassword);
-                    sslConnector.setKeyPassword(keyPassword);
-                    server.setConnectors(new Connector[] {httpConnector, sslConnector});
+                    configureSSL(sslConnector);
+                    server.setConnectors(new Connector[] {sslConnector});
                 } else {
                     SelectChannelConnector selectConnector = new SelectChannelConnector();
                     selectConnector.setPort(portNumber);
