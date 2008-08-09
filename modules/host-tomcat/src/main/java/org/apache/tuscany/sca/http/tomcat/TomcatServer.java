@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.AccessController;
+import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -217,7 +218,7 @@ public class TomcatServer implements ServletHost {
         if (scheme == null) {
             scheme = "http";
         }
-        final int portNumber = (uri.getPort() == -1 ? defaultPortNumber : uri.getPort() ); 
+        final int portNumber = (uri.getPort() == -1 ? defaultPortNumber : uri.getPort());
 
         // Get the port object associated with the given port number
         Port port = ports.get(portNumber);
@@ -226,13 +227,12 @@ public class TomcatServer implements ServletHost {
             // Create an engine
             // Allow privileged access to read properties. Requires PropertiesPermission read in
             // security policy.
-            final StandardEngine engine = 
-            AccessController.doPrivileged(new PrivilegedAction<StandardEngine>() {
+            final StandardEngine engine = AccessController.doPrivileged(new PrivilegedAction<StandardEngine>() {
                 public StandardEngine run() {
                     return new StandardEngine();
                 }
             });
-            
+
             engine.setBaseDir("");
             engine.setDefaultHost("localhost");
             engine.setName("engine/" + portNumber);
@@ -265,7 +265,7 @@ public class TomcatServer implements ServletHost {
             // Allow privileged access to read properties. Requires PropertiesPermission read in
             // security policy.
             try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     public Object run() throws LifecycleException {
                         engine.start();
                         return null;
@@ -274,20 +274,52 @@ public class TomcatServer implements ServletHost {
             } catch (PrivilegedActionException e) {
                 // throw (LifecycleException)e.getException();
                 throw new ServletMappingException(e);
-            }                
+            }
             Connector connector;
             // Allow privileged access to read properties. Requires PropertiesPermission read in
             // security policy.
             try {
+                final String protocol = scheme;
                 connector = AccessController.doPrivileged(new PrivilegedExceptionAction<CustomConnector>() {
                     public CustomConnector run() throws Exception {
-                       CustomConnector customConnector = new CustomConnector();
-                       customConnector.setPort(portNumber);
-                       customConnector.setContainer(engine);
-                       customConnector.initialize();
-                       customConnector.start();
-                       return customConnector;
-                   }
+                        CustomConnector customConnector = new CustomConnector();
+                        customConnector.setPort(portNumber);
+                        customConnector.setContainer(engine);
+
+                        if ("https".equalsIgnoreCase(protocol)) {
+                            configureSSL(customConnector);
+                            ((Http11Protocol) customConnector.getProtocolHandler()).setSSLEnabled(true);
+                        }
+                        customConnector.initialize();
+                        customConnector.start();
+                        return customConnector;
+                    }
+
+                    private void configureSSL(CustomConnector customConnector) {
+                        String trustStore = System.getProperty("javax.net.ssl.trustStore");
+                        String trustStorePass = System.getProperty("javax.net.ssl.trustStorePassword");
+                        String keyStore = System.getProperty("javax.net.ssl.keyStore");
+                        String keyStorePass = System.getProperty("javax.net.ssl.keyStorePassword");
+
+                        customConnector.setProperty("protocol", "TLS");
+
+                        customConnector.setProperty("keystore", keyStore);
+                        customConnector.setProperty("keypass", keyStorePass);
+                        String keyStoreType =
+                            System.getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
+                        String trustStoreType =
+                            System.getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
+                        customConnector.setProperty("keytype", keyStoreType);
+                        customConnector.setProperty("trusttype", trustStoreType);
+                        customConnector.setProperty("truststore", trustStore);
+                        customConnector.setProperty("trustpass", trustStorePass);
+
+                        customConnector.setProperty("clientauth", "false");
+                        customConnector.setProtocol("HTTP/1.1");
+                        customConnector.setScheme(protocol);
+                        customConnector.setProperty("backlog", "10");
+                        customConnector.setSecure(true);
+                    }
                 });
             } catch (Exception e) {
                 throw new ServletMappingException(e);
@@ -512,12 +544,12 @@ public class TomcatServer implements ServletHost {
             } catch (Exception ex) {
                 // Hack to handle destruction of Servlets without Servlet context 
             }
-            
+
             logger.info("Removed Servlet mapping: " + suri);
-            
+
             // Stop the port if there's no servlets on it anymore
             String[] contextNames = port.getConnector().getMapper().getContextNames();
-            if (contextNames == null || contextNames.length ==0) {
+            if (contextNames == null || contextNames.length == 0) {
                 try {
                     port.getConnector().stop();
                     port.getEngine().stop();
@@ -526,7 +558,7 @@ public class TomcatServer implements ServletHost {
                     throw new IllegalStateException(e);
                 }
             }
-            
+
             return servletWrapper.getServlet();
         } else {
             logger.warning("Trying to Remove servlet mapping: " + mapping + " where mapping is not registered");

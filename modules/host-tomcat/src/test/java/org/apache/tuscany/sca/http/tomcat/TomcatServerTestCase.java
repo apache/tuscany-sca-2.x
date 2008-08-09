@@ -20,10 +20,15 @@ package org.apache.tuscany.sca.http.tomcat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.URL;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -91,7 +96,38 @@ public class TomcatServerTestCase extends TestCase {
         service.stop();
         assertTrue(servlet.invoked);
     }
+    
+    /**
+     * Verifies requests are properly routed according to the Servlet mapping
+     */
+    public void testRegisterServletMappingSSL() throws Exception {
+        System.setProperty("javax.net.ssl.keyStore", "target/test-classes/tuscany.keyStore");
+        System.setProperty("javax.net.ssl.keyStorePassword", "apache");
+        TomcatServer service = new TomcatServer(workScheduler);
+        TestServlet servlet = new TestServlet();
+        try {
+            service.addServletMapping("https://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
+        } finally {
+            System.clearProperty("javax.net.ssl.keyStore");
+            System.clearProperty("javax.net.ssl.keyStorePassword");
+        }
+        System.setProperty("javax.net.ssl.trustStore", "target/test-classes/tuscany.keyStore");
+        System.setProperty("javax.net.ssl.trustStorePassword", "apache");
+        URL url = new URL("https://127.0.0.1:8085/foo");
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        conn.setHostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }}
+        );
 
+        conn.connect();
+        read(conn.getInputStream());
+        
+        service.stop();
+        assertTrue(servlet.invoked);
+
+    }
     /**
      * Verifies that Servlets can be registered with multiple ports
      */
@@ -244,9 +280,14 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     private static String read(Socket socket) throws IOException {
+        InputStream is = socket.getInputStream();
+        return read(is);
+    }
+
+    private static String read(InputStream is) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(is));
             StringBuffer sb = new StringBuffer();
             String str;
             while ((str = reader.readLine()) != null) {
@@ -259,7 +300,6 @@ public class TomcatServerTestCase extends TestCase {
             }
         }
     }
-
     private class TestServlet extends HttpServlet {
         private static final long serialVersionUID = 1L;
         boolean invoked;

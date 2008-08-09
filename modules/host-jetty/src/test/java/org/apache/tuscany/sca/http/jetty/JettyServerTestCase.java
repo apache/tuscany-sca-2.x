@@ -20,11 +20,16 @@ package org.apache.tuscany.sca.http.jetty;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.net.URL;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -93,6 +98,37 @@ public class JettyServerTestCase extends TestCase {
         assertTrue(servlet.invoked);
     }
 
+    public void testRegisterServletMappingSSL() throws Exception {
+        System.setProperty("javax.net.ssl.keyStore", "target/test-classes/tuscany.keyStore");
+        System.setProperty("javax.net.ssl.keyStorePassword", "apache");
+        System.setProperty("jetty.ssl.password", "apache");
+        JettyServer service = new JettyServer(workScheduler);
+        TestServlet servlet = new TestServlet();
+        try {
+            service.addServletMapping("https://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
+        } finally {
+            System.clearProperty("javax.net.ssl.keyStore");
+            System.clearProperty("javax.net.ssl.keyStorePassword");
+            System.clearProperty("jetty.ssl.password");
+        }
+        System.setProperty("javax.net.ssl.trustStore", "target/test-classes/tuscany.keyStore");
+        System.setProperty("javax.net.ssl.trustStorePassword", "apache");
+        URL url = new URL("https://127.0.0.1:8085/foo");
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        conn.setHostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }}
+        );
+
+        conn.connect();
+        read(conn.getInputStream());
+        
+        service.stop();
+        assertTrue(servlet.invoked);
+
+    }
+
     /**
      * Verifies that Servlets can be registered with multiple ports
      */
@@ -116,7 +152,7 @@ public class JettyServerTestCase extends TestCase {
             os.flush();
             read(client);
         }
-        
+
         service.stop();
         assertTrue(servlet.invoked);
         assertTrue(servlet2.invoked);
@@ -172,50 +208,55 @@ public class JettyServerTestCase extends TestCase {
         assertNotNull(ex);
         service.stop();
     }
-    
+
     public void testResourceServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        
+
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
         DefaultResourceServlet resourceServlet = new DefaultResourceServlet(documentRoot);
         TestResourceServlet servlet = new TestResourceServlet(resourceServlet);
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/webcontent/*", servlet);
-        
+
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST2.getBytes());
         os.flush();
-        
+
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
-        
+
         service.stop();
     }
 
     public void testDefaultServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
-        
+
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
         DefaultResourceServlet resourceServlet = new DefaultResourceServlet(documentRoot);
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/webcontent/*", resourceServlet);
-        
+
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST2.getBytes());
         os.flush();
-        
+
         String document = read(client);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
-        
+
         service.stop();
     }
 
     private static String read(Socket socket) throws IOException {
+        InputStream is = socket.getInputStream();
+        return read(is);
+    }
+
+    private static String read(InputStream is) throws IOException {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(is));
             StringBuffer sb = new StringBuffer();
             String str;
             while ((str = reader.readLine()) != null) {
@@ -251,11 +292,11 @@ public class JettyServerTestCase extends TestCase {
     private class TestResourceServlet extends HttpServlet {
         private static final long serialVersionUID = 1L;
         private HttpServlet delegate;
-        
+
         public TestResourceServlet(HttpServlet delegate) {
             this.delegate = delegate;
         }
-        
+
         @Override
         public void init() throws ServletException {
             super.init();
@@ -267,12 +308,12 @@ public class JettyServerTestCase extends TestCase {
             super.init();
             delegate.init(config);
         }
-        
+
         @Override
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
             delegate.service(req, resp);
         }
-        
+
         @Override
         public void destroy() {
             super.destroy();
