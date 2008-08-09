@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.binding.gdata.collection;
 
 import com.google.gdata.data.BaseEntry;
-import com.google.gdata.data.Feed;
+import com.google.gdata.data.BaseFeed;
 
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Remotable;
@@ -37,7 +37,7 @@ public interface Collection {
      * 
      * @return the Atom feed
      */
-    Feed getFeed();
+    BaseFeed<? extends BaseFeed, ? extends BaseEntry> getFeed();
 
     /**
      * Get an Atom feed for a collection of resources resulting
@@ -46,7 +46,7 @@ public interface Collection {
      * @param queryString a query string
      * @return the Atom feed
      */
-    Feed query(String queryString);
+    BaseFeed<? extends BaseFeed, ? extends BaseEntry> query(String queryString);
 
     /**
      * Creates a new entry.
@@ -79,5 +79,4 @@ public interface Collection {
      * @param id
      */
     void delete(String id) throws NotFoundException;
-
 }

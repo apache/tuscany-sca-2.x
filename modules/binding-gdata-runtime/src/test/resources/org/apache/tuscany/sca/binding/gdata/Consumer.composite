@@ -23,9 +23,9 @@
 	   name="Consumer">
     
     <component name="CustomerClient">
-        <implementation.java class="org.apache.tuscany.sca.binding.gdata.CustomerClientImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.gdata.consumerprovider.CustomerClientImpl"/>
         <reference name="resourceCollection">
-        	<tuscany:binding.gdata uri="http://www.google.com/calendar/feeds/gsocstudent2008@gmail.com/private/full"/>
+        	<tuscany:binding.gdata uri="http://localhost:8086/customer"  username="gsocstudent2008" password="gsoc2008" serviceType="sca"/>
         </reference>
     </component>
 
