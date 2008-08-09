@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.gdata.collection;
 
+import com.google.gdata.data.BaseEntry;
 import java.io.InputStream;
 
 import org.osoa.sca.annotations.Remotable;
 
-import com.google.gdata.data.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 
 /**
@@ -41,7 +41,7 @@ public interface MediaCollection extends Collection {
      * @param contentType
      * @param media
      */
-    Entry postMedia(String title, String slug, String contentType, InputStream media);
+    BaseEntry postMedia(String title, String slug, String contentType, InputStream media);
 
     /**
      * Update a media entry.

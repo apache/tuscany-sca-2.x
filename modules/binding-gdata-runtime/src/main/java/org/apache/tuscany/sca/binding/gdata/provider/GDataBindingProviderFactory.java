@@ -65,10 +65,7 @@ public class GDataBindingProviderFactory implements BindingProviderFactory<GData
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                GDataBinding binding) {
-        //return new AtomServiceBindingProvider(component, service, binding, servletHost, messageFactory, mediator);
-        
-        //FIXME - To implement AtomServiceBindingProvider
-        return null;
+        return new GDataServiceBindingProvider(component, service, binding, servletHost, messageFactory, mediator);
     }
 
     public Class<GDataBinding> getModelType() {
