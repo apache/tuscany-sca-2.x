@@ -64,6 +64,8 @@ public class WebAppServletHost implements ServletHost {
     private int defaultPortNumber = 8080;
     private String contributionRoot;
 
+    private ServletContext servletContext;
+
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
     }
@@ -208,7 +210,7 @@ public class WebAppServletHost implements ServletHost {
 
     public void init(ServletConfig config) throws ServletException {
 
-        ServletContext servletContext = config.getServletContext();
+        servletContext = config.getServletContext();
         if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
             initContextPath(config);
             String domainURI = "http://localhost/" + contextPath;
@@ -223,6 +225,7 @@ public class WebAppServletHost implements ServletHost {
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
         }
+        
     }
 
     protected String getContributionRoot(ServletContext servletContext) {
@@ -327,5 +330,9 @@ public class WebAppServletHost implements ServletHost {
 
     public String getContributionRoot() {
         return contributionRoot;
+    }
+
+    public void setAttribute(String name, Object value) {
+        servletContext.setAttribute(name, value);
     }
 }
