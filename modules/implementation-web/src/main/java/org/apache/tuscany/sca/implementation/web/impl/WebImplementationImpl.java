@@ -101,6 +101,9 @@ class WebImplementationImpl implements WebImplementation, ComponentPreProcessor 
      * TODO: also support introspection and handle WEB-INF/web.componentType (spec line 503) 
      */
     public void preProcess(Component component) {
+        if (!(component instanceof RuntimeComponent)) {
+            return;
+        }
         RuntimeComponent rtc = (RuntimeComponent) component;
         
         for (Reference reference : rtc.getReferences()) {
