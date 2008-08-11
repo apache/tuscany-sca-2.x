@@ -36,34 +36,34 @@ import org.junit.Test;
  */
 public class WebModuleProcessorTestCase {
 
-	WebModule webModule;
-	
+    WebModule webModule;
+
     @Before
     public void setUp() throws Exception {
-    	String jarFilePath = "target/test-classes/ejb-injection-sample.ear";
-    	JavaEEModuleHelper jmh = new JavaEEModuleHelper();
-    	AppModule appModule = jmh.getMetadataCompleteModules(jarFilePath);
-    	webModule = appModule.getWebModules().get(0);
+        String jarFilePath = "target/test-classes/ejb-injection-sample.ear";
+        JavaEEModuleHelper jmh = new JavaEEModuleHelper();
+        AppModule appModule = jmh.getMetadataCompleteModules(jarFilePath);
+        webModule = appModule.getWebModules().get(0);
     }
-    
+
     @Test
     public void testWebAppContribution() throws Exception {
-    	WebModuleProcessor wmp = new WebModuleProcessor(webModule);
-    	
-    	ComponentType ct = wmp.getWebAppComponentType();
-    	Assert.assertEquals(2, ct.getReferences().size());
-    	Set<String> referenceNames = new HashSet<String>();
-    	for(Reference r : ct.getReferences()) {
-    		referenceNames.add(r.getName());
-    	}
-    	
-    	Assert.assertEquals(2, referenceNames.size());
-    	Assert.assertTrue(referenceNames.contains("org.myorg.MyServlet_bank"));
-    	Assert.assertTrue(referenceNames.contains("org.myorg.MyServlet_converter"));
-    	
-    	Assert.assertEquals(0, ct.getServices().size());
-    	
-    	Composite composite = wmp.getWebAppComposite();
-    	Assert.assertEquals(2, composite.getReferences().size());
+        WebModuleProcessor wmp = new WebModuleProcessor(webModule);
+
+        ComponentType ct = wmp.getWebAppComponentType();
+        Assert.assertEquals(2, ct.getReferences().size());
+        Set<String> referenceNames = new HashSet<String>();
+        for (Reference r : ct.getReferences()) {
+            referenceNames.add(r.getName());
+        }
+
+        Assert.assertEquals(2, referenceNames.size());
+        Assert.assertTrue(referenceNames.contains("org.myorg.MyServlet_bank"));
+        Assert.assertTrue(referenceNames.contains("org.myorg.MyServlet_converter"));
+
+        Assert.assertEquals(0, ct.getServices().size());
+
+        Composite composite = wmp.getWebAppComposite();
+        Assert.assertEquals(2, composite.getReferences().size());
     }
 }

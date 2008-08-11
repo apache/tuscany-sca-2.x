@@ -52,90 +52,97 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class AssemblyHelper {
     private static AssemblyFactory af = new DefaultAssemblyFactory();
     private static JavaInterfaceFactory jif = new DefaultJavaInterfaceFactory();
-    
+
     public static final Map<String, QName> ALLOWED_ENV_ENTRY_TYPES;
     public static Intent CONVERSATIONAL_INTENT;
     static {
         ALLOWED_ENV_ENTRY_TYPES = new HashMap<String, QName>();
-        ALLOWED_ENV_ENTRY_TYPES.put(String.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Character.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "string", "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(String.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "string",
+                                                                      "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(Character.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "string",
+                                                                         "xsd"));
         ALLOWED_ENV_ENTRY_TYPES.put(Byte.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "byte", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Short.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "short", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Integer.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(Short.class.getName(),
+                                    new QName("http://www.w3.org/2001/XMLSchema", "short", "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(Integer.class.getName(),
+                                    new QName("http://www.w3.org/2001/XMLSchema", "int", "xsd"));
         ALLOWED_ENV_ENTRY_TYPES.put(Long.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "long", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Boolean.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "boolean", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Double.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "double", "xsd"));
-        ALLOWED_ENV_ENTRY_TYPES.put(Float.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "float", "xsd"));        
+        ALLOWED_ENV_ENTRY_TYPES.put(Boolean.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "boolean",
+                                                                       "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(Double.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "double",
+                                                                      "xsd"));
+        ALLOWED_ENV_ENTRY_TYPES.put(Float.class.getName(),
+                                    new QName("http://www.w3.org/2001/XMLSchema", "float", "xsd"));
     }
 
     static {
         PolicyFactory dpf = new DefaultPolicyFactory();
         CONVERSATIONAL_INTENT = dpf.createIntent();
         CONVERSATIONAL_INTENT.setName(new QName("http://www.osoa.org/xmlns/sca/1.0", "conversational"));
-    	
+
     }
 
     public static JavaInterfaceContract createInterfaceContract(Class<?> clazz) throws InvalidInterfaceException {
-    	JavaInterface ji = jif.createJavaInterface(clazz);
-    	JavaInterfaceContract jic = jif.createJavaInterfaceContract();
+        JavaInterface ji = jif.createJavaInterface(clazz);
+        JavaInterfaceContract jic = jif.createJavaInterfaceContract();
         jic.setInterface(ji);
-        
+
         return jic;
     }
-    
+
     public static ComponentService createComponentService() {
-    	return af.createComponentService();
+        return af.createComponentService();
     }
-    
+
     public static ComponentReference createComponentReference() {
-    	return af.createComponentReference();    	
+        return af.createComponentReference();
     }
-    
+
     public static ComponentProperty createComponentProperty() {
-    	return af.createComponentProperty();
+        return af.createComponentProperty();
     }
-    
+
     public static ComponentType createComponentType() {
-    	return af.createComponentType();
+        return af.createComponentType();
     }
 
     public static Component createComponentFromComponentType(ComponentType componentType, String componentName) {
         Component component = af.createComponent();
         component.setName(componentName);
-   	
-        for(Service service : componentType.getServices()) {
-        	ComponentService compService = af.createComponentService();
-        	compService.setService(service);
-        	component.getServices().add(compService);
+
+        for (Service service : componentType.getServices()) {
+            ComponentService compService = af.createComponentService();
+            compService.setService(service);
+            component.getServices().add(compService);
         }
-        
-        for(Reference reference : componentType.getReferences()) {
-        	ComponentReference compReference = af.createComponentReference();
-        	compReference.setReference(reference);
-        	component.getReferences().add(compReference);
+
+        for (Reference reference : componentType.getReferences()) {
+            ComponentReference compReference = af.createComponentReference();
+            compReference.setReference(reference);
+            component.getReferences().add(compReference);
         }
-        
-        for(Property property : componentType.getProperties()) {
-        	ComponentProperty compProperty = af.createComponentProperty();
-        	compProperty.setProperty(property);
-        	component.getProperties().add(compProperty);
+
+        for (Property property : componentType.getProperties()) {
+            ComponentProperty compProperty = af.createComponentProperty();
+            compProperty.setProperty(property);
+            component.getProperties().add(compProperty);
         }
         return component;
     }
-    
+
     public static Composite createComposite() {
-    	return af.createComposite();
+        return af.createComposite();
     }
 
-	public static Component createComponent() {
-		return af.createComponent();
-	}
+    public static Component createComponent() {
+        return af.createComponent();
+    }
 
-	public static CompositeReference createCompositeReference() {
-		return af.createCompositeReference();
-	}
+    public static CompositeReference createCompositeReference() {
+        return af.createCompositeReference();
+    }
 
-	public static CompositeService createCompositeService() {
-		return af.createCompositeService();
-	}
+    public static CompositeService createCompositeService() {
+        return af.createCompositeService();
+    }
 }

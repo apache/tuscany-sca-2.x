@@ -42,29 +42,29 @@ import org.apache.tuscany.sca.implementation.web.WebImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
 public class WebModuleProcessor {
-	private WebModule webModule;
-	private ComponentType componentType;
-	
-	public WebModuleProcessor(WebModule module) {
-		webModule = module;
-	}
+    private WebModule webModule;
+    private ComponentType componentType;
 
-	public ComponentType getWebAppComponentType() throws ContributionException {
-		if(componentType != null) {
-			return componentType;
-		}
+    public WebModuleProcessor(WebModule module) {
+        webModule = module;
+    }
+
+    public ComponentType getWebAppComponentType() throws ContributionException {
+        if (componentType != null) {
+            return componentType;
+        }
         componentType = AssemblyHelper.createComponentType();
-        
+
         WebApp webApp = webModule.getWebApp();
         ClassLoader classLoader = webModule.getClassLoader();
 
         // Process Remote EJB References
-        for(Map.Entry<String, EjbRef> entry: webApp.getEjbRefMap().entrySet()) {
+        for (Map.Entry<String, EjbRef> entry : webApp.getEjbRefMap().entrySet()) {
             EjbRef ejbRef = entry.getValue();
-            if(ejbRef.getRefType().compareTo(EjbReference.Type.REMOTE) != 0) {
-            	// Only Remote EJB references need to be considered.
-            	// Skip the current one as it is a remote reference.
-            	continue;
+            if (ejbRef.getRefType().compareTo(EjbReference.Type.REMOTE) != 0) {
+                // Only Remote EJB references need to be considered.
+                // Skip the current one as it is a remote reference.
+                continue;
             }
             String referenceName = entry.getKey();
             referenceName = referenceName.replace("/", "_");
@@ -72,21 +72,21 @@ public class WebModuleProcessor {
             reference.setName(referenceName);
             InterfaceContract ic = null;
             try {
-            	Class<?> clazz = classLoader.loadClass(ejbRef.getInterface());
-            	ic = AssemblyHelper.createInterfaceContract(clazz);
+                Class<?> clazz = classLoader.loadClass(ejbRef.getInterface());
+                ic = AssemblyHelper.createInterfaceContract(clazz);
             } catch (Exception e) {
-            	componentType = null;
+                componentType = null;
                 throw new ContributionException(e);
             }
             reference.setInterfaceContract(ic);
             componentType.getReferences().add(reference);
         }
-        
+
         // Process env-entries to compute properties
-        for(Map.Entry<String, EnvEntry> entry : webApp.getEnvEntryMap().entrySet()) {
+        for (Map.Entry<String, EnvEntry> entry : webApp.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if(!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
@@ -101,12 +101,12 @@ public class WebModuleProcessor {
 
         return componentType;
     }
-	
-	public Composite getWebAppComposite() throws ContributionException {
-		getWebAppComponentType();
-		
-		Composite composite = AssemblyHelper.createComposite();
-		
+
+    public Composite getWebAppComposite() throws ContributionException {
+        getWebAppComponentType();
+
+        Composite composite = AssemblyHelper.createComposite();
+
         ModelFactoryExtensionPoint mfep = new DefaultModelFactoryExtensionPoint();
         WebImplementationFactory wif = mfep.getFactory(WebImplementationFactory.class);
         WebImplementation impl = wif.createWebImplementation();
@@ -117,32 +117,32 @@ public class WebModuleProcessor {
         String componentName = webModule.getModuleId();
         component.setName(componentName);
         component.setImplementation(impl);
-        
+
         // Add references
-        for(Reference reference : componentType.getReferences()) {
-        	ComponentReference componentReference = AssemblyHelper.createComponentReference();
-        	componentReference.setReference(reference);
+        for (Reference reference : componentType.getReferences()) {
+            ComponentReference componentReference = AssemblyHelper.createComponentReference();
+            componentReference.setReference(reference);
             component.getReferences().add(componentReference);
         }
-        
+
         // Add properties
-        for(Property property : componentType.getProperties()) {
-        	ComponentProperty componentProperty = AssemblyHelper.createComponentProperty();
-        	componentProperty.setProperty(property);
-        	component.getProperties().add(componentProperty);
+        for (Property property : componentType.getProperties()) {
+            ComponentProperty componentProperty = AssemblyHelper.createComponentProperty();
+            componentProperty.setProperty(property);
+            component.getProperties().add(componentProperty);
         }
-        
+
         // Add component to composite
         composite.getComponents().add(component);
-        
+
         // Add composite references
-        for(ComponentReference reference : component.getReferences()) {
-        	CompositeReference compositeReference = AssemblyHelper.createCompositeReference();
-        	compositeReference.setInterfaceContract(reference.getInterfaceContract());
-        	compositeReference.getPromotedReferences().add(reference);
+        for (ComponentReference reference : component.getReferences()) {
+            CompositeReference compositeReference = AssemblyHelper.createCompositeReference();
+            compositeReference.setInterfaceContract(reference.getInterfaceContract());
+            compositeReference.getPromotedReferences().add(reference);
             composite.getReferences().add(compositeReference);
-        }        
+        }
 
         return composite;
-	}
+    }
 }
