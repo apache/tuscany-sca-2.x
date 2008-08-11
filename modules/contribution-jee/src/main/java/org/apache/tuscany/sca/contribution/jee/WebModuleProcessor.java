@@ -44,16 +44,24 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 public class WebModuleProcessor {
     private WebModule webModule;
     private ComponentType componentType;
+    private AssemblyHelper helper;
+
+    public WebModuleProcessor(WebModule webModule, AssemblyHelper helper) {
+        super();
+        this.webModule = webModule;
+        this.helper = helper;
+    }
 
     public WebModuleProcessor(WebModule module) {
         webModule = module;
+        helper = new AssemblyHelper();
     }
 
     public ComponentType getWebAppComponentType() throws ContributionException {
         if (componentType != null) {
             return componentType;
         }
-        componentType = AssemblyHelper.createComponentType();
+        componentType = helper.createComponentType();
 
         WebApp webApp = webModule.getWebApp();
         ClassLoader classLoader = webModule.getClassLoader();
@@ -68,12 +76,12 @@ public class WebModuleProcessor {
             }
             String referenceName = entry.getKey();
             referenceName = referenceName.replace("/", "_");
-            Reference reference = AssemblyHelper.createComponentReference();
+            Reference reference = helper.createComponentReference();
             reference.setName(referenceName);
             InterfaceContract ic = null;
             try {
                 Class<?> clazz = classLoader.loadClass(ejbRef.getInterface());
-                ic = AssemblyHelper.createInterfaceContract(clazz);
+                ic = helper.createInterfaceContract(clazz);
             } catch (Exception e) {
                 componentType = null;
                 throw new ContributionException(e);
@@ -86,15 +94,15 @@ public class WebModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : webApp.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
             propertyName = propertyName.replace("/", "_");
             String value = envEntry.getEnvEntryValue();
-            Property property = AssemblyHelper.createComponentProperty();
+            Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }
@@ -105,7 +113,7 @@ public class WebModuleProcessor {
     public Composite getWebAppComposite() throws ContributionException {
         getWebAppComponentType();
 
-        Composite composite = AssemblyHelper.createComposite();
+        Composite composite = helper.createComposite();
 
         ModelFactoryExtensionPoint mfep = new DefaultModelFactoryExtensionPoint();
         WebImplementationFactory wif = mfep.getFactory(WebImplementationFactory.class);
@@ -113,21 +121,21 @@ public class WebModuleProcessor {
         impl.setWebURI(webModule.getModuleId());
 
         // Create component
-        Component component = AssemblyHelper.createComponent();
+        Component component = helper.createComponent();
         String componentName = webModule.getModuleId();
         component.setName(componentName);
         component.setImplementation(impl);
 
         // Add references
         for (Reference reference : componentType.getReferences()) {
-            ComponentReference componentReference = AssemblyHelper.createComponentReference();
+            ComponentReference componentReference = helper.createComponentReference();
             componentReference.setReference(reference);
             component.getReferences().add(componentReference);
         }
 
         // Add properties
         for (Property property : componentType.getProperties()) {
-            ComponentProperty componentProperty = AssemblyHelper.createComponentProperty();
+            ComponentProperty componentProperty = helper.createComponentProperty();
             componentProperty.setProperty(property);
             component.getProperties().add(componentProperty);
         }
@@ -137,7 +145,7 @@ public class WebModuleProcessor {
 
         // Add composite references
         for (ComponentReference reference : component.getReferences()) {
-            CompositeReference compositeReference = AssemblyHelper.createCompositeReference();
+            CompositeReference compositeReference = helper.createCompositeReference();
             compositeReference.setInterfaceContract(reference.getInterfaceContract());
             compositeReference.getPromotedReferences().add(reference);
             composite.getReferences().add(compositeReference);
