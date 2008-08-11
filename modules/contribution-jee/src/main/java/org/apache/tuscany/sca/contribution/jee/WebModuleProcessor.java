@@ -94,7 +94,7 @@ public class WebModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : webApp.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
@@ -102,7 +102,7 @@ public class WebModuleProcessor {
             String value = envEntry.getEnvEntryValue();
             Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }
