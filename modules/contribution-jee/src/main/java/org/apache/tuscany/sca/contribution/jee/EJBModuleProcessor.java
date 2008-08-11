@@ -106,7 +106,7 @@ public class EJBModuleProcessor {
                 String intf = ((JavaInterface)reference.getInterfaceContract().getInterface()).getName();
                 for (String bean : intfToBean.get(intf)) {
                     if (statefulBeans.contains(bean)) {
-                        reference.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
+                        reference.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
                         break;
                     }
                 }
@@ -245,7 +245,7 @@ public class EJBModuleProcessor {
             }
             service.setInterfaceContract(ic);
             if (conversational) {
-                service.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
+                service.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
             }
             componentType.getServices().add(service);
         }
@@ -266,7 +266,7 @@ public class EJBModuleProcessor {
             }
             service.setInterfaceContract(ic);
             if (conversational) {
-                service.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
+                service.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
             }
             componentType.getServices().add(service);
         }
@@ -296,7 +296,7 @@ public class EJBModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : bean.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
@@ -304,7 +304,7 @@ public class EJBModuleProcessor {
             String value = envEntry.getEnvEntryValue();
             Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }
@@ -340,7 +340,7 @@ public class EJBModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : bean.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
@@ -348,7 +348,7 @@ public class EJBModuleProcessor {
             String value = envEntry.getEnvEntryValue();
             Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }
