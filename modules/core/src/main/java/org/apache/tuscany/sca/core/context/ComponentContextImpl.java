@@ -219,7 +219,11 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
             if (refInterfaceContract != interfaceContract) {
                 ref = (RuntimeComponentReference)reference.clone();
-                ref.setInterfaceContract(interfaceContract);
+                if (interfaceContract != null) {
+                    ref.setInterfaceContract(interfaceContract);
+                } else {
+                    ref.setInterfaceContract(refInterfaceContract);
+                }
             }
             ref.setComponent(component);
             return new ServiceReferenceImpl<B>(businessInterface, component, ref, binding, proxyFactory, compositeActivator);
@@ -342,14 +346,17 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      */
     private InterfaceContract getInterfaceContract(InterfaceContract interfaceContract, Class<?> businessInterface)
         throws CloneNotSupportedException, InvalidInterfaceException {
-        Interface interfaze = interfaceContract.getInterface();
         boolean compatible = false;
-        if (interfaze instanceof JavaInterface) {
-            Class<?> cls = ((JavaInterface)interfaze).getJavaClass();
-            if (businessInterface.isAssignableFrom(cls)) {
-                compatible = true;
+        if (interfaceContract != null && interfaceContract.getInterface() != null) {
+            Interface interfaze = interfaceContract.getInterface();
+            if (interfaze instanceof JavaInterface) {
+                Class<?> cls = ((JavaInterface)interfaze).getJavaClass();
+                if (businessInterface.isAssignableFrom(cls)) {
+                    compatible = true;
+                }
             }
         }
+
         if (!compatible) {
             // The interface is not assignable from the interface contract
             interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
