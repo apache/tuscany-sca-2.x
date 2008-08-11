@@ -412,8 +412,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         // Use the interface contract of the reference on the component type
         Reference componentTypeRef = reference.getReference();
-        InterfaceContract sourceContract =
-            componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
+
+        InterfaceContract sourceContract;
+        if (componentTypeRef == null || componentTypeRef.getInterfaceContract() == null) {
+            sourceContract = reference.getInterfaceContract();
+        } else {
+            sourceContract = componentTypeRef.getInterfaceContract();
+        }
+
         sourceContract = sourceContract.makeUnidirectional(false);
 
         EndpointReference wireSource =
