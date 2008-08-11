@@ -61,7 +61,7 @@
                     <forkMode>once</forkMode>
                         <!--  I hit a bug in maven-surefire-plugin 
                         http://jira.codehaus.org/browse/SUREFIRE-128 -->
-                    <argLine>-ea -Xmx128m -javaagent:&quot;${settings.localRepository}/org/aspectj/aspectjweaver/1.6.1/aspectjweaver-1.6.1.jar&quot;</argLine>
+                    <argLine>-ea -Xmx128m -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/1.6.1/aspectjweaver-1.6.1.jar</argLine>
                 </configuration>
             </plugin>
         </plugins>
