@@ -23,19 +23,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 
 /**
  * The model representing an Web implementation in an SCA assembly model.
  */
-class WebImplementationImpl implements WebImplementation {
+class WebImplementationImpl implements WebImplementation, ComponentPreProcessor {
 
     private List<Property> properties = new ArrayList<Property>(); 
-    // private List<Service> services = new ArrayList<Service>(); 
     private List<Reference> references = new ArrayList<Reference>(); 
     private String uri;
     private boolean unresolved;
@@ -93,4 +95,38 @@ class WebImplementationImpl implements WebImplementation {
     public void setWebURI(String webURI) {
         this.webURI = webURI;
     }
+
+    /**
+     * Use preProcess to add any references dynamically
+     * TODO: also support introspection and handle WEB-INF/web.componentType (spec line 503) 
+     */
+    public void preProcess(Component component) {
+        RuntimeComponent rtc = (RuntimeComponent) component;
+        
+        for (Reference reference : rtc.getReferences()) {
+            if (getReference(reference.getName()) == null) {
+                getReferences().add(createReference(reference));
+            }
+        }
+    }
+
+    protected Reference getReference(String name) {
+        for (Reference reference : getReferences()) {
+            if (reference.getName().equals(name)) {
+                return reference;
+            }
+        }
+        return null;
+    }
+
+    protected Reference createReference(Reference reference) {
+        Reference newReference;
+        try {
+            newReference = (Reference)reference.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e); // should not ever happen
+        }
+        return newReference;
+    }
+
 }
