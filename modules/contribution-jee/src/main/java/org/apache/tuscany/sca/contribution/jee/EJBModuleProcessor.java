@@ -56,14 +56,20 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
  * @version $Rev$ $Date$
  */
 public class EJBModuleProcessor {
-
     private EjbModule ejbModule;
-
+    private AssemblyHelper helper;
     private Map<String, List<String>> intfToBean = new HashMap<String, List<String>>();
     private List<String> statefulBeans = new ArrayList<String>();
 
+    public EJBModuleProcessor(EjbModule ejbModule, AssemblyHelper helper) {
+        super();
+        this.ejbModule = ejbModule;
+        this.helper = helper;
+    }
+
     public EJBModuleProcessor(EjbModule ejbModule) {
         this.ejbModule = ejbModule;
+        this.helper = new AssemblyHelper();
     }
 
     public Map<String, ComponentType> getEjbComponentTypes() throws ContributionException {
@@ -100,7 +106,7 @@ public class EJBModuleProcessor {
                 String intf = ((JavaInterface)reference.getInterfaceContract().getInterface()).getName();
                 for (String bean : intfToBean.get(intf)) {
                     if (statefulBeans.contains(bean)) {
-                        reference.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
+                        reference.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
                         break;
                     }
                 }
@@ -111,7 +117,7 @@ public class EJBModuleProcessor {
     }
 
     public ComponentType getEjbAppComponentType() throws ContributionException {
-        ComponentType componentType = AssemblyHelper.createComponentType();
+        ComponentType componentType = helper.createComponentType();
 
         Map<String, ComponentType> ejbComponentTypes = getEjbComponentTypes();
 
@@ -120,7 +126,7 @@ public class EJBModuleProcessor {
             ComponentType ejbComponentType = entry.getValue();
 
             for (Service service : ejbComponentType.getServices()) {
-                Service service2 = AssemblyHelper.createComponentService();
+                Service service2 = helper.createComponentService();
                 service2.setName(beanName + "_" + service.getName());
                 service2.setInterfaceContract(service.getInterfaceContract());
                 service2.getRequiredIntents().addAll(service.getRequiredIntents());
@@ -129,7 +135,7 @@ public class EJBModuleProcessor {
             }
 
             for (Reference reference : ejbComponentType.getReferences()) {
-                Reference reference2 = AssemblyHelper.createComponentReference();
+                Reference reference2 = helper.createComponentReference();
                 reference2.setName(beanName + "_" + reference.getName());
                 reference2.setInterfaceContract(reference.getInterfaceContract());
                 reference2.getRequiredIntents().addAll(reference.getRequiredIntents());
@@ -142,7 +148,7 @@ public class EJBModuleProcessor {
     }
 
     public Composite getEjbAppComposite() throws ContributionException {
-        Composite composite = AssemblyHelper.createComposite();
+        Composite composite = helper.createComposite();
 
         Map<String, ComponentType> ejbComponentTypes = getEjbComponentTypes();
 
@@ -156,28 +162,28 @@ public class EJBModuleProcessor {
             EJBImplementation impl = eif.createEJBImplementation();
             impl.setEJBLink(ejbModule.getModuleId() + "#" + ejbName);
             // Create component
-            Component component = AssemblyHelper.createComponent();
+            Component component = helper.createComponent();
             String componentName = ejbName;
             component.setName(componentName);
             component.setImplementation(impl);
 
             // Add services
             for (Service service : componentType.getServices()) {
-                ComponentService componentService = AssemblyHelper.createComponentService();
+                ComponentService componentService = helper.createComponentService();
                 componentService.setService(service);
                 component.getServices().add(componentService);
             }
 
             // Add references
             for (Reference reference : componentType.getReferences()) {
-                ComponentReference componentReference = AssemblyHelper.createComponentReference();
+                ComponentReference componentReference = helper.createComponentReference();
                 componentReference.setReference(reference);
                 component.getReferences().add(componentReference);
             }
 
             // Add properties
             for (Property property : componentType.getProperties()) {
-                ComponentProperty componentProperty = AssemblyHelper.createComponentProperty();
+                ComponentProperty componentProperty = helper.createComponentProperty();
                 componentProperty.setProperty(property);
                 component.getProperties().add(componentProperty);
             }
@@ -187,7 +193,7 @@ public class EJBModuleProcessor {
 
             // Add composite services
             for (ComponentService service : component.getServices()) {
-                CompositeService compositeService = AssemblyHelper.createCompositeService();
+                CompositeService compositeService = helper.createCompositeService();
                 compositeService.setInterfaceContract(service.getInterfaceContract());
                 compositeService.setPromotedComponent(component);
                 compositeService.setPromotedService(service);
@@ -196,7 +202,7 @@ public class EJBModuleProcessor {
 
             // Add composite references
             for (ComponentReference reference : component.getReferences()) {
-                CompositeReference compositeReference = AssemblyHelper.createCompositeReference();
+                CompositeReference compositeReference = helper.createCompositeReference();
                 compositeReference.setInterfaceContract(reference.getInterfaceContract());
                 compositeReference.getPromotedReferences().add(reference);
                 composite.getReferences().add(compositeReference);
@@ -206,7 +212,7 @@ public class EJBModuleProcessor {
     }
 
     private ComponentType getEjbComponentType(SessionBean bean, ClassLoader cl) throws ContributionException {
-        ComponentType componentType = AssemblyHelper.createComponentType();
+        ComponentType componentType = helper.createComponentType();
 
         boolean conversational = bean.getSessionType().equals(SessionType.STATEFUL);
         if (conversational) {
@@ -226,12 +232,12 @@ public class EJBModuleProcessor {
 
             String serviceName =
                 intfName.lastIndexOf(".") != -1 ? intfName.substring(intfName.lastIndexOf(".") + 1) : intfName;
-            Service service = AssemblyHelper.createComponentService();
+            Service service = helper.createComponentService();
             service.setName(serviceName);
             InterfaceContract ic = null;
             try {
                 Class<?> clazz = cl.loadClass(intfName);
-                ic = AssemblyHelper.createInterfaceContract(clazz);
+                ic = helper.createInterfaceContract(clazz);
                 ic.getInterface().setConversational(conversational);
                 ic.getInterface().setRemotable(true);
             } catch (Exception e) {
@@ -239,7 +245,7 @@ public class EJBModuleProcessor {
             }
             service.setInterfaceContract(ic);
             if (conversational) {
-                service.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
+                service.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
             }
             componentType.getServices().add(service);
         }
@@ -248,19 +254,19 @@ public class EJBModuleProcessor {
         for (String intfName : bean.getBusinessLocal()) {
             String serviceName =
                 intfName.lastIndexOf(".") != -1 ? intfName.substring(intfName.lastIndexOf(".") + 1) : intfName;
-            Service service = AssemblyHelper.createComponentService();
+            Service service = helper.createComponentService();
             service.setName(serviceName);
             InterfaceContract ic = null;
             try {
                 Class<?> clazz = cl.loadClass(intfName);
-                ic = AssemblyHelper.createInterfaceContract(clazz);
+                ic = helper.createInterfaceContract(clazz);
                 ic.getInterface().setConversational(conversational);
             } catch (Exception e) {
                 throw new ContributionException(e);
             }
             service.setInterfaceContract(ic);
             if (conversational) {
-                service.getRequiredIntents().add(AssemblyHelper.CONVERSATIONAL_INTENT);
+                service.getRequiredIntents().add(helper.CONVERSATIONAL_INTENT);
             }
             componentType.getServices().add(service);
         }
@@ -273,12 +279,12 @@ public class EJBModuleProcessor {
             }
             String referenceName = entry.getKey();
             referenceName = referenceName.replace("/", "_");
-            Reference reference = AssemblyHelper.createComponentReference();
+            Reference reference = helper.createComponentReference();
             reference.setName(referenceName);
             InterfaceContract ic = null;
             try {
                 Class<?> clazz = cl.loadClass(ejbRef.getInterface());
-                ic = AssemblyHelper.createInterfaceContract(clazz);
+                ic = helper.createInterfaceContract(clazz);
             } catch (Exception e) {
                 throw new ContributionException(e);
             }
@@ -290,15 +296,15 @@ public class EJBModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : bean.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
             propertyName = propertyName.replace("/", "_");
             String value = envEntry.getEnvEntryValue();
-            Property property = AssemblyHelper.createComponentProperty();
+            Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }
@@ -307,7 +313,7 @@ public class EJBModuleProcessor {
     }
 
     private ComponentType getEjbComponentType(MessageDrivenBean bean, ClassLoader cl) throws ContributionException {
-        ComponentType componentType = AssemblyHelper.createComponentType();
+        ComponentType componentType = helper.createComponentType();
 
         // Process Remote EJB References
         for (Map.Entry<String, EjbRef> entry : bean.getEjbRefMap().entrySet()) {
@@ -317,12 +323,12 @@ public class EJBModuleProcessor {
             }
             String referenceName = entry.getKey();
             referenceName = referenceName.replace("/", "_");
-            Reference reference = AssemblyHelper.createComponentReference();
+            Reference reference = helper.createComponentReference();
             reference.setName(referenceName);
             InterfaceContract ic = null;
             try {
                 Class<?> clazz = cl.loadClass(ejbRef.getInterface());
-                ic = AssemblyHelper.createInterfaceContract(clazz);
+                ic = helper.createInterfaceContract(clazz);
             } catch (Exception e) {
                 throw new ContributionException(e);
             }
@@ -334,15 +340,15 @@ public class EJBModuleProcessor {
         for (Map.Entry<String, EnvEntry> entry : bean.getEnvEntryMap().entrySet()) {
             EnvEntry envEntry = entry.getValue();
             String type = envEntry.getEnvEntryType();
-            if (!AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
+            if (!helper.ALLOWED_ENV_ENTRY_TYPES.containsKey(type)) {
                 continue;
             }
             String propertyName = entry.getKey();
             propertyName = propertyName.replace("/", "_");
             String value = envEntry.getEnvEntryValue();
-            Property property = AssemblyHelper.createComponentProperty();
+            Property property = helper.createComponentProperty();
             property.setName(propertyName);
-            property.setXSDType(AssemblyHelper.ALLOWED_ENV_ENTRY_TYPES.get(type));
+            property.setXSDType(helper.ALLOWED_ENV_ENTRY_TYPES.get(type));
             property.setValue(value);
             componentType.getProperties().add(property);
         }

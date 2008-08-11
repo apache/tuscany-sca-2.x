@@ -50,8 +50,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * @version $Rev$ $Date$
  */
 public class AssemblyHelper {
-    private static AssemblyFactory af = new DefaultAssemblyFactory();
-    private static JavaInterfaceFactory jif = new DefaultJavaInterfaceFactory();
+    private AssemblyFactory af;
+    private JavaInterfaceFactory jif;
 
     public static final Map<String, QName> ALLOWED_ENV_ENTRY_TYPES;
     public static Intent CONVERSATIONAL_INTENT;
@@ -82,7 +82,19 @@ public class AssemblyHelper {
 
     }
 
-    public static JavaInterfaceContract createInterfaceContract(Class<?> clazz) throws InvalidInterfaceException {
+    public AssemblyHelper() {
+        super();
+        af = new DefaultAssemblyFactory();
+        jif = new DefaultJavaInterfaceFactory();
+    }
+
+    public AssemblyHelper(AssemblyFactory af, JavaInterfaceFactory jif) {
+        super();
+        this.af = af;
+        this.jif = jif;
+    }
+
+    public JavaInterfaceContract createInterfaceContract(Class<?> clazz) throws InvalidInterfaceException {
         JavaInterface ji = jif.createJavaInterface(clazz);
         JavaInterfaceContract jic = jif.createJavaInterfaceContract();
         jic.setInterface(ji);
@@ -90,23 +102,23 @@ public class AssemblyHelper {
         return jic;
     }
 
-    public static ComponentService createComponentService() {
+    public ComponentService createComponentService() {
         return af.createComponentService();
     }
 
-    public static ComponentReference createComponentReference() {
+    public ComponentReference createComponentReference() {
         return af.createComponentReference();
     }
 
-    public static ComponentProperty createComponentProperty() {
+    public ComponentProperty createComponentProperty() {
         return af.createComponentProperty();
     }
 
-    public static ComponentType createComponentType() {
+    public ComponentType createComponentType() {
         return af.createComponentType();
     }
 
-    public static Component createComponentFromComponentType(ComponentType componentType, String componentName) {
+    public Component createComponentFromComponentType(ComponentType componentType, String componentName) {
         Component component = af.createComponent();
         component.setName(componentName);
 
@@ -130,19 +142,19 @@ public class AssemblyHelper {
         return component;
     }
 
-    public static Composite createComposite() {
+    public Composite createComposite() {
         return af.createComposite();
     }
 
-    public static Component createComponent() {
+    public Component createComponent() {
         return af.createComponent();
     }
 
-    public static CompositeReference createCompositeReference() {
+    public CompositeReference createCompositeReference() {
         return af.createCompositeReference();
     }
 
-    public static CompositeService createCompositeService() {
+    public CompositeService createCompositeService() {
         return af.createCompositeService();
     }
 }
