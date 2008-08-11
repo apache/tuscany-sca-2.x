@@ -21,25 +21,38 @@ package sample;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Reference;
 
 /**
  */
 public class HelloworldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Reference
-    protected HelloworldService helloworldService;
+    protected HelloworldService service;
 
+    @Override
+    public void init(ServletConfig config) {
+        if (service == null) {
+            // The helloworldService reference will only be injected from the @Reference 
+            // annotation in containers supporting SCA "deep" integration. In other 
+            // environments in can be looked up from the ComponentContext.
+            ComponentContext cc = (ComponentContext)config.getServletContext().getAttribute("org.osoa.sca.ComponentContext");
+            service = cc.getService(HelloworldService.class, "service");
+        }
+    }
+    
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     	String name = request.getParameter("name");
-    	String greeting = helloworldService.sayHello(name);
+    	String greeting = service.sayHello(name);
     	
         Writer out = response.getWriter();
         out.write("<html><head><title>Apache Tuscany Helloworld Servlet Sample</title></head><body>");
