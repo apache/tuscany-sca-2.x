@@ -39,7 +39,7 @@ public class JavaEEModuleHelper {
         try {
             appModule = loader.load(new File(jarFilePath));
         } catch (OpenEJBException e) {
-        	throw new ContributionException(e);
+            throw new ContributionException(e);
         }
 
         // Process deployment descriptor files
@@ -47,7 +47,7 @@ public class JavaEEModuleHelper {
         try {
             readDescriptors.deploy(appModule);
         } catch (OpenEJBException e) {
-        	throw new ContributionException(e);
+            throw new ContributionException(e);
         }
 
         // Process annotations
@@ -55,7 +55,7 @@ public class JavaEEModuleHelper {
         try {
             annDeployer.deploy(appModule);
         } catch (OpenEJBException e) {
-        	throw new ContributionException(e);
+            throw new ContributionException(e);
         }
 
         return appModule;
