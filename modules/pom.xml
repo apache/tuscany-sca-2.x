@@ -143,6 +143,8 @@
                 <module>implementation-resource-runtime</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
+                <module>implementation-web</module>
+                <module>implementation-web-runtime</module>
                 <module>implementation-widget</module>
                 <module>implementation-widget-runtime</module>
                 <module>implementation-xquery</module>
