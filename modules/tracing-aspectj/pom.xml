@@ -47,6 +47,35 @@
     </dependencies>
     <build>
         <plugins>
+        <!-- Copy the aspectjweaver jar to avoid surefire problems for
+        directorites with space -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.aspectj</groupId>
+                                    <artifactId>aspectjweaver</artifactId>
+                                    <version>1.6.1</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/dependency
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
             <!-- surefire plugin configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -61,10 +90,9 @@
                     <forkMode>once</forkMode>
                         <!--  I hit a bug in maven-surefire-plugin 
                         http://jira.codehaus.org/browse/SUREFIRE-128 -->
-                    <argLine>-ea -Xmx128m -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/1.6.1/aspectjweaver-1.6.1.jar</argLine>
+                    <argLine>-ea -Xmx128m -javaagent:target/dependency/aspectjweaver-1.6.1.jar</argLine>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
