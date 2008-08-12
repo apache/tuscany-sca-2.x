@@ -171,6 +171,7 @@ public class EJBModuleProcessor {
             for (Service service : componentType.getServices()) {
                 ComponentService componentService = helper.createComponentService();
                 componentService.setService(service);
+                componentService.setInterfaceContract(service.getInterfaceContract());
                 component.getServices().add(componentService);
             }
 
@@ -178,6 +179,7 @@ public class EJBModuleProcessor {
             for (Reference reference : componentType.getReferences()) {
                 ComponentReference componentReference = helper.createComponentReference();
                 componentReference.setReference(reference);
+                componentReference.setInterfaceContract(reference.getInterfaceContract());
                 component.getReferences().add(componentReference);
             }
 

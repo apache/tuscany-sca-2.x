@@ -130,6 +130,7 @@ public class WebModuleProcessor {
         for (Reference reference : componentType.getReferences()) {
             ComponentReference componentReference = helper.createComponentReference();
             componentReference.setReference(reference);
+            componentReference.setInterfaceContract(reference.getInterfaceContract());
             component.getReferences().add(componentReference);
         }
 
