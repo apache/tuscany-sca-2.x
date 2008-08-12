@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.host.corba.jse.DefaultCorbaHost;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
@@ -48,6 +49,7 @@ public class ScenarioThreeTestCase {
      */
     @BeforeClass
     public static void setUp() {
+        TestCorbaHost.setCorbaHost(new DefaultCorbaHost());
         try {
             try {
                 server =

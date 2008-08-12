@@ -16,27 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.host.corba.jse;
+package org.apache.tuscany.sca.host.corba.jse.tns;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.corba.CorbaHostExtensionPoint;
+import org.apache.tuscany.sca.host.corba.jse.DefaultCorbaHost;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev: 683329 $ $Date: 2008-08-06 19:06:39 +0200 (śro, 06 sie 2008) $
  */
 public class CorbaRuntimeModuleActivator implements ModuleActivator {
     // private static final Logger logger =
     // Logger.getLogger(CorbaRuntimeModuleActivator.class.getName());
 
-    private DefaultCorbaHost server;
+    private TnsDefaultCorbaHost server;
 
-    public void start(ExtensionPointRegistry extensionPointRegistry) {
-
+    public void start(ExtensionPointRegistry extensionPointRegistry) {       
         // Register our Corba host
         CorbaHostExtensionPoint corbaHosts = extensionPointRegistry.getExtensionPoint(CorbaHostExtensionPoint.class);
-        server = new DefaultCorbaHost();
-        corbaHosts.addCorbaHost(server);
+        server = new TnsDefaultCorbaHost();
+        if (corbaHosts.getCorbaHosts().size() > 0 && corbaHosts.getCorbaHosts().get(0) instanceof DefaultCorbaHost) {
+            // Set TnsDefaultCorbaHost as default when DefaultCorbaHost was registered before
+            corbaHosts.getCorbaHosts().add(0, server);     
+        } else {
+            corbaHosts.getCorbaHosts().add(server);
+        }
     }
 
     public void stop(ExtensionPointRegistry registry) {

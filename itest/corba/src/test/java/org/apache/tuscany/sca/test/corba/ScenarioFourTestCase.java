@@ -23,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.host.corba.jse.DefaultCorbaHost;
+import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
+import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourFactory;
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
@@ -43,13 +46,21 @@ public class ScenarioFourTestCase {
     private static SCADomain domain;
     private static ScenarioFourComponent scenarioFourComponent;
     private static ScenarioFour scenarioFour;
-
+    private static TransientNameServer server;
+    private static final int ORB_INITIAL_PORT = 5080;
+    
     /**
      * Initial configuration
      */
     @BeforeClass
     public static void setUp() {
+        TestCorbaHost.setCorbaHost(new DefaultCorbaHost());
         try {
+            server = new TransientNameServer("localhost", ORB_INITIAL_PORT, TransientNameService.DEFAULT_SERVICE_NAME);
+            Thread t = server.start();
+            if (t == null) {
+                Assert.fail("The naming server cannot be started");
+            }
             // obtain domain
             domain = SCADomain.newInstance("ScenarioFour.composite");
             scenarioFourComponent = domain.getService(ScenarioFourComponent.class, "ScenarioFour");
@@ -64,7 +75,7 @@ public class ScenarioFourTestCase {
      */
     @AfterClass
     public static void tearDown() {
-        // do nothing
+        server.stop();
     }
 
     /**

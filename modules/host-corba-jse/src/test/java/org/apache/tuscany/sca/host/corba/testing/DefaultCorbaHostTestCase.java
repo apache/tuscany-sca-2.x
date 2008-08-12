@@ -247,39 +247,4 @@ public class DefaultCorbaHostTestCase {
         }
     }
 
-    /**
-     * Test for creating and releasing local name server
-     */
-    @Test
-    public void test_localNameServer() {
-        int testPort = 5070;
-        try {
-            host.createLocalNameServer(testPort);
-            host.createLocalNameServer(testPort);
-            host.createLocalNameServer(testPort);
-            Thread.sleep(1000);
-            // make test connection to name server
-            Socket socket = new Socket("localhost", testPort);
-            socket.close();
-            // and stop server
-            host.releaseLocalNameServer(testPort);
-            host.releaseLocalNameServer(testPort);
-            // after releasing 2 clients 3rd should still hold the server
-            socket = new Socket("localhost", testPort);
-            socket.close();
-            host.releaseLocalNameServer(testPort);
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-        try {
-            // previously made 3rd stop so there should be no name server under
-            // this port
-            new Socket("localhost", testPort);
-            fail();
-        } catch (Exception e) {
-            assertTrue(e instanceof SocketException);
-        }
-    }
 }

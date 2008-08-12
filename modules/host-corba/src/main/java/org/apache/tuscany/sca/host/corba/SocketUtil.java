@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.impl.util;
+package org.apache.tuscany.sca.host.corba;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

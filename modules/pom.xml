@@ -112,6 +112,7 @@
                 <module>host-corba</module>
                 <module>host-corba-jee</module>
                 <module>host-corba-jse</module>
+                <module>host-corba-jse-tns</module>
                 <module>host-ejb</module>
                 <module>host-embedded</module>
                 <module>host-http</module>

@@ -17,39 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.corba;
+package org.apache.tuscany.sca.test.corba;
 
-import org.omg.CORBA.Object;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.corba.CorbaHostExtensionPoint;
 
 /**
- * CORBA Service hosting interface
+ * Registers TestCorbaHost as a Corba host extension. 
  */
-public interface CorbaHost {
+public class TestCorbaHostModuleActivator implements ModuleActivator {
 
-    /**
-     * Registers servant in name server.
-     * 
-     * @param uri corbaname URI
-     * @param serviceObject
-     * @throws CorbaHostException
-     */
-    void registerServant(String uri, Object serviceObject) throws CorbaHostException;
+    public void start(ExtensionPointRegistry extensionPointRegistry) {
+        CorbaHostExtensionPoint chep = extensionPointRegistry.getExtensionPoint(CorbaHostExtensionPoint.class);
+        chep.getCorbaHosts().add(0, new TestCorbaHost());
+    }
 
-    /**
-     * Removes servant from name server
-     * 
-     * @param orb The ORB instance
-     * @param name binding name
-     * @throws CorbaHostException
-     */
-    void unregisterServant(String uri) throws CorbaHostException;
+    public void stop(ExtensionPointRegistry extensionPointRegistry) {
 
-    /**
-     * Gets reference to object
-     * 
-     * @param name binding name
-     * @return objects reference
-     * @throws CorbaHostException
-     */
-    Object lookup(String uri) throws CorbaHostException;
+    }
+
 }
