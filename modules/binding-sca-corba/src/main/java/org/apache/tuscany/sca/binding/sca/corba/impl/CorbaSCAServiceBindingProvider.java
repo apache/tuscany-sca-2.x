@@ -23,13 +23,11 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
 import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
-import org.apache.tuscany.sca.binding.corba.impl.util.SocketUtil;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.corba.CorbaHost;
-import org.apache.tuscany.sca.host.corba.CorbanameURL;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -48,8 +46,6 @@ public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
     private DynaCorbaServant servant;
     private MessageFactory messageFactory;
     private InterfaceContract wsdlInterfaceContract;
-    private boolean isLocalhost;
-    private int bindingPort;
 
     public CorbaSCAServiceBindingProvider(SCABinding binding,
                                           CorbaHost host,
@@ -59,10 +55,6 @@ public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
         this.binding = binding;
         this.host = host;
         this.service = service;
-        
-        CorbanameURL details = new CorbanameURL(binding.getURI());
-        isLocalhost = SocketUtil.isLocalhost(details.getHost());
-        bindingPort = details.getPort();
         
         messageFactory = extensions.getExtensionPoint(MessageFactory.class);
 
@@ -87,9 +79,6 @@ public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
                 new CorbaSCAInvocationProxy(service.getRuntimeWire(binding), service.getInterfaceContract()
                     .getInterface(), messageFactory);
             servant = new DynaCorbaServant(proxy, "IDL:org/apache/tuscany/sca/binding/sca/corba/Service:1.0");
-            if (isLocalhost) {
-                host.createLocalNameServer(bindingPort);
-            }
             host.registerServant(binding.getURI(), servant);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -99,9 +88,6 @@ public class CorbaSCAServiceBindingProvider implements ServiceBindingProvider {
     public void stop() {
         try {
             host.unregisterServant(binding.getURI());
-            if (isLocalhost) {
-                host.releaseLocalNameServer(bindingPort);
-            }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

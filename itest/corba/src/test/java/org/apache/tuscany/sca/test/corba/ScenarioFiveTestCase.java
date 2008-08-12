@@ -21,21 +21,20 @@ package org.apache.tuscany.sca.test.corba;
 
 import static org.junit.Assert.fail;
 
+import org.apache.tuscany.sca.host.corba.jse.tns.TnsDefaultCorbaHost;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.corba.types.ScenarioFive;
 import org.apache.tuscany.sca.test.corba.types.ScenarioFiveComponent;
 import org.junit.Test;
 
 /**
- * Tests usage of "provideNameServer" attribute in <binding.corba>
+ * Tests usage of TNS JSE Corba host
  */
 public class ScenarioFiveTestCase {
 
-    /**
-     * Tests binding with provided name server
-     */
     @Test
     public void test_providedNameServer() {
+        TestCorbaHost.setCorbaHost(new TnsDefaultCorbaHost());
         try {
             // just make sure we can obtain and use the reference with success
             SCADomain domain = SCADomain.newInstance("ScenarioFive.composite");

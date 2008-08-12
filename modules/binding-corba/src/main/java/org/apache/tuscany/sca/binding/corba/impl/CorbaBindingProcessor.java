@@ -86,10 +86,6 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
         if (id != null) {
             binding.setId(id);
         }
-        
-        // Read name server request
-        String provideNameServer = reader.getAttributeValue(null, "provideNameServer");
-        binding.setProvideNameServer("true".equals(provideNameServer) ? true : false);
         return binding;
     }
 
@@ -118,10 +114,6 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
         
         if (model.getId() != null) {
             writer.writeAttribute("id", model.getId());
-        }
-        
-        if (model.isProvideNameServer()) {
-            writer.writeAttribute("provideNameServer", "true");
         }
         writer.writeEndElement();
     }

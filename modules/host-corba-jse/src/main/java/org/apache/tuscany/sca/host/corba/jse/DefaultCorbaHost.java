@@ -29,8 +29,6 @@ import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
 import org.apache.tuscany.sca.host.corba.CorbaHostUtils;
 import org.apache.tuscany.sca.host.corba.CorbanameURL;
-import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
-import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NameComponent;
@@ -48,8 +46,6 @@ public class DefaultCorbaHost implements CorbaHost {
     private static final Logger logger = Logger.getLogger(DefaultCorbaHost.class.getName());
 
     private Map<String, ORB> orbs = new ConcurrentHashMap<String, ORB>();
-    private Map<Integer, TransientNameServer> localServers = new ConcurrentHashMap<Integer, TransientNameServer>();
-    private Map<Integer, Integer> clientsCount = new ConcurrentHashMap<Integer, Integer>();
 
     private void validatePort(int port) throws IllegalArgumentException {
         if (port < 1) {
@@ -179,51 +175,6 @@ public class DefaultCorbaHost implements CorbaHost {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-    }
-
-    /**
-     * Starts transient name server under given port. If TNS was previously
-     * spawned it increments clients counter.
-     */
-    synchronized public void createLocalNameServer(int port) throws CorbaHostException {
-        int useCount = clientsCount.containsKey(port) ? clientsCount.get(port) : 0;
-        // no server previously spawned
-        if (useCount == 0) {
-            TransientNameServer server =
-                new TransientNameServer("localhost", port, TransientNameService.DEFAULT_SERVICE_NAME);
-            Thread thread = server.start();
-            if (thread == null) {
-                throw new CorbaHostException("TransientNameServer couldn't be started");
-            } else {
-                localServers.put(port, server);
-            }
-        }
-        clientsCount.put(port, ++useCount);
-    }
-
-    /**
-     * Stops transient name server if there is only one client left using such
-     * TNS. Decrements clients counter if TNS is used by 2 or more clients.
-     */
-    synchronized public void releaseLocalNameServer(int port) throws CorbaHostException {
-        int useCount = clientsCount.containsKey(port) ? clientsCount.get(port) : 0;
-        if (useCount == 1) {
-            // last client executed stop, cleaning up
-            TransientNameServer server = localServers.get(port);
-            if (server != null) {
-                server.stop();
-                clientsCount.remove(port);
-                localServers.remove(port);
-            } else {
-                // FIXME: should we throw exception when expecting not null
-                // server object?
-            }
-        } else if (useCount > 1) {
-            clientsCount.put(port, --useCount);
-        } else {
-            // ignoring request to stop non existing name server
-        }
-
     }
 
 }

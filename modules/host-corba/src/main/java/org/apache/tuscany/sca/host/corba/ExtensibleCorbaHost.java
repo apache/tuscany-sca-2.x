@@ -51,12 +51,4 @@ public class ExtensibleCorbaHost implements CorbaHost {
         return hosts.getCorbaHosts().get(0);
     }
 
-    public void createLocalNameServer(int port) throws CorbaHostException {
-        getCorbaHost().createLocalNameServer(port);
-    }
-    
-    public void releaseLocalNameServer(int port) throws CorbaHostException {
-        getCorbaHost().releaseLocalNameServer(port);
-    }
-
 }

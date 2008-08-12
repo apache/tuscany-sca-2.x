@@ -158,12 +158,4 @@ public class JEECorbaHost implements CorbaHost {
         }
     }
 
-    public void createLocalNameServer(int port) throws CorbaHostException {
-        // no need to start - server is provided by environment
-    }
-
-    public void releaseLocalNameServer(int port) throws CorbaHostException {
-        // no need to release - server is provided by environment
-    }
-
 }
