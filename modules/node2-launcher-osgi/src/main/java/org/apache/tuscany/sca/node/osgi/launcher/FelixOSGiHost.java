@@ -59,8 +59,8 @@ public class FelixOSGiHost implements OSGiHost {
             + "javax.xml.validation, "
             + "javax.xml.xpath, "
             // Force the classes to be imported from the system bundle
-            + "javax.xml.stream, "
-            + "javax.xml.stream.util, "
+            // + "javax.xml.stream, "
+            // + "javax.xml.stream.util, "
             + "javax.sql,"
             + "org.w3c.dom, "
             + "org.xml.sax, "
