@@ -56,6 +56,7 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
 
         servletHost.addServletMapping("org.osoa.sca.componentContext.js", contextServlet);
         contextServlet.setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
+        contextServlet.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
         WebAppServletHost.getInstance().setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
 
         return new ImplementationProvider() {

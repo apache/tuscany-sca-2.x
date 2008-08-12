@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Servlet that handles the GET request for the componentContext.js script
@@ -96,7 +97,9 @@ public class ComponentContextServlet extends HttpServlet {
 
         out.write("// SCA References\n");
         
-        for (ComponentReference cr : WebSingleton.INSTANCE.getRuntimeComponent().getReferences()) {
+        RuntimeComponent component = (RuntimeComponent)servletContext.getAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent");
+        
+        for (ComponentReference cr : component.getReferences()) {
             String ref = "// SCA Reference " + cr.getName() + "\n";
             out.write(ref);
             for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
