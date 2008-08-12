@@ -113,7 +113,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sdo</groupId>
                 <artifactId>tuscany-sdo-plugin</artifactId>
-                <version>1.1-incubating</version>
+                <version>1.1.1</version>
                 <executions>
                     <execution>
                         <id>generate-po-sdo</id>
