@@ -17,7 +17,7 @@
  * under the License.    
 -->
 <project name="feed-aggregator" default="compile">
-    <property name="test.class" value="feed.SampleServer" />
+    <property name="test.class" value="launch.LaunchFeedServer" />
 	<property name="test.jar"   value="sample-feed-aggregator.jar" />
 	
     <target name="init">
