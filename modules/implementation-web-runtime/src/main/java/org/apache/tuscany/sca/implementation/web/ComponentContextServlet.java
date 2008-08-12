@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -52,6 +54,7 @@ public class ComponentContextServlet extends HttpServlet {
     
     protected transient Map<String, Object> attributes = new HashMap<String, Object>();
     protected transient ServletContext servletContext;
+    private transient List<ContextScriptProcessor> contextScriptProcessors = new ArrayList<ContextScriptProcessor>();
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -106,7 +109,7 @@ public class ComponentContextServlet extends HttpServlet {
 
         out.println("}");
 
-        for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
+        for (ContextScriptProcessor csp : contextScriptProcessors) {
             csp.scriptInit(req, response);
         }
     }
@@ -123,7 +126,7 @@ public class ComponentContextServlet extends HttpServlet {
         for (ComponentReference cr : component.getReferences()) {
             String ref = "// SCA Reference " + cr.getName() + "\n";
             out.write(ref);
-            for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
+            for (ContextScriptProcessor csp : contextScriptProcessors) {
                 csp.scriptReference(cr, out);
             }
         }
@@ -150,7 +153,6 @@ public class ComponentContextServlet extends HttpServlet {
     }
 
     public void addContextScriptProcessor(ContextScriptProcessor csp) {
-        // TODO Auto-generated method stub
-        
+        contextScriptProcessors.add(csp);
     }
 }

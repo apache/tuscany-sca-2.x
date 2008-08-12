@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.apache.tuscany.sca.implementation.web.ComponentContextServlet;
 import org.apache.tuscany.sca.implementation.web.ContextScriptProcessorExtensionPoint;
 import org.apache.tuscany.sca.implementation.web.DefaultContextScriptProcessorExtensionPoint;
@@ -57,7 +56,7 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
         servletHost.addServletMapping("org.osoa.sca.componentContext.js", contextServlet);
         contextServlet.setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
         contextServlet.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
-        WebAppServletHost.getInstance().setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
+//        WebAppServletHost.getInstance().setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
 
         return new ImplementationProvider() {
             public Invoker createInvoker(RuntimeComponentService arg0, Operation arg1) {
