@@ -85,6 +85,27 @@ public class ComponentContextServlet extends HttpServlet {
      */
     protected void doScriptInit(HttpServletRequest req, HttpServletResponse response) throws IOException, UnsupportedEncodingException {
 
+        PrintWriter out = response.getWriter();
+        
+        out.println("if (SCA == undefined) var SCA = new Object();");
+        out.println("if (SCA.componentContext == undefined) {");
+        out.println("   SCA.componentContext = new Object();");
+        out.println("   SCA.componentContext.serviceNames = [];");
+        out.println("   SCA.componentContext.serviceProxys = [];");
+        out.println("   SCA.componentContext.getService = function(serviceName){");
+        out.println("      var i = SCA.componentContext.serviceNames.indexOf(serviceName);");
+        out.println("      return SCA.componentContext.serviceProxys[i];");
+        out.println("   };");
+        out.println("   if (componentContext == undefined) var componentContext = SCA.componentContext;");
+
+        // TODO remove this dummy service once the rest is implemented
+        out.println("   var proxy = new Object();");
+        out.println("   proxy.sayHello = function(s, f) {f('proxyHello ' + s);};");
+        out.println("   SCA.componentContext.serviceProxys.push(proxy);");
+        out.println("   SCA.componentContext.serviceNames.push('service');");
+
+        out.println("}");
+
         for (ContextScriptProcessor csp : WebSingleton.INSTANCE.getContextScriptProcessors()) {
             csp.scriptInit(req, response);
         }
