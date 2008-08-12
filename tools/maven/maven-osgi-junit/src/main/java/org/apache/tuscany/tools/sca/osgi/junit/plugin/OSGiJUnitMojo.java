@@ -48,7 +48,7 @@ import org.osgi.framework.BundleContext;
  * @goal test
  * @phase integration-test
  * @requiresDependencyResolution test
- * @description Run the unit test over HTTP
+ * @description Run the unit test with OSGi
  */
 public class OSGiJUnitMojo extends AbstractMojo {
     /**
