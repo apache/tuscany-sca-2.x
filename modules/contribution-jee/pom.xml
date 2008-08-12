@@ -65,6 +65,13 @@
             <version>1.4-SNAPSHOT</version>
             <!--scope>runtime</scope-->
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-jee</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
