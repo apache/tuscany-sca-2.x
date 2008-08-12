@@ -35,5 +35,5 @@ public interface AComponent {
 
     String fooBC();
 
-    DComponent getDReference();
+    String invokeDReference();
 }

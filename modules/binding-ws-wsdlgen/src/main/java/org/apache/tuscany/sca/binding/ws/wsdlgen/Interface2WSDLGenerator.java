@@ -76,6 +76,8 @@ import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @version $Rev: 670103 $ $Date: 2008-06-21 01:35:00 +0100 (Sat, 21 Jun 2008) $
@@ -153,6 +155,39 @@ public class Interface2WSDLGenerator {
         throw new WSDLGenerationException(problem.toString(), null, problem);
     }
     
+    private XMLTypeHelper getTypeHelper(DataType type, Map<String, XMLTypeHelper> helpers) {
+        if (type == null) {
+            return null;
+        }
+        String db = type.getDataBinding();
+        if (db == null) {
+            return null;
+        }
+        if ("java:array".equals(db)) {
+            DataType dt = (DataType)type.getLogical();
+            db = dt.getDataBinding();
+        }
+        return helpers.get(db);
+    }
+    
+    private boolean inputTypesCompatible(DataType wrapperType, DataType<List<DataType>> inputType, Map<String, XMLTypeHelper> helpers) {
+        XMLTypeHelper wrapperHelper = getTypeHelper(wrapperType, helpers);
+        for (DataType dt : inputType.getLogical()) {
+            if (getTypeHelper(dt, helpers) != wrapperHelper) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private boolean outputTypeCompatible(DataType wrapperType, DataType outputType, Map<String, XMLTypeHelper> helpers) {
+        if (getTypeHelper(outputType, helpers) != getTypeHelper(wrapperType, helpers)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     private void addDataType(Map<XMLTypeHelper, List<DataType>> map, DataType type, Map<String, XMLTypeHelper> helpers) {
         if (type == null) {
             return;
@@ -178,18 +213,33 @@ public class Interface2WSDLGenerator {
         Map<XMLTypeHelper, List<DataType>> dataTypes = new HashMap<XMLTypeHelper, List<DataType>>();
         for (Operation op : intf.getOperations()) {
             WrapperInfo wrapper = op.getWrapper();
-            if (useWrapper && wrapper != null) {
-                DataType dt1 = wrapper.getInputWrapperType();
+            DataType dt1 = null;
+            boolean useInputWrapper = useWrapper & wrapper != null;
+            if (useInputWrapper) {
+                dt1 = wrapper.getInputWrapperType();
+                useInputWrapper &= inputTypesCompatible(dt1, op.getInputType(), helpers);
+            }
+            if (useInputWrapper) {
                 addDataType(dataTypes, dt1, helpers);
-                DataType dt2 = wrapper.getOutputWrapperType();
+            } else {
+                for (DataType dt : op.getInputType().getLogical()) {
+                    addDataType(dataTypes, dt, helpers);
+                }
+            }
+            
+            DataType dt2 = null;
+            boolean useOutputWrapper = useWrapper & wrapper != null;
+            if (useOutputWrapper) {
+                dt2 = wrapper.getOutputWrapperType();
+                useOutputWrapper &= outputTypeCompatible(dt2, op.getOutputType(), helpers);
+            }
+            if (useOutputWrapper) {
                 addDataType(dataTypes, dt2, helpers);
             } else {
-                for (DataType dt1 : op.getInputType().getLogical()) {
-                    addDataType(dataTypes, dt1, helpers);
-                }
-                DataType dt2 = op.getOutputType();
+                dt2 = op.getOutputType();
                 addDataType(dataTypes, dt2, helpers);
             }
+            
             for (DataType<DataType> dt3 : op.getFaultTypes()) {
                 DataType dt4 = dt3.getLogical();
                 addDataType(dataTypes, dt4, helpers);
@@ -325,7 +375,10 @@ public class Interface2WSDLGenerator {
                             }
                             QName typeName = element.getType().getQName();
                             String nsURI = typeName.getNamespaceURI();
-                            if ("".equals(nsURI) || targetNS.equals(nsURI)) {
+                            if ("".equals(nsURI)) {
+                                xsElement.setAttribute("type", typeName.getLocalPart());
+                                addSchemaImport(schema, "", schemaDoc);
+                            } else if (targetNS.equals(nsURI)) {
                                 xsElement.setAttribute("type", typeName.getLocalPart());
                             } else if (SCHEMA_NS.equals(nsURI)) {
                                 xsElement.setAttribute("type", "xs:" + typeName.getLocalPart());
@@ -336,6 +389,7 @@ public class Interface2WSDLGenerator {
                                     prefix = "ns" + i++;
                                     prefixMap.put(nsURI, prefix);
                                     schema.setAttributeNS(XMLNS_NS, "xmlns:" + prefix, nsURI);
+                                    addSchemaImport(schema, nsURI, schemaDoc);
                                 }
                                 xsElement.setAttribute("type", prefix + ":" + typeName.getLocalPart());
                             }
@@ -354,7 +408,26 @@ public class Interface2WSDLGenerator {
 
         return definition;
     }
-    
+
+    private static void addSchemaImport(Element schema, String nsURI, Document schemaDoc) {
+        Element imp = schemaDoc.createElementNS(SCHEMA_NS, "xs:import");
+        if (!"".equals(nsURI)) {
+            imp.setAttribute("namespace", nsURI);
+        }
+        NodeList childNodes = schema.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            if (childNode instanceof Element) {
+                schema.insertBefore(imp, childNode);
+                imp = null;
+                break;
+            }
+        }
+        if (imp != null) {
+            schema.appendChild(imp);
+        }
+    }
+
     private void addSchemaExtension(XSDefinition xsDef,
                                     XmlSchemaCollection schemaCollection,
                                     WSDLDefinition wsdlDefinition,

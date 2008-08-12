@@ -136,7 +136,7 @@ public class CallableReferenceRemoteTestCase {
     @Test
     public void testRequiredFalseReference() {
         try {
-            acomponent.getDReference().foo(null);
+            acomponent.invokeDReference();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
