@@ -13,11 +13,11 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-feed-aggregator.jar feed.SampleServer
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-feed-aggregator.jar launch.LaunchFeedServer
 
 and on *nix do
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-feed-aggregator.jar feed.SampleServer
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-feed-aggregator.jar launch.LaunchFeedServer
 
 You should see the following output on the screen.
 
@@ -56,10 +56,11 @@ web-resource/
         feed/
           AggregatorImpl.java             - implementation of the Feed
                                             aggregator component
-          SampleServer.java               - starts the SCA Runtime and 
-                                            publishes the aggregated feeds
           Sort.java						  - utilty interface 
           SortImpl.java					  - implementation of the Sort component
+        launch
+          LaunchFeedServer.java           - starts the SCA Runtime and 
+                                            publishes the aggregated feeds
       resources/
         FeedAggregator.composite          - the SCA assembly for this sample
   feed-aggregator.png                     - a pictorial representation of the 

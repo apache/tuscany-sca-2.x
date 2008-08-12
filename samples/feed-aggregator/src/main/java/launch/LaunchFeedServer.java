@@ -16,15 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package feed;
+
+package launch;
 
 import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class SampleServer {
+public class LaunchFeedServer {
     public static void main(String[] args) throws Exception {
-
         SCADomain scaDomain = SCADomain.newInstance("FeedAggregator.composite");
 
         try {
@@ -40,11 +40,6 @@ public class SampleServer {
             e.printStackTrace();
         }
 
-        // RssFeed feedService = scaDomain.getService(RssFeed.class,
-        // "RssAggregatorComponent");
-        // SyndFeed syndFeed = feedService.get();
-        // SyndFeedOutput output = new SyndFeedOutput();
-        // output.output(syndFeed,new PrintWriter(System.out));
 
         scaDomain.close();
         System.out.println("Sample Feed server stopped");
