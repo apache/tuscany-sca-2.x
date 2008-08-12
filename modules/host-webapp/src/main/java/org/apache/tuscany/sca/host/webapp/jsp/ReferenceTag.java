@@ -27,6 +27,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
+import org.osoa.sca.ComponentContext;
 
 /**
  * Tag to handle SCA references
@@ -54,9 +55,13 @@ public class ReferenceTag extends TagSupport {
         }
  
         ServletContext servletContext = pageContext.getServletContext();
-        SCADomain scaDomain = (SCADomain)servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
-        if (scaDomain == null) {
-            throw new JspException("SCADomain is null. Check Tuscany configuration in web.xml");
+        ComponentContext componentContext = (ComponentContext)servletContext.getAttribute("org.osoa.sca.ComponentContext");
+        SCADomain scaDomain = null;
+        if (componentContext == null) {
+            scaDomain = (SCADomain)servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
+            if (scaDomain == null) {
+                throw new JspException("SCADomain is null. Check Tuscany configuration in web.xml");
+            }
         }
 
         Class<?> typeClass;
@@ -68,7 +73,11 @@ public class ReferenceTag extends TagSupport {
 
         Object o;
         try {
-            o = scaDomain.getService(typeClass, name);
+            if (componentContext != null) {
+                o = componentContext.getService(typeClass, name);
+            } else {
+                o = scaDomain.getService(typeClass, name);
+            }
         } catch (Exception e) {
             throw new JspException("Exception getting service for reference'" + name + "': " + e, e);
         }
