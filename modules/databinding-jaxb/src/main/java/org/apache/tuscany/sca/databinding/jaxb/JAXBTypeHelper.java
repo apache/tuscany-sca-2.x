@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.beans.Introspector;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -74,11 +73,41 @@ public class JAXBTypeHelper implements XMLTypeHelper {
                 xmlType = ((XMLType)logical).getTypeName();
             }
             if (xmlType == null) {
-                xmlType =
-                    new QName(JavaXMLMapper.getNamespace(javaType), Introspector.decapitalize(javaType.getSimpleName()));
+                xmlType = new QName(jaxbRIDecapitalize(javaType.getSimpleName()));
             }
             return new TypeInfo(xmlType, false, null);
         }
+    }
+
+    /**
+     * The JAXB RI doesn't implement the decapitalization algorithm in the
+     * JAXB spec.  See Sun bug 6505643 for details.  This means that we need
+     * to mimic the incorrect algorithm for references from wrapper schemas.
+     */
+    private String jaxbRIDecapitalize(String name) {
+        // find first lower case char in name
+        int lower = name.length();
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isLowerCase(name.charAt(i))) {
+                lower = i;
+                break;
+            }
+        }
+
+        int decap;
+        if (name.length() == 0) {
+            decap = 0;  // empty string: nothing to do
+        } else if (lower == 0) {
+            decap = 0;  // first char is lower case: nothing to do
+        } else if (lower == 1) {
+            decap = 1;  // one upper followed by lower: decapitalize 1 char
+        } else if (lower < name.length()) { 
+            decap = lower - 1;  // n uppers followed by at least one lower: decapitalize n-1 chars
+        } else {
+            decap = name.length();  // all upper case: decapitalize all chars
+        }
+
+        return name.substring(0, decap).toLowerCase() + name.substring(decap);
     }
 
     /*

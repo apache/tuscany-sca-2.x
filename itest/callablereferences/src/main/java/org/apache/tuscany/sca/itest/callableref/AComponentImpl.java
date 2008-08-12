@@ -107,8 +107,8 @@ public class AComponentImpl implements AComponent {
         return dReference1.fooString(aReferenceString);
     }    
 
-    public DComponent getDReference() {
-        return dReference;
+    public String invokeDReference() {
+        return dReference.foo(null);
     }
 
 }
