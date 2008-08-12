@@ -20,7 +20,9 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -28,17 +30,20 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CalculatorTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCADomain scaDomain;
+    private SCANode2 node;
 
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("Calculator.composite");
-        calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
+        SCANode2Factory factory = SCANode2Factory.newInstance();
+        node = factory.createSCANodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
+        node.start();
+        
+        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
     }
 
     public void testCalculator() throws Exception {
