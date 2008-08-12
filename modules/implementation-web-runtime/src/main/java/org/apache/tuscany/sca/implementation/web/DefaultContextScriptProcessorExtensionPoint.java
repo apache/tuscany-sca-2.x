@@ -19,11 +19,33 @@
 
 package org.apache.tuscany.sca.implementation.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class DefaultContextScriptProcessorExtensionPoint implements ContextScriptProcessorExtensionPoint {
 
+    protected ComponentContextServlet componentContextServlet;
+    protected List<ContextScriptProcessor> tempCSPHolder = new ArrayList<ContextScriptProcessor>();
+    
+    public DefaultContextScriptProcessorExtensionPoint() {
+    }
+
     public void addContextScriptProcessor(ContextScriptProcessor csp) {
-        WebSingleton.INSTANCE.addContextScriptProcessor(csp);
+        if (componentContextServlet != null) {
+            componentContextServlet.addContextScriptProcessor(csp);
+        } else {
+            tempCSPHolder.add(csp); 
+        }
+    }
+    
+    public void setComponentContextServlet(ComponentContextServlet servlet) {
+        componentContextServlet = servlet;
+        if (tempCSPHolder.size() > 0) {
+            for (ContextScriptProcessor csp : tempCSPHolder) {
+                componentContextServlet.addContextScriptProcessor(csp);
+            }
+        }
     }
 
 }

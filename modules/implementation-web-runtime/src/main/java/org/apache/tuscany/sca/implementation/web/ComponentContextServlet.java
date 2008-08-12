@@ -23,8 +23,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +48,18 @@ public class ComponentContextServlet extends HttpServlet {
     protected static final String FOOTER = "/** --- Apache Tuscany componentContext.js EOF --- */\n";
 
     public static final String COMPONENT_CONTEXT_SCRIPT_URI = "org.apache.tuscany.sca.componentContext.js";
+    
+    protected transient Map<String, Object> attributes = new HashMap<String, Object>();
+    protected transient ServletContext servletContext;
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-        
+        this.servletContext = servletConfig.getServletContext();
+        if (attributes.size() > 0) {
+            for (String name : attributes.keySet()) {
+                servletContext.setAttribute(name, attributes.get(name));
+            }
+        }
     }
 
     @Override
@@ -103,4 +114,19 @@ public class ComponentContextServlet extends HttpServlet {
         // TODO: support properties
     }
 
+    /**
+     * Set an attribute on the ServletContext
+     */
+    public void setAttribute(String name, Object value) {
+        if (servletContext != null) {
+            servletContext.setAttribute(name, value);
+        } else {
+            attributes.put(name, value);
+        }
+    }
+
+    public void addContextScriptProcessor(ContextScriptProcessor csp) {
+        // TODO Auto-generated method stub
+        
+    }
 }
