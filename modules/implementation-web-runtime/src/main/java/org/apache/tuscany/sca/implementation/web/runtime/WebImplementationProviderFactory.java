@@ -18,8 +18,15 @@
  */
 package org.apache.tuscany.sca.implementation.web.runtime;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
+import org.apache.tuscany.sca.implementation.web.ComponentContextServlet;
+import org.apache.tuscany.sca.implementation.web.ContextScriptProcessorExtensionPoint;
+import org.apache.tuscany.sca.implementation.web.DefaultContextScriptProcessorExtensionPoint;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -29,11 +36,26 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class WebImplementationProviderFactory implements ImplementationProviderFactory<WebImplementation> {
 
+    private ServletHost servletHost;
+    private ComponentContextServlet contextServlet;
+
     public WebImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        if (!hosts.isEmpty()) {
+            this.servletHost = hosts.get(0);
+        }
+
+        contextServlet = new ComponentContextServlet();
+
+        DefaultContextScriptProcessorExtensionPoint dcspep = (DefaultContextScriptProcessorExtensionPoint)extensionPoints.getExtensionPoint(ContextScriptProcessorExtensionPoint.class);
+        dcspep.setComponentContextServlet(contextServlet);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
 
+        servletHost.addServletMapping("org.osoa.sca.componentContext.js", contextServlet);
+        contextServlet.setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
         WebAppServletHost.getInstance().setAttribute("org.osoa.sca.ComponentContext", new ComponentContextProxy(component));
 
         return new ImplementationProvider() {
