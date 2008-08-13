@@ -55,6 +55,10 @@ public class ComponentContextServlet extends HttpServlet {
     protected transient ServletContext servletContext;
     private transient List<ContextScriptProcessor> contextScriptProcessors = new ArrayList<ContextScriptProcessor>();
 
+    public ComponentContextServlet() {
+        contextScriptProcessors.add(new JSONRPCScripProcessor());
+    }
+
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         this.servletContext = servletConfig.getServletContext();
@@ -99,13 +103,6 @@ public class ComponentContextServlet extends HttpServlet {
         out.println("      return SCA.componentContext.serviceProxys[i];");
         out.println("   };");
         out.println("   if (componentContext == undefined) var componentContext = SCA.componentContext;");
-
-        // TODO remove this dummy service once the rest is implemented
-        out.println("   var proxy = new Object();");
-        out.println("   proxy.sayHello = function(s, f) {f('proxyHello ' + s);};");
-        out.println("   SCA.componentContext.serviceProxys.push(proxy);");
-        out.println("   SCA.componentContext.serviceNames.push('service');");
-
         out.println("}");
 
         for (ContextScriptProcessor csp : contextScriptProcessors) {
