@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>tuscany-binding-gdata-runtime</artifactId>
-    <name>Apache Tuscany SCA GData Binding Extension</name>
+    <name>Apache Tuscany SCA GData Binding Extension Runtime</name>
 
     <repositories>
        <repository>
