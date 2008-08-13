@@ -139,6 +139,15 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- Profile to use to build distributions -->
+        <profile>
+            <id>distribution</id>
+            <modules>
+            </modules>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -154,6 +163,7 @@
                         <configuration>
                             <descriptors>
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <finalName>apache-tuscany-sca-manager-1.4-SNAPSHOT</finalName>
