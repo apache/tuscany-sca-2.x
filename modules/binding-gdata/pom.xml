@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-binding-gdata</artifactId>
-    <name>Apache Tuscany SCA Atom Feed Binding Extension</name>
+    <name>Apache Tuscany SCA Gdata Binding Extension GSOC</name>
 
     <dependencies>
         <dependency>

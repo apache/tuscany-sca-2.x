@@ -27,7 +27,7 @@
 	</parent>
 
 	<artifactId>tuscany-binding-gdata-runtime-gsoc</artifactId>
-	<name>Apache Tuscany SCA Gdata Binding Extension</name>
+	<name>Apache Tuscany SCA Gdata Binding Extension Runtime GSOC</name>
 
     <repositories>
        <repository>

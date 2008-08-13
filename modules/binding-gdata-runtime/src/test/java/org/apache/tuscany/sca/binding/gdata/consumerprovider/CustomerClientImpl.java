@@ -19,11 +19,13 @@
 package org.apache.tuscany.sca.binding.gdata.consumerprovider;
 
 import com.google.gdata.data.BaseEntry;
+import com.google.gdata.data.BaseFeed;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.Person;
 import com.google.gdata.data.PlainTextConstruct;
+import com.google.gdata.data.Source;
 import com.google.gdata.data.extensions.EventEntry;
 import com.google.gdata.data.extensions.When;
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
@@ -43,10 +45,10 @@ public class CustomerClientImpl implements CustomerClient {
                 "\n// Get the Feed" +
                 "\n//--------------------------\n");
 
-        Feed feed = (Feed) resourceCollection.getFeed();
+        BaseFeed<? extends BaseFeed, ? extends BaseEntry> feed = resourceCollection.getFeed();
 
         System.out.println("Feed content - " + feed.getUpdated().toString() + ":\n");
-        for (Entry e : feed.getEntries()) {
+        for (BaseEntry e : feed.getEntries()) {
             System.out.println("# " + e.getTitle().getPlainText());
         }
 
@@ -105,10 +107,10 @@ public class CustomerClientImpl implements CustomerClient {
                 "\n// Execute a query" +
                 "\n//--------------------------\n");
 
-        feed = (Feed) resourceCollection.query("GSoC");
+        feed = (Feed)(Source) resourceCollection.query("GSoC");
 
         System.out.println("Feed content - " + feed.getUpdated().toString() + ":\n");
-        for (Entry e : feed.getEntries()) {
+        for (BaseEntry e : feed.getEntries()) {
             System.out.println("# " + e.getTitle().getPlainText());
         }
     }
