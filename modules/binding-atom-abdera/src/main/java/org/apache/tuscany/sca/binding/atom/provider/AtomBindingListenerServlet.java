@@ -48,12 +48,14 @@ import org.apache.abdera.model.Service;
 import org.apache.abdera.model.Workspace;
 import org.apache.abdera.parser.ParseException;
 import org.apache.abdera.parser.Parser;
+import org.apache.abdera.writer.WriterFactory;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -318,18 +320,35 @@ class AtomBindingListenerServlet extends HttpServlet {
                 		}
                 	}
                 }
-                
-                // Write the Atom feed
-                response.setContentType("application/atom+xml; charset=utf-8");
-                // Provide Etag based on Id and time.               
-                response.addHeader(ETAG, feedETag );
-                if ( feedUpdated != null )
-                   response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
-                try {
-                         feed.getDocument().writeTo(response.getOutputStream());
-                } catch (IOException ioe) {
-                    throw new ServletException(ioe);
-                }
+                // Content negotiation
+            	String acceptType = request.getHeader( "Accept" );
+            	String preferredType = getContentPreference( acceptType ); 
+            	if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
+            		// JSON response body
+                    response.setContentType("application/json;type=feed");
+                    
+                    try {
+                		Abdera abdera = new Abdera();
+                		WriterFactory wf = abdera.getWriterFactory();
+                		org.apache.abdera.writer.Writer json = wf.getWriter("json");
+                    	feed.writeTo(json, response.getWriter());
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }           		
+
+            	} else {
+            		// Write the Atom feed
+            		response.setContentType("application/atom+xml;type=feed");
+            		// Provide Etag based on Id and time.               
+            		response.addHeader(ETAG, feedETag );
+            		if ( feedUpdated != null )
+            			response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
+            		try {
+            			feed.getDocument().writeTo(response.getOutputStream());
+            		} catch (IOException ioe) {
+            			throw new ServletException(ioe);
+            		}
+            	}
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -374,12 +393,30 @@ class AtomBindingListenerServlet extends HttpServlet {
                       response.addHeader(LOCATION, link.getHref().toString());
                    }
                 }
-                response.setContentType("application/atom+xml;type=entry");
-                try {
-                        feedEntry.writeTo(getWriter(response));
-                } catch (IOException ioe) {
-                    throw new ServletException(ioe);
-                }
+
+                // Content negotiation
+                String acceptType = request.getHeader( "Accept" );
+            	String preferredType = getContentPreference( acceptType ); 
+            	if (( preferredType != null ) && ((preferredType.indexOf( "json") > -1) || (preferredType.indexOf( "JSON") > -1 ))) {
+            		// JSON response body
+                    response.setContentType("application/json;type=entry");
+                    try {
+                		Abdera abdera = new Abdera();
+                		WriterFactory wf = abdera.getWriterFactory();
+                		org.apache.abdera.writer.Writer json = wf.getWriter("json");
+                    	feedEntry.writeTo(json, response.getWriter());
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }           		
+            	} else {
+            		// XML response body 
+            		response.setContentType("application/atom+xml;type=entry");
+            		try {
+            			feedEntry.writeTo(getWriter(response));
+            		} catch (IOException ioe) {
+            			throw new ServletException(ioe);
+            		}
+            	}
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -709,5 +746,15 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
         
         return feedId + "-" + feedUpdated.hashCode();
+    }
+
+    public static String getContentPreference( String acceptType ) {
+    	if (( acceptType == null ) || ( acceptType.length() < 1 )) {
+            return "application/atom+xml";    		
+    	}
+    	StringTokenizer st = new StringTokenizer( acceptType, "," );
+    	if ( st.hasMoreTokens() )
+    		return st.nextToken();    		
+        return "application/atom+xml";
     }
 }
