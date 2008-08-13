@@ -42,8 +42,8 @@ public class SortImpl implements Sort {
         entriesArray = (Entry[])entries.toArray(entriesArray);
         Arrays.sort(entriesArray, new Comparator() {
             public int compare(final Object xObj, final Object yObj) {
-                Date xDate = ((Entry)xObj).getPublished();
-                Date yDate = ((Entry)yObj).getPublished();
+                Date xDate = ((Entry)xObj).getUpdated();
+                Date yDate = ((Entry)yObj).getUpdated();
                 if (xDate == null)
                     return -1;
                 if (newFirst)
