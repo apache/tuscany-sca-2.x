@@ -47,6 +47,7 @@ public class BeanJavaInterfaceImpl extends JavaInterfaceImpl implements JavaInte
     protected BeanJavaInterfaceImpl() {
     }
 
+    @Override
     public String getName() {
         if (isUnresolved()) {
             return className;
@@ -56,44 +57,54 @@ public class BeanJavaInterfaceImpl extends JavaInterfaceImpl implements JavaInte
         }    
     }
 
+    @Override
     public void setName(String className) {
         if (!isUnresolved())
             throw new IllegalStateException();
         this.className = className;
     }
 
+    @Override
     public Class<?> getJavaClass() {
         return javaClass;
     }
 
+    @Override
     public void setJavaClass(Class<?> javaClass) {
         this.javaClass = javaClass;
     }
 
+    @Override
     public Class<?> getCallbackClass() {
         return callbackClass;
     }
 
+    @Override
     public void setCallbackClass(Class<?> callbackClass) {
         this.callbackClass = callbackClass;
     }
 
+    @Override
     public boolean isConversational() {
         return conversational;
     }
 
+    @Override
     public boolean isRemotable() {
         return remotable;
     }
 
+    @Override
     public void setConversational(boolean conversational) {
         this.conversational = conversational;
     }
 
+    @Override
     public void setRemotable(boolean local) {
         this.remotable = local;
     }
 
+    @Override
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
@@ -102,25 +113,31 @@ public class BeanJavaInterfaceImpl extends JavaInterfaceImpl implements JavaInte
         return extensions;
     }
 
+    @Override
     public List<Operation> getOperations() {
         return operations;
     }
 
+    @Override
     public boolean isUnresolved() {
         return unresolved;
     }
 
+    @Override
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
     }
 
+    @Override
     public void resetDataBinding(String dataBinding) {
     }
     
     @Deprecated
+    @Override
     public void setDefaultDataBinding(String dataBinding) {
     }    
 
+    @Override
     public boolean isDynamic() {
         return false;
     }

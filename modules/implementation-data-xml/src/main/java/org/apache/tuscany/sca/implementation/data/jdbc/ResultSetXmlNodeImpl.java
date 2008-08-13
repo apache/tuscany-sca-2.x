@@ -133,6 +133,7 @@ public class ResultSetXmlNodeImpl implements XmlNode {
     private class RecordXmlNodeImpl extends XmlNodeImpl {
         int index = 0;
 
+        @Override
         public Iterator<XmlNode> children() {
             return new Iterator<XmlNode>() {
 
@@ -150,6 +151,7 @@ public class ResultSetXmlNodeImpl implements XmlNode {
             };
         }
 
+        @Override
         public QName getName() {
             return RECORD;
         }
@@ -167,16 +169,19 @@ public class ResultSetXmlNodeImpl implements XmlNode {
             this.index = index;
         }
 
+        @Override
         public List<XmlNode> attributes() {
             XmlNode attr = new SimpleXmlNodeImpl(NAME, columnNames[index], XmlNode.Type.ATTRIBUTE);
             return Arrays.asList(attr);
         }
 
+        @Override
         public Iterator<XmlNode> children() {
             XmlNode[] nodes = {new ValueXmlNodeImpl(index)};
             return Arrays.asList(nodes).iterator();
         }
 
+        @Override
         public QName getName() {
             return COLUMN;
         }
@@ -194,6 +199,7 @@ public class ResultSetXmlNodeImpl implements XmlNode {
             this.index = index;
         }
 
+        @Override
         public String getValue() {
             try {
                 return String.valueOf(resultSet.getObject(index + 1));
@@ -202,6 +208,7 @@ public class ResultSetXmlNodeImpl implements XmlNode {
             }
         }
 
+        @Override
         public Type getType() {
             return Type.CHARACTERS;
         }

@@ -31,6 +31,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
  */
 public class ReferenceTEI extends TagExtraInfo {
 
+    @Override
     public VariableInfo[] getVariableInfo(TagData data) {
         VariableInfo info1
            = new VariableInfo(

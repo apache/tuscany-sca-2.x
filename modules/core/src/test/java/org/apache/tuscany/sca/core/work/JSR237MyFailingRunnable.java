@@ -35,6 +35,7 @@ public class JSR237MyFailingRunnable extends JSR237MyRunnable {
     /**
      * Sleeps for a period of time defined by sleepTime
      */
+    @Override
     public void run() {
         System.out.println("Starting " + this + " and throwing an Exception");
         throw new IllegalArgumentException("Sample exception from " + this);

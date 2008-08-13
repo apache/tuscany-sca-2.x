@@ -95,6 +95,7 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
      * as a Maven dependency and has been packed with this module 
      */
     /************start of fix *********************************************************************/
+    @Override
     public AxisConfiguration getAxisConfiguration() throws AxisFault {
         InputStream axis2xmlStream;
         try {

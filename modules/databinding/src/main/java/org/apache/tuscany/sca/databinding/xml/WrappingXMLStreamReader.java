@@ -49,10 +49,12 @@ public class WrappingXMLStreamReader extends StreamReaderDelegate implements XML
         this.level = 1;
     }
 
+    @Override
     public boolean hasNext() throws XMLStreamException {
         return !done && super.hasNext();
     }
 
+    @Override
     public int next() throws XMLStreamException {
         if (!hasNext()) {
             throw new IllegalStateException("No more events");
@@ -72,6 +74,7 @@ public class WrappingXMLStreamReader extends StreamReaderDelegate implements XML
         return event;
     }
 
+    @Override
     public int nextTag() throws XMLStreamException {
         int event = 0;
         while (true) {

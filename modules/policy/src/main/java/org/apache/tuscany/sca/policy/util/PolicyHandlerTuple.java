@@ -82,7 +82,8 @@ public class PolicyHandlerTuple {
     public void setProvidedIntentName(QName providedIntentName) {
         this.providedIntentName = providedIntentName;
     }
-    
+
+    @Override
     public String toString() {
         return policyHandlerClassName + ", " + providedIntentName + ", " + policyModelClassName + ", " + appliesTo;
     }

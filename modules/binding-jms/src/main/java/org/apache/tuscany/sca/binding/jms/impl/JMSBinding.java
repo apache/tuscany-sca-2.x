@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 
 public class JMSBinding implements Binding {
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

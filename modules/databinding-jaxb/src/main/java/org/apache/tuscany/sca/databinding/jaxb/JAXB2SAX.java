@@ -58,6 +58,7 @@ public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
         }
     }
 
+    @Override
     public int getWeight() {
         return 20;
     }

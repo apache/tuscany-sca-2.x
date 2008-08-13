@@ -78,6 +78,7 @@ public abstract class _ObjectManagerImplBase extends org.omg.CORBA.portable.Obje
     // Type-specific CORBA::Object operations
     private static String[] __ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/references/ObjectManager:1.0"};
 
+    @Override
     public String[] _ids() {
         return (String[])__ids.clone();
     }

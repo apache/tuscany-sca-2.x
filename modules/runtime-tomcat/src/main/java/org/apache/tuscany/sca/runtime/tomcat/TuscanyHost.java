@@ -56,6 +56,7 @@ public class TuscanyHost extends StandardHost {
     // TODO static for expedience, find a better way to share when/if this is working properly
     protected static List<StandardContext> scaApps = new ArrayList<StandardContext>();
 
+    @Override
     public synchronized void start() throws LifecycleException {
         try {
             logger.log(Level.INFO, "Starting Tuscany/SCA runtime");
@@ -67,6 +68,7 @@ public class TuscanyHost extends StandardHost {
         }
     }
 
+    @Override
     public synchronized void stop() throws LifecycleException {
         try {
             logger.log(Level.INFO, "Stopping Tuscany/SCA runtime");
@@ -78,6 +80,7 @@ public class TuscanyHost extends StandardHost {
         }
     }
 
+    @Override
     public synchronized void addChild(Container child) {
         try {
             if (isSCAApp(child)) {

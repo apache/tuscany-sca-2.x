@@ -50,6 +50,7 @@ public class ObjectMessageProcessor extends AbstractMessageProcessor {
         }
     }
 
+    @Override
     protected Message createJMSMessage(Session session, Object o) {
         try {
 

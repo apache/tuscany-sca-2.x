@@ -42,7 +42,8 @@ public class ContributionGeneratedMetadataDocumentProcessor extends Contribution
     													  Monitor monitor) {
         super(modelFactories, staxProcessor, monitor);
     }
-    
+
+    @Override
     public String getArtifactType() {
         return "sca-contribution-generated.xml";
     }

@@ -102,6 +102,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
      * @param context this should be a conversation object so that the conversation can b stored 
      *                and reset when the component instance is removed
      */
+    @Override
     public void addWrapperReference(Object existingContextId, Object contextId) throws TargetResolutionException {
        
         
@@ -120,6 +121,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         }
     }
 
+    @Override
     public void registerWrapper(InstanceWrapper wrapper, Object contextId) throws TargetResolutionException {
         // if a wrapper for a different instance is already registered for this contextId, remove it
         InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(contextId);

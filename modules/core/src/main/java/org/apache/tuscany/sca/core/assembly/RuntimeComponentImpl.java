@@ -103,7 +103,8 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
     }
-    
+
+    @Override
     public String toString() {
         return getName();
     }

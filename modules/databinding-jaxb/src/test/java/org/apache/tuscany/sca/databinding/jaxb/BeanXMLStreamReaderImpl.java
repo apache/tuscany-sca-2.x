@@ -86,6 +86,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             this.entry = entry;
         }
 
+        @Override
         public Iterator<XmlNode> children() {
             List<XmlNode> nodes = new ArrayList<XmlNode>();
             XmlNode key = new BeanXmlNodeImpl(new QName("", "key"), entry.getKey());
@@ -124,6 +125,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             }
         }
 
+        @Override
         public Iterator<XmlNode> children() {
             if (name == null) {
                 return null;
@@ -188,10 +190,12 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             }
         }
 
+        @Override
         public QName getName() {
             return name;
         }
 
+        @Override
         public String getValue() {
             return getStringValue(value);
         }

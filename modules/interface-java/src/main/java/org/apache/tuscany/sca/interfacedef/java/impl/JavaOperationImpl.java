@@ -75,6 +75,7 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
         return true;
     }
 
+    @Override
     public String toString() {
         return method == null ? "null" : method.toGenericString();
     }

@@ -291,6 +291,7 @@ public class JAXBPropertyDescriptor implements Comparable<JAXBPropertyDescriptor
         }
     }
 
+    @Override
     public String toString() {
         String value = "PropertyDescriptorPlus[";
         value += " name=" + this.getPropertyName();

@@ -115,6 +115,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
         this.callback = callback;
     }
 
+    @Override
     protected ReferenceParameters getReferenceParameters() {
         ReferenceParameters parameters = super.getReferenceParameters();
         if (callback != null) {

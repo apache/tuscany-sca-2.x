@@ -226,6 +226,7 @@ public class TestRuntimeComponentService implements RuntimeComponentService {
         return null;
     }
 
+    @Override
     public Object clone() {
         return null;
     }

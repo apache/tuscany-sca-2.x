@@ -55,6 +55,7 @@ public class FastInfoset2XMLStreamReader extends BaseTransformer<InputStream, XM
         } 
     }
 
+    @Override
     public int getWeight() {
         return 20;
     }

@@ -46,7 +46,7 @@ public class EquinoxRuntime extends OSGiRuntime  {
         return instance;
     }
     
-    
+    @Override
     protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)

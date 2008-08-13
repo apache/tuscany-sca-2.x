@@ -60,7 +60,8 @@ class HTTPBindingImpl implements HTTPBinding {
     public void setUnresolved(boolean unresolved) {
         // The sample binding is always resolved
     }
-    
+
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     

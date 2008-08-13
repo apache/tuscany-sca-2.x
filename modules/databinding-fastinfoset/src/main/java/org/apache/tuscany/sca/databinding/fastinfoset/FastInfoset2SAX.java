@@ -59,6 +59,7 @@ public class FastInfoset2SAX extends BaseTransformer<InputStream, ContentHandler
         } 
     }
 
+    @Override
     public int getWeight() {
         return 20;
     }

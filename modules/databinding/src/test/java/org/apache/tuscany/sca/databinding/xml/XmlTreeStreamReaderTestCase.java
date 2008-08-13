@@ -183,6 +183,7 @@ public class XmlTreeStreamReaderTestCase {
             return namespaces;
         }
 
+        @Override
         public String toString() {
             return String.valueOf(name);
         }

@@ -64,6 +64,7 @@ public class AbstractBinding implements Binding {
         this.unresolved = unresolved;
     }
     
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     

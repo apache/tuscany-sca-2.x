@@ -42,10 +42,12 @@ public class ReferenceTag extends TagSupport {
     protected String type;
     protected Integer scope = PageContext.PAGE_SCOPE;
 
+    @Override
     public int doStartTag() throws JspException {
         return SKIP_BODY;
     }
 
+    @Override
     public int doEndTag() throws JspException {
 
         try {

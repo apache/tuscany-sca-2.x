@@ -155,6 +155,7 @@ public class TestOperation implements Operation {
         return null;
     }
 
+    @Override
     public Object clone() {
         return null;
     }

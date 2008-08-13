@@ -66,6 +66,7 @@ public class SecurityIdentityPolicy implements Policy {
         this.runAsRole = runAsRole;
     }
 
+    @Override
     public String toString() {
         if (useCallerIdentity) {
             return "useCallerIdentity";

@@ -282,7 +282,8 @@ final class NodeLauncherUtil {
      * A file name filter used to filter JAR files.
      */
     private static class WebAppJARFileNameFilter extends StandAloneJARFileNameFilter {
-        
+
+        @Override
         public boolean accept(File dir, String name) {
             if (!super.accept(dir, name)) {
                 return false;

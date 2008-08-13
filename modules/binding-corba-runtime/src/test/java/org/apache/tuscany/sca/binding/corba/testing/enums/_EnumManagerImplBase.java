@@ -68,6 +68,7 @@ public abstract class _EnumManagerImplBase extends org.omg.CORBA.portable.Object
     // Type-specific CORBA::Object operations
     private static String[] __ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/enums/EnumManager:1.0"};
 
+    @Override
     public String[] _ids() {
         return (String[])__ids.clone();
     }

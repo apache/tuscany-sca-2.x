@@ -189,6 +189,7 @@ public class XmlNodeIterator implements Iterator<XmlNode> {
             return parent;
         }
 
+        @Override
         public String toString() {
             StringBuffer sb = new StringBuffer(map.toString());
             if (parent != null) {

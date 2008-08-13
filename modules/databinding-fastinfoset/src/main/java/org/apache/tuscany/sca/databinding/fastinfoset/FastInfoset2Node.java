@@ -58,6 +58,7 @@ public class FastInfoset2Node extends BaseTransformer<InputStream, Node> impleme
         } 
     }
 
+    @Override
     public int getWeight() {
         return 20;
     }

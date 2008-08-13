@@ -125,6 +125,7 @@ public class GeneratedDataTypeImpl implements DataType<XMLType> {
         // NOP
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

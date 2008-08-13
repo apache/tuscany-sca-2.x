@@ -59,6 +59,7 @@ public class EJBBindingImpl implements EJBBinding {
     /**
      * Clone the binding
      */
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }    
