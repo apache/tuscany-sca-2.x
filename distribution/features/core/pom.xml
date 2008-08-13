@@ -28,7 +28,7 @@
 
     <artifactId>tuscany-distribution-core</artifactId>
     <name>Apache Tuscany SCA Core Distribution</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <dependencies>
 
@@ -201,6 +201,58 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- Profile to use to build distributions -->
+        <profile>
+            <id>distribution</id>
+            <modules>
+                <module>../../../modules/assembly</module>
+                <module>../../../modules/assembly-xml</module>
+                <module>../../../modules/assembly-xsd</module>
+                <module>../../../modules/binding-sca</module>
+                <module>../../../modules/binding-sca-xml</module>
+                <module>../../../modules/contribution</module>
+                <module>../../../modules/contribution-impl</module>
+                <module>../../../modules/contribution-java</module>
+                <module>../../../modules/contribution-namespace</module>
+                <module>../../../modules/contribution-xml</module>
+                <module>../../../modules/core</module>
+                <module>../../../modules/core-databinding</module>
+                <module>../../../modules/core-spi</module>
+                <module>../../../modules/data-api</module>
+                <module>../../../modules/databinding</module>
+                <module>../../../modules/databinding-jaxb</module>
+                <module>../../../modules/definitions</module>
+                <module>../../../modules/definitions-xml</module>
+                <module>../../../modules/endpoint</module>
+                <module>../../../modules/extensibility</module>
+                <module>../../../modules/host-embedded</module>
+                <module>../../../modules/host-http</module>
+                <module>../../../modules/implementation-java</module>
+                <module>../../../modules/implementation-java-runtime</module>
+                <module>../../../modules/implementation-java-xml</module>
+                <module>../../../modules/implementation-node</module>
+                <module>../../../modules/implementation-node-runtime</module>
+                <module>../../../modules/interface</module>
+                <module>../../../modules/interface-java</module>
+                <module>../../../modules/interface-java-jaxws</module>
+                <module>../../../modules/interface-java-xml</module>
+                <module>../../../modules/interface-wsdl</module>
+                <module>../../../modules/interface-wsdl-xml</module>
+                <module>../../../modules/monitor</module>
+                <module>../../../modules/node2-api</module>
+                <module>../../../modules/node2-impl</module>
+                <module>../../../modules/node2-launcher</module>
+                <module>../../../modules/policy</module>
+                <module>../../../modules/policy-security</module>
+                <module>../../../modules/policy-xml</module>
+                <module>../../../modules/sca-api</module>
+                <module>../../../modules/xsd</module>
+                <module>../../../modules/xsd-xml</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -216,6 +268,7 @@
                         <configuration>
                             <descriptors>
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <finalName>apache-tuscany-sca-1.4-SNAPSHOT</finalName>

@@ -20,7 +20,7 @@
 <assembly>
     <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
     <id></id>
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeBaseDirectory>true</includeBaseDirectory>
     <formats>
         <!--
         <format>dir</format>
@@ -34,7 +34,7 @@
         <!-- Add the text files to the top-level directroy -->
         <fileSet>
             <directory>src/main/release</directory>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT</outputDirectory>
+            <outputDirectory></outputDirectory>
             <includes>
                 <include>CHANGES</include>
                 <include>DISCLAIMER</include>
@@ -44,7 +44,7 @@
         </fileSet>
         <fileSet>
             <directory>src/main/release/bin</directory>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT</outputDirectory>
+            <outputDirectory></outputDirectory>
             <includes>
                 <include>INSTALL</include>
                 <include>LICENSE</include>
@@ -55,7 +55,7 @@
         <!-- Add the node launcher webapp to the modules directory -->
         <fileSet>
             <directory>../../sca/modules/node2-launcher-webapp/target</directory>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT/modules</outputDirectory>
+            <outputDirectory>modules</outputDirectory>
             <includes>
                 <include>*.war</include>
             </includes>
@@ -64,13 +64,14 @@
         <!-- Add samples to the samples directory -->
         <fileSet>
             <directory>../../sca/samples</directory>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT/samples</outputDirectory>
+            <outputDirectory>samples</outputDirectory>
             <includes>
                 <include>domain-management/**/*</include>
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
                 <exclude>**/.*</exclude>
+                <exclude>**/.*/**</exclude>
                 <exclude>**/*.log</exclude>
 
                 <!-- Sample specific files/folders to exclude -->
@@ -83,19 +84,16 @@
 
         <!-- Add all the Tuscany modules to the modules directory -->
         <dependencySet>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT/modules</outputDirectory>
+            <outputDirectory>modules</outputDirectory>
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:*</include>
             </includes>
-            <excludes>
-                <exclude>org.apache.tuscany.sca:tuscany-distribution-*</exclude>
-            </excludes>
         </dependencySet>
 
         <!-- Add all the dependent jars to the lib directory -->
         <dependencySet>
-            <outputDirectory>tuscany-sca-1.4-SNAPSHOT/lib</outputDirectory>
+            <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
             <excludes>
                 <exclude>org.apache.tuscany.sca:*</exclude>
