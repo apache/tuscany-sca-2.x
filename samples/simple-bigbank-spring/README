@@ -1,25 +1,74 @@
 Spring Bigbank Sample
-=================
-This sample implements a simple a version of the BigBank scenrio used in 
-various places in the SCA specification documents. 
+======================
+This sample is made of 3 modules that represent the different aspects of a fictitious banking application.
 
-The README in the samples directory (the directory above this) provides 
-general instructions about building and running samples. Take a look there 
-first. 
+To run the simple-bigbank-spring sample you need to first run spring-bigbank-calculator, spring-bigbank-checkaccount and spring-bigbank-stockquote composites. 
+This will bring up Tuscany runtime and load the three applications and make them available as services.
+Bigbank-Spring is dependent on these services.
 
-If you just want to run it to see what happens open a command prompt, navigate
-to this sample directory and do:
+This demo uses ant. This is just one way of running this demo.
 
+Start Spring-Bigbank-calculator Composite
+-----------------------------------------
+
+Spring-Bigbank-calculator is a calculator application which handles add, subtract, multiply and divide operations. Each of these operations is implemented in a different language, including JavaScript, groovy, Ruby and Python.
+
+To run the spring-bigbank-calculator composite and make it available as a service for this demo do the following:
+
+cd spring-bigbank-calculator
+ant compile  
 ant run
 
-OR if you don't have ant, on Windows do
+.. Leave the server running
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-simple-bigbank-spring.jar bigbank.client.BigBankClient
+Note that 'ant compile' needs to be done the first time you run this demo out of the binary distribution. No need to do 'ant compile' from there on.
 
-and on *nix do
+Start Spring-Bigbank-checkaccount Composite
+-------------------------------------------
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-simple-bigbank-spring.jar bigbank.client.BigBankClient
+This contains all artifacts that deal with the account management within the bigbank.  The services offered by the bigbank-account module are used by the bigbank.
 
+cd spring-bigbank-checkaccount
+ant compile  
+ant run
+
+.. Leave the server running
+
+Note that 'ant compile' needs to be done the first time you run this demo out of the binary distribution. No need to do 'ant compile' from there on.
+
+Start Spring-Bigbank-stockquote Composite
+-----------------------------------------
+
+A very simple web services based stock quote application which returns random 
+stock quotes on request. Please note that the stockquote service is not live and is implemented instead to allow for this application to always run without dependency on the availability of a webservice.
+
+cd spring-bigbank-stockquote
+ant compile  
+ant run
+
+.. Leave the server running
+
+Start Spring Bigbank
+--------------------
+This contains all artifacts that make up the bigbank application.  This is the application that the end user interacts with
+
+Start spring-bigbank in the following way:
+
+i ) Compile the spring-bigbank as follows :
+    
+    cd simple-bigbank-spring                  
+    ant compile
+    
+ii) Now start the bigbank service as follows :
+    
+    cd bigbank
+    ant compile 
+    ant run
+
+    .. Leave the server running
+
+Note that 'ant compile' needs to be done the first time you run this demo out ofthe  binary distribution. 
+No need to do 'ant compile' from there on.
 
 Sample Overview
 ---------------

@@ -30,10 +30,13 @@
 
     <component name="AccountServiceComponent">
         <implementation.spring location="spring-context/Account-spring-context.xml"/>
+        
+        <service name="AccountService">
+            <interface.java interface="bigbank.account.AccountService"/>
+        </service>
 
         <reference name="savingsAccountService" target="SavingsAccountServiceComponent"/>
         
-        <!--reference name="checkingAccountService" target="CheckingAccountServiceComponent"/-->
         <reference name="checkingAccountService">
           <interface.java interface="bigbank.account.checking.CheckingAccountService"/>
           <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
@@ -59,10 +62,6 @@
     <component name="SavingsAccountServiceComponent">
         <implementation.composite name="bbsv:SavingsAccountDept"/>
     </component>
-
-    <!--component name="CheckingAccountServiceComponent">
-        <implementation.composite name="bbck:CheckingsAccountDept"/>
-    </component-->
 
     <component name="StockAccountServiceComponent">
         <implementation.composite name="bbst:StockAccountDept"/>

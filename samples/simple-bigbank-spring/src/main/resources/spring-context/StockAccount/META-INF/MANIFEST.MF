@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Spring-Context: META-INF/spring/StockAccount-context.xml
+
+
