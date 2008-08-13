@@ -26,7 +26,7 @@
     <service name="StockAccountService" promote="StockAccountServiceComponent"/>
 
     <component name="StockAccountServiceComponent">
-        <implementation.spring location="spring-context/StockAccount/META-INF/spring/StockAccount-context.xml"/>
+        <implementation.spring location="spring-context/StockAccount"/>
     </component>
 
 </composite>

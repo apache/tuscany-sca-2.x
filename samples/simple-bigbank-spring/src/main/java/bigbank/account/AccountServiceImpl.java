@@ -21,6 +21,8 @@ package bigbank.account;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osoa.sca.annotations.Service;
+
 import bigbank.account.checking.CheckingAccountDetails;
 import bigbank.account.checking.CheckingAccountService;
 import bigbank.account.savings.SavingsAccountDetails;
@@ -33,6 +35,7 @@ import bigbank.calculator.CalculatorService;
 /**
  * Account service implementation
  */
+@Service(AccountService.class)
 public class AccountServiceImpl implements AccountService {
 
     private SavingsAccountService savingsAccountService;
