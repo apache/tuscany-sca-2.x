@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.web;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class ComponentContextServlet extends HttpServlet {
 
         doScriptInit(req, response);
 
-        doScriptReferences(out);
+        doScriptReferences(req, response);
 
         out.write(FOOTER);
 
@@ -117,7 +116,9 @@ public class ComponentContextServlet extends HttpServlet {
     /**
      * Calls each ContextScriptProcessor for each SCA reference to insert code for the reference into componentContext.js  
      */
-    protected void doScriptReferences(PrintWriter out) throws IOException, UnsupportedEncodingException {
+    protected void doScriptReferences(HttpServletRequest req, HttpServletResponse response) throws IOException, UnsupportedEncodingException {
+
+        PrintWriter out = response.getWriter();
 
         out.write("// SCA References\n");
         
@@ -127,7 +128,7 @@ public class ComponentContextServlet extends HttpServlet {
             String ref = "// SCA Reference " + cr.getName() + "\n";
             out.write(ref);
             for (ContextScriptProcessor csp : contextScriptProcessors) {
-                csp.scriptReference(cr, out);
+                csp.scriptReference(cr, req, response);
             }
         }
 
@@ -137,7 +138,7 @@ public class ComponentContextServlet extends HttpServlet {
     /**
      * Calls each ContextScriptProcessor for each SCA property to insert code for the property into componentContext.js  
      */
-    protected void doScriptProperties(OutputStream out) throws IOException, UnsupportedEncodingException {
+    protected void doScriptProperties(HttpServletRequest req, HttpServletResponse response) throws IOException, UnsupportedEncodingException {
         // TODO: support properties
     }
 

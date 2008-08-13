@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,5 +28,5 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 
 public interface ContextScriptProcessor {
     void scriptInit(HttpServletRequest req, HttpServletResponse response)  throws IOException;
-    void scriptReference(ComponentReference cr, PrintWriter out) throws IOException;
+    void scriptReference(ComponentReference cr, HttpServletRequest req, HttpServletResponse response) throws IOException;
 }
