@@ -30,27 +30,6 @@
         <format>zip</format>
     </formats>
 
-    <moduleSets>
-        <moduleSet>
-            <sources>
-                 <includeModuleDirectory>true</includeModuleDirectory>
-                 <includes>
-                     <include>**/*</include>
-                 </includes>
-                 <excludes>
-                    <!-- General file/folders to exclude -->
-                    <exclude>**/.*</exclude>
-                    <exclude>**/.*/**</exclude>
-                    <exclude>**/*.log</exclude>
-
-                    <!-- Specific files/folders to exclude -->
-                    <exclude>**/target</exclude>
-                    <exclude>**/target/**/*</exclude>
-                 </excludes>
-             </sources>
-        </moduleSet>
-    </moduleSets>
-
     <fileSets>
         <fileSet>
             <directory>src/main/release</directory>
@@ -70,6 +49,80 @@
                 <include>LICENSE</include>
                 <include>NOTICE</include>
             </includes>
+        </fileSet>
+
+        <!-- Add module sources to the modules directory -->
+        <fileSet>
+            <directory>../../../modules</directory>
+            <outputDirectory>modules</outputDirectory>
+            <includes>
+                <include>assembly/**/*</include>
+                <include>assembly-xml/**/*</include>
+                <include>assembly-xsd/**/*</include>
+                <include>binding-ejb/**/*</include>
+                <include>binding-ejb-runtime/**/*</include>
+                <include>binding-jms/**/*</include>
+                <include>binding-jms-runtime/**/*</include>
+                <include>binding-sca/**/*</include>
+                <include>binding-sca-xml/**/*</include>
+                <include>contribution/**/*</include>
+                <include>contribution-impl/**/*</include>
+                <include>contribution-java/**/*</include>
+                <include>contribution-namespace/**/*</include>
+                <include>contribution-xml/**/*</include>
+                <include>core/**/*</include>
+                <include>core-databinding/**/*</include>
+                <include>core-spi/**/*</include>
+                <include>data-api/**/*</include>
+                <include>databinding/**/*</include>
+                <include>databinding-axiom/**/*</include>
+                <include>databinding-jaxb/**/*</include>
+                <include>definitions/**/*</include>
+                <include>definitions-xml/**/*</include>
+                <include>distribution-core/**/*</include>
+                <include>distribution-ejava/**/*</include>
+                <include>endpoint/**/*</include>
+                <include>extensibility/**/*</include>
+                <include>extension-helper/**/*</include>
+                <include>host-ejb/**/*</include>
+                <include>host-embedded/**/*</include>
+                <include>host-http/**/*</include>
+                <include>implementation-ejb/**/*</include>
+                <include>implementation-java/**/*</include>
+                <include>implementation-java-runtime/**/*</include>
+                <include>implementation-java-xml/**/*</include>
+                <include>implementation-node/**/*</include>
+                <include>implementation-node-runtime/**/*</include>
+                <include>implementation-script/**/*</include>
+                <include>implementation-spring/**/*</include>
+                <include>interface/**/*</include>
+                <include>interface-java/**/*</include>
+                <include>interface-java-jaxws/**/*</include>
+                <include>interface-java-xml/**/*</include>
+                <include>interface-wsdl/**/*</include>
+                <include>interface-wsdl-xml/**/*</include>
+                <include>monitor/**/*</include>
+                <include>node2-api/**/*</include>
+                <include>node2-impl/**/*</include>
+                <include>node2-launcher/**/*</include>
+                <include>policy/**/*</include>
+                <include>policy-security/**/*</include>
+                <include>policy-xml/**/*</include>
+                <include>sca-api/**/*</include>
+                <include>xsd/**/*</include>
+                <include>xsd-xml/**/*</include>
+            </includes>
+            <excludes>
+                <!-- General file/folders to exclude -->
+                <exclude>**/.*</exclude>
+                <exclude>**/.*/**</exclude>
+                <exclude>**/*.log</exclude>
+
+                <!-- Specific files/folders to exclude -->
+                <exclude>pom.xml</exclude>
+                <exclude>**/target</exclude>
+                <exclude>**/target/**/*</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
 

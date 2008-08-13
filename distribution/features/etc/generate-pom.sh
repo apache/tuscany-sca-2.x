@@ -20,12 +20,21 @@
 # included directly or transitively in that distribution
 
 echo "        <profile>"
-echo "            <id>distribution</id>"
+echo "            <id>modules</id>"
 echo "            <modules>"
 
 unzip -v target/*-SNAPSHOT.zip | awk '/(.*)(\/modules\/tuscany-)(.*)(\..ar$)/ { print gensub("(.*)(/modules/tuscany-)(.*)(-...-SNAPSHOT.jar)", "\\3", "g")}' | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
 
 echo "            </modules>"
 echo "        </profile>"
+echo ""
+
+# This generates a list of includes that can be included in a
+# Maven assembly fileset, to include the source of the modules
+# in a source distribution for example
+
+echo "            <includes>"
+unzip -v target/*-SNAPSHOT.zip | awk '/(.*)(\/modules\/tuscany-)(.*)(\..ar$)/ { print gensub("(.*)(/modules/tuscany-)(.*)(-...-SNAPSHOT.jar)", "\\3", "g")}' | sort | awk '{ printf "                <include>%s/**/*</include>\n", $1 }'
+echo "            </includes>"
 echo ""
 
