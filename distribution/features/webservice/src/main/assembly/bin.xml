@@ -21,6 +21,7 @@
     <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
     <id></id>
     <includeBaseDirectory>true</includeBaseDirectory>
+    <baseDirectory>tuscany-sca-1.4-SNAPSHOT</baseDirectory>
     <formats>
         <!--
         <format>dir</format>
