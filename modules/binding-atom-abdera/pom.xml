@@ -113,6 +113,18 @@
         </dependency>            
                 
         <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-extensions-main</artifactId>
+            <version>0.4.0-incubating</version> 
+        </dependency>            
+                
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-extensions-json</artifactId>
+            <version>0.4.0-incubating</version> 
+        </dependency>            
+                
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version> 
