@@ -35,12 +35,9 @@
     </build>
 
     <profiles>
-        <!-- default profile that builds everything -->
+        <!-- Profile to use to build distributions -->
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>distribution</id>
             <modules>
                 <module>all</module>
                 <module>core</module>
@@ -50,6 +47,9 @@
                 <module>web20</module>
                 <module>webservice</module>
             </modules>
+            <properties>
+               <maven.test.skip>true</maven.test.skip>
+            </properties>
         </profile>
 
         <profile>
@@ -64,19 +64,5 @@
                 <module>webservice</module>
             </modules>
         </profile>
-
-        <profile>
-            <id>distribution</id>
-            <modules>
-                <module>all</module>
-                <module>core</module>
-                <module>ejava</module>
-                <module>manager</module>
-                <module>process</module>
-                <module>web20</module>
-                <module>webservice</module>
-            </modules>
-        </profile>
-
     </profiles>
 </project>
