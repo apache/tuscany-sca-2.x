@@ -136,6 +136,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         return policyProviders.get(binding);
     }
 
+    @Override
     public String toString() {
         return getName();
     }

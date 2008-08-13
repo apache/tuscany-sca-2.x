@@ -81,6 +81,7 @@ public class Axis2ServiceServlet extends AxisServlet {
     public void init() throws ServletException {
     }
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         servletContext.setAttribute(CONFIGURATION_CONTEXT, tmpconfigContext);

@@ -160,42 +160,52 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLEventReader createFilteredReader(XMLEventReader arg0, EventFilter arg1) throws XMLStreamException {
         return inputFactory.createFilteredReader(arg0, arg1);
     }
 
+    @Override
     public XMLStreamReader createFilteredReader(XMLStreamReader arg0, StreamFilter arg1) throws XMLStreamException {
         return inputFactory.createFilteredReader(arg0, arg1);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(InputStream arg0, String arg1) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0, arg1);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(InputStream arg0) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(Reader arg0) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(Source arg0) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(String arg0, InputStream arg1) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0, arg1);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(String arg0, Reader arg1) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0, arg1);
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(XMLStreamReader arg0) throws XMLStreamException {
         return inputFactory.createXMLEventReader(arg0);
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(InputStream arg0, String arg1) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -205,6 +215,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(InputStream arg0) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -214,6 +225,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(Reader arg0) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -223,6 +235,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(Source arg0) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -232,6 +245,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(String arg0, InputStream arg1) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -241,6 +255,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(String arg0, Reader arg1) throws XMLStreamException {
         initializeSchemas();
         if (hasSchemas) {
@@ -250,38 +265,47 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         }
     }
 
+    @Override
     public XMLEventAllocator getEventAllocator() {
         return inputFactory.getEventAllocator();
     }
 
+    @Override
     public Object getProperty(String arg0) throws IllegalArgumentException {
         return inputFactory.getProperty(arg0);
     }
 
+    @Override
     public XMLReporter getXMLReporter() {
         return inputFactory.getXMLReporter();
     }
 
+    @Override
     public XMLResolver getXMLResolver() {
         return inputFactory.getXMLResolver();
     }
 
+    @Override
     public boolean isPropertySupported(String arg0) {
         return inputFactory.isPropertySupported(arg0);
     }
 
+    @Override
     public void setEventAllocator(XMLEventAllocator arg0) {
         inputFactory.setEventAllocator(arg0);
     }
 
+    @Override
     public void setProperty(String arg0, Object arg1) throws IllegalArgumentException {
         inputFactory.setProperty(arg0, arg1);
     }
 
+    @Override
     public void setXMLReporter(XMLReporter arg0) {
         inputFactory.setXMLReporter(arg0);
     }
 
+    @Override
     public void setXMLResolver(XMLResolver arg0) {
         inputFactory.setXMLResolver(arg0);
     }

@@ -69,6 +69,7 @@ public class _DummyObjectStub extends org.omg.CORBA.portable.ObjectImpl implemen
     // Type-specific CORBA::Object operations
     private static String[] __ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/references/DummyObject:1.0"};
 
+    @Override
     public String[] _ids() {
         return (String[])__ids.clone();
     }

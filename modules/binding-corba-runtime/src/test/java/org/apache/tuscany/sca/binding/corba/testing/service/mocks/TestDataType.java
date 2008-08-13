@@ -80,6 +80,7 @@ public class TestDataType<L> implements DataType<L> {
 
     }
 
+    @Override
     public Object clone() {
         return null;
     }

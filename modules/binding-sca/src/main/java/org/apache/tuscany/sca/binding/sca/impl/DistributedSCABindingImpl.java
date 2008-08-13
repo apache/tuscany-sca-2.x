@@ -108,6 +108,7 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     /**
      * Clone the binding
      */
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     

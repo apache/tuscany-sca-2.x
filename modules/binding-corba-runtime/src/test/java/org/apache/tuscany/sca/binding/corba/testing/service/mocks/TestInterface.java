@@ -94,6 +94,7 @@ public class TestInterface implements JavaInterface {
 
     }
 
+    @Override
     public Object clone() {
         return null;
     }

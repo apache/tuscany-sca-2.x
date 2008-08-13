@@ -73,6 +73,7 @@ public class WSDLOperationImpl extends OperationImpl implements WSDLOperation {
         return true;
     }
 
+    @Override
     public String toString() {
         return operation == null ? null : operation.toString();
     }

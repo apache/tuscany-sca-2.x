@@ -67,7 +67,8 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         dir.delete();
         
     }
-    
+
+    @Override
     protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)

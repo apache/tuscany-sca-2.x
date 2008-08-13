@@ -63,6 +63,7 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
     //        the classpath which contains framework.jar. The entries in init.xargs starting with
     //        -install are assumed to be single-line entries with full bundle location.
     //
+    @Override
     protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)

@@ -76,6 +76,7 @@ public abstract class _DummyObjectImplBase extends org.omg.CORBA.portable.Object
     // Type-specific CORBA::Object operations
     private static String[] __ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/references/DummyObject:1.0"};
 
+    @Override
     public String[] _ids() {
         return (String[])__ids.clone();
     }

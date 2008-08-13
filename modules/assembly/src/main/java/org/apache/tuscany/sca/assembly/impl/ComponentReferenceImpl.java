@@ -95,6 +95,7 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
      * Use endpoint information to work out what the interface contract for the
      * binding is. 
      */
+    @Override
     public InterfaceContract getInterfaceContract(Binding binding){
         InterfaceContract interfaceContract = null;
         

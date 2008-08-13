@@ -43,6 +43,7 @@ public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
      * @throws java.lang.Exception
      */
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -51,6 +52,7 @@ public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
      * @throws java.lang.Exception
      */
     @After
+    @Override
     public void tearDown() throws Exception {
     }
 

@@ -78,6 +78,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             }
         }
 
+        @Override
         public Iterator<XmlNode> children() {
             if (name == null) {
                 return null;
@@ -143,10 +144,12 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             }
         }
 
+        @Override
         public QName getName() {
             return name;
         }
 
+        @Override
         public String getValue() {
             return getStringValue(value);
         }

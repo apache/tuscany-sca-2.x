@@ -35,6 +35,7 @@ public class ConsumerProviderTestCase extends TestCase {
     private CustomerClient testService = null;
 
     @Before
+    @Override
     public void setUp() throws Exception {
         System.out.println("Method Test Start-----------------------------------------------------------------------");
 
@@ -48,6 +49,7 @@ public class ConsumerProviderTestCase extends TestCase {
     }
 
     @After
+    @Override
     public void tearDown() {
         scaDomainProvider.close();
         System.out.println("Method Test End------------------------------------------------------------------------");

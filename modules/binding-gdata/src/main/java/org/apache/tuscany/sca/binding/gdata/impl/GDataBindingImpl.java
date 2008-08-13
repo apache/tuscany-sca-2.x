@@ -98,6 +98,7 @@ class GDataBindingImpl implements GDataBinding, PolicySetAttachPoint {
         this.intentAttachPointType = intentAttachPointType;
     }
     
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

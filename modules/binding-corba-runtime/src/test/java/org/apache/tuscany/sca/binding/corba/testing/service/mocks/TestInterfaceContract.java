@@ -50,6 +50,7 @@ public class TestInterfaceContract implements InterfaceContract {
         this.iface = callInterface;
     }
 
+    @Override
     public Object clone() {
         return null;
     }

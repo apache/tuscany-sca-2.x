@@ -176,6 +176,7 @@ public class CorbanameURL {
         this.namePath = namePath;
     }
 
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append("corbaname:");

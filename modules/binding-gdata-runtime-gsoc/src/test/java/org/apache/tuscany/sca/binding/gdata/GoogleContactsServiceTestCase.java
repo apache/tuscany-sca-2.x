@@ -44,6 +44,7 @@ public class GoogleContactsServiceTestCase extends TestCase{
     }
     
     @Before
+    @Override
     public void setUp() throws Exception {
         System.out.println("Method Test Start-----------------------------------------------------------------------");
         
@@ -53,6 +54,7 @@ public class GoogleContactsServiceTestCase extends TestCase{
     }
 
     @After
+    @Override
     public void tearDown(){
         System.out.println("Method Test End------------------------------------------------------------------------");
         System.out.println("\n\n");

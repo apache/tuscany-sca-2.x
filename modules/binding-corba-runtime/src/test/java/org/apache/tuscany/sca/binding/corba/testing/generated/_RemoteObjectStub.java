@@ -32,6 +32,7 @@ public class _RemoteObjectStub extends org.omg.CORBA.portable.ObjectImpl impleme
     // Type-specific CORBA::Object operations
     private static String[] __ids = {"IDL:org/apache/tuscany/sca/binding/corba/testing/generated/RemoteObject:1.0"};
 
+    @Override
     public String[] _ids() {
         return (String[])__ids.clone();
     }

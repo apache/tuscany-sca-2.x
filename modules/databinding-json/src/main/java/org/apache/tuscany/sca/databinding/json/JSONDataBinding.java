@@ -44,6 +44,7 @@ public class JSONDataBinding extends BaseDataBinding {
         super(NAME, ALIASES, org.json.JSONObject.class);
     }
 
+    @Override
     public boolean introspect(DataType type, Operation operation) {
         assert type != null;
         Class cls = type.getPhysical();

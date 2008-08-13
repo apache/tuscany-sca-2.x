@@ -92,6 +92,7 @@ public class TestRuntimeWire implements RuntimeWire {
 
     }
 
+    @Override
     public Object clone() {
         return null;
     }
