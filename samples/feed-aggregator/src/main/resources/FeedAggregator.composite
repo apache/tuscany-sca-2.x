@@ -49,7 +49,7 @@
         <implementation.java class="feed.AggregatorImpl"/>        
         <reference name="sort" target="Sort"/>          
 		<reference name="atomFeed1">
-   	 		<tuscany:binding.atom uri="http://www.oreillynet.com/pub/feed/1"/>
+   	 		<tuscany:binding.atom uri="http://www.oreillynet.com/pub/feed/35"/>
    		</reference>
    		<reference name="atomFeed2"> 	
    	 		<tuscany:binding.atom uri="http://feeds.feedburner.com/blogspot/Dcni?format=xml"/>
