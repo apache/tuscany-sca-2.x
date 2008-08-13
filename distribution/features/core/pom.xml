@@ -202,9 +202,9 @@
     </dependencies>
 
     <profiles>
-        <!-- Profile to use to build distributions -->
+        <!-- Profile that can be used to build the modules included in the distro -->
         <profile>
-            <id>distribution</id>
+            <id>dependencies</id>
             <modules>
                 <module>../../../modules/assembly</module>
                 <module>../../../modules/assembly-xml</module>
