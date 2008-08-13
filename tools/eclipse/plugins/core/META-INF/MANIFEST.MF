@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Apache Tuscany SCA Tools
+Bundle-Name: Apache Tuscany SCA Tools Core Plugin
 Bundle-SymbolicName: org.apache.tuscany.sca.core;singleton:=true
 Bundle-Version: 1.4.0
 Import-Package: org.eclipse.core.resources,
