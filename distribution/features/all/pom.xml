@@ -28,44 +28,44 @@
 
     <artifactId>tuscany-distribution-all</artifactId>
     <name>Apache Tuscany SCA All-in-one Distribution</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <dependencies>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-core</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-ejava</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-manager</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-process</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-web20</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-webservice</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
