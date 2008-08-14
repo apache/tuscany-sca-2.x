@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.host.corba;
 import org.omg.CORBA.Object;
 
 /**
+ * @version $Rev$ $Date$
  * CORBA Service hosting interface
  */
 public interface CorbaHost {

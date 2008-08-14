@@ -40,7 +40,8 @@ import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 /**
- * Default implementation of CORBA host
+ * @version $Rev$ $Date$
+ * Default implementation of JSE CORBA host
  */
 public class DefaultCorbaHost implements CorbaHost {
     private static final Logger logger = Logger.getLogger(DefaultCorbaHost.class.getName());

@@ -28,6 +28,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * @version $Rev$ $Date$
+ * Tests for host utils
+ */
 public class UtilsTestCase {
 
     private void assertDetailsAreOk(CorbanameURL details, String host, int port, String nameService, List<String> namePath) {
@@ -40,6 +44,9 @@ public class UtilsTestCase {
         }
     }
 
+    /**
+     * Tests if corbaname url is beeing processes properly
+     */
     @Test
     public void test_validCorbaname() {
         String testUri = null;
@@ -103,6 +110,9 @@ public class UtilsTestCase {
         assertDetailsAreOk(details, CorbanameURL.DEFAULT_HOST, CorbanameURL.DEFAULT_PORT, CorbanameURL.DEFAULT_NAME_SERVICE, namePath);
     }
     
+    /**
+     * Test for invalid corbaname url 
+     */
     @Test
     public void test_invalidCorbaname() {
         String testUri = null;
@@ -124,6 +134,9 @@ public class UtilsTestCase {
         }
     }
     
+    /**
+     * Test for creating corbaname url from host, port, name parameters
+     */
     @Test
     public void test_creatingCorbanameURI() {
         String uri = CorbaHostUtils.createCorbanameURI("SomeHost", 1000, "SomeName");

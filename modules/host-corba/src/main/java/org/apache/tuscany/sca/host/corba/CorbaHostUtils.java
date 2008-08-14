@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.host.corba;
 
 
 /**
+ * @version $Rev$ $Date$
  * Various utilities for host-corba
  */
 public class CorbaHostUtils {

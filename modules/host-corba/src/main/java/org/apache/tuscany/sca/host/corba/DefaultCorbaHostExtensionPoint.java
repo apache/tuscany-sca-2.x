@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @version $Rev$ $Date$
  * Default implementation of CorbaHostExtensionPoint
  */
 public class DefaultCorbaHostExtensionPoint implements CorbaHostExtensionPoint {
