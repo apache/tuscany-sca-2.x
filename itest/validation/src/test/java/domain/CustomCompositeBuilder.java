@@ -27,10 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
@@ -187,6 +189,19 @@ public class CustomCompositeBuilder {
     
     public Monitor getMonitorInstance() {
     	return monitor;
+    }
+    
+    public void buildContribution() throws Exception {
+        // Create a composite model for the domain
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName("http://customdomain", "domain"));
+        
+        // Add all deployables to it, normally the domain administrator would select
+        // the deployables to include
+        domainComposite.getIncludes().addAll(workspace.getDeployables());
+        
+        // Build the domain composite and wire the components included in it
+        domainCompositeBuilder.build(domainComposite);
     }
     
     public void readContribution(String compositeURL, String sourceURI, String sourceURL) throws Exception {
