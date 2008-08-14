@@ -38,6 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * Tests SCA default binding over CORBA binding
  */
 public class ScenarioFourTestCase {

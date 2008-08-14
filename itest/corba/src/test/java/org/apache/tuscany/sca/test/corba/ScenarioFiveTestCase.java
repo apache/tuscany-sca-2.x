@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.test.corba.types.ScenarioFiveComponent;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * Tests usage of TNS JSE Corba host
  */
 public class ScenarioFiveTestCase {

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.test.corba.types;
 import org.apache.tuscany.sca.test.corba.generated._ScenarioTwoImplBase;
 
 /**
+ * @version $Rev$ $Date$
  * Servant for generated interface. 
  */
 public class ScenarioTwoServant extends _ScenarioTwoImplBase {

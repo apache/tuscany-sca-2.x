@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.test.corba.types;
 import org.osoa.sca.annotations.Remotable;
 
 /**
+ * @version $Rev$ $Date$
  * Operations for scenario five
  */
 @Remotable

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * Operations for ScenarioThree.
  */
 public interface TScenarioThree {

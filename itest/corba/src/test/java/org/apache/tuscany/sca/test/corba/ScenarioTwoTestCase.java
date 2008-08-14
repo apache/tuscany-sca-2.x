@@ -41,6 +41,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
 /**
+ * @version $Rev$ $Date$
  * Tests attribute get/set mapping using cooperation between traditional CORBA
  * and Tuscany CORBA
  */

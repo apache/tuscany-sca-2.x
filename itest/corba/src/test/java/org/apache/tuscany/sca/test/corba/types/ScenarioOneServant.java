@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.test.corba.generated.WrongColor;
 import org.apache.tuscany.sca.test.corba.generated._ScenarioOneImplBase;
 
 /**
+ * @version $Rev$ $Date$
  * Servant for generated interface. Uses generated classes.
  */
 public class ScenarioOneServant extends _ScenarioOneImplBase {

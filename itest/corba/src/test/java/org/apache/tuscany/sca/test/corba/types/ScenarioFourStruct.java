@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * Type for ScenarioFour test
  */
 public class ScenarioFourStruct {

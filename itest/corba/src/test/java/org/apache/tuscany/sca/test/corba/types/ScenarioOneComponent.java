@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.test.corba.generated.WrongColor;
 import org.osoa.sca.annotations.Reference;
 
 /**
+ * @version $Rev$ $Date$
  * Component for reference using generated interface.
  */
 public class ScenarioOneComponent implements ScenarioOneOperations {

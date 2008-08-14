@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.test.corba.types;
 import org.osoa.sca.annotations.Reference;
 
 /**
+ * @version $Rev$ $Date$
  * Component for obtaining ScenarioFive reference
  */
 public class ScenarioFiveComponent {

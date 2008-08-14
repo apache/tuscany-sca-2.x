@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * User provided interface representation for InnerStruct type.
  */
 public final class TInnerStruct {

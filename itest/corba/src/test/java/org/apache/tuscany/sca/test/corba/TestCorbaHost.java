@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.host.corba.jse.DefaultCorbaHost;
 import org.omg.CORBA.Object;
 
 /**
+ * @version $Rev$ $Date$
  * Mock Corba host which proxies to configured Corba host
  */
 public class TestCorbaHost implements CorbaHost {

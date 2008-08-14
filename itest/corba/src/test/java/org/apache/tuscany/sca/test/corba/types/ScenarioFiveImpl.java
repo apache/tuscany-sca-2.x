@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * Implementation of ScenarioFive service
  */
 public class ScenarioFiveImpl implements ScenarioFive {

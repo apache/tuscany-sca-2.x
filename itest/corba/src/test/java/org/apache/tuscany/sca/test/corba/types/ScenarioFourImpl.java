@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.test.corba.types;
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
 
 /**
+ * @version $Rev$ $Date$
  * Implementation of ScenarioFour service
  */
 public class ScenarioFourImpl implements ScenarioFour {
