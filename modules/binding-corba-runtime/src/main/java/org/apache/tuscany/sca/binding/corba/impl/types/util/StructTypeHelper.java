@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.binding.corba.impl.types.util;
 import java.lang.reflect.Field;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.StructMember;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -31,25 +29,6 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public class StructTypeHelper implements TypeHelper {
-
-    public TypeCode getType(TypeTreeNode node) {
-        TypeTreeNode[] children = node.getChildren();
-        if (children != null) {
-            StructMember[] members = new StructMember[children.length];
-            for (int i = 0; i < children.length; i++) {
-                members[i] =
-                    new StructMember(children[i].getJavaClass().getSimpleName(), TypeHelpersProxy.getType(children[i]),
-                                     null);
-            }
-            TypeCode result =
-                org.omg.CORBA.ORB.init().create_struct_tc(node.getJavaClass().getSimpleName(),
-                                                          node.getJavaClass().getSimpleName(),
-                                                          members);
-            return result;
-        } else {
-            return null;
-        }
-    }
 
     public Object read(TypeTreeNode node, InputStream is) {
         TypeTreeNode[] children = node.getChildren();

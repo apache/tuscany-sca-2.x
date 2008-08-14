@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * @version $Rev$ $Date$
  * Utility for finding method in given class.
  */
 public class MethodFinder {

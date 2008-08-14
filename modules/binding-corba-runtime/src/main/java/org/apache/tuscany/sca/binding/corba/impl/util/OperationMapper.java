@@ -54,11 +54,21 @@ public final class OperationMapper {
         return allInterfaces;
     }
     
+    /**
+     * Maps Java methods to operation names
+     * @param intfClass
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static Map<Method, String> mapMethodToOperation(Class<?> intfClass) {
         return iiopMap(intfClass, false);
     }
 
+    /**
+     * Maps operation names to Java methods
+     * @param intfClass
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static Map<String, Method> mapOperationToMethod(Class<?> intfClass) {
         return iiopMap(intfClass, true);

@@ -33,8 +33,7 @@ import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfiguration
 
 /**
  * @version $Rev$ $Date$
- * Creator of types tree.
- * 
+ *          Creator of types tree.
  */
 public class TypeTreeCreator {
 
@@ -66,8 +65,7 @@ public class TypeTreeCreator {
     /**
      * Creates class for given string argument.
      * 
-     * @param name
-     *            name of type
+     * @param name name of type
      * @return type
      */
     private static Class<?> createClassFromString(String name) {
@@ -115,8 +113,7 @@ public class TypeTreeCreator {
     /**
      * Reduces dimension of array.
      * 
-     * @param forClass
-     *            array class
+     * @param forClass array class
      * @return reduced array
      */
     private static Class<?> reduceArrayDimension(Class<?> forClass) {
@@ -142,7 +139,8 @@ public class TypeTreeCreator {
      * @param forClass
      * @return type tree
      */
-    public static TypeTree createTypeTree(Class<?> forClass, boolean scaBindingRules) throws RequestConfigurationException {
+    public static TypeTree createTypeTree(Class<?> forClass, boolean scaBindingRules)
+        throws RequestConfigurationException {
         TypeTree tree = new TypeTree();
         TypeTreeNode rootNode = null;
         rootNode = inspectClassHierarchy(forClass, tree, scaBindingRules);
@@ -160,24 +158,16 @@ public class TypeTreeCreator {
      */
     private static TypeTreeNode inspectClassHierarchy(Class<?> forClass, TypeTree tree, boolean scaBindingRules)
         throws RequestConfigurationException {
-        // //remains of type tree caching
-        // TypeTreeNode existingNode = tree.getNodeForType(forClass);
-        // if (existingNode != null) {
-        // return existingNode;
-        // }
-
+        
         TypeTreeNode node = null;
         if (scaBindingRules) {
             node = createTypeNode4ScaBinding(forClass);
         } else {
             node = createTypeNode4CorbaBinding(forClass);
         }
-        
+
         NodeType nodeType = node.getNodeType();
         TypeTreeNode[] children = null;
-
-        // //remains of type tree caching
-        // tree.addUsedType(forClass, node);
 
         if (nodeType.equals(NodeType.primitive)) {
             // stop condition for recurrent method
@@ -214,8 +204,7 @@ public class TypeTreeCreator {
     /**
      * Creating and configuring TypeTreeNode for given class.
      * 
-     * @param forClass
-     *            class
+     * @param forClass class
      * @return node
      * @throws RequestConfigurationException
      */
@@ -249,7 +238,7 @@ public class TypeTreeCreator {
         }
         return node;
     }
-    
+
     private static TypeTreeNode createTypeNode4ScaBinding(Class<?> forClass) throws RequestConfigurationException {
         TypeTreeNode node = new TypeTreeNode();
         if (forClass.isArray()) {
@@ -298,7 +287,7 @@ public class TypeTreeCreator {
             return false;
         }
         /*
-         * Are constructor args declared as class fields? 
+         * Are constructor args declared as class fields?
          */
         Field[] fields = forClass.getFields();
         Set<Class<?>> fieldsSet = new HashSet<Class<?>>(Arrays.asList(fieldsTypes));

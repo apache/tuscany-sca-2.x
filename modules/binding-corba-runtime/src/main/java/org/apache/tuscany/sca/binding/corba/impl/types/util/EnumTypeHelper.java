@@ -3,16 +3,13 @@ package org.apache.tuscany.sca.binding.corba.impl.types.util;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
+/**
+ * @version $Rev$ $Date$
+ */
 public class EnumTypeHelper implements TypeHelper {
-
-    public TypeCode getType(TypeTreeNode node) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     public Object read(TypeTreeNode node, InputStream is) {
         int value = is.read_long();

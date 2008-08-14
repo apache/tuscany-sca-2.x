@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.corba.impl.types.util;
 import org.apache.tuscany.sca.binding.corba.impl.reference.InterfaceInstanceCreator;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
 import org.omg.CORBA.Object;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -30,11 +29,6 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public class ReferenceTypeHelper implements TypeHelper {
-
-    public TypeCode getType(TypeTreeNode node) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     public java.lang.Object read(TypeTreeNode node, InputStream is) {
         Object reference = is.read_Object();

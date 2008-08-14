@@ -66,7 +66,7 @@ public class CorbaInvoker implements Invoker {
                 }
             }
             if (msg.getOperation().getFaultTypes() != null) {
-                for (DataType type : msg.getOperation().getFaultTypes()) {
+                for (DataType<?> type : msg.getOperation().getFaultTypes()) {
                     request.addExceptionType(type.getPhysical());
                 }
             }

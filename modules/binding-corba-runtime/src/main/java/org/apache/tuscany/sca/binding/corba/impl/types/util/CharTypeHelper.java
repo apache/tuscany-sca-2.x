@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -29,10 +27,6 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public class CharTypeHelper implements TypeHelper {
-
-    public TypeCode getType(TypeTreeNode node) {
-        return ORB.init().get_primitive_tc(org.omg.CORBA.TCKind.from_int(9));
-    }
 
     public Object read(TypeTreeNode node, InputStream is) {
         return is.read_char();

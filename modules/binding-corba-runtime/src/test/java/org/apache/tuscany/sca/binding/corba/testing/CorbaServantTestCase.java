@@ -72,6 +72,10 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
+/**
+ * @version $Rev$ $Date$
+ * Tests API for dynamic CORBA servants
+ */
 public class CorbaServantTestCase {
 
     private static ORB orb;
@@ -487,7 +491,7 @@ public class CorbaServantTestCase {
             //expecting exception...
             Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
             InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
-            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
+            new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
             fail();
         } catch (Exception e) {
             if (e instanceof RequestConfigurationException) {

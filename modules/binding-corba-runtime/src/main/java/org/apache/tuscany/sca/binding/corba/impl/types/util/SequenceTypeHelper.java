@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -33,17 +32,6 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public class SequenceTypeHelper implements TypeHelper {
-
-    public TypeCode getType(TypeTreeNode node) {
-        TypeCode typeCode =
-            org.omg.CORBA.ORB.init().create_alias_tc(node.getJavaClass().getSimpleName(),
-                                                     node.getJavaClass().getSimpleName(),
-                                                     org.omg.CORBA.ORB.init()
-                                                         .create_sequence_tc(0,
-                                                                             TypeHelpersProxy.getType(node
-                                                                                 .getChildren()[0])));
-        return typeCode;
-    }
 
     public Object read(TypeTreeNode node, InputStream is) {
         Object sequence = null;

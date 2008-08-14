@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
+/**
+ * @version $Rev$ $Date$
+ * Class for type utilities
+ */
 public class Utils {
 
     /**

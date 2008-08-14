@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * @version $Rev$ $Date$
  * Invocation proxy for SCA components
  */
 public class ComponentInvocationProxy implements InvocationProxy {
@@ -60,6 +61,7 @@ public class ComponentInvocationProxy implements InvocationProxy {
     /**
      * Maps Java methods to Tuscany operations
      */
+    @SuppressWarnings("unchecked")
     private void createMethod2OperationMapping() {
         // for every operation find all methods with the same name, then
         // compare operations and methods parameters
@@ -111,7 +113,7 @@ public class ComponentInvocationProxy implements InvocationProxy {
                 }
                 // cache input types trees
                 if (operation.getInputType() != null) {
-                    for (DataType<List<DataType>> type : operation.getInputType().getLogical()) {
+                    for (DataType<List<DataType<?>>> type : operation.getInputType().getLogical()) {
                         Class<?> forClass = type.getPhysical();
                         TypeTree inputType = TypeTreeCreator.createTypeTree(forClass, false);
                         inputInstances.add(inputType);
