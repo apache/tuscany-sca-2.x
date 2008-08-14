@@ -185,7 +185,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
-                warning("DuplicateComponentName", component, composite.getName().toString(), component.getName());
+                error("DuplicateComponentName", component, composite.getName().toString(), component.getName());
             } else {
                 components.put(component.getName(), component);
             }
