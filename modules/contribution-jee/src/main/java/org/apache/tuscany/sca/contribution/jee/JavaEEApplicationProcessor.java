@@ -81,6 +81,7 @@ public class JavaEEApplicationProcessor {
                     String referenceName = beanName2+"_"+reference.getName();
                     reference2.setName(referenceName);
                     reference2.setInterfaceContract(reference.getInterfaceContract());
+                    reference2.getRequiredIntents().addAll(reference.getRequiredIntents());
                     componentType.getReferences().add(reference2);
                 }
             }
