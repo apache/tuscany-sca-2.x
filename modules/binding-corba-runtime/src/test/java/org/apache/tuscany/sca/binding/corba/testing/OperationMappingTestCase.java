@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * Various tests for OperationsMapping
  */
 public class OperationMappingTestCase {

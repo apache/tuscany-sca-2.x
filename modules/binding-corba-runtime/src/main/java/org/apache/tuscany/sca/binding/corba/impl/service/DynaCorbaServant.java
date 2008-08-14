@@ -35,6 +35,7 @@ import org.omg.CORBA.portable.OutputStream;
 import org.omg.CORBA.portable.ResponseHandler;
 
 /**
+ * @version $Rev$ $Date$
  * General servant which provides target component implementation via CORBA
  */
 public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {

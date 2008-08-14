@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.NodeType;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -90,20 +89,6 @@ public class TypeHelpersProxy {
             typeHelper = complexTypes.get(type);
         }
         return typeHelper;
-    }
-
-    /**
-     * Proxies getType method invocation to appropriate TypeHelper
-     * implementation. It's not being used since I've changed method for passing
-     * arguments. May be useful while implementing CORBA service bindings.
-     * 
-     * @param node
-     * @return
-     */
-    public static final TypeCode getType(TypeTreeNode node) {
-        TypeHelper typeHelper = getTypeHelper(node);
-        TypeCode typeCode = typeHelper.getType(node);
-        return typeCode;
     }
 
     /**

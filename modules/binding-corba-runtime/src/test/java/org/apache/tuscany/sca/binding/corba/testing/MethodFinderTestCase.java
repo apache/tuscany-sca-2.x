@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.binding.corba.impl.util.MethodFinder;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * Various tests for MethodFinder
  */
 public class MethodFinderTestCase {

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.corba.testing;
 
 /**
+ * @version $Rev$ $Date$
  * Interface that can be tested for operations mapping
  */
 public interface MappingTestInterface {

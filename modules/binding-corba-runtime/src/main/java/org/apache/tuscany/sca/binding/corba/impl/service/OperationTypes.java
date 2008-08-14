@@ -23,6 +23,10 @@ import java.util.List;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
 
+/**
+ * @version $Rev$ $Date$
+ * Holder for Java type trees for one method  
+ */
 public class OperationTypes {
 
     private TypeTree outputType;

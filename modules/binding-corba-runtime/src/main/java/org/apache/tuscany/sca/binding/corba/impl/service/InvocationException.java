@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.corba.impl.service;
 
 /**
+ * @version $Rev$ $Date$
  * Wrapper for exception thrown during target invocation 
  */
 public class InvocationException extends Exception {

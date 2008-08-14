@@ -66,6 +66,7 @@ import org.omg.CosNaming.NamingContextHelper;
 
 /**
  * @version $Rev$ $Date$
+ * Tests API for dynamic CORBA requests. Tests handling various Java types.
  */
 public class CorbaTypesTestCase {
     private static TransientNameServer server;

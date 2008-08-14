@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
-import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
 
@@ -28,13 +27,6 @@ import org.omg.CORBA.portable.OutputStream;
  * @version $Rev$ $Date$
  */
 public interface TypeHelper {
-
-    /**
-     * Gets type definition for CORBA API.
-     * @param node 
-     * @return
-     */
-    TypeCode getType(TypeTreeNode node);
 
     /**
      * Reads CORBA object

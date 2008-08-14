@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.corba.impl.service;
 import java.util.List;
 
 /**
+ * @version $Rev$ $Date$
  * Target proxy interface for service bindings
  */
 public interface InvocationProxy {
