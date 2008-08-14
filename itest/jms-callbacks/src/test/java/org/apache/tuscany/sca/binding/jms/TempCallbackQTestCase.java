@@ -22,9 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,16 +32,16 @@ import org.junit.Test;
  */
 public class TempCallbackQTestCase {
 
-    private SCAClient scaClient;
+    private SCADomain scaDomain;
 
     @Before
     public void init() throws MalformedURLException {
-        this.scaClient = (SCAClient)SCANode2Factory.newInstance().createSCANode("src/main/resources/simple/tempq.composite");
+        scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/tempq.composite");
     }
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        JMSClient client = scaClient.getService(JMSClient.class, "ClientComponent");
+        JMSClient client = scaDomain.getService(JMSClient.class, "ClientComponent");
 
         client.aClientMethod();
 
@@ -57,8 +55,8 @@ public class TempCallbackQTestCase {
 
     @After
     public void end() {
-        if (scaClient != null) {
-            ((SCANode2)scaClient).stop();
+        if (scaDomain != null) {
+            scaDomain.close();
         }
     }
 
