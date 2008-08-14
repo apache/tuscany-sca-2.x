@@ -18,25 +18,14 @@
  */
 package org.apache.tuscany.sca.tools.inspector;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.apache.tuscany.sca.tools.inspector.RegistryInspector;
 
 import calculator.CalculatorService;
 
