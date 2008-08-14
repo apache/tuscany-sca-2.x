@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.corba.CorbaHostExtensionPoint;
 
 /**
+ * @version $Rev$ $Date$
  * Registers TestCorbaHost as a Corba host extension. 
  */
 public class TestCorbaHostModuleActivator implements ModuleActivator {

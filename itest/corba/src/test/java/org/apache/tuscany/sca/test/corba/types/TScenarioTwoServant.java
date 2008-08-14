@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * Servant for user provided interface.
  */
 public class TScenarioTwoServant implements TScenarioTwo {

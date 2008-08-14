@@ -49,6 +49,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
 /**
+ * @version $Rev$ $Date$
  * This test class contains three main tests:<br>
  * 1. Tuscany is being used as a consumer of some non-Tuscany CORBA service<br>
  * 2. Tuscany is being used as a service provider, which will be consumed by

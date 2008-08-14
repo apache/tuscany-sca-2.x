@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * Tests various mapping scenarios.
  */
 public class ScenarioThreeTestCase {

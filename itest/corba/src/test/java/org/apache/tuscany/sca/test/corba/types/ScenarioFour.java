@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
 import org.osoa.sca.annotations.Remotable;
 
 /**
+ * @version $Rev$ $Date$
  * Operations for ScenarioFour
  */
 @Remotable

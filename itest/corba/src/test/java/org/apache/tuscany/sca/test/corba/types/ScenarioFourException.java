@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 /**
+ * @version $Rev$ $Date$
  * Exception for ScenarioFour tests
  */
 public class ScenarioFourException extends Exception {

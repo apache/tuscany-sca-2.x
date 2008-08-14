@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.test.corba.generated.UnexpectedException;
 import org.apache.tuscany.sca.test.corba.generated.WrongColor;
 
 /**
+ * @version $Rev$ $Date$
  * User provided CORBA service interface.
  */
 public interface TScenarioOne {
