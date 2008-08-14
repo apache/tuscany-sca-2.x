@@ -87,6 +87,7 @@ public class WebModuleProcessor {
                 throw new ContributionException(e);
             }
             reference.setInterfaceContract(ic);
+            reference.getRequiredIntents().add(AssemblyHelper.EJB_INTENT);
             componentType.getReferences().add(reference);
         }
 
@@ -131,6 +132,7 @@ public class WebModuleProcessor {
             ComponentReference componentReference = helper.createComponentReference();
             componentReference.setReference(reference);
             componentReference.setInterfaceContract(reference.getInterfaceContract());
+            componentReference.getRequiredIntents().addAll(reference.getRequiredIntents());
             component.getReferences().add(componentReference);
         }
 
@@ -148,6 +150,7 @@ public class WebModuleProcessor {
         for (ComponentReference reference : component.getReferences()) {
             CompositeReference compositeReference = helper.createCompositeReference();
             compositeReference.setInterfaceContract(reference.getInterfaceContract());
+            compositeReference.getRequiredIntents().addAll(reference.getRequiredIntents());
             compositeReference.getPromotedReferences().add(reference);
             composite.getReferences().add(compositeReference);
         }

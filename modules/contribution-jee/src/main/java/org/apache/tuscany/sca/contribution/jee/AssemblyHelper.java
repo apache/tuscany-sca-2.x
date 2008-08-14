@@ -54,7 +54,8 @@ public class AssemblyHelper {
     private JavaInterfaceFactory jif;
 
     public static final Map<String, QName> ALLOWED_ENV_ENTRY_TYPES;
-    public static Intent CONVERSATIONAL_INTENT;
+    public static final Intent CONVERSATIONAL_INTENT;
+    public static final Intent EJB_INTENT;
     static {
         ALLOWED_ENV_ENTRY_TYPES = new HashMap<String, QName>();
         ALLOWED_ENV_ENTRY_TYPES.put(String.class.getName(), new QName("http://www.w3.org/2001/XMLSchema", "string",
@@ -80,6 +81,8 @@ public class AssemblyHelper {
         CONVERSATIONAL_INTENT = dpf.createIntent();
         CONVERSATIONAL_INTENT.setName(new QName("http://www.osoa.org/xmlns/sca/1.0", "conversational"));
 
+        EJB_INTENT = dpf.createIntent();
+        EJB_INTENT.setName(new QName("http://www.osoa.org/xmlns/sca/1.0", "ejb"));
     }
 
     public AssemblyHelper() {
