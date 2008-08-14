@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * @version $Rev$ $Date$
  * Class partially copied from eclipse wst project
  * (http://repo1.maven.org/maven2/org/eclipse/wst/server/core/1.0.205-v20070829b/).
  * Finally we should use jar from maven dependency. Problem described in

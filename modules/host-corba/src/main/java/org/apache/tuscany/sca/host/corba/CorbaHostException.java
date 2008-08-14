@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.host.corba;
 
 /**
+ * @version $Rev$ $Date$
  * General exception for corba hosts operations
  */
 public class CorbaHostException extends Exception {

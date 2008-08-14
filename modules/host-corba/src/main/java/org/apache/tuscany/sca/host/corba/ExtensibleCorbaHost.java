@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.host.corba;
 import org.omg.CORBA.Object;
 
 /**
+ * @version $Rev$ $Date$
  * Default implementation of extensible CORBA host
  */
 public class ExtensibleCorbaHost implements CorbaHost {

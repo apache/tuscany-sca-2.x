@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * @version $Rev$ $Date$
  * General tests
  */
 public class TnsDefaultCorbaHostTestCase {

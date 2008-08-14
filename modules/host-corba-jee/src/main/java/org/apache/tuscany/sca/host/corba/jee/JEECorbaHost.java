@@ -42,7 +42,8 @@ import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 /**
- * Default implementation of CORBA host
+ * @version $Rev$ $Date$
+ * Implementation of JEE CORBA host
  */
 public class JEECorbaHost implements CorbaHost {
 

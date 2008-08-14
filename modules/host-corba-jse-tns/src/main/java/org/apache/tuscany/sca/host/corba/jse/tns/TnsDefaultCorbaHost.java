@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.host.corba.jse.tns;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.host.corba.CorbaHost;
 import org.apache.tuscany.sca.host.corba.CorbaHostException;
@@ -32,11 +33,12 @@ import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.omg.CORBA.Object;
 
 /**
+ * @version $Rev$ $Date$
  * Default implementation of CORBA host
  */
 public class TnsDefaultCorbaHost implements CorbaHost {
-    //private static final Logger logger = Logger.getLogger(TnsDefaultCorbaHost.class.getName());
-
+    
+    private static final Logger logger = Logger.getLogger(TnsDefaultCorbaHost.class.getName());
     private Map<Integer, TransientNameServer> localServers = new ConcurrentHashMap<Integer, TransientNameServer>();
     private Map<Integer, Integer> clientsCount = new ConcurrentHashMap<Integer, Integer>();
     private CorbaHost targetHost = new DefaultCorbaHost();
@@ -95,13 +97,12 @@ public class TnsDefaultCorbaHost implements CorbaHost {
                 clientsCount.remove(port);
                 localServers.remove(port);
             } else {
-                // FIXME: should we throw exception when expecting not null
-                // server object?
+                logger.warning("Local name server on port " + port + " was null!");
             }
         } else if (useCount > 1) {
             clientsCount.put(port, --useCount);
         } else {
-            // ignoring request to stop non existing name server
+            logger.warning("Tried to release non existing local name server on port " + port);
         }
 
     }

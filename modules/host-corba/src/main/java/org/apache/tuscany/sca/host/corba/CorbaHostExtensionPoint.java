@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.host.corba;
 import java.util.List;
 
 /**
+ * @version $Rev$ $Date$
  * An extension point for CORBA hostst
  */
 public interface CorbaHostExtensionPoint {

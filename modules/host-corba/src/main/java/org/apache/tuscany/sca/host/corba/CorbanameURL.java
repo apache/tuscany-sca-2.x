@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * @version $Rev$ $Date$
  * Holds corbaname URI details
  */
 public class CorbanameURL {
