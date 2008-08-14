@@ -28,15 +28,15 @@
 
     <artifactId>tuscany-distribution-manager</artifactId>
     <name>Apache Tuscany SCA Domain Manager Distribution</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <dependencies>
 
-        <!-- Base distribution -->
+        <!-- Core distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-core</artifactId>
-            <type>jar</type>
+            <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
