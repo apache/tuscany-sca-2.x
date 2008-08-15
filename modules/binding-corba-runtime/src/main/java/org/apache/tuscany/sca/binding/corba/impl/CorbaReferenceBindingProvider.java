@@ -61,7 +61,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
             if (remoteObject == null) {
                 remoteObject = host.lookup(binding.getCorbaname());    
             }
-            return new CorbaInvoker(remoteObject, referenceClass, operationsMap, false);
+            return new CorbaInvoker(remoteObject, referenceClass, operationsMap);
         } catch (Exception e) {
         }
         return null;

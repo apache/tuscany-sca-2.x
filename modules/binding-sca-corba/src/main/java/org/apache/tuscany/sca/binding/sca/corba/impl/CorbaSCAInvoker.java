@@ -54,7 +54,7 @@ public class CorbaSCAInvoker implements Invoker {
      */
     public Message invoke(Message msg) {
         try { 
-            DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, "scaService", false);
+            DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, "scaService");
             request.setReferenceClass(referenceClass);
             request.setOutputType(String.class);
             request.addExceptionType(WrappedSCAException.class);

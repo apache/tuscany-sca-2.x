@@ -39,13 +39,11 @@ public class CorbaInvoker implements Invoker {
     private Object remoteObject;
     private Class<?> referenceClass;
     private Map<Method, String> operationsMap;
-    private boolean scaBindingRules;
 
-    public CorbaInvoker(Object remoteObject, Class<?> referenceClass, Map<Method, String> operationsMap, boolean scaBindingRules) {
+    public CorbaInvoker(Object remoteObject, Class<?> referenceClass, Map<Method, String> operationsMap) {
         this.remoteObject = remoteObject;
         this.referenceClass = referenceClass;
         this.operationsMap = operationsMap;
-        this.scaBindingRules = scaBindingRules;
     }
 
     /**
@@ -53,7 +51,7 @@ public class CorbaInvoker implements Invoker {
      */
     public Message invoke(Message msg) {
         try {
-            DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, msg.getOperation().getName(), scaBindingRules);
+            DynaCorbaRequest request = new DynaCorbaRequest(remoteObject, msg.getOperation().getName());
             request.setReferenceClass(referenceClass);
             request.setOperationsMap(operationsMap);
             if (msg.getOperation().getOutputType() != null) {
