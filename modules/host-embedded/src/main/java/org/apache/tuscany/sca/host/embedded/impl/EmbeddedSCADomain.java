@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.node.impl.RuntimeBootStrapper;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -56,7 +57,7 @@ public class EmbeddedSCADomain extends SCADomain {
 
     private String uri;
     private Composite domainComposite;
-    private ReallySmallRuntime runtime;
+    private RuntimeBootStrapper runtime;
     private ComponentManagerImpl componentManager = new ComponentManagerImpl(this);
     
     /**
@@ -70,7 +71,7 @@ public class EmbeddedSCADomain extends SCADomain {
         this.uri = domainURI;
         
         // Create a runtime
-        runtime = new ReallySmallRuntime(runtimeClassLoader);
+        runtime = new RuntimeBootStrapper(runtimeClassLoader);
     }
     
     public void start() throws ActivationException {

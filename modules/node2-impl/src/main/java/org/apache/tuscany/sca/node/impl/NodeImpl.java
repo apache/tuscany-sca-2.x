@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -54,6 +55,8 @@ import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
@@ -61,7 +64,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -90,13 +92,15 @@ public class NodeImpl implements SCANode2, SCAClient {
     private String configurationName;
 
     // The Tuscany runtime that does the hard work
-    private ReallySmallRuntime runtime;
+    private RuntimeBootStrapper runtime;
     private CompositeActivator compositeActivator;
     private XMLInputFactory inputFactory;
     private ModelFactoryExtensionPoint modelFactories;
     private StAXArtifactProcessorExtensionPoint artifactProcessors;
+    private URLArtifactProcessorExtensionPoint documentProcessors;
     private Monitor monitor;
 
+    private List<Contribution> contributions;
     private ContributionMetadata metadata;
 
     // The composite loaded into this node
@@ -147,6 +151,12 @@ public class NodeImpl implements SCANode2, SCAClient {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);
 
+        if (compositeURI != null) {
+            URI uri = URI.create(compositeURI);
+            if (uri.isAbsolute()) {
+                throw new IllegalArgumentException("Composite URI must be a resource name: " + compositeURI);
+            }
+        }
         try {
             // Initialize the runtime
             initRuntime();
@@ -174,7 +184,8 @@ public class NodeImpl implements SCANode2, SCAClient {
             if (contributionArtifactURL == null) {
                 throw new IllegalArgumentException("Composite not found: " + contributionArtifactPath);
             }
-            composite = createComposite(contributionArtifactURL.toString());
+            // Set to relative URI to avoid duplicate loading
+            Composite composite = createComposite(compositeURI);
             config.setComposite(composite);
         } else {
 
@@ -199,12 +210,15 @@ public class NodeImpl implements SCANode2, SCAClient {
                 StAXArtifactProcessor<ContributionMetadata> processor =
                     artifactProcessors.getProcessor(ContributionMetadata.class);
                 XMLStreamReader reader = inputFactory.createXMLStreamReader(contributionArtifactURL.openStream());
+                reader.nextTag();
                 metadata = processor.read(reader);
                 reader.close();
                 if (metadata.getDeployables().isEmpty()) {
                     throw new IllegalArgumentException(
                                                        "No deployable composite is declared in " + contributionArtifactPath);
                 }
+                Composite composite = metadata.getDeployables().get(0);
+                config.setComposite(composite);
             }
         }
 
@@ -229,7 +243,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         return c;
     }
 
-    private URL getContributionURL(URL contributionArtifactURL, String contributionArtifactPath) {
+    public static URL getContributionURL(URL contributionArtifactURL, String contributionArtifactPath) {
         URL contributionURL = null;
         // "jar:file://....../something.jar!/a/b/c/app.composite"
         try {
@@ -300,8 +314,12 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Initialize the runtime
             initRuntime();
 
+            URI uri = URI.create(compositeURI);
             ConfiguredNodeImplementation configuration = null;
             if (contributions == null || contributions.length == 0) {
+                if (uri.getScheme() != null) {
+                    throw new IllegalArgumentException("No SCA contributions are provided");
+                }
                 configuration = findNodeConfiguration(compositeURI, null);
             } else {
 
@@ -358,16 +376,23 @@ public class NodeImpl implements SCANode2, SCAClient {
                 configuration = findNodeConfiguration(compositeURI, null);
             } else {
                 // Create a node configuration
-                NodeImplementationFactory nodeImplementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+                NodeImplementationFactory nodeImplementationFactory =
+                    modelFactories.getFactory(NodeImplementationFactory.class);
                 configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
                 // Read the composite model
                 StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
-                URL compositeURL = new URL(compositeURI);
-                logger.log(Level.INFO, "Loading composite: " + compositeURL);
-                XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(compositeContent));
-                Composite composite = compositeProcessor.read(reader);
-                reader.close();
+                // URL compositeURL = new URL(compositeURI);
+                logger.log(Level.INFO, "Loading composite: " + compositeURI);
+
+                CompositeDocumentProcessor compositeDocProcessor =
+                    (CompositeDocumentProcessor)documentProcessors.getProcessor(Composite.class);
+                composite =
+                    compositeDocProcessor.read(URI.create(compositeURI), new ByteArrayInputStream(compositeContent
+                        .getBytes("UTF-8")));
+
+                analyzeProblems();
+
                 configuration.setComposite(composite);
 
                 // Create contribution models
@@ -402,7 +427,7 @@ public class NodeImpl implements SCANode2, SCAClient {
     private void initRuntime() throws Exception {
 
         // Create a node runtime
-        runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
+        runtime = new RuntimeBootStrapper(Thread.currentThread().getContextClassLoader());
         runtime.start();
 
         // Get the various factories we need
@@ -413,6 +438,8 @@ public class NodeImpl implements SCANode2, SCAClient {
         // Create the required artifact processors
         artifactProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
+        documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+
         // Save the composite activator
         compositeActivator = runtime.getCompositeActivator();
 
@@ -421,7 +448,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
     }
-    
+
     /**
      * Escape the space in URL string
      * @param uri
@@ -441,7 +468,7 @@ public class NodeImpl implements SCANode2, SCAClient {
 
         // Load the specified contributions
         ContributionService contributionService = runtime.getContributionService();
-        List<Contribution> contributions = new ArrayList<Contribution>();
+        contributions = new ArrayList<Contribution>();
         for (Contribution contribution : configuration.getContributions()) {
             URI uri = createURI(contribution.getLocation());
             if (uri.getScheme() == null) {
@@ -468,9 +495,12 @@ public class NodeImpl implements SCANode2, SCAClient {
             contributions.add(contributionService.contribute(contribution.getURI(), contributionURL, false));
             analyzeProblems();
         }
-        
+
+        composite = configuration.getComposite();
+
         // Resolve the metadata within the context of the contribution
-        //FIXME This doesn't seem to make sense here 
+        // FIXME The deployable composite should have been picked by the SCA Domain Manager already and we should not
+        // pollute the Node impl to deal with this 
         if (metadata != null) {
             StAXArtifactProcessor<ContributionMetadata> processor =
                 artifactProcessors.getProcessor(ContributionMetadata.class);
@@ -481,55 +511,65 @@ public class NodeImpl implements SCANode2, SCAClient {
                 }
             }
             List<Composite> composites = metadata.getDeployables();
-            configuration.setComposite(composites.get(0));
+            if (composites.size() == 0) {
+                throw new IllegalArgumentException("No deployable composite is declared");
+            } else if (composites.size() == 1) {
+                composite = composites.get(0);
+            } else {
+                // This is temporary to include all composites
+                AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
+                Composite tempComposite = assemblyFactory.createComposite();
+                tempComposite.setName(new QName("http://tempuri.org", "aggregated"));
+                tempComposite.setURI("http://tempuri.org/aggregated");
+                tempComposite.getIncludes().addAll(composites);
+                composite = tempComposite;
+            }
+            configuration.setComposite(composite);
         }
 
-        // Load the specified composite
-        Contribution contribution;
-        URL compositeURL;
-        
-        URI uri = createURI(configuration.getComposite().getURI());
-        if (uri.getScheme() == null) {
-            
-            // If the composite URI is a relative URI, try to resolve it within the contributions
-            contribution = contribution(contributions, uri.toString());
-            if (contribution == null) {
-                throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
-            }
-            compositeURL = new URL(location(contribution, uri.toString()));
-            
-        } else {
-            
-            // If the composite URI is an absolute URI, use it as is
-            compositeURL = uri.toURL();
-            
-            // And resolve the composite within the scope of the last contribution
-            if (contributions.size() != 0) {
-                contribution = contributions.get(contributions.size() -1);
-            } else {
-                contribution = null;
-            }
-        }
-            
-        // Read the composite
-        StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
-        composite = configuration.getComposite();
+        Contribution contribution = null;
         if (composite.getName() == null) {
+            // Load the specified composite
+            URL compositeURL;
+
+            URI uri = createURI(configuration.getComposite().getURI());
+            if (uri.getScheme() == null) {
+
+                // If the composite URI is a relative URI, try to resolve it within the contributions
+                contribution = contribution(contributions, uri.toString());
+                if (contribution == null) {
+                    throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
+                }
+                compositeURL = new URL(location(contribution, uri.toString()));
+
+            } else {
+
+                // If the composite URI is an absolute URI, use it as is
+                compositeURL = uri.toURL();
+            }
+
+            URLArtifactProcessor<Composite> compositeDocProcessor = documentProcessors.getProcessor(Composite.class);
+            // Read the composite
             logger.log(Level.INFO, "Loading composite: " + compositeURL);
-            InputStream is = compositeURL.openStream();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            composite = compositeProcessor.read(reader);
-            reader.close();
+            // InputStream is = compositeURL.openStream();
+            // XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            composite = compositeDocProcessor.read(null, uri, compositeURL);
+            // reader.close();
 
             analyzeProblems();
+
+        }
+        // And resolve the composite within the scope of the last contribution
+        if (contribution == null && contributions.size() != 0) {
+            contribution = contributions.get(contributions.size() - 1);
         }
 
         // Resolve the given composite within the scope of the selected contribution
         if (contribution != null) {
+            StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
             compositeProcessor.resolve(composite, contribution.getModelResolver());
             analyzeProblems();
         }
-
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
@@ -550,7 +590,7 @@ public class NodeImpl implements SCANode2, SCAClient {
 
         analyzeProblems();
     }
-    
+
     /**
      * Returns the artifact representing the given composite.
      * 
@@ -640,6 +680,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Deactivate the composite
             compositeActivator.deactivate(composite);
 
+            runtime.stop();
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -774,4 +815,9 @@ public class NodeImpl implements SCANode2, SCAClient {
         // Collect JARs from the parent ClassLoader
         collectJARs(urls, cl.getParent());
     }
+
+    public CompositeActivator getCompositeActivator() {
+        return compositeActivator;
+    }
+
 }

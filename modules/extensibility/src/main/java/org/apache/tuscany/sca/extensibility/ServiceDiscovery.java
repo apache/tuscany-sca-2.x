@@ -68,20 +68,24 @@ public class ServiceDiscovery {
     }
 
     /**
+     * @deprecated
      * Register a ClassLoader with this discovery mechanism. Tuscany extension
      * ClassLoaders are registered here.
      * 
      * @param classLoader
      */
+    @Deprecated
     public synchronized void registerClassLoader(ClassLoader classLoader) {
         registeredClassLoaders.add(classLoader);
     }
 
     /**
+     * @deprecated
      * Unregister a ClassLoader with this discovery mechanism. 
      * 
      * @param classLoader
      */
+    @Deprecated
     public synchronized void unregisterClassLoader(ClassLoader classLoader) {
         registeredClassLoaders.remove(classLoader);
     }
@@ -127,9 +131,15 @@ public class ServiceDiscovery {
         });
         if (className != null) {
             try {
-                return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+                // Try the classloader for the service interface first 
+                return Class.forName(className, false, serviceInterface.getClassLoader());
             } catch (ClassNotFoundException e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
+                try {
+                    // Try the thread context classloader
+                    return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+                } catch (ClassNotFoundException ex) {
+                    logger.log(Level.WARNING, ex.getMessage(), ex);
+                }
             }
         }
         Set<ServiceDeclaration> services = getServiceDiscoverer().discover(serviceInterface.getName(), true);

@@ -72,7 +72,7 @@ public class DomainManagerLauncher {
     }
     
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Domain Manager starting...");
+        logger.info("Apache Tuscany SCA Domain Manager is starting...");
 
         // Create a domain manager
         DomainManagerLauncher launcher = newInstance();
@@ -85,9 +85,13 @@ public class DomainManagerLauncher {
             logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
             throw e;
         }
-        logger.info("SCA Domain Manager started.");
+        logger.info("SCA Domain Manager is now started.");
+        
+        ShutdownThread hook = new ShutdownThread(domainManager);
+        Runtime.getRuntime().addShutdownHook(hook);
         
         logger.info("Press enter to shutdown.");
+
         try {
             System.in.read();
         } catch (IOException e) {
@@ -98,13 +102,40 @@ public class DomainManagerLauncher {
                 lock.wait();
             }
         }
+        
+        stop(domainManager);
+        // Remove the hook
+        Runtime.getRuntime().removeShutdownHook(hook);
+    }
 
+    private static void stop(Object domainManager) throws Exception {
         // Stop the domain manager
+        if (domainManager == null) {
+            return;
+        }
         try {
             domainManager.getClass().getMethod("stop").invoke(domainManager);
+            logger.info("SCA Domain Manager is now stopped.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
             throw e;
+        }
+    }
+    
+    private static class ShutdownThread extends Thread {
+        private Object domainManager;
+
+        public ShutdownThread(Object domainManager) {
+            super();
+            this.domainManager = domainManager;
+        }
+
+        public void run() {
+            try {
+                DomainManagerLauncher.stop(domainManager);
+            } catch (Exception e) {
+                // Ignore
+            }
         }
     }
 }

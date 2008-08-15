@@ -18,16 +18,9 @@
 
 package org.apache.tuscany.sca.host.embedded;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.osoa.sca.CallableReference;
@@ -158,49 +151,6 @@ public abstract class SCADomain {
     public abstract <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);
 
     /**
-     * Read the service name from a configuration file
-     * 
-     * @param classLoader
-     * @param name The name of the service class
-     * @return A class name which extends/implements the service class
-     * @throws IOException
-     */
-    private static String getServiceName(final ClassLoader classLoader, final String name) throws IOException {
-        InputStream is;
-        // Allow privileged access to open stream. Requires FilePermission in security policy.
-        try {
-            is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-                public InputStream run() throws IOException {
-                    return classLoader.getResourceAsStream("META-INF/services/" + name);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (IOException)e.getException();
-        }
-                
-        if (is == null) {
-            return null;
-        }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                } else if (!line.startsWith("#")) {
-                    return line.trim();
-                }
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-        return null;
-    }
-
-    /**
      * Returns an SCADomain instance. If the system property
      * "org.apache.tuscany.sca.host.embedded.SCADomain" is set, its value is used as
      * the name of the implementation class. Otherwise, if the resource
@@ -223,53 +173,45 @@ public abstract class SCADomain {
             // Determine the runtime and application ClassLoader
             final ClassLoader runtimeClassLoader = SCADomain.class.getClassLoader();
             final ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
-            
-            // Discover the SCADomain implementation
-            final String name = SCADomain.class.getName();
-            String className = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                public String run() {
-                    return System.getProperty(name);
-                }
-            });
 
-            if (className == null) {
-                className = getServiceName(runtimeClassLoader, name);
-            }
-            
-            if (className == null) {
-                
+            Class<?> implClass = ServiceDiscovery.getInstance().loadFirstServiceClass(SCADomain.class);
+
+            if (implClass == null) {
+
                 // Create a default SCA domain implementation
                 domain =
-                    new DefaultSCADomain(runtimeClassLoader,
-                                         applicationClassLoader,
-                                         domainURI,
-                                         contributionLocation,
+                    new DefaultSCADomain(runtimeClassLoader, applicationClassLoader, domainURI, contributionLocation,
                                          composites);
             } else {
-                
+
                 // Create an instance of the discovered SCA domain implementation
-                Class cls = Class.forName(className, true, runtimeClassLoader);
                 Constructor<?> constructor = null;
                 try {
-                    constructor = cls.getConstructor(ClassLoader.class, ClassLoader.class,
-                                                     String.class, String.class, String[].class);
-                } catch (NoSuchMethodException e) {}
+                    constructor =
+                        implClass.getConstructor(ClassLoader.class,
+                                                 ClassLoader.class,
+                                                 String.class,
+                                                 String.class,
+                                                 String[].class);
+                } catch (NoSuchMethodException e) {
+                }
                 if (constructor != null) {
-                    domain = (SCADomain)constructor.newInstance(runtimeClassLoader,
-                                                                applicationClassLoader,
-                                                                domainURI,
-                                                                contributionLocation,
-                                                                composites);
+                    domain =
+                        (SCADomain)constructor.newInstance(runtimeClassLoader,
+                                                           applicationClassLoader,
+                                                           domainURI,
+                                                           contributionLocation,
+                                                           composites);
                 } else {
-                    
-                    constructor = cls.getConstructor(ClassLoader.class, String.class);
+
+                    constructor = implClass.getConstructor(ClassLoader.class, String.class);
                     domain = (SCADomain)constructor.newInstance(runtimeClassLoader, domainURI);
                 }
             }
-            
+
             // FIXME: temporary support for connect() API
             theDomain = domain;
-            
+
             return domain;
 
         } catch (Exception e) {

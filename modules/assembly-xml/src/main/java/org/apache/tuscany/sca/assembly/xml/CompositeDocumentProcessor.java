@@ -36,7 +36,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -45,6 +44,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
@@ -86,6 +86,19 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream scdlStream = null;
         try {
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            scdlStream = connection.getInputStream();
+        } catch (IOException e) {
+            ContributionReadException ce = new ContributionReadException(e);
+            error("ContributionReadException", url, ce);
+            throw ce;
+        }
+        return read(uri, scdlStream);
+    }
+
+    public Composite read(URI uri, InputStream scdlStream) throws ContributionReadException {
+        try {
             if (scaDefnSink != null ) {
                 fillDomainPolicySets(scaDefnSink);
             }
@@ -96,13 +109,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             try {
                 if ( domainPolicySets != null ) {
                     transformedArtifactContent =
-                        PolicyComputationUtils.addApplicablePolicySets(url, domainPolicySets);
+                        PolicyComputationUtils.addApplicablePolicySets(scdlStream, domainPolicySets);
                     scdlStream = new ByteArrayInputStream(transformedArtifactContent);
-                } else {
-                    URLConnection connection = url.openConnection();
-                    connection.setUseCaches(false);
-                    scdlStream = connection.getInputStream();
-                }
+                } 
             } catch ( IOException e ) {
             	ContributionReadException ce = new ContributionReadException(e);
             	error("ContributionReadException", scdlStream, ce);
