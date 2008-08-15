@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * TODO: Shouldn't this be using the contribution service?
@@ -36,7 +37,9 @@ public class ResourceHelper {
         
         InputStream is;
         try {
-            is = scriptSrcUrl.openStream();
+            URLConnection connection = scriptSrcUrl.openConnection();                       
+            connection.setUseCaches(false);
+            is = connection.getInputStream();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
