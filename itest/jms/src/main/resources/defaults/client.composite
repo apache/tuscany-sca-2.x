@@ -18,7 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="RPCComposite">
+           name="DefaultClientComposite">
 
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/>

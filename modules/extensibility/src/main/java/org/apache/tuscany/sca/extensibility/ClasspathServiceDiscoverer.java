@@ -30,6 +30,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,12 +108,14 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
     }
 
     private WeakReference<ClassLoader> classLoaderReference;
+    private boolean useTCCL = false;
     private static final Logger logger = Logger.getLogger(ClasspathServiceDiscoverer.class.getName());
 
     public ClasspathServiceDiscoverer() {
         // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader classLoader = ClasspathServiceDiscoverer.class.getClassLoader();
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
+        this.useTCCL = true;
     }
 
     public ClasspathServiceDiscoverer(ClassLoader classLoader) {
@@ -128,10 +131,33 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
                         if (url != null) {
                             return Arrays.asList(url);
                         } else {
+                            if (useTCCL) {
+                                // Try thread context classloader
+                                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                                if (tccl != getContextClassLoader()) {
+                                    url = tccl.getResource(name);
+                                }
+                                if (url != null) {
+                                    return Arrays.asList(url);
+                                }
+                            }
                             return Collections.emptyList();
                         }
                     } else {
-                        return Collections.list(getContextClassLoader().getResources(name));
+                        List<URL> urls = Collections.list(getContextClassLoader().getResources(name));
+                        if (!useTCCL) {
+                            return urls;
+                        }
+                        // Try thread context classloader
+                        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                        if (tccl != getContextClassLoader()) {
+                            urls.addAll(Collections.list(tccl.getResources(name)));
+                            // Remove duplicate entries
+                            Set<URL> urlSet = new HashSet<URL>(urls);
+                            return new ArrayList<URL>(urlSet);
+                        } else {
+                            return urls;
+                        }
                     }
                 }
             });
@@ -143,9 +169,9 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
     public ClassLoader getContextClassLoader() {
         return classLoaderReference.get();
     }
-    
+
     public <T> T getContext() {
-        return (T) getContextClassLoader();
+        return (T)getContextClassLoader();
     }
 
     /**

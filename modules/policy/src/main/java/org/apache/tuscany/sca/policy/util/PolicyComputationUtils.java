@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.policy.util;
 
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
+import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -341,11 +341,12 @@ public class PolicyComputationUtils {
         }
     }
 
-    public static byte[] addApplicablePolicySets(URL artifactUrl, Collection<PolicySet> domainPolicySets) throws Exception {
+    public static byte[] addApplicablePolicySets(InputStream is, Collection<PolicySet> domainPolicySets) throws Exception {
         DocumentBuilderFactory dbFac = DocumentBuilderFactory.newInstance();
         dbFac.setNamespaceAware(true);
         DocumentBuilder db = dbFac.newDocumentBuilder();
-        Document doc = db.parse(artifactUrl.toURI().toString());
+        Document doc = db.parse(is);
+        is.close();
         return addApplicablePolicySets(doc, domainPolicySets);
     }
     

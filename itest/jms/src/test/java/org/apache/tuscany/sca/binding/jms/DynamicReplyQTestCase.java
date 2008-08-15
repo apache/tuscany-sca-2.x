@@ -35,7 +35,7 @@ public class DynamicReplyQTestCase {
     @Before
     public void init() {
         scaDomain =
-            SCADomain.newInstance("http://localhost", "/dynamic", "dynamic/client.composite", "simple/service.composite");
+            SCADomain.newInstance("http://localhost", "/", "dynamic/client.composite", "simple/service.composite");
     }
 
     @Test

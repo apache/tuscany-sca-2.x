@@ -235,6 +235,37 @@
         </profile>
 
         <profile>
+            <id>osgi</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>calculator</module>
+            </modules>
+            <properties>
+                <maven.test.skip.exec>true</maven.test.skip.exec>
+            </properties>
+            <build>
+                <plugins>
+                <plugin>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-maven-osgi-junit</artifactId>
+                    <version>1.4-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <id>osgi-test</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                 </plugin>            
+                 </plugins>       
+            </build> 
+        </profile>  
+
+        <profile>
             <id>dependencies</id>
             <modules>
                 <module>modules</module>

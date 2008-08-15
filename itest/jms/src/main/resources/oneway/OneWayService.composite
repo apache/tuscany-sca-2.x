@@ -18,7 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="OneWayComposite">
+           name="OneWayServiceComposite">
 
     <component name="OneWayService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayServiceImpl"/>
