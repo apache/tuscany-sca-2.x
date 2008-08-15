@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -199,6 +200,13 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
                 try {
                     is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
                         public InputStream run() throws IOException {
+                            URLConnection connection = url.openConnection();
+                            // TUSCANY-2539
+                            // Don't cache connections by default to stop Tuscany locking contribution jar files
+                            // done here as this is one of the first places we open a stream and the only way to 
+                            // set the default is to set it on an instance of URLConnection
+                            connection.setDefaultUseCaches(false);                            
+                            connection.setUseCaches(false);
                             return url.openStream();
                         }
                     });
