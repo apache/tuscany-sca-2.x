@@ -139,11 +139,11 @@ public class TypeTreeCreator {
      * @param forClass
      * @return type tree
      */
-    public static TypeTree createTypeTree(Class<?> forClass, boolean scaBindingRules)
+    public static TypeTree createTypeTree(Class<?> forClass)
         throws RequestConfigurationException {
         TypeTree tree = new TypeTree();
         TypeTreeNode rootNode = null;
-        rootNode = inspectClassHierarchy(forClass, tree, scaBindingRules);
+        rootNode = inspectClassHierarchy(forClass, tree);
         tree.setRootNode(rootNode);
         return tree;
 
@@ -156,16 +156,12 @@ public class TypeTreeCreator {
      * @param tree
      * @return
      */
-    private static TypeTreeNode inspectClassHierarchy(Class<?> forClass, TypeTree tree, boolean scaBindingRules)
+    private static TypeTreeNode inspectClassHierarchy(Class<?> forClass, TypeTree tree)
         throws RequestConfigurationException {
         
         TypeTreeNode node = null;
-        if (scaBindingRules) {
-            node = createTypeNode4ScaBinding(forClass);
-        } else {
-            node = createTypeNode4CorbaBinding(forClass);
-        }
-
+        node = createTypeNode(forClass);
+        
         NodeType nodeType = node.getNodeType();
         TypeTreeNode[] children = null;
 
@@ -178,14 +174,14 @@ public class TypeTreeCreator {
             // reducing sequence dimension
             Class<?> reduced = reduceArrayDimension(node.getJavaClass());
             children = new TypeTreeNode[1];
-            children[0] = inspectClassHierarchy(reduced, tree, scaBindingRules);
+            children[0] = inspectClassHierarchy(reduced, tree);
         } else if (nodeType.equals(NodeType.struct) || nodeType.equals(NodeType.exception)) {
             // inspect types for every structure member
             Field[] fields = node.getJavaClass().getFields();
             children = new TypeTreeNode[fields.length];
             for (int i = 0; i < fields.length; i++) {
                 Class<?> field = fields[i].getType();
-                TypeTreeNode child = inspectClassHierarchy(field, tree, scaBindingRules);
+                TypeTreeNode child = inspectClassHierarchy(field, tree);
                 child.setName(fields[i].getName());
                 children[i] = child;
             }
@@ -208,7 +204,7 @@ public class TypeTreeCreator {
      * @return node
      * @throws RequestConfigurationException
      */
-    private static TypeTreeNode createTypeNode4CorbaBinding(Class<?> forClass) throws RequestConfigurationException {
+    private static TypeTreeNode createTypeNode(Class<?> forClass) throws RequestConfigurationException {
         TypeTreeNode node = new TypeTreeNode();
         if (forClass.isArray()) {
             node.setNodeType(NodeType.sequence);
@@ -238,23 +234,7 @@ public class TypeTreeCreator {
         }
         return node;
     }
-
-    private static TypeTreeNode createTypeNode4ScaBinding(Class<?> forClass) throws RequestConfigurationException {
-        TypeTreeNode node = new TypeTreeNode();
-        if (forClass.isArray()) {
-            node.setNodeType(NodeType.sequence);
-            node.setJavaClass(forClass);
-        } else if (primitives.contains(forClass)) {
-            node.setNodeType(NodeType.primitive);
-            node.setJavaClass(forClass);
-            node.setChildren(null);
-        } else {
-            node.setNodeType(NodeType.struct);
-            node.setJavaClass(forClass);
-        }
-        return node;
-    }
-
+    
     /**
      * Tells whether given class is structure
      * 

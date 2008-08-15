@@ -55,18 +55,6 @@ public class DynaCorbaRequest {
     private List<TypeTree> argumentsTypes = new ArrayList<TypeTree>();
     private Class<?> referenceClass;
     private Map<Method, String> operationsMap;
-    private boolean scaBindingRules;
-
-    /**
-     * Creates request with CORBA binding mapping rules in default
-     * 
-     * @param remoteObject object reference
-     * @param operation operation to invoke
-     */
-    public DynaCorbaRequest(Object remoteObject, String operation) {
-        // use CORBA binding rules by default
-        this(remoteObject, operation, false);
-    }
     
     /**
      * Creates request.
@@ -75,8 +63,7 @@ public class DynaCorbaRequest {
      * @param operation operation to invoke
      * @param scaBindingRules apply SCA default binding mapping rules
      */
-    public DynaCorbaRequest(Object remoteObject, String operation, boolean scaBindingRules) {
-        this.scaBindingRules = scaBindingRules;
+    public DynaCorbaRequest(Object remoteObject, String operation) {
         this.remoteObject = (ObjectImpl)remoteObject;
         this.operation = operation;
     }
@@ -103,7 +90,7 @@ public class DynaCorbaRequest {
      * @param argument
      */
     public void addArgument(java.lang.Object argument) throws RequestConfigurationException {
-        TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass(), scaBindingRules);
+        TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
         argumentsTypes.add(tree);
         arguments.add(argument);
     }
@@ -127,7 +114,7 @@ public class DynaCorbaRequest {
      * @param forClass
      */
     public void setOutputType(Class<?> forClass) throws RequestConfigurationException {
-        returnTree = TypeTreeCreator.createTypeTree(forClass, scaBindingRules);
+        returnTree = TypeTreeCreator.createTypeTree(forClass);
     }
 
     /**
@@ -136,7 +123,7 @@ public class DynaCorbaRequest {
      * @param forClass
      */
     public void addExceptionType(Class<?> forClass) throws RequestConfigurationException {
-        TypeTree tree = TypeTreeCreator.createTypeTree(forClass, scaBindingRules);
+        TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
         String exceptionId = Utils.getTypeId(forClass);
         exceptions.put(exceptionId, tree);
     }

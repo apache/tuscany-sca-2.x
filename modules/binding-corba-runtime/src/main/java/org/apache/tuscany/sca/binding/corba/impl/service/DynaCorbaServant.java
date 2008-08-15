@@ -103,7 +103,7 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
                 try {
                     OutputStream out = rh.createExceptionReply();
                     Class<?> exceptionClass = ie.getTargetException().getClass();
-                    TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass, false);
+                    TypeTree tree = TypeTreeCreator.createTypeTree(exceptionClass);
                     String exceptionId = Utils.getTypeId(exceptionClass);
                     out.write_string(exceptionId);
                     TypeHelpersProxy.write(tree.getRootNode(), out, ie.getTargetException());

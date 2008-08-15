@@ -108,14 +108,14 @@ public class ComponentInvocationProxy implements InvocationProxy {
                 if (operation.getOutputType() != null && operation.getOutputType().getPhysical() != null
                     && !operation.getOutputType().getPhysical().equals(void.class)) {
                     TypeTree outputType =
-                        TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical(), false);
+                        TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical());
                     operationTypes.setOutputType(outputType);
                 }
                 // cache input types trees
                 if (operation.getInputType() != null) {
                     for (DataType<List<DataType<?>>> type : operation.getInputType().getLogical()) {
                         Class<?> forClass = type.getPhysical();
-                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass, false);
+                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass);
                         inputInstances.add(inputType);
                     }
 
