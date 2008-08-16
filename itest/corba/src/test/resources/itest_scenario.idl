@@ -72,6 +72,20 @@ module org {
 								attribute string stringField;
 								
 							};
+							
+							typedef string StringArray[2][2];
+							
+							struct AnnotatedStruct {
+									StringArray stringArray;
+							};
+							
+							interface ScenarioSix {
+								
+								StringArray passStringArray(in StringArray arg);
+								
+								AnnotatedStruct passAnnotatedStruct(in AnnotatedStruct arg);
+								
+							};
 						};
 					};
 				};
