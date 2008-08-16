@@ -30,6 +30,7 @@ public class TypeTreeNode {
     private TypeTreeNode[] children;
     private Class<?> javaClass;
     private String name;
+    private Object attributes;
 
     public String getName() {
         return name;
@@ -61,6 +62,14 @@ public class TypeTreeNode {
 
     public void setJavaClass(Class<?> javaClass) {
         this.javaClass = javaClass;
+    }
+
+    public Object getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Object attributes) {
+        this.attributes = attributes;
     }
 
 }

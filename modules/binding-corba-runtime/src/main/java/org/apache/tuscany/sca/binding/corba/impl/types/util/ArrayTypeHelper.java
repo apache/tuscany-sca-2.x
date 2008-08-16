@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
+import java.lang.reflect.Array;
+
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
@@ -29,13 +31,23 @@ import org.omg.CORBA.portable.OutputStream;
 public class ArrayTypeHelper implements TypeHelper {
 
     public Object read(TypeTreeNode node, InputStream is) {
-        // TODO Auto-generated method stub
-        return null;
+        Object array = null;
+        try {
+            int size = (Integer)node.getAttributes();
+            array = Array.newInstance(node.getChildren()[0].getJavaClass(), size);
+            for (int i = 0; i < size; i++) {
+                Array.set(array, i, TypeHelpersProxy.read(node.getChildren()[0], is));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return array;
     }
 
     public void write(TypeTreeNode node, OutputStream os, Object data) {
-        // TODO Auto-generated method stub
-
+        for (int i = 0; i < (Integer)node.getAttributes(); i++) {
+            TypeHelpersProxy.write(node.getChildren()[0], os, Array.get(data, i));
+        }
     }
 
 }

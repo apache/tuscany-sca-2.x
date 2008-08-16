@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.omg.CORBA.portable.IDLEntity;
 
 /**
@@ -52,7 +54,7 @@ public final class OperationMapper {
         }
 
         return allInterfaces;
-    }
+    }    
     
     /**
      * Maps Java methods to operation names
@@ -60,7 +62,7 @@ public final class OperationMapper {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static Map<Method, String> mapMethodToOperation(Class<?> intfClass) {
+    public static Map<Method, String> mapMethodToOperationName(Class<?> intfClass) {
         return iiopMap(intfClass, false);
     }
 
@@ -70,7 +72,7 @@ public final class OperationMapper {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, Method> mapOperationToMethod(Class<?> intfClass) {
+    public static Map<String, Method> mapOperationNameToMethod(Class<?> intfClass) {
         return iiopMap(intfClass, true);
     }
 
@@ -524,4 +526,53 @@ public final class OperationMapper {
         keywords.add("wstring");
     }
 
+    @SuppressWarnings("unchecked")
+    public static Map<Operation, Method> mapOperationToMethod(List<Operation> operations, Class<?> forClass) {
+        return (Map<Operation, Method>)createMethod2OperationMapping(operations, forClass, false);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static Map<Method, Operation> mapMethodToOperation(List<Operation> operations, Class<?> forClass) {
+        return (Map<Method, Operation>)createMethod2OperationMapping(operations, forClass, true);
+    }
+    
+    /**
+     * Maps Java methods to Tuscany operations
+     */
+    @SuppressWarnings("unchecked")
+    private static Map createMethod2OperationMapping(List<Operation> operations, Class<?> forClass, boolean method2operation) {
+        // for every operation find all methods with the same name, then
+        // compare operations and methods parameters
+        Map mapping = new HashMap();
+        for (Operation operation : operations) {
+            List<DataType> inputTypes = operation.getInputType().getLogical();
+            Method[] methods = forClass.getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(operation.getName()) && inputTypes.size() == methods[i]
+                    .getParameterTypes().length) {
+                    Class<?>[] parameterTypes = methods[i].getParameterTypes();
+                    int j = 0;
+                    boolean parameterMatch = true;
+                    for (DataType dataType : inputTypes) {
+                        if (!dataType.getPhysical().equals(parameterTypes[j])) {
+                            parameterMatch = false;
+                            break;
+                        }
+                        j++;
+                    }
+                    if (parameterMatch) {
+                        // match found
+                        if (method2operation) {
+                            mapping.put(methods[i], operation);
+                        } else {
+                            mapping.put(operation, methods[i]);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return mapping;
+    }
+    
 }

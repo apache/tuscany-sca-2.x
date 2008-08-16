@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.corba.testing;
 
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Array;
@@ -34,6 +35,9 @@ import org.apache.tuscany.sca.binding.corba.impl.service.ComponentInvocationProx
 import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
 import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
 import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
+import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.ArraysUnionsTests;
+import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.ArraysUnionsTestsHelper;
+import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.TestStruct;
 import org.apache.tuscany.sca.binding.corba.testing.enums.Color;
 import org.apache.tuscany.sca.binding.corba.testing.enums.EnumManager;
 import org.apache.tuscany.sca.binding.corba.testing.enums.EnumManagerHelper;
@@ -51,6 +55,7 @@ import org.apache.tuscany.sca.binding.corba.testing.generated.TestObject;
 import org.apache.tuscany.sca.binding.corba.testing.generated.TestObjectHelper;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.NonCorbaException;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysUnionsTuscanyServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.CalcServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.EnumManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.InvalidTestObjectServant;
@@ -500,6 +505,56 @@ public class CorbaServantTestCase {
                 e.printStackTrace();
                 fail();
             }
+        }
+    }
+    
+    @Test
+    public void test_arraysPassing() {
+        try {
+            ArraysUnionsTuscanyServant arraysUnions = new ArraysUnionsTuscanyServant();
+            TestRuntimeComponentService service = new TestRuntimeComponentService(arraysUnions);
+            Class<?> javaClass = ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass();
+            InvocationProxy proxy = new ComponentInvocationProxy(service, service.getRuntimeWire(null), javaClass);
+            DynaCorbaServant servant = new DynaCorbaServant(proxy, Utils.getTypeId(javaClass));
+            String[] ids = new String[] {"IDL:org/apache/tuscany/sca/binding/corba/testing/arrays_unions/ArraysUnionsTests:1.0"};
+            servant.setIds(ids);
+            bindServant(servant, "ArraysUnions");
+            Object reference = bindReference("ArraysUnions");
+            ArraysUnionsTests objRef = ArraysUnionsTestsHelper.narrow(reference);
+            String[][] stringArray = {{"Hello", "World"}, {"Hi", "Again"}};
+            String[][] result = objRef.passStringArray(stringArray);
+            for (int i = 0; i < stringArray.length; i++) {
+                for (int j = 0; j < stringArray[i].length; j++) {
+                    assertEquals(stringArray[i][j], result[i][j]);
+                }
+            }
+            TestStruct struct = new TestStruct();
+            String[] field1 = {"Hello", "World"};
+            int[][] field2 = { {4, 2, 2, 5}, {6, 12, 5, 8}};
+            float[][][] field3 = { { {2, 6}, {2, 7}, {9, 3}, {4, 6}}, { {3, 7}, {6, 6}, {3, 5}, {6, 2}}};
+            struct.oneDimArray = field1;
+            struct.twoDimArray = field2;
+            struct.threeDimArray = field3;
+            
+            TestStruct structResult = objRef.passTestStruct(struct);
+            for (int i = 0; i < struct.oneDimArray.length; i++) {
+                assertEquals(struct.oneDimArray[i], structResult.oneDimArray[i]);
+            }
+            for (int i = 0; i < struct.twoDimArray.length; i++) {
+                for (int j = 0; j < struct.twoDimArray[i].length; j++) {
+                    assertEquals(struct.twoDimArray[i][j], structResult.twoDimArray[i][j]);
+                }
+            }
+            for (int i = 0; i < struct.threeDimArray.length; i++) {
+                for (int j = 0; j < struct.threeDimArray[i].length; j++) {
+                    for (int k = 0; k < struct.threeDimArray[i][j].length; k++) {
+                        assertEquals(struct.threeDimArray[i][j][k], structResult.threeDimArray[i][j][k]);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
     }
 
