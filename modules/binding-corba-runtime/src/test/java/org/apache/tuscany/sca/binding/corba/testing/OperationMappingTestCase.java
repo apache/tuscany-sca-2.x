@@ -38,7 +38,7 @@ public class OperationMappingTestCase {
      */
     @Test
     public void test_mappingRules() {
-        Map<Method, String> met2op = OperationMapper.mapMethodToOperation(MappingTestInterface.class);
+        Map<Method, String> met2op = OperationMapper.mapMethodToOperationName(MappingTestInterface.class);
         for (Method method : met2op.keySet()) {
             String name = method.getName();
             String translatedName = met2op.get(method);

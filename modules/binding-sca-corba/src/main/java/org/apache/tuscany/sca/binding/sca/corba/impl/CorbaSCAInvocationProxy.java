@@ -56,9 +56,9 @@ public class CorbaSCAInvocationProxy implements InvocationProxy {
         this.messageFactory = messageFactory;
         try {
             List<TypeTree> inputType = new ArrayList<TypeTree>();
-            inputType.add(TypeTreeCreator.createTypeTree(String.class));
+            inputType.add(TypeTreeCreator.createTypeTree(String.class, null));
             types.setInputType(inputType);
-            types.setOutputType(TypeTreeCreator.createTypeTree(String.class));
+            types.setOutputType(TypeTreeCreator.createTypeTree(String.class, null));
         } catch (RequestConfigurationException e) {
             // ignore - string type should not cause this exception
         }

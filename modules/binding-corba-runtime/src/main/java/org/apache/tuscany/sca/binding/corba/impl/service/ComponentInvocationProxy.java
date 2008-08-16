@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.service;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,55 +43,18 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class ComponentInvocationProxy implements InvocationProxy {
 
     private RuntimeWire wire;
-    private RuntimeComponentService service;
     private Map<Method, Operation> methodOperationMapping;
+    private Map<Operation, Method> operationMethodMapping;
     private Map<String, Method> operationsMap;
     private Map<Operation, OperationTypes> operationsCache = new HashMap<Operation, OperationTypes>();
-    private Class<?> javaClass;
 
     public ComponentInvocationProxy(RuntimeComponentService service, RuntimeWire wire, Class<?> javaClass)
         throws RequestConfigurationException {
         this.wire = wire;
-        this.service = service;
-        this.javaClass = javaClass;
-        operationsMap = OperationMapper.mapOperationToMethod(javaClass);
-        createMethod2OperationMapping();
+        operationsMap = OperationMapper.mapOperationNameToMethod(javaClass);
+        operationMethodMapping = OperationMapper.mapOperationToMethod(service.getInterfaceContract().getInterface().getOperations(), javaClass);
+        methodOperationMapping = OperationMapper.mapMethodToOperation(service.getInterfaceContract().getInterface().getOperations(), javaClass);
         cacheOperationTypes(service.getInterfaceContract().getInterface().getOperations());
-    }
-
-    /**
-     * Maps Java methods to Tuscany operations
-     */
-    @SuppressWarnings("unchecked")
-    private void createMethod2OperationMapping() {
-        // for every operation find all methods with the same name, then
-        // compare operations and methods parameters
-        this.methodOperationMapping = new HashMap<Method, Operation>();
-        for (Operation operation : service.getInterfaceContract().getInterface().getOperations()) {
-            List<DataType> inputTypes = operation.getInputType().getLogical();
-            Method[] methods = javaClass.getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].getName().equals(operation.getName()) && inputTypes.size() == methods[i]
-                    .getParameterTypes().length) {
-                    Class<?>[] parameterTypes = methods[i].getParameterTypes();
-                    int j = 0;
-                    boolean parameterMatch = true;
-                    for (DataType dataType : inputTypes) {
-                        if (!dataType.getPhysical().equals(parameterTypes[j])) {
-                            parameterMatch = false;
-                            break;
-                        }
-                        j++;
-                    }
-                    if (parameterMatch) {
-                        // match found
-                        methodOperationMapping.put(methods[i], operation);
-                        break;
-                    }
-                }
-            }
-
-        }
     }
 
     /**
@@ -107,16 +71,21 @@ public class ComponentInvocationProxy implements InvocationProxy {
                 // cache output type tree
                 if (operation.getOutputType() != null && operation.getOutputType().getPhysical() != null
                     && !operation.getOutputType().getPhysical().equals(void.class)) {
+                    Annotation[] notes = operationMethodMapping.get(operation).getAnnotations();
                     TypeTree outputType =
-                        TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical());
+                        TypeTreeCreator.createTypeTree(operation.getOutputType().getPhysical(), notes);
                     operationTypes.setOutputType(outputType);
                 }
                 // cache input types trees
                 if (operation.getInputType() != null) {
+                    Method method = operationMethodMapping.get(operation);
+                    Annotation[][] notes = method.getParameterAnnotations();
+                    int i = 0;
                     for (DataType<List<DataType<?>>> type : operation.getInputType().getLogical()) {
                         Class<?> forClass = type.getPhysical();
-                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass);
+                        TypeTree inputType = TypeTreeCreator.createTypeTree(forClass, notes[i]);
                         inputInstances.add(inputType);
+                        i++;
                     }
 
                 }

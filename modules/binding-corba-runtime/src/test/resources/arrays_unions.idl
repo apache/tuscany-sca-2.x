@@ -19,7 +19,7 @@
 
 /*
  * compile by
- * idlj -fall -oldImplBase enums.idl
+ * idlj -fall -oldImplBase arrays_unions.idl
  */
 
 module org {
@@ -29,11 +29,21 @@ module org {
 				module binding {
 					module corba {
 						module testing {
-							module enums {
-								enum Color {red, yellow, green};
-								interface EnumManager {
-									Color getColor(in Color color);		
+							module arrays_unions {
+								
+								struct TestStruct {
+									string oneDimArray[2];
+									long twoDimArray[2][4];
+									float threeDimArray[2][4][2];
 								};
+								
+								typedef string StringArray[2][2];
+								
+								interface ArraysUnionsTests {
+									TestStruct passTestStruct(in TestStruct arg);
+									StringArray passStringArray(in StringArray arg);
+								};
+								
 							};
 						};
 					};
@@ -42,3 +52,4 @@ module org {
 		};
 	};
 };
+

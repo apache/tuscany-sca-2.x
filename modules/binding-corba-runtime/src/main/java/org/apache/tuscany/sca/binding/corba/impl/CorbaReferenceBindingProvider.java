@@ -50,7 +50,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
         this.host = host;
         this.reference = reference;
         this.referenceClass = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-        operationsMap = OperationMapper.mapMethodToOperation(referenceClass);
+        operationsMap = OperationMapper.mapMethodToOperationName(referenceClass);
     }
 
     /**
@@ -61,7 +61,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
             if (remoteObject == null) {
                 remoteObject = host.lookup(binding.getCorbaname());    
             }
-            return new CorbaInvoker(remoteObject, referenceClass, operationsMap);
+            return new CorbaInvoker(reference, remoteObject, referenceClass, operationsMap);
         } catch (Exception e) {
         }
         return null;

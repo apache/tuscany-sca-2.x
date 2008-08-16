@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.types;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
 
 /**
  * @version $Rev$ $Date$
@@ -134,16 +136,43 @@ public class TypeTreeCreator {
     }
 
     /**
+     * Return given array without first element
+     * @param array
+     * @return
+     */
+    private static int[] removeFirstElement(int[] array) {
+        int[] result = new int[array.length - 1];
+        System.arraycopy(array, 1, result, 0, result.length);
+        return result;
+    }
+
+    /**
+     * Converts objects annotations to structure which will be used by this class 
+     * @param notes
+     * @return
+     */
+    private static AnnotationAttributes createAnnotationAttributes(Annotation[] notes) {
+        AnnotationAttributes attrs = new AnnotationAttributes();
+        for (int i = 0; notes != null && i < notes.length; i++) {
+            if (notes[i].annotationType().equals(CorbaArray.class)) {
+                attrs.setCorbaArray(true);
+                attrs.setCorbaArrayLength(((CorbaArray)notes[i]).value());
+            }
+        }
+        return attrs;
+    }
+
+    /**
      * Creates tree for given type.
      * 
      * @param forClass
      * @return type tree
      */
-    public static TypeTree createTypeTree(Class<?> forClass)
-        throws RequestConfigurationException {
+    public static TypeTree createTypeTree(Class<?> forClass, Annotation[] notes) throws RequestConfigurationException {
         TypeTree tree = new TypeTree();
         TypeTreeNode rootNode = null;
-        rootNode = inspectClassHierarchy(forClass, tree);
+        AnnotationAttributes attrs = createAnnotationAttributes(notes);
+        rootNode = inspectClassHierarchy(forClass, attrs, tree);
         tree.setRootNode(rootNode);
         return tree;
 
@@ -156,32 +185,37 @@ public class TypeTreeCreator {
      * @param tree
      * @return
      */
-    private static TypeTreeNode inspectClassHierarchy(Class<?> forClass, TypeTree tree)
+    private static TypeTreeNode inspectClassHierarchy(Class<?> forClass, AnnotationAttributes attributes, TypeTree tree)
         throws RequestConfigurationException {
-        
+
         TypeTreeNode node = null;
-        node = createTypeNode(forClass);
-        
+        node = createTypeNode(forClass, attributes);
+
         NodeType nodeType = node.getNodeType();
         TypeTreeNode[] children = null;
 
         if (nodeType.equals(NodeType.primitive)) {
             // stop condition for recurrent method
         } else if (nodeType.equals(NodeType.array)) {
-            // similar to sequence, but with fixed array length
-            // TODO: determine how array length will be declared
+            Class<?> reduced = reduceArrayDimension(node.getJavaClass());
+            children = new TypeTreeNode[1];
+            int[] newLengths = removeFirstElement(attributes.getCorbaArrayLength());
+            attributes.setCorbaArrayLength(newLengths);
+            children[0] = inspectClassHierarchy(reduced, attributes, tree);
         } else if (nodeType.equals(NodeType.sequence)) {
             // reducing sequence dimension
             Class<?> reduced = reduceArrayDimension(node.getJavaClass());
             children = new TypeTreeNode[1];
-            children[0] = inspectClassHierarchy(reduced, tree);
+            children[0] = inspectClassHierarchy(reduced, attributes, tree);
+            // System.arraycopy(src, srcPos, dest, destPos, length)
         } else if (nodeType.equals(NodeType.struct) || nodeType.equals(NodeType.exception)) {
             // inspect types for every structure member
             Field[] fields = node.getJavaClass().getFields();
             children = new TypeTreeNode[fields.length];
             for (int i = 0; i < fields.length; i++) {
                 Class<?> field = fields[i].getType();
-                TypeTreeNode child = inspectClassHierarchy(field, tree);
+                AnnotationAttributes fAttrs = createAnnotationAttributes(fields[i].getAnnotations());
+                TypeTreeNode child = inspectClassHierarchy(field, fAttrs, tree);
                 child.setName(fields[i].getName());
                 children[i] = child;
             }
@@ -204,11 +238,24 @@ public class TypeTreeCreator {
      * @return node
      * @throws RequestConfigurationException
      */
-    private static TypeTreeNode createTypeNode(Class<?> forClass) throws RequestConfigurationException {
+    private static TypeTreeNode createTypeNode(Class<?> forClass, AnnotationAttributes attributes)
+        throws RequestConfigurationException {
         TypeTreeNode node = new TypeTreeNode();
-        if (forClass.isArray()) {
+        if (forClass.isArray() && !attributes.isCorbaArray()) {
             node.setNodeType(NodeType.sequence);
             node.setJavaClass(forClass);
+        } else if (forClass.isArray() && attributes.isCorbaArray()) {
+            node.setNodeType(NodeType.array);
+            node.setJavaClass(forClass);
+            try {
+                // set the actual array size for further use by ArrayTypeHelper
+                node.setAttributes(attributes.getCorbaArrayLength()[0]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                RequestConfigurationException exc =
+                    new RequestConfigurationException("Annotated array size doesn't match declared arrays size");
+                throw exc;
+            }
+
         } else if (primitives.contains(forClass)) {
             node.setNodeType(NodeType.primitive);
             node.setJavaClass(forClass);
@@ -234,7 +281,7 @@ public class TypeTreeCreator {
         }
         return node;
     }
-    
+
     /**
      * Tells whether given class is structure
      * 
@@ -350,4 +397,5 @@ public class TypeTreeCreator {
         } while (forClass != null && !forClass.equals(Object.class));
         return false;
     }
+
 }

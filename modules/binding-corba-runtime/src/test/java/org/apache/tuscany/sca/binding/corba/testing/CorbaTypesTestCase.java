@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 
 import junit.framework.Assert;
@@ -37,7 +38,9 @@ import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.DivBy
 import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SomeStruct;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.DummyObject;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidCorbaArray;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum1;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum2;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum3;
@@ -45,6 +48,8 @@ import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct1;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct2;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct3;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysUnionsServant;
+import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysUnionsTuscanyServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.CalcServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.EnumManagerServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ObjectManagerServant;
@@ -66,7 +71,8 @@ import org.omg.CosNaming.NamingContextHelper;
 
 /**
  * @version $Rev$ $Date$
- * Tests API for dynamic CORBA requests. Tests handling various Java types.
+ *          Tests API for dynamic CORBA requests. Tests handling various Java
+ *          types.
  */
 public class CorbaTypesTestCase {
     private static TransientNameServer server;
@@ -78,6 +84,7 @@ public class CorbaTypesTestCase {
     private static Object refCalcObject;
     private static Object refObjectManager;
     private static Object refEnumManager;
+    private static Object refArraysUnions;
 
     /**
      * Spawns tnameserv process (must be in PATH). Initializes test servants and
@@ -109,6 +116,7 @@ public class CorbaTypesTestCase {
             CalcServant calcObject = new CalcServant();
             ObjectManagerServant objectManager = new ObjectManagerServant();
             EnumManagerServant enumManager = new EnumManagerServant();
+            ArraysUnionsServant arraysUnions = new ArraysUnionsServant();
 
             orb.connect(singleSetter);
             orb.connect(arraysSetter);
@@ -140,6 +148,10 @@ public class CorbaTypesTestCase {
             path = new NameComponent[] {nc};
             namingContext.rebind(path, enumManager);
 
+            nc = new NameComponent("ArraysUnions", "");
+            path = new NameComponent[] {nc};
+            namingContext.rebind(path, arraysUnions);
+
             NamingContextExt nce = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
 
             refArraysSetter = nce.resolve(nce.to_name("ArraysSetter"));
@@ -148,6 +160,7 @@ public class CorbaTypesTestCase {
             refCalcObject = nce.resolve(nce.to_name("CalcObject"));
             refObjectManager = nce.resolve(nce.to_name("ObjectManager"));
             refEnumManager = nce.resolve(nce.to_name("EnumManager"));
+            refArraysUnions = nce.resolve(nce.to_name("ArraysUnions"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -576,7 +589,7 @@ public class CorbaTypesTestCase {
         } catch (Exception e) {
             assertTrue(e instanceof RequestConfigurationException);
         }
-        
+
         try {
             request = new DynaCorbaRequest(refArraysSetter, "whatever");
             request.setOutputType(SomeStruct.class);
@@ -624,7 +637,7 @@ public class CorbaTypesTestCase {
     }
 
     /**
-     * Tests hanlding passing wrong params
+     * Tests handling passing wrong params
      */
     @Test
     public void test_systemException_BAD_PARAM() {
@@ -644,4 +657,106 @@ public class CorbaTypesTestCase {
         }
     }
 
+    /**
+     * Tests passing CORBA arrays
+     */
+    @Test
+    public void test_arraysPassing() {
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passStringArray");
+            Annotation[] notes =
+                ArraysUnionsTuscanyServant.class.getMethod("passStringArray", new Class<?>[] {String[][].class})
+                    .getAnnotations();
+            request.setOutputType(String[][].class, notes);
+            String[][] argument = { {"Hello", "World"}, {"Hi", "again"}};
+            request.addArgument(argument, notes);
+            DynaCorbaResponse response = request.invoke();
+            String[][] result = (String[][])response.getContent();
+            for (int i = 0; i < argument.length; i++) {
+                for (int j = 0; j < argument[i].length; j++) {
+                    assertEquals(argument[i][j], result[i][j]);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passTestStruct");
+            ArraysTestStruct arg = new ArraysTestStruct();
+            String[] field1 = {"Hello", "World"};
+            arg.field1 = field1;
+            int[][] field2 = { {4, 2, 2, 5}, {6, 12, 5, 8}};
+            arg.field2 = field2;
+            float[][][] field3 = { { {2, 6}, {2, 7}, {9, 3}, {4, 6}}, { {3, 7}, {6, 6}, {3, 5}, {6, 2}}};
+            arg.field3 = field3;
+            request.addArgument(arg);
+            request.setOutputType(ArraysTestStruct.class);
+            DynaCorbaResponse response = request.invoke();
+            ArraysTestStruct result = (ArraysTestStruct)response.getContent();
+            for (int i = 0; i < arg.field1.length; i++) {
+                assertEquals(arg.field1[i], result.field1[i]);
+            }
+            for (int i = 0; i < arg.field2.length; i++) {
+                for (int j = 0; j < arg.field2[i].length; j++) {
+                    assertEquals(arg.field2[i][j], result.field2[i][j]);
+                }
+            }
+            for (int i = 0; i < arg.field2.length; i++) {
+                for (int j = 0; j < arg.field2[i].length; j++) {
+                    for (int k = 0; k < arg.field3[i][j].length; k++) {
+                        assertEquals(arg.field3[i][j][k], result.field3[i][j][k]);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    /**
+     * Tests situation when CORBA array dimension size doesn't match
+     * CORBA array annotation arguments (which sets dimension lengths)
+     */
+    @Test
+    public void test_invalidArrayAnnotationSize() {
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passStringArray");
+            Annotation[] notes =
+                ArraysUnionsTuscanyServant.class.getMethod("passStringArray", new Class<?>[] {String[][].class})
+                    .getAnnotations();
+            request.setOutputType(String[][][].class, notes);
+            fail();
+        } catch (RequestConfigurationException e) {
+            // expected
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passStringArray");
+            Annotation[] notes =
+                ArraysUnionsTuscanyServant.class.getMethod("passStringArray", new Class<?>[] {String[][].class})
+                    .getAnnotations();
+            request.addArgument(new String[0][0][0], notes);
+            fail();
+        } catch (RequestConfigurationException e) {
+            // expected
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passStringArray");
+            request.addArgument(new InvalidCorbaArray(), null);
+            fail();
+        } catch (RequestConfigurationException e) {
+            // expected
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 }

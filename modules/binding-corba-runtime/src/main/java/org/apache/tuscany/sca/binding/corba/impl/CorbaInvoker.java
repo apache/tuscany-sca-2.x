@@ -19,15 +19,19 @@
 
 package org.apache.tuscany.sca.binding.corba.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.omg.CORBA.Object;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -39,11 +43,13 @@ public class CorbaInvoker implements Invoker {
     private Object remoteObject;
     private Class<?> referenceClass;
     private Map<Method, String> operationsMap;
+    private Map<Operation, Method> operationMethodMapping;
 
-    public CorbaInvoker(Object remoteObject, Class<?> referenceClass, Map<Method, String> operationsMap) {
+    public CorbaInvoker(RuntimeComponentReference reference, Object remoteObject, Class<?> referenceClass, Map<Method, String> operationsMap) {
         this.remoteObject = remoteObject;
         this.referenceClass = referenceClass;
         this.operationsMap = operationsMap;
+        this.operationMethodMapping = OperationMapper.mapOperationToMethod(reference.getInterfaceContract().getInterface().getOperations(), referenceClass);
     }
 
     /**
@@ -55,12 +61,14 @@ public class CorbaInvoker implements Invoker {
             request.setReferenceClass(referenceClass);
             request.setOperationsMap(operationsMap);
             if (msg.getOperation().getOutputType() != null) {
-                request.setOutputType(msg.getOperation().getOutputType().getPhysical());
+                Annotation[] notes = operationMethodMapping.get(msg.getOperation()).getAnnotations();
+                request.setOutputType(msg.getOperation().getOutputType().getPhysical(), notes);
             }
             java.lang.Object[] args = msg.getBody();
             if (args != null) {
+                Annotation[][] notes = operationMethodMapping.get(msg.getOperation()).getParameterAnnotations();
                 for (int i = 0; i < args.length; i++) {
-                    request.addArgument(args[i]);
+                    request.addArgument(args[i], notes[i]);
                 }
             }
             if (msg.getOperation().getFaultTypes() != null) {

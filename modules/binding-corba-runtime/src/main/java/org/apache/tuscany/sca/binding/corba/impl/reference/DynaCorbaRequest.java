@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.impl.reference;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,12 +86,21 @@ public class DynaCorbaRequest {
     }
 
     /**
-     * Adds operation argument - stores arguments and caches its TypeTree
+     * Adds operation argument - stores arguments and caches its TypeTree. Annotations will be set to null by default.
      * 
      * @param argument
      */
     public void addArgument(java.lang.Object argument) throws RequestConfigurationException {
-        TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass());
+        addArgument(argument, null);
+    }
+    
+    /**
+     * Adds operation argument - stores arguments and caches its TypeTree
+     * 
+     * @param argument
+     */
+    public void addArgument(java.lang.Object argument, Annotation[] notes) throws RequestConfigurationException {
+        TypeTree tree = TypeTreeCreator.createTypeTree(argument.getClass(), notes);
         argumentsTypes.add(tree);
         arguments.add(argument);
     }
@@ -109,12 +119,21 @@ public class DynaCorbaRequest {
     }
 
     /**
-     * Sets return type for operation
+     * Sets return type for operation. Annotations will be set to null by default.
      * 
      * @param forClass
      */
     public void setOutputType(Class<?> forClass) throws RequestConfigurationException {
-        returnTree = TypeTreeCreator.createTypeTree(forClass);
+        setOutputType(forClass, null);
+    }
+    
+    /**
+     * Sets return type for operation
+     * 
+     * @param forClass
+     */
+    public void setOutputType(Class<?> forClass, Annotation[] notes) throws RequestConfigurationException {
+        returnTree = TypeTreeCreator.createTypeTree(forClass, notes);
     }
 
     /**
@@ -123,7 +142,7 @@ public class DynaCorbaRequest {
      * @param forClass
      */
     public void addExceptionType(Class<?> forClass) throws RequestConfigurationException {
-        TypeTree tree = TypeTreeCreator.createTypeTree(forClass);
+        TypeTree tree = TypeTreeCreator.createTypeTree(forClass, null);
         String exceptionId = Utils.getTypeId(forClass);
         exceptions.put(exceptionId, tree);
     }
