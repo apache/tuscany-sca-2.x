@@ -103,12 +103,6 @@ public class BPELImplementationProcessorTestCase extends TestCase {
      */
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
-        /*try {
-            staxProcessor.read(reader);            
-            fail("InvalidException should have been thrown");
-        } catch(Exception e) {
-            assertTrue(true);
-        }*/
         staxProcessor.read(reader);
         Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
         assertNotNull(problem);

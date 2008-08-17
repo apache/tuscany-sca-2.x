@@ -23,16 +23,14 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collection;
 
-import javax.xml.namespace.QName;
 import javax.wsdl.PortType;
-
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
 /**
  * The BPEL process definition implementation.
@@ -40,14 +38,14 @@ import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
  * @version $Rev$ $Date$
  */
 public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
-    private QName   name;
-    private URI     uri;
-    private URL     location;
+    private QName name;
+    private URI uri;
+    private URL location;
     private boolean unresolved;
     private List<BPELPartnerLinkElement> partnerLinks = new ArrayList<BPELPartnerLinkElement>();
     private List<BPELImportElement> imports = new ArrayList<BPELImportElement>();
-    private Collection<PortType> thePortTypes = null;
-    private Collection<WSDLInterface> theInterfaces = null;
+    private List<PortType> thePortTypes = new ArrayList<PortType>();
+    private List<WSDLInterface> theInterfaces = new ArrayList<WSDLInterface>();
     
     public QName getName() {
         return name;
@@ -81,65 +79,22 @@ public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
         this.unresolved = undefined;
     }  
     
-    /**
-     * Return the list of PartnerLinks for this process
-     * @return List<BPELPartnerLinkElement> the list of Partner Links
-     */
     public List<BPELPartnerLinkElement> getPartnerLinks() {
     	return partnerLinks;
     }
     
-    /**
-     * Return the list of imports for this process
-     * @return List<BPELImportElement> the list of Import elements
-     */
     public List<BPELImportElement> getImports() {
     	return imports;
     }
     
-    public void setPortTypes( Collection<PortType> thePortTypes ) {
-    	this.thePortTypes = thePortTypes;
-    }
-    
-    public Collection<PortType> getPortTypes() {
+    public List<PortType> getPortTypes() {
     	return thePortTypes;
     }
     
-    /**
-     * Set the associated collection of WSDL interfaces
-     * @param theInterfaces
-     */
-    public void setInterfaces( Collection<WSDLInterface> theInterfaces ) {
-    	this.theInterfaces = theInterfaces;
-    } // end setInterfaces
-    
-    /**
-     * Return the collection of associated WSDL interfaces
-     * @return
-     */
-    public Collection<WSDLInterface> getInterfaces() {
+    public List<WSDLInterface> getInterfaces() {
     	return theInterfaces;
-    } // end getInterfaces
-    
-    public void compile() {
-        /*
-        String bpelFile = reader.getAttributeValue(null, "file");  // FIXME: 
-
-        // Resolving the BPEL file and compiling it
-        URL bpelURL = getClass().getClassLoader().getResource(bpelFile);
-        if (bpelURL == null)
-            throw new ODEProcessException("Couldn't find referenced bpel file " + bpelFile);
-        BpelC bpelc = BpelC.newBpelCompiler();
-        ByteArrayOutputStream compiledProcess = new ByteArrayOutputStream();
-        bpelc.setOutputStream(compiledProcess);
-        try {
-            bpelc.compile(new File(bpelURL.getFile()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
-
+    
     @Override
     public int hashCode() {
         return String.valueOf(getName()).hashCode();

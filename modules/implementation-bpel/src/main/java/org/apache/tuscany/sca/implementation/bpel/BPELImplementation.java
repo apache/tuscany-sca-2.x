@@ -32,35 +32,43 @@ public interface BPELImplementation extends Implementation {
 
     /**
      * Get the BPEL process Name
+     * 
+     * @return
      */
     QName getProcess();
     
     /**
      * Set the BPEL process Name
+     * 
      * @param processName process QName
      */
     void setProcess(QName processName);
     
     /**
      * Get the BPEL process definition
+     * 
      * @return
      */
     BPELProcessDefinition getProcessDefinition();
     
     /**
      * Set the BPEL process definition
+     * 
      * @param processDefinition
      */
     void setProcessDefinition(BPELProcessDefinition processDefinition);
     
     /** 
-     * Returns the componentType for this Spring implementation 
+     * Returns the componentType for this implementation.
+     * 
+     *  @return
      */
     public ComponentType getComponentType(); 
 
     /**
-     * Sets the componentType for this Spring implementation
-     * @parma componentType the component type to set
+     * Sets the componentType for this implementation
+     * 
+     * @param componentType the component type to set
      */
     public void setComponentType(ComponentType componentType); 
 }

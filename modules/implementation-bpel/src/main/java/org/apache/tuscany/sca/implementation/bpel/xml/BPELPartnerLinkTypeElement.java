@@ -39,75 +39,74 @@
  */
 public class BPELPartnerLinkTypeElement implements ExtensibilityElement {
 	
-	private QName name;
-	private String Role1name = null;
-	private QName  Role1porttype = null;
-	private PortType	Role1pType = null;
-	private String Role2name = null;
-	private QName  Role2porttype = null;
-	private PortType	Role2pType = null;
+    private QName name;
+    private String Role1name = null;
+    private QName Role1porttype = null;
+    private PortType Role1pType = null;
+    private String Role2name = null;
+    private QName Role2porttype = null;
+    private PortType Role2pType = null;
+    private QName elementType = null;
+    private Boolean required = false;
 
-	
-	private QName  elementType = null;
-	private Boolean required = false;
-	
-	public BPELPartnerLinkTypeElement( QName name ) {
-		this.name = name;
-	}
-	
-	public QName getName(){
-		return name;
-	}
-	
-	public void setRole1( String name, QName portType, PortType pType ) {
-		Role1name = name;
-		Role1porttype = portType;
-		Role1pType = pType;
-	}
-	
-	public void setRole2( String name, QName portType, PortType pType ) {
-		Role2name = name;
-		Role2porttype = portType;
-		Role2pType = pType;
-	}
-	
-	public String getRole1Name() {
-		return Role1name;
-	}
-	public String getRole2Name() {
-		return Role2name;
-	}
-	
-	public QName getRole1PortType() {
-		return Role1porttype;
-	}
-	
-	public QName getRole2PortType() {
-		return Role2porttype;
-	}
-	
-	public PortType getRole1pType() {
-		return Role1pType;
-	}
-	
-	public PortType getRole2pType() {
-		return Role2pType;
-	}
-	
-	public QName getElementType() {
-		return elementType;
-	}
-	
+    public BPELPartnerLinkTypeElement(QName name) {
+        this.name = name;
+    }
+
+    public QName getName() {
+        return name;
+    }
+
+    public void setRole1(String name, QName portType, PortType pType) {
+        Role1name = name;
+        Role1porttype = portType;
+        Role1pType = pType;
+    }
+
+    public void setRole2(String name, QName portType, PortType pType) {
+        Role2name = name;
+        Role2porttype = portType;
+        Role2pType = pType;
+    }
+
+    public String getRole1Name() {
+        return Role1name;
+    }
+
+    public String getRole2Name() {
+        return Role2name;
+    }
+
+    public QName getRole1PortType() {
+        return Role1porttype;
+    }
+
+    public QName getRole2PortType() {
+        return Role2porttype;
+    }
+
+    public PortType getRole1pType() {
+        return Role1pType;
+    }
+
+    public PortType getRole2pType() {
+        return Role2pType;
+    }
+
+    public QName getElementType() {
+        return elementType;
+    }
+
     public Boolean getRequired() {
-    	return required;
+        return required;
     }
-    
+
     public void setElementType(QName elementType) {
-    	this.elementType = elementType;
+        this.elementType = elementType;
     }
-    
+
     public void setRequired(java.lang.Boolean required) {
-    	this.required = required;
+        this.required = required;
     }
-    
+
 } // end BPELPartnerLinkType

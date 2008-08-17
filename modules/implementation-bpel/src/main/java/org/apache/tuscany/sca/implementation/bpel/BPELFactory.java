@@ -35,6 +35,7 @@ public interface BPELFactory {
 
     /**
      * Creates a new BPEL Process Definition
+     * 
      * @return
      */
     BPELProcessDefinition createBPELProcessDefinition();
