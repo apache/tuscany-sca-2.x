@@ -85,7 +85,6 @@ public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeser
 	public ExtensibilityElement unmarshall(Class theClass, QName elementType,
 			Element theElement, Definition def, ExtensionRegistry extReg)
 			throws WSDLException {
-		// System.out.println("BPELExtensionHandler unmarshall called");
 
 		// Check that this elementType really is a partnerLinkType element
 		if( !elementType.getLocalPart().equals(localName) ) return null;
@@ -93,15 +92,24 @@ public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeser
 		theExtension.setElementType(elementType);
 		theExtension.setName( theElement.getAttribute("name") );
 
-		//Fetch the child "role" elements
+		// Fetch the child "role" elements
 		NodeList theRoles = theElement.getElementsByTagNameNS("*", roleName);
 		for ( int i=0; i < theRoles.getLength(); i++ ) {
 			if( i > 1 ) break;
 			Element roleNode = (Element)theRoles.item(i);
 			String roleName = roleNode.getAttribute("name");
 			String portType = roleNode.getAttribute("portType");
-			// The PortType attribute is a QName in prefix:localName format - convert to a QName
-			QName rolePortType = getQNameValue( def, portType );
+			if (portType == null || portType.length() == 0) {
+			    // Fetch the child "portType" element
+			    NodeList portTypesNodes = roleNode.getElementsByTagNameNS("*", "portType");
+			    for (int p = 0; p < portTypesNodes.getLength(); p++) {
+			        Element portTypeNode = (Element)portTypesNodes.item(p);
+	                        portType = portTypeNode.getAttribute("name");
+			        break;
+			    }
+			}
+                        // The PortType attribute is a QName in prefix:localName format - convert to a QName
+                        QName rolePortType = getQNameValue( def, portType );
 			theExtension.setRole( i, roleName, rolePortType );
 		} // end for
 		return theExtension;
