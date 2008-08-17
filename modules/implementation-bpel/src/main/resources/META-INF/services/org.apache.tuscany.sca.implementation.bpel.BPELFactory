@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory
+org.apache.tuscany.sca.implementation.bpel.impl.BPELFactoryImpl

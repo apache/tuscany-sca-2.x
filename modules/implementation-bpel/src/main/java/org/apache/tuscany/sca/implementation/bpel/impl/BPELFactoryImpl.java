@@ -19,24 +19,27 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
+import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+
 /**
- * Thrown when a process can't be compiled properly or when its descriptors
- * are invalid.
+ * A factory for the BPEL implementation model.
  * 
- * @version $Rev$ $Date$ 
+ * @version $Rev$ $Date$
  */
-public class BPELProcessException extends RuntimeException {
-    private static final long serialVersionUID = 1047893235216756186L;
-
-    public BPELProcessException(String message) {
-        super(message);
+public class BPELFactoryImpl implements BPELFactory {
+    
+    public BPELFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
     }
 
-    public BPELProcessException(String message, Throwable cause) {
-        super(message, cause);
+    public BPELImplementation createBPELImplementation() {
+        return new BPELImplementationImpl();
     }
 
-    public BPELProcessException(Throwable cause) {
-        super(cause);
+    public BPELProcessDefinition createBPELProcessDefinition() {
+        return new BPELProcessDefinitionImpl();
     }
+
 }

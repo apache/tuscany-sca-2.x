@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
+class BPELProcessDefinitionImpl implements BPELProcessDefinition {
     private QName name;
     private URI uri;
     private URL location;
