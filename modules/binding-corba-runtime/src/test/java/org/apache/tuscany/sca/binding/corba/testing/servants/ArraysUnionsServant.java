@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.testing.servants;
 
+import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.RichUnion;
 import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.TestStruct;
 import org.apache.tuscany.sca.binding.corba.testing.arrays_unions._ArraysUnionsTestsImplBase;
 
@@ -31,6 +32,10 @@ public class ArraysUnionsServant extends _ArraysUnionsTestsImplBase {
     }
 
     public String[][] passStringArray(String[][] arg) {
+        return arg;
+    }
+
+    public RichUnion passRichUnion(RichUnion arg) {
         return arg;
     }
 

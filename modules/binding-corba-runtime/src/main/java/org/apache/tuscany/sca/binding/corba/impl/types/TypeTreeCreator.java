@@ -32,6 +32,8 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
 
 /**
  * @version $Rev$ $Date$
@@ -137,6 +139,7 @@ public class TypeTreeCreator {
 
     /**
      * Return given array without first element
+     * 
      * @param array
      * @return
      */
@@ -147,7 +150,9 @@ public class TypeTreeCreator {
     }
 
     /**
-     * Converts objects annotations to structure which will be used by this class 
+     * Converts objects annotations to structure which will be used by this
+     * class
+     * 
      * @param notes
      * @return
      */
@@ -222,7 +227,16 @@ public class TypeTreeCreator {
         } else if (nodeType.equals(NodeType.idl_enum)) {
 
         } else if (nodeType.equals(NodeType.union)) {
-            // TODO: unions
+            // inspect types for every structure member
+            Field[] fields = node.getJavaClass().getDeclaredFields();
+            children = new TypeTreeNode[fields.length];
+            for (int i = 0; i < fields.length; i++) {
+                Class<?> field = fields[i].getType();
+                AnnotationAttributes fAttrs = createAnnotationAttributes(fields[i].getAnnotations());
+                TypeTreeNode child = inspectClassHierarchy(field, fAttrs, tree);
+                child.setName(fields[i].getName());
+                children[i] = child;
+            }
         } else if (nodeType.equals(NodeType.reference)) {
             // TODO: CORBA references
         }
@@ -255,7 +269,6 @@ public class TypeTreeCreator {
                     new RequestConfigurationException("Annotated array size doesn't match declared arrays size");
                 throw exc;
             }
-
         } else if (primitives.contains(forClass)) {
             node.setNodeType(NodeType.primitive);
             node.setJavaClass(forClass);
@@ -273,6 +286,10 @@ public class TypeTreeCreator {
         } else if (isUserException(forClass)) {
             node.setNodeType(NodeType.exception);
             node.setJavaClass(forClass);
+        } else if (isUnionType(forClass)) {
+            node.setNodeType(NodeType.union);
+            node.setJavaClass(forClass);
+            node.setAttributes(getUnionAttributes(forClass));
         } else {
             RequestConfigurationException e =
                 new RequestConfigurationException("User defined type which cannot be handled: " + forClass
@@ -382,7 +399,7 @@ public class TypeTreeCreator {
     }
 
     /**
-     * Tells whether given class is corba user exception
+     * Tells whether given class is CORBA user exception
      * 
      * @param forClass
      * @return
@@ -398,4 +415,83 @@ public class TypeTreeCreator {
         return false;
     }
 
+    /**
+     * Tells whether given class is CORBA union. This method validates usage of
+     * unions annotations.
+     * 
+     * @param forClass
+     * @return
+     * @throws RequestConfigurationException
+     */
+    private static boolean isUnionType(Class<?> forClass) throws RequestConfigurationException {
+        int classMods = forClass.getModifiers();
+        if (!Modifier.isFinal(classMods)) {
+            return false;
+        }
+        boolean atLeastOneOption = false;
+        boolean discriminatorPresent = false;
+        for (int i = 0; i < forClass.getDeclaredFields().length; i++) {
+            CorbaUnionElement note = forClass.getDeclaredFields()[i].getAnnotation(CorbaUnionElement.class);
+            if (note != null) {
+                int fieldMod = forClass.getDeclaredFields()[i].getModifiers();
+                if (Modifier.isPrivate(fieldMod) && !Modifier.isFinal(fieldMod) && !Modifier.isStatic(fieldMod)) {
+                    if (note.type().equals(CorbaUnionElementType.discriminator)) {
+                        if (discriminatorPresent) {
+                            throw new RequestConfigurationException(
+                                                                    "More than one discriminators declared on: " + forClass);
+                        }
+                        discriminatorPresent = true;
+                    } else {
+                        atLeastOneOption = true;
+                    }
+                } else {
+                    throw new RequestConfigurationException(
+                                                            "Annotated union field should be private, not final and no static on class: " + forClass);
+                }
+            }
+        }
+        if (atLeastOneOption && !discriminatorPresent) {
+            throw new RequestConfigurationException("No discriminator annotation found on: " + forClass);
+        } else if (!atLeastOneOption && discriminatorPresent) {
+            throw new RequestConfigurationException("No union option found on: " + forClass);
+        } else if (discriminatorPresent && atLeastOneOption) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Gets union attributes - discriminator field name, option fields etc. This
+     * method relies that previously scanned class is valid (method isUnionType)
+     * 
+     * @param forClass
+     * @return
+     * @throws RequestConfigurationException
+     */
+    private static UnionAttributes getUnionAttributes(Class<?> forClass) throws RequestConfigurationException {
+        UnionAttributes attributes = new UnionAttributes();
+        for (int i = 0; i < forClass.getDeclaredFields().length; i++) {
+            CorbaUnionElement note = forClass.getDeclaredFields()[i].getAnnotation(CorbaUnionElement.class);
+            if (note != null) {
+                if (note.type().equals(CorbaUnionElementType.discriminator)) {
+                    attributes.setDiscriminatorName(forClass.getDeclaredFields()[i].getName());
+                } else if (note.type().equals(CorbaUnionElementType.defaultOption)) {
+                    attributes.setDefaultOptionName(forClass.getDeclaredFields()[i].getName());
+                } else if (note.type().equals(CorbaUnionElementType.option)) {
+                    if (attributes.getOptionsMapping().containsKey(note.optionNumber())) {
+                        throw new RequestConfigurationException("In " + forClass
+                            + ": field \""
+                            + forClass.getDeclaredFields()[i].getName()
+                            + "\" uses already used option id: "
+                            + note.optionNumber());
+                    } else {
+                        attributes.getOptionsMapping().put(note.optionNumber(),
+                                                           forClass.getDeclaredFields()[i].getName());
+                    }
+                }
+            }
+        }
+        return attributes;
+    }
 }

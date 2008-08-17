@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.binding.corba.impl;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
@@ -38,6 +40,7 @@ import org.omg.CORBA.Object;
  */
 public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
 
+    private static final Logger logger = Logger.getLogger(CorbaServiceBindingProvider.class.getName());
     private CorbaBinding binding;
     private CorbaHost host;
     private RuntimeComponentReference reference;
@@ -63,6 +66,7 @@ public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
             }
             return new CorbaInvoker(reference, remoteObject, referenceClass, operationsMap);
         } catch (Exception e) {
+            logger.log(Level.WARNING, "Exception during creating CORBA invoker", e);
         }
         return null;
     }

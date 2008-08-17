@@ -17,27 +17,39 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.testing.servants;
+package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.RichUnion;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
 
-public class ArraysUnionsTuscanyServant {
+public final class InnerUnion {
 
-    private static final long serialVersionUID = 1L;
-
-    public ArraysTestStruct passTestStruct(ArraysTestStruct arg) {
-        return arg;
-    }
-
-    @CorbaArray( {2, 2})
-    public String[][] passStringArray(@CorbaArray( {2, 2})String[][] arg) {
-        return arg;
-    }
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 1)
+    private int x;
+   
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 2)
+    private float y;
     
-    public RichUnion passRichUnion(RichUnion arg) { 
-        return arg;
+    @CorbaUnionElement(type = CorbaUnionElementType.discriminator)
+    @SuppressWarnings("unused")
+    private int discriminator;
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        discriminator = 1;
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        discriminator = 2;
+        this.y = y;
     }
 
 }

@@ -39,9 +39,23 @@ module org {
 								
 								typedef string StringArray[2][2];
 								
+								union InnerUnion switch (long) {
+									case 1: long x;
+									case 2: float y;
+								};
+								
+								union RichUnion switch (long) {
+								    case 1: long x;
+									case 2: float y;
+								    case 3: string z;
+								    case 4: InnerUnion iu;
+								    default: boolean a;
+								};
+								
 								interface ArraysUnionsTests {
 									TestStruct passTestStruct(in TestStruct arg);
 									StringArray passStringArray(in StringArray arg);
+									RichUnion passRichUnion(in RichUnion arg);
 								};
 								
 							};

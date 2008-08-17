@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
 import org.omg.CORBA.portable.InputStream;
@@ -30,6 +32,8 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class StructTypeHelper implements TypeHelper {
 
+    private static final Logger logger = Logger.getLogger(StructTypeHelper.class.getName());
+    
     public Object read(TypeTreeNode node, InputStream is) {
         TypeTreeNode[] children = node.getChildren();
         Object result = null;
@@ -42,8 +46,7 @@ public class StructTypeHelper implements TypeHelper {
                     childField.set(result, childResult);
                 }
             } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
+                logger.log(Level.WARNING, "Exception during reading CORBA struct data", e);
             }
         }
         return result;
@@ -58,8 +61,7 @@ public class StructTypeHelper implements TypeHelper {
                     TypeHelpersProxy.write(children[i], os, childField.get(data));
                 }
             } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
+                logger.log(Level.WARNING, "Exception during writing CORBA struct data", e);
             }
         }
     }

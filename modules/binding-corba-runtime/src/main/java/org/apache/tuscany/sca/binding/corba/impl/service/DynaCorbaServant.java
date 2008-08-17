@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.binding.corba.impl.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
@@ -40,6 +42,8 @@ import org.omg.CORBA.portable.ResponseHandler;
  */
 public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
 
+    private static final Logger logger = Logger.getLogger(DynaCorbaServant.class.getName());
+    
     private String[] ids;
     private InvocationProxy invocationProxy;
     private String typeId;
@@ -109,13 +113,10 @@ public class DynaCorbaServant extends ObjectImpl implements InvokeHandler {
                     TypeHelpersProxy.write(tree.getRootNode(), out, ie.getTargetException());
                     return out;
                 } catch (Exception e) {
-                    // TODO: raise remote exception - exception while handling
-                    // target exception
-                    e.printStackTrace();
+                    logger.log(Level.WARNING, "Exception during handling invocation exception", e);
                 }
             } catch (Exception e) {
-                // TODO: raise remote exception
-                e.printStackTrace();
+                logger.log(Level.WARNING, "Unexpected exception during sending CORBA result to client", e);
             }
         }
         return null;
