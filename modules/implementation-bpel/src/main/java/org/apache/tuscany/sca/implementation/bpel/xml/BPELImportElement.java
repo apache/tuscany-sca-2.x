@@ -31,14 +31,12 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
  */
 public class BPELImportElement {
 	
-	private String location;
+    private String location;
     private String importType;
     private String namespace;
     private WSDLDefinition theWSDL = null;
-    
-    public BPELImportElement( String location, 
-    						  String importType,
-    						  String namespace  ) {
+
+    public BPELImportElement(String location, String importType, String namespace) {
         this.location = location;
         this.importType = importType;
         this.namespace = namespace;
@@ -51,17 +49,17 @@ public class BPELImportElement {
     public String getLocation() {
         return location;
     }
-    
+
     public String getNamespace() {
-    	return namespace;
+        return namespace;
     }
-    
-    public void setWSDLDefinition( WSDLDefinition theDefinition) {
-    	theWSDL = theDefinition;
+
+    public void setWSDLDefinition(WSDLDefinition theDefinition) {
+        theWSDL = theDefinition;
     }
-    
+
     public WSDLDefinition getWSDLDefinition() {
-    	return theWSDL;
+        return theWSDL;
     }
-    
+
 } // end class BPELImportElement

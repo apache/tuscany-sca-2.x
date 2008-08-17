@@ -86,20 +86,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         this.monitor = monitor;
     }
 
-    /**
-     * Report a error.
-     * 
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Object... messageParameters) {
-    	 if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-	        monitor.problem(problem);
-    	 }
-    }
-     
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_BPEL_QNAME;
@@ -137,43 +123,29 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return implementation;
     }
 
-    public void resolve(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(BPELImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
         
-    	if( impl != null && impl.isUnresolved()) 
+    	if( implementation != null && implementation.isUnresolved()) 
     	{
-            BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(impl, resolver);
+            BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(implementation, resolver);
             if(processDefinition.isUnresolved()) {
-            	error("BPELProcessNotFound", impl, processDefinition.getName());
-                //throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
+            	error("BPELProcessNotFound", implementation, processDefinition.getName());
             } else {            
-                impl.setProcessDefinition(processDefinition);
+                implementation.setProcessDefinition(processDefinition);
             
                 // Get the component type from the process definition
-                generateComponentType( impl );
+                generateComponentType( implementation );
             
                 //resolve component type
-                mergeComponentType(resolver, impl);
+                mergeComponentType(resolver, implementation);
                         
                 //set current implementation resolved 
-                impl.setUnresolved(false);
+                implementation.setUnresolved(false);
             }
         }
         
     } // end resolve
 
-    /*
-     * Write out the XML representation of the BPEL implementation
-     * <implementation.bpel process="..." />
-     * 
-     * One complexity here is that the value of the process attribute is a QName
-     * In this implementation, the QName is written out in XML Namespaces recommendation format,
-     * as described in the documentation of the getAttributeValueNS method:
-     * 
-     * ie:  {http://example.com/somenamespace}SomeName
-     * 
-     * This may well NOT be the format in which the attribute was originally read from the
-     * composite file.
-     */
     public void write( BPELImplementation bpelImplementation, 
     		           XMLStreamWriter writer ) throws ContributionWriteException, XMLStreamException {
         //FIXME Deal with policy processing...
@@ -199,43 +171,40 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return resolver.resolveModel(BPELProcessDefinition.class, processDefinition);
     } // end resolveBPELProcessDefinition
     
-    // Calculates the component type of the supplied implementation and attaches it to the
-    // implementation
-    private void generateComponentType(BPELImplementation impl ) 
-    	throws ContributionResolveException {
+    /**
+     * Calculates the component type of the supplied implementation and attaches it to the
+     * implementation.
+     * 
+     * @param impl
+     * @throws ContributionResolveException
+     */
+    private void generateComponentType(BPELImplementation impl) throws ContributionResolveException {
+
         // Create a ComponentType and mark it unresolved
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
         impl.setComponentType(componentType);
-        
-        // Each partner link in the process represents either a service or a reference
+
+        // Each partner link in the process represents either a service or a
+        // reference
         // - or both, in the sense of involving a callback
         BPELProcessDefinition theProcess = impl.getProcessDefinition();
         List<BPELPartnerLinkElement> partnerLinks = theProcess.getPartnerLinks();
-        
-        for( BPELPartnerLinkElement pLink : partnerLinks ) {
-        	// check that the partner link has been designated as service or reference in SCA terms
-        	if ( pLink.isSCATyped() ) {
-        		String SCAName = pLink.getSCAName(); 
-        		if( pLink.querySCAType().equals("reference") ) {
-        			componentType.getReferences().add(
-	        			generateReference( SCAName, 
-	        					           pLink.getMyRolePortType(), 
-	        					           pLink.getPartnerRolePortType(),
-		        					       theProcess.getInterfaces() )
-        			);
-        		} else {
-        			componentType.getServices().add(
-	        			generateService( SCAName, 
-	        					         pLink.getMyRolePortType(), 
-	        					         pLink.getPartnerRolePortType(),
-	        					         theProcess.getInterfaces() ) 
-        			);
-        		} // end if
-        	} // end if
+
+        for (BPELPartnerLinkElement pLink : partnerLinks) {
+
+            // check that the partner link has been designated as service or
+            // reference in SCA terms
+            if (pLink.isSCATyped()) {
+                String SCAName = pLink.getSCAName();
+                if (pLink.querySCAType().equals("reference")) {
+                    componentType.getReferences().add(generateReference(SCAName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                } else {
+                    componentType.getServices().add(generateService(SCAName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                } // end if
+            } // end if
         } // end for
-        
-    	
+
     } // end getComponentType
     
     /**
@@ -247,70 +216,69 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @return
      */
     private Reference generateReference( String name, PortType myRolePT, 
-    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces  ) 
-    		throws ContributionResolveException {
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces) throws ContributionResolveException {
+        
         Reference reference = assemblyFactory.createReference();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
-        
-        // Establish whether there is just a call interface or a call + callback interface
+
+        // Establish whether there is just a call interface or a call + callback
+        // interface
         PortType callPT = null;
         PortType callbackPT = null;
-        if( myRolePT != null ) {
-        	callPT = myRolePT;
-        	// If the 2 port types are not the same one, there is a callback...
-        	if( partnerRolePT != null ) {
-        		if( !myRolePT.getQName().equals(partnerRolePT.getQName()) ){
-        			callbackPT = partnerRolePT;
-        		} // end if
-        	} // end if
-        } else if ( partnerRolePT != null ) {
-        	callPT = partnerRolePT;
+        if (myRolePT != null) {
+            callPT = myRolePT;
+            // If the 2 port types are not the same one, there is a callback...
+            if (partnerRolePT != null) {
+                if (!myRolePT.getQName().equals(partnerRolePT.getQName())) {
+                    callbackPT = partnerRolePT;
+                } // end if
+            } // end if
+        } else if (partnerRolePT != null) {
+            callPT = partnerRolePT;
         } // end if
-        // No interfaces mean an error - throw an exception
-        if( callPT == null && callbackPT == null ) {
-        	error("MyRolePartnerRoleNull", theInterfaces);
-        	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
-        } // end if 
-        
-        // Set the name of the reference to the supplied name and the multiplicity of the reference
-        // to 1..1 
-        // TODO: support other multiplicities 
+
+        // No interfaces mean an error
+        if (callPT == null && callbackPT == null) {
+            error("MyRolePartnerRoleNull", theInterfaces);
+        } // end if
+
+        // Set the name of the reference to the supplied name and the
+        // multiplicity of the reference
+        // to 1..1
+        // TODO: support other multiplicities
         reference.setName(name);
         reference.setMultiplicity(Multiplicity.ONE_ONE);
-        
-        if ( callPT != null ) {
+
+        if (callPT != null) {
             // Set the call interface and, if present, the callback interface
             WSDLInterface callInterface = null;
-            for( WSDLInterface anInterface : theInterfaces ) {
-        	    if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
+            for (WSDLInterface anInterface : theInterfaces) {
+                if (anInterface.getPortType().getQName().equals(callPT.getQName()))
+                    callInterface = anInterface;
             } // end for
-            // Throw an exception if no interface is found
-            if( callInterface == null ) {
-        	    error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
-        	    throw new ContributionResolveException("Interface not found for port type " +
-        			    callPT.getQName().toString() );
+            if (callInterface == null) {
+                error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
             } else
                 reference.getInterfaceContract().setInterface(callInterface);
         }
- 
-        // There is a callback if the partner role is not null and if the partner role port type
+
+        // There is a callback if the partner role is not null and if the
+        // partner role port type
         // is not the same as the port type for my role
-        if ( callbackPT != null ) {
+        if (callbackPT != null) {
             WSDLInterface callbackInterface = null;
-            for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().getQName().equals(callbackPT.getQName())) callbackInterface = anInterface;
+            for (WSDLInterface anInterface : theInterfaces) {
+                if (anInterface.getPortType().getQName().equals(callbackPT.getQName()))
+                    callbackInterface = anInterface;
             } // end for
-            // Throw an exception if no interface is found
-            if( callbackInterface == null ) {
-            	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
-            	throw new ContributionResolveException("Interface not found for port type " +
-            			callbackPT.getQName().toString() );
-            } else 
+            if (callbackInterface == null) {
+                error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
+            } else
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
-    	
-    	return reference;
+
+        return reference;
     } // end generateReference
     
     /**
@@ -327,62 +295,60 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         Service service = assemblyFactory.createService();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         service.setInterfaceContract(interfaceContract);
-        
-        // Set the name of the service to the supplied name 
+
+        // Set the name of the service to the supplied name
         service.setName(name);
-        
-        // Establish whether there is just a call interface or a call + callback interface
+
+        // Establish whether there is just a call interface or a call + callback
+        // interface
         PortType callPT = null;
         PortType callbackPT = null;
-        if( myRolePT != null ) {
-        	callPT = myRolePT;
-        	// If the 2 port types are not the same one, there is a callback...
-        	if( partnerRolePT != null ) {
-        		if( !myRolePT.getQName().equals(partnerRolePT.getQName()) ){
-        			callbackPT = partnerRolePT;
-        		} // end if
-        	} // end if
-        } else if ( partnerRolePT != null ) {
-        	callPT = partnerRolePT;
-        } // end if
-        // No interfaces mean an error - throw an exception
-        if( callPT == null && callbackPT == null ) {
-        	error("MyRolePartnerRoleNull", theInterfaces);
-        	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
+        if (myRolePT != null) {
+            callPT = myRolePT;
+            // If the 2 port types are not the same one, there is a callback...
+            if (partnerRolePT != null) {
+                if (!myRolePT.getQName().equals(partnerRolePT.getQName())) {
+                    callbackPT = partnerRolePT;
+                } // end if
+            } // end if
+        } else if (partnerRolePT != null) {
+            callPT = partnerRolePT;
         } // end if
 
-        if ( callPT != null ) {
+        // No interfaces mean an error
+        if (callPT == null && callbackPT == null) {
+            error("MyRolePartnerRoleNull", theInterfaces);
+        } // end if
+
+        if (callPT != null) {
             // Set the call interface and, if present, the callback interface
             WSDLInterface callInterface = null;
-            for( WSDLInterface anInterface : theInterfaces ) {
-        	    if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
+            for (WSDLInterface anInterface : theInterfaces) {
+                if (anInterface.getPortType().getQName().equals(callPT.getQName()))
+                    callInterface = anInterface;
             } // end for
-            // Throw an exception if no interface is found
-            if( callInterface == null ) {
-        	    error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
-        	    throw new ContributionResolveException("Interface not found for port type " +
-        			    callPT.getQName().toString() );
+            if (callInterface == null) {
+                error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
             } else
                 service.getInterfaceContract().setInterface(callInterface);
         } // end if
-        
-        // There is a callback if the partner role is not null and if the partner role port type
+
+        // There is a callback if the partner role is not null and if the
+        // partner role port type
         // is not the same as the port type for my role
-        if ( callbackPT != null ) {
+        if (callbackPT != null) {
             WSDLInterface callbackInterface = null;
-            for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().getQName().equals(callbackPT.getQName())) callbackInterface = anInterface;
+            for (WSDLInterface anInterface : theInterfaces) {
+                if (anInterface.getPortType().getQName().equals(callbackPT.getQName()))
+                    callbackInterface = anInterface;
             } // end for
-            // Throw an exception if no interface is found
-            if( callbackInterface == null ) {
-            	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
-            	throw new ContributionResolveException("Interface not found for port type " +
-            			callbackPT.getQName().toString() );
-            } else 
+            if (callbackInterface == null) {
+                error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
+            } else
                 service.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
-    	
-    	return service;
+
+        return service;
     } // end generateService
     
     /**
@@ -395,26 +361,30 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @param impl
      */
     private void mergeComponentType(ModelResolver resolver, BPELImplementation impl) {
-    	// Load the component type from a component type file, if any
+
+        // Load the component type from a component type file, if any
         ComponentType componentType = getComponentType(resolver, impl);
         if (componentType != null && !componentType.isUnresolved()) {
-            
-        	// References...
+
+            // References...
             Map<String, Reference> refMap = new HashMap<String, Reference>();
             for (Reference reference : componentType.getReferences()) {
-            	reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(reference.getName(), reference);
             } // end for
 
-            // For the present, overwrite anything arising from the component type sidefile if
+            // For the present, overwrite anything arising from the component
+            // type sidefile if
             // equivalent services are defined in the implementation.
-            // TODO - a more careful merge must be done, using the implementation introspection data
-            // as the master but adding any additional and non-conflicting information from the
+            // TODO - a more careful merge must be done, using the
+            // implementation introspection data
+            // as the master but adding any additional and non-conflicting
+            // information from the
             // sidefile
             for (Reference ref : impl.getReferences()) {
-            	ref.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                ref.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(ref.getName(), ref);
-            } // end for 
+            } // end for
 
             impl.getReferences().clear();
             impl.getReferences().addAll(refMap.values());
@@ -422,18 +392,21 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // Services.....
             Map<String, Service> serviceMap = new HashMap<String, Service>();
             for (Service service : componentType.getServices()) {
-                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);               
+                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 serviceMap.put(service.getName(), service);
             } // end for
-            
-            // For the present, overwrite anything arising from the component type sidefile if
+
+            // For the present, overwrite anything arising from the component
+            // type sidefile if
             // equivalent services are defined in the implementation.
-            // TODO - a more careful merge must be done, using the implementation introspection data
-            // as the master but adding any additional and non-conflicting information from the
+            // TODO - a more careful merge must be done, using the
+            // implementation introspection data
+            // as the master but adding any additional and non-conflicting
+            // information from the
             // sidefile
             for (Service svc : impl.getServices()) {
                 svc.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
-                serviceMap.put(svc.getName(), svc);    
+                serviceMap.put(svc.getName(), svc);
             } // end for
 
             impl.getServices().clear();
@@ -442,10 +415,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // Properties
             Map<String, Property> propMap = new HashMap<String, Property>();
             for (Property property : componentType.getProperties()) {
-            	propMap.put(property.getName(), property);
+                propMap.put(property.getName(), property);
             } // end for
 
-            // A simple overwrite of any equivalent properties from the component type sidefile
+            // A simple overwrite of any equivalent properties from the
+            // component type sidefile
             for (Property prop : impl.getProperties()) {
                 propMap.put(prop.getName(), prop);
             }
@@ -495,44 +469,54 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
         String fullValue = reader.getAttributeValue(null, attribute);
         if (fullValue == null) {
-        	error("AttributeProcessMissing", reader);
-        	return null;
+            error("AttributeProcessMissing", reader);
+            return null;
         }
-        
+
         // Deal with the attribute in the XML Namespaces recommendation format
-        // - trim off any leading/trailing spaces and check that the first character is '{'
-        if( fullValue.trim().charAt(0) == '{' ) {
-        	try {
-        		// Attempt conversion to a QName object
-        		QName theProcess = QName.valueOf( fullValue );
-        		return theProcess;
-        	} catch ( IllegalArgumentException e ) {
-        		// This exception happens if the attribute begins with '{' but doesn't conform
-        		// to the XML Namespaces recommendation format
-        		error("AttributeWithoutNamespace", reader, attribute, fullValue);
-        		return null;
-        		//throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                //" in your composite should be of the form {namespaceURI}localname");
-        	}
+        // - trim off any leading/trailing spaces and check that the first
+        // character is '{'
+        if (fullValue.trim().charAt(0) == '{') {
+            try {
+                // Attempt conversion to a QName object
+                QName theProcess = QName.valueOf(fullValue);
+                return theProcess;
+            } catch (IllegalArgumentException e) {
+                // This exception happens if the attribute begins with '{' but
+                // doesn't conform
+                // to the XML Namespaces recommendation format
+                error("AttributeWithoutNamespace", reader, attribute, fullValue);
+                return null;
+            }
         } // endif
-        
+
         // Deal with the attribute in the local name + prefix format
         if (fullValue.indexOf(":") < 0) {
-        	error("AttributeWithoutPrefix", reader, attribute, fullValue);
-        	return null;
-            //throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                    //" in your composite should be prefixed (process=\"prefix:name\").");
+            error("AttributeWithoutPrefix", reader, attribute, fullValue);
+            return null;
         }
         String prefix = fullValue.substring(0, fullValue.indexOf(":"));
         String name = fullValue.substring(fullValue.indexOf(":") + 1);
         String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
         if (nsUri == null) {
-        	error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
-        	return null;
-            //throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                    //" in your composite has an unrecognized namespace prefix.");
-        } 
+            error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
+            return null;
+        }
         return new QName(nsUri, name, prefix);
     }
 
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+         if (monitor != null) {
+                Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                monitor.problem(problem);
+         }
+    }
+     
 }

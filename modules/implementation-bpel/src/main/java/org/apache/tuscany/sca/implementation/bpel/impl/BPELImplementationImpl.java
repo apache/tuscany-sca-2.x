@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
@@ -32,7 +31,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * The model representing a BPEL implementation in an SCA assembly model.
@@ -41,32 +39,30 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
  */
 public class BPELImplementationImpl extends ImplementationImpl implements BPELImplementation {
 
-    private QName _processName;
-    private BPELProcessDefinition _processDefinition;
+    private QName processName;
+    private BPELProcessDefinition processDefinition;
     private ComponentType componentType;
 
     /**
      * Constructs a new BPEL implementation.
      */
-    public BPELImplementationImpl(AssemblyFactory assemblyFactory,
-                              WSDLFactory wsdlFactory) {
-
+    public BPELImplementationImpl() {
     }
 
     public QName getProcess() {
-        return _processName;
+        return processName;
     }
     
     public void setProcess(QName processName) {
-        _processName = processName;
+        this.processName = processName;
     }
 
     public BPELProcessDefinition getProcessDefinition() {
-        return this._processDefinition;
+        return this.processDefinition;
     }
 
     public void setProcessDefinition(BPELProcessDefinition processDefinition) {
-        this._processDefinition = processDefinition;
+        this.processDefinition = processDefinition;
     }
 
     @Override

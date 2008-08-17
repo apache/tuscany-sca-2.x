@@ -19,25 +19,20 @@
 
 package org.apache.tuscany.sca.implementation.bpel;
 
-import java.util.List;
-import java.util.Collection;
-
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.wsdl.PortType;
-
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
-import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
-
-
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
 /**
- * The BPEL process definition.
+ * The model representing a BPEL process definition.
  *
  * @version $Rev$ $Date$
  */
@@ -45,70 +40,70 @@ public interface BPELProcessDefinition extends Base {
 
     /**
      * Get the BPEL process Name
+     * 
+     * @return
      */
     QName getName();
 
     /**
      * Set the BPEL process Name
+     * 
      * @param processName process QName
      */
     void setName(QName name);
 
     /**
      * Get BPEL process URI
+     * 
      * @return URI for the process
      */
     URI getURI();
 
     /**
      * Set the BPEL process URI
+     * 
      * @param uri for the process
      */
     void setURI(URI uri);
 
     /**
      * Get the URL for the process location
+     * 
      * @return
      */
     URL getLocation();
 
     /**
      * Set the URL for the process location
+     * 
      * @param url
      */
     void setLocation(URL location);
     
     /**
      * Return the list of PartnerLinks for this process
+     * 
+     * @return
      */
     List<BPELPartnerLinkElement> getPartnerLinks();
     
     /**
      * Return the list of imports for this process
+     * 
+     * @return
      */
     List<BPELImportElement> getImports();
     
     /**
-     * Set the associated collection of port types
-     * @param thePortTypes
-     */
-    public void setPortTypes( Collection<PortType> thePortTypes ) ;
-    
-    /**
      * Return the collection of associated port types
+     * 
      * @return
      */
-    public Collection<PortType> getPortTypes() ;
-    
-    /**
-     * Set the associated collection of WSDL interfaces
-     * @param theInterfaces
-     */
-    public void setInterfaces( Collection<WSDLInterface> theInterfaces ) ;
+    public List<PortType> getPortTypes() ;
     
     /**
      * Return the collection of associated WSDL interfaces
      * @return
      */
-    public Collection<WSDLInterface> getInterfaces() ;
+    public List<WSDLInterface> getInterfaces() ;
 }

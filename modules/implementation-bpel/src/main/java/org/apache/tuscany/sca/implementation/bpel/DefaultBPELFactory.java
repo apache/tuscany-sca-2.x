@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.implementation.bpel;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationImpl;
 import org.apache.tuscany.sca.implementation.bpel.impl.BPELProcessDefinitionImpl;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * A default factory for the BPEL implementation model.
@@ -32,22 +30,15 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
  */
 public class DefaultBPELFactory implements BPELFactory {
     
-    private AssemblyFactory assemblyFactory;
-    private WSDLFactory wsdlFactory;
-    
     public DefaultBPELFactory(ModelFactoryExtensionPoint modelFactories) {
-        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        this.wsdlFactory  = modelFactories.getFactory(WSDLFactory.class);
     }
 
     public BPELImplementation createBPELImplementation() {
-        return new BPELImplementationImpl(assemblyFactory, wsdlFactory);
+        return new BPELImplementationImpl();
     }
 
     public BPELProcessDefinition createBPELProcessDefinition() {
         return new BPELProcessDefinitionImpl();
     }
-    
-    
 
 }

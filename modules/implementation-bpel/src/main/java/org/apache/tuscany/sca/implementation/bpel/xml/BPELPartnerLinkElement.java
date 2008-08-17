@@ -40,8 +40,8 @@ public class BPELPartnerLinkElement {
 
     private String 	REFERENCE_TYPE = "reference";
     private String 	SERVICE_TYPE = "service";
-	private String 	name;
-	private QName	partnerLinkType;
+    private String 	name;
+    private QName	partnerLinkType;
     private BPELPartnerLinkTypeElement 	pLinkType = null;
     private String 	myRole;
     private String 	partnerRole;
@@ -78,15 +78,15 @@ public class BPELPartnerLinkElement {
     }
     
     private PortType getRolePortType( String theRole ) {
-    	if( theRole == null || theRole.length() == 0 ) {
-    		return null;
-    	} //end if
-    	if ( theRole.equals( pLinkType.getRole1Name() ) ) {
-    		return pLinkType.getRole1pType();
-    	} else if ( theRole.equals( pLinkType.getRole2Name() ) ) {
-    		return pLinkType.getRole2pType();
-    	} // end if 
-    	return null;
+    	if (theRole == null || theRole.length() == 0) {
+            return null;
+        } // end if
+        if (theRole.equals(pLinkType.getRole1Name())) {
+            return pLinkType.getRole1pType();
+        } else if (theRole.equals(pLinkType.getRole2Name())) {
+            return pLinkType.getRole2pType();
+        } // end if
+        return null;
     } // end getRolePortType
 
     public String getName() {
