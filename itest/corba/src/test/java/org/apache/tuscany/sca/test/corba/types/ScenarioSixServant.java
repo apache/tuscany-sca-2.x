@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 import org.apache.tuscany.sca.test.corba.generated.AnnotatedStruct;
+import org.apache.tuscany.sca.test.corba.generated.RichUnion;
 import org.apache.tuscany.sca.test.corba.generated._ScenarioSixImplBase;
 
 /**
@@ -35,6 +36,10 @@ public class ScenarioSixServant extends _ScenarioSixImplBase {
     }
 
     public AnnotatedStruct passAnnotatedStruct(AnnotatedStruct arg) {
+        return arg;
+    }
+    
+    public RichUnion passRichUnion(RichUnion arg) {
         return arg;
     }
 
