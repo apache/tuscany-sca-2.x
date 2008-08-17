@@ -194,11 +194,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // check that the partner link has been designated as service or
             // reference in SCA terms
             if (pLink.isSCATyped()) {
-                String SCAName = pLink.getSCAName();
+                String scaName = pLink.getSCAName();
                 if (pLink.querySCAType().equals("reference")) {
-                    componentType.getReferences().add(generateReference(SCAName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                    componentType.getReferences().add(generateReference(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
                 } else {
-                    componentType.getServices().add(generateService(SCAName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                    componentType.getServices().add(generateService(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
                 } // end if
             } // end if
         } // end for
