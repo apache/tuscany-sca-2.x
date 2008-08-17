@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.bpel.impl;
+package org.apache.tuscany.sca.implementation.bpel.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
@@ -50,8 +50,6 @@ import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
-import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
-import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
@@ -82,7 +80,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        this.bpelFactory = new DefaultBPELFactory(modelFactories);
+        this.bpelFactory = modelFactories.getFactory(BPELFactory.class);
         this.monitor = monitor;
     }
 

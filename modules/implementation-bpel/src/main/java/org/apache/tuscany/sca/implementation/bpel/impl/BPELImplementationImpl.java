@@ -37,17 +37,11 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELImplementationImpl extends ImplementationImpl implements BPELImplementation {
+class BPELImplementationImpl extends ImplementationImpl implements BPELImplementation {
 
     private QName processName;
     private BPELProcessDefinition processDefinition;
     private ComponentType componentType;
-
-    /**
-     * Constructs a new BPEL implementation.
-     */
-    public BPELImplementationImpl() {
-    }
 
     public QName getProcess() {
         return processName;

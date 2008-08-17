@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.bpel.impl.BPELDocumentProcessor;type=.bpel,model=org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition
+org.apache.tuscany.sca.implementation.bpel.xml.BPELDocumentProcessor;type=.bpel,model=org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition

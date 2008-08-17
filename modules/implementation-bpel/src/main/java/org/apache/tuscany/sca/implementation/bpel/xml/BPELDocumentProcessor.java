@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.bpel.impl;
+package org.apache.tuscany.sca.implementation.bpel.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -46,9 +46,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
-import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
-import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
-import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkTypeElement;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
