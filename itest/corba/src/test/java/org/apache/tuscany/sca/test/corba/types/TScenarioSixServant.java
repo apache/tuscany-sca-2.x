@@ -34,5 +34,9 @@ public class TScenarioSixServant implements TScenarioSix {
     public TAnnotatedStruct passAnnotatedStruct(TAnnotatedStruct arg) {
         return arg;
     }
+    
+    public TRichUnion passRichUnion(TRichUnion arg) {
+        return arg;
+    }
 
 }

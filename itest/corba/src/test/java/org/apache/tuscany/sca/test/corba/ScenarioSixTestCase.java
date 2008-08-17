@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.test.corba;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
@@ -28,10 +29,14 @@ import org.apache.tuscany.sca.host.corba.naming.TransientNameServer;
 import org.apache.tuscany.sca.host.corba.naming.TransientNameService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.corba.generated.AnnotatedStruct;
+import org.apache.tuscany.sca.test.corba.generated.InnerUnion;
+import org.apache.tuscany.sca.test.corba.generated.RichUnion;
 import org.apache.tuscany.sca.test.corba.generated.ScenarioSix;
 import org.apache.tuscany.sca.test.corba.generated.ScenarioSixHelper;
 import org.apache.tuscany.sca.test.corba.types.ScenarioSixServant;
 import org.apache.tuscany.sca.test.corba.types.TAnnotatedStruct;
+import org.apache.tuscany.sca.test.corba.types.TInnerUnion;
+import org.apache.tuscany.sca.test.corba.types.TRichUnion;
 import org.apache.tuscany.sca.test.corba.types.TScenarioSix;
 import org.apache.tuscany.sca.test.corba.types.TScenarioSixComponent;
 import org.junit.AfterClass;
@@ -44,6 +49,7 @@ import org.omg.CosNaming.NamingContextHelper;
 
 /**
  * Tests using enhanced Java interfaces (annotations)
+ * 
  * @version $Rev$ $Date$
  */
 public class ScenarioSixTestCase {
@@ -114,15 +120,16 @@ public class ScenarioSixTestCase {
         String[][] result = { {"Hello", "World"}, {"Hi", "Again"}};
         return result;
     }
-    
+
     /**
-     * Tests passing arrays. Tuscany acts as a client, servant object is served in a traditional way
+     * Tests passing arrays. Tuscany acts as a client, servant object is served
+     * in a traditional way
      */
     @Test
     public void test_arraysPassing_tuscanyAsClient() {
         try {
             TScenarioSix ref = domain.getService(TScenarioSixComponent.class, "ScenarioSix").getScenarioSix();
-            String[][] arrayArg = getStringArray(); 
+            String[][] arrayArg = getStringArray();
             String[][] arrayRes = ref.passStringArray(arrayArg);
             assertTrue(areArraysEqual(arrayArg, arrayRes));
             TAnnotatedStruct structArg = new TAnnotatedStruct();
@@ -134,9 +141,10 @@ public class ScenarioSixTestCase {
             fail();
         }
     }
-    
+
     /**
-     * Tests passing arrays. Servant object is served by Tuscany and it is accessed by traditional Corba client
+     * Tests passing arrays. Servant object is served by Tuscany and it is
+     * accessed by traditional Corba client
      */
     @Test
     public void test_arraysPassing_tuscanyAsService() {
@@ -153,6 +161,64 @@ public class ScenarioSixTestCase {
             structArg.stringArray = getStringArray();
             AnnotatedStruct structRes = ref.passAnnotatedStruct(structArg);
             assertTrue(areArraysEqual(structArg.stringArray, structRes.stringArray));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    /**
+     * Tests passing unions. Tuscany acts as a client, servant object is served
+     * in a traditional way
+     */
+    @Test
+    public void test_unionsPassing_tuscanyAsClient() {
+        try {
+            TScenarioSix ref = domain.getService(TScenarioSixComponent.class, "ScenarioSix").getScenarioSix();
+            TRichUnion arg = new TRichUnion();
+            TInnerUnion inner = new TInnerUnion();
+            inner.setY(10f);
+            arg.setIu(inner);
+            TRichUnion result = ref.passRichUnion(arg);
+            assertEquals(arg.getIu().getY(), result.getIu().getY());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+        try {
+            TScenarioSix ref = domain.getService(TScenarioSixComponent.class, "ScenarioSix").getScenarioSix();
+            TRichUnion arg = new TRichUnion();
+            arg.setY(15f);
+            TRichUnion result = ref.passRichUnion(arg);
+            assertEquals(arg.getY(), result.getY());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+    
+    /**
+     * Tests passing unions. Servant object is served by Tuscany and it is
+     * accessed by traditional Corba client
+     */
+    @Test
+    public void test_unionsPassing_tuscanyAsService() {
+        try {
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContext ncRef = NamingContextHelper.narrow(objRef);
+            NameComponent nc = new NameComponent(TUSCANY_SERVICE_NAME, "");
+            NameComponent path[] = {nc};
+            ScenarioSix ref = ScenarioSixHelper.narrow(ncRef.resolve(path));
+            RichUnion arg = new RichUnion();
+            InnerUnion inner = new InnerUnion();
+            inner.y(20f);
+            arg.iu(inner);
+            RichUnion result = ref.passRichUnion(arg);
+            assertEquals(arg.iu().y(), result.iu().y());
+            arg = new RichUnion();
+            arg.y(15f);
+            result = ref.passRichUnion(arg);
+            assertEquals(arg.y(), result.y());
         } catch (Exception e) {
             e.printStackTrace();
             fail();

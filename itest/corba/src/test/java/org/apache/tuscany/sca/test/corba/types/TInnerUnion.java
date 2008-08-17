@@ -19,19 +19,41 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
 
 /**
  * @version $Rev$ $Date$
- * Operations for scenario six.
+ * User provided interface representation for CORBA InnerUnion type.
  */
-public interface TScenarioSix {
+public final class TInnerUnion {
 
-    @CorbaArray( {2, 2})
-    public String[][] passStringArray(@CorbaArray( {2, 2})String[][] arg);
-
-    public TAnnotatedStruct passAnnotatedStruct(TAnnotatedStruct arg);
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 1)
+    private int x;
+   
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 2)
+    private float y;
     
-    public TRichUnion passRichUnion(TRichUnion arg);
+    @CorbaUnionElement(type = CorbaUnionElementType.discriminator)
+    @SuppressWarnings("unused")
+    private int discriminator;
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        discriminator = 1;
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        discriminator = 2;
+        this.y = y;
+    }
 
 }
