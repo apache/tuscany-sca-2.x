@@ -508,6 +508,9 @@ public class CorbaServantTestCase {
         }
     }
     
+    /**
+     * Tests serving CORBA arrays by Tuscany CORBA servants
+     */
     @Test
     public void test_arraysPassing() {
         try {

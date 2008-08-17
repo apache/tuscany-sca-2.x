@@ -17,27 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.testing.servants;
+package org.apache.tuscany.sca.binding.corba.meta;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.RichUnion;
-
-public class ArraysUnionsTuscanyServant {
-
-    private static final long serialVersionUID = 1L;
-
-    public ArraysTestStruct passTestStruct(ArraysTestStruct arg) {
-        return arg;
-    }
-
-    @CorbaArray( {2, 2})
-    public String[][] passStringArray(@CorbaArray( {2, 2})String[][] arg) {
-        return arg;
-    }
-    
-    public RichUnion passRichUnion(RichUnion arg) { 
-        return arg;
-    }
-
+/**
+ * @version $Rev$ $Date$
+ * Types for union element
+ */
+public enum CorbaUnionElementType {
+    discriminator, defaultOption, option;
 }

@@ -17,27 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.corba.testing.servants;
+package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
-import org.apache.tuscany.sca.binding.corba.testing.hierarchy.RichUnion;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
 
-public class ArraysUnionsTuscanyServant {
+/**
+ * Reused option id
+ */
+public final class InvalidUnion5 {
 
-    private static final long serialVersionUID = 1L;
+    @CorbaUnionElement(type = CorbaUnionElementType.discriminator)
+    @SuppressWarnings("unused")
+    private int a;
 
-    public ArraysTestStruct passTestStruct(ArraysTestStruct arg) {
-        return arg;
-    }
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 1)
+    @SuppressWarnings("unused")
+    private int b;
 
-    @CorbaArray( {2, 2})
-    public String[][] passStringArray(@CorbaArray( {2, 2})String[][] arg) {
-        return arg;
-    }
-    
-    public RichUnion passRichUnion(RichUnion arg) { 
-        return arg;
-    }
+    @CorbaUnionElement(type = CorbaUnionElementType.option, optionNumber = 1)
+    @SuppressWarnings("unused")
+    private int c;
 
 }

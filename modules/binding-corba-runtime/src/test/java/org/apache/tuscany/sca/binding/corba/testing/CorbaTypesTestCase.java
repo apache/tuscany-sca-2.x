@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.binding.corba.testing.generated.SimpleStruct;
 import org.apache.tuscany.sca.binding.corba.testing.generated.SomeStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.DummyObject;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InnerUnion;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidCorbaArray;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum1;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum2;
@@ -47,6 +48,12 @@ import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidEnum3;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct1;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct2;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidStruct3;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidUnion1;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidUnion2;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidUnion3;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidUnion4;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.InvalidUnion5;
+import org.apache.tuscany.sca.binding.corba.testing.hierarchy.RichUnion;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysSetterServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysUnionsServant;
 import org.apache.tuscany.sca.binding.corba.testing.servants.ArraysUnionsTuscanyServant;
@@ -757,6 +764,78 @@ public class CorbaTypesTestCase {
         } catch (Exception e) {
             e.printStackTrace();
             fail();
+        }
+    }
+    
+    /**
+     * Tests passing CORBA unions
+     */
+    @Test
+    public void test_passingUnions() {
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passRichUnion");
+            request.setOutputType(RichUnion.class);
+            RichUnion arg = new RichUnion();
+            InnerUnion argIu = new InnerUnion();
+            argIu.setX(10);
+            arg.setIu(argIu);
+            request.addArgument(arg);
+            DynaCorbaResponse response = request.invoke();
+            RichUnion result = (RichUnion)response.getContent();
+            assertEquals(arg.getIu().getX(), result.getIu().getX());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "passRichUnion");
+            request.setOutputType(RichUnion.class);
+            RichUnion arg = new RichUnion();
+            arg.setDef(true);
+            request.addArgument(arg);
+            DynaCorbaResponse response = request.invoke();
+            RichUnion result = (RichUnion)response.getContent();
+            assertEquals(arg.isDef(), result.isDef());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+    
+    /**
+     * Tests handling invalid union declarations
+     */
+    @Test
+    public void test_testInvalidUnionClasses() {
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "whatever");
+            request.setOutputType(InvalidUnion1.class);
+        } catch (Exception e) {
+            assertEquals(RequestConfigurationException.class, e.getClass());
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "whatever");
+            request.setOutputType(InvalidUnion2.class);
+        } catch (Exception e) {
+            assertEquals(RequestConfigurationException.class, e.getClass());
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "whatever");
+            request.setOutputType(InvalidUnion3.class);
+        } catch (Exception e) {
+            assertEquals(RequestConfigurationException.class, e.getClass());
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "whatever");
+            request.setOutputType(InvalidUnion4.class);
+        } catch (Exception e) {
+            assertEquals(RequestConfigurationException.class, e.getClass());
+        }
+        try {
+            DynaCorbaRequest request = new DynaCorbaRequest(refArraysUnions, "whatever");
+            request.setOutputType(InvalidUnion5.class);
+        } catch (Exception e) {
+            assertEquals(RequestConfigurationException.class, e.getClass());
         }
     }
 }

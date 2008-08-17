@@ -1,6 +1,8 @@
 package org.apache.tuscany.sca.binding.corba.impl.types.util;
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeNode;
 import org.omg.CORBA.portable.InputStream;
@@ -11,6 +13,8 @@ import org.omg.CORBA.portable.OutputStream;
  */
 public class EnumTypeHelper implements TypeHelper {
 
+    private static final Logger logger = Logger.getLogger(EnumTypeHelper.class.getName());
+    
     public Object read(TypeTreeNode node, InputStream is) {
         int value = is.read_long();
         Object result = null;
@@ -18,7 +22,7 @@ public class EnumTypeHelper implements TypeHelper {
             Method method = node.getJavaClass().getMethod("from_int", new Class[] {int.class});
             result = method.invoke(null, new Object[] {value});
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            logger.log(Level.WARNING, "Exception during reading CORBA enum data", e);
             e.printStackTrace();
         }
         return result;
@@ -30,8 +34,7 @@ public class EnumTypeHelper implements TypeHelper {
             Method method = data.getClass().getMethod("value", new Class[] {});
             value = (Integer)method.invoke(data, new Object[] {});
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Exception during writing CORBA enum data", e);
         }
         os.write_long(value);
     }

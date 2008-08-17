@@ -72,6 +72,7 @@ public class TypeHelpersProxy {
         complexTypes.put(NodeType.sequence, new SequenceTypeHelper());
         complexTypes.put(NodeType.idl_enum, new EnumTypeHelper());
         complexTypes.put(NodeType.exception, new StructTypeHelper());
+        complexTypes.put(NodeType.union, new UnionTypeHelper());
     }
 
     /**
