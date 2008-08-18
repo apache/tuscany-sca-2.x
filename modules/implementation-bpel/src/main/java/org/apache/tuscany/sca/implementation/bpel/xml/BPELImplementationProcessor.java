@@ -367,7 +367,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // References...
             Map<String, Reference> refMap = new HashMap<String, Reference>();
             for (Reference reference : componentType.getReferences()) {
-                reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(reference.getName(), reference);
             } // end for
 
@@ -380,7 +379,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // information from the
             // sidefile
             for (Reference ref : impl.getReferences()) {
-                ref.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(ref.getName(), ref);
             } // end for
 
@@ -390,7 +388,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // Services.....
             Map<String, Service> serviceMap = new HashMap<String, Service>();
             for (Service service : componentType.getServices()) {
-                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 serviceMap.put(service.getName(), service);
             } // end for
 
@@ -403,7 +400,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             // information from the
             // sidefile
             for (Service svc : impl.getServices()) {
-                svc.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 serviceMap.put(svc.getName(), svc);
             } // end for
 
