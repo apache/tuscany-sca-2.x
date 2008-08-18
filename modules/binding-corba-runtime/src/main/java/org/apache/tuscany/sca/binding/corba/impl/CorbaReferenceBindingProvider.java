@@ -40,7 +40,7 @@ import org.omg.CORBA.Object;
  */
 public class CorbaReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private static final Logger logger = Logger.getLogger(CorbaServiceBindingProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(CorbaReferenceBindingProvider.class.getName());
     private CorbaBinding binding;
     private CorbaHost host;
     private RuntimeComponentReference reference;

@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.sca.corba.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -45,6 +47,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class CorbaSCAInvocationProxy implements InvocationProxy {
 
+    private static final Logger logger = Logger.getLogger(CorbaSCAInvocationProxy.class.getName());
     private RuntimeWire wire;
     private Interface componentInterface;
     private OperationTypes types = new OperationTypes();
@@ -85,17 +88,15 @@ public class CorbaSCAInvocationProxy implements InvocationProxy {
                 return omResult.toStringWithConsume();
             }
         } catch (XMLStreamException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.WARNING, "XMLStreamException during handling invocation target exception", e);
         } catch (InvocationTargetException e) {
             OMElement omException = (OMElement)((FaultException)e.getCause()).getFaultInfo();
             try {
                 WrappedSCAException wrappedException = new WrappedSCAException(omException.toStringWithConsume());
                 InvocationException exception = new InvocationException(wrappedException);
                 throw exception;
-            } catch (XMLStreamException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            } catch (XMLStreamException xmle) {
+                logger.log(Level.WARNING, "XMLStreamException during handling invocation target exception", xmle);
             }
             
         }
