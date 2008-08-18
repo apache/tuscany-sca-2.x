@@ -25,6 +25,9 @@ import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
@@ -60,6 +63,16 @@ public class BPELImplementationProvider implements ImplementationProvider {
         this.implementation = implementation;
         this.odeServer = odeServer;
         this.txMgr = txMgr;
+        
+        // Configure the service and reference interfaces to use a DOM databinding
+        // as it's what ODE expects
+        for (Service service: implementation.getServices()) {
+            service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+        }
+        for (Reference reference: implementation.getReferences()) {
+            reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+        }
+        
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
