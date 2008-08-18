@@ -48,24 +48,33 @@ public class NodeImplTestCase {
     @Test
     public void testNodeWithCompositeContent() {
         SCANode2Factory factory = new NodeFactoryImpl();
-        SCAContribution contribution = new SCAContribution("c1", new File("target/classes").toURI().toString());
+        SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
         SCANode2 node = factory.createSCANode("HelloWorld.composite", composite, contribution);
-        node.start();
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
-        Assert.assertEquals("Hello, Node", hw.hello("Node"));
-        node.stop();
+        testNode(node);
     }
+    
+    @Test
+    public void testNodeWithCompositeContentAndNoContribution() {
+        SCANode2Factory factory = new NodeFactoryImpl();
+        SCANode2 node = factory.createSCANode("HelloWorld.composite", composite);
+        testNode(node);
+    }    
 
+    @Test
+    public void testNodeWithoutCompositeURI() {
+        SCANode2Factory factory = new NodeFactoryImpl();
+        SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
+        SCANode2 node = factory.createSCANode(null, contribution);
+        testNode(node);
+    }
+    
     @Test
     public void testNodeWithCompositeURI() {
         SCANode2Factory factory = new NodeFactoryImpl();
-        SCAContribution contribution = new SCAContribution("c1", new File("target/classes").toURI().toString());
+        SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
         String compositeURI = new File("target/test-classes/HelloWorld.composite").toURI().toString();
         SCANode2 node = factory.createSCANode(compositeURI, contribution);
-        node.start();
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
-        Assert.assertEquals("Hello, Node", hw.hello("Node"));
-        node.stop();
+        testNode(node);
     }
 
     @Test
@@ -74,10 +83,7 @@ public class NodeImplTestCase {
         SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
         String compositeURI = "HelloWorld.composite";
         SCANode2 node = factory.createSCANode(compositeURI, contribution);
-        node.start();
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
-        Assert.assertEquals("Hello, Node", hw.hello("Node"));
-        node.stop();
+        testNode(node);
     }
 
     @Test
@@ -85,10 +91,7 @@ public class NodeImplTestCase {
         SCANode2Factory factory = new NodeFactoryImpl();
         String compositeURI = "HelloWorld.composite";
         SCANode2 node = factory.createSCANode(compositeURI, new SCAContribution[0]);
-        node.start();
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
-        Assert.assertEquals("Hello, Node", hw.hello("Node"));
-        node.stop();
+        testNode(node);
     }
 
     @Test
@@ -96,9 +99,21 @@ public class NodeImplTestCase {
         SCANode2Factory factory = new NodeFactoryImpl();
         String compositeURI = "HelloWorld.composite";
         SCANode2 node = factory.createSCANodeFromClassLoader(compositeURI, HelloWorld.class.getClassLoader());
+        testNode(node);
+    }
+
+    @Test
+    public void testNodeWithClassLoaderAndNullComposite() {
+        SCANode2Factory factory = new NodeFactoryImpl();
+        SCANode2 node = factory.createSCANodeFromClassLoader(null, HelloWorld.class.getClassLoader());
+        testNode(node);
+    }
+    
+    private void testNode(SCANode2 node) {
         node.start();
         HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
         Assert.assertEquals("Hello, Node", hw.hello("Node"));
         node.stop();
     }
+        
 }

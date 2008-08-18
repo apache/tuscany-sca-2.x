@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -101,8 +100,6 @@ public class NodeImpl implements SCANode2, SCAClient {
     private Monitor monitor;
 
     private List<Contribution> contributions;
-    private ContributionMetadata metadata;
-
     // The composite loaded into this node
     private Composite composite;
 
@@ -168,12 +165,20 @@ public class NodeImpl implements SCANode2, SCAClient {
         }
     }
 
+    /**
+     * Discover the contribution on the classpath
+     * @param compositeURI
+     * @param classLoader
+     * @return A configured node implementation
+     * @throws Exception
+     */
     private ConfiguredNodeImplementation findNodeConfiguration(final String compositeURI, ClassLoader classLoader)
         throws Exception {
         NodeImplementationFactory nodeImplementationFactory =
             modelFactories.getFactory(NodeImplementationFactory.class);
         ConfiguredNodeImplementation config = nodeImplementationFactory.createConfiguredNodeImplementation();
 
+        // Default to thread context classloader
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
@@ -188,43 +193,25 @@ public class NodeImpl implements SCANode2, SCAClient {
             Composite composite = createComposite(compositeURI);
             config.setComposite(composite);
         } else {
-
-            // Here the SCADomain was started without any reference to a composite file
-            // We are going to look for an sca-contribution.xml or sca-contribution-generated.xml
-
-            // Look for META-INF/sca-contribution.xml
+            // No composite is specified, tring to search the SCA metadata files
             contributionArtifactPath = Contribution.SCA_CONTRIBUTION_META;
-            contributionArtifactURL = getResource(classLoader, contributionArtifactPath);
+            contributionArtifactURL = getResource(classLoader, Contribution.SCA_CONTRIBUTION_META);
 
-            // Look for META-INF/sca-contribution-generated.xml
             if (contributionArtifactURL == null) {
                 contributionArtifactPath = Contribution.SCA_CONTRIBUTION_GENERATED_META;
-                contributionArtifactURL = getResource(classLoader, contributionArtifactPath);
+                contributionArtifactURL = getResource(classLoader, Contribution.SCA_CONTRIBUTION_GENERATED_META);
             }
-
-            // Look for META-INF/sca-deployables directory
             if (contributionArtifactURL == null) {
                 contributionArtifactPath = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
-                contributionArtifactURL = getResource(classLoader, contributionArtifactPath);
-            } else {
-                StAXArtifactProcessor<ContributionMetadata> processor =
-                    artifactProcessors.getProcessor(ContributionMetadata.class);
-                XMLStreamReader reader = inputFactory.createXMLStreamReader(contributionArtifactURL.openStream());
-                reader.nextTag();
-                metadata = processor.read(reader);
-                reader.close();
-                if (metadata.getDeployables().isEmpty()) {
-                    throw new IllegalArgumentException(
-                                                       "No deployable composite is declared in " + contributionArtifactPath);
-                }
-                Composite composite = metadata.getDeployables().get(0);
-                config.setComposite(composite);
+                contributionArtifactURL = getResource(classLoader, Contribution.SCA_CONTRIBUTION_DEPLOYABLES);
             }
-        }
-
-        if (contributionArtifactURL == null) {
-            throw new IllegalArgumentException(
-                                               "Can't determine contribution deployables. Either specify a composite file, or use an sca-contribution.xml file to specify the deployables.");
+            
+            // No contribution can be discovered
+            if (contributionArtifactURL == null) {
+                throw new IllegalArgumentException("No default contribution can be discovered on the classpath");
+            }
+            
+            // No composite will be created, all deployable composites will be used later
         }
 
         Contribution c = getContribution(contributionArtifactURL, contributionArtifactPath);
@@ -314,10 +301,10 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Initialize the runtime
             initRuntime();
 
-            URI uri = URI.create(compositeURI);
+            URI uri = compositeURI == null ? null : URI.create(compositeURI);
             ConfiguredNodeImplementation configuration = null;
             if (contributions == null || contributions.length == 0) {
-                if (uri.getScheme() != null) {
+                if (uri != null && uri.getScheme() != null) {
                     throw new IllegalArgumentException("No SCA contributions are provided");
                 }
                 configuration = findNodeConfiguration(compositeURI, null);
@@ -328,8 +315,9 @@ public class NodeImpl implements SCANode2, SCAClient {
                     modelFactories.getFactory(NodeImplementationFactory.class);
                 configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
-                Composite composite = createComposite(compositeURI);
+                Composite composite = compositeURI == null ? null : createComposite(compositeURI);
                 configuration.setComposite(composite);
+  
 
                 // Create contribution models
                 ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
@@ -498,32 +486,14 @@ public class NodeImpl implements SCANode2, SCAClient {
 
         composite = configuration.getComposite();
 
-        // Resolve the metadata within the context of the contribution
-        // FIXME The deployable composite should have been picked by the SCA Domain Manager already and we should not
-        // pollute the Node impl to deal with this 
-        if (metadata != null) {
-            StAXArtifactProcessor<ContributionMetadata> processor =
-                artifactProcessors.getProcessor(ContributionMetadata.class);
+        // FIXME: This is a hack to get a list of deployable composites. By design, the deployment composite should
+        // has been configured
+        if (composite == null) {
+            List<Composite> deployables = new ArrayList<Composite>();
             for (Contribution c : contributions) {
-                processor.resolve(metadata, c.getModelResolver());
-                if (!metadata.isUnresolved()) {
-                    break;
-                }
+                deployables.addAll(c.getDeployables());
             }
-            List<Composite> composites = metadata.getDeployables();
-            if (composites.size() == 0) {
-                throw new IllegalArgumentException("No deployable composite is declared");
-            } else if (composites.size() == 1) {
-                composite = composites.get(0);
-            } else {
-                // This is temporary to include all composites
-                AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
-                Composite tempComposite = assemblyFactory.createComposite();
-                tempComposite.setName(new QName("http://tempuri.org", "aggregated"));
-                tempComposite.setURI("http://tempuri.org/aggregated");
-                tempComposite.getIncludes().addAll(composites);
-                composite = tempComposite;
-            }
+            aggregate(deployables);
             configuration.setComposite(composite);
         }
 
@@ -589,6 +559,26 @@ public class NodeImpl implements SCANode2, SCAClient {
         runtime.buildComposite(composite);
 
         analyzeProblems();
+    }
+
+    /**
+     * Create a deployment composite that includes a list of deployable composites
+     * @param composites
+     */
+    private void aggregate(List<Composite> composites) {
+        if (composites.size() == 0) {
+            throw new IllegalArgumentException("No deployable composite is declared");
+        } else if (composites.size() == 1) {
+            composite = composites.get(0);
+        } else {
+            // Include all composites
+            AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
+            Composite aggregated = assemblyFactory.createComposite();
+            aggregated.setName(new QName("http://tempuri.org", "aggregated"));
+            aggregated.setURI("http://tempuri.org/aggregated");
+            aggregated.getIncludes().addAll(composites);
+            composite = aggregated;
+        }
     }
 
     /**
