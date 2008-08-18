@@ -68,6 +68,7 @@ class InterfaceInfo implements Serializable {
             MethodInfo methodInfo = new MethodInfo(method);
             methodInfo.setIDLName((String) entry.getValue());
             methods.put(method.getName(), methodInfo);
+            methods.put(methodInfo.getIDLName(), methodInfo);
         }
     }
 
