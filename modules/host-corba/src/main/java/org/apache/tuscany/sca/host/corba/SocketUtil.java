@@ -52,13 +52,13 @@ public class SocketUtil {
         private Set<String> addressList;
         private String host;
         private Set<String> nonAddressList;
-        private Map threadMap2;
+        private Map<String, CacheThread> threadMap2;
 
         public CacheThread(String host,
                            Set<InetAddress> currentAddresses,
                            Set<String> addressList,
                            Set<String> nonAddressList,
-                           Map threadMap2) {
+                           Map<String, CacheThread> threadMap2) {
             super("Caching localhost information");
             this.host = host;
             this.currentAddresses = currentAddresses;
@@ -69,9 +69,9 @@ public class SocketUtil {
 
         public void run() {
             if (currentAddresses != null) {
-                Iterator iter2 = currentAddresses.iterator();
+                Iterator<InetAddress> iter2 = currentAddresses.iterator();
                 while (iter2.hasNext()) {
-                    InetAddress addr = (InetAddress)iter2.next();
+                    InetAddress addr = iter2.next();
                     String hostname = addr.getHostName();
                     String hostname2 = addr.getCanonicalHostName();
                     synchronized (lock) {
@@ -154,7 +154,7 @@ public class SocketUtil {
             // get network interfaces
             final Set<InetAddress> currentAddresses = new HashSet<InetAddress>();
             currentAddresses.add(InetAddress.getLocalHost());
-            Enumeration nis = NetworkInterface.getNetworkInterfaces();
+            Enumeration<?> nis = NetworkInterface.getNetworkInterfaces();
             while (nis.hasMoreElements()) {
                 NetworkInterface inter = (NetworkInterface)nis.nextElement();
                 Enumeration<InetAddress> ias = inter.getInetAddresses();
@@ -173,9 +173,9 @@ public class SocketUtil {
                     notLocalHostCache = new HashSet<String>();
                     localHostCache = new HashSet<String>(currentAddresses.size() * 3);
 
-                    Iterator iter = currentAddresses.iterator();
+                    Iterator<InetAddress> iter = currentAddresses.iterator();
                     while (iter.hasNext()) {
-                        InetAddress addr = (InetAddress)iter.next();
+                        InetAddress addr = iter.next();
                         String a = addr.getHostAddress();
                         if (a != null && !localHostCache.contains(a))
                             localHostCache.add(a);
