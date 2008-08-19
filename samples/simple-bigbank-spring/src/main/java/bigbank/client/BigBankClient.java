@@ -20,8 +20,8 @@
 package bigbank.client;
 
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 import bigbank.account.AccountService;
 
@@ -32,8 +32,8 @@ import bigbank.account.AccountService;
 public class BigBankClient {
     public static void main(String[] args) throws Exception {
 
-        SCANode2Factory factory = SCANode2Factory.newInstance();
-        SCANode2 node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankClient.class.getClassLoader());
+        SCANodeFactory factory = SCANodeFactory.newInstance();
+        SCANode node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankClient.class.getClassLoader());
         node.start();
         
         AccountService accountService = ((SCAClient)node).getService(AccountService.class, "AccountServiceComponent");

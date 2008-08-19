@@ -38,13 +38,13 @@
     <dependencies>     
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-api</artifactId>
+            <artifactId>tuscany-node-api</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-impl</artifactId>
+            <artifactId>tuscany-node-impl</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
