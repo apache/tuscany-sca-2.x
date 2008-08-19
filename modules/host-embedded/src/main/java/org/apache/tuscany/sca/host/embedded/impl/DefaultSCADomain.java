@@ -43,8 +43,8 @@ import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
@@ -68,7 +68,7 @@ public class DefaultSCADomain extends SCADomain {
     private List<String> contributionURLs;
 
     private CompositeActivator compositeActivator;
-    private SCANode2 node;
+    private SCANode node;
     private SCAClient client;
 
     /**
@@ -149,7 +149,7 @@ public class DefaultSCADomain extends SCADomain {
     }
 
     public void init() {
-        SCANode2Factory factory = SCANode2Factory.newInstance();
+        SCANodeFactory factory = SCANodeFactory.newInstance();
 
         List<SCAContribution> contributions = new ArrayList<SCAContribution>();
 

@@ -24,8 +24,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 import calculator.CalculatorService;
 
@@ -35,11 +35,11 @@ import calculator.CalculatorService;
 public class RegistryInspectorTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode2 node;
+    private SCANode node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANode(new File("src/test/resources/Calculator.composite").toURL().toString(),
                                          new SCAContribution("TestContribution", 
                                                              new File("src/test/resources").toURL().toString()));

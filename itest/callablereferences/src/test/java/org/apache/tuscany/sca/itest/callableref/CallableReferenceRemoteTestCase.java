@@ -27,8 +27,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,8 +40,8 @@ import org.junit.Test;
  */
 public class CallableReferenceRemoteTestCase {
     
-    private static SCANode2 nodeA;
-    private static SCANode2 nodeB;
+    private static SCANode nodeA;
+    private static SCANode nodeB;
    
     private static AComponent acomponent;
 
@@ -52,7 +52,7 @@ public class CallableReferenceRemoteTestCase {
             
             System.out.println("Setting up nodes");
                   
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             nodeA = nodeFactory.createSCANode(new File("src/main/resources/nodeA/CompositeA.composite").toURL().toString(),
                                              new SCAContribution("TestContribution", 
                                                                  new File("src/main/resources/nodeA").toURL().toString()));

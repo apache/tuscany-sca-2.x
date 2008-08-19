@@ -22,8 +22,8 @@ package calculator;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,10 +35,10 @@ import org.junit.Test;
  */
 public class CalculatorDistributedTestCase {
 
-    private static SCANode2 manager;
-    private static SCANode2 nodeA;
-    private static SCANode2 nodeB;
-    private static SCANode2 nodeC;
+    private static SCANode manager;
+    private static SCANode nodeA;
+    private static SCANode nodeB;
+    private static SCANode nodeC;
 
     private static CalculatorService calculatorService;
     
@@ -53,7 +53,7 @@ public class CalculatorDistributedTestCase {
             manager = managerLauncher.createDomainManager();
             manager.start();
             
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             nodeC  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeC");
             nodeB  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeB");
             nodeA  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeA");

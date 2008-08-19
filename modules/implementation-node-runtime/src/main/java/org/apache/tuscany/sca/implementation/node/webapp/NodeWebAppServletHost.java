@@ -48,8 +48,8 @@ import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherUtil;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * ServletHost implementation for use in a Webapp Node environment.
@@ -62,7 +62,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final NodeWebAppServletHost servletHost = new NodeWebAppServletHost();
 
     private Map<String, Servlet> servlets = new HashMap<String, Servlet>();
-    private SCANode2 node;
+    private SCANode node;
     
     private String contextPath = "/";
     private int defaultPort = 8080;
@@ -112,7 +112,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         String nodeConfiguration = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
         
         // Create the SCA node
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromURL(nodeConfiguration);
         
         // Register the Servlet host
@@ -350,7 +350,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
      * 
      * @return
      */
-    private static ServletHostExtensionPoint servletHosts(SCANode2 node) {
+    private static ServletHostExtensionPoint servletHosts(SCANode node) {
         //FIXME Need a clean way to get the extension point registry
         // from the node
         ExtensionPointRegistry registry;

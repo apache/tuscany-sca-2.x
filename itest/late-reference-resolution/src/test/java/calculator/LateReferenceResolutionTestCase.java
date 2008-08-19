@@ -25,8 +25,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,9 +38,9 @@ import org.junit.Test;
  */
 public class LateReferenceResolutionTestCase {
 
-    private static SCANode2 nodeA;
-    private static SCANode2 nodeB;
-    private static SCANode2 nodeC;
+    private static SCANode nodeA;
+    private static SCANode nodeB;
+    private static SCANode nodeC;
 
     private static CalculatorService calculatorService;
     
@@ -53,7 +53,7 @@ public class LateReferenceResolutionTestCase {
             System.out.println("Setting up domain");
 
             
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             nodeC = nodeFactory.createSCANode(new File("src/main/resources/nodeC/Calculator.composite").toURL().toString(),
                 new SCAContribution("NodeC", 
                                     new File("src/main/resources/nodeC").toURL().toString()));

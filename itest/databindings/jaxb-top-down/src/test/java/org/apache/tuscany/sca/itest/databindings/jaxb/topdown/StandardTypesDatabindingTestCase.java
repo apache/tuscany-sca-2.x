@@ -56,8 +56,8 @@ import org.apache.tuscany.sca.databinding.xml.String2Node;
 import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesServiceClient;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransformer;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -70,14 +70,14 @@ import org.xml.sax.InputSource;
 public class StandardTypesDatabindingTestCase {
 
     private static SCAClient domain;
-    private static SCANode2 node;
+    private static SCANode node;
 
     /**
      * Runs once before the tests
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/standard-types-service.composite", null);
         node.start();
         domain = (SCAClient)node;

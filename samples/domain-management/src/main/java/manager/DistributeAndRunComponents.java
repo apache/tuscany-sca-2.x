@@ -71,7 +71,7 @@ import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuil
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
@@ -260,7 +260,7 @@ public class DistributeAndRunComponents {
         System.out.println(print(domainComposite));
         
         // Now start our SCA nodes
-        List<SCANode2> runtimeNodes = new ArrayList<SCANode2>();
+        List<SCANode> runtimeNodes = new ArrayList<SCANode>();
         NodeLauncher launcher = NodeLauncher.newInstance();
         for (Component node: cloudComposite.getComponents()) {
             
@@ -286,7 +286,7 @@ public class DistributeAndRunComponents {
                 Contribution dependency = dependencies.get(c);
                 contributions[c] = new org.apache.tuscany.sca.node.launcher.Contribution(dependency.getURI(), dependency.getLocation());
             }
-            SCANode2 runtimeNode = launcher.createNode("http://sample/" + node.getName(), print(runnable), contributions);
+            SCANode runtimeNode = launcher.createNode("http://sample/" + node.getName(), print(runnable), contributions);
             
             // Start the node
             runtimeNode.start();
@@ -296,7 +296,7 @@ public class DistributeAndRunComponents {
         System.out.println("Nodes are running, press enter to stop...");
         System.in.read();
         
-        for (SCANode2 runtimeNode: runtimeNodes) {
+        for (SCANode runtimeNode: runtimeNodes) {
             runtimeNode.stop();
         }
     }

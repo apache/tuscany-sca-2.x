@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class OneWayTestCase {
      */
     private static final int MAX_SLEEP_TIME = 10000;
 
-    private SCANode2 node;
+    private SCANode node;
     
     /**
      * Initialise the SCADomain.
@@ -59,7 +59,7 @@ public class OneWayTestCase {
     @Before
     public void setUp() throws Exception {
         
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("OneWayContribution/META-INF/sca-deployables/oneWay.composite", null);
         node.start();
         

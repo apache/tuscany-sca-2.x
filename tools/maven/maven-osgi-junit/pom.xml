@@ -45,7 +45,7 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-launcher-osgi</artifactId>
+            <artifactId>tuscany-node-launcher-osgi</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         

@@ -38,7 +38,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-launcher</artifactId>
+            <artifactId>tuscany-node-launcher</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 

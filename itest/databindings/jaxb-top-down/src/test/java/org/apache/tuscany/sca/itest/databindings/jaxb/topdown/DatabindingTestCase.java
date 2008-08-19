@@ -28,8 +28,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceClient;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,14 +40,14 @@ import org.junit.Test;
 public class DatabindingTestCase {
 
     private static SCAClient client;
-    private static SCANode2 node;
+    private static SCANode node;
 
     /**
      * Runs once before running the tests
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/helloservice.composite", null);
         node.start();
         client = (SCAClient)node;

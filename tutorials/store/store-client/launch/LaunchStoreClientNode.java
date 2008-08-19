@@ -20,7 +20,7 @@
 package launch;
 
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 
 import client.Shopper;
@@ -29,7 +29,7 @@ public class LaunchStoreClientNode {
 
     public static void main(String[] args) throws Exception {
         NodeLauncher nodeLauncher = NodeLauncher.newInstance();
-        SCANode2 storeClientNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/StoreClientNode");
+        SCANode storeClientNode = nodeLauncher.createNodeFromURL("http://localhost:9990/node-config/StoreClientNode");
         storeClientNode.start();
         SCAClient client = (SCAClient)storeClientNode;
         

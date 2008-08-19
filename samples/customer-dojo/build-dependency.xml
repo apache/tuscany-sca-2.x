@@ -49,6 +49,7 @@
         <include name="tuscany-implementation-java-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-implementation-java-runtime-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-implementation-java-xml-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-node-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-implementation-resource-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-implementation-resource-runtime-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-interface-1.4-SNAPSHOT.jar"/>
@@ -56,6 +57,8 @@
         <include name="tuscany-interface-java-jaxws-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-interface-java-xml-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-monitor-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-node2-api-1.4-SNAPSHOT.jar"/>
+        <include name="tuscany-node2-impl-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-policy-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-policy-xml-1.4-SNAPSHOT.jar"/>
         <include name="tuscany-sca-api-1.4-SNAPSHOT.jar"/>

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.implementation.node.launcher;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode;
 
 /**
  * Bootstrap class for the SCA node daemon.
@@ -28,12 +28,12 @@ import org.apache.tuscany.sca.node.SCANode2;
  * @version $Rev$ $Date$
  */
 public class NodeImplementationDaemonBootstrap {
-    private SCANode2 node;
+    private SCANode node;
 
     /**
      * A node wrappering an instance of a node daemon.
      */
-    public static class NodeFacade implements SCANode2 {
+    public static class NodeFacade implements SCANode {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
         private SCADomain daemon;
@@ -77,7 +77,7 @@ public class NodeImplementationDaemonBootstrap {
      * Returns the node representing the daemon.
      * @return
      */
-    public SCANode2 getNode() {
+    public SCANode getNode() {
         return node;
     }
 

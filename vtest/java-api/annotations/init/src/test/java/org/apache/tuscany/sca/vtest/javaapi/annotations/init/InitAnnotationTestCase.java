@@ -25,8 +25,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -50,8 +50,8 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitProper() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        SCANode2 node = nodeFactory.createSCANode(new File("src/main/resources/proper/AService.composite").toURL().toString(),
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        SCANode node = nodeFactory.createSCANode(new File("src/main/resources/proper/AService.composite").toURL().toString(),
                 new SCAContribution("TestContribution", 
                                     new File("src/main/resources/proper").toURL().toString()));
         node.start();
@@ -74,9 +74,9 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitProtectedMethod() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         try {
-            SCANode2 node = nodeFactory.createSCANode(new File("src/main/resources/err1/AServiceErr1.composite").toURL().toString(),
+            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err1/AServiceErr1.composite").toURL().toString(),
                     new SCAContribution("TestContribution", 
                                         new File("src/main/resources/err1").toURL().toString()));
             Assert.fail();
@@ -100,9 +100,9 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitPrivateMethod() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         try {
-            SCANode2 node = nodeFactory.createSCANode(new File("src/main/resources/err2/AServiceErr2.composite").toURL().toString(),
+            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err2/AServiceErr2.composite").toURL().toString(),
                     new SCAContribution("TestContribution", 
                                         new File("src/main/resources/err2").toURL().toString()));
             Assert.fail();
@@ -126,9 +126,9 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitNonVoidReturnType() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         try {
-            SCANode2 node = nodeFactory.createSCANode(new File("src/main/resources/err3/HelloWorldErr3.composite").toURL().toString(),
+            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err3/HelloWorldErr3.composite").toURL().toString(),
                     new SCAContribution("TestContribution", 
                                         new File("src/main/resources/err3").toURL().toString()));
             Assert.fail();
@@ -152,9 +152,9 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitMethodWithArgs() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         try {
-            SCANode2 node = nodeFactory.createSCANode(new File("src/main/resources/err4/HelloWorldErr4.composite").toURL().toString(),
+            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err4/HelloWorldErr4.composite").toURL().toString(),
                     new SCAContribution("TestContribution", 
                                         new File("src/main/resources/err4").toURL().toString()));
             Assert.fail();
