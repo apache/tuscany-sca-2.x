@@ -19,13 +19,8 @@
 
 package bigbank.server;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -39,61 +34,21 @@ public class BigBankServer {
             timeout = Long.parseLong(args[0]);
         }
         
-        System.out.println("Starting the Spring SCA BigBank server...");
-        ClassLoader cl = BigBankServer.class.getClassLoader();
-        EmbeddedSCADomain domain = new EmbeddedSCADomain(cl, "http://localhost");
+        System.out.println("Starting the Sample SCA Spring BigBank server...");
+                
+        SCANode2Factory factory = SCANode2Factory.newInstance();
+        SCANode2 node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankServer.class.getClassLoader());
+        node.start();
 
-        //Start the domain
-        domain.start();
-
-        // Contribute the SCA contribution
-        ContributionService contributionService = domain.getContributionService();
-        
-        URL bigbankContribUrl = getContributionURL(BigBankServer.class);
-        Contribution bigbankContribution = contributionService.contribute("http://bigbank", bigbankContribUrl, false);
-        for (Composite deployable : bigbankContribution.getDeployables()) {
-            domain.getDomainComposite().getIncludes().add(deployable);
-            domain.buildComposite(deployable);
-        }
-
-        //Start Components from  composite
-        for (Composite deployable : bigbankContribution.getDeployables()) {
-            domain.getCompositeActivator().activate(deployable);
-            domain.getCompositeActivator().start(deployable);
-        }
-        
         if (timeout < 0) {
             System.out.println("Press Enter to Exit...");
             System.in.read();
         } else {
             Thread.sleep(timeout);
         }
-        
-        contributionService.remove("http://bigbank");
 
-        // Stop Components from  composite
-        for (Composite deployable : bigbankContribution.getDeployables()) {
-            domain.getCompositeActivator().stop(deployable);
-            domain.getCompositeActivator().deactivate(deployable);
-        }
-
-        domain.stop();
-
-        domain.close();
+        node.stop();
         
         System.out.println("Bye");
     }
-    
-    private static URL getContributionURL(Class<?> cls) throws MalformedURLException {
-        String flag = "/" + cls.getName().replace('.', '/') + ".class";
-        URL url = cls.getResource(flag);
-        String root = url.toExternalForm();
-        root = root.substring(0, root.length() - flag.length() + 1);
-        if (root.startsWith("jar:") && root.endsWith("!/")) {
-            root = root.substring(4, root.length() - 2);
-        }
-        url = new URL(root);
-        return url;
-    }
-
 }
