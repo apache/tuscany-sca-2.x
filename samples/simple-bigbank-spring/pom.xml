@@ -38,7 +38,56 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-api</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-impl</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.ws.security</groupId>
+            <artifactId>wss4j</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-data-api</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
@@ -79,22 +128,51 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-tomcat</artifactId>
+            <artifactId>tuscany-binding-atom-abdera</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rss-rome</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>apache-activemq</artifactId>
-            <version>4.1.1</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.activemq</groupId>
-                    <artifactId>activemq-web-demo</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-resource-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-http-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-tomcat</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -107,7 +185,68 @@
     </dependencies>
 
     <build>
-       <finalName>${artifactId}</finalName>
+            <finalName>${artifactId}</finalName>
+            <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                    
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+                
+                    <executions>
+                        <execution> 
+                            <id>install-dojo</id>                       
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <ant antfile="./build-dojo.xml" target="install-dojo">
+                                        <property name="localRepository" value="${settings.localRepository}"/>
+                                    </ant>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                        <execution> 
+                            <id>copy-dojo-files</id>                       
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
+                                        <property name="localRepository" value="${settings.localRepository}"/>
+                                        <property name="artifactId" value="${artifactId}"/>
+                                    </ant>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                        <execution> 
+                            <id>clean-dojo-files</id>                       
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <ant antfile="./build-dojo.xml" target="clean-dojo-files">
+                                        <property name="localRepository" value="${settings.localRepository}"/>
+                                        <property name="artifactId" value="${artifactId}"/>
+                                    </ant>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>            
+                </plugins>
     </build>
 
 </project>

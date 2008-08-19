@@ -19,7 +19,9 @@
 
 package bigbank.client;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 import bigbank.account.AccountService;
 
@@ -30,14 +32,15 @@ import bigbank.account.AccountService;
 public class BigBankClient {
     public static void main(String[] args) throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance("BigBank.composite");
+        SCANode2Factory factory = SCANode2Factory.newInstance();
+        SCANode2 node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankClient.class.getClassLoader());
+        node.start();
         
-        AccountService accountService = scaDomain.getService(AccountService.class,
-                                                          "AccountServiceComponent");
+        AccountService accountService = ((SCAClient)node).getService(AccountService.class, "AccountServiceComponent");
 
         System.out.println("Account summary: " + accountService.getAccountReport("Customer_01") );
 
-        scaDomain.close();
+        node.stop();
     }  
 
 }
