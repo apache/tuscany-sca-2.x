@@ -18,8 +18,8 @@
  */
 package bigbank.stockquote.server;
 
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * This server program shows how to bootstrap SCA from a simple J2SE program
@@ -31,8 +31,8 @@ public class StockQuoteServer {
 
         System.out.println("Starting the Sample SCA StockQuote Service...");
 
-        SCANode2Factory factory = SCANode2Factory.newInstance();
-        SCANode2 node = factory.createSCANodeFromClassLoader("StockQuote.composite", StockQuoteServer.class.getClassLoader());
+        SCANodeFactory factory = SCANodeFactory.newInstance();
+        SCANode node = factory.createSCANodeFromClassLoader("StockQuote.composite", StockQuoteServer.class.getClassLoader());
         node.start();
 
         System.out.println("Press Enter to Exit...");

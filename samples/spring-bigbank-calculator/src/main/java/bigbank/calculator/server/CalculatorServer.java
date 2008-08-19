@@ -19,8 +19,8 @@
 
 package bigbank.calculator.server;
 
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 public class CalculatorServer {
 
@@ -28,8 +28,8 @@ public class CalculatorServer {
 
         System.out.println("Starting the Sample SCA Calculator...");
 
-        SCANode2Factory factory = SCANode2Factory.newInstance();
-        SCANode2 node = factory.createSCANodeFromClassLoader("Calculator.composite", CalculatorServer.class.getClassLoader());
+        SCANodeFactory factory = SCANodeFactory.newInstance();
+        SCANode node = factory.createSCANodeFromClassLoader("Calculator.composite", CalculatorServer.class.getClassLoader());
         node.start();
 
         System.out.println("Press Enter to Exit...");
