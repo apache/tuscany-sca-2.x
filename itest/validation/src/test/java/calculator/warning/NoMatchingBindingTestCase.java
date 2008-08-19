@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
@@ -40,11 +40,11 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class NoMatchingBindingTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode2 node;
+    private SCANode node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node =
             nodeFactory.createSCANode("Calculator.composite", new SCAContribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
                 .toURL().toString()));

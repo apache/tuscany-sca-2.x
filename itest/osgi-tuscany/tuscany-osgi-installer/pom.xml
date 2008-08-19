@@ -487,17 +487,17 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-node2-api</artifactId>
+            <artifactId>tuscany-node-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-node2-impl</artifactId>
+            <artifactId>tuscany-node-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-node2-launcher</artifactId>
+            <artifactId>tuscany-node-launcher</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

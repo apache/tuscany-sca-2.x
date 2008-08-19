@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.domain.manager.launcher;
 
 import org.apache.tuscany.sca.domain.manager.impl.DomainManagerConfiguration;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * Bootstrap class for the SCA domain manager.
@@ -30,15 +30,15 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
  * @version $Rev$ $Date$
  */
 public class DomainManagerLauncherBootstrap {
-    private SCANode2 node;
+    private SCANode node;
 
     /**
      * A node wrappering an instance of a domain manager.
      */
-    public static class NodeFacade implements SCANode2 {
+    public static class NodeFacade implements SCANode {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCANode2 node;
+        private SCANode node;
         private String rootDirectory;
         
         private NodeFacade(String rootDirectory) {
@@ -51,7 +51,7 @@ public class DomainManagerLauncherBootstrap {
             boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                SCANode2Factory factory = SCANode2Factory.newInstance();
+                SCANodeFactory factory = SCANodeFactory.newInstance();
                 node = factory.createSCANodeFromClassLoader("DomainManager.composite", getClass().getClassLoader());
                 node.start();
 
@@ -88,7 +88,7 @@ public class DomainManagerLauncherBootstrap {
      * Returns the node representing the domain manager.
      * @return
      */
-    public SCANode2 getNode() {
+    public SCANode getNode() {
         return node;
     }
 

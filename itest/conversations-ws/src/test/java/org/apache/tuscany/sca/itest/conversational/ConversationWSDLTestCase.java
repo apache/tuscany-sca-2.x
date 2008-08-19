@@ -26,8 +26,8 @@ import java.io.File;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,12 +35,12 @@ import org.junit.Test;
 
 public class ConversationWSDLTestCase {
 
-    private SCANode2 node; 
+    private SCANode node; 
     private ConversationalClient conversationalStatelessClientStatefulService;    
 
     @Before
     public void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANode(new File("src/main/resources/ConversationalWSDL/conversationalWSDL.composite").toURL().toString(),
                                          new SCAContribution("TestContribution", 
                                                                      new File("src/main/resources/ConversationalWSDL").toURL().toString()));

@@ -23,8 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 
@@ -33,7 +32,7 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
  */
 public class RegistryInspector {
 
-    public String registryAsString(SCANode2 node) {
+    public String registryAsString(SCANode node) {
         StringBuffer extensionPointRegistryString = new StringBuffer("Extension Point Registry \n");
         
         // Get the interesting extension points out of the registry and print them out

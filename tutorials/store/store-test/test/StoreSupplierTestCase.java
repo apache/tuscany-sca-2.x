@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.junit.After;
@@ -40,10 +40,10 @@ import client.Shopper;
  */
 public class StoreSupplierTestCase {
     
-    private SCANode2 domainManager;
-    private SCANode2 storeSupplierNode;
-    private SCANode2 storeCatalogsNode;
-    private SCANode2 storeClientNode;
+    private SCANode domainManager;
+    private SCANode storeSupplierNode;
+    private SCANode storeCatalogsNode;
+    private SCANode storeClientNode;
 
     @Before
     public void setup() throws Exception {

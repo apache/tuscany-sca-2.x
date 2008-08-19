@@ -30,15 +30,15 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceSta
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class StatelessStatefulTestCase {
 
-    private static SCANode2 node;
+    private static SCANode node;
     private static ConversationalClient conversationalStatelessClientStatelessService;
     private static ConversationalClient conversationalStatelessClientStatefulService;
     private static ConversationalClient conversationalStatefulClientStatelessService;
@@ -49,7 +49,7 @@ public class StatelessStatefulTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         try {
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             node = nodeFactory.createSCANode(new File("src/main/resources/Conversational/conversational.composite").toURL().toString(),
                                              new SCAContribution("TestContribution", 
                                                                  new File("src/main/resources/Conversational").toURL().toString()));

@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.node.launcher;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
@@ -33,17 +33,17 @@ import org.osoa.sca.ServiceReference;
  */
 public class NodeImplementationLauncherBootstrap {
 
-    private SCANode2 node;
+    private SCANode node;
 
     /**
      * A node facade.
      */
-    public static class NodeFacade implements SCANode2, SCAClient {
+    public static class NodeFacade implements SCANode, SCAClient {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCANode2 delegate;
+        private SCANode delegate;
         
-        private NodeFacade(SCANode2 delegate) {
+        private NodeFacade(SCANode delegate) {
             runtimeClassLoader = Thread.currentThread().getContextClassLoader();
             this.delegate = delegate;
         }
@@ -90,7 +90,7 @@ public class NodeImplementationLauncherBootstrap {
      * @param configurationURI
      */
     public NodeImplementationLauncherBootstrap(String configurationURI) throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = new NodeFacade(nodeFactory.createSCANodeFromURL(configurationURI));
     }
 
@@ -101,7 +101,7 @@ public class NodeImplementationLauncherBootstrap {
      * @param contributionClassLoader
      */
     public NodeImplementationLauncherBootstrap(String compositeURI, ClassLoader contributionClassLoader) throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = new NodeFacade(nodeFactory.createSCANodeFromClassLoader(compositeURI, contributionClassLoader));
     }
 
@@ -113,7 +113,7 @@ public class NodeImplementationLauncherBootstrap {
      * @param locations
      */
     public NodeImplementationLauncherBootstrap(String compositeURI, String[] uris, String[] locations) throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCAContribution[] contributions = new SCAContribution[uris.length];
         for (int i = 0; i < uris.length; i++) {
             contributions[i] = new SCAContribution(uris[i], locations[i]);
@@ -129,7 +129,7 @@ public class NodeImplementationLauncherBootstrap {
      * @param locations
      */
     public NodeImplementationLauncherBootstrap(String compositeURI, String compositeContent, String[] uris, String[] locations) throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCAContribution[] contributions = new SCAContribution[uris.length];
         for (int i = 0; i < uris.length; i++) {
             contributions[i] = new SCAContribution(uris[i], locations[i]);
@@ -142,7 +142,7 @@ public class NodeImplementationLauncherBootstrap {
      * 
      * @return
      */
-    public SCANode2 getNode() {
+    public SCANode getNode() {
         return node;
     }
 

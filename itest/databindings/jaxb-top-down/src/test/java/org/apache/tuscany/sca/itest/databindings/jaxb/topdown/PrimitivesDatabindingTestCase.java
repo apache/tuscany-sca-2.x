@@ -23,8 +23,8 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesServiceClient;
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,14 +35,14 @@ import org.junit.Test;
 public class PrimitivesDatabindingTestCase {
 
     private static SCAClient domain;
-    private static SCANode2 node;
+    private static SCANode node;
 
     /**
      * Runs before each test method
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/primitivesservice.composite", null);
         node.start();
         domain = (SCAClient)node;

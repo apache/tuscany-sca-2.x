@@ -50,8 +50,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
@@ -219,9 +219,9 @@ public class ContributionSPIsTestCase {
                 contributions[i] = new SCAContribution(contributionsToDeploy.get(i).getURI(), contributionsToDeploy.get(i).getLocation()); 
             }
                    
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
-            SCANode2 node = nodeFactory.createSCANode(chosenDeployableLocation, contributions);
+            SCANode node = nodeFactory.createSCANode(chosenDeployableLocation, contributions);
             
             node.start();
             SCAClient client = (SCAClient)node;

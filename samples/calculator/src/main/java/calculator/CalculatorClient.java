@@ -20,8 +20,8 @@
 package calculator;
 
 import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        SCANode2Factory factory = SCANode2Factory.newInstance();
-        SCANode2 node = factory.createSCANodeFromClassLoader("Calculator.composite", CalculatorClient.class.getClassLoader());
+        SCANodeFactory factory = SCANodeFactory.newInstance();
+        SCANode node = factory.createSCANodeFromClassLoader("Calculator.composite", CalculatorClient.class.getClassLoader());
         node.start();
         
         CalculatorService calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
