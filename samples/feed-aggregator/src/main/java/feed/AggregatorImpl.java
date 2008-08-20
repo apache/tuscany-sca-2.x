@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.abdera.Abdera;
@@ -77,7 +78,7 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.colle
         Person author = factory.newAuthor();
         author.setName(feedAuthor);
         feed.addAuthor(author);
-        feed.addLink("http://incubator.apache.org/tuscany", "alternate");
+        feed.addLink("http://tuscany.apache.org/", "alternate");
 
         // Aggregate entries from atomFeed1, atomFeed2, rssFeed1 and rssFeed2
         List<Entry> entries = new ArrayList<Entry>();
@@ -102,15 +103,26 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.colle
             } catch (Exception e) {}
         }
 
-        // Sort entries by published date
+        // Sort entries by updated date
         if (sort != null) {
             entries = sort.sort(entries);
         }
         
         // Add the entries to the new feed
+        // Also synthesize a feed id and updated field base on entries
+        Date feedUpdated = new Date( 0 );
         for (Entry entry: entries) {
+        	Date entryUpdated = entry.getUpdated();
+        	if (( entryUpdated != null ) && ( entryUpdated.compareTo( feedUpdated ) > 0 )) {
+        		feedUpdated = entryUpdated;
+        	}
             feed.addEntry(entry);
         }
+        feed.setUpdated( feedUpdated );
+        // Note that feed id should be permanent, immutable, and unique
+        // in order to support proper ETag creation.
+        // Tough to do when the feed is regenerated with each get.
+        feed.setId( "http://tuscany.apache.org/feed", true );
         
         return feed;
     }
