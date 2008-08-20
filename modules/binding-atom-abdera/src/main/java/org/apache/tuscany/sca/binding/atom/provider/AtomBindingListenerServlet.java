@@ -27,7 +27,9 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -51,6 +53,7 @@ import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.sca.binding.atom.CacheContext;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -157,6 +160,14 @@ class AtomBindingListenerServlet extends HttpServlet {
 
         // No authentication required for a get request
     	
+    	// Test for any cache info in the request
+ 	    CacheContext cacheContext = null;    	
+    	try { 
+    	   cacheContext = getCacheContextFromRequest( request );
+    	} catch ( java.text.ParseException e ) {    
+    	}
+    	// System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );
+    	
         // Get the request path
     	int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
         String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
@@ -260,20 +271,20 @@ class AtomBindingListenerServlet extends HttpServlet {
                     // All feeds must provide Id and updated elements.
                     // However, some do not, so provide some program protection.
                     feed.setId( "Feed" + feed.hashCode());
-                    Date lastModified = new Date( 0 );
+                    Date responseLastModified = new Date( 0 );
                     
                     // Add entries to the feed
                     for (Entry<Object, Object> entry: collection) {
                         org.apache.abdera.model.Entry feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
                         // Use the most recent entry update as the feed update
                         Date entryUpdated = feedEntry.getUpdated();
-                        if (( entryUpdated != null ) && (entryUpdated.compareTo( lastModified  ) > 0 ))
-                        	lastModified = entryUpdated;
+                        if (( entryUpdated != null ) && (entryUpdated.compareTo( responseLastModified  ) > 0 ))
+                        	responseLastModified = entryUpdated;
                         feed.addEntry(feedEntry);
                     }
                     // If no entries were newly updated,
-                    if ( lastModified.compareTo( new Date( 0 ) ) == 0 ) 
-                    	lastModified = new Date();
+                    if ( responseLastModified.compareTo( new Date( 0 ) ) == 0 ) 
+                    	responseLastModified = new Date();
                 }
             }
             if (feed != null) {
@@ -320,6 +331,11 @@ class AtomBindingListenerServlet extends HttpServlet {
                 		}
                 	}
                 }
+        		// Provide Etag based on Id and time.               
+        		response.addHeader(ETAG, feedETag );
+        		if ( feedUpdated != null )
+        			response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
+        		
                 // Content negotiation
             	String acceptType = request.getHeader( "Accept" );
             	String preferredType = getContentPreference( acceptType ); 
@@ -339,10 +355,6 @@ class AtomBindingListenerServlet extends HttpServlet {
             	} else {
             		// Write the Atom feed
             		response.setContentType("application/atom+xml;type=feed");
-            		// Provide Etag based on Id and time.               
-            		response.addHeader(ETAG, feedETag );
-            		if ( feedUpdated != null )
-            			response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
             		try {
             			feed.getDocument().writeTo(response.getOutputStream());
             		} catch (IOException ioe) {
@@ -376,14 +388,13 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
             // Write the Atom entry
             if (feedEntry != null) {
-                IRI feedId = feedEntry.getId();
-                if ( feedId != null )
-                   response.addHeader(ETAG, "\"" + feedId.toString() + "\"" );
+                String entryETag = "\"" + generateEntryETag( feedEntry ) + "\"";
                 Date entryUpdated = feedEntry.getUpdated();
                 if ( entryUpdated != null )
                    response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
                 // TODO Check If-Modified-Since If-Unmodified-Since predicates against LASTMODIFIED. 
-                // If true return 304 and null body.            
+                // If true return 304 and null body.
+                
                 Link link = feedEntry.getSelfLink();
                 if (link != null) {
                     response.addHeader(LOCATION, link.getHref().toString());
@@ -394,6 +405,52 @@ class AtomBindingListenerServlet extends HttpServlet {
                    }
                 }
 
+                // Test request for predicates.
+                String predicate = request.getHeader( "If-Match" );
+                if (( predicate != null ) && ( !predicate.equals(entryETag) )) {
+                	// No match, should short circuit
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+                    return;
+                }
+                predicate = request.getHeader( "If-None-Match" );
+                if (( predicate != null ) && ( predicate.equals(entryETag) )) {
+                	// Match, should short circuit
+                    response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+                    return;
+                }
+                if ( entryUpdated != null ) {
+                	predicate = request.getHeader( "If-Unmodified-Since" );                
+                	if ( predicate != null ) {
+                		try {
+                			Date predicateDate = dateFormat.parse( predicate ); 
+                			if ( predicateDate.compareTo( entryUpdated ) < 0 ) {
+                				// Match, should short circuit
+                				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+                				return;
+                			}             		
+                		} catch ( java.text.ParseException e ) {
+                			// Ignore and move on
+                		}
+                	}
+                	predicate = request.getHeader( "If-Modified-Since" );                
+                	if ( predicate != null ) {
+                		try {
+                			Date predicateDate = dateFormat.parse( predicate ); 
+                			if ( predicateDate.compareTo( entryUpdated ) > 0 ) {
+                				// Match, should short circuit
+                				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+                				return;
+                			}             		
+                		} catch ( java.text.ParseException e ) {
+                			// Ignore and move on
+                		}
+                	}
+                }
+        		// Provide Etag based on Id and time.               
+        		response.addHeader(ETAG, entryETag );
+        		if ( entryUpdated != null )
+        			response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
+        		
                 // Content negotiation
                 String acceptType = request.getHeader( "Accept" );
             	String preferredType = getContentPreference( acceptType ); 
@@ -726,6 +783,8 @@ class AtomBindingListenerServlet extends HttpServlet {
     
     /**
      * Generate ETag based on feed Id and updated fields.
+     * Note that the feed id should be unique per feed, immutable, and unchanging,
+     * but the ETag should change whenever the feed contents change. 
      * @param feed
      * @return ETag
      */
@@ -748,6 +807,32 @@ class AtomBindingListenerServlet extends HttpServlet {
         return feedId + "-" + feedUpdated.hashCode();
     }
 
+    /**
+     * Generate ETag based on entry Id and updated fields.
+     * Note that the entry id should be unique per entry, immutable, and unchanging,
+     * but the ETag should change whenever the entry contents change. 
+     * @param feed
+     * @return ETag
+     */
+    public static String generateEntryETag( org.apache.abdera.model.Entry entry ) {
+    	if ( entry == null ) {
+    		return null; 
+    	}
+        
+    	IRI entryIdIRI = entry.getId();
+        String entryId = "ID";
+        if ( entryIdIRI != null ) {
+        	entryId = entryIdIRI.toString();
+        }
+        
+        Date entryUpdated = entry.getUpdated();
+        if ( entryUpdated == null ) {
+        	return entryId;
+        }
+        
+        return entryId + "-" + entryUpdated.hashCode();
+    }
+
     public static String getContentPreference( String acceptType ) {
     	if (( acceptType == null ) || ( acceptType.length() < 1 )) {
             return "application/atom+xml";    		
@@ -757,4 +842,40 @@ class AtomBindingListenerServlet extends HttpServlet {
     		return st.nextToken();    		
         return "application/atom+xml";
     }
+
+    /**
+     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
+     * @param request
+     * @return
+     */
+    public CacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
+    	CacheContext context = new CacheContext();
+    	List<String> predicates = new ArrayList<String>();
+    	
+    	String eTag = request.getHeader( "If-Match" );    	
+    	if ( eTag != null ) {
+    	   context.setETag( eTag );
+    	   predicates.add( "If-Match" );
+    	}
+    	eTag = request.getHeader( "If-None-Match" );    	
+    	if ( eTag != null ) {
+    	   context.setETag( eTag );
+    	   predicates.add( "If-None-Match" );
+    	}
+        String lastModifiedString = request.getHeader( "If-Modified-Since" );        
+    	if ( lastModifiedString != null ) {
+     	   context.setLastModified( lastModifiedString );
+     	   predicates.add( "If-Modified-Since" );
+     	}
+        lastModifiedString = request.getHeader( "If-Unmodified-Since" );        
+    	if ( lastModifiedString != null ) {
+     	   context.setLastModified( lastModifiedString );
+     	   predicates.add( "If-Unmodified-Since" );
+     	}
+    	if ( predicates.size() > 0 ) {
+         	context.setPredicates( predicates.toArray( new String[ 0 ] ) );
+    	}
+    	return context;
+    }
+
 }
