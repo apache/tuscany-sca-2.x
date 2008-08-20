@@ -33,7 +33,7 @@ public class HelloWorldClient3 {
     public HelloWorldService helloWorldService;
 
     public  final static void main(String[] args) throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient.composite");
+        SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient3.composite");
         
         scaDomain.getService(HelloWorldClient3.class, "HelloWorldClient3").doit(args);
 
