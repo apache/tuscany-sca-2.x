@@ -23,8 +23,8 @@
 	name="helloworldwsclient">
     
     <!-- A component representing the client program -->
-    <component name="HelloWorldClient">
-      <implementation.java class="helloworld.HelloWorldClient"/>
+    <component name="HelloWorldClient3">
+      <implementation.java class="helloworld.HelloWorldClient3"/>
       <reference name="helloWorldService">
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
       </reference>

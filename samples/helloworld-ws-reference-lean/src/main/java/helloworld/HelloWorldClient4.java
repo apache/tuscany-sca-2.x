@@ -19,35 +19,34 @@
 package helloworld;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 /**
  * The HelloWorld client implementation
  */
 @Scope("COMPOSITE") @EagerInit
-public class HelloWorldClient2 {
+public class HelloWorldClient4 {
     
-    private static HelloWorldClient2 client;
-   
-    @Reference
-    public HelloWorldService helloWorldService;
+    static ComponentContext clientContext;
 
-    public HelloWorldClient2() {
-        client = this;
+    @Context
+    public void setContext(ComponentContext context) {
+        clientContext = context;
     }
     
     public  final static void main(String[] args) throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient2.composite");
-        
-        client.doit(args);
+        SCADomain scaDomain = SCADomain.newInstance("helloworldwsclient4.composite");
+
+        HelloWorldService helloWorldService = clientContext.getService(HelloWorldService.class, "helloWorldService");
+        String value = helloWorldService.getGreetings("World");
+        System.out.println(value);
 
         scaDomain.close();
     }
     
-    void doit(String[] args) {
-        String value = helloWorldService.getGreetings("World");
-        System.out.println(value);
+    public void doit(String[] args) {
     }
 }
