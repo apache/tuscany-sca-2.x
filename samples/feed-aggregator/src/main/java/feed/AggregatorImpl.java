@@ -135,7 +135,7 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.colle
         Person author = factory.newAuthor();
         author.setName(feedAuthor);
         feed.addAuthor(author);
-        feed.addLink("http://incubator.apache.org/tuscany", "alternate");
+        feed.addLink("http://tuscany.apache.org", "alternate");
         
         Feed allFeed = getFeed();
         if (queryString.startsWith("title=")) {
