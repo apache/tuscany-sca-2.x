@@ -62,7 +62,7 @@ public class AlertsFeedServiceImpl implements Collection {
         feed.setTitle("Apache Tuscany Feed Aggregator");
         feed.setSubtitle("A sample showing an SCA application to aggregate various types of feeds");
         feed.addAuthor("Apache Tuscany");
-        feed.addLink("http://incubator.apache.org/tuscany");
+        feed.addLink("http://tuscany.apache.org");
  
         // Aggregate entries from feed1 and feed2
         try {        
