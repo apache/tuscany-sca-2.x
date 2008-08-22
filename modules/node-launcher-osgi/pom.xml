@@ -137,7 +137,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.node2.launcher.osgi</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.node.launcher.osgi</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.node.osgi.launcher*</Export-Package>
                     </instructions>

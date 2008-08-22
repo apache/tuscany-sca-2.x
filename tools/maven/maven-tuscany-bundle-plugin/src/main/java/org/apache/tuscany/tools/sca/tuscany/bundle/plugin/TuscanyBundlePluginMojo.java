@@ -319,6 +319,7 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
         if (!bundleFile.exists())
             return;
         
+        File processedFile = bundleFile;
         boolean retainManifestEntries = false;
         if (!artifact.getGroupId().equals("org.apache.tuscany.sca")) {
           // For pre-bundled 3rd party bundles, retain all OSGi manifest entries except Require-Bundle
@@ -342,6 +343,8 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
         if (!bundleSymName.startsWith("org.apache.tuscany.sca")) {
             bundleSymName = "org.apache.tuscany.sca.3rdparty." + bundleSymName;
             attributes.putValue("Bundle-SymbolicName", bundleSymName);
+            
+            processedFile = new File(bundleFile.getParent(), "org.apache.tuscany.sca.3rdparty." + bundleFile.getName());
         }
         
         String imports = (String)attributes.getValue("Import-Package");
@@ -408,7 +411,7 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
         jarOut.close();
         out.close();
         bundleFile.delete();
-        FileOutputStream fileOut = new FileOutputStream(bundleFile);
+        FileOutputStream fileOut = new FileOutputStream(processedFile);
         fileOut.write(out.toByteArray());
         fileOut.close();
         

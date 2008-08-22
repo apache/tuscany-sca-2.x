@@ -43,6 +43,7 @@
                 <module>maven-java2wsdl</module>
                 <module>maven-web-junit</module>
                 <module>maven-wsdl2java</module>
+                <module>maven-tuscany-bundle-plugin</module>
             </modules>
         </profile>
     </profiles>
