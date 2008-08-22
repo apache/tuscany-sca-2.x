@@ -552,6 +552,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         } catch (InvalidInterfaceException e1) {
             throw new IntrospectionException(e1);
         }
+
+        // FIXME:  This part seems to have already been taken care above!!
         try {
             processCallback(paramType, reference);
         } catch (InvalidServiceType e) {
@@ -584,9 +586,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             Class<?> callbackClass = callback.value();
-            JavaInterface javaInterface = javaFactory.createJavaInterface();
-            javaInterface.setJavaClass(callbackClass);
-            contract.getInterfaceContract().setCallbackInterface(javaInterface);
+            JavaInterface javaInterface;
+            try {
+                javaInterface = javaFactory.createJavaInterface(callbackClass);
+                contract.getInterfaceContract().setCallbackInterface(javaInterface);
+            } catch (InvalidInterfaceException e) {
+                throw new InvalidServiceType("Invalid callback interface "+callbackClass, interfaze);
+            }
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidServiceType("No callback interface specified on annotation", interfaze);
         }
