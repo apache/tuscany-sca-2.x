@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+        xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        elementFormDefault="qualified">
+
+   <include schemaLocation="sca-core.xsd"/>
+
+   <complexType name="JMSBinding">
+      <complexContent>
+         <extension base="sca:Binding">
+            <sequence>
+               <element name="destination" type="sca:Destination" minOccurs="0"/>
+   	         <element name="connectionFactory" type="sca:ConnectionFactory"  
+                        minOccurs="0"/>
+ 	         <element name="activationSpec" type="sca:ActivationSpec" 
+                        minOccurs="0"/>
+  	         <element name="response" type="sca:Response" minOccurs="0"/>
+               <element name="headers" type="sca:Headers" minOccurs="0"/>
+    	         <element name="resourceAdapter" type="sca:ResourceAdapter" 
+                        minOccurs="0"/>
+               <element name="operationProperties" type="sca:OperationProperties" 
+                        minOccurs="0" maxOccurs="unbounded"/>
+               <any namespace="##other" processContents="lax" 
+                    minOccurs="0" maxOccurs="unbounded"/>
+            </sequence>
+    	      <attribute name="correlationScheme"
+                       default="RequestMsgIDToCorrelID">
+    	         <simpleType>
+                  <restriction base="string">
+                     <enumeration value="RequestMsgIDToCorrelID"/>
+                     <enumeration value="RequestCorrelIDToCorrelID"/>
+                     <enumeration value="None"/>
+                  </restriction>
+               </simpleType>
+            </attribute>
+
+            <attribute name="initialContextFactory" type="anyURI"/>
+            <attribute name="jndiURL" type="anyURI"/>
+            <attribute name="requestConnection" type="QName"/>
+            <attribute name="responseConnection" type="QName"/>
+            <attribute name="operationProperties" type="QName"/>
+            <anyAttribute/>
+         </extension>
+      </complexContent>
+   </complexType>
+
+   <simpleType name="CreateResource">
+      <restriction base="string">
+         <enumeration value="always"/>
+         <enumeration value="never"/>
+         <enumeration value="ifnotexist"/>
+      </restriction>
+   </simpleType>
+
+   <complexType name="Destination">
+      <sequence>
+         <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+      <attribute name="name" type="anyURI" use="required"/>
+      <attribute name="type" use="optional" default="queue">
+         <simpleType>
+            <restriction base="string">
+               <enumeration value="queue"/>
+               <enumeration value="topic"/>
+            </restriction>
+         </simpleType>
+      </attribute>
+      <attribute name="create" type="sca:CreateResource" 
+                 use="optional" default="ifnotexist"/>
+   </complexType>
+
+   <complexType name="ConnectionFactory">
+    	<sequence>          <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+    	</sequence>
+    	<attribute name="name" type="anyURI" use="required"/>
+    	<attribute name="create" type="sca:CreateResource" 
+                 use="optional" default="ifnotexist"/>
+   </complexType>
+
+   <complexType name="ActivationSpec">
+      <sequence>
+         <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+      <attribute name="name" type="anyURI" use="required"/>
+      <attribute name="create" type="sca:CreateResource"
+                 use="optional" default="ifnotexist"/>
+   </complexType>
+
+   <complexType name="Response">
+      <sequence>
+         <element name="destination" type="sca:Destination" minOccurs="0"/>
+         <element name="connectionFactory" type="sca:ConnectionFactory" 
+                  minOccurs="0"/>
+         <element name="activationSpec" type="sca:ActivationSpec" minOccurs="0"/>
+      </sequence>
+   </complexType>
+
+   <complexType name="Headers">
+      <sequence>
+         <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+      <attribute name="JMSType" type="string"/>
+      <attribute name="JMSCorrelationID" type="string"/>
+      <attribute name="JMSDeliveryMode" type="string"/>
+      <attribute name="JMSTimeToLive" type="int"/>
+      <attribute name="JMSPriority" type="string"/>
+   </complexType>
+
+   <complexType name="ResourceAdapter">
+      <sequence>
+         <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+      <attribute name="name" type="string" use="required"/>
+   </complexType>
+
+   <complexType name="OperationProperties">
+      <sequence>
+         <element name="property" type="string" 
+                  minOccurs="0" maxOccurs="unbounded"/>
+         <element name="headers" type="sca:Headers"/>
+      </sequence>
+      <attribute name="name" type="string" use="required"/>
+      <attribute name="nativeOperation" type="string"/>
+   </complexType>
+
+   <element name="binding.jms" type="sca:JMSBinding" 
+            substitutionGroup="sca:binding"/>
+</schema>
