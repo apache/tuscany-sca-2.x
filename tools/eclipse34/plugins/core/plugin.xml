@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<plugin>
+
+	<extension-point id="runtimeClasspathContainerInitializer"
+		name="Tuscany Runtime Classpath Container Initializers"
+		schema="exsd/runtimeClasspathContainerInitializer.exsd"/>
+
+	<extension point = "org.eclipse.wst.xml.core.catalogContributions">
+		<catalogContribution id="default">
+			<uri name="http://www.osoa.org/xmlns/sca/1.0" uri="xsd/sca-all.xsd"/>
+		</catalogContribution>
+	</extension>
+	
+	<extension point = "org.eclipse.wst.xml.core.catalogContributions">
+		<catalogContribution id="default">
+			<uri name="http://tuscany.apache.org/xmlns/sca/1.0" uri="xsd/tuscany-sca.xsd"/>
+		</catalogContribution>
+	</extension>	
+	
+	<extension point="org.eclipse.core.runtime.contentTypes"> 
+      <file-association content-type="org.eclipse.core.runtime.xml" file-extensions="composite"/>
+      <file-association content-type="org.eclipse.core.runtime.xml" file-extensions="componentType"/>       
+	</extension>
+	
+	<extension
+       point="org.apache.tuscany.sca.plugin.core.runtimeClasspathContainerInitializer">
+    	<runtimeClasspathContainerInitializer
+    			id="org.apache.tuscany.sca.plugin.core.runtime.library"
+				class="org.apache.tuscany.sca.plugin.core.classpath.CoreClasspathContainerInitializer"/>                       
+	</extension>	
+
+	<extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+    	<classpathContainerInitializer 
+    			id="org.apache.tuscany.sca.plugin.core.runtime.library"
+				class="org.apache.tuscany.sca.plugin.core.classpath.CoreClasspathContainerInitializer"/>                       
+	</extension>
+	
+	<extension point="org.eclipse.jdt.ui.classpathContainerPage">
+		<classpathContainerPage 
+				id="org.apache.tuscany.sca.plugin.core.runtime.library"
+				name="Tuscany SCA Core Library"
+				class="org.apache.tuscany.sca.plugin.core.classpath.CoreLibraryEntryPage">
+		</classpathContainerPage>
+	</extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Tuscany"
+            visible="true"
+            id="org.apache.tuscany.sca.plugin.core.launch.actionSet">
+         <action
+               label="&amp;Start SCA Domain Manager"
+               icon="icons/t.gif"
+               class="org.apache.tuscany.sca.plugin.core.launch.TuscanyLaunchDomainManagerAction"
+               tooltip="Start SCA Domain Manager"
+               toolbarPath="tuscanyGroup"
+               id="org.apache.tuscany.sca.plugin.core.launch.TuscanyLaunchDomainManagerAction">
+         </action>
+      </actionSet>
+   </extension>
+
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+       		name="Tuscany"
+        	delegate="org.apache.tuscany.sca.plugin.core.launch.TuscanyLaunchConfigurationDelegate"
+        	modes="run, debug"
+			sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+    		sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
+        	id="org.apache.tuscany.sca.plugin.core.launch.configurationtype">        
+    	</launchConfigurationType>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+    	<launchConfigurationTypeImage
+        	icon="icons/t.gif"
+        	configTypeID="org.apache.tuscany.sca.plugin.core.launch.configurationtype"
+        	id="org.apache.tuscany.sca.plugin.core.launch.configurationtypeimage">
+    	</launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    	<launchConfigurationTabGroup
+        	type="org.apache.tuscany.sca.plugin.core.launch.configurationtype"
+        	class="org.apache.tuscany.sca.plugin.core.launch.TuscanyLaunchConfigurationTabGroup"
+        	id="org.apache.tuscany.sca.plugin.core.launch.configurationtypetabgroup">
+    	</launchConfigurationTabGroup>
+	</extension>	
+	
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+		<shortcut
+			id="org.apache.tuscany.sca.plugin.core.launchshortcut"
+			class="org.apache.tuscany.sca.plugin.core.launch.TuscanyLaunchNodeShortcut"
+			label="Tuscany"
+			icon="icons/t.gif"
+			modes="run, debug">
+			<contextualLaunch>
+				<enablement>
+					<with variable="selection">
+						<count value="1"/>
+						<iterate>
+							<or>
+								<test property="org.eclipse.debug.ui.matchesPattern" value="*.composite"/>
+							</or>
+						</iterate>
+					</with>
+			 	</enablement>
+			</contextualLaunch>
+		</shortcut>
+	</extension>
+
+	<extension point="org.eclipse.ui.newWizards">
+		<category name="Tuscany" id="org.apache.tuscany.sca.plugin.core.newwizards" /> 
+		<wizard name="Composite" icon="icons/t.gif" 
+				category="org.apache.tuscany.sca.plugin.core.newwizards" 
+				class="org.apache.tuscany.sca.plugin.core.newwizards.NewCompositeWizard" 
+				preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective" 
+				id="org.apache.tuscany.sca.plugin.core.newwizards.newcompositewizard">
+			<description>Create a new SCA Composite</description> 
+		</wizard>
+		<wizard name="ComponentType" icon="icons/t.gif" 
+				category="org.apache.tuscany.sca.plugin.core.newwizards" 
+				class="org.apache.tuscany.sca.plugin.core.newwizards.NewComponentTypeWizard" 
+				preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective" 
+				id="org.apache.tuscany.sca.plugin.core.newwizards.newcompositewizard">
+			<description>Create a new SCA ComponentType</description> 
+		</wizard>		
+	</extension>
+	
+</plugin>
