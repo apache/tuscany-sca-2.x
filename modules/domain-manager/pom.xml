@@ -84,7 +84,6 @@
             <scope>runtime</scope>
         </dependency>
         
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-data-api</artifactId>
@@ -168,6 +167,13 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-atom-abdera</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-http-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
