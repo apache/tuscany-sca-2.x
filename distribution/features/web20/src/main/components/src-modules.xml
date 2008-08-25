@@ -27,12 +27,21 @@
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
+                <include>binding-atom/**/*</include>
+                <include>binding-atom-abdera/**/*</include>
+                <include>binding-http/**/*</include>
+                <include>binding-http-runtime/**/*</include>
+                <include>binding-jsonrpc/**/*</include>
+                <include>binding-jsonrpc-runtime/**/*</include>
+                <include>binding-rss/**/*</include>
+                <include>binding-rss-rome/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-xml/**/*</include>
                 <include>contribution/**/*</include>
                 <include>contribution-impl/**/*</include>
                 <include>contribution-java/**/*</include>
                 <include>contribution-namespace/**/*</include>
+                <include>contribution-resource/**/*</include>
                 <include>contribution-xml/**/*</include>
                 <include>core/**/*</include>
                 <include>core-databinding/**/*</include>
@@ -40,17 +49,24 @@
                 <include>data-api/**/*</include>
                 <include>databinding/**/*</include>
                 <include>databinding-jaxb/**/*</include>
+                <include>databinding-json/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
+                <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
+                <include>host-jetty/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
                 <include>implementation-java-xml/**/*</include>
                 <include>implementation-node/**/*</include>
                 <include>implementation-node-runtime/**/*</include>
+                <include>implementation-resource/**/*</include>
+                <include>implementation-resource-runtime/**/*</include>
+                <include>implementation-widget/**/*</include>
+                <include>implementation-widget-runtime/**/*</include>
                 <include>interface/**/*</include>
                 <include>interface-java/**/*</include>
                 <include>interface-java-jaxws/**/*</include>
@@ -84,3 +100,4 @@
         </fileSet>
     </fileSets>
 </component>
+

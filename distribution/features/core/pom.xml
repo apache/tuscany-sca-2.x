@@ -213,6 +213,7 @@
     </dependencies>
 
     <profiles>
+
         <!-- Profile that can be used to build the modules included in the distro -->
         <profile>
             <id>modules</id>

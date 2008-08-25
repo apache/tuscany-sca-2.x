@@ -62,5 +62,4 @@ echo "            </excludes>"
 echo "        </fileSet>"
 echo "    </fileSets>"
 echo "</component>"
-echo ""
 

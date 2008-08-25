@@ -40,17 +40,23 @@
                 <include>data-api/**/*</include>
                 <include>databinding/**/*</include>
                 <include>databinding-jaxb/**/*</include>
+                <include>databinding-saxon/**/*</include>
+                <include>databinding-sdo/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
+                <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
+                <include>implementation-bpel/**/*</include>
+                <include>implementation-bpel-ode/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
                 <include>implementation-java-xml/**/*</include>
                 <include>implementation-node/**/*</include>
                 <include>implementation-node-runtime/**/*</include>
+                <include>implementation-xquery/**/*</include>
                 <include>interface/**/*</include>
                 <include>interface-java/**/*</include>
                 <include>interface-java-jaxws/**/*</include>
@@ -84,3 +90,4 @@
         </fileSet>
     </fileSets>
 </component>
+

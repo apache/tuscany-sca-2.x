@@ -73,7 +73,6 @@
                 <exclude>org.apache.tuscany.sca:tuscany-sca-api</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-xsd</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-xsd-xml</exclude>
-                <exclude>org.apache.tuscany.sca:tuscany-distribution-core:pom</exclude>
             </excludes>
         </dependencySet>
 
@@ -101,3 +100,4 @@
         </dependencySet>
     </dependencySets>
 </component>
+

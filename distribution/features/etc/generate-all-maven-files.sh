@@ -16,10 +16,26 @@
 # under the License. 
 
 # This script can be used to generate Maven build POM and assembly files
-# for a distribution
+# for all the distributions
 
-../etc/generate-src-modules.sh > src/main/components/src-modules.xml
-../etc/generate-pom.sh > pom.xml.tmp
-cp pom.xml.tmp pom.xml
-rm pom.xml.tmp
+echo "Generate Maven files: core"
+cd core; ../etc/generate-down-dependencies.sh > src/main/components/bin-down-dependencies.xml; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: ejava"
+cd ../ejava; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: manager"
+cd ../manager; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: process"
+cd ../process; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: web20"
+cd ../web20; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: webservice"
+cd ../webservice; ../etc/generate-maven-files.sh
+
+echo "Generate Maven files: all"
+cd ../all; ../etc/generate-maven-files.sh
 

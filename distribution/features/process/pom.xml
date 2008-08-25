@@ -54,6 +54,7 @@
     </dependencies>
 
     <profiles>
+
         <!-- Profile that can be used to build the modules included in the distro -->
         <profile>
             <id>modules</id>
@@ -62,12 +63,7 @@
                 <module>../../../modules/assembly-xml</module>
                 <module>../../../modules/assembly-xsd</module>
                 <module>../../../modules/binding-sca</module>
-                <module>../../../modules/binding-sca-axis2</module>
                 <module>../../../modules/binding-sca-xml</module>
-                <module>../../../modules/binding-ws</module>
-                <module>../../../modules/binding-ws-axis2</module>
-                <module>../../../modules/binding-ws-wsdlgen</module>
-                <module>../../../modules/binding-ws-xml</module>
                 <module>../../../modules/contribution</module>
                 <module>../../../modules/contribution-impl</module>
                 <module>../../../modules/contribution-java</module>
@@ -78,21 +74,16 @@
                 <module>../../../modules/core-spi</module>
                 <module>../../../modules/data-api</module>
                 <module>../../../modules/databinding</module>
-                <module>../../../modules/databinding-axiom</module>
                 <module>../../../modules/databinding-jaxb</module>
-                <module>../../../modules/databinding-jaxb-axiom</module>
                 <module>../../../modules/databinding-saxon</module>
                 <module>../../../modules/databinding-sdo</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/distribution-core</module>
-                <module>../../../modules/distribution-process</module>
-                <module>../../../modules/distribution-webservice</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
-                <module>../../../modules/host-jetty</module>
                 <module>../../../modules/implementation-bpel</module>
                 <module>../../../modules/implementation-bpel-ode</module>
                 <module>../../../modules/implementation-java</module>
@@ -108,14 +99,14 @@
                 <module>../../../modules/interface-wsdl</module>
                 <module>../../../modules/interface-wsdl-xml</module>
                 <module>../../../modules/monitor</module>
-                <module>../../../modules/node2-api</module>
-                <module>../../../modules/node2-impl</module>
-                <module>../../../modules/node2-launcher</module>
+                <module>../../../modules/monitor-logging</module>
+                <module>../../../modules/node-api</module>
+                <module>../../../modules/node-impl</module>
+                <module>../../../modules/node-launcher</module>
+                <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
-                <module>../../../modules/policy-security-ws</module>
                 <module>../../../modules/policy-xml</module>
-                <module>../../../modules/policy-xml-ws</module>
                 <module>../../../modules/sca-api</module>
                 <module>../../../modules/xsd</module>
                 <module>../../../modules/xsd-xml</module>
