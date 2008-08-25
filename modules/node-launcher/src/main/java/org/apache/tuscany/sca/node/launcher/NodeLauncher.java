@@ -113,9 +113,22 @@ public class NodeLauncher {
 
         // Create a node
         NodeLauncher launcher = newInstance();
-        String configurationURI = args[0];
-        logger.info("SCA Node configuration: " + configurationURI);
-        Object node = launcher.createNodeFromURL(configurationURI);
+        Object node;
+        if (args.length ==1) {
+            
+            // Create from a configuration URI
+            String configurationURI = args[0];
+            logger.info("SCA Node configuration: " + configurationURI);
+            node = launcher.createNodeFromURL(configurationURI);
+        } else {
+            
+            // Create from a composite URI and a contribution location
+            String compositeURI = args[0];
+            String contributionLocation = args[1];
+            logger.info("SCA composite: " + compositeURI);
+            logger.info("SCA contribution: " + contributionLocation);
+            node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+        }
         
         // Start the node
         try {
