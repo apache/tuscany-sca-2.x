@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
     * Licensed to the Apache Software Foundation (ASF) under one
     * or more contributor license agreements.  See the NOTICE file
@@ -17,21 +16,27 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<assembly>
-    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id>src</id>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>tuscany-sca-1.4-SNAPSHOT-src</baseDirectory>
-    <formats>
-        <!--
-        <format>dir</format>
-        <format>tar.gz</format>
-        -->
-        <format>zip</format>
-    </formats>
+<component>
+    <fileSets>
 
-    <componentDescriptors>
-        <componentDescriptor>../core/src/main/components/src-common.xml</componentDescriptor>
-        <componentDescriptor>../core/src/main/components/src-modules.xml</componentDescriptor>
-    </componentDescriptors>
-</assembly>
+        <!-- Add samples to the samples directory -->
+        <fileSet>
+            <directory>../../../samples</directory>
+            <outputDirectory>samples</outputDirectory>
+            <includes>
+                <include>domain-management/**/*</include>
+            </includes>
+            <excludes>
+                <!-- General file/folders to exclude -->
+                <exclude>**/.*</exclude>
+                <exclude>**/.*/**</exclude>
+                <exclude>**/*.log</exclude>
+
+                <!-- Sample specific files/folders to exclude -->
+                <exclude>pom.xml</exclude>
+                <exclude>**/target</exclude>
+                <exclude>**/target/**/*</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</component>

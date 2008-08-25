@@ -1,0 +1,103 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * License); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * AS IS BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<component>
+    <dependencySets>
+
+        <!-- Add all the Tuscany modules to the modules directory -->
+        <dependencySet>
+            <outputDirectory>modules</outputDirectory>
+            <unpack>false</unpack>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>org.apache.tuscany.sca:*</include>
+            </includes>
+            <excludes>
+                <exclude>org.apache.tuscany.sca:tuscany-assembly</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-assembly-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-assembly-xsd</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-binding-sca</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-binding-sca-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-contribution</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-contribution-impl</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-contribution-java</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-contribution-namespace</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-contribution-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-core</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-core-databinding</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-core-spi</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-data-api</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-databinding</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-databinding-jaxb</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-definitions</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-definitions-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-endpoint</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-extensibility</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-host-embedded</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-host-http</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-implementation-java</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-implementation-java-runtime</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-implementation-java-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-implementation-node</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-implementation-node-runtime</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface-java</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface-java-jaxws</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface-java-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-monitor</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-monitor-logging</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-api</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-impl</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-launcher</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-launcher-webapp</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-policy</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-policy-security</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-policy-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-sca-api</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-xsd</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-xsd-xml</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-distribution-core:pom</exclude>
+            </excludes>
+        </dependencySet>
+
+        <!-- Add all the dependent jars to the lib directory -->
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <excludes>
+                <exclude>asm:asm-all</exclude>
+                <exclude>cglib:cglib-nodep</exclude>
+                <exclude>com.sun.xml.bind:jaxb-impl</exclude>
+                <exclude>javax.activation:activation</exclude>
+                <exclude>javax.annotation:jsr250-api</exclude>
+                <exclude>javax.jws:jsr181-api</exclude>
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+                <exclude>javax.xml.stream:stax-api</exclude>
+                <exclude>javax.xml.ws:jaxws-api</exclude>
+                <exclude>org.apache.geronimo.specs:geronimo-commonj_1.1_spec</exclude>
+                <exclude>org.apache.ws.commons.schema:XmlSchema</exclude>
+                <exclude>org.codehaus.woodstox:wstx-asl</exclude>
+                <exclude>wsdl4j:wsdl4j</exclude>
+                <exclude>org.apache.tuscany.sca:*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+</component>

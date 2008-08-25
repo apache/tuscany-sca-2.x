@@ -31,13 +31,14 @@
     <packaging>pom</packaging>
 
     <dependencies>
-
+    
         <!-- Core distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-core</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Binding Models -->
@@ -45,36 +46,43 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-atom</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-http</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jsonrpc</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rss</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-xml</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-xml</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Contribution models -->
@@ -82,16 +90,19 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-java</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-namespace</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-resource</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Domain support -->
@@ -99,11 +110,13 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-manager</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-manager</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Implementation Models -->
@@ -111,31 +124,37 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-bpel</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-ejb</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-node</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-resource</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-widget</artifactId>
             <version>1.4-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

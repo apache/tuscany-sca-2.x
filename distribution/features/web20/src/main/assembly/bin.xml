@@ -30,79 +30,9 @@
         <format>zip</format>
     </formats>
 
-    <fileSets>
-
-        <!-- Add the text files to the top-level directroy -->
-        <fileSet>
-            <directory>src/main/release</directory>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>CHANGES</include>
-                <include>DISCLAIMER</include>
-                <include>README</include>
-                <include>RELEASE_NOTES</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/release/bin</directory>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>INSTALL</include>
-                <include>LICENSE</include>
-                <include>NOTICE</include>
-            </includes>
-        </fileSet>
-
-        <!-- Add the node launcher webapp to the modules directory -->
-        <fileSet>
-            <directory>../../sca/modules/node2-launcher-webapp/target</directory>
-            <outputDirectory>modules</outputDirectory>
-            <includes>
-                <include>*.war</include>
-            </includes>
-        </fileSet>
-
-        <!-- Add samples to the samples directory -->
-        <fileSet>
-            <directory>../../sca/samples</directory>
-            <outputDirectory>samples</outputDirectory>
-            <includes>
-                <include>feed-aggregator/**/*</include>
-                <include>store/**/*</include>
-                <include>web-resource/**/*</include>
-            </includes>
-            <excludes>
-                <!-- General file/folders to exclude -->
-                <exclude>**/.*</exclude>
-                <exclude>**/.*/**</exclude>
-                <exclude>**/*.log</exclude>
-
-                <!-- Sample specific files/folders to exclude -->
-                <exclude>pom.xml</exclude>
-            </excludes>
-        </fileSet>
-    </fileSets>
-
-    <dependencySets>
-
-        <!-- Add all the Tuscany modules to the modules directory -->
-        <dependencySet>
-            <outputDirectory>modules</outputDirectory>
-            <unpack>false</unpack>
-            <includes>
-                <include>org.apache.tuscany.sca:*</include>
-            </includes>
-        </dependencySet>
-
-        <!-- Add all the dependent jars to the lib directory -->
-        <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <unpack>false</unpack>
-            <excludes>
-                <exclude>org.apache.tuscany.sca:*</exclude>
-            </excludes>
-        </dependencySet>
-
-    </dependencySets>
-
+    <componentDescriptors>
+        <componentDescriptor>../core/src/main/components/bin-common.xml</componentDescriptor>
+        <componentDescriptor>../core/src/main/components/bin-down-dependencies.xml</componentDescriptor>
+        <componentDescriptor>src/main/components/bin-samples.xml</componentDescriptor>
+    </componentDescriptors>
 </assembly>
