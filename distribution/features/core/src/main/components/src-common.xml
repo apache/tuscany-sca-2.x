@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
     * Licensed to the Apache Software Foundation (ASF) under one
     * or more contributor license agreements.  See the NOTICE file
@@ -17,21 +16,27 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<assembly>
-    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id>src</id>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>tuscany-sca-1.4-SNAPSHOT-src</baseDirectory>
-    <formats>
-        <!--
-        <format>dir</format>
-        <format>tar.gz</format>
-        -->
-        <format>zip</format>
-    </formats>
+<component>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>CHANGES</include>
+                <include>DISCLAIMER</include>
+                <include>README</include>
+                <include>RELEASE_NOTES</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/release/src</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>BUILDING</include>
+                <include>LICENSE</include>
+                <include>NOTICE</include>
+            </includes>
+        </fileSet>
+    </fileSets>
 
-    <componentDescriptors>
-        <componentDescriptor>../core/src/main/components/src-common.xml</componentDescriptor>
-        <componentDescriptor>../core/src/main/components/src-modules.xml</componentDescriptor>
-    </componentDescriptors>
-</assembly>
+</component>

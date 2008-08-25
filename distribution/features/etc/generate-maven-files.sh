@@ -15,20 +15,9 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-# This script can be used to generate a Maven build profile that includes all
-# the modules included directly or transitively in a distribution
+# This script can be used to generate Maven build POM and assembly files
+# for a distribution
 
-cat pom.xml | awk 'BEGIN { i=0 } /<profiles>/ { i=1; print } /.*/ { if (i==0) print } '
-
-echo "        <profile>"
-echo "            <id>modules</id>"
-echo "            <modules>"
-
-mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(tuscany-)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\5", "g") }' | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
-
-echo "            </modules>"
-echo "        </profile>"
-echo ""
-
-cat pom.xml | awk 'BEGIN { i=0 } /<\/profiles>/ { i=1 } /.*/ { if (i==1) print } '
+../etc/generate-src-modules.sh > src/main/components/src-modules.xml
+../etc/generate-pom.sh > pom.xml
 

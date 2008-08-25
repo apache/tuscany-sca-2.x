@@ -40,14 +40,6 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-        <!-- Web Service distribution -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-webservice</artifactId>
-            <type>jar</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
         <!-- Implementations -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
