@@ -9,15 +9,7 @@ first.
 If you just want to run it to see what happens open a command prompt, navigate
 to this sample directory and do:
 
-ant run
-
-OR if you don't have ant, on Windows do
-
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
-
-and on *nix do
-
-java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
+java -jar <tuscany-install>/modules/tuscany-node-launcher.jar Calculator.composite target/sample-calculator-lean.jar
 
 Sample Overview
 ---------------
@@ -42,10 +34,8 @@ calculator/
           MultiplyServiceImpl.java
           DivideService.java      - divides one number by another
           DivideServiceImpl.java
-          CalculatorClient.java   - starts the SCA Runtime and 
-                                    deploys the Calculator.composite. 
-                                    It then calls the deployed Calculator 
-                                    Components services
+          CalculatorClient.java   - a client component that calls the
+                                    Calculator services
       resources/
         Calculator.composite      - the SCA assembly for this sample
     test/
