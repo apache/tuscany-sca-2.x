@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.jws.WebService;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -64,7 +66,10 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             // scan interfaces for remotable
             Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
-                if (interfaze.isAnnotationPresent(Remotable.class) || interfaze.isAnnotationPresent(Callback.class)) {
+                if (interfaze.isAnnotationPresent(Remotable.class) 
+                    || interfaze.isAnnotationPresent(WebService.class)
+                    || interfaze.isAnnotationPresent(Callback.class)
+                    ) {
                     Service service;
                     try {
                         service = createService(interfaze);

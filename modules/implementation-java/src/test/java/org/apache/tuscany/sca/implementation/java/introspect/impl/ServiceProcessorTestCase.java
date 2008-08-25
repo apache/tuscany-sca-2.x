@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import javax.jws.WebService;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -65,6 +67,12 @@ public class ServiceProcessorTestCase extends TestCase {
         assertEquals(1, type.getServices().size());
     }
 
+
+    public void testMultipleWithWebServiceAnnotation() throws Exception {
+        processor.visitClass(FooMultipleWithWebService.class, type);
+        assertEquals(2, type.getServices().size());
+    }
+    
     public void testRemotableNoService() throws Exception {
         processor.visitClass(FooRemotableNoService.class, type);
         assertEquals(1, type.getServices().size());
@@ -102,6 +110,10 @@ public class ServiceProcessorTestCase extends TestCase {
 
     private interface Bar2 {
     }
+    
+    @WebService
+    private interface Bar3 {
+    }
 
     @Remotable
     private interface BazRemotable {
@@ -124,7 +136,10 @@ public class ServiceProcessorTestCase extends TestCase {
     private class FooMultipleWithCalback implements Baz, Bar {
 
     }
-
+    
+    private class FooMultipleWithWebService implements BazRemotable, Bar3 {
+    }
+    
     private class FooRemotableNoService implements BazRemotable, Bar {
 
     }
