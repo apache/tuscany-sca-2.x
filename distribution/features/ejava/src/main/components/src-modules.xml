@@ -27,6 +27,10 @@
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
+                <include>binding-ejb/**/*</include>
+                <include>binding-ejb-runtime/**/*</include>
+                <include>binding-jms/**/*</include>
+                <include>binding-jms-runtime/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-xml/**/*</include>
                 <include>contribution/**/*</include>
@@ -39,18 +43,25 @@
                 <include>core-spi/**/*</include>
                 <include>data-api/**/*</include>
                 <include>databinding/**/*</include>
+                <include>databinding-axiom/**/*</include>
                 <include>databinding-jaxb/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
+                <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
+                <include>extension-helper/**/*</include>
+                <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
+                <include>implementation-ejb/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
                 <include>implementation-java-xml/**/*</include>
                 <include>implementation-node/**/*</include>
                 <include>implementation-node-runtime/**/*</include>
+                <include>implementation-script/**/*</include>
+                <include>implementation-spring/**/*</include>
                 <include>interface/**/*</include>
                 <include>interface-java/**/*</include>
                 <include>interface-java-jaxws/**/*</include>
@@ -84,3 +95,4 @@
         </fileSet>
     </fileSets>
 </component>
+

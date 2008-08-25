@@ -48,7 +48,9 @@ echo "            <includes>"
 echo "                <include>org.apache.tuscany.sca:*</include>"
 echo "            </includes>"
 echo "            <excludes>"
+
 mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\2:\\4", "g") }' | sort | awk '{ printf "                <exclude>%s</exclude>\n", $1 }'
+
 echo "            </excludes>"
 echo "        </dependencySet>"
 echo ""
@@ -58,13 +60,12 @@ echo "            <outputDirectory>lib</outputDirectory>"
 echo "            <unpack>false</unpack>"
 echo "            <useTransitiveFiltering>true</useTransitiveFiltering>"
 echo "            <excludes>"
+
 mvn -o dependency:list | awk '/.INFO.    (.*):(.*):(.*):(.*):(.*)/ && !/(.*)(.tuscany.sca):(.*)/ { print gensub("(.INFO.    )(.*)(:)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\2:\\4", "g") }' | sort | awk '{ printf "                <exclude>%s</exclude>\n", $1 }'
+
 echo "                <exclude>org.apache.tuscany.sca:*</exclude>"
 echo "            </excludes>"
 echo "        </dependencySet>"
 echo "    </dependencySets>"
-
-
 echo "</component>"
-echo ""
 

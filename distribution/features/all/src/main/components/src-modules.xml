@@ -27,6 +27,18 @@
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
+                <include>binding-atom/**/*</include>
+                <include>binding-atom-abdera/**/*</include>
+                <include>binding-ejb/**/*</include>
+                <include>binding-ejb-runtime/**/*</include>
+                <include>binding-http/**/*</include>
+                <include>binding-http-runtime/**/*</include>
+                <include>binding-jms/**/*</include>
+                <include>binding-jms-runtime/**/*</include>
+                <include>binding-jsonrpc/**/*</include>
+                <include>binding-jsonrpc-runtime/**/*</include>
+                <include>binding-rss/**/*</include>
+                <include>binding-rss-rome/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-axis2/**/*</include>
                 <include>binding-sca-xml/**/*</include>
@@ -38,6 +50,7 @@
                 <include>contribution-impl/**/*</include>
                 <include>contribution-java/**/*</include>
                 <include>contribution-namespace/**/*</include>
+                <include>contribution-resource/**/*</include>
                 <include>contribution-xml/**/*</include>
                 <include>core/**/*</include>
                 <include>core-databinding/**/*</include>
@@ -47,19 +60,41 @@
                 <include>databinding-axiom/**/*</include>
                 <include>databinding-jaxb/**/*</include>
                 <include>databinding-jaxb-axiom/**/*</include>
+                <include>databinding-json/**/*</include>
+                <include>databinding-saxon/**/*</include>
+                <include>databinding-sdo/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
                 <include>distribution-core/**/*</include>
+                <include>distribution-ejava/**/*</include>
+                <include>distribution-manager/**/*</include>
+                <include>distribution-process/**/*</include>
+                <include>distribution-web20/**/*</include>
+                <include>distribution-webservice/**/*</include>
+                <include>distribution-webservice/**/*</include>
+                <include>domain-manager/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
+                <include>extension-helper/**/*</include>
+                <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
+                <include>implementation-bpel/**/*</include>
+                <include>implementation-bpel-ode/**/*</include>
+                <include>implementation-ejb/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
                 <include>implementation-java-xml/**/*</include>
                 <include>implementation-node/**/*</include>
                 <include>implementation-node-runtime/**/*</include>
+                <include>implementation-resource/**/*</include>
+                <include>implementation-resource-runtime/**/*</include>
+                <include>implementation-script/**/*</include>
+                <include>implementation-spring/**/*</include>
+                <include>implementation-widget/**/*</include>
+                <include>implementation-widget-runtime/**/*</include>
+                <include>implementation-xquery/**/*</include>
                 <include>interface/**/*</include>
                 <include>interface-java/**/*</include>
                 <include>interface-java-jaxws/**/*</include>
@@ -72,12 +107,16 @@
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
                 <include>node-launcher-webapp/**/*</include>
+                <include>node-manager/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
                 <include>policy-security-ws/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>policy-xml-ws/**/*</include>
                 <include>sca-api/**/*</include>
+                <include>workspace/**/*</include>
+                <include>workspace-impl/**/*</include>
+                <include>workspace-xml/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>

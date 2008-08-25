@@ -20,6 +20,8 @@
 
 cat pom.xml | awk 'BEGIN { i=0 } /<profiles>/ { i=1; print } /.*/ { if (i==0) print } '
 
+echo ""
+echo "        <!-- Profile that can be used to build the modules included in the distro -->"
 echo "        <profile>"
 echo "            <id>modules</id>"
 echo "            <modules>"
@@ -28,7 +30,6 @@ mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.
 
 echo "            </modules>"
 echo "        </profile>"
-echo ""
 
 cat pom.xml | awk 'BEGIN { i=0 } /<\/profiles>/ { i=1 } /.*/ { if (i==1) print } '
 
