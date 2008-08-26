@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.binding.rmi;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
 import net.sf.cglib.asm.ClassWriter;
 import net.sf.cglib.asm.Constants;
@@ -100,12 +103,26 @@ public class RMIService implements ComponentLifecycle {
                 try {
                     return invokeTarget(JavaInterfaceUtil.findOperation(method, serviceInterface.getOperations()), args);
                 } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
+                    final Throwable cause = e.getCause();
                     for (Class<?> declaredType : method.getExceptionTypes()) {
                         if (declaredType.isInstance(cause)) {
                             throw e;
                         }
                     }
+
+                    if (cause.getCause() != null) {
+                        // TUSCANY-2545: don't inlcude nested cause object
+                        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                            public Object run() throws Exception {
+                                Field field = Throwable.class.getDeclaredField("cause");
+                                field.setAccessible(true);
+                                field.set(cause, null);
+                                field.setAccessible(false);
+                                return null;
+                            }
+                        });
+                    }
+
                     throw cause;
                 }
             }
