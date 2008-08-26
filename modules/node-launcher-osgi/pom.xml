@@ -112,6 +112,8 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/tuscany/modules</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                             <excludeArtifactIds></excludeArtifactIds>
                         </configuration>
                     </execution>
