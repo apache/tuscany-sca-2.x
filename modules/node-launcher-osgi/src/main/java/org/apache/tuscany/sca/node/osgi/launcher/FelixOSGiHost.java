@@ -164,7 +164,7 @@ public class FelixOSGiHost implements OSGiHost {
 
     private void shutdown() throws BundleException {
         if (felix != null) {
-            felix.stop();
+            felix.stopAndWait();
         }
         Thread.currentThread().setContextClassLoader(tccl);
     }
