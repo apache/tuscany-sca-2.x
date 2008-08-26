@@ -130,6 +130,7 @@
                 <module>interface-wsdl-xml</module>
                 <module>implementation-bpel</module>
                 <module>implementation-bpel-ode</module>
+                <module>implementation-bpel-jbpm</module>
                 <module>implementation-das</module>
                 <module>implementation-data-xml</module>
                 <module>implementation-ejb</module>
