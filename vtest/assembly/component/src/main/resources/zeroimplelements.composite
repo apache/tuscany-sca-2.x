@@ -23,8 +23,6 @@
 	name="Assemby-component-zeroimplelements-Composite">
 
     <component name="AComponent">
-	    <reference name="b" target="BComponent"/>
-	    <reference name="b2" target="B2Component"/>
     </component>
 
     <component name="BComponent">

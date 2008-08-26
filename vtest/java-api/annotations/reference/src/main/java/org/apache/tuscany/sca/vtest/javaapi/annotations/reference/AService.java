@@ -48,4 +48,8 @@ public interface AService {
     public boolean isB7SetterCalled();
     public boolean isB16Null();
     public boolean isB17Null();
+    
+    public boolean isB4Null(); 
+    public boolean isB5Null();
+    public boolean isB6Null();
 }

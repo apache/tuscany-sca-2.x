@@ -201,4 +201,15 @@ public class AServiceImpl implements AService {
         return b17 == null;
     }
 
+    public boolean isB4Null() {
+        return b4 == null;
+    }
+    
+    public boolean isB5Null() {
+        return b5 == null;
+    }
+    
+    public boolean isB6Null() {
+        return b6 == null;
+    }    
 }

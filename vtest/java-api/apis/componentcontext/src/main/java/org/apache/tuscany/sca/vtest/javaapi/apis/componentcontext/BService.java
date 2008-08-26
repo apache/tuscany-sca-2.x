@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext;
 
+import org.osoa.sca.annotations.Remotable;
+
 /**
  * Simple Service B.
  */
+@Remotable
 public interface BService {
 
     String getBName();

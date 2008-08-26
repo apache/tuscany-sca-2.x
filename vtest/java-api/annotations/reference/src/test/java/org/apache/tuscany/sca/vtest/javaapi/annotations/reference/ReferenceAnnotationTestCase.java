@@ -110,7 +110,12 @@ public class ReferenceAnnotationTestCase {
      */
     @Test
     public void atReference2() throws Exception {
-        AService anotherA = ServiceFinder.getService(AService.class, "AnotherAComponent");
+        AService anotherA = ServiceFinder.getService(AService.class, "AUnannotatedComponent");
+        
+        Assert.assertFalse(anotherA.isB4Null());
+        Assert.assertTrue(anotherA.isB5Null());
+        Assert.assertFalse(anotherA.isB6Null());
+        
         Assert.assertEquals("BService", anotherA.getB4Name());
         try {
             anotherA.getB5Name();
@@ -207,5 +212,18 @@ public class ReferenceAnnotationTestCase {
     public void atReference7() throws Exception {
         Assert.assertTrue(a.isB16Null());
         Assert.assertTrue(a.isB17Null());
+    }
+    
+    /**
+     * Java Component Implementation Spec
+     * Section 1.2.7
+     * Line 361 when @Property and @Reference annotations are present
+     * then unannotated fields are ignored
+     */
+    @Test
+    public void atReference8() throws Exception {
+        Assert.assertTrue(a.isB4Null());
+        Assert.assertTrue(a.isB5Null());
+        Assert.assertTrue(a.isB6Null());
     }
 }

@@ -441,7 +441,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    warning("ReferenceNotFound", component, component.getName(), componentReference.getName());
+                    error("ReferenceNotFound", component, component.getName(), componentReference.getName());
                 }
             }
         }

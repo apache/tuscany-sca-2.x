@@ -130,8 +130,10 @@ class WidgetImplementationIntrospector {
         String referenceName = null;
         
         String tokens[] = scriptContent.split("=");
-        tokens = tokens[0].split(" ");
-        referenceName = tokens[tokens.length -1];
+        
+        // find the string between the quotes
+        tokens = tokens[1].split("\"");
+        referenceName = tokens[1];
         
         if(referenceName != null) {
             reference = assemblyFactory.createReference();

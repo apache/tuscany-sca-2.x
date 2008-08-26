@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.reference.BService;
 import org.osoa.sca.annotations.Service;
 
 @Service(AService.class)
-public class AnotherAServiceImpl implements AService {
+public class AUnannotatedServiceImpl implements AService {
 
     public BService b4; // field injection (public, un-annotated)
 
@@ -32,7 +32,7 @@ public class AnotherAServiceImpl implements AService {
     
     public BService b6; // setter injection (public, un-annotated)
 
-    public AnotherAServiceImpl() {
+    public AUnannotatedServiceImpl() {
     }
 
     public String getName() {
@@ -126,4 +126,16 @@ public class AnotherAServiceImpl implements AService {
     public boolean isB17Null() {
         return true;
     }
+    
+    public boolean isB4Null() {
+        return b4 == null;
+    }
+    
+    public boolean isB5Null() {
+        return b5 == null;
+    }
+    
+    public boolean isB6Null() {
+        return b6 == null;
+    }     
 }

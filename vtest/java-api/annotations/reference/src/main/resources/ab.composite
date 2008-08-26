@@ -26,9 +26,6 @@
         <reference name="b1" target="BComponent"/>		
         <reference name="b2" target="BComponent"/>		
         <reference name="b3" target="BComponent"/>
-        <reference name="b4" target="BComponent"/>
-        <reference name="b5" target="BComponent"/>
-        <reference name="b6" target="BComponent"/>
         <reference name="b7" target="BComponent"/>
         <reference name="b8" target="BComponent"/>
         <reference name="b9" target="BComponent"/>
@@ -40,8 +37,8 @@
         <reference name="b15" multiplicity="1..n" target="BComponent BComponent"/>
     </component>   
     
-    <component name="AnotherAComponent">
-        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl.AnotherAServiceImpl"/>
+    <component name="AUnannotatedComponent">
+        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl.AUnannotatedServiceImpl"/>
         <reference name="b4" target="BComponent"/>
         <reference name="b5" target="BComponent"/>
         <reference name="b6" target="BComponent"/>
