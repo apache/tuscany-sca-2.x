@@ -35,6 +35,7 @@ public class ComponentContextTestCase {
 
     protected static String compositeName = "ab.composite";
     protected static AComponent a;
+    protected static AComponent aUnannotated;
     protected static BService b;
 
     @BeforeClass
@@ -43,6 +44,7 @@ public class ComponentContextTestCase {
             System.out.println("Setting up");
             ServiceFinder.init(compositeName);
             a = ServiceFinder.getService(AComponent.class, "AComponent");
+            aUnannotated = ServiceFinder.getService(AComponent.class, "AUnannotatedComponent");
             b = ServiceFinder.getService(BService.class, "BComponent/BService");
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,6 +67,7 @@ public class ComponentContextTestCase {
     @Test
     public void testGetURI() throws Exception {
         Assert.assertEquals("AComponent", a.getContextURI());
+        Assert.assertEquals("AUnannotatedComponent", aUnannotated.getContextURI());
     }
 
     /**

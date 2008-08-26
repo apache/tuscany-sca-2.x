@@ -24,7 +24,6 @@
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl.AServiceImpl" />
 		<reference name="b" target="BComponent" />
-		<reference name="c" target="CComponent" />
 		<reference name="d" target="DComponent" />
 	</component>
 

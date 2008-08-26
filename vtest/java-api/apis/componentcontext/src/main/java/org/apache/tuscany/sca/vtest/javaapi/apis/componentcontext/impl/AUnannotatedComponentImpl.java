@@ -37,19 +37,16 @@ import org.osoa.sca.annotations.Service;
 @Service(AComponent.class)
 @Scope("COMPOSITE")
 @EagerInit
-public class AComponentImpl implements AComponent {
+public class AUnannotatedComponentImpl implements AComponent {
 
     public static String rcContent = null;
 
     protected ComponentContext componentContext;
     
-    @Reference
     protected BService bReference;
     
-    @Reference
     protected DComponent dReference;    
 
-    @Property(name="aProperty", required=true)
     protected String aProperty;
 
     public String getName() {

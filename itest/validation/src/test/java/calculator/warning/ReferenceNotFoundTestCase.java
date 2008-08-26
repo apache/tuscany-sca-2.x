@@ -34,34 +34,45 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
+import domain.CustomCompositeBuilder;
+
 /**
  * This shows how to test the Calculator service component.
  */
 public class ReferenceNotFoundTestCase extends TestCase {
 
-    private CalculatorService calculatorService;
-    private SCANode node;
+    private CustomCompositeBuilder customDomain;
 
     @Override
     protected void setUp() throws Exception {
+        customDomain = CustomCompositeBuilder.getInstance();
+        try {
+            customDomain.loadContribution("src/main/resources/ReferenceNotFound/Calculator.composite", 
+                                          "TestContribution", 
+                                          "src/main/resources/ReferenceNotFound/");
+            customDomain.buildContribution();
+        } catch (Exception ex){
+            throw ex;
+        }   
+        
+        
+        /*
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANode(new File("src/main/resources/ReferenceNotFound/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
         		                                     new File("src/main/resources/ReferenceNotFound").toURL().toString()));
         node.start();
         calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        */
     }
 
     @Override
     protected void tearDown() throws Exception {
-        node.stop();
+        //node.stop();
     }
 
     public void testCalculator() throws Exception {
-        ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
+        Monitor monitor = customDomain.getMonitorInstance();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         
         assertNotNull(problem);

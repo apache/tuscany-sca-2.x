@@ -28,6 +28,13 @@
 	    <reference name="dReference" target="DComponent"/>
 	    <property name="aProperty" type="xsd:string">PropertyA</property>
      </component>
+     
+    <component name="AUnannotatedComponent">
+        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl.AUnannotatedComponentImpl"/>
+        <reference name="bReference" target="BComponent/BService"/>
+        <reference name="dReference" target="DComponent"/>
+        <property name="aProperty" type="xsd:string">PropertyA</property>
+     </component>     
 
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl.BComponentImpl"/>
