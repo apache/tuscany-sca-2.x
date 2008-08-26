@@ -25,7 +25,7 @@
 		<version>1.4-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>tuscany-implementation-bpel-ode</artifactId>
+	<artifactId>tuscany-implementation-bpel-jbpm</artifactId>
 	<name>Apache Tuscany SCA BPEL jBPM Implementation Extension</name>
 	<dependencies>
 		<dependency>
