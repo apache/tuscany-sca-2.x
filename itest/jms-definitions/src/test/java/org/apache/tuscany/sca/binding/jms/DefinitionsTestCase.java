@@ -49,7 +49,7 @@ public class DefinitionsTestCase {
             }
         }
 
-        assertEquals("Hello petra", OneWayServiceImpl.name);
+        assertEquals("petra", OneWayServiceImpl.name);
     }
 
     @After
