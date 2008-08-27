@@ -23,7 +23,6 @@
         <dependencySet>
             <outputDirectory>modules</outputDirectory>
             <unpack>false</unpack>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>org.apache.tuscany.sca:*</include>
             </includes>
@@ -80,7 +79,6 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
             <excludes>
                 <exclude>asm:asm-all</exclude>
                 <exclude>cglib:cglib-nodep</exclude>

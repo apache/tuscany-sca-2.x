@@ -19,7 +19,7 @@
 # for all the distributions
 
 echo "Generate Maven files: core"
-cd core; ../etc/generate-down-dependencies.sh > src/main/components/bin-down-dependencies.xml; ../etc/generate-maven-files.sh
+cd core; ../etc/generate-filtered-dependencies.sh > src/main/components/bin-filtered-dependencies.xml; ../etc/generate-maven-files.sh
 
 echo "Generate Maven files: ejava"
 cd ../ejava; ../etc/generate-maven-files.sh

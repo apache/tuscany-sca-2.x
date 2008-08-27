@@ -32,7 +32,7 @@
 
     <componentDescriptors>
         <componentDescriptor>../core/src/main/components/bin-common.xml</componentDescriptor>
-        <componentDescriptor>../core/src/main/components/bin-down-dependencies.xml</componentDescriptor>
+        <componentDescriptor>../core/src/main/components/bin-filtered-dependencies.xml</componentDescriptor>
         <componentDescriptor>src/main/components/bin-samples.xml</componentDescriptor>
     </componentDescriptors>
 </assembly>
