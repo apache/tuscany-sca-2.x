@@ -47,6 +47,7 @@
                 <exclude>org.apache.tuscany.sca:tuscany-definitions-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-endpoint</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-extensibility</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-extensibility-osgi</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-embedded</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-http</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-implementation-java</exclude>
@@ -65,6 +66,7 @@
                 <exclude>org.apache.tuscany.sca:tuscany-node-api</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-impl</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-launcher-osgi</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher-webapp</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy-security</exclude>
@@ -89,6 +91,10 @@
                 <exclude>javax.xml.bind:jaxb-api</exclude>
                 <exclude>javax.xml.stream:stax-api</exclude>
                 <exclude>javax.xml.ws:jaxws-api</exclude>
+                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
+                <exclude>org.apache.felix:org.osgi.compendium</exclude>
+                <exclude>org.apache.felix:org.osgi.core</exclude>
+                <exclude>org.apache.felix:org.osgi.foundation</exclude>
                 <exclude>org.apache.geronimo.specs:geronimo-commonj_1.1_spec</exclude>
                 <exclude>org.apache.ws.commons.schema:XmlSchema</exclude>
                 <exclude>org.codehaus.woodstox:wstx-asl</exclude>
@@ -98,4 +104,3 @@
         </dependencySet>
     </dependencySets>
 </component>
-
