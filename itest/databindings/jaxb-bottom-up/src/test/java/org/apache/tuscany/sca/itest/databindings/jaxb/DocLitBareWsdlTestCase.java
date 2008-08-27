@@ -24,7 +24,6 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -57,7 +56,7 @@ public class DocLitBareWsdlTestCase {
         }
     }
 
-    @Ignore("TUSCANY-2398")
+    // @Ignore("TUSCANY-2398")
     @Test
     public void testDocLitBareWsdl() throws Exception {
         AClientService client = domain.getService(AClientService.class, "AClientComponent");

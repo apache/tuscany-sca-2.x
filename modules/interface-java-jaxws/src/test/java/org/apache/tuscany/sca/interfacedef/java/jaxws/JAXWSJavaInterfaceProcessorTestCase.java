@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 import com.example.stock.StockExceptionTest;
-
 /**
  *
  * @version $Rev$ $Date$
@@ -91,7 +90,7 @@ public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
             op = op2;
         }
 
-        assertTrue(op.isWrapperStyle());
+        assertTrue(!op.isWrapperStyle() && op.getWrapper() == null);
 
         if ("M2".equals(op2.getName())) {
             op = op2;

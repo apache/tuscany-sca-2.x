@@ -125,8 +125,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             boolean bare = false;
             if (methodSOAPBinding != null) {
                 bare = methodSOAPBinding.parameterStyle() == SOAPBinding.ParameterStyle.BARE;
-                // For BARE parameter style, the data is in the wrapped format already
-                operation.setWrapperStyle(bare);
+                if(bare) {
+                    // For BARE parameter style, the data won't be unwrapped
+                    // The wrapper should be null
+                    operation.setWrapperStyle(false);
+                }
                 documentStyle = methodSOAPBinding.style() == Style.DOCUMENT;
             }
 

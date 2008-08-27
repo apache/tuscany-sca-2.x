@@ -133,7 +133,8 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         // Check if the source operation is wrapped
         DataType<List<DataType>> sourceType = context.getSourceDataType();
         Operation sourceOp = context.getSourceOperation();
-        boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
+        boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle() && sourceOp.getWrapper() != null;
+        boolean sourceBare = sourceOp != null && !sourceOp.isWrapperStyle() && sourceOp.getWrapper() == null;
 
         // Find the wrapper handler for source data
         WrapperHandler sourceWrapperHandler = null;
@@ -143,19 +144,20 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         // Check if the target operation is wrapped
         DataType<List<DataType>> targetType = context.getTargetDataType();
         Operation targetOp = (Operation)context.getTargetOperation();
-        boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
+        boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle() && targetOp.getWrapper() != null;
+        boolean targetBare = targetOp != null && !targetOp.isWrapperStyle() && targetOp.getWrapper() == null;
 
         // Find the wrapper handler for target data
         WrapperHandler targetWrapperHandler = null;
         String targetDataBinding = getDataBinding(targetOp);
         targetWrapperHandler = getWrapperHandler(targetDataBinding, targetWrapped);
 
-        if ((!sourceWrapped) && targetWrapped) {
+        if ((!sourceWrapped && !sourceBare) && targetWrapped) {
             // Unwrapped --> Wrapped
             WrapperInfo wrapper = targetOp.getWrapper();
-            ElementInfo wrapperElement = wrapper.getInputWrapperElement();
+            // ElementInfo wrapperElement = wrapper.getInputWrapperElement();
 
-            Class<?> targetWrapperClass = wrapper != null ? wrapper.getInputWrapperClass() : null;
+            // Class<?> targetWrapperClass = wrapper != null ? wrapper.getInputWrapperClass() : null;
 
             if (source == null) {
                 // Empty child elements
@@ -207,14 +209,14 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                                              true);
             return new Object[] {targetWrapper};
 
-        } else if (sourceWrapped && (!targetWrapped)) {
+        } else if (sourceWrapped && (!targetWrapped && !targetBare)) {
             // Wrapped to Unwrapped
             Object sourceWrapper = source[0];
             Object[] target = null;
 
-            List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
+            // List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
             if (targetWrapperHandler != null) {
-                ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
+                // ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // FIXME: This is a workaround for the wsdless support as it passes in child elements
                 // under the wrapper that only matches by position
                 if (sourceWrapperHandler.isInstance(sourceWrapper, sourceOp, true)) {
