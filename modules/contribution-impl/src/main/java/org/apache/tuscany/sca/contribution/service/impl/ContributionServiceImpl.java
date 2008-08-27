@@ -474,6 +474,9 @@ public class ContributionServiceImpl implements ContributionService {
                         for (IntentAttachPointType attachPointType : definitions.getImplementationTypes() ) {
                             policyDefinitionsResolver.addModel(attachPointType);
                         }
+                        for (Object binding : definitions.getBindings() ) {
+                            policyDefinitionsResolver.addModel(binding);
+                        }
                     }
                 }
             }

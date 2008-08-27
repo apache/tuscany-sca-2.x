@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -120,6 +121,9 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                                 policySet.setName(new QName(targetNamespace, 
                                                             policySet.getName().getLocalPart()));
                                 definitions.getPolicySets().add(policySet);
+                            } else if ( extension instanceof Binding ) {
+                                Binding binding = (Binding)extension;
+                                definitions.getBindings().add(binding);
                             } else if ( extension instanceof IntentAttachPointType ) {
                                 IntentAttachPointType type = (IntentAttachPointType)extension;
                                 if ( type.getName().getLocalPart().startsWith(BINDING)) {

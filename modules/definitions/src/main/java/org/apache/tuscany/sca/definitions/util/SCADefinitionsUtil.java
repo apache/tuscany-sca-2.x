@@ -73,6 +73,7 @@ public class SCADefinitionsUtil {
         target.getPolicySets().addAll(source.getPolicySets());
         target.getBindingTypes().addAll(source.getBindingTypes());
         target.getImplementationTypes().addAll(source.getImplementationTypes());
+        target.getBindings().addAll(source.getBindings());
     }
     
     public static boolean isSCADefnsFile(URI uri) {

@@ -102,6 +102,10 @@ public class JMSBinding implements Binding {
     private Map<String, Long> operationJMSTimeToLives = new HashMap<String, Long>();
     private Map<String, Integer> operationJMSPriorities = new HashMap<String, Integer>();
     private String jmsSelector;
+    private String requestConnectionName;
+    private String responseConnectionName;
+    private JMSBinding requestConnectionBinding;
+    private JMSBinding responseConnectionBinding;
     
     public JMSBinding() {
         super();
@@ -183,7 +187,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getDestinationName() {
-        return destinationName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getDestinationName() != null) {
+            return requestConnectionBinding.getDestinationName();
+        } else {
+            return destinationName;
+        }
     }
 
     public void setDestinationName(String destinationName) {
@@ -207,7 +215,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getConnectionFactoryName() {
-        return connectionFactoryName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getConnectionFactoryName() != null) {
+            return requestConnectionBinding.getConnectionFactoryName();
+        } else {
+            return connectionFactoryName;
+        }
     }
 
     public void setConnectionFactoryName(String connectionFactoryName) {
@@ -239,7 +251,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseDestinationName() {
-        return this.responseDestinationName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseDestinationName() != null) {
+            return requestConnectionBinding.getResponseDestinationName();
+        } else {
+            return this.responseDestinationName;
+        }
     }
 
     public void setResponseDestinationName(String name) {
@@ -263,7 +279,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseConnectionFactoryName() {
-        return responseConnectionFactoryName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseConnectionFactoryName() != null) {
+            return requestConnectionBinding.getResponseConnectionFactoryName();
+        } else {
+            return responseConnectionFactoryName;
+        }
     }
 
     public void setResponseConnectionFactoryName(String connectionFactoryName) {
@@ -483,4 +503,32 @@ public class JMSBinding implements Binding {
         this.jmsSelector = jmsSelector;
     }
 
+    public String getRequestConnectionName() {
+        return requestConnectionName;
+    }
+
+    public void setRequestConnectionName(String requestConnectionName) {
+        this.requestConnectionName = requestConnectionName;
+    }
+
+    public void setResponseConnectionName(String responseConnectionName) {
+        this.responseConnectionName = responseConnectionName;
+    }
+    public String getResponseConnectionName() {
+        return responseConnectionName;
+    }
+
+    public void setRequestConnectionBinding(JMSBinding binding) {
+        this.requestConnectionBinding = binding;
+    }
+    public JMSBinding getRequestConnectionBinding() {
+        return requestConnectionBinding;
+    }
+
+    public void setResponseConnectionBinding(JMSBinding binding) {
+        this.responseConnectionBinding = binding;
+    }
+    public JMSBinding getResponseConnectionBinding() {
+        return responseConnectionBinding;
+    }
 }
