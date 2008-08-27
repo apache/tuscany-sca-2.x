@@ -111,6 +111,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
+                            <includeScope>test</includeScope>
                             <outputDirectory>${project.build.directory}/tuscany/modules</outputDirectory>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>

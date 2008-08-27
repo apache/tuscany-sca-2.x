@@ -39,7 +39,7 @@ public class NodeLauncher {
      */
     private NodeLauncher() {
     }
-    
+
     /**
      * Returns a new launcher instance.
      *  
@@ -61,9 +61,9 @@ public class NodeLauncher {
     public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
         return (T)node(configurationURL, null, null, null, null);
     }
-    
+
     /**
-     * Creates a new SCA Node.
+     * Creates a new SCA OSGi Node.
      * 
      * @param compositeURI the URI of the composite to use 
      * @param contributions the URI of the contributions that provides the composites and related 
@@ -73,12 +73,12 @@ public class NodeLauncher {
      * @return a new SCA node.
      * @throws LauncherException
      */
-    public <T> T createNode(String compositeURI, Contribution...contributions) throws LauncherException {
+    public <T> T createNode(String compositeURI, Contribution... contributions) throws LauncherException {
         return (T)node(null, compositeURI, null, contributions, null);
     }
-    
+
     /**
-     * Creates a new SCA Node.
+     * Creates a new SCA OSGi Node.
      * 
      * @param compositeURI the URI of the composite to use 
      * @param compositeContent the XML content of the composite to use 
@@ -86,10 +86,11 @@ public class NodeLauncher {
      * @return a new SCA node.
      * @throws LauncherException
      */
-    public <T> T createNode(String compositeURI, String compositeContent, Contribution...contributions) throws LauncherException {
+    public <T> T createNode(String compositeURI, String compositeContent, Contribution... contributions)
+        throws LauncherException {
         return (T)node(null, compositeURI, compositeContent, contributions, null);
     }
-    
+
     /**
      * Create a SCA node based on the discovery of the contribution on the classpath for the 
      * given classloader. This method should be treated a convenient shortcut with the following
@@ -107,49 +108,57 @@ public class NodeLauncher {
     public <T> T createNodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
         return (T)node(null, compositeURI, null, null, classLoader);
     }
-    
+
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node starting...");
+        logger.info("Apache Tuscany SCA OSGi Node is starting...");
 
         // Create a node
         NodeLauncher launcher = newInstance();
-        Object node;
-        if (args.length ==1) {
-            
-            // Create from a configuration URI
-            String configurationURI = args[0];
-            logger.info("SCA Node configuration: " + configurationURI);
-            node = launcher.createNodeFromURL(configurationURI);
-        } else {
-            
-            // Create from a composite URI and a contribution location
-            String compositeURI = args[0];
-            String contributionLocation = args[1];
-            logger.info("SCA composite: " + compositeURI);
-            logger.info("SCA contribution: " + contributionLocation);
-            node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
-        }
-        
-        // Start the node
-        try {
-            node.getClass().getMethod("start").invoke(node);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Node could not be started", e);
-            throw e;
-        }
-        logger.info("SCA Node started.");
-        
-        logger.info("Press enter to shutdown.");
-        try {
-            System.in.read();
-        } catch (IOException e) {}
 
-        // Stop the node
+        OSGiHost host = NodeLauncherUtil.startOSGi();
         try {
-            node.getClass().getMethod("stop").invoke(node);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
-            throw e;
+
+            Object node;
+            if (args.length == 1) {
+
+                // Create from a configuration URI
+                String configurationURI = args[0];
+                logger.info("SCA OSGi Node configuration: " + configurationURI);
+                node = launcher.createNodeFromURL(configurationURI);
+            } else {
+
+                // Create from a composite URI and a contribution location
+                String compositeURI = args[0];
+                String contributionLocation = args[1];
+                logger.info("SCA composite: " + compositeURI);
+                logger.info("SCA contribution: " + contributionLocation);
+                node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+            }
+
+            // Start the node
+            try {
+                node.getClass().getMethod("start").invoke(node);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA OSGi Node could not be started", e);
+                throw e;
+            }
+            logger.info("SCA OSGi Node is now started.");
+
+            logger.info("Press Enter to shutdown...");
+            try {
+                System.in.read();
+            } catch (IOException e) {
+            }
+
+            // Stop the node
+            try {
+                node.getClass().getMethod("stop").invoke(node);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA OSGi Node could not be stopped", e);
+                throw e;
+            }
+        } finally {
+            NodeLauncherUtil.stopOSGi(host);
         }
     }
 
