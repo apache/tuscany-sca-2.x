@@ -224,8 +224,25 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
             String main = NodeLauncher.class.getName();
-            final String[] command = new String[]{ java, "-cp", cp, main , nodeConfigurationURI};
+            final List<String> command = new ArrayList<String>();
+            command.add(java);
+            command.add("-cp");
+            command.add(cp);
+            
+            // Propagate TUSCANY properties
+            String tuscanyHome = props.getProperty("TUSCANY_HOME");
+            if (tuscanyHome != null) {
+                command.add("-DTUSCANY_HOME=" + tuscanyHome);
+            }
+            String tuscanyPath = props.getProperty("TUSCANY_PATH");
+            if (tuscanyPath != null) {
+                command.add("-DTUSCANY_PATH=" + tuscanyPath);
+            }
 
+            // Specify the main class and parameters
+            command.add(main);
+            command.add(nodeConfigurationURI);
+            
             logger.info("Starting " + "java " + main + " " + nodeConfigurationURI);
             
             // Start the VM
