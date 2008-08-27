@@ -18,9 +18,10 @@
  * under the License.    
 -->
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
+             xmlns:itest="http://jms"
                  targetNamespace="http://jms" >
 
-    <binding.jms name="TestService" >
+    <binding.jms name="itest:TestService" >
         <destination name="MyServiceQueue" create="never"/>
         <connectionFactory name="MyConnectionFactory"/>
     </binding.jms>
