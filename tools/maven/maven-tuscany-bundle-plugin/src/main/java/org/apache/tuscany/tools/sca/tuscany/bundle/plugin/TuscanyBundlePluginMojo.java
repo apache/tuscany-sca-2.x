@@ -296,7 +296,14 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
 
             artifact.setFile(getFile( artifact ));
             
-            MavenProject bundleProject = mavenProjectBuilder.buildFromRepository(artifact, remoteRepositories, localRepository, true);
+            MavenProject bundleProject;
+            try {
+                bundleProject =
+                    mavenProjectBuilder.buildFromRepository(artifact, remoteRepositories, localRepository, true);
+            } catch (Exception e) {
+                getLog().error(e);
+                continue;
+            }
             bundleProject.setArtifact(artifact);
             
             if ( bundleProject.getDependencyArtifacts() == null ) {
