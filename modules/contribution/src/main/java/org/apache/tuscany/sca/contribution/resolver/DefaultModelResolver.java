@@ -57,4 +57,10 @@ public class DefaultModelResolver implements ModelResolver {
         return map.remove(resolved);
     }
     
+    // FIXME: TUSCANY-2499: temporarily  give access to the models to get the jms binding
+    //  use of definitions.xml working while the definitions.xml processing is being refactored
+    public Map getModels() {
+        return map;
+    }
+    
 }

@@ -72,4 +72,11 @@ public interface SCADefinitions {
      * @return a list of domain wide Implementation Types 
      */
     List<IntentAttachPointType> getImplementationTypes();
+
+    /**
+     * Returns a list of domain wide binding definition objects
+     * 
+     * @return a list of domain wide binding definition objects 
+     */
+    List<Object> getBindings();
 }

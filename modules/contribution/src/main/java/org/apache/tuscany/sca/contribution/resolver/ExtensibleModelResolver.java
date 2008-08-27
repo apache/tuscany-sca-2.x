@@ -191,5 +191,11 @@ public class ExtensibleModelResolver implements ModelResolver {
 
         return unresolved;
     }
+    
+    // FIXME: TUSCANY-2499: temporarily  give access to the defaultResolver to get the jms binding
+    //  use of definitions.xml working while the definitions.xml processing is being refactored
+    public ModelResolver getDefaultModelResolver() {
+        return defaultResolver;
+    }
 
 }

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.jms.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -34,6 +35,8 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -215,10 +218,14 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
 
         }
 
-        // Read requestConnection
-        // TODO
-        // Read reponseConnection
-        // TODO
+        String requestConnectionName = reader.getAttributeValue(null, "requestConnection");
+        if (requestConnectionName != null && requestConnectionName.length() > 0) {
+            jmsBinding.setRequestConnectionName(requestConnectionName);
+        }
+        String responseConnectionName = reader.getAttributeValue(null, "responseConnection");
+        if (responseConnectionName != null && responseConnectionName.length() > 0) {
+            jmsBinding.setResponseConnectionName(responseConnectionName);
+        }
 
         // Read sub-elements of binding.jms
         boolean endFound = false;
@@ -286,6 +293,28 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     }
 
     public void resolve(JMSBinding model, ModelResolver resolver) throws ContributionResolveException {
+        if (model.getRequestConnectionName() != null) {
+            model.setRequestConnectionBinding(getConnectionBinding(model.getRequestConnectionName(), resolver));
+        }
+        if (model.getResponseConnectionName() != null) {
+            model.setResponseConnectionBinding(getConnectionBinding(model.getResponseConnectionName(), resolver));
+        }
+    }
+
+    private JMSBinding getConnectionBinding(String bindingName, ModelResolver resolver) {
+        if (resolver instanceof ExtensibleModelResolver) {
+            DefaultModelResolver dr = (DefaultModelResolver)((ExtensibleModelResolver) resolver).getDefaultModelResolver();
+            Map models = dr.getModels();
+            for (Object o : models.keySet()) {
+                if (o instanceof JMSBinding) {
+                    JMSBinding binding = (JMSBinding) o;
+                    if (bindingName.equals(binding.getName())) {
+                        return binding;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void write(JMSBinding rmiBinding, XMLStreamWriter writer) throws ContributionWriteException,

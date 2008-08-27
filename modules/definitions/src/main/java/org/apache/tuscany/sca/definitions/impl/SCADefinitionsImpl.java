@@ -38,6 +38,7 @@ public class SCADefinitionsImpl implements SCADefinitions {
     private List<PolicySet> policySets = new CopyOnWriteArrayList<PolicySet>();
     private List<IntentAttachPointType> bindingTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
     private List<IntentAttachPointType> implementationTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
+    private List<Object> bindings = new CopyOnWriteArrayList<Object>();
 
    
     public List<IntentAttachPointType> getBindingTypes() {
@@ -62,5 +63,9 @@ public class SCADefinitionsImpl implements SCADefinitions {
 
     public void setTargetNamespace(String ns) {
        this.targetNamespace = ns;
+    }
+
+    public List<Object> getBindings() {
+        return bindings;
     }
 }
