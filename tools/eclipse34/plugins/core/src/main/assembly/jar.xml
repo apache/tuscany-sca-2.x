@@ -53,16 +53,27 @@
 
         <!-- Add the distributions -->
         <dependencySet>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
             <unpack>true</unpack>
             <includes>
-                <include>org.apache.tuscany.sca:tuscany-distribution-core:zip</include>
+                <include>*:zip</include>
             </includes>
+            <excludes>
+                <exclude>*:zip:src</exclude>
+            </excludes>
+            <unpackOptions>
+                <excludes>
+                    <exclude>*/samples</exclude>
+                    <exclude>*/samples/**/*</exclude>
+                </excludes>
+            </unpackOptions>
         </dependencySet>
 
         <dependencySet>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
             <unpack>false</unpack>
             <includes>
-                <include>org.apache.tuscany.sca:tuscany-distribution-core:zip:src</include>
+                <include>*:zip:src</include>
             </includes>
         </dependencySet>
     </dependencySets>
