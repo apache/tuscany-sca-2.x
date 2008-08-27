@@ -22,7 +22,7 @@ mkdir target/p2-tmp
 cd target/p2-tmp
 unzip ../apache-tuscany-sca-1.4-SNAPSHOT-updatesite.zip
 
-eclipse -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator -updateSite tuscany-sca-1.4-SNAPSHOT-updatesite/ -site file:tuscany-sca-1.4-SNAPSHOT-updatesite/site.xml -metadataRepository file:tuscany-sca-1.4-SNAPSHOT-updatesite/ -metadataRepositoryName "Apache Tuscany SCA Eclipse Update Site." -artifactRepository file:tuscany-sca-1.4-SNAPSHOT-updatesite/ -artifactRepositoryName "Eclipse Ganymede Artifacts" -noDefaultIUs -vmargs -Xmx256m
+eclipse -nosplash -application org.eclipse.equinox.p2.metadata.generator.EclipseGenerator -updateSite tuscany-sca-1.4-SNAPSHOT-updatesite/ -site file:tuscany-sca-1.4-SNAPSHOT-updatesite/site.xml -metadataRepository file:tuscany-sca-1.4-SNAPSHOT-updatesite/ -metadataRepositoryName "Apache Tuscany SCA Eclipse Update Site." -artifactRepository file:tuscany-sca-1.4-SNAPSHOT-updatesite/ -artifactRepositoryName "Eclipse Ganymede Artifacts" -noDefaultIUs -vmargs -Xmx256m
 
 zip ../apache-tuscany-sca-1.4-SNAPSHOT-updatesite.zip tuscany-sca-1.4-SNAPSHOT-updatesite/artifacts.xml tuscany-sca-1.4-SNAPSHOT-updatesite/content.xml
 
