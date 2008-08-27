@@ -92,6 +92,7 @@
                 <module>interop-soap-service</module>
                 -->
                 <module>jms</module>
+                <module>jms-definitions</module>
                 <module>large-sdo-ws</module>
                 <module>late-reference-resolution</module>
                 <module>oneway</module>
