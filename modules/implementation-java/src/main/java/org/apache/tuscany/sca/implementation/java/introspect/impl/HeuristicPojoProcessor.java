@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jws.WebService;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -96,7 +98,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
              */
             Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> i : interfaces) {
-                if (i.isAnnotationPresent(Remotable.class)) {
+                if (i.isAnnotationPresent(Remotable.class) || i.isAnnotationPresent(WebService.class)) {
                     addService(type, i);
                 }
             }
