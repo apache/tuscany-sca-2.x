@@ -28,9 +28,6 @@ import java.util.Set;
 
 import bean.TestBean;
 
-
-
-
 /**
  * A simple client component that uses a reference with an JSONRPC binding.
  * 
@@ -82,6 +79,10 @@ public class EchoComponentImpl implements Echo {
 			list.add(itr.next());
 		}
 		return list;
+	}
+	
+	public String[] echoArray(String[] stringArray) {
+		return stringArray;
 	}
 	
 	public Set echoSet(HashSet param){
