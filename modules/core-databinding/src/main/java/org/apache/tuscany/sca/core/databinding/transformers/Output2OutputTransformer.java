@@ -154,7 +154,8 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
             Operation sourceOp = context.getSourceOperation();
-            boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
+            boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle() && sourceOp.getWrapper() != null;
+            boolean sourceBare = sourceOp != null && !sourceOp.isWrapperStyle() && sourceOp.getWrapper() == null;
 
             WrapperHandler sourceWrapperHandler = null;
             String sourceDataBinding = getDataBinding(sourceOp);
@@ -162,12 +163,14 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
 
             DataType<DataType> targetType = context.getTargetDataType();
             Operation targetOp = (Operation)context.getTargetOperation();
-            boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
+            boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle() && targetOp.getWrapper() != null;
+            boolean targetBare = targetOp != null && !targetOp.isWrapperStyle() && targetOp.getWrapper() == null;
+
             WrapperHandler targetWrapperHandler = null;
             String targetDataBinding = getDataBinding(targetOp);
             targetWrapperHandler = getWrapperHandler(targetDataBinding, targetWrapped);
 
-            if ((!sourceWrapped) && targetWrapped) {
+            if ((!sourceWrapped &&!sourceBare) && targetWrapped) {
                 // Unwrapped --> Wrapped
                 WrapperInfo wrapper = targetOp.getWrapper();
                 ElementInfo wrapperElement = wrapper.getOutputWrapperElement();
@@ -211,7 +214,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
                 targetWrapperHandler.setChildren(targetWrapper, new Object[] {child}, targetOp, false);
                 return targetWrapper;
-            } else if (sourceWrapped && (!targetWrapped)) {
+            } else if (sourceWrapped && (!targetWrapped && !targetBare)) {
                 // Wrapped to Unwrapped
                 Object sourceWrapper = response;
                 List<ElementInfo> childElements = sourceOp.getWrapper().getOutputChildElements();

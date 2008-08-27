@@ -146,7 +146,8 @@ public class WSDLDefinitionGenerator {
         try {
             for (Iterator oi = portType.getOperations().iterator(); oi.hasNext();) {
                 Operation operation = (Operation)oi.next();
-                BindingOperation bindingOperation = createBindingOperation(definition, operation, "");
+                BindingOperation bindingOperation =
+                    createBindingOperation(definition, operation, "urn:" + operation.getName());
                 binding.addBindingOperation(bindingOperation);
             }
         } catch (WSDLException e) {

@@ -284,6 +284,10 @@ public class Interface2WSDLGenerator {
             javax.wsdl.Operation operation = generateOperation(definition, op, helpers, wrappers);
             portType.addOperation(operation);
             String action = ((JavaOperation)op).getAction();
+            if ((action == null || "".equals(action)) && !op.isWrapperStyle() && op.getWrapper() == null) {
+                // Bare style
+                action = "urn:" + op.getName();
+            }
             BindingOperation bindingOp = definitionGenerator.createBindingOperation(definition, operation, action);
             binding.addBindingOperation(bindingOp);
         }
@@ -355,7 +359,25 @@ public class Interface2WSDLGenerator {
                 if (entry.getValue().size() == 1 && entry.getValue().get(0).getQName() == null) {
                     // special case for global fault element
                     QName typeName = entry.getValue().get(0).getType().getQName();
-                    wrapper.setAttribute("type", typeName.getLocalPart());
+                    String nsURI = typeName.getNamespaceURI();
+                    if ("".equals(nsURI)) {
+                        wrapper.setAttribute("type", typeName.getLocalPart());
+                        addSchemaImport(schema, "", schemaDoc);
+                    } else if (targetNS.equals(nsURI)) {
+                        wrapper.setAttribute("type", typeName.getLocalPart());
+                    } else if (SCHEMA_NS.equals(nsURI)) {
+                        wrapper.setAttribute("type", "xs:" + typeName.getLocalPart());
+                    } else {
+                        Map<String, String> prefixMap = prefixMaps.get(schema);
+                        String prefix = prefixMap.get(nsURI);
+                        if (prefix == null) {
+                            prefix = "ns" + i++;
+                            prefixMap.put(nsURI, prefix);
+                            schema.setAttributeNS(XMLNS_NS, "xmlns:" + prefix, nsURI);
+                            addSchemaImport(schema, nsURI, schemaDoc);
+                        }
+                        wrapper.setAttribute("type", prefix + ":" + typeName.getLocalPart());
+                    }                    
                 } else {
                     // normal wrapper containing type definition inline
                     Element complexType = schemaDoc.createElementNS(SCHEMA_NS, "xs:complexType");
@@ -544,6 +566,7 @@ public class Interface2WSDLGenerator {
         inputMsg.setUndefined(false);
         definition.addMessage(inputMsg);
 
+        List<ElementInfo> elements = null;
         // FIXME: By default, java interface is mapped to doc-lit-wrapper style WSDL
         if (op.getWrapper() != null) {
             // Generate doc-lit-wrapper style
@@ -553,6 +576,11 @@ public class Interface2WSDLGenerator {
             int i = 0;
             for (DataType d : op.getInputType().getLogical()) {
                 inputMsg.addPart(generatePart(definition, d, "arg" + i));
+                elements = new ArrayList<ElementInfo>();
+                ElementInfo element = getElementInfo(d.getPhysical(), d, null, helpers);
+                elements.add(element);
+                QName elementName = ((XMLType)d.getLogical()).getElementName();
+                wrappers.put(elementName, elements);
                 i++;
             }
         }
@@ -570,7 +598,15 @@ public class Interface2WSDLGenerator {
             if (op.getWrapper() != null) {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
-                outputMsg.addPart(generatePart(definition, op.getOutputType(), "return"));
+                DataType outputType = op.getOutputType();
+                outputMsg.addPart(generatePart(definition, outputType, "return"));
+                if (outputType != null) {
+                    elements = new ArrayList<ElementInfo>();
+                    ElementInfo element = getElementInfo(outputType.getPhysical(), outputType, null, helpers);
+                    elements.add(element);
+                    QName elementName = ((XMLType)outputType.getLogical()).getElementName();
+                    wrappers.put(elementName, elements);
+                }
             }
             output.setMessage(outputMsg);
 
@@ -594,17 +630,16 @@ public class Interface2WSDLGenerator {
             }
             fault.setMessage(faultMsg);
             operation.addFault(fault);
-            List<ElementInfo> elements = null;
             if (faultType.getLogical().getPhysical() != faultType.getPhysical()) {
                 // create special wrapper for type indirection to real fault bean
-                elements = new ArrayList<ElementInfo>(1);
                 DataType logical = faultType.getLogical();
+                elements = new ArrayList<ElementInfo>();
                 elements.add(getElementInfo(logical.getPhysical(), logical, null, helpers));
              } else {
                 // convert synthesized fault bean to a wrapper type
-                elements = new ArrayList<ElementInfo>();
                 for (DataType<XMLType> propDT: op.getFaultBeans().get(faultName)) {
                     XMLType logical = propDT.getLogical();
+                    elements = new ArrayList<ElementInfo>();
                     elements.add(getElementInfo(propDT.getPhysical(), propDT, logical.getElementName(), helpers));
                 }
             }
