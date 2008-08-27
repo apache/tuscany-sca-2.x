@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.MessageFormat;
 
 import junit.framework.TestCase;
 
@@ -54,7 +55,7 @@ public class HTTPBindingTestCase extends TestCase {
         REQUEST2_HEADER + REQUEST2_CONTENT.getBytes().length + "\n\n" + REQUEST2_CONTENT;
 
     private static final String REQUEST3_HEADER =
-        "GET /httpget/test HTTP/1.0\n" + "Host: localhost\n"
+        "GET /httpget/{0} HTTP/1.0\n" + "Host: localhost\n"
             + "Content-Type: text/xml\n"
             + "Connection: close\n"
             + "Content-Length: ";
@@ -97,11 +98,13 @@ public class HTTPBindingTestCase extends TestCase {
     public void testGetImplementation() throws Exception {
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
-        os.write(REQUEST3.getBytes());
+        int index = 0;
+        String request = MessageFormat.format( REQUEST3, index ); 
+        os.write( request.getBytes());
         os.flush();
         
         String document = read(client);
-        assertTrue(document.indexOf("<body><p>uh oh</body>") != -1);
+        assertTrue(document.indexOf("<body><p>item=" + index) != -1);
     }
 
     /**
