@@ -31,15 +31,15 @@ import java.util.logging.Logger;
  * @version $Rev$ $Date$
  */
 public class DomainManagerLauncher {
-    
-    private static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
+
+    private static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());
 
     /**
      * Constructs a new DomainManagerLauncher.
      */
     private DomainManagerLauncher() {
     }
-    
+
     /**
      * Returns a new launcher instance.
      *  
@@ -58,7 +58,7 @@ public class DomainManagerLauncher {
     public <T> T createDomainManager() throws LauncherException {
         return (T)domainManager(".");
     }
-    
+
     /**
      * Creates a new DomainManager.
      * 
@@ -70,34 +70,41 @@ public class DomainManagerLauncher {
     public <T> T createDomainManager(String rootDirectory) throws LauncherException {
         return (T)domainManager(rootDirectory);
     }
-    
+
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Domain Manager starting...");
 
         // Create a domain manager
         DomainManagerLauncher launcher = newInstance();
-        Object domainManager = launcher.createDomainManager();
-        
-        // Start the domain manager
+        OSGiHost host = NodeLauncherUtil.startOSGi();
         try {
-            domainManager.getClass().getMethod("start").invoke(domainManager);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
-            throw e;
-        }
-        logger.info("SCA Domain Manager started.");
-        
-        logger.info("Press enter to shutdown.");
-        try {
-            System.in.read();
-        } catch (IOException e) {}
 
-        // Stop the domain manager
-        try {
-            domainManager.getClass().getMethod("stop").invoke(domainManager);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
-            throw e;
+            Object domainManager = launcher.createDomainManager();
+
+            // Start the domain manager
+            try {
+                domainManager.getClass().getMethod("start").invoke(domainManager);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
+                throw e;
+            }
+            logger.info("SCA Domain Manager started.");
+
+            logger.info("Press enter to shutdown.");
+            try {
+                System.in.read();
+            } catch (IOException e) {
+            }
+
+            // Stop the domain manager
+            try {
+                domainManager.getClass().getMethod("stop").invoke(domainManager);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
+                throw e;
+            }
+        } finally {
+            NodeLauncherUtil.stopOSGi(host);
         }
     }
 }
