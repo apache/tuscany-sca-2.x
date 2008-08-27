@@ -20,7 +20,9 @@ package bean;
 
 public class TestBean {
     private String testString;
+    private String[] testStringArray;
     private int testInt;
+    
 
     public String getTestString() {
         return testString;
@@ -30,6 +32,14 @@ public class TestBean {
         this.testString = testString;
     }
 
+    public String[] getTestStringArray() {
+    	return testStringArray;
+    }
+    
+    public void setStringArray(String[] stringArray) {
+    	this.testStringArray = stringArray;
+    }
+    
     public int getTestInt() {
         return testInt;
     }

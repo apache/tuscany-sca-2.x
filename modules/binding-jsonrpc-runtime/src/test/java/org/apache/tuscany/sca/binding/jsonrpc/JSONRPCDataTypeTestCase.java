@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -102,6 +103,23 @@ public class JSONRPCDataTypeTestCase {
 
 		Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getJSONObject("map").getString("Binding"));
 	}
+	
+	@Test
+	public void testBean() throws Exception {
+		JSONObject jsonRequest = new JSONObject(
+				"{ \"method\": \"echoBean\", \"params\": [ {\"javaClass\": \"bean.TestBean\", \"testString\": \"JSON-RPC\", \"testInt\":1234}], \"id\": 7}");
+
+		WebConversation wc = new WebConversation();
+		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+		WebResponse response = wc.getResource(request);
+
+		Assert.assertEquals(200, response.getResponseCode());
+
+		JSONObject jsonResp = new JSONObject(response.getText());
+
+		Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getString("testString"));
+	}	
 
 	@Test
 	public void testList() throws Exception {
@@ -119,11 +137,29 @@ public class JSONRPCDataTypeTestCase {
 
 		Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
 	}
+	
+	//@Test
+	@Ignore("TUSCANY-2565")
+	public void testArray() throws Exception {
+		JSONObject jsonRequest = new JSONObject(
+				"{\"params\":[\"1\",\"2\"],\"method\":\"echoArray\",\"id\":9}");
+
+		WebConversation wc = new WebConversation();
+		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+		WebResponse response = wc.getResource(request);
+
+		Assert.assertEquals(200, response.getResponseCode());
+
+		JSONObject jsonResp = new JSONObject(response.getText());
+
+		Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
+	}	
 
 	@Test
 	public void testSet() throws Exception {
 		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 9}");
+				"{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 10}");
 
 		WebConversation wc = new WebConversation();
 		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
@@ -136,22 +172,4 @@ public class JSONRPCDataTypeTestCase {
 
 		Assert.assertEquals("red", jsonResp.getJSONObject("result").getJSONObject("set").getString("red"));
 	}
-
-	@Test
-	public void testBean() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoBean\", \"params\": [ {\"javaClass\": \"bean.TestBean\", \"testString\": \"JSON-RPC\", \"testInt\":1234}], \"id\": 7}");
-
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
-
-		Assert.assertEquals(200, response.getResponseCode());
-
-		JSONObject jsonResp = new JSONObject(response.getText());
-
-		Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getString("testString"));
-	}
-
 }
