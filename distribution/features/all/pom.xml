@@ -124,7 +124,6 @@
                 <module>../../../modules/distribution-process</module>
                 <module>../../../modules/distribution-web20</module>
                 <module>../../../modules/distribution-webservice</module>
-                <module>../../../modules/distribution-webservice</module>
                 <module>../../../modules/domain-manager</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>

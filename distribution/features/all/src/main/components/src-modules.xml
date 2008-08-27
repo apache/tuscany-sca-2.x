@@ -71,7 +71,6 @@
                 <include>distribution-process/**/*</include>
                 <include>distribution-web20/**/*</include>
                 <include>distribution-webservice/**/*</include>
-                <include>distribution-webservice/**/*</include>
                 <include>domain-manager/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
@@ -134,4 +133,3 @@
         </fileSet>
     </fileSets>
 </component>
-
