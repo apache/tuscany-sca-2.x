@@ -30,9 +30,9 @@ import java.io.InputStream;
 public class TestGetImpl {
     
     public InputStream get(String id) {
-        
-        return new ByteArrayInputStream("<html><body><p>uh oh</body></html>".getBytes());
-        
+        System.out.println( "DOB: TestGetImpl id=" + id );
+        return new ByteArrayInputStream(("<html><body><p>item=" + id + "</body></html>").getBytes());
+
     }
 
 }

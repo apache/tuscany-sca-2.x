@@ -45,7 +45,8 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
     private ServletHost servletHost;
     private String servletMapping;
-    
+    private HTTPBindingListenerServlet bindingListenerServlet;
+   
     public HTTPServiceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentService service,
                                               HTTPBinding binding,
@@ -58,18 +59,46 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        
         // Get the invokers for the supported operations
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
         Servlet servlet = null;
+        bindingListenerServlet = new HTTPBindingListenerServlet( messageFactory );
         for (InvocationChain invocationChain : wire.getInvocationChains()) {
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
-            if (operationName.equals("get")) {
+            if (operationName.equals("get")) { 
                 Invoker getInvoker = invocationChain.getHeadInvoker();
-                servlet = new HTTPGetListenerServlet(getInvoker, messageFactory);
-                break;
+               	bindingListenerServlet.setGetInvoker(getInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("conditionalGet")) {
+                Invoker conditionalGetInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setConditionalGetInvoker(conditionalGetInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("delete")) {
+                Invoker deleteInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setDeleteInvoker(deleteInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("conditionalDelete")) {
+                Invoker conditionalDeleteInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setConditionalDeleteInvoker(conditionalDeleteInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("put")) {
+                Invoker putInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setPutInvoker(putInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("conditionalPut")) {
+                Invoker conditionalPutInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setConditionalPutInvoker(conditionalPutInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("post")) {
+                Invoker postInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setPostInvoker(postInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("conditionalPost")) {
+                Invoker conditionalPostInvoker = invocationChain.getHeadInvoker();
+               	bindingListenerServlet.setConditionalPostInvoker(conditionalPostInvoker);
+                servlet = bindingListenerServlet;
             } else if (operationName.equals("service")) {
                 Invoker serviceInvoker = invocationChain.getHeadInvoker();
                 servlet = new HTTPServiceListenerServlet(serviceInvoker, messageFactory);
@@ -92,8 +121,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
         servletHost.addServletMapping(servletMapping, servlet);
     }
 
-    public void stop() {
-        
+    public void stop() {        
         // Unregister the Servlet from the Servlet host
         servletHost.removeServletMapping(servletMapping);
     }

@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -42,7 +43,7 @@ public class TestServiceImpl implements Servlet {
     }
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-        //HttpServletResponse httpResponse = (HttpServletResponse)response;
+        //HttpServletResponse httpResponse = (HttpServletResponse)response;   	
         response.getOutputStream().print("<html><body><p>hey</body></html>");
     }
 

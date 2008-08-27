@@ -53,7 +53,7 @@ import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.sca.binding.atom.CacheContext;
+import org.apache.tuscany.sca.binding.http.CacheContext;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -163,7 +163,7 @@ class AtomBindingListenerServlet extends HttpServlet {
     	// Test for any cache info in the request
  	    CacheContext cacheContext = null;    	
     	try { 
-    	   cacheContext = getCacheContextFromRequest( request );
+    	   cacheContext = CacheContext.getCacheContextFromRequest( request );
     	} catch ( java.text.ParseException e ) {    
     	}
     	// System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );
@@ -841,41 +841,6 @@ class AtomBindingListenerServlet extends HttpServlet {
     	if ( st.hasMoreTokens() )
     		return st.nextToken();    		
         return "application/atom+xml";
-    }
-
-    /**
-     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
-     * @param request
-     * @return
-     */
-    public CacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
-    	CacheContext context = new CacheContext();
-    	List<String> predicates = new ArrayList<String>();
-    	
-    	String eTag = request.getHeader( "If-Match" );    	
-    	if ( eTag != null ) {
-    	   context.setETag( eTag );
-    	   predicates.add( "If-Match" );
-    	}
-    	eTag = request.getHeader( "If-None-Match" );    	
-    	if ( eTag != null ) {
-    	   context.setETag( eTag );
-    	   predicates.add( "If-None-Match" );
-    	}
-        String lastModifiedString = request.getHeader( "If-Modified-Since" );        
-    	if ( lastModifiedString != null ) {
-     	   context.setLastModified( lastModifiedString );
-     	   predicates.add( "If-Modified-Since" );
-     	}
-        lastModifiedString = request.getHeader( "If-Unmodified-Since" );        
-    	if ( lastModifiedString != null ) {
-     	   context.setLastModified( lastModifiedString );
-     	   predicates.add( "If-Unmodified-Since" );
-     	}
-    	if ( predicates.size() > 0 ) {
-         	context.setPredicates( predicates.toArray( new String[ 0 ] ) );
-    	}
-    	return context;
     }
 
 }
