@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jws.WebService;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -268,6 +269,17 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertTrue(type.getPropertyMembers().containsKey("gen4"));
     }
 
+    /**
+     * Interfaces with "@WebService" annotation implemented by the class should result
+     * in a Service in the same manner as an "@Remotable" annotation would.
+     */
+    public void testInterfaceWithWebServiceAnnotation() throws Exception{
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        visitEnd(SomeWebServiceImpl.class, type);
+        assertEquals(1, type.getServices().size());
+        assertEquals("SomeWebService", type.getServices().get(0).getName());
+    }
+    
     @Remotable
     private interface ReferenceRemotableInterface {
         void operation1(String param1);
@@ -530,6 +542,21 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         protected void setOtherRef(RemotableRef otherRef) {
         }
 
+    }
+
+    @WebService
+    private interface SomeWebService {
+        void serviceOperation1();
+    }
+    
+    @Service
+    private static class SomeWebServiceImpl implements SomeWebService {
+        public SomeWebServiceImpl() {
+            
+        }
+
+        public void serviceOperation1() {
+        }
     }
 
 }
