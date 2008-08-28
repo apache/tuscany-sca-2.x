@@ -55,6 +55,7 @@
                 <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
+                <include>extensibility-osgi/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
@@ -78,6 +79,7 @@
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
+                <include>node-launcher-osgi/**/*</include>
                 <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>

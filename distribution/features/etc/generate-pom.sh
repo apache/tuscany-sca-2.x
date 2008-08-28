@@ -18,18 +18,9 @@
 # This script can be used to generate a Maven build profile that includes all
 # the modules included directly or transitively in a distribution
 
-cat pom.xml | awk 'BEGIN { i=0 } /<profiles>/ { i=1; print } /.*/ { if (i==0) print } '
+cat pom.xml | awk 'BEGIN { i=0 } /<modules>/ { i=1; print } /.*/ { if (i==0) print } '
 
-echo ""
-echo "        <!-- Profile that can be used to build the modules included in the distro -->"
-echo "        <profile>"
-echo "            <id>modules</id>"
-echo "            <modules>"
+mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(tuscany-)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\5", "g") }' | grep -v "distribution-" | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
 
-mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(tuscany-)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\5", "g") }' | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
-
-echo "            </modules>"
-echo "        </profile>"
-
-cat pom.xml | awk 'BEGIN { i=0 } /<\/profiles>/ { i=1 } /.*/ { if (i==1) print } '
+cat pom.xml | awk 'BEGIN { i=0 } /<\/modules>/ { i=1 } /.*/ { if (i==1) print } '
 
