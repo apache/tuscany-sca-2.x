@@ -18,6 +18,7 @@
 # After building the updatesite Zip, this script can be used to generate the
 # Eclipse Ganymede P2 metadata for the site.
 
+rm -rf target/p2-tmp
 mkdir target/p2-tmp
 cd target/p2-tmp
 unzip ../apache-tuscany-sca-1.4-SNAPSHOT-updatesite.zip
