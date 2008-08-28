@@ -74,6 +74,7 @@
                 <include>domain-manager/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
+                <include>extensibility-osgi/**/*</include>
                 <include>extension-helper/**/*</include>
                 <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
@@ -105,6 +106,7 @@
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
+                <include>node-launcher-osgi/**/*</include>
                 <include>node-launcher-webapp/**/*</include>
                 <include>node-manager/**/*</include>
                 <include>policy/**/*</include>

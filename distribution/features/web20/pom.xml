@@ -98,6 +98,39 @@
 
     <profiles>
 
+        <!-- Default build profile that can be used to build the distro packages -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>distribution-package</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/bin.xml</descriptor>
+                                        <descriptor>src/main/assembly/src.xml</descriptor>
+                                    </descriptors>
+                                    <tarLongFileMode>gnu</tarLongFileMode>
+                                    <finalName>apache-tuscany-sca-web20-1.4-SNAPSHOT</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
         <!-- Profile that can be used to build the modules included in the distro -->
         <profile>
             <id>modules</id>
@@ -130,9 +163,9 @@
                 <module>../../../modules/databinding-json</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
-                <module>../../../modules/distribution-core</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
+                <module>../../../modules/extensibility-osgi</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
@@ -156,6 +189,7 @@
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>
+                <module>../../../modules/node-launcher-osgi</module>
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
@@ -166,32 +200,5 @@
             </modules>
         </profile>
     </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>distribution-package</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/bin.xml</descriptor>
-                                <descriptor>src/main/assembly/src.xml</descriptor>
-                            </descriptors>
-                            <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>apache-tuscany-sca-web20-1.4-SNAPSHOT</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
 
 </project>
