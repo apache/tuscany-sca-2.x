@@ -347,7 +347,7 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
         String artifactId = artifact.getGroupId() + ":" + artifact.getArtifactId();
         
         String bundleSymName = (String)attributes.getValue("Bundle-SymbolicName");
-        if (!bundleSymName.startsWith("org.apache.tuscany.sca")) {
+        if (!bundleSymName.startsWith("org.apache.tuscany")) {
             bundleSymName = "org.apache.tuscany.sca.3rdparty." + bundleSymName;
             attributes.putValue("Bundle-SymbolicName", bundleSymName);
             
