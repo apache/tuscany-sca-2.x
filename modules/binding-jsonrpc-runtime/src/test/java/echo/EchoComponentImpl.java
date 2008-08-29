@@ -81,8 +81,12 @@ public class EchoComponentImpl implements Echo {
 		return list;
 	}
 	
-	public String[] echoArray(String[] stringArray) {
+	public String[] echoArrayString(String[] stringArray) {
 		return stringArray;
+	}
+	
+	public int[] echoArrayInt(int[] intArray) {
+		return intArray;
 	}
 	
 	public Set echoSet(HashSet param){
