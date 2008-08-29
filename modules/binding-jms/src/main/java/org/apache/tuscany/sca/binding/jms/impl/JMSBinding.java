@@ -39,8 +39,7 @@ public class JMSBinding implements Binding {
         return super.clone();
     }
 
-    // properties required to implement the Tuscany
-    // binding extension SPI
+    // properties required to implement the Tuscany binding extension SPI
     private String uri = null;
     private String name = null;
     private boolean unresolved = false;
@@ -72,8 +71,7 @@ public class JMSBinding implements Binding {
     private String responseConnectionFactoryName = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
     private String responseConnectionFactoryCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;
 
-    // Provides the name of the factory that interfaces to the
-    // JMS API for us.
+    // Provides the name of the factory that interfaces to the JMS API for us.
     private String jmsResourceFactoryName = JMSBindingConstants.DEFAULT_RF_CLASSNAME;
 
     // Message processors used to deal with the request and response messages
@@ -199,7 +197,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getDestinationType() {
-        return destinationType;
+        if (requestConnectionBinding != null && requestConnectionBinding.getDestinationType() != null) {
+            return requestConnectionBinding.getDestinationType();
+        } else {
+            return destinationType;
+        }
     }
 
     public void setDestinationType(String destinationType) {
@@ -207,7 +209,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getDestinationCreate() {
-        return this.destinationCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getDestinationCreate() != null) {
+            return requestConnectionBinding.getDestinationCreate();
+        } else {
+            return this.destinationCreate;
+        }
     }
 
     public void setDestinationCreate(String create) {
@@ -227,7 +233,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getConnectionFactoryCreate() {
-        return this.connectionFactoryCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getConnectionFactoryCreate() != null) {
+            return requestConnectionBinding.getConnectionFactoryCreate();
+        } else {
+            return this.connectionFactoryCreate;
+        }
     }
 
     public void setConnectionFactoryCreate(String create) {
@@ -235,7 +245,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getActivationSpecName() {
-        return activationSpecName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getActivationSpecName() != null) {
+            return requestConnectionBinding.getActivationSpecName();
+        } else {
+            return activationSpecName;
+        }
     }
 
     public void setActivationSpecName(String activationSpecName) {
@@ -243,7 +257,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getActivationSpecCreate() {
-        return this.activationSpecCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getActivationSpecCreate() != null) {
+            return requestConnectionBinding.getActivationSpecCreate();
+        } else {
+            return this.activationSpecCreate;
+        }
     }
 
     public void setActivationSpecCreate(String create) {
@@ -263,7 +281,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseDestinationType() {
-        return this.responseDestinationType;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseDestinationType() != null) {
+            return requestConnectionBinding.getResponseDestinationType();
+        } else {
+            return this.responseDestinationType;
+        }
     }
 
     public void setResponseDestinationType(String type) {
@@ -271,7 +293,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseDestinationCreate() {
-        return this.responseDestinationCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseDestinationCreate() != null) {
+            return requestConnectionBinding.getResponseDestinationCreate();
+        } else {
+            return this.responseDestinationCreate;
+        }
     }
 
     public void setResponseDestinationCreate(String create) {
@@ -291,7 +317,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseConnectionFactoryCreate() {
-        return this.responseConnectionFactoryCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseConnectionFactoryCreate() != null) {
+            return requestConnectionBinding.getResponseConnectionFactoryCreate();
+        } else {
+            return this.responseConnectionFactoryCreate;
+        }
     }
 
     public void setResponseConnectionFactoryCreate(String create) {
@@ -299,7 +329,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseActivationSpecName() {
-        return responseActivationSpecName;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseActivationSpecName() != null) {
+            return requestConnectionBinding.getResponseActivationSpecName();
+        } else {
+            return responseActivationSpecName;
+        }
     }
 
     public void setResponseActivationSpecName(String activationSpecName) {
@@ -307,7 +341,11 @@ public class JMSBinding implements Binding {
     }
 
     public String getResponseActivationSpecCreate() {
-        return this.responseActivationSpecCreate;
+        if (requestConnectionBinding != null && requestConnectionBinding.getResponseActivationSpecCreate() != null) {
+            return requestConnectionBinding.getResponseActivationSpecCreate();
+        } else {
+            return this.responseActivationSpecCreate;
+        }
     }
 
     public void setResponseActivationSpecCreate(String create) {

@@ -187,7 +187,6 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                 jmsBinding.setCorrelationScheme(correlationScheme);
             } else {
             	error("InvalidCorrelationScheme", reader, correlationScheme);
-                //throw new JMSBindingException("invalid correlationScheme: " + correlationScheme);
             }
         }
 
@@ -301,6 +300,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private JMSBinding getConnectionBinding(String bindingName, ModelResolver resolver) {
         if (resolver instanceof ExtensibleModelResolver) {
             DefaultModelResolver dr = (DefaultModelResolver)((ExtensibleModelResolver) resolver).getDefaultModelResolver();
@@ -432,12 +432,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                 case END_ELEMENT:
                     QName x = reader.getName();
                     if (x.getLocalPart().equals("response")) {
-//                        reader.next();
                         return;
                     } else {
                     	error("UnexpectedResponseElement", reader, x.toString());
-                        //throw new RuntimeException("Incomplete binding.jms/response definition found unexpected element " 
-                    	                            //+ x.toString());
                     }
             }
         }
