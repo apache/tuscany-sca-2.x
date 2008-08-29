@@ -138,11 +138,10 @@ public class JSONRPCDataTypeTestCase {
 		Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
 	}
 	
-	//@Test
-	@Ignore("TUSCANY-2565")
-	public void testArray() throws Exception {
+	@Test
+	public void testArrayString() throws Exception {
 		JSONObject jsonRequest = new JSONObject(
-				"{\"params\":[\"1\",\"2\"],\"method\":\"echoArray\",\"id\":9}");
+				"{\"params\":[[\"1\",\"2\"]],\"method\":\"echoArrayString\",\"id\":9}");
 
 		WebConversation wc = new WebConversation();
 		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
@@ -153,13 +152,32 @@ public class JSONRPCDataTypeTestCase {
 
 		JSONObject jsonResp = new JSONObject(response.getText());
 
-		Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
+		Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
 	}	
 
+	
+	@Test
+	public void testArrayInt() throws Exception {
+		JSONObject jsonRequest = new JSONObject(
+				"{\"params\":[[1,2]],\"method\":\"echoArrayInt\",\"id\":10}");
+
+		WebConversation wc = new WebConversation();
+		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+		WebResponse response = wc.getResource(request);
+
+		Assert.assertEquals(200, response.getResponseCode());
+
+		JSONObject jsonResp = new JSONObject(response.getText());
+
+		Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
+	}	
+
+	
 	@Test
 	public void testSet() throws Exception {
 		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 10}");
+				"{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 11}");
 
 		WebConversation wc = new WebConversation();
 		WebRequest request = new PostMethodWebRequest(SERVICE_URL,

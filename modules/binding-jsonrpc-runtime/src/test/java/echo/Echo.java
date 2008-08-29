@@ -53,7 +53,9 @@ public interface Echo {
     
     List echoList(ArrayList list);
     
-    String [] echoArray(String[] stringArray);
+    String [] echoArrayString(String[] stringArray);
+    
+    int [] echoArrayInt(int[] intArray);
     
     Set echoSet(HashSet set);
     

@@ -28,3 +28,4 @@ org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:co
 org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:simpleType,weight=80000,public=false
 org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=commonj.sdo.DataObject,weight=80000,public=false
 org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=javax.xml.bind.JAXBElement,weight=80000,public=false
+org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:array,weight=80000,public=false
