@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 
 import javax.transaction.TransactionManager;
 
@@ -95,9 +95,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 odeServer.init();
             }
 
-            URL deployURL = this.implementation.getProcessDefinition().getLocation();
+            URI deployURI = URI.create(this.implementation.getProcessDefinition().getLocation());
             
-            File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
+            File deploymentDir = new File(deployURI.getPath()).getParentFile();
             
             if(__log.isInfoEnabled()) {
                 __log.info(">>> Deploying : " + deploymentDir.toString());

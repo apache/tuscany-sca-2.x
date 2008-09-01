@@ -109,7 +109,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
             // and relying on componentType file for service definition
             // so it's OK to set resolved for now
             processDefinition = readProcessDefinition(artifactURL);
-            processDefinition.setURI(artifactURI);
+            processDefinition.setURI(artifactURI.toString());
             processDefinition.setUnresolved(false);
         } catch (Exception e) {
             ContributionReadException ce = new ContributionReadException(e);
@@ -333,7 +333,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     private BPELProcessDefinition readProcessDefinition(URL doc) throws Exception {
         BPELProcessDefinition processDefinition = factory.createBPELProcessDefinition();
         processDefinition.setUnresolved(true);
-        processDefinition.setLocation(doc);
+        processDefinition.setLocation(doc.toString());
 
         InputStream is = doc.openStream();
         XMLStreamReader reader = null;

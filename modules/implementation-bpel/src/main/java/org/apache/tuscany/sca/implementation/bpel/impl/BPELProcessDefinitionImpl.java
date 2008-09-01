@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +38,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
  */
 class BPELProcessDefinitionImpl implements BPELProcessDefinition {
     private QName name;
-    private URI uri;
-    private URL location;
+    private String uri;
+    private String location;
     private boolean unresolved;
     private List<BPELPartnerLinkElement> partnerLinks = new ArrayList<BPELPartnerLinkElement>();
     private List<BPELImportElement> imports = new ArrayList<BPELImportElement>();
@@ -55,19 +54,19 @@ class BPELProcessDefinitionImpl implements BPELProcessDefinition {
         this.name = name;
     }
 
-    public URI getURI() {
+    public String getURI() {
         return uri;
     }
     
-    public void setURI(URI uri) {
+    public void setURI(String uri) {
         this.uri = uri;
     }
     
-    public URL getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(URL location) {
+    public void setLocation(String location) {
         this.location = location; 
     }
 

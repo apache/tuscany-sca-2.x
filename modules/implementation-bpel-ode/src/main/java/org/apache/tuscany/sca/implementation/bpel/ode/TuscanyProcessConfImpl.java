@@ -95,9 +95,9 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      */
     public String getBpelDocument() {
         //System.out.println("getBPELDocument called");
-        URL processURL = implementation.getProcessDefinition().getLocation();
+        String processURL = implementation.getProcessDefinition().getLocation();
         try {
-            return getRelativePath( getDirectory(), new File( processURL.toURI() ));
+            return getRelativePath( getDirectory(), new File(processURL));
         } catch (Exception e) {
             if(__log.isWarnEnabled()) {
                 __log.warn("Unable to resolve relative path of BPEL process" + processURL, e );
@@ -382,9 +382,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      * @return - the File object containing the BPEL process
      */
     private File getBPELFile() {
-        URL fileURL = implementation.getProcessDefinition().getLocation();
         try {
-            File theProcess = new File( fileURL.toURI());
+            File theProcess = new File(implementation.getProcessDefinition().getLocation());
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {

@@ -209,9 +209,8 @@ public class BPELODEDeployFile {
      * @return - the File object containing the BPEL process
      */
     private File getBPELFile() {
-        URL fileURL = implementation.getProcessDefinition().getLocation();
         try {
-            File theProcess = new File( fileURL.toURI());
+            File theProcess = new File(implementation.getProcessDefinition().getLocation());
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {

@@ -57,28 +57,28 @@ public interface BPELProcessDefinition extends Base {
      * 
      * @return URI for the process
      */
-    URI getURI();
+    String getURI();
 
     /**
      * Set the BPEL process URI
      * 
      * @param uri for the process
      */
-    void setURI(URI uri);
+    void setURI(String uri);
 
     /**
      * Get the URL for the process location
      * 
      * @return
      */
-    URL getLocation();
+    String getLocation();
 
     /**
      * Set the URL for the process location
      * 
      * @param url
      */
-    void setLocation(URL location);
+    void setLocation(String location);
     
     /**
      * Return the list of PartnerLinks for this process
