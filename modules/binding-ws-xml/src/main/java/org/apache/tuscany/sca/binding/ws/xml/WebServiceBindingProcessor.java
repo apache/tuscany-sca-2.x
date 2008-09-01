@@ -348,8 +348,12 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                     model.setService(service.getElement());
                     if (model.getPortName() != null) {
                         Port port = service.getElement().getPort(model.getPortName());
-                        model.setPort(port);
-                        model.setBinding(port.getBinding());
+                        if (port != null) {
+                            model.setPort(port);
+                            model.setBinding(port.getBinding());
+                        } else {
+                            warning("WsdlPortTypeDoesNotMatch", wsdlDefinition, model.getPortName());
+                        }
                     }
                 } else {
                 	warning("WsdlServiceDoesNotMatch", wsdlDefinition, model.getServiceName());
