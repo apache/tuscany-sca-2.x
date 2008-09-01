@@ -85,7 +85,13 @@ public class WSDLInterfaceIntrospectorImpl {
     }
     
     private void processIntents(WSDLInterface wsdlInterface, PortType portType) {
-        Object o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        Object o;
+        try {
+            o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        } catch (NoSuchMethodError e) {
+            // That method does not exist on older WSDL4J levels
+            o = null;
+        }
         if(o != null && o instanceof Vector) {
             Vector<QName> policyAttributes = (Vector<QName>) o;
             
@@ -113,7 +119,13 @@ public class WSDLInterfaceIntrospectorImpl {
     private boolean isConversational(PortType portType) {
         boolean conversational = false;
         
-        Object o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        Object o;
+        try {
+            o =  portType.getExtensionAttribute(POLICY_REQUIRES);
+        } catch (NoSuchMethodError e) {
+            // That method does not exist on older WSDL4J levels
+            o =null;
+        }
         if(o != null && o instanceof Vector) {
             Vector<QName> policyAttributes = (Vector<QName>) o;
             
@@ -129,7 +141,13 @@ public class WSDLInterfaceIntrospectorImpl {
     private boolean isEndConversation(javax.wsdl.Operation operation) {
         boolean endConversation = false;
         
-        Object o =  operation.getExtensionAttribute(POLICY_END_CONVERSATION);
+        Object o;
+        try {
+            o =  operation.getExtensionAttribute(POLICY_END_CONVERSATION);
+        } catch (NoSuchMethodError e) {
+            // That method does not exist on older WSDL4J levels
+            o = null;
+        }
         if(o != null && o instanceof String) {
             endConversation = Boolean.valueOf((String)o);            
         }
