@@ -97,7 +97,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
             URI deployURI = URI.create(this.implementation.getProcessDefinition().getLocation());
             
-            File deploymentDir = new File(deployURI.getPath()).getParentFile();
+            File deploymentDir = new File(deployURI).getParentFile();
             
             if(__log.isInfoEnabled()) {
                 __log.info(">>> Deploying : " + deploymentDir.toString());

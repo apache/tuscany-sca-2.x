@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -210,7 +211,7 @@ public class BPELODEDeployFile {
      */
     private File getBPELFile() {
         try {
-            File theProcess = new File(implementation.getProcessDefinition().getLocation());
+            File theProcess = new File(URI.create(implementation.getProcessDefinition().getLocation()));
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {
