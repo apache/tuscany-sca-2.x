@@ -149,6 +149,7 @@
                 <module>../../../modules/databinding-json</module>
                 <module>../../../modules/databinding-saxon</module>
                 <module>../../../modules/databinding-sdo</module>
+                <module>../../../modules/databinding-sdo-axiom</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/domain-manager</module>
@@ -186,7 +187,7 @@
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>
-                <module>../../../modules/node-launcher-osgi</module>
+                <module>../../../modules/node-launcher-equinox</module>
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/node-manager</module>
                 <module>../../../modules/policy</module>

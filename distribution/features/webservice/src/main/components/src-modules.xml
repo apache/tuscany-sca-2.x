@@ -47,6 +47,8 @@
                 <include>databinding-axiom/**/*</include>
                 <include>databinding-jaxb/**/*</include>
                 <include>databinding-jaxb-axiom/**/*</include>
+                <include>databinding-sdo/**/*</include>
+                <include>databinding-sdo-axiom/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
                 <include>distribution-core/**/*</include>
@@ -72,7 +74,7 @@
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
-                <include>node-launcher-osgi/**/*</include>
+                <include>node-launcher-equinox/**/*</include>
                 <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
