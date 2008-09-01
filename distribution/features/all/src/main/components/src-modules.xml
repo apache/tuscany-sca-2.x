@@ -63,6 +63,7 @@
                 <include>databinding-json/**/*</include>
                 <include>databinding-saxon/**/*</include>
                 <include>databinding-sdo/**/*</include>
+                <include>databinding-sdo-axiom/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
                 <include>distribution-core/**/*</include>
@@ -106,7 +107,7 @@
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
-                <include>node-launcher-osgi/**/*</include>
+                <include>node-launcher-equinox/**/*</include>
                 <include>node-launcher-webapp/**/*</include>
                 <include>node-manager/**/*</include>
                 <include>policy/**/*</include>

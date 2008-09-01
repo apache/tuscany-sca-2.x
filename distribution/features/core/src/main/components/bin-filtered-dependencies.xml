@@ -66,7 +66,7 @@
                 <exclude>org.apache.tuscany.sca:tuscany-node-api</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-impl</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher</exclude>
-                <exclude>org.apache.tuscany.sca:tuscany-node-launcher-osgi</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-node-launcher-equinox</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher-webapp</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy-security</exclude>
@@ -91,13 +91,17 @@
                 <exclude>javax.xml.bind:jaxb-api</exclude>
                 <exclude>javax.xml.stream:stax-api</exclude>
                 <exclude>javax.xml.ws:jaxws-api</exclude>
-                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
-                <exclude>org.apache.felix:org.osgi.compendium</exclude>
-                <exclude>org.apache.felix:org.osgi.core</exclude>
-                <exclude>org.apache.felix:org.osgi.foundation</exclude>
                 <exclude>org.apache.geronimo.specs:geronimo-commonj_1.1_spec</exclude>
                 <exclude>org.apache.ws.commons.schema:XmlSchema</exclude>
                 <exclude>org.codehaus.woodstox:wstx-asl</exclude>
+                <exclude>org.eclipse.core:contenttype</exclude>
+                <exclude>org.eclipse.core:jobs</exclude>
+                <exclude>org.eclipse.core:runtime</exclude>
+                <exclude>org.eclipse.equinox:app</exclude>
+                <exclude>org.eclipse.equinox:common</exclude>
+                <exclude>org.eclipse.equinox:preferences</exclude>
+                <exclude>org.eclipse.equinox:registry</exclude>
+                <exclude>org.eclipse:osgi</exclude>
                 <exclude>wsdl4j:wsdl4j</exclude>
                 <exclude>org.apache.tuscany.sca:*</exclude>
             </excludes>

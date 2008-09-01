@@ -89,6 +89,16 @@
             <artifactId>tuscany-databinding-jaxb-axiom</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-sdo</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-sdo-axiom</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
 
         <!-- Hosts -->
         <dependency>
@@ -172,6 +182,8 @@
                 <module>../../../modules/databinding-axiom</module>
                 <module>../../../modules/databinding-jaxb</module>
                 <module>../../../modules/databinding-jaxb-axiom</module>
+                <module>../../../modules/databinding-sdo</module>
+                <module>../../../modules/databinding-sdo-axiom</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/endpoint</module>
@@ -196,7 +208,7 @@
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>
-                <module>../../../modules/node-launcher-osgi</module>
+                <module>../../../modules/node-launcher-equinox</module>
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>

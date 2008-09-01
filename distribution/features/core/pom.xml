@@ -170,7 +170,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-launcher-osgi</artifactId>
+            <artifactId>tuscany-node-launcher-equinox</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -307,7 +307,7 @@
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>
-                <module>../../../modules/node-launcher-osgi</module>
+                <module>../../../modules/node-launcher-equinox</module>
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
