@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * The model representing the BPEL implementation in an SCA assembly model.
@@ -71,4 +72,20 @@ public interface BPELImplementation extends Implementation {
      * @param componentType the component type to set
      */
     public void setComponentType(ComponentType componentType); 
+
+    /**
+     * Returns the model resolver that can be used to resolve WSDLs and XSDs
+     * referenced by the BPEL process.
+     * 
+     * @return
+     */
+    ModelResolver getModelResolver();
+
+    /**
+     * Sets the model resolver that can be used to resolve WSDLs and XSDs referenced
+     * by the BPEL process.
+     * 
+     * @param modelResolver
+     */
+    void setModelResolver(ModelResolver modelResolver);
 }

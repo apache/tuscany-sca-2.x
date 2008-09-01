@@ -125,6 +125,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         
     	if( implementation != null && implementation.isUnresolved()) 
     	{
+    	    implementation.setModelResolver(resolver);
+    	    
             BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(implementation, resolver);
             if(processDefinition.isUnresolved()) {
             	error("BPELProcessNotFound", implementation, processDefinition.getName());

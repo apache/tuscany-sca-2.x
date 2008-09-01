@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 
@@ -42,6 +43,7 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
     private QName processName;
     private BPELProcessDefinition processDefinition;
     private ComponentType componentType;
+    private ModelResolver modelResolver;
 
     public QName getProcess() {
         return processName;
@@ -61,53 +63,49 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
 
     @Override
     public String getURI() {
-        // The sample BPEL implementation does not have a URI
+        // The BPEL implementation does not have a URI
         return null;
     }
 
     @Override
     public void setURI(String uri) {
-        // The sample BPEL implementation does not have a URI
+        // The BPEL implementation does not have a URI
     }
 
     @Override
     public ConstrainingType getConstrainingType() {
-        // The sample BPEL implementation does not support constrainingTypes
+        // The BPEL implementation does not support constrainingTypes
         return null;
     }
 
     @Override
     public List<Property> getProperties() {
-        // The sample BPEL implementation does not support properties
+        // The BPEL implementation does not support properties
         return Collections.emptyList();
     }
     
-    /* 
-     * Returns the componentType for this BPEL process implementation 
-     */
     public ComponentType getComponentType() {
         return componentType;
     }
 
-    /*
-     * Sets the componentType for this BPEL process implementation
-     */
     public void setComponentType(ComponentType componentType) {
         this.componentType = componentType;
     }
     
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+    
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
+    }
+    
     @Override
-    /**
-     * Returns a List of the services for this BPEL process implementation
-     */
     public List<Service> getServices() {
         return componentType.getServices();
     }
 
     @Override
-    /**
-     * Returns a List of the references for this BPEL process implementation
-     */
     public List<Reference> getReferences() {
         return componentType.getReferences();
     }
