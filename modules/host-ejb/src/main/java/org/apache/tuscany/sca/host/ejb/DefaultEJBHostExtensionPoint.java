@@ -31,12 +31,12 @@ public class DefaultEJBHostExtensionPoint implements EJBHostExtensionPoint {
 
     private List<EJBHost> ejbHosts = new ArrayList<EJBHost>();
 
-    public void addEJBHost(EJBHost servletHost) {
-        ejbHosts.add(servletHost);
+    public void addEJBHost(EJBHost ejbHost) {
+        ejbHosts.add(ejbHost);
     }
 
-    public void removeEJBHost(EJBHost servletHost) {
-        ejbHosts.remove(servletHost);
+    public void removeEJBHost(EJBHost ejbHost) {
+        ejbHosts.remove(ejbHost);
     }
 
     public List<EJBHost> getEJBHosts() {
