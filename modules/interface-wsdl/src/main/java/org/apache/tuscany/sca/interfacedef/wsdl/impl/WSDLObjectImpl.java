@@ -19,15 +19,16 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import java.io.Serializable;
+
 import javax.wsdl.Definition;
-import javax.wsdl.WSDLElement;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WSDLObjectImpl<T extends WSDLElement> implements WSDLObject<T> {
+public class WSDLObjectImpl<T extends Serializable> implements WSDLObject<T> {
     private Definition definition;
     private T element;
 

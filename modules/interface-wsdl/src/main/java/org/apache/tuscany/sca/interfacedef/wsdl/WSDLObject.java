@@ -19,14 +19,15 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+import java.io.Serializable;
+
 import javax.wsdl.Definition;
-import javax.wsdl.WSDLElement;
 
 /**
  * Model for objects in a WSDL definition
  * @version $Rev$ $Date$
  */
-public interface WSDLObject<T extends WSDLElement> {
+public interface WSDLObject<T extends Serializable> {
     /**
      * Get the owning definition where the element is declared
      * @return The owning definition

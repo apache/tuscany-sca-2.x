@@ -128,8 +128,12 @@ public class WSDLModelResolver implements ModelResolver {
             wsdlExtensionRegistry.registerDeserializer(Types.class, schema, deserializer);
         }
         // ---- Policy WSDL Extensions
-        wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_POLICY_ATTRIBUTE_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
-        wsdlExtensionRegistry.registerExtensionAttributeType(Operation.class, Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION, AttributeExtensible.STRING_TYPE);
+        try {
+            wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_POLICY_ATTRIBUTE_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
+            wsdlExtensionRegistry.registerExtensionAttributeType(Operation.class, Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION, AttributeExtensible.STRING_TYPE);
+        } catch (NoSuchMethodError e) {
+            // That method does not exist on older WSDL4J levels
+        }
         
         // ---- BPEL additions
         serializer = new BPELExtensionHandler();
