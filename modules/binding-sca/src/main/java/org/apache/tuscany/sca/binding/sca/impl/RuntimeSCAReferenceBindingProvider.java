@@ -95,7 +95,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         //        act as though there is a local wire and sometimes as if there is a remote wire
         //        what are the implications of this here?
 
-        if (optimizableBinding.getTargetComponentService() != null) {
+        if (RemoteBindingHelper.isTargetRemote()) {
+            targetIsRemote = true;
+        } else if (optimizableBinding.getTargetComponentService() != null) {
             if (optimizableBinding.getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
             } else {

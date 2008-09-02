@@ -76,7 +76,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                     
                 }
                 
-                if ((serviceURI != null) && (serviceURI.isAbsolute())) {          
+                if (RemoteBindingHelper.isTargetRemote() || ((serviceURI != null) && (serviceURI.isAbsolute()))) {          
                     
                     //  create a nested provider to handle the remote case
                     distributedBinding = new DistributedSCABindingImpl();
