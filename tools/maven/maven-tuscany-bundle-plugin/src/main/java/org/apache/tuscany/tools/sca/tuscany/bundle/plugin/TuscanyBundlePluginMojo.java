@@ -347,7 +347,7 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
         String artifactId = artifact.getGroupId() + ":" + artifact.getArtifactId();
         
         String bundleSymName = (String)attributes.getValue("Bundle-SymbolicName");
-        if (!bundleSymName.startsWith("org.apache.tuscany")) {
+        if (!bundleSymName.startsWith("org.apache.tuscany.sca")) {
             bundleSymName = "org.apache.tuscany.sca.3rdparty." + bundleSymName;
             attributes.putValue("Bundle-SymbolicName", bundleSymName);
             
@@ -376,7 +376,10 @@ public class TuscanyBundlePluginMojo extends BundleAllPlugin {
                 Map importAttr = (Map)importMap.get(pkg);
                 String version = (String)importAttr.get("version");
                 if (version != null && version.indexOf(',') == -1) {
-                    if (!version.matches(".*\\..*\\.")) {
+                    if (((String)pkg).startsWith("org.osgi")) {
+                        // Leave version as is - for OSGi packages, assume backward compatibility
+                    }
+                    else if (!version.matches(".*\\..*\\.")) {
                         Version curVersion = new Version(version);
                         Version nextVersion = new Version(curVersion.getMajor(), curVersion.getMinor()+1, 0);
                         version = '[' + version + ',' + nextVersion + ')';
