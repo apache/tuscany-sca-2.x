@@ -33,6 +33,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
@@ -54,6 +55,7 @@ public class JMSBindingListener implements MessageListener {
 
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
+    private Binding targetBinding;
     private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponentService service;
     private JMSMessageProcessor requestMessageProcessor;
@@ -61,10 +63,11 @@ public class JMSBindingListener implements MessageListener {
     private String correlationScheme;
     private List<Operation> serviceOperations;
 
-    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service) throws NamingException {
+    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;
+        this.targetBinding = targetBinding;
         requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         correlationScheme = jmsBinding.getCorrelationScheme();
@@ -107,7 +110,7 @@ public class JMSBindingListener implements MessageListener {
 
         setHeaderProperties(requestJMSMsg, tuscanyMsg, operation);
 
-        return service.getRuntimeWire(jmsBinding).invoke(operation, tuscanyMsg);
+        return service.getRuntimeWire(targetBinding).invoke(operation, tuscanyMsg);
     }
 
     protected Operation getTargetOperation(String operationName) {

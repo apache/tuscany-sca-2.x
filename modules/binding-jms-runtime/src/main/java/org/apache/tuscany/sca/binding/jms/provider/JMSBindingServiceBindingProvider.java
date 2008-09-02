@@ -31,6 +31,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
@@ -50,6 +51,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private RuntimeComponentService service;
+    private Binding targetBinding;
     private JMSBinding jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
     private MessageConsumer consumer;
@@ -58,10 +60,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
     private Destination destination;
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding, WorkScheduler workScheduler) {
+    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler) {
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
+        this.targetBinding = targetBinding;
 
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
@@ -139,7 +142,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             consumer = session.createConsumer(destination);
         }
 
-        final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service);
+        final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
         try {
 
             consumer.setMessageListener(listener);

@@ -204,7 +204,7 @@ public class OperationSelectionTestCaseFIXME {
             .andReturn(operationReturnValue);
 
         // Create the JMS Binding Listener
-        final JMSBindingListener bindingListener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service);
+        final JMSBindingListener bindingListener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service, null);
 
         // Simulate a message
         final TextMessage requestJMSMsg = EasyMock.createStrictMock(TextMessage.class);
