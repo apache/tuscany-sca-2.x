@@ -90,7 +90,11 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
+        if (reference.getInterfaceContract() == null) {
+            return reference.getReference().getInterfaceContract();
+        } else {
+            return reference.getInterfaceContract();
+        }
     }
 
     public void start() {
