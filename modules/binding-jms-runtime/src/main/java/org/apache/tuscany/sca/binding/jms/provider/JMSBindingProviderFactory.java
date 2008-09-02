@@ -49,7 +49,7 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
-        return new JMSBindingServiceBindingProvider(component, service, binding, workScheduler);
+        return new JMSBindingServiceBindingProvider(component, service, binding, binding, workScheduler);
     }
 
     public Class<JMSBinding> getModelType() {

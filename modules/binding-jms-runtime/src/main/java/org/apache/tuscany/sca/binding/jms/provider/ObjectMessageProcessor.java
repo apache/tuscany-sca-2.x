@@ -43,7 +43,12 @@ public class ObjectMessageProcessor extends AbstractMessageProcessor {
     protected Object[] extractPayload(Message msg) {
         try {
 
-            return new Object[] {((ObjectMessage)msg).getObject()};
+            Object o = ((ObjectMessage)msg).getObject();
+            if (o != null && o.getClass().isArray()) {
+                return (Object[])o;
+            } else {
+                return new Object[] { o};
+            }
 
         } catch (JMSException e) {
             throw new JMSBindingException(e);

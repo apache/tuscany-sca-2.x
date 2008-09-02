@@ -141,7 +141,7 @@ public class JMSBindingServiceQueueCreateModeTestCaseFIXME {
         // Try and create the JMS Binding Service for the JMS Binding
         try {
             JMSBindingServiceBindingProvider jmsService =
-                new JMSBindingServiceBindingProvider(null, service, jmsBinding, null);
+                new JMSBindingServiceBindingProvider(null, service, null, jmsBinding, null);
             jmsService.start();
 
             // Check whether we were expecting an exception
