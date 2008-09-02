@@ -125,7 +125,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         if (isTargetRemote()) {
             // initialize the remote provider if it hasn't been done already
             if (distributedProvider == null) {
-                if (!reference.getInterfaceContract().getInterface().isRemotable()) {
+                if (reference.getInterfaceContract() != null && !reference.getInterfaceContract().getInterface().isRemotable()) {
                     throw new IllegalStateException("Reference interface not remotable for component: " + component
                         .getName()
                         + " and reference: "
