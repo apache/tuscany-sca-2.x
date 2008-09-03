@@ -148,8 +148,10 @@ public class FelixOSGiHost implements OSGiHost {
                 try {
                     b.start();
                     Class<?> discovererClass = b.loadClass("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
+                    Method getInstance = discovererClass.getMethod("getInstance");
+                    Object instance = getInstance.invoke(null);
                     Method getter = discovererClass.getMethod("getServiceDiscoverer");
-                    Object discoverer = getter.invoke(null);
+                    Object discoverer = getter.invoke(instance);
 
                     Method getCL = discoverer.getClass().getMethod("getContextClassLoader");
                     ClassLoader cl = (ClassLoader)getCL.invoke(discoverer);
