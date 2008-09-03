@@ -409,10 +409,46 @@ public class ContributionServiceImpl implements ContributionService {
             }
         }
 
+        processApplicationComposite(contribution);
+
         // store the contribution on the registry
         this.contributionRepository.addContribution(contribution);
 
         return contribution;
+    }
+
+    /**
+     * Process any application composite (eg see 5.1.3 of SCA JEE spec) 
+     * TODO: see TUSCANY-2581
+     */
+    private void processApplicationComposite(Contribution contribution) {
+        
+        Composite composite = findComposite("web-inf/web.composite", contribution);
+        if (composite != null) {
+            if (!contribution.getDeployables().contains(composite)) {
+                contribution.getDeployables().add(createDeploymentComposite(composite));
+            }
+        }
+    }
+
+    /**
+     * Create a deployment composite for the composite
+     * See line 247 section 5.1.3 of SCA JEE spec
+     */
+    private Composite createDeploymentComposite(Composite composite) {
+        // TODO: for now just use as-is
+        return composite;
+    }
+
+    private Composite findComposite(String name, Contribution contribution) {
+        for (Artifact artifact : contribution.getArtifacts()) {
+            if (artifact.getModel() instanceof Composite) {
+                if (name.equalsIgnoreCase(artifact.getURI())) {
+                    return (Composite)artifact.getModel();
+                }
+            }
+        }
+        return null;
     }
 
     /**
