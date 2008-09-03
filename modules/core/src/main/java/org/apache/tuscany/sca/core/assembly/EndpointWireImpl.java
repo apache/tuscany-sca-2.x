@@ -151,6 +151,11 @@ public class EndpointWireImpl implements RuntimeWire {
     public void rebuild() {
     }
 
+    // TODO: TUSCANY-2580: give RuntimeComponentReferenceImpl a way to get at the endpoint
+    public Endpoint getEndpoint() {
+        return endpoint;
+    }
+    
     /**
      * @see java.lang.Object#clone()
      */
