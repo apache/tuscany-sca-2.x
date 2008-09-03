@@ -101,7 +101,16 @@ public class JMSResourceFactory {
      */
     public void closeConnection() throws JMSException {
         if (connection != null) {
-            connection.close();
+            try {
+                connection.close();
+            } catch (JMSException e) {
+                // if using an embedded broker then when shutting down Tuscany the broker may get closed
+                // before this stop method is called. I can't see how to detect that so for now just
+                // ignore the exception if the message is that the transport is already disposed
+                if (!e.getMessage().contains("disposed")) {
+                    throw e;
+                }
+            }
         }
     }
 
