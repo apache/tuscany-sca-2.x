@@ -170,14 +170,14 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
         return invokeImpl(obj, name, args, Object.class);
     }
 
-    public <T> T getInterface(Object obj, Class<T> clazz) {
+    public Object getInterface(Object obj, Class clazz) {
         if (obj == null) {
             throw new IllegalArgumentException("script object is null");
         }
         return makeInterface(obj, clazz);
     }
 
-    public <T> T getInterface(Class<T> clazz) {
+    public Object getInterface(Class clazz) {
         return makeInterface(null, clazz);
     }
 
@@ -443,10 +443,10 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                 public Set<String> getNames() {                    
                     HashSet set = new HashSet();
                     synchronized (ctx) {
-                        for (int scope : ctx.getScopes()) {
-                            Bindings b = ctx.getBindings(scope);
+                        for (Object scope : ctx.getScopes()) {
+                            Bindings b = ctx.getBindings((Integer)scope);
                             if (b != null) {
-                                for (String key: b.keySet()) {
+                                for (Object key: b.keySet()) {
                                     set.add(key);
                                 }
                             }
