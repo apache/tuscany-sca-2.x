@@ -97,7 +97,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         public URL getLocation() {
             return url;
         }
-        
+
         public URL getResource(final String name) {
             return AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 public URL run() {
@@ -117,11 +117,11 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     }
 
     public class ClassLoaderImpl extends SecureClassLoader {
-    
+
         public ClassLoaderImpl() {
             super(EquinoxServiceDiscoverer.class.getClassLoader());
         }
-    
+
         /**
          * Open a back-door to expose the META-INF/services resources
          */
@@ -135,21 +135,21 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             if (path.startsWith("/")) {
                 path = path.substring(1);
             }
-    
+
             if (!path.startsWith("META-INF/services")) {
                 return null;
             }
-    
+
             for (Bundle bundle : context.getBundles()) {
                 URL url = bundle.getEntry(name);
                 if (url != null) {
                     return url;
                 }
             }
-    
+
             return null;
         }
-    
+
         /**
          * Open a back-door to expose the META-INF/services resources
          */
@@ -164,13 +164,13 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             if (path.startsWith("/")) {
                 path = path.substring(1);
             }
-    
+
             if (!path.startsWith("META-INF/services")) {
                 return null;
             }
-    
+
             Set<URL> urlSet = new HashSet<URL>();
-    
+
             for (Bundle bundle : context.getBundles()) {
                 Enumeration<URL> urls = bundle.findEntries(path, file, false);
                 if (urls != null) {
@@ -179,7 +179,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             }
             return Collections.enumeration(urlSet);
         }
-    
+
     }
 
     private static String toString(Bundle b) {
@@ -250,72 +250,74 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
         serviceName = "META-INF/services/" + serviceName;
 
-        int index = serviceName.lastIndexOf('/');
-        String path = serviceName.substring(0, index);
-        String file = serviceName.substring(index + 1);
+        //        int index = serviceName.lastIndexOf('/');
+        //        String path = serviceName.substring(0, index);
+        //        String file = serviceName.substring(index + 1);
 
         for (Bundle bundle : context.getBundles()) {
-            Enumeration<URL> urls = bundle.findEntries(path, file, false);
-            while (urls != null && urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
-                if (debug) {
-                    logger.fine("Reading service provider file: " + url.toExternalForm());
-                }
+            // Enumeration<URL> urls = bundle.findEntries(path, file, false);
+            // Enumeration<URL> urls = bundle.findEntries(path, file, false); // This is expensive
+            final URL url = bundle.getEntry(serviceName);
+            if (url == null) {
+                continue;
+            }
+            if (debug) {
+                logger.fine("Reading service provider file: " + url.toExternalForm());
+            }
+            try {
+                // Allow privileged access to open URL stream. Add FilePermission to added to security
+                // policy file.
+                InputStream is;
                 try {
-                    // Allow privileged access to open URL stream. Add FilePermission to added to security
-                    // policy file.
-                    InputStream is;
-                    try {
-                        is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-                            public InputStream run() throws IOException {
-                                return url.openStream();
-                            }
-                        });
-                    } catch (PrivilegedActionException e) {
-                        throw (IOException)e.getException();
-                    }
-                    BufferedReader reader = null;
-                    try {
-                        reader = new BufferedReader(new InputStreamReader(is));
-                        int count = 0;
-                        while (true) {
-                            String line = reader.readLine();
-                            if (line == null)
-                                break;
-                            line = line.trim();
-                            if (!line.startsWith("#") && !"".equals(line)) {
-                                String reg = line.trim();
-                                if (debug) {
-                                    logger.fine("Registering service provider: " + reg);
-                                }
-
-                                Map<String, String> attributes = parseServiceDeclaration(reg);
-                                String className = attributes.get("class");
-                                if (className == null) {
-                                    // Add a unique class name to prevent equals() from returning true
-                                    className = "_class_" + count;
-                                    count++;
-                                }
-                                ServiceDeclarationImpl descriptor =
-                                    new ServiceDeclarationImpl(bundle, url, className, attributes);
-                                descriptors.add(descriptor);
-                                if (firstOnly) {
-                                    return descriptors;
-                                }
-                            }
+                    is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                        public InputStream run() throws IOException {
+                            return url.openStream();
                         }
-                    } finally {
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (IOException e) {
-                                // Ignore
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    });
+                } catch (PrivilegedActionException e) {
+                    throw (IOException)e.getException();
                 }
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(is));
+                    int count = 0;
+                    while (true) {
+                        String line = reader.readLine();
+                        if (line == null)
+                            break;
+                        line = line.trim();
+                        if (!line.startsWith("#") && !"".equals(line)) {
+                            String reg = line.trim();
+                            if (debug) {
+                                logger.fine("Registering service provider: " + reg);
+                            }
+
+                            Map<String, String> attributes = parseServiceDeclaration(reg);
+                            String className = attributes.get("class");
+                            if (className == null) {
+                                // Add a unique class name to prevent equals() from returning true
+                                className = "_class_" + count;
+                                count++;
+                            }
+                            ServiceDeclarationImpl descriptor =
+                                new ServiceDeclarationImpl(bundle, url, className, attributes);
+                            descriptors.add(descriptor);
+                            if (firstOnly) {
+                                return descriptors;
+                            }
+                        }
+                    }
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            // Ignore
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return descriptors;
@@ -331,7 +333,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     }
 
     public <T> T getContext() {
-        return (T) context;
+        return (T)context;
     }
 
 }

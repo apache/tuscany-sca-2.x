@@ -33,7 +33,7 @@ public class OSGiServiceDiscoveryActivator implements BundleActivator {
         if (bundleContext == null) {
             bundleContext = context;
             OSGiServiceDiscoverer discoverer = new OSGiServiceDiscoverer(bundleContext);
-            ServiceDiscovery.setServiceDiscoverer(discoverer);
+            ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
         }
     }
 

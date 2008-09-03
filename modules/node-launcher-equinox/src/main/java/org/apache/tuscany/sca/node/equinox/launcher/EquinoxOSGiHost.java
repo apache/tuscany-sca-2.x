@@ -31,7 +31,9 @@ import org.osgi.framework.BundleContext;
  * 
  */
 public class EquinoxOSGiHost implements OSGiHost {
-
+    private LauncherBundleActivator activator = new LauncherBundleActivator();
+    private BundleContext context;
+    
     private final static String systemPackages =
         "org.osgi.framework; version=1.3.0," + "org.osgi.service.packageadmin; version=1.2.0, "
             + "org.osgi.service.startlevel; version=1.0.0, "
@@ -92,15 +94,22 @@ public class EquinoxOSGiHost implements OSGiHost {
         String args[] = {};
         Map<Object, Object> props = new HashMap<Object, Object>();
         props.put("org.osgi.framework.system.packages", systemPackages);
+        // Set the extension bundle
+        // props.put("osgi.framework.extensions", "org.apache.tuscany.sca.extensibility.equinox");
         props.put(EclipseStarter.PROP_CLEAN, "true");
         props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
-        props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse").toURI().toString());
+        props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse/install").toURI().toString());
+        props.put(LocationManager.PROP_CONFIG_AREA, new File("target/eclipse/config").toURI().toString());
+        props.put(LocationManager.PROP_USER_AREA, new File("target/eclipse/user").toURI().toString());
+        
         EclipseStarter.setInitialProperties(props);
-        BundleContext context = EclipseStarter.startup(args, null);
+        context = EclipseStarter.startup(args, null);
+        activator.start(context);
         return context;
     }
 
     private void shutdown() throws Exception {
+        activator.stop(context);
         EclipseStarter.shutdown();
     }
 

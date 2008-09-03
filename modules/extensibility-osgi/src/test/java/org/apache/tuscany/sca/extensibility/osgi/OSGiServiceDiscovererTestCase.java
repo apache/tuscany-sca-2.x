@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.sca.extensibility.osgi;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,4 +113,11 @@ public class OSGiServiceDiscovererTestCase {
         descriptors = discoverer.discover("notthere", true);
         Assert.assertEquals(0, descriptors.size());
     }    
+    
+    @Test
+    public void testClassLoader () throws IOException {
+        Enumeration<URL> resources = discoverer.getContextClassLoader().getResources("META-INF/services/org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory");
+        List<URL> list = Collections.list(resources);
+        Assert.assertEquals(1, list.size());
+    }
 }

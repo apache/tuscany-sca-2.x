@@ -142,7 +142,8 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
             for (URL url : urls) {
                 File file = new File(url.toURI());
-                if (file.getName().startsWith("org.apache.felix.") || file.getName().startsWith("org.osgi.")) {
+                if (file.getName().startsWith("org.apache.felix.") || file.getName().startsWith("osgi-")
+                    || file.getName().startsWith("org.osgi.")) {
                     continue;
                 }
                 try {
@@ -205,6 +206,12 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         }
 
         String symbolicName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+        if (symbolicName != null) {
+            int index = symbolicName.indexOf(';');
+            if (index != -1) {
+                symbolicName = symbolicName.substring(0, index);
+            }
+        }
         String version = manifest.getMainAttributes().getValue(BUNDLE_VERSION);
         Bundle bundle = findBundle(bundleContext, symbolicName, version);
         if (bundle != null) {
