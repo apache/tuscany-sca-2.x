@@ -31,6 +31,7 @@
                 <include>binding-atom-abdera/**/*</include>
                 <include>binding-ejb/**/*</include>
                 <include>binding-http/**/*</include>
+                <include>binding-http-runtime/**/*</include>
                 <include>binding-jsonrpc/**/*</include>
                 <include>binding-rss/**/*</include>
                 <include>binding-sca/**/*</include>

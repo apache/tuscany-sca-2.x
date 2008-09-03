@@ -39,3 +39,6 @@ cd ../webservice; ../etc/generate-maven-files.sh
 echo "Generate Maven files: all"
 cd ../all; ../etc/generate-maven-files.sh
 
+echo "Generate Maven files: repository"
+cd ../repository; ../etc/generate-maven-files.sh
+
