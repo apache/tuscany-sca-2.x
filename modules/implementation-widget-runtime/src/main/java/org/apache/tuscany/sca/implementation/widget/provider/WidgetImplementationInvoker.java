@@ -223,22 +223,20 @@ class WidgetImplementationInvoker implements Invoker {
                 String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
                 if(proxyClient != null) {
                     
-                    // Convert the local host to the acutal name of local host
+                    // Generate the JavaScript proxy configuration code
+                    // Proxies are configured with the target URI path, as at this point we shouldn't
+                    // be generating proxies that communicate with other hosts (if a proxy needs to
+                    // communicate with another host it should be generated on and served by
+                    // that particular host)
                     URI targetURI = URI.create(binding.getURI());
-                    if ("localhost".equals(targetURI.getHost())) {
-                        try {
-                            String host = InetAddress.getLocalHost().getHostName();
-                            targetURI = new URI(targetURI.getScheme(), targetURI.getUserInfo(),
-                                                host, targetURI.getPort(),
-                                                targetURI.getPath(), targetURI.getQuery(), targetURI.getFragment());
-                        } catch (UnknownHostException e) {
-                        }
-                    }
+                    String targetPath = targetURI.getPath();
                     
                     if(proxyClient.equals("JSONRpcClient")) {
-                        pw.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetURI + "\").Service;");
+                        //FIXME Proxies should follow the same pattern, saving us from having to test
+                        // for JSONRpc here
+                        pw.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetPath + "\").Service;");
                     } else {
-                        pw.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetURI + "\");");
+                        pw.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetPath + "\");");
                     }
                 }                
             }
