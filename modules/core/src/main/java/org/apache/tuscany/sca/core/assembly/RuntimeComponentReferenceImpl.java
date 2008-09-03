@@ -69,6 +69,18 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
                 return wire;
             }
         }
+
+        // TODO: TUSCANY-2580: before returning null see if a candidate binding matches 
+        for (RuntimeWire wire : getRuntimeWires()) {
+            if (wire instanceof EndpointWireImpl) {
+                Endpoint endpoint = ((EndpointWireImpl)wire).getEndpoint();
+                for (Binding b : endpoint.getCandidateBindings()) {
+                    if (b == binding) {
+                        return wire;
+                    }
+                }
+            }
+        }
         return null;
     }
 

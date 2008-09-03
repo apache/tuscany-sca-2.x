@@ -307,6 +307,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
             // wire
             return;
         }
+
+        // TODO: TUSCANY-2580: avoid NPE if the InterfaceCOntract is null
+        Reference ctref = endpoint.getSourceComponentReference().getReference();
+        if (ctref != null && ctref.getInterfaceContract() == null) {
+            ctref.setInterfaceContract(reference.getInterfaceContract());
+        }
         
         RuntimeWire wire = new EndpointWireImpl(endpoint, this);
         

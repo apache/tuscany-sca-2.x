@@ -121,7 +121,16 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         if (this.binding == null) {
             this.binding = this.reference.getBinding(SCABinding.class);
             if (this.binding == null) {
-                this.binding = this.reference.getBindings().get(0);
+
+                // TODO: TUSCANY-2580: if the refernece doesn't have a binding yet then instead of NPE use a candidate one if its avaialable              
+                if (reference.getBindings() != null && reference.getBindings().size() > 0) {
+                    this.binding = this.reference.getBindings().get(0);
+                } else {
+                    this.binding = this.reference.getEndpoints().get(0).getCandidateBindings().get(0);
+                    if (this.reference.getEndpoints().get(0).getInterfaceContract() == null) {
+                        this.reference.getEndpoints().get(0).setInterfaceContract(reference.getInterfaceContract());
+                    }
+                }
             }
         }
 
@@ -169,8 +178,10 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     }
 
     protected void initCallbackID() {
-        if (reference.getInterfaceContract().getCallbackInterface() != null) {
-            this.callbackID = createCallbackID();
+        if (reference.getInterfaceContract() != null) {
+            if (reference.getInterfaceContract().getCallbackInterface() != null) {
+                this.callbackID = createCallbackID();
+            }
         }
     }
 
