@@ -90,6 +90,12 @@ public class EndpointResolverImpl implements EndpointResolver {
                 }
             }
             
+            if (endpoint.isUnresolved()){
+                // TODO: TUSCANY-2580: if its still unresolved use the first candidate binding
+                endpoint.setSourceBinding(endpoint.getCandidateBindings().get(0));
+                endpoint.getSourceBinding().setURI(endpoint.getTargetName());
+            }
+
             if (endpoint.isUnresolved() != true){
                 // If we have to build the endpoint because we are matching
                 // intents and policies then we do that now. If the binding
