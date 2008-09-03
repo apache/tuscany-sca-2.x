@@ -64,7 +64,7 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
     private JMSBinding createBinding(DistributedSCABinding binding) {
         JMSBinding b = new JMSBinding();
         b.setInitialContextFactoryName("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        b.setJndiURL("tcp://localhost:61616"); // TODO: plug in jndi url from definitions.xml
+        b.setJndiURL("vm://localhost"); // TODO: plug in jndi url from definitions.xml
         b.setRequestMessageProcessorName(JMSBindingConstants.OBJECT_MP_CLASSNAME);
         b.setResponseMessageProcessorName(JMSBindingConstants.OBJECT_MP_CLASSNAME);
         if (binding.getSCABinding().getURI().startsWith("/")) {
