@@ -32,6 +32,7 @@ public class MyClientTestCase {
             Assert.assertEquals("Hi Hello petra", service.sayHello("petra"));
 
         } finally {
+            clientNode.stop();
             serviceNode.stop();
         }
     }
