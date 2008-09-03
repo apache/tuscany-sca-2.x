@@ -20,7 +20,7 @@
 
 cat pom.xml | awk 'BEGIN { i=0 } /<modules>/ { i=1; print } /.*/ { if (i==0) print } '
 
-mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(tuscany-)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\5", "g") }' | grep -v "distribution-" | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
+mvn -o dependency:list | awk '/.INFO.    (.*.tuscany.sca):(tuscany-)(.*):(.*):(.*):(.*)/ { print gensub("(.INFO.    )(.*)(:)(tuscany-)(.*)(:)(.*)(:)(.*)(:)(.*)", "\\5", "g") }' | grep -v "distribution-" | grep -v "maven-" | grep -v "wsdl2java" | grep -v "java2wsdl" | sort | awk '{ printf "                <module>../../../modules/%s</module>\n", $1 }'
 
 cat pom.xml | awk 'BEGIN { i=0 } /<\/modules>/ { i=1 } /.*/ { if (i==1) print } '
 
