@@ -102,6 +102,11 @@
                 <include>interface-java-xml/**/*</include>
                 <include>interface-wsdl/**/*</include>
                 <include>interface-wsdl-xml/**/*</include>
+                <include>java2wsdl/**/*</include>
+                <include>maven-ant-generator/**/*</include>
+                <include>maven-incremental-build/**/*</include>
+                <include>maven-java2wsdl/**/*</include>
+                <include>maven-wsdl2java/**/*</include>
                 <include>monitor/**/*</include>
                 <include>monitor-logging/**/*</include>
                 <include>node-api/**/*</include>
@@ -119,6 +124,7 @@
                 <include>workspace/**/*</include>
                 <include>workspace-impl/**/*</include>
                 <include>workspace-xml/**/*</include>
+                <include>wsdl2java/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>
