@@ -35,17 +35,33 @@
 package org.apache.tuscany.sca.implementation.script.engines;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
@@ -60,18 +76,22 @@ import javax.script.SimpleBindings;
 
 import org.jruby.Ruby;
 import org.jruby.RubyException;
+import org.jruby.RubyIO;
+import org.jruby.RubyObject;
 import org.jruby.ast.Node;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.internal.runtime.GlobalVariable;
 import org.jruby.internal.runtime.GlobalVariables;
 import org.jruby.internal.runtime.ReadonlyAccessor;
+import org.jruby.internal.runtime.ValueAccessor;
 import org.jruby.javasupport.Java;
+import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.javasupport.JavaObject;
 import org.jruby.javasupport.JavaUtil;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.IAccessor;
 import org.jruby.runtime.builtin.IRubyObject;
-import org.jruby.runtime.load.LoadService;
+import org.jruby.util.KCode;
 
 import com.sun.script.jruby.JRubyScriptEngineFactory;
 
@@ -114,12 +134,10 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
             this.node = node;
         }
 
-        @Override
         public ScriptEngine getEngine() {
             return TuscanyJRubyScriptEngine.this;
         }
 
-        @Override
         public Object eval(ScriptContext ctx) throws ScriptException {
             return evalNode(node, ctx);
         }
@@ -139,27 +157,27 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
     }
 
     // Invocable methods
-    public Object invokeFunction(String name, Object[] args) 
-                         throws ScriptException {       
+    public Object invokeFunction(String name, Object... args) 
+                         throws ScriptException, NoSuchMethodException {       
         return invokeImpl(null, name, args, Object.class);
     }
 
-    public Object invokeMethod(Object obj, String name, Object[] args) 
-                         throws ScriptException {       
+    public Object invokeMethod(Object obj, String name, Object... args) 
+                         throws ScriptException, NoSuchMethodException {       
         if (obj == null) {
             throw new IllegalArgumentException("script object is null");
         }
         return invokeImpl(obj, name, args, Object.class);
     }
 
-    public Object getInterface(Object obj, Class clazz) {
+    public <T> T getInterface(Object obj, Class<T> clazz) {
         if (obj == null) {
             throw new IllegalArgumentException("script object is null");
         }
         return makeInterface(obj, clazz);
     }
 
-    public Object getInterface(Class clazz) {
+    public <T> T getInterface(Class<T> clazz) {
         return makeInterface(null, clazz);
     }
 
@@ -219,8 +237,9 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
 
     private Object rubyToJava(IRubyObject value, Class type) {
         return JavaUtil.convertArgument(
-                 Java.ruby_to_java(value, value, Block.NULL_BLOCK), 
-                 type);
+                runtime,
+                Java.ruby_to_java(value, value, Block.NULL_BLOCK), 
+                type);
     }
 
     private IRubyObject javaToRuby(Object value) {
@@ -235,49 +254,82 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
     }   
 
     private synchronized Node compileScript(String script, ScriptContext ctx) 
-                                 throws ScriptException {        
+                                 throws ScriptException {
         GlobalVariables oldGlobals = runtime.getGlobalVariables();  
         try {
+            setErrorWriter(ctx.getErrorWriter());
             setGlobalVariables(ctx);
             String filename = (String) ctx.getAttribute(ScriptEngine.FILENAME);
             if (filename == null) {
                 filename = "<unknown>";
-            }
-            return runtime.parse(script, filename, null, 0);
-        } catch (Exception exp) { 
-            throw new ScriptException(exp);
+            }            
+            return runtime.parseEval(script, filename, null, 0);
+        } catch (RaiseException e) {
+            RubyException re =  e.getException();
+            runtime.printError(re);
+            throw new ScriptException(e);
+        } catch (Exception e) {
+            throw new ScriptException(e);
         } finally {
             if (oldGlobals != null) {
-                //setGlobalVariables(oldGlobals);
+                setGlobalVariables(oldGlobals);
             }
         }
     }
 
     private synchronized Node compileScript(Reader reader, ScriptContext ctx) 
-                                 throws ScriptException {        
+                                 throws ScriptException {
         GlobalVariables oldGlobals = runtime.getGlobalVariables();  
         try {
+            setErrorWriter(ctx.getErrorWriter());
             setGlobalVariables(ctx);
             String filename = (String) ctx.getAttribute(ScriptEngine.FILENAME);
             if (filename == null) {
                 filename = "<unknown>";
+                String script = getRubyScript(reader);
+                return runtime.parseEval(script, filename, null, 0);
             }
-            return runtime.parse(reader, filename, null, 0);
+            InputStream inputStream = getRubyReader(filename);
+            return runtime.parseFile(inputStream, filename, null);
+        } catch (RaiseException e) {
+            RubyException re =  e.getException();
+            runtime.printError(re);
+            throw new ScriptException(e);
         } catch (Exception exp) {
             throw new ScriptException(exp);
         } finally {
             if (oldGlobals != null) {
-                //setGlobalVariables(oldGlobals);
+                setGlobalVariables(oldGlobals);
             }
         }
+    }
+
+    private String getRubyScript(Reader reader) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        char[] cbuf;
+        while (true) {
+            cbuf = new char[8*1024];
+            int chars = reader.read(cbuf, 0, cbuf.length);
+            if (chars < 0) {
+                break;
+            }
+            sb.append(cbuf, 0, chars);
+        }
+        cbuf = null;
+        return (new String(sb)).trim();
+    }
+    
+    private InputStream getRubyReader(String filename) throws FileNotFoundException {
+        File file = new File(filename);
+        return new FileInputStream(file);
     }
 
     private void setGlobalVariables(final ScriptContext ctx) {
         ctx.setAttribute("context", ctx, ScriptContext.ENGINE_SCOPE);
         setGlobalVariables(new GlobalVariables(runtime) {
                 GlobalVariables parent = runtime.getGlobalVariables();
-                
-                @Override
+
+            @Override
                 public void define(String name, IAccessor accessor) {
                     assert name != null;
                     assert accessor != null;
@@ -288,8 +340,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                     }
                 }
 
-
-                @Override
+            @Override
                 public void defineReadonly(String name, IAccessor accessor) {
                     assert name != null;
                     assert accessor != null;
@@ -301,7 +352,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                     }
                 } 
 
-                @Override
+            @Override
                 public boolean isDefined(String name) {
                     assert name != null;
                     assert name.startsWith("$");
@@ -312,7 +363,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                     }
                 }
 
-                @Override
+            @Override
                 public void alias(String name, String oldName) {
                     assert name != null;
                     assert oldName != null;
@@ -334,7 +385,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                     }
                 }
 
-                @Override
+            @Override
                 public IRubyObject get(String name) {
                     assert name != null;
                     assert name.startsWith("$");
@@ -356,7 +407,7 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                     }                    
                 }
 
-                @Override
+            @Override
                 public IRubyObject set(String name, IRubyObject value) {
                     assert name != null;
                     assert name.startsWith("$");
@@ -378,32 +429,38 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                             ((IAccessor)obj).setValue(value);
                         } else {                        
                             ctx.setAttribute(modifiedName, rubyToJava(value), scope);
+                            if ("KCODE".equals(modifiedName)) {
+                                setKCode((String)rubyToJava(value));
+                            } else if ("stdout".equals(modifiedName)) {
+                                equalOutputs((RubyObject)value);
+                            }
                         }
                         return oldValue;
                     }
                 }
 
-                @Override
-                public Iterator getNames() {                    
-                    List list = new ArrayList();
+            @Override
+                public Set<String> getNames() {                    
+                    HashSet set = new HashSet();
                     synchronized (ctx) {
-                        Iterator<Integer> iterator = ctx.getScopes().iterator();
-                        int scope;
-                        while (iterator.hasNext()) {
-                            scope = iterator.next().intValue();
+                        for (int scope : ctx.getScopes()) {
                             Bindings b = ctx.getBindings(scope);
                             if (b != null) {
-                                Iterator<String> bIterator = b.keySet().iterator();
-                                while (bIterator.hasNext()) {
-                                    list.add(bIterator.next());
+                                for (String key: b.keySet()) {
+                                    set.add(key);
                                 }
                             }
                         }
                     }
-                    for (Iterator names = parent.getNames(); names.hasNext();) {
-                        list.add(names.next());
+                    for (Iterator<String> names = parent.getNames().iterator(); names.hasNext();) {
+                        set.add(names.next());
                     }
-                    return Collections.unmodifiableList(list).iterator();
+                    return Collections.unmodifiableSet(set);
+                }
+
+            @Override
+                public IRubyObject getDefaultSeparator() {
+                    return parent.getDefaultSeparator();
                 }
             });
     }
@@ -416,85 +473,225 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
                             throws ScriptException {
         GlobalVariables oldGlobals = runtime.getGlobalVariables();
         try {
+            setWriterOutputStream(ctx.getWriter());
+            setErrorWriter(ctx.getErrorWriter());
             setGlobalVariables(ctx);
-            return rubyToJava(runtime.eval(node));
-        } catch (RaiseException exp) {
-            RubyException rexp = exp.getException();
-            throw new ScriptException(rexp.toString());
+            return rubyToJava(runtime.runNormally(node, false));
         } catch (Exception exp) {
             throw new ScriptException(exp);
         } finally {
-            if (oldGlobals != null) {
-                //setGlobalVariables(oldGlobals);
+            try {
+                JavaEmbedUtils.terminate(runtime);
+            } catch (RaiseException e) {
+                RubyException re =  e.getException();
+                runtime.printError(re);
+                if (!runtime.fastGetClass("SystemExit").isInstance(re)) {
+                    throw new ScriptException(e);
+                }
+            } finally {
+                if (oldGlobals != null) {
+                    setGlobalVariables(oldGlobals);
+                }
             }
         }
     }
 
-    private void init(String loadPath) {    
-        // Allow privileged access to ready properties. Requires PropertyPermission in security
-        // policy.
-        //runtime = Ruby.getDefaultInstance();
-        runtime = AccessController.doPrivileged(new PrivilegedAction<Ruby>() {
-            public Ruby run() {
-                return Ruby.getDefaultInstance();
-            }
-        });
-        if (loadPath == null) {
-            // Allow privileged access to ready properties. Requires PropertyPermission in security
-            // policy.
-            loadPath = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                public String run() {
-                    return System.getProperty("java.class.path");
-                }
-            });
-        }
-        List list = new ArrayList(Arrays.asList(loadPath.split(File.pathSeparator)));
-        list.add("META-INF/jruby.home/lib/ruby/site_ruby/1.8");
-        list.add("META-INF/jruby.home/lib/ruby/site_ruby/1.8/java");
-        list.add("META-INF/jruby.home/lib/ruby/site_ruby");
-        list.add("META-INF/jruby.home/lib/ruby/1.8");
-        list.add("META-INF/jruby.home/lib/ruby/1.8/java");
-        list.add("lib/ruby/1.8");
-        final List finalList = list;
-        // runtime.getLoadService().init(list);
-        // Allow privileged access to ready properties. Requires PropertyPermission in security
-        // policy.
-        final LoadService loadService = runtime.getLoadService();
+    private void init(final String loadPath) {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            public Ruby run() {
-                loadService.init(finalList);
-                // loadService.require("java");
+            public Object run() {
+                runtime = Ruby.newInstance();
+                IAccessor d = new ValueAccessor(runtime.newString("<script>"));
+                runtime.getGlobalVariables().define("$PROGRAM_NAME", d);
+                runtime.getGlobalVariables().define("$0", d);
+                String path = loadPath;
+                if (path == null) {
+                    path = System.getProperty("java.class.path");
+                }
+                List list = Arrays.asList(path.split(File.pathSeparator));
+                runtime.getLoadService().init(list);
+                runtime.getLoadService().require("java");
                 return null;
             }
-        });        
+        });
     }
 
-    private Object invokeImpl(final Object obj, String method, 
+    private synchronized Object invokeImpl(final Object obj, String method, 
                         Object[] args, Class returnType)
                         throws ScriptException {
         if (method == null) {
             throw new NullPointerException("method name is null");
         }
-
+        GlobalVariables oldGlobals = runtime.getGlobalVariables();
         try {
+            setWriterOutputStream(context.getWriter());
+            setErrorWriter(context.getErrorWriter());
+            setGlobalVariables(context);           
             IRubyObject rubyRecv = obj != null ? 
                   JavaUtil.convertJavaToRuby(runtime, obj) : runtime.getTopSelf();
-
-            IRubyObject[] rubyArgs = JavaUtil.convertJavaArrayToRuby(runtime, args);
-
-            // Create Ruby proxies for any input arguments that are not primitives.
-            IRubyObject javaUtilities = runtime.getObject().getConstant("JavaUtilities");
-            for (int i = 0; i < rubyArgs.length; i++) {
-                IRubyObject tmp = rubyArgs[i];
-                if (tmp instanceof JavaObject) {
-                    rubyArgs[i] = javaUtilities.callMethod(runtime.getCurrentContext(), "wrap", tmp);
+            
+            IRubyObject result;
+            if (args != null && args.length > 0) {
+                IRubyObject[] rubyArgs = JavaUtil.convertJavaArrayToRuby(runtime, args);
+                // Create Ruby proxies for any input arguments that are not primitives.
+                IRubyObject javaUtilities = runtime.getObject().getConstant("JavaUtilities");
+                for (int i = 0; i < rubyArgs.length; i++) {
+                    IRubyObject tmp = rubyArgs[i];
+                    if (tmp instanceof JavaObject) {
+                        rubyArgs[i] = javaUtilities.callMethod(runtime.getCurrentContext(), "wrap", tmp);
+                    }
                 }
-            }
-
-            IRubyObject result = rubyRecv.callMethod(runtime.getCurrentContext(), method, rubyArgs);
+                result = rubyRecv.callMethod(runtime.getCurrentContext(), method, rubyArgs);
+            } else {
+                result = rubyRecv.callMethod(runtime.getCurrentContext(), method);
+            }   
             return rubyToJava(result, returnType);
         } catch (Exception exp) {
             throw new ScriptException(exp);
+        } finally {
+            try {
+                JavaEmbedUtils.terminate(runtime);
+            } catch (RaiseException e) {
+                RubyException re =  e.getException();
+                runtime.printError(re);
+                if (!runtime.fastGetClass("SystemExit").isInstance(re)) {
+                    throw new ScriptException(e);
+                }
+            } finally {
+                if (oldGlobals != null) {
+                    setGlobalVariables(oldGlobals);
+                }
+            }
+        }
+    }
+    
+    private void setKCode(String encoding) {
+        KCode kcode = KCode.create(runtime, encoding);
+        runtime.setKCode(kcode);
+    }
+    
+    private void equalOutputs(RubyObject value) {
+        runtime.getGlobalVariables().set("$>", value);
+        runtime.getGlobalVariables().set("$defout", value);
+    }
+    
+    private void setWriterOutputStream(Writer writer) {
+        try {
+            RubyIO dummy_io = 
+                new RubyIO(runtime, new PrintStream(new WriterOutputStream(new StringWriter())));
+            runtime.getGlobalVariables().set("$stderr", dummy_io); //discard unwanted warnings
+            RubyIO io = 
+                new RubyIO(runtime, new PrintStream(new WriterOutputStream(writer)));
+            io.getOpenFile().getMainStream().setSync(true);
+            runtime.defineGlobalConstant("STDOUT", io);
+            runtime.getGlobalVariables().set("$>", io);
+            runtime.getGlobalVariables().set("$stdout", io);
+            runtime.getGlobalVariables().set("$defout", io);
+        } catch (UnsupportedEncodingException exp) {
+            throw new IllegalArgumentException(exp);
+        }
+    }
+    
+    private void setErrorWriter(Writer writer) {
+        try {
+            RubyIO dummy_io = 
+                new RubyIO(runtime, new PrintStream(new WriterOutputStream(new StringWriter())));
+            runtime.getGlobalVariables().set("$stderr", dummy_io); //discard unwanted warnings
+            RubyIO io = 
+                new RubyIO(runtime, new PrintStream(new WriterOutputStream(writer)));
+            io.getOpenFile().getMainStream().setSync(true);
+            runtime.defineGlobalConstant("STDERR", io);
+            runtime.getGlobalVariables().set("$stderr", io);
+            runtime.getGlobalVariables().set("$deferr", io);
+        } catch (UnsupportedEncodingException exp) {
+            throw new IllegalArgumentException(exp);
+        }
+    }
+
+    private String getEncoding() {
+        String enc = System.getProperty("sun.jnu.encoding");
+        if (enc != null) {
+            return enc;
+        }
+        return ((enc = System.getProperty("file.encoding")) == null) ? "UTF-8" : enc;
+    }
+    
+    private class WriterOutputStream extends OutputStream {
+
+        private Writer writer;
+        private CharsetDecoder decoder;
+        
+        private WriterOutputStream(Writer writer) throws UnsupportedEncodingException {
+            this(writer, getEncoding());
+        }
+        
+        private WriterOutputStream(Writer writer, String enc) throws UnsupportedEncodingException {
+            this.writer = writer;
+            if (enc == null) {
+                throw new UnsupportedEncodingException("encoding is " + enc);
+            }
+            try {
+                decoder = Charset.forName(enc).newDecoder();
+            } catch (Exception e) {
+                throw new UnsupportedEncodingException("Unsupported: " + enc);
+            }
+            decoder.onMalformedInput(CodingErrorAction.REPLACE);
+            decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        }
+        
+        @Override
+        public void close() throws IOException {
+            synchronized(writer) {
+                decoder = null;
+                writer.close();
+            }
+        }
+
+        @Override
+        public void flush() throws IOException {
+            synchronized(writer) {
+                writer.flush();
+            }
+        }
+        
+        @Override
+        public void write(int b) throws IOException {
+            byte[] buffer = new byte[1];
+            write(buffer, 0, 1);
+        }
+        
+        @Override
+        public void write(byte[] buffer) throws IOException {
+            write(buffer, 0, buffer.length);
+        }
+
+        @Override
+        public void write(byte[] buffer, int offset, int length) throws IOException {
+            synchronized(writer) {
+                if (offset < 0 || offset > buffer.length - length || length < 0) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (length == 0) {
+                    return;
+                }
+                ByteBuffer bytes = ByteBuffer.wrap(buffer, offset, length);
+                CharBuffer chars = CharBuffer.allocate(length);
+                convert(bytes, chars);
+                char[] cbuf = new char[chars.length()];
+                chars.get(cbuf, 0, chars.length());
+                writer.write(cbuf);
+                writer.flush();
+            }
+        }
+
+        private void convert(ByteBuffer bytes, CharBuffer chars) throws IOException {
+            decoder.reset();
+            chars.clear();
+            CoderResult result = decoder.decode(bytes, chars, true);
+            if (result.isError() || result.isOverflow()) {
+                throw new IOException(result.toString());
+            } else if (result.isUnderflow()) {
+                chars.flip();
+            }
         }
     }
 }
