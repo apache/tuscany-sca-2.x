@@ -79,7 +79,7 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
     private void initializeTuscanyClassLoaders(BundleContext bundleContext) {
 
         OSGiServiceDiscoverer discoverer = new OSGiServiceDiscoverer(bundleContext);
-        ServiceDiscovery.setServiceDiscoverer(discoverer);
+        ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
         thisBundle = bundleContext.getBundle();
 
         origTCCL = Thread.currentThread().getContextClassLoader();

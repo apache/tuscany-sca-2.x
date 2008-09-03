@@ -33,7 +33,7 @@ public class EquinoxServiceDiscoveryActivator implements BundleActivator {
         if (bundleContext == null) {
             bundleContext = context;
             EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(bundleContext);
-            ServiceDiscovery.setServiceDiscoverer(discoverer);
+            ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
         }
     }
 

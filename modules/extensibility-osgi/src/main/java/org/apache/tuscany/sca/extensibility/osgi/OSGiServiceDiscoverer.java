@@ -254,7 +254,7 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
         }
         return attributes;
     }
-    
+
     public BundleContext getBundleContext() {
         return context;
     }
@@ -266,9 +266,9 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
     public ClassLoader getContextClassLoader() {
         return classLoader;
     }
-    
+
     public <T> T getContext() {
-        return (T) context;
+        return (T)context;
     }
 
     @SuppressWarnings("unchecked")
@@ -278,14 +278,19 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
 
         serviceName = "META-INF/services/" + serviceName;
 
-        int index = serviceName.lastIndexOf('/');
-        String path = serviceName.substring(0, index);
-        String file = serviceName.substring(index + 1);
+        //        int index = serviceName.lastIndexOf('/');
+        //        String path = serviceName.substring(0, index);
+        //        String file = serviceName.substring(index + 1);
 
-        for (Bundle bundle : context.getBundles()) {
-            Enumeration<URL> urls = bundle.findEntries(path, file, false);
-            while (urls != null && urls.hasMoreElements()) {
-                final URL url = urls.nextElement();
+        // long start = System.currentTimeMillis();
+        try {
+            for (Bundle bundle : context.getBundles()) {
+                // Enumeration<URL> urls = bundle.findEntries(path, file, false); // This is expensive
+                final URL url = bundle.getEntry(serviceName);
+                if (url == null) {
+                    continue;
+                }
+
                 if (debug) {
                     logger.fine("Reading service provider file: " + url.toExternalForm());
                 }
@@ -345,6 +350,11 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
+        } finally {
+//            long end = System.currentTimeMillis();
+//            if (true) {
+//                logger.info("Duration: " + (end - start) + " ms");
+//            }
         }
         return descriptors;
 

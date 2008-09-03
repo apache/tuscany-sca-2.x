@@ -38,9 +38,9 @@ import java.util.logging.Logger;
 public class ServiceDiscovery {
     private static final Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
 
-    private final static ServiceDiscovery instance = new ServiceDiscovery();
+    private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
-    private static ServiceDiscoverer discoverer;
+    private ServiceDiscoverer discoverer;
     private Set<ClassLoader> registeredClassLoaders = new HashSet<ClassLoader>();
 
     /**
@@ -50,17 +50,28 @@ public class ServiceDiscovery {
      * @return
      */
     public static ServiceDiscovery getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
-    public static ServiceDiscoverer getServiceDiscoverer() {
+    /**
+     * Get a classloader-based service discovery instance
+     * @param classLoader
+     * @return
+     */
+    public static ServiceDiscovery getInstance(ClassLoader classLoader) {
+        ServiceDiscovery discovery = new ServiceDiscovery();
+        discovery.setServiceDiscoverer(new ClasspathServiceDiscoverer(classLoader));
+        return discovery;
+    }
+    
+    public ServiceDiscoverer getServiceDiscoverer() {
         if (discoverer == null) {
             discoverer = new ClasspathServiceDiscoverer();
         }
         return discoverer;
     }
 
-    public static void setServiceDiscoverer(ServiceDiscoverer sd) {
+    public void setServiceDiscoverer(ServiceDiscoverer sd) {
         if (discoverer != null) {
             throw new IllegalStateException("The ServiceDiscoverer cannot be reset");
         }
