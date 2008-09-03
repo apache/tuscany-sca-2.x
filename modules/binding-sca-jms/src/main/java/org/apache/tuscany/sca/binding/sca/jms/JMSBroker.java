@@ -32,6 +32,9 @@ import org.apache.tuscany.sca.core.ModuleActivator;
  */
 public class JMSBroker implements ModuleActivator {
 
+    // this is static so that there is only one broker per JVM
+    // if that wasn't the case then to use the vm: transport each broker
+    // would need a unique name and clients would need to know the name
     private static BrokerService broker;
 
     public void start(ExtensionPointRegistry arg0) {
