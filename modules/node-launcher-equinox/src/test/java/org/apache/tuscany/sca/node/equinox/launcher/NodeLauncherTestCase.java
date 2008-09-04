@@ -23,10 +23,6 @@ import hello.HelloWorld;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.equinox.launcher.DomainManagerLauncher;
-import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
-import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil;
-import org.apache.tuscany.sca.node.equinox.launcher.OSGiHost;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -40,7 +36,7 @@ public class NodeLauncherTestCase {
 
     @BeforeClass
     public static void setUp() {
-        System.setProperty("TUSCANY_HOME", "target/tuscany");
+        // System.setProperty("TUSCANY_HOME", "target/tuscany");
         host = NodeLauncherUtil.startOSGi();
     }
 
