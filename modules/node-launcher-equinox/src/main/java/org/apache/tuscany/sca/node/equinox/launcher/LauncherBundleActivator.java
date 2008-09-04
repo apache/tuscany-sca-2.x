@@ -3,12 +3,11 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -137,7 +136,12 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
             if (urls == null) {
                 File tuscanyInstallDir = findTuscanyInstallDir(bundleContext.getBundle());
 
-                urls = JarFileFinder.findJarFiles(tuscanyInstallDir, new JarFileFinder.StandAloneJARFileNameFilter());
+                if (tuscanyInstallDir != null) {
+                    urls =
+                        JarFileFinder.findJarFiles(tuscanyInstallDir, new JarFileFinder.StandAloneJARFileNameFilter());
+                } else {
+                    urls = JarFileFinder.getClassPathEntries(JarFileFinder.class.getClassLoader(), false);
+                }
             }
 
             for (URL url : urls) {
@@ -169,6 +173,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                 return tuscanyInstallDir;
         }
 
+        /*
         String location = bundle.getLocation();
 
         if (location != null && location.startsWith("file:")) {
@@ -189,6 +194,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                 }
             }
         }
+        */
         return null;
     }
 
@@ -198,6 +204,26 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         }
         long start = System.currentTimeMillis();
 
+        File file = JarFileFinder.toFile(bundleFile);
+        if (file != null && file.isDirectory()) {
+            boolean isOSGiBundle = false;
+            File mf = new File(file, "META-INF/MANIFEST.MF");
+            if (mf.isFile()) {
+                Manifest manifest = new Manifest();
+                manifest.read(new FileInputStream(mf));
+                isOSGiBundle = manifest != null && manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME) != null;
+            }
+            if (isOSGiBundle) {
+                Bundle bundle = bundleContext.installBundle(bundleFile.toString());
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Bundle installed in " + (System.currentTimeMillis() - start) + " ms: " + bundleFile);
+                }
+                tuscanyBundles.add(bundle);
+                return bundle;
+            } else {
+                return null;
+            }
+        }
         Manifest manifest = readManifest(bundleFile);
         boolean isOSGiBundle = manifest != null && manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME) != null;
 

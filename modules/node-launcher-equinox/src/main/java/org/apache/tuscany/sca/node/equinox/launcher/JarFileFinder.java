@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -267,6 +268,48 @@ public class JarFileFinder {
         return jarURLs;
 
     }
+    
+    
+    /**
+     * Returns contribution JARs available on the classpath.
+     * 
+     * @return
+     */
+    public static List<URL> getClassPathEntries(ClassLoader classLoader, boolean recursive) {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        Set<URL> entries = new HashSet<URL>();
+        list(entries, classLoader, recursive);
+        return new ArrayList<URL>(entries);
+    }
+
+    /**
+     * Collect JARs on the classpath of a URLClassLoader
+     * @param urls
+     * @param cl
+     */
+    private static void list(Set<URL> urls, ClassLoader cl, boolean recursive) {
+        if (cl == null) {
+            return;
+        }
+
+        // Collect JARs from the URLClassLoader's classpath
+        if (cl instanceof URLClassLoader) {
+            URL[] jarURLs = ((URLClassLoader)cl).getURLs();
+            if (jarURLs != null) {
+                for (URL jarURL : jarURLs) {
+                    urls.add(jarURL);
+                }
+            }
+        }
+
+        // Collect JARs from the parent ClassLoader
+        if (recursive) {
+            list(urls, cl.getParent(), recursive);
+        }
+    }
+
 
     static String getProperty(final String prop) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -281,7 +324,7 @@ public class JarFileFinder {
         });
     }
 
-    private static File toFile(URL url) {
+    public static File toFile(URL url) {
         if (url == null || !url.getProtocol().equals("file")) {
             return null;
         } else {
