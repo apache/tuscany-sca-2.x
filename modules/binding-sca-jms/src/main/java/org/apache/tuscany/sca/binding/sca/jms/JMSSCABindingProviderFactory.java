@@ -51,6 +51,13 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
                                                                    RuntimeComponentReference reference,
                                                                    DistributedSCABinding binding) {
         JMSBinding jmsBinding = createBinding(binding);
+
+        // FIXME: CREATE_NEVER doesn't work as the dynamically created JNDI destinations 
+        // aren't replicated around the broker cluster. Maybe it needs an AMQ specific
+        // impl of the Tuscany JMSResourceFactory which uses use physical destinations 
+        // instead of JNDI
+        //jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_NEVER);
+
         return new JMSBindingReferenceBindingProvider(component, reference, jmsBinding);
     }
 
@@ -58,6 +65,7 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
                                                                RuntimeComponentService service,
                                                                DistributedSCABinding binding) {
         JMSBinding jmsBinding = createBinding(binding);
+        jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_ALWAYS);
         return new JMSBindingServiceBindingProvider(component, service, binding.getSCABinding(), jmsBinding, workScheduler);
     }
 
