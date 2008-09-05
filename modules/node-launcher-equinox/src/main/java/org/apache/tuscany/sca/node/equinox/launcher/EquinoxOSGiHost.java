@@ -95,7 +95,7 @@ public class EquinoxOSGiHost implements OSGiHost {
         Map<Object, Object> props = new HashMap<Object, Object>();
         props.put("org.osgi.framework.system.packages", systemPackages);
         // Set the extension bundle
-        // props.put("osgi.framework.extensions", "org.apache.tuscany.sca.extensibility.equinox");
+        props.put("osgi.framework.extensions", "org.apache.tuscany.sca.extensibility.equinox");
         props.put(EclipseStarter.PROP_CLEAN, "true");
         props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
         props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse/install").toURI().toString());
