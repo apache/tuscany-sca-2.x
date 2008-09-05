@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.domainManager;
-import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.startOSGi;
-import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.stopOSGi;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -79,13 +77,14 @@ public class DomainManagerLauncher {
         // Create a launcher
         DomainManagerLauncher launcher = newInstance();
         
-        OSGiHost osgiHost = null;
+        EquinoxOSGiHost equinox = null;
         Object domainManager = null;
         ShutdownThread shutdown = null;
         try {
 
             // Start the OSGi host 
-            osgiHost = startOSGi();
+            equinox = new EquinoxOSGiHost();
+            equinox.start();
 
             // Start the domain manager
             domainManager = launcher.createDomainManager();
@@ -98,7 +97,7 @@ public class DomainManagerLauncher {
             logger.info("SCA Domain Manager is now started.");
 
             // Install a shutdown hook
-            ShutdownThread hook = new ShutdownThread(domainManager, osgiHost);
+            ShutdownThread hook = new ShutdownThread(domainManager, equinox);
             Runtime.getRuntime().addShutdownHook(hook);
 
             logger.info("Press enter to shutdown.");
@@ -124,8 +123,8 @@ public class DomainManagerLauncher {
             if (domainManager != null) {
                 stopDomainManager(domainManager);
             }
-            if (osgiHost != null) {
-                stopOSGi(osgiHost);
+            if (equinox != null) {
+                equinox.stop();
             }
         }
     }
@@ -149,12 +148,12 @@ public class DomainManagerLauncher {
     
     private static class ShutdownThread extends Thread {
         private Object domainManager;
-        private OSGiHost osgiHost;
+        private EquinoxOSGiHost equinox;
 
-        public ShutdownThread(Object domainManager, OSGiHost osgiHost) {
+        public ShutdownThread(Object domainManager, EquinoxOSGiHost equinox) {
             super();
             this.domainManager = domainManager;
-            this.osgiHost = osgiHost;
+            this.equinox = equinox;
         }
 
         public void run() {
@@ -164,7 +163,7 @@ public class DomainManagerLauncher {
                 // Ignore
             }
             try {
-                stopOSGi(osgiHost);
+                equinox.stop();
             } catch (Exception e) {
                 // Ignore
             }

@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.node;
-import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.startOSGi;
-import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.stopOSGi;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -117,13 +115,14 @@ public class NodeLauncher {
         // Create a node launcher
         NodeLauncher launcher = newInstance();
 
-        OSGiHost osgiHost = null;
+        EquinoxOSGiHost equinox = null;
         Object node = null;
         ShutdownThread shutdown = null;
         try {
 
             // Start the OSGi host 
-            osgiHost = startOSGi();
+            equinox = new EquinoxOSGiHost();
+            equinox.start();
 
             if (args.length ==1) {
                 
@@ -151,7 +150,7 @@ public class NodeLauncher {
             logger.info("SCA Node is now started.");
             
             // Install a shutdown hook
-            shutdown = new ShutdownThread(node, osgiHost);
+            shutdown = new ShutdownThread(node, equinox);
             Runtime.getRuntime().addShutdownHook(shutdown);
             
             logger.info("Press enter to shutdown.");
@@ -176,8 +175,8 @@ public class NodeLauncher {
             if (node != null) {
                 stopNode(node);
             }
-            if (osgiHost != null) {
-                stopOSGi(osgiHost);
+            if (equinox != null) {
+                equinox.stop();
             }
         }
     }
@@ -200,12 +199,12 @@ public class NodeLauncher {
     
     private static class ShutdownThread extends Thread {
         private Object node;
-        private OSGiHost osgiHost;
+        private EquinoxOSGiHost equinox;
 
-        public ShutdownThread(Object node, OSGiHost osgiHost) {
+        public ShutdownThread(Object node, EquinoxOSGiHost equinox) {
             super();
             this.node = node;
-            this.osgiHost = osgiHost;
+            this.equinox = equinox;
         }
 
         public void run() {
@@ -215,7 +214,7 @@ public class NodeLauncher {
                 // Ignore
             }
             try {
-                stopOSGi(osgiHost);
+                equinox.stop();
             } catch (Exception e) {
                 // Ignore
             }

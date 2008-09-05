@@ -32,18 +32,19 @@ import org.junit.Test;
  * 
  */
 public class NodeLauncherTestCase {
-    private static OSGiHost host;
+    private static EquinoxOSGiHost equinox;
 
     @BeforeClass
     public static void setUp() {
         // System.setProperty("TUSCANY_HOME", "target/tuscany");
-        host = NodeLauncherUtil.startOSGi();
+        equinox = new EquinoxOSGiHost();
+        equinox.start();
     }
 
     @AfterClass
     public static void tearDown() {
-        if (host != null) {
-            NodeLauncherUtil.stopOSGi(host);
+        if (equinox != null) {
+            equinox.stop();
         }
 
     }

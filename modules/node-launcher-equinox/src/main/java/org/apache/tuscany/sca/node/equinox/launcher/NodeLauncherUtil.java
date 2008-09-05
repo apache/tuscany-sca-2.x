@@ -172,14 +172,4 @@ final class NodeLauncherUtil {
         }
     }
 
-    static OSGiHost startOSGi() {
-        OSGiHost host = new EquinoxOSGiHost();
-        host.start();
-        return host;
-    }
-
-    static void stopOSGi(OSGiHost host) {
-        host.stop();
-    }
-
 }
