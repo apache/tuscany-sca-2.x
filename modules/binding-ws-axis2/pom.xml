@@ -95,11 +95,11 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-security-ws</artifactId>
+            <artifactId>tuscany-binding-ws-axis2-policy</artifactId>
             <version>1.4-SNAPSHOT</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.apache.axis2</groupId>

@@ -74,6 +74,7 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationServiceBindingConfigurator;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -84,10 +85,12 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -123,6 +126,7 @@ public class Axis2ServiceProvider {
     private List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
     private Map<String, Port> urlMap = new HashMap<String, Port>();
+    private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
 
     public static final QName QNAME_WSA_ADDRESS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
@@ -195,6 +199,20 @@ public class Axis2ServiceProvider {
             setPortAddress((Port)port, endpointURI);
             urlMap.put(endpointURI, (Port)port);
         }
+        
+        // find out which policies are active
+        if (wsBinding instanceof PolicySetAttachPoint) {
+            List<PolicySet> policySets = ((PolicySetAttachPoint)wsBinding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
+                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
+                    } else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }        
     }
 
     static String getPortAddress(Port port) {
@@ -682,9 +700,23 @@ public class Axis2ServiceProvider {
             parameters.setConversationID(conversationID);
         }
 
+        for ( PolicyHandler policyHandler : policyHandlerList ) {
+            policyHandler.beforeInvoke(msg, inMC);
+        }
+                
+        if (basicAuthenticationPolicy != null) {
+            Axis2BasicAuthenticationServiceBindingConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
+        }
+        
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
-        return wire.invoke(op, msg);
+        Object response =  wire.invoke(op, msg);
+        
+        for ( PolicyHandler policyHandler : policyHandlerList ) {
+            policyHandler.afterInvoke(response, inMC);
+        }        
+        
+        return response;
     }
 
     public boolean isConversational() {
@@ -713,17 +745,31 @@ public class Axis2ServiceProvider {
         if (wsBinding instanceof PolicySetAttachPoint) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
             PolicyHandler policyHandler = null;
+            
             for (PolicySet policySet : policiedBinding.getPolicySets()) {
                 policyHandler =
                     PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
+                
                 if (policyHandler != null) {
                     policyHandler.setApplicablePolicySet(policySet);
                     policyHandlerList.add(policyHandler);
-                }
+                } 
             }
+            
+            // code to create policy handlers using a policy SPI based
+            // on policy providers
+/*            
+            List<PolicyProvider> policyProviders = ((RuntimeComponentService)contract).getPolicyProviders(wsBinding);
+            
+            for (PolicyProvider policyProvider : policyProviders){
+                policyHandler = policyProvider.createHandler();
+                if (policyHandler != null) {
+                    policyHandlerList.add(policyHandler);
+                } 
+            }
+*/           
         }
-    }
-     
+    }      
     
     private void fillQoSContext(Message message, MessageContext axis2MsgCtx) {
         if ( axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) != null &&

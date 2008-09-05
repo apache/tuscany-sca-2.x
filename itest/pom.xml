@@ -101,6 +101,7 @@
                 <module>osgi-contribution</module>
                 <module>policy</module>
                 <module>policy-security</module>
+                <module>policy-security-basicauth</module>
                 <module>policy-security-jsr250</module>
                 <module>properties</module>
                 <module>recursive</module>

@@ -114,4 +114,11 @@ public interface Message {
      * @return
      */
     Map<String, Object> getQoSContext();
+    
+    /** 
+     * Returns a map of objects that are contained in the message header
+     * 
+     * @return
+     */
+    Map<String, Object> getHeader();
 }

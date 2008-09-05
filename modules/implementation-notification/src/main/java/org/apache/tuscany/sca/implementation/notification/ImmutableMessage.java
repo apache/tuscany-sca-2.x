@@ -90,7 +90,10 @@ public class ImmutableMessage implements Message {
     }
 
     public Map<String, Object> getQoSContext() {
-        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public Map<String, Object> getHeader() {
         return null;
     }
 

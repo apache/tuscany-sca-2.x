@@ -78,7 +78,10 @@ import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.osoa.sca.ServiceRuntimeException;
@@ -374,9 +377,9 @@ public class Axis2ServiceClient {
         }
         Axis2BindingInvoker invoker;
         if (operation.isNonBlocking()) {
-            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
+            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList, wsBinding);
         } else {
-            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
+            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList, wsBinding);
         }
         
         return invoker;
@@ -475,6 +478,19 @@ public class Axis2ServiceClient {
                     policyHandlerList.add(policyHandler);
                 }
             }
+            
+            // code to create policy handlers using the new policy SPI based
+            // on policy providers
+/*            
+            List<PolicyProvider> policyProviders = ((RuntimeComponentReference)contract).getPolicyProviders(wsBinding);
+            
+            for (PolicyProvider policyProvider : policyProviders){
+                policyHandler = policyProvider.createHandler();
+                if (policyHandler != null) {
+                    policyHandlerList.add(policyHandler);
+                } 
+            }
+*/             
         }
     }
 

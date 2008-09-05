@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
  * @version $Rev $Date$
  */
 public class MessageImpl implements Message { 
+    private Map<String, Object> header = new Hashtable<String, Object>();
     private Object body;
     private Object messageID;
     private boolean isFault;
@@ -100,5 +101,9 @@ public class MessageImpl implements Message {
     public Map<String, Object> getQoSContext() {
         return qosContext;
     }
+    
+    public Map<String, Object> getHeader() {
+        return qosContext;
+    }    
 
 }
