@@ -61,15 +61,19 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             	args = new Object[] {requestOM};
             }
             
+            /*
             for ( PolicyHandler policyHandler : policyHandlerList ) {
                 policyHandler.beforeInvoke(operation, args, inMC);
             }
+            */
             
             OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, inMC);
             
+            /*
             for ( PolicyHandler policyHandler : policyHandlerList ) {
                 policyHandler.afterInvoke(operation, args, inMC, responseOM);
             }
+            */
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if (null != responseOM ) {

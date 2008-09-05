@@ -40,10 +40,15 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationReferenceBindingConfigurator;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
@@ -54,48 +59,57 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  */
 public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
 
-    private Axis2ServiceClient serviceClient;
-    private QName wsdlOperationName;
-    private Options options;
-    private SOAPFactory soapFactory;
-
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
-
     public static final String TUSCANY_PREFIX = "tuscany";
     public static final QName CALLBACK_ID_REFPARM_QN =
         new QName(Constants.SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
         new QName(Constants.SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
     
+    private Axis2ServiceClient serviceClient;
+    private QName wsdlOperationName;
+    private Options options;
+    private SOAPFactory soapFactory;    
     private List<PolicyHandler> policyHandlerList = null;
+    private WebServiceBinding wsBinding;
+    private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
 
     public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
                                Options options,
                                SOAPFactory soapFactory,
-                               List<PolicyHandler> policyHandlerList) {
+                               List<PolicyHandler> policyHandlerList,
+                               WebServiceBinding wsBinding) {
         this.serviceClient = serviceClient;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
         this.policyHandlerList = policyHandlerList;
+        this.wsBinding = wsBinding;
+        
+        // find out which policies are active
+        if (wsBinding instanceof PolicySetAttachPoint) {
+            List<PolicySet> policySets = ((PolicySetAttachPoint)wsBinding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
+                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
+                    } else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }
     }
 
     private static final QName EXCEPTION = new QName("", "Exception");
     
     public Message invoke(Message msg) {
         try {
-            for ( PolicyHandler policyHandler : policyHandlerList ) {
-                policyHandler.beforeInvoke(msg);
-            }
-            
             Object resp = invokeTarget(msg);
-            
-            for ( PolicyHandler policyHandler : policyHandlerList ) {
-                policyHandler.afterInvoke(msg);
-            }
+           
             msg.setBody(resp);
         } catch (AxisFault e) {
             if (e.getDetail() != null ) {
@@ -120,6 +134,14 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
         requestMC.getOptions().setTimeOutInMilliSeconds(240000L);
 
+        for ( PolicyHandler policyHandler : policyHandlerList ) {
+            policyHandler.beforeInvoke(msg, requestMC, operationClient);
+        }
+        
+        if (basicAuthenticationPolicy != null) {
+            Axis2BasicAuthenticationReferenceBindingConfigurator.setOperationOptions(operationClient, msg, basicAuthenticationPolicy);
+        }
+        
         // Allow privileged access to read properties. Requires PropertiesPermission read in
         // security policy.
         try {
@@ -135,7 +157,11 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         }
 
         MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-
+        
+        for ( PolicyHandler policyHandler : policyHandlerList ) {
+            policyHandler.afterInvoke(msg, responseMC, operationClient);
+        }
+        
         OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
 
         // FIXME: [rfeng] We have to pay performance penalty to build the complete OM as the operationClient.complete() will

@@ -185,6 +185,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(service, serviceBinding, chain);
                 }
+                addServiceBindingInterceptor(service, serviceBinding, chain, operation);
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
             }
@@ -249,7 +250,7 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param chain
      * @param operation
      */
-    private void addServiceBindingInterceptor(ComponentReference service,
+    private void addServiceBindingInterceptor(ComponentService service,
                                               Binding binding,
                                               InvocationChain chain,
                                               Operation operation) {

@@ -185,6 +185,10 @@ public class NonBlockingInterceptor implements Interceptor {
         public Map<String, Object> getQoSContext() {
             return null;
         }
+        
+        public Map<String, Object> getHeader() {
+            return null;
+        }        
     }
 
 }

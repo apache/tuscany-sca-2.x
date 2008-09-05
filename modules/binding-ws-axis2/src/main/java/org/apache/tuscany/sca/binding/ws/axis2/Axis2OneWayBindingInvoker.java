@@ -29,6 +29,7 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
@@ -43,9 +44,10 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
                                      QName wsdlOperationName,
                                      Options options,
                                      SOAPFactory soapFactory,
-                                     List<PolicyHandler> policyHandlerList) {
+                                     List<PolicyHandler> policyHandlerList,
+                                     WebServiceBinding wsBinding) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory, policyHandlerList);
+        super(serviceClient, wsdlOperationName, options, soapFactory, policyHandlerList, wsBinding);
     }
 
     @Override
