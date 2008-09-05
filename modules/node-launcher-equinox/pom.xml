@@ -64,13 +64,6 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-osgi</artifactId>
-            <version>1.4-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>        
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-manager</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>test</scope>
