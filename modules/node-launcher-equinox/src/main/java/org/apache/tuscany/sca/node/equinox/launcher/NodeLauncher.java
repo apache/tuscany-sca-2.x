@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.node;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.startOSGi;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.stopOSGi;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -110,56 +112,113 @@ public class NodeLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA OSGi Node is starting...");
+        logger.info("Apache Tuscany SCA Node is starting...");
 
-        // Create a node
+        // Create a node launcher
         NodeLauncher launcher = newInstance();
 
-        OSGiHost host = NodeLauncherUtil.startOSGi();
+        OSGiHost osgiHost = null;
+        Object node = null;
+        ShutdownThread shutdown = null;
         try {
 
-            Object node;
-            if (args.length == 1) {
+            // Start the OSGi host 
+            osgiHost = startOSGi();
 
-                // Create from a configuration URI
+            if (args.length ==1) {
+                
+                // Create a node from a configuration URI
                 String configurationURI = args[0];
-                logger.info("SCA OSGi Node configuration: " + configurationURI);
+                logger.info("SCA Node configuration: " + configurationURI);
                 node = launcher.createNodeFromURL(configurationURI);
             } else {
-
-                // Create from a composite URI and a contribution location
+                
+                // Create a node from a composite URI and a contribution location
                 String compositeURI = args[0];
                 String contributionLocation = args[1];
                 logger.info("SCA composite: " + compositeURI);
                 logger.info("SCA contribution: " + contributionLocation);
                 node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
             }
-
+            
             // Start the node
             try {
                 node.getClass().getMethod("start").invoke(node);
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA OSGi Node could not be started", e);
+                logger.log(Level.SEVERE, "SCA Node could not be started", e);
                 throw e;
             }
-            logger.info("SCA OSGi Node is now started.");
-
-            logger.info("Press Enter to shutdown...");
+            logger.info("SCA Node is now started.");
+            
+            // Install a shutdown hook
+            shutdown = new ShutdownThread(node, osgiHost);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+            
+            logger.info("Press enter to shutdown.");
             try {
                 System.in.read();
             } catch (IOException e) {
-            }
-
-            // Stop the node
-            try {
-                node.getClass().getMethod("stop").invoke(node);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA OSGi Node could not be stopped", e);
-                throw e;
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
             }
         } finally {
-            NodeLauncherUtil.stopOSGi(host);
+
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the node
+            if (node != null) {
+                stopNode(node);
+            }
+            if (osgiHost != null) {
+                stopOSGi(osgiHost);
+            }
         }
     }
 
+    /**
+     * Stop the given node.
+     * 
+     * @param node
+     * @throws Exception
+     */
+    private static void stopNode(Object node) throws Exception {
+        try {
+            node.getClass().getMethod("stop").invoke(node);
+            logger.info("SCA Node is now stopped.");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
+            throw e;
+        }
+    }
+    
+    private static class ShutdownThread extends Thread {
+        private Object node;
+        private OSGiHost osgiHost;
+
+        public ShutdownThread(Object node, OSGiHost osgiHost) {
+            super();
+            this.node = node;
+            this.osgiHost = osgiHost;
+        }
+
+        public void run() {
+            try {
+                stopNode(node);
+            } catch (Exception e) {
+                // Ignore
+            }
+            try {
+                stopOSGi(osgiHost);
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
 }
