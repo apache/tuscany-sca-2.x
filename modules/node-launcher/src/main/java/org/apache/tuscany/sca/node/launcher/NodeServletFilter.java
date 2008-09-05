@@ -40,6 +40,8 @@ import javax.servlet.ServletResponse;
 public class NodeServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
 
+    private static final String NODE_WEB_APP_SERVLET_HOST = "org.apache.tuscany.sca.implementation.node.webapp.NodeWebAppServletHost";
+
     private static final Logger logger = Logger.getLogger(NodeServletFilter.class.getName());
 
     private ClassLoader runtimeClassLoader;
@@ -48,7 +50,7 @@ public class NodeServletFilter implements Filter {
     private Filter filter;
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        logger.info("Apache Tuscany SCA WebApp Node starting...");
+        logger.info("Apache Tuscany SCA WebApp Node is starting...");
 
         try {
             // Get the Tuscany runtime ClassLoader
@@ -62,7 +64,7 @@ public class NodeServletFilter implements Filter {
         
                 // Load the Tuscany WebApp Servlet host and get the host instance
                 // for the current webapp
-                String className = "org.apache.tuscany.sca.implementation.node.webapp.NodeWebAppServletHost"; 
+                String className = NODE_WEB_APP_SERVLET_HOST; 
                 if (runtimeClassLoader != null) {
                     servletHostClass = Class.forName(className, true, runtimeClassLoader);
                 } else {
