@@ -21,7 +21,7 @@
 	
 
     <property name="dojo.version" value="1.0.0"/>
-    <property name="unpack.location" value="${basedir}/samples/simple-bigbank-spring/src/main/resources/web/dojo"/>
+    <property name="unpack.location" value="${basedir}/src/main/resources/web/dojo"/>
 	
 
     <target name="check-dojo-installed">
