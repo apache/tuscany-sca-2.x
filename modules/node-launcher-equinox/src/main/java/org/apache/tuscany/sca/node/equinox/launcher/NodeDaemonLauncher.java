@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.nodeDaemon;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.startOSGi;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.stopOSGi;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class NodeDaemonLauncher {
 
-    private static final Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
+    static final Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
 
     /**
      * Constructs a new node daemon launcher.
@@ -61,40 +63,98 @@ public class NodeDaemonLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node Daemon starting...");
+        logger.info("Apache Tuscany SCA Node Daemon is starting...");
 
-        // Create a node daemon
+        // Create a node launcher
         NodeDaemonLauncher launcher = newInstance();
-        OSGiHost host = NodeLauncherUtil.startOSGi();
 
+        OSGiHost osgiHost = null;
+        Object node = null;
+        ShutdownThread shutdown = null;
         try {
-            Object daemon = launcher.createNodeDaemon();
 
-            // Start the node daemon
+            // Start the OSGi host 
+            osgiHost = startOSGi();
+
+            // Start the node
+            node = launcher.createNodeDaemon();
             try {
-                daemon.getClass().getMethod("start").invoke(daemon);
+                node.getClass().getMethod("start").invoke(node);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
                 throw e;
             }
-            logger.info("SCA Node Daemon started.");
-
+            logger.info("SCA Node Daemon is now started.");
+            
+            // Install a shutdown hook
+            shutdown = new ShutdownThread(node, osgiHost);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+            
             logger.info("Press enter to shutdown.");
             try {
                 System.in.read();
             } catch (IOException e) {
-            }
-
-            // Stop the node daemon
-            try {
-                daemon.getClass().getMethod("stop").invoke(daemon);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Node Daemon could not be stopped", e);
-                throw e;
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
             }
         } finally {
-            NodeLauncherUtil.stopOSGi(host);
+
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the node
+            if (node != null) {
+                stopNode(node);
+            }
+            if (osgiHost != null) {
+                stopOSGi(osgiHost);
+            }
         }
     }
 
+    /**
+     * Stop the given node.
+     * 
+     * @param node
+     * @throws Exception
+     */
+    private static void stopNode(Object node) throws Exception {
+        try {
+            node.getClass().getMethod("stop").invoke(node);
+            logger.info("SCA Node Daemon is now stopped.");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "SCA Node Daemon could not be stopped", e);
+            throw e;
+        }
+    }
+    
+    private static class ShutdownThread extends Thread {
+        private Object node;
+        private OSGiHost osgiHost;
+
+        public ShutdownThread(Object node, OSGiHost osgiHost) {
+            super();
+            this.node = node;
+            this.osgiHost = osgiHost;
+        }
+
+        public void run() {
+            try {
+                stopNode(node);
+            } catch (Exception e) {
+                // Ignore
+            }
+            try {
+                stopOSGi(osgiHost);
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
 }

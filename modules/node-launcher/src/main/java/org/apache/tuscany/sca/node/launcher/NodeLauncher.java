@@ -109,55 +109,98 @@ public class NodeLauncher {
     }
     
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node starting...");
+        logger.info("Apache Tuscany SCA Node is starting...");
 
-        // Create a node
+        // Create a node launcher
         NodeLauncher launcher = newInstance();
-        Object node;
-        if (args.length ==1) {
-            
-            // Create from a configuration URI
-            String configurationURI = args[0];
-            logger.info("SCA Node configuration: " + configurationURI);
-            node = launcher.createNodeFromURL(configurationURI);
-        } else {
-            
-            // Create from a composite URI and a contribution location
-            String compositeURI = args[0];
-            String contributionLocation = args[1];
-            logger.info("SCA composite: " + compositeURI);
-            logger.info("SCA contribution: " + contributionLocation);
-            node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
-        }
-        
-        // Start the node
+
+        Object node = null;
+        ShutdownThread shutdown = null;
         try {
-            node.getClass().getMethod("start").invoke(node);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Node could not be started", e);
-            throw e;
-        }
-        logger.info("SCA Node started.");
-        
-        logger.info("Press enter to shutdown.");
-        try {
-            System.in.read();
-        } catch (IOException e) {
+            if (args.length ==1) {
+                
+                // Create a node from a configuration URI
+                String configurationURI = args[0];
+                logger.info("SCA Node configuration: " + configurationURI);
+                node = launcher.createNodeFromURL(configurationURI);
+            } else {
+                
+                // Create a node from a composite URI and a contribution location
+                String compositeURI = args[0];
+                String contributionLocation = args[1];
+                logger.info("SCA composite: " + compositeURI);
+                logger.info("SCA contribution: " + contributionLocation);
+                node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+            }
             
-            // Wait forever
-            Object lock = new Object();
-            synchronized(lock) {
-                lock.wait();
+            // Start the node
+            try {
+                node.getClass().getMethod("start").invoke(node);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA Node could not be started", e);
+                throw e;
+            }
+            logger.info("SCA Node is now started.");
+            
+            // Install a shutdown hook
+            shutdown = new ShutdownThread(node);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+            
+            logger.info("Press enter to shutdown.");
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
+            }
+        } finally {
+
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the node
+            if (node != null) {
+                stopNode(node);
             }
         }
+    }
 
-        // Stop the node
+    /**
+     * Stop the given node.
+     * 
+     * @param node
+     * @throws Exception
+     */
+    private static void stopNode(Object node) throws Exception {
         try {
             node.getClass().getMethod("stop").invoke(node);
+            logger.info("SCA Node is now stopped.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
             throw e;
         }
     }
+    
+    private static class ShutdownThread extends Thread {
+        private Object node;
 
+        public ShutdownThread(Object node) {
+            super();
+            this.node = node;
+        }
+
+        public void run() {
+            try {
+                stopNode(node);
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
 }

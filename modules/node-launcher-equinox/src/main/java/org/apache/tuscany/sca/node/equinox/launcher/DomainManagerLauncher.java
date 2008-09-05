@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.domainManager;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.startOSGi;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.stopOSGi;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class DomainManagerLauncher {
 
-    private static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());
+    static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());
 
     /**
      * Constructs a new DomainManagerLauncher.
@@ -72,39 +74,100 @@ public class DomainManagerLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Domain Manager starting...");
+        logger.info("Apache Tuscany SCA Domain Manager is starting...");
 
-        // Create a domain manager
+        // Create a launcher
         DomainManagerLauncher launcher = newInstance();
-        OSGiHost host = NodeLauncherUtil.startOSGi();
+        
+        OSGiHost osgiHost = null;
+        Object domainManager = null;
+        ShutdownThread shutdown = null;
         try {
 
-            Object domainManager = launcher.createDomainManager();
+            // Start the OSGi host 
+            osgiHost = startOSGi();
 
             // Start the domain manager
+            domainManager = launcher.createDomainManager();
             try {
                 domainManager.getClass().getMethod("start").invoke(domainManager);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
                 throw e;
             }
-            logger.info("SCA Domain Manager started.");
+            logger.info("SCA Domain Manager is now started.");
+
+            // Install a shutdown hook
+            ShutdownThread hook = new ShutdownThread(domainManager, osgiHost);
+            Runtime.getRuntime().addShutdownHook(hook);
 
             logger.info("Press enter to shutdown.");
             try {
                 System.in.read();
             } catch (IOException e) {
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
             }
 
-            // Stop the domain manager
-            try {
-                domainManager.getClass().getMethod("stop").invoke(domainManager);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
-                throw e;
-            }
         } finally {
-            NodeLauncherUtil.stopOSGi(host);
+            
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the domain manager and OSGi host
+            if (domainManager != null) {
+                stopDomainManager(domainManager);
+            }
+            if (osgiHost != null) {
+                stopOSGi(osgiHost);
+            }
+        }
+    }
+    
+        
+    /**
+     * Stop the given domain manager.
+     * 
+     * @param domainManager
+     * @throws Exception
+     */
+    private static void stopDomainManager(Object domainManager) throws Exception {
+        try {
+            domainManager.getClass().getMethod("stop").invoke(domainManager);
+            logger.info("SCA Domain Manager is now stopped.");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
+            throw e;
+        }
+    }
+    
+    private static class ShutdownThread extends Thread {
+        private Object domainManager;
+        private OSGiHost osgiHost;
+
+        public ShutdownThread(Object domainManager, OSGiHost osgiHost) {
+            super();
+            this.domainManager = domainManager;
+            this.osgiHost = osgiHost;
+        }
+
+        public void run() {
+            try {
+                stopDomainManager(domainManager);
+            } catch (Exception e) {
+                // Ignore
+            }
+            try {
+                stopOSGi(osgiHost);
+            } catch (Exception e) {
+                // Ignore
+            }
         }
     }
 }

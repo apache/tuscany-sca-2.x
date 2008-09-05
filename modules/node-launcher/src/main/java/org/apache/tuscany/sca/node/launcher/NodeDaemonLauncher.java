@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class NodeDaemonLauncher {
 
-    private static final Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
+    static final Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
     
     /**
      * Constructs a new node daemon launcher.
@@ -61,40 +61,84 @@ public class NodeDaemonLauncher {
     }
     
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node Daemon starting...");
+        logger.info("Apache Tuscany SCA Node Daemon is starting...");
 
-        // Create a node daemon
+        // Create a node launcher
         NodeDaemonLauncher launcher = newInstance();
-        Object daemon = launcher.createNodeDaemon();
-        
-        // Start the node daemon
+
+        Object node = null;
+        ShutdownThread shutdown = null;
         try {
-            daemon.getClass().getMethod("start").invoke(daemon);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
-            throw e;
-        }
-        logger.info("SCA Node Daemon started.");
-        
-        logger.info("Press enter to shutdown.");
-        try {
-            System.in.read();
-        } catch (IOException e) {
             
-            // Wait forever
-            Object lock = new Object();
-            synchronized(lock) {
-                lock.wait();
+            // Start the node
+            node = launcher.createNodeDaemon();
+            try {
+                node.getClass().getMethod("start").invoke(node);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
+                throw e;
+            }
+            logger.info("SCA Node Daemon is now started.");
+            
+            // Install a shutdown hook
+            shutdown = new ShutdownThread(node);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+            
+            logger.info("Press enter to shutdown.");
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
+            }
+        } finally {
+
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the node
+            if (node != null) {
+                stopNode(node);
             }
         }
-
-        // Stop the node daemon
+    }
+    
+    /**
+     * Stop the given node.
+     * 
+     * @param node
+     * @throws Exception
+     */
+    private static void stopNode(Object node) throws Exception {
         try {
-            daemon.getClass().getMethod("stop").invoke(daemon);
+            node.getClass().getMethod("stop").invoke(node);
+            logger.info("SCA Node Daemon is now stopped.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node Daemon could not be stopped", e);
             throw e;
         }
     }
     
+    private static class ShutdownThread extends Thread {
+        private Object node;
+
+        public ShutdownThread(Object node) {
+            super();
+            this.node = node;
+        }
+
+        public void run() {
+            try {
+                stopNode(node);
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
 }

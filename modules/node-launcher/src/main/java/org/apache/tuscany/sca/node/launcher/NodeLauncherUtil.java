@@ -45,7 +45,6 @@ import java.util.logging.Logger;
  * @version $Rev$ $Date$
  */
 final class NodeLauncherUtil {
-
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
@@ -414,7 +413,7 @@ final class NodeLauncherUtil {
             return nodeDaemon;
             
         } catch (Exception e) {
-            NodeLauncher.logger.log(Level.SEVERE, "SCA Node Daemon could not be created", e);
+            NodeDaemonLauncher.logger.log(Level.SEVERE, "SCA Node Daemon could not be created", e);
             throw new LauncherException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);
@@ -452,7 +451,7 @@ final class NodeLauncherUtil {
             return domainManager;
             
         } catch (Exception e) {
-            NodeLauncher.logger.log(Level.SEVERE, "SCA Domain Manager could not be created", e);
+            DomainManagerLauncher.logger.log(Level.SEVERE, "SCA Domain Manager could not be created", e);
             throw new LauncherException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);

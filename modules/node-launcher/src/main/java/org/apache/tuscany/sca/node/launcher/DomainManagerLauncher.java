@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class DomainManagerLauncher {
     
-    private static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
+    static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
 
     /**
      * Constructs a new DomainManagerLauncher.
@@ -74,45 +74,60 @@ public class DomainManagerLauncher {
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Domain Manager is starting...");
 
-        // Create a domain manager
+        // Create a launcher
         DomainManagerLauncher launcher = newInstance();
-        Object domainManager = launcher.createDomainManager();
         
-        // Start the domain manager
+        Object domainManager = null;
+        ShutdownThread shutdown = null;
         try {
-            domainManager.getClass().getMethod("start").invoke(domainManager);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
-            throw e;
-        }
-        logger.info("SCA Domain Manager is now started.");
-        
-        ShutdownThread hook = new ShutdownThread(domainManager);
-        Runtime.getRuntime().addShutdownHook(hook);
-        
-        logger.info("Press enter to shutdown.");
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
             
-            // Wait forever
-            Object lock = new Object();
-            synchronized(lock) {
-                lock.wait();
+            // Start the domain manager
+            domainManager = launcher.createDomainManager();
+            try {
+                domainManager.getClass().getMethod("start").invoke(domainManager);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
+                throw e;
+            }
+            logger.info("SCA Domain Manager is now started.");
+            
+            // Install a shutdown hook
+            shutdown = new ShutdownThread(domainManager);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+            
+            logger.info("Press enter to shutdown.");
+    
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                
+                // Wait forever
+                Object lock = new Object();
+                synchronized(lock) {
+                    lock.wait();
+                }
+            }
+        } finally {
+            
+            // Remove the shutdown hook
+            if (shutdown != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdown);
+            }
+            
+            // Stop the domain manager
+            if (domainManager != null) {
+                stopDomainManager(domainManager);
             }
         }
-        
-        stop(domainManager);
-        // Remove the hook
-        Runtime.getRuntime().removeShutdownHook(hook);
     }
 
-    private static void stop(Object domainManager) throws Exception {
-        // Stop the domain manager
-        if (domainManager == null) {
-            return;
-        }
+    /**
+     * Stop the given domain manager.
+     * 
+     * @param domainManager
+     * @throws Exception
+     */
+    private static void stopDomainManager(Object domainManager) throws Exception {
         try {
             domainManager.getClass().getMethod("stop").invoke(domainManager);
             logger.info("SCA Domain Manager is now stopped.");
@@ -132,7 +147,7 @@ public class DomainManagerLauncher {
 
         public void run() {
             try {
-                DomainManagerLauncher.stop(domainManager);
+                stopDomainManager(domainManager);
             } catch (Exception e) {
                 // Ignore
             }
