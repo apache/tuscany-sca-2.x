@@ -28,9 +28,9 @@ import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.osgi.framework.BundleContext;
 
 /**
- * 
+ * Wraps the Equinox runtime.
  */
-public class EquinoxOSGiHost implements OSGiHost {
+public class EquinoxOSGiHost {
     private LauncherBundleActivator activator = new LauncherBundleActivator();
     private BundleContext context;
     
