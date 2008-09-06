@@ -114,6 +114,8 @@
                 <module>../../../modules/assembly</module>
                 <module>../../../modules/assembly-xml</module>
                 <module>../../../modules/assembly-xsd</module>
+                <module>../../../modules/binding-corba</module>
+                <module>../../../modules/binding-corba-runtime</module>
                 <module>../../../modules/binding-ejb</module>
                 <module>../../../modules/binding-ejb-runtime</module>
                 <module>../../../modules/binding-jms</module>
@@ -136,8 +138,10 @@
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
-                <module>../../../modules/extensibility-osgi</module>
+                <module>../../../modules/extensibility-equinox</module>
                 <module>../../../modules/extension-helper</module>
+                <module>../../../modules/host-corba</module>
+                <module>../../../modules/host-corba-jse</module>
                 <module>../../../modules/host-ejb</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>

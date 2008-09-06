@@ -29,6 +29,8 @@
                 <include>assembly-xsd/**/*</include>
                 <include>binding-atom/**/*</include>
                 <include>binding-atom-abdera/**/*</include>
+                <include>binding-corba/**/*</include>
+                <include>binding-corba-runtime/**/*</include>
                 <include>binding-ejb/**/*</include>
                 <include>binding-ejb-runtime/**/*</include>
                 <include>binding-http/**/*</include>
@@ -75,8 +77,10 @@
                 <include>domain-manager/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
-                <include>extensibility-osgi/**/*</include>
+                <include>extensibility-equinox/**/*</include>
                 <include>extension-helper/**/*</include>
+                <include>host-corba/**/*</include>
+                <include>host-corba-jse/**/*</include>
                 <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>

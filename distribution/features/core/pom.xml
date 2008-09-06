@@ -44,6 +44,13 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
+        <!-- Corba binding -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-corba-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
         <!-- Contribution model -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -119,7 +126,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-extensibility-osgi</artifactId>
+            <artifactId>tuscany-extensibility-equinox</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        
+        <!--  Corba host -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-corba-jse</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
@@ -271,6 +285,8 @@
                 <module>../../../modules/assembly</module>
                 <module>../../../modules/assembly-xml</module>
                 <module>../../../modules/assembly-xsd</module>
+                <module>../../../modules/binding-corba</module>
+                <module>../../../modules/binding-corba-runtime</module>
                 <module>../../../modules/binding-sca</module>
                 <module>../../../modules/binding-sca-xml</module>
                 <module>../../../modules/contribution</module>
@@ -288,7 +304,9 @@
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
-                <module>../../../modules/extensibility-osgi</module>
+                <module>../../../modules/extensibility-equinox</module>
+                <module>../../../modules/host-corba</module>
+                <module>../../../modules/host-corba-jse</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/implementation-java</module>

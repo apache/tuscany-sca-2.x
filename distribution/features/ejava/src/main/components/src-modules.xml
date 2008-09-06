@@ -27,6 +27,8 @@
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
+                <include>binding-corba/**/*</include>
+                <include>binding-corba-runtime/**/*</include>
                 <include>binding-ejb/**/*</include>
                 <include>binding-ejb-runtime/**/*</include>
                 <include>binding-jms/**/*</include>
@@ -50,8 +52,10 @@
                 <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
-                <include>extensibility-osgi/**/*</include>
+                <include>extensibility-equinox/**/*</include>
                 <include>extension-helper/**/*</include>
+                <include>host-corba/**/*</include>
+                <include>host-corba-jse/**/*</include>
                 <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>

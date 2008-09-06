@@ -30,6 +30,8 @@
                 <exclude>org.apache.tuscany.sca:tuscany-assembly</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-assembly-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-assembly-xsd</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-binding-corba</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-binding-corba-runtime</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-binding-sca</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-binding-sca-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-contribution</exclude>
@@ -47,7 +49,9 @@
                 <exclude>org.apache.tuscany.sca:tuscany-definitions-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-endpoint</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-extensibility</exclude>
-                <exclude>org.apache.tuscany.sca:tuscany-extensibility-osgi</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-extensibility-equinox</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-host-corba</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-host-corba-jse</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-embedded</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-http</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-implementation-java</exclude>
