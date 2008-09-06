@@ -28,8 +28,10 @@ import org.eclipse.osgi.baseadaptor.hooks.BundleFileFactoryHook;
 import org.eclipse.osgi.baseadaptor.hooks.BundleFileWrapperFactoryHook;
 
 /**
- * Bundle file wrapper factory that converts plain jars into OSGi bundles 
- */
+ * A bundle file wrapper that we can use later to adjust to different bundle schemes.
+ *
+ * @version $Rev: $ $Date: $
+*/
 public class BundleFileWrapperFactory implements BundleFileWrapperFactoryHook, BundleFileFactoryHook {
 
     public BundleFile createBundleFile(Object content, BaseData data, boolean base) throws IOException {
