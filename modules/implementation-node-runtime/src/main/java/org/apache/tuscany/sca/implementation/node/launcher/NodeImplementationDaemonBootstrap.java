@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.node.launcher;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * Bootstrap class for the SCA node daemon.
@@ -36,7 +36,7 @@ public class NodeImplementationDaemonBootstrap {
     public static class NodeFacade implements SCANode {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCADomain daemon;
+        private SCANode daemon;
         
         private NodeFacade() {
             runtimeClassLoader = Thread.currentThread().getContextClassLoader();
@@ -47,7 +47,8 @@ public class NodeImplementationDaemonBootstrap {
             boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                daemon = SCADomain.newInstance("NodeDaemon.composite");
+                SCANodeFactory factory = SCANodeFactory.newInstance();
+                daemon = factory.createSCANodeFromClassLoader("NodeDaemon.composite", threadContextClassLoader);
                 started = true;
             } finally {
                 if (!started) {
@@ -59,7 +60,7 @@ public class NodeImplementationDaemonBootstrap {
         public void stop() {
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                daemon.close();
+                daemon.stop();
             } finally {
                 Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
