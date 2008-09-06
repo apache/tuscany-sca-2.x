@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.implementation.node;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * Test case for node component implementations.
@@ -29,16 +30,16 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class NodeImplementationTestCase extends TestCase {
 
-    private SCADomain scaDomain;
+    private SCANode node;
     
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("TestNode.composite");
+        node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("TestNode.composite", null);
     }
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
     }
     
     public void testNode() {
