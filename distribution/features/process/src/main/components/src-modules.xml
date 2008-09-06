@@ -27,6 +27,8 @@
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
+                <include>binding-corba/**/*</include>
+                <include>binding-corba-runtime/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-xml/**/*</include>
                 <include>contribution/**/*</include>
@@ -47,7 +49,9 @@
                 <include>distribution-core/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
-                <include>extensibility-osgi/**/*</include>
+                <include>extensibility-equinox/**/*</include>
+                <include>host-corba/**/*</include>
+                <include>host-corba-jse/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>implementation-bpel/**/*</include>
