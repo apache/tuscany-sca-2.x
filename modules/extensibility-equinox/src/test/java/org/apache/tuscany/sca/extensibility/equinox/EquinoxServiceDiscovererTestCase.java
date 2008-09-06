@@ -40,12 +40,14 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
+ * Test the Equinox service discoverer.
  * 
+ * @version $Rev: $ $Date: $
  */
 public class EquinoxServiceDiscovererTestCase {
     private static EquinoxServiceDiscoverer discoverer;
     private static Bundle testBundle;
-    private static EquinoxOSGiHost host;
+    private static TestEquinoxHost host;
 
     private static String getState(Bundle b) {
         StringBuffer sb = new StringBuffer();
@@ -77,7 +79,7 @@ public class EquinoxServiceDiscovererTestCase {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        host = new EquinoxOSGiHost();
+        host = new TestEquinoxHost();
         BundleContext context = host.start();
 
         InputStream is = EquinoxServiceDiscovererTestCase.class.getResourceAsStream("/test-bundle.jar");

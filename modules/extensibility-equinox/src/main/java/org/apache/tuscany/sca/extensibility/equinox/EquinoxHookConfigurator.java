@@ -23,11 +23,17 @@ import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
 
 /**
- * Hook Configurator for Equinox
+ * Hook Configurator for Equinox.
+ *
+ * @version $Rev: $ $Date: $
  */
 public class EquinoxHookConfigurator implements HookConfigurator {
+    
     public void addHooks(HookRegistry registry) {
+        
+        // Register our BundleFileWrapperFactory and ClassLoading hooks
         registry.addBundleFileWrapperFactoryHook(new BundleFileWrapperFactory());
+        registry.addClassLoadingHook(new URLClassLoadingHook());
     }
 
 }

@@ -45,6 +45,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The ServiceDiscoverer that find META-INF/services/... in installed bundles
+ *
+ * @version $Rev: $ $Date: $
  */
 public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoverer.class.getName());
