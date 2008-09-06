@@ -28,7 +28,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.security.SecureClassLoader;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,6 +53,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     public EquinoxServiceDiscoverer(BundleContext context) {
         this.context = context;
+        // http://wiki.eclipse.org/index.php/Context_Class_Loader_Enhancements
         this.classLoader = new ClassLoaderImpl();
     }
 
@@ -116,12 +116,27 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     }
 
-    public class ClassLoaderImpl extends SecureClassLoader {
-
+    private final static ClassLoader getTCCL() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+    
+    public class ClassLoaderImpl extends ClassLoader {
+        private ClassLoader delegate;
+        
         public ClassLoaderImpl() {
             super(EquinoxServiceDiscoverer.class.getClassLoader());
+            this.delegate = getTCCL();
         }
 
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return delegate.loadClass(name);
+        }
+        
         /**
          * Open a back-door to expose the META-INF/services resources
          */
