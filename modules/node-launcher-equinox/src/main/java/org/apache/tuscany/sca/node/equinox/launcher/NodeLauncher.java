@@ -33,11 +33,14 @@ import java.util.logging.Logger;
 public class NodeLauncher {
 
     static final Logger logger = Logger.getLogger(NodeLauncher.class.getName());
+    private EquinoxOSGiHost host;
 
     /**
      * Constructs a new node launcher.
      */
     private NodeLauncher() {
+        host = new EquinoxOSGiHost();
+        host.start();
     }
 
     /**
@@ -115,14 +118,10 @@ public class NodeLauncher {
         // Create a node launcher
         NodeLauncher launcher = newInstance();
 
-        EquinoxOSGiHost equinox = null;
+        EquinoxOSGiHost equinox = launcher.host;
         Object node = null;
         ShutdownThread shutdown = null;
         try {
-
-            // Start the OSGi host 
-            equinox = new EquinoxOSGiHost();
-            equinox.start();
 
             if (args.length ==1) {
                 
@@ -178,6 +177,12 @@ public class NodeLauncher {
             if (equinox != null) {
                 equinox.stop();
             }
+        }
+    }
+    
+    public void destroy() {
+        if (host != null) {
+            host.stop();
         }
     }
 

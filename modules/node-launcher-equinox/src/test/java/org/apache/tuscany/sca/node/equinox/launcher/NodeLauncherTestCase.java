@@ -32,26 +32,23 @@ import org.junit.Test;
  * 
  */
 public class NodeLauncherTestCase {
-    private static EquinoxOSGiHost equinox;
+    private static NodeLauncher launcher;
 
     @BeforeClass
     public static void setUp() {
-        // System.setProperty("TUSCANY_HOME", "target/tuscany");
-        equinox = new EquinoxOSGiHost();
-        equinox.start();
+        launcher = NodeLauncher.newInstance();
     }
 
     @AfterClass
     public static void tearDown() {
-        if (equinox != null) {
-            equinox.stop();
+        if (launcher != null) {
+            launcher.destroy();
         }
 
     }
 
     @Test
     public void testLaunch() throws Exception {
-        NodeLauncher launcher = NodeLauncher.newInstance();
         SCANode node = launcher.createNodeFromClassLoader("HelloWorld.composite", getClass().getClassLoader());
         node.start();
 

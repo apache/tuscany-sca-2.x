@@ -88,10 +88,12 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
 
         for (Bundle b : bundleContext.getBundles()) {
             try {
-                if ("org.apache.tuscany.sca.contribution.osgi".equals(b.getSymbolicName())) {
-                    b.start();
-                    logger.info(toString(b, false) + " " + b.getState());
-                    break;
+                if ("org.apache.tuscany.sca.contribution.osgi".equals(b.getSymbolicName()) || "org.apache.tuscany.sca.extensibility.equinox"
+                    .equals(b.getSymbolicName())) {
+                    if (b.getHeaders().get("Fragment-Host") == null) {
+                        b.start();
+                        logger.info(toString(b, false) + " " + b.getState());
+                    }
                 }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -223,11 +225,14 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
             } else {
                 return null;
             }
+        } else if (file != null && !file.exists()) {
+            return null;
         }
         Manifest manifest = readManifest(bundleFile);
         boolean isOSGiBundle = manifest != null && manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME) != null;
 
         if (!isOSGiBundle) {
+            // return null;
             manifest = updateBundleManifest(bundleFile, manifest);
         }
 
