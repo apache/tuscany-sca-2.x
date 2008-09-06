@@ -76,7 +76,14 @@ public class TestEquinoxHost  {
 
     public BundleContext start() {
         try {
-            return startup();
+            Map<Object, Object> props = new HashMap<Object, Object>();
+            props.put("org.osgi.framework.system.packages", systemPackages);
+            props.put(EclipseStarter.PROP_CLEAN, "true");
+            props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
+            props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse").toURI().toString());
+            EclipseStarter.setInitialProperties(props);
+            BundleContext context = EclipseStarter.startup(new String[]{}, null);
+            return context;
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -84,26 +91,10 @@ public class TestEquinoxHost  {
 
     public void stop() {
         try {
-            shutdown();
+            EclipseStarter.shutdown();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private BundleContext startup() throws Exception {
-        String args[] = {};
-        Map<Object, Object> props = new HashMap<Object, Object>();
-        props.put("org.osgi.framework.system.packages", systemPackages);
-        props.put(EclipseStarter.PROP_CLEAN, "true");
-        props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
-        props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse").toURI().toString());
-        EclipseStarter.setInitialProperties(props);
-        BundleContext context = EclipseStarter.startup(args, null);
-        return context;
-    }
-
-    private void shutdown() throws Exception {
-        EclipseStarter.shutdown();
     }
 
 }
