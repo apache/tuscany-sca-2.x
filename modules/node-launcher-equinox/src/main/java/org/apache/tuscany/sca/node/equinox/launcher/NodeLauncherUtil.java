@@ -19,23 +19,17 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
-import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.file;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
-import java.util.jar.JarInputStream;
-import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -274,6 +268,33 @@ final class NodeLauncherUtil {
             return manifest;
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        }
+    }
+    
+    /**
+     * Returns the location of this bundle.
+     * 
+     * @return
+     * @throws IOException
+     */
+    static String bundleLocation() throws IOException, URISyntaxException {
+        String resource = NodeLauncherUtil.class.getName().replace('.', '/') + ".class"; 
+        URL url = NodeLauncherUtil.class.getClassLoader().getResource(resource);
+        if (url == null) {
+            throw new FileNotFoundException(resource);
+        }
+        URI uri = url.toURI();
+            
+        String scheme = uri.getScheme();
+        if (scheme.equals("jar")) {
+            String path = uri.toString().substring(4);
+            int i = path.indexOf("!/");
+            path = path.substring(0, i);
+            return path;
+        } else {
+            String path = uri.toString();
+            path = path.substring(0, path.length() - resource.length());
+            return path;
         }
     }
     

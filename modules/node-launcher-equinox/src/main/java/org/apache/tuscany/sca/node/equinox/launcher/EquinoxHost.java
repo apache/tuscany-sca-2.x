@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.bundleLocation;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.string;
 import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
 
@@ -142,8 +143,10 @@ public class EquinoxHost {
             // Start Eclipse
             context = EclipseStarter.startup(new String[]{}, null);
             
-            // FIXME use the correct bundle location
-            Bundle launcherBundle = context.installBundle(new File("target/classes").toURI().toURL().toString());
+            // Install the launcher bundle
+            String bundleLocation = bundleLocation();
+            logger.info("Installing launcher bundle: " + bundleLocation);
+            Bundle launcherBundle = context.installBundle(bundleLocation);
             logger.info("Starting bundle: " + string(launcherBundle, false));
             launcherBundle.start();
             
