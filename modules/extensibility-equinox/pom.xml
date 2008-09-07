@@ -79,6 +79,7 @@
                         <Bundle-Activator>org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator</Bundle-Activator>
                         <Export-Package>org.apache.tuscany.sca.extensibility.equinox*</Export-Package>
                         <Eclipse-AutoStart>true</Eclipse-AutoStart> 
+                        <DynamicImport-Package>*</DynamicImport-Package> 
                     </instructions>
                 </configuration>
             </plugin>
