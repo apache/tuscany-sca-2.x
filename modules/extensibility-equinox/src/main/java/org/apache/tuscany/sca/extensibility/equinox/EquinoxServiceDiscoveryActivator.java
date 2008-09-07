@@ -29,19 +29,13 @@ import org.osgi.framework.BundleContext;
  * @version $Rev: $ $Date: $
  */
 public class EquinoxServiceDiscoveryActivator implements BundleActivator {
-    private static BundleContext bundleContext;
 
     public void start(BundleContext context) throws Exception {
-        if (bundleContext == null) {
-            bundleContext = context;
-            EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(bundleContext);
-            ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
-        }
+        EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(context);
+        ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
     }
 
     public void stop(BundleContext context) throws Exception {
-        bundleContext = null;
-        // ServiceDiscovery.setServiceDiscoverer(discoverer);
     }
 
 }

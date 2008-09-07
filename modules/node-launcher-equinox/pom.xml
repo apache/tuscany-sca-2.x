@@ -37,24 +37,28 @@
             <version>2.5</version> <!-- To be compatible with Jetty 6 --> 
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>osgi</artifactId>
             <version>3.3.0-v20070530</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.core</groupId>
             <artifactId>runtime</artifactId>
             <version>3.3.100-v20070530</version>
             <scope>runtime</scope>
         </dependency>        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-node-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility-equinox</artifactId>
@@ -82,7 +86,6 @@
             <version>1.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-              
     </dependencies>
 
     <build>
@@ -122,7 +125,6 @@
                 </configuration>
             </plugin>
 
-<!-- 
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -132,11 +134,12 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.node.launcher.equinox</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Bundle-Activator>org.apache.tuscany.sca.node.equinox.launcher.LauncherBundleActivator</Bundle-Activator>
                         <Export-Package>org.apache.tuscany.sca.node.equinox.launcher*</Export-Package>
+                        <Eclipse-AutoStart>true</Eclipse-AutoStart> 
                     </instructions>
                 </configuration>
             </plugin>
- -->            
         </plugins>
     </build>
 

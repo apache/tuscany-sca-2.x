@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
 public class EquinoxOSGiHostTestCase {
     @Test
     public void testStartThenStop() {
-        EquinoxOSGiHost host = new EquinoxOSGiHost();
+        EquinoxHost host = new EquinoxHost();
         BundleContext context = host.start();
         Assert.assertNotNull(context);
         for (Bundle b : context.getBundles()) {
@@ -46,7 +46,7 @@ public class EquinoxOSGiHostTestCase {
 
     @Test
     public void testStartTwice() {
-        EquinoxOSGiHost host = new EquinoxOSGiHost();
+        EquinoxHost host = new EquinoxHost();
         host.start();
         try {
             host.start();

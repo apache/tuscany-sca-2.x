@@ -19,8 +19,32 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.file;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 /**
  * Common functions and constants used by the admin components.
@@ -172,4 +196,114 @@ final class NodeLauncherUtil {
         }
     }
 
+    static File file(URL url) {
+        if (url == null || !url.getProtocol().equals("file")) {
+            return null;
+        } else {
+            String filename = url.getFile().replace('/', File.separatorChar);
+            int pos = 0;
+            while ((pos = filename.indexOf('%', pos)) >= 0) {
+                if (pos + 2 < filename.length()) {
+                    String hexStr = filename.substring(pos + 1, pos + 3);
+                    char ch = (char)Integer.parseInt(hexStr, 16);
+                    filename = filename.substring(0, pos) + ch + filename.substring(pos + 3);
+                }
+            }
+            return new File(filename);
+        }
+    }
+    
+    static Pattern pattern = Pattern.compile("-([0-9.]+)");
+
+    private static String version(String jarFile) {
+        Matcher matcher = pattern.matcher(jarFile);
+        String version = "1.0.0";
+        if (matcher.find()) {
+            version = matcher.group();
+            if (version.endsWith(".")) {
+                version = version.substring(1, version.length() - 1);
+            } else {
+                version = version.substring(1);
+            }
+        }
+        return version;
+    }
+
+    private static void addPackages(String jarFile, Set<String> packages) throws IOException {
+        String version = ";version=" + version(jarFile);
+        ZipInputStream is = new ZipInputStream(new FileInputStream(file(new URL(jarFile))));
+        ZipEntry entry;
+        while ((entry = is.getNextEntry()) != null) {
+            String entryName = entry.getName();
+            if (!entry.isDirectory() && entryName != null && entryName.length() > 0 &&
+                !entryName.startsWith(".") && !entryName.startsWith("META-INF") &&
+                entryName.lastIndexOf("/") > 0) {
+                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
+                packages.add(pkg);
+            }
+        }
+        is.close();
+    }
+
+    static Manifest libraryManifest(String[] jarFiles) throws IllegalStateException {
+        try {
+
+            // List exported packages and bundle classpath entries
+            StringBuffer classpath = new StringBuffer();
+            StringBuffer exports = new StringBuffer();
+            Set<String> packages = new HashSet<String>(); 
+            for (String jarFile: jarFiles) {
+                addPackages(jarFile, packages);
+                classpath.append(jarFile);
+                classpath.append(',');
+            }
+            for (String pkg: packages) {
+                exports.append(pkg);
+                exports.append(',');
+            }
+    
+            // Create a manifest
+            Manifest manifest = new Manifest();
+            Attributes attributes = manifest.getMainAttributes();
+            attributes.putValue("Manifest-Version", "1.0");
+            attributes.putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
+            attributes.putValue(Constants.BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
+            attributes.putValue(Constants.EXPORT_PACKAGE, exports.substring(0, exports.length() -1));
+            attributes.putValue(Constants.BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
+            
+            return manifest;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    static String string(Bundle b, boolean verbose) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(b.getBundleId()).append(" ").append(b.getSymbolicName());
+        int s = b.getState();
+        if ((s & Bundle.UNINSTALLED) != 0) {
+            sb.append(" UNINSTALLED");
+        }
+        if ((s & Bundle.INSTALLED) != 0) {
+            sb.append(" INSTALLED");
+        }
+        if ((s & Bundle.RESOLVED) != 0) {
+            sb.append(" RESOLVED");
+        }
+        if ((s & Bundle.STARTING) != 0) {
+            sb.append(" STARTING");
+        }
+        if ((s & Bundle.STOPPING) != 0) {
+            sb.append(" STOPPING");
+        }
+        if ((s & Bundle.ACTIVE) != 0) {
+            sb.append(" ACTIVE");
+        }
+    
+        if (verbose) {
+            sb.append(" ").append(b.getLocation());
+            sb.append(" ").append(b.getHeaders());
+        }
+        return sb.toString();
+    }
 }

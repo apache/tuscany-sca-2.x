@@ -77,13 +77,13 @@ public class DomainManagerLauncher {
         // Create a launcher
         DomainManagerLauncher launcher = newInstance();
         
-        EquinoxOSGiHost equinox = null;
+        EquinoxHost equinox = null;
         Object domainManager = null;
         ShutdownThread shutdown = null;
         try {
 
             // Start the OSGi host 
-            equinox = new EquinoxOSGiHost();
+            equinox = new EquinoxHost();
             equinox.start();
 
             // Start the domain manager
@@ -148,9 +148,9 @@ public class DomainManagerLauncher {
     
     private static class ShutdownThread extends Thread {
         private Object domainManager;
-        private EquinoxOSGiHost equinox;
+        private EquinoxHost equinox;
 
-        public ShutdownThread(Object domainManager, EquinoxOSGiHost equinox) {
+        public ShutdownThread(Object domainManager, EquinoxHost equinox) {
             super();
             this.domainManager = domainManager;
             this.equinox = equinox;
