@@ -34,19 +34,13 @@ import org.osoa.sca.annotations.Scope;
 @EagerInit
 public class CalculatorTestCase extends TestCase {
 
-    private static CalculatorService calculatorService;
     private NodeLauncher launcher;
     private SCANode node;
-
-    @Reference
-    public void setCalculatorService(CalculatorService calculatorService) {
-        CalculatorTestCase.calculatorService = calculatorService;
-    }
 
     @Override
     protected void setUp() throws Exception {
         launcher = NodeLauncher.newInstance();
-        node = launcher.createNodeFromClassLoader("CalculatorTest.composite", getClass().getClassLoader());
+        node = launcher.createNodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
         node.start();
     }
 
@@ -61,12 +55,4 @@ public class CalculatorTestCase extends TestCase {
     public void testDummy() {
     }
 
-    @Init
-    public void init() throws Exception {
-        // Calculate
-        assertEquals(calculatorService.add(3, 2), 5.0);
-        assertEquals(calculatorService.subtract(3, 2), 1.0);
-        assertEquals(calculatorService.multiply(3, 2), 6.0);
-        assertEquals(calculatorService.divide(3, 2), 1.5);
-    }
 }
