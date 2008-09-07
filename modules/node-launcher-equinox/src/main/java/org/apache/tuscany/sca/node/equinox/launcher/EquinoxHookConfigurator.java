@@ -17,7 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.extensibility.equinox;
+package org.apache.tuscany.sca.node.equinox.launcher;
+
+import java.util.jar.Manifest;
+import java.util.logging.Logger;
 
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
@@ -28,12 +31,28 @@ import org.eclipse.osgi.baseadaptor.HookRegistry;
  * @version $Rev: $ $Date: $
  */
 public class EquinoxHookConfigurator implements HookConfigurator {
+    private static Logger logger = Logger.getLogger(HookConfigurator.class.getName());
+    
+    private String[] jarFiles;
+    private Manifest manifest;
+    
+    public EquinoxHookConfigurator() {
+
+        // Get the list of JAR files to install
+        String jarFilesProperty = System.getProperty("org.apache.tuscany.sca.node.launcher.equinox.jarFiles");
+        jarFiles = jarFilesProperty.split(";");
+        
+        // Create a single 'library' bundle for them
+        long libraryStart = System.currentTimeMillis();
+        manifest = NodeLauncherUtil.libraryManifest(jarFiles);
+        logger.info("Third-party library manifest generated in " + (System.currentTimeMillis() - libraryStart) + " ms");
+        
+    }
     
     public void addHooks(HookRegistry registry) {
         
-        // Register our BundleFileWrapperFactory and ClassLoading hooks
-        registry.addBundleFileWrapperFactoryHook(new BundleFileWrapperFactory());
-        registry.addClassLoadingHook(new URLClassLoadingHook());
+        // Register our BundleFileFactory hook 
+        registry.addBundleFileFactoryHook(new LibrariesBundleFileFactoryHook(manifest));
     }
 
 }

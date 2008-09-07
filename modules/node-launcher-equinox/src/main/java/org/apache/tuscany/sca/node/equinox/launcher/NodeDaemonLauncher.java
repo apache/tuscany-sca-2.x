@@ -66,13 +66,13 @@ public class NodeDaemonLauncher {
         // Create a node launcher
         NodeDaemonLauncher launcher = newInstance();
 
-        EquinoxOSGiHost equinox = null;
+        EquinoxHost equinox = null;
         Object node = null;
         ShutdownThread shutdown = null;
         try {
 
             // Start the OSGi host 
-            equinox = new EquinoxOSGiHost();
+            equinox = new EquinoxHost();
             equinox.start();
 
             // Start the node
@@ -135,9 +135,9 @@ public class NodeDaemonLauncher {
     
     private static class ShutdownThread extends Thread {
         private Object node;
-        private EquinoxOSGiHost equinox;
+        private EquinoxHost equinox;
 
-        public ShutdownThread(Object node, EquinoxOSGiHost equinox) {
+        public ShutdownThread(Object node, EquinoxHost equinox) {
             super();
             this.node = node;
             this.equinox = equinox;

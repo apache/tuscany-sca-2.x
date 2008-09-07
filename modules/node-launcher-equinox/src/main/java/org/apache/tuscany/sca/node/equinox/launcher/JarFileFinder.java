@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.file;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -324,23 +326,6 @@ public class JarFileFinder {
         });
     }
 
-    public static File toFile(URL url) {
-        if (url == null || !url.getProtocol().equals("file")) {
-            return null;
-        } else {
-            String filename = url.getFile().replace('/', File.separatorChar);
-            int pos = 0;
-            while ((pos = filename.indexOf('%', pos)) >= 0) {
-                if (pos + 2 < filename.length()) {
-                    String hexStr = filename.substring(pos + 1, pos + 3);
-                    char ch = (char)Integer.parseInt(hexStr, 16);
-                    filename = filename.substring(0, pos) + ch + filename.substring(pos + 3);
-                }
-            }
-            return new File(filename);
-        }
-    }
-
     private static URL getContainer(URL resourceURL, String resourceName) {
         URL root = null;
         // "jar:file://....../something.jar!/a/b/c/app.composite"
@@ -358,7 +343,7 @@ public class JarFileFinder {
                     try {
                         root = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
                             public URL run() throws IOException {
-                                return toFile(new URL(location)).toURI().toURL();
+                                return file(new URL(location)).toURI().toURL();
                             }
                         });
                     } catch (PrivilegedActionException e) {
@@ -370,14 +355,14 @@ public class JarFileFinder {
                 // jar contribution
                 String location = url.substring(4, url.lastIndexOf("!/"));
                 // workaround for evil URL/URI from Maven
-                root = toFile(new URL(location)).toURI().toURL();
+                root = file(new URL(location)).toURI().toURL();
 
             } else if ("wsjar".equals(protocol)) {
                 // See https://issues.apache.org/jira/browse/TUSCANY-2219
                 // wsjar contribution 
                 String location = url.substring(6, url.lastIndexOf("!/"));
                 // workaround for evil url/uri from maven 
-                root = toFile(new URL(location)).toURI().toURL();
+                root = file(new URL(location)).toURI().toURL();
 
             } else if (protocol != null && (protocol.equals("bundle") || protocol.equals("bundleresource"))) {
                 root = new URL(resourceURL.getProtocol(), resourceURL.getHost(), resourceURL.getPort(), "/");
