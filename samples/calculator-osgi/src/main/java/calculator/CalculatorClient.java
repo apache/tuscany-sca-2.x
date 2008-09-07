@@ -42,6 +42,7 @@ public class CalculatorClient {
     public void calculate() {
 
         // Calculate
+        System.out.println(getClass().getClassLoader());
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
