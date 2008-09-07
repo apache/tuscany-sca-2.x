@@ -151,12 +151,14 @@ public class EquinoxHost {
             launcherBundle.start();
             
             // Start all bundles for now to help diagnose any class loading issues
-            //for (Bundle bundle: context.getBundles()) {
-            //    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
-            //        logger.info("Starting bundle: " + string(bundle, false));
-            //        bundle.start();
-            //    }
-            //}
+            long activateStart = System.currentTimeMillis();
+            for (Bundle bundle: context.getBundles()) {
+                if ((bundle.getState() & Bundle.ACTIVE) == 0) {
+                    logger.info("Starting bundle: " + string(bundle, false));
+                    bundle.start();
+                }
+            }
+            logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
             
             return context;
             

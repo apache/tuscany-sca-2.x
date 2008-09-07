@@ -72,7 +72,7 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
                 }
                 long installStart = System.currentTimeMillis();
                 Bundle bundle = bundleContext.installBundle(bundleFile);
-                //logger.info("Bundle installed in " + (System.currentTimeMillis() - installStart) + " ms: " + NodeLauncherUtil.string(bundle, false));
+                logger.info("Bundle installed in " + (System.currentTimeMillis() - installStart) + " ms: " + NodeLauncherUtil.string(bundle, false));
                 installedBundles.add(bundle);
             }
         }
