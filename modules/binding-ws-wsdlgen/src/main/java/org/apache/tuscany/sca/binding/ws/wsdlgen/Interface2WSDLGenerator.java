@@ -263,9 +263,9 @@ public class Interface2WSDLGenerator {
         QName name = getQName(iface);
         Definition definition = factory.newDefinition();
         if (requiresSOAP12) {
-            definition.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+            definition.addNamespace("SOAP12", "http://schemas.xmlsoap.org/wsdl/soap12/");
         } else {
-            definition.addNamespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
+            definition.addNamespace("SOAP", "http://schemas.xmlsoap.org/wsdl/soap/");
         }
         definition.addNamespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
         definition.addNamespace("xs", SCHEMA_NS);
