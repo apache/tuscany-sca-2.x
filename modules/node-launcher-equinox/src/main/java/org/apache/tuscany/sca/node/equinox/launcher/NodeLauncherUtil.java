@@ -25,6 +25,7 @@ import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
 import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,9 +34,11 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -43,8 +46,10 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * Common functions and constants used by the admin components.
@@ -66,21 +71,32 @@ final class NodeLauncherUtil {
      * Collect JAR files under the given directory.
      * 
      * @p @param contributions
+     * @param bundleContext TODO
      * @throws LauncherException
      */
     static Object node(String configurationURI,
                        String compositeURI,
                        String compositeContent,
                        Contribution[] contributions,
-                       ClassLoader contributionClassLoader) throws LauncherException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                       ClassLoader contributionClassLoader,
+                       BundleContext bundleContext) throws LauncherException {
         try {
 
+            Bundle bundle = null;
+            for (Bundle b : bundleContext.getBundles()) {
+                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
+                    bundle = b;
+                    break;
+                }
+            }
+            if (bundle == null) {
+                throw new IllegalStateException(
+                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
+            }
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
             String className = NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP;
-            Class<?> bootstrapClass;
-            bootstrapClass = Class.forName(className, false, tccl);
+            Class<?> bootstrapClass = bundle.loadClass(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
 
             Object bootstrap;
             if (configurationURI != null) {
@@ -137,7 +153,7 @@ final class NodeLauncherUtil {
             NodeLauncher.logger.log(Level.SEVERE, "SCA Node could not be created", e);
             throw new LauncherException(e);
         } finally {
-            Thread.currentThread().setContextClassLoader(tccl);
+            // 
         }
     }
 
@@ -254,8 +270,9 @@ final class NodeLauncherUtil {
             Set<String> packages = new HashSet<String>(); 
             for (String jarFile: jarFiles) {
                 addPackages(jarFile, packages);
-                classpath.append(jarFile);
-                classpath.append(',');
+                classpath.append("\"external:");
+                classpath.append(file(new URL(jarFile)).getAbsolutePath().replace(File.separatorChar, '/'));
+                classpath.append("\",");
             }
             for (String pkg: packages) {
                 exports.append(pkg);
@@ -272,10 +289,26 @@ final class NodeLauncherUtil {
             attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
             
+            try {
+                ManifestElement[] elements = ManifestElement.parseHeader(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
+                for(ManifestElement e: elements) {
+                    System.out.println(Arrays.asList(e.getValueComponents()));
+                }
+            } catch (BundleException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return manifest;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+    
+    static byte[] generateBundle(Manifest mf) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        JarOutputStream jos = new JarOutputStream(bos, mf);
+        jos.close();
+        return bos.toByteArray();
     }
     
     /**

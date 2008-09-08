@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
@@ -45,6 +48,17 @@ public class EquinoxHookConfigurator implements HookConfigurator {
         // Create a single 'library' bundle for them
         long libraryStart = System.currentTimeMillis();
         manifest = NodeLauncherUtil.libraryManifest(jarFiles);
+        
+        if (logger.isLoggable(Level.FINE)) {
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                manifest.write(bos);
+                bos.close();
+                logger.fine(new String(bos.toByteArray()));
+            } catch (IOException e) {
+            }
+        }
+
         logger.info("Third-party library manifest generated in " + (System.currentTimeMillis() - libraryStart) + " ms");
         
     }

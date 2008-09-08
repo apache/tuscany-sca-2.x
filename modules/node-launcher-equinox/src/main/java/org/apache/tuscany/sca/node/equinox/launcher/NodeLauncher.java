@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.framework.BundleContext;
+
 /**
  * A launcher for SCA nodes.
  *  
@@ -34,13 +36,14 @@ public class NodeLauncher {
 
     static final Logger logger = Logger.getLogger(NodeLauncher.class.getName());
     private EquinoxHost host;
+    private BundleContext bundleContext;
 
     /**
      * Constructs a new node launcher.
      */
     private NodeLauncher() {
         host = new EquinoxHost();
-        host.start();
+        bundleContext = host.start();
     }
 
     /**
@@ -62,7 +65,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
-        return (T)node(configurationURL, null, null, null, null);
+        return (T)node(configurationURL, null, null, null, null, bundleContext);
     }
 
     /**
@@ -77,7 +80,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, Contribution... contributions) throws LauncherException {
-        return (T)node(null, compositeURI, null, contributions, null);
+        return (T)node(null, compositeURI, null, contributions, null, bundleContext);
     }
 
     /**
@@ -91,7 +94,7 @@ public class NodeLauncher {
      */
     public <T> T createNode(String compositeURI, String compositeContent, Contribution... contributions)
         throws LauncherException {
-        return (T)node(null, compositeURI, compositeContent, contributions, null);
+        return (T)node(null, compositeURI, compositeContent, contributions, null, bundleContext);
     }
 
     /**
@@ -109,7 +112,7 @@ public class NodeLauncher {
      * @return A newly created SCA node
      */
     public <T> T createNodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
-        return (T)node(null, compositeURI, null, null, classLoader);
+        return (T)node(null, compositeURI, null, null, classLoader, bundleContext);
     }
 
     public static void main(String[] args) throws Exception {
@@ -183,6 +186,7 @@ public class NodeLauncher {
     public void destroy() {
         if (host != null) {
             host.stop();
+            bundleContext = null;
         }
     }
 
