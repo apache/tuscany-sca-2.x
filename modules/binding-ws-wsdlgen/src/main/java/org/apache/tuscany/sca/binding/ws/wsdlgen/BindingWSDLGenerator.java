@@ -61,7 +61,7 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
  */
 public class BindingWSDLGenerator {
     private static final Logger logger = Logger.getLogger(BindingWSDLGenerator.class.getName());
-    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "SOAP.1_2");
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap.1_2");
 
     public static boolean printWSDL;     // external code sets this to print generated WSDL
 

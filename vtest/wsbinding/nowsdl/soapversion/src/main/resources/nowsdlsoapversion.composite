@@ -34,7 +34,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.BServiceSOAPImpl"/>
 		<service name="BServiceSOAP">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP"/>
-			<binding.ws requires="SOAP" uri="http://localhost:8085/BComponentSOAP"/>
+			<binding.ws requires="soap" uri="http://localhost:8085/BComponentSOAP"/>
 		</service>
     </component>
     
@@ -42,7 +42,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.BServiceSOAP11Impl"/>
 		<service name="BServiceSOAP11">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP11"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
 		</service>
     </component>
     
@@ -50,7 +50,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.BServiceSOAP12Impl"/>
 		<service name="BServiceSOAP12">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP12"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BComponentSOAP12"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BComponentSOAP12"/>
 		</service>
     </component>
     
@@ -58,7 +58,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.CServiceImpl"/>
 		<service name="CService">
        		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.CService"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/CComponent"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/CComponent"/>
 		</service>
     </component>
 
@@ -74,7 +74,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent/BService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService"/>
-			<binding.ws requires="SOAP" uri="http://localhost:8085/BComponent"/>
+			<binding.ws requires="soap" uri="http://localhost:8085/BComponent"/>
         </reference>
     </component>
     
@@ -82,7 +82,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent/BService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponent"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponent"/>
         </reference>
     </component>
     
@@ -90,7 +90,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponent/BService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BComponent"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BComponent"/>
         </reference>
     </component>
     
@@ -106,7 +106,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP/BServiceSOAP">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP"/>
-			<binding.ws requires="SOAP" uri="http://localhost:8085/BComponentSOAP"/>
+			<binding.ws requires="soap" uri="http://localhost:8085/BComponentSOAP"/>
         </reference>
     </component>
     
@@ -114,7 +114,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP/BServiceSOAP">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponentSOAP"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponentSOAP"/>
         </reference>
     </component>
     
@@ -122,7 +122,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP/BServiceSOAP">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BComponentSOAP"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BComponentSOAP"/>
         </reference>
     </component>
 
@@ -138,7 +138,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP11/BServiceSOAP11">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP11"/>
-			<binding.ws requires="SOAP" uri="http://localhost:8085/BComponentSOAP11"/>
+			<binding.ws requires="soap" uri="http://localhost:8085/BComponentSOAP11"/>
         </reference>
     </component>
     
@@ -146,7 +146,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP11/BServiceSOAP11">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP11"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
         </reference>
     </component>
     
@@ -154,7 +154,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP11/BServiceSOAP11">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP11"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BComponentSOAP11"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BComponentSOAP11"/>
         </reference>
     </component>
     
@@ -170,7 +170,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP12/BServiceSOAP12">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP12"/>
-			<binding.ws requires="SOAP" uri="http://localhost:8085/BComponentSOAP12"/>
+			<binding.ws requires="soap" uri="http://localhost:8085/BComponentSOAP12"/>
         </reference>
     </component>
     
@@ -178,7 +178,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP12/BServiceSOAP12">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP12"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponentSOAP12"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponentSOAP12"/>
         </reference>
     </component>
     
@@ -186,7 +186,7 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.AServiceImpl"/>
         <reference name="b1" target="BComponentSOAP12/BServiceSOAP12">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP12"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BComponentSOAP12"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/BComponentSOAP12"/>
         </reference>
     </component>
     
@@ -194,11 +194,11 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl.DServiceImpl"/>
         <reference name="b1" target="BComponentSOAP11/BServiceSOAP11">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BServiceSOAP11"/>
-			<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
+			<binding.ws requires="soap.1_1" uri="http://localhost:8085/BComponentSOAP11"/>
         </reference>
         <reference name="c1" target="CComponent/CService">
         	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.CService"/>
-			<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/CComponent"/>
+			<binding.ws requires="soap.1_2" uri="http://localhost:8085/CComponent"/>
         </reference>
     </component>
     
