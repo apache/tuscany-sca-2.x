@@ -277,10 +277,7 @@ public class JarFileFinder {
      * 
      * @return
      */
-    public static List<URL> getClassPathEntries(ClassLoader classLoader, boolean recursive) {
-        if (classLoader == null) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-        }
+    static List<URL> getClassPathEntries(ClassLoader classLoader, boolean recursive) {
         Set<URL> entries = new HashSet<URL>();
         list(entries, classLoader, recursive);
         return new ArrayList<URL>(entries);

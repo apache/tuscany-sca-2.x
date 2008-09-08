@@ -53,20 +53,9 @@ public class ServiceDiscovery {
         return INSTANCE;
     }
 
-    /**
-     * Get a classloader-based service discovery instance
-     * @param classLoader
-     * @return
-     */
-    public static ServiceDiscovery getInstance(ClassLoader classLoader) {
-        ServiceDiscovery discovery = new ServiceDiscovery();
-        discovery.setServiceDiscoverer(new ClasspathServiceDiscoverer(classLoader));
-        return discovery;
-    }
-    
-    public ServiceDiscoverer getServiceDiscoverer() {
+    private ServiceDiscoverer getServiceDiscoverer() {
         if (discoverer == null) {
-            discoverer = new ClasspathServiceDiscoverer();
+            discoverer = new ContextClassLoaderServiceDiscoverer();
         }
         return discoverer;
     }

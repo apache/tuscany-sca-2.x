@@ -30,15 +30,15 @@ import org.junit.Test;
 /**
  * Test Case for ClasspathServiceDiscover
  */
-public class ClasspathServiceDiscovererTestCase {
-    private static ClasspathServiceDiscoverer discover;
+public class ContextClassLoaderServiceDiscovererTestCase {
+    private static ContextClassLoaderServiceDiscoverer discover;
 
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        discover = new ClasspathServiceDiscoverer(ClasspathServiceDiscoverer.class.getClassLoader());
+        discover = new ContextClassLoaderServiceDiscoverer();
     }
 
     @Test

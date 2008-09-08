@@ -267,10 +267,6 @@ public class OSGiServiceDiscoverer implements ServiceDiscoverer {
         return classLoader;
     }
 
-    public <T> T getContext() {
-        return (T)context;
-    }
-
     @SuppressWarnings("unchecked")
     public Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly) {
         boolean debug = logger.isLoggable(Level.FINE);

@@ -30,7 +30,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,9 +42,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ * A ServiceDiscoverer that find META-INF/services/... using the Context ClassLoader.
+ *
+ * @version $Rev: $ $Date: $
  */
-public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
+public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
+    private static final Logger logger = Logger.getLogger(ContextClassLoaderServiceDiscoverer.class.getName());
 
     public class ServiceDeclarationImpl implements ServiceDeclaration {
         private URL url;
@@ -83,16 +85,12 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
         }
 
         public Class<?> loadClass(String className) throws ClassNotFoundException {
-            return getContextClassLoader().loadClass(className);
-        }
-
-        private ClasspathServiceDiscoverer getOuterType() {
-            return ClasspathServiceDiscoverer.this;
+            return classLoaderReference.get().loadClass(className);
         }
 
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            sb.append("ClassLoader: ").append(getContextClassLoader());
+            sb.append("ClassLoader: ").append(classLoaderReference.get());
             sb.append(" Attributes: ").append(attributes);
             return sb.toString();
         }
@@ -100,7 +98,7 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
         public URL getResource(final String name) {
             return AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 public URL run() {
-                    return getContextClassLoader().getResource(name);
+                    return classLoaderReference.get().getResource(name);
                 }
             });
         }
@@ -108,70 +106,32 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
     }
 
     private WeakReference<ClassLoader> classLoaderReference;
-    private boolean useTCCL = false;
-    private static final Logger logger = Logger.getLogger(ClasspathServiceDiscoverer.class.getName());
 
-    public ClasspathServiceDiscoverer() {
-        // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader classLoader = ClasspathServiceDiscoverer.class.getClassLoader();
-        this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
-        this.useTCCL = true;
-    }
-
-    public ClasspathServiceDiscoverer(ClassLoader classLoader) {
+    public ContextClassLoaderServiceDiscoverer() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
 
-    protected List<URL> getResources(final String name, final boolean firstOnly) throws IOException {
+    private List<URL> getResources(final String name, final boolean firstOnly) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<List<URL>>() {
                 public List<URL> run() throws IOException {
                     if (firstOnly) {
-                        URL url = getContextClassLoader().getResource(name);
+                        URL url = classLoaderReference.get().getResource(name);
                         if (url != null) {
                             return Arrays.asList(url);
                         } else {
-                            if (useTCCL) {
-                                // Try thread context classloader
-                                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                                if (tccl != getContextClassLoader()) {
-                                    url = tccl.getResource(name);
-                                }
-                                if (url != null) {
-                                    return Arrays.asList(url);
-                                }
-                            }
                             return Collections.emptyList();
                         }
                     } else {
-                        List<URL> urls = Collections.list(getContextClassLoader().getResources(name));
-                        if (!useTCCL) {
-                            return urls;
-                        }
-                        // Try thread context classloader
-                        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                        if (tccl != getContextClassLoader()) {
-                            urls.addAll(Collections.list(tccl.getResources(name)));
-                            // Remove duplicate entries
-                            Set<URL> urlSet = new HashSet<URL>(urls);
-                            return new ArrayList<URL>(urlSet);
-                        } else {
-                            return urls;
-                        }
+                        List<URL> urls = Collections.list(classLoaderReference.get().getResources(name));
+                        return urls;
                     }
                 }
             });
         } catch (PrivilegedActionException e) {
             throw (IOException)e.getException();
         }
-    }
-
-    public ClassLoader getContextClassLoader() {
-        return classLoaderReference.get();
-    }
-
-    public <T> T getContext() {
-        return (T)getContextClassLoader();
     }
 
     /**
@@ -181,7 +141,7 @@ public class ClasspathServiceDiscoverer implements ServiceDiscoverer {
      * @param declaration
      * @return a map of attributes
      */
-    protected static Map<String, String> parseServiceDeclaration(String declaration) {
+    private static Map<String, String> parseServiceDeclaration(String declaration) {
         Map<String, String> attributes = new HashMap<String, String>();
         int index = declaration.indexOf(';');
         if (index != -1) {

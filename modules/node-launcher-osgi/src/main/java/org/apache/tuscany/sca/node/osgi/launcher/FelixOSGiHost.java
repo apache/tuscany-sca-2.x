@@ -41,7 +41,7 @@ public class FelixOSGiHost implements OSGiHost {
 
     private Felix felix;
     private LauncherBundleActivator activator;
-    private ClassLoader tccl;
+    //private ClassLoader tccl;
 
     private final static String systemPackages =
         "org.osgi.framework; version=1.3.0," + "org.osgi.service.packageadmin; version=1.2.0, "
@@ -137,8 +137,8 @@ public class FelixOSGiHost implements OSGiHost {
         // Now start Felix instance.
         felix.start();
 
-        tccl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getContextClassLoader(felix.getBundleContext()));
+        //tccl = Thread.currentThread().getContextClassLoader();
+        //Thread.currentThread().setContextClassLoader(getContextClassLoader(felix.getBundleContext()));
 
     }
 
@@ -168,7 +168,7 @@ public class FelixOSGiHost implements OSGiHost {
         if (felix != null) {
             felix.stopAndWait();
         }
-        Thread.currentThread().setContextClassLoader(tccl);
+        //Thread.currentThread().setContextClassLoader(tccl);
     }
 
 }

@@ -38,7 +38,6 @@ public class EquinoxServiceDiscoveryActivator implements BundleActivator {
         EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(context);
         ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
         logger.info("Installed service discovery");
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     }
 
     public void stop(BundleContext context) throws Exception {
