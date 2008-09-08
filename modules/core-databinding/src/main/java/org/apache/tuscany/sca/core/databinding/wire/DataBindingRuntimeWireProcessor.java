@@ -154,7 +154,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             } else {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
-                if (isRemotable(chain, sourceOperation, targetOperation)) {
+                if (!isOnMessage(targetOperation) && isRemotable(chain, sourceOperation, targetOperation)) {
                     interceptor =
                         new PassByValueInterceptor(dataBindings, faultExceptionMapper, chain, targetOperation);
                 }
@@ -167,6 +167,15 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             }
         }
 
+    }
+
+    /**
+     * FIXME: TUSCANY-2586, temporary work around till the JIRA is fixed to prevent
+     *  the PassByValueInterceptor being used for services when the binding protocol
+     *  doesn't need the copies done. 
+     */
+    protected boolean isOnMessage(Operation op) {
+        return "onMessage".equals(op.getName());
     }
 
     /**
