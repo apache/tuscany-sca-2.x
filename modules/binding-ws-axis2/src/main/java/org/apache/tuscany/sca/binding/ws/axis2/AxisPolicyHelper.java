@@ -39,7 +39,7 @@ public class AxisPolicyHelper {
     public static final QName CONFIDENTIALITY_INTENT = new QName(XMLNS_SCA_1_0, "confidentiality");
     public static final QName INTEGRITY_INTENT = new QName(XMLNS_SCA_1_0, "integrity");
     public static final QName MTOM_INTENT = new QName(XMLNS_SCA_1_0, "MTOM");
-    public static final QName SOAP12_INTENT = new QName(XMLNS_SCA_1_0, "soap12");
+    public static final QName SOAP12_INTENT = new QName(XMLNS_SCA_1_0, "SOAP12");
 
     public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
         PolicySet returnPolicySet = null;

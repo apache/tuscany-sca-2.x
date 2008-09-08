@@ -29,22 +29,22 @@
 
 	<service name="BServiceSOAP" promote="BComponentSOAP">
    		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP"/>
-		<binding.ws requires="soap" uri="http://localhost:8085/BServiceSOAP"/>
+		<binding.ws requires="SOAP" uri="http://localhost:8085/BServiceSOAP"/>
 	</service>
 
 	<service name="BServiceSOAP11" promote="BComponentSOAP11">
    		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP11"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
 	</service>
 
 	<service name="BServiceSOAP12" promote="BComponentSOAP12">
    		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP12"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServiceSOAP12"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BServiceSOAP12"/>
 	</service>
 
 	<service name="CService" promote="CComponent">
    		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.CService"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/CService"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/CService"/>
 	</service>
 
 	<component name="BComponent">
@@ -74,17 +74,17 @@
 
     <reference name="AComponent2B1" promote="AComponent2/b1">
       	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BService"/>
-		<binding.ws requires="soap" uri="http://localhost:8085/BService"/>
+		<binding.ws requires="SOAP" uri="http://localhost:8085/BService"/>
     </reference>
 
     <reference name="AComponent3B1" promote="AComponent3/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BService"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BService"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BService"/>
     </reference>
 
     <reference name="AComponent4B1" promote="AComponent4/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BService"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BService"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BService"/>
     </reference>
 
     <reference name="AComponent5B1" promote="AComponent5/b1">
@@ -94,17 +94,17 @@
 
     <reference name="AComponent6B1" promote="AComponent6/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP"/>
-		<binding.ws requires="soap" uri="http://localhost:8085/BServiceSOAP"/>
+		<binding.ws requires="SOAP" uri="http://localhost:8085/BServiceSOAP"/>
     </reference>
 
     <reference name="AComponent7B1" promote="AComponent7/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BServiceSOAP"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BServiceSOAP"/>
     </reference>
 
     <reference name="AComponent8B1" promote="AComponent8/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServiceSOAP"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BServiceSOAP"/>
     </reference>
 
     <reference name="AComponent9B1" promote="AComponent9/b1">
@@ -114,17 +114,17 @@
 
     <reference name="AComponent10B1" promote="AComponent10/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP11"/>
-		<binding.ws requires="soap" uri="http://localhost:8085/BServiceSOAP11"/>
+		<binding.ws requires="SOAP" uri="http://localhost:8085/BServiceSOAP11"/>
     </reference>
 
     <reference name="AComponent11B1" promote="AComponent11/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP11"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
     </reference>
 
     <reference name="AComponent12B1" promote="AComponent12/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP11"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServiceSOAP11"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BServiceSOAP11"/>
     </reference>
 
     <reference name="AComponent13B1" promote="AComponent13/b1">
@@ -134,27 +134,27 @@
 
     <reference name="AComponent14B1" promote="AComponent14/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP12"/>
-		<binding.ws requires="soap" uri="http://localhost:8085/BServiceSOAP12"/>
+		<binding.ws requires="SOAP" uri="http://localhost:8085/BServiceSOAP12"/>
     </reference>
 
     <reference name="AComponent15B1" promote="AComponent15/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP12"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BServiceSOAP12"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BServiceSOAP12"/>
     </reference>
 
     <reference name="AComponent16B1" promote="AComponent16/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP12"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/BServiceSOAP12"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/BServiceSOAP12"/>
     </reference>
 
     <reference name="DComponentB1" promote="DComponent/b1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.BServiceSOAP11"/>
-		<binding.ws requires="soap.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
+		<binding.ws requires="SOAP.1_1" uri="http://localhost:8085/BServiceSOAP11"/>
     </reference>
     
     <reference name="DComponentC1" promote="DComponent/c1">
        	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.CService"/>
-		<binding.ws requires="soap.1_2" uri="http://localhost:8085/CService"/>
+		<binding.ws requires="SOAP.1_2" uri="http://localhost:8085/CService"/>
     </reference>
 
     <component name="AComponent1">
