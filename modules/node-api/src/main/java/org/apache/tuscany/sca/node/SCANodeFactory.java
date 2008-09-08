@@ -120,11 +120,11 @@ public abstract class SCANodeFactory {
         SCANodeFactory scaNodeFactory = null;
 
         try {
-            final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            // final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
             try {
                 Class<?> discoveryClass =
-                    Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery", true, classLoader);
+                    Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                 Object instance = discoveryClass.getMethod("getInstance").invoke(null);
                 Class<?> factoryImplClass =
                     (Class<?>)discoveryClass.getMethod("loadFirstServiceClass", Class.class)
@@ -140,7 +140,7 @@ public abstract class SCANodeFactory {
             // Fail back to default impl
             String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
 
-            Class<?> cls = Class.forName(className, true, classLoader);
+            Class<?> cls = Class.forName(className);
             scaNodeFactory = (SCANodeFactory)cls.newInstance();
             return scaNodeFactory;
 

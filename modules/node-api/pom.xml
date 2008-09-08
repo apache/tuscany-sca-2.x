@@ -51,7 +51,7 @@
                         <Bundle-SymbolicName>org.apache.tuscany.sca.node.api</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.node*</Export-Package>
-                        <DynamicImport-Package>org.apache.tuscany.sca.node.impl</DynamicImport-Package>
+                        <DynamicImport-Package>org.apache.tuscany.sca.node.impl,org.apache.tuscany.sca.extensibility</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
