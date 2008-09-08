@@ -101,6 +101,8 @@ public class EquinoxHost {
             // Set startup properties
             props.put(EclipseStarter.PROP_CLEAN, "true");
             
+            props.put("osgi.console", "8085");
+            
             // Set location properties
             // FIXME Use proper locations
             props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
@@ -155,11 +157,16 @@ public class EquinoxHost {
             for (Bundle bundle: context.getBundles()) {
                 if ((bundle.getState() & Bundle.ACTIVE) == 0) {
                     logger.info("Starting bundle: " + string(bundle, false));
-                    bundle.start();
+                    try {
+                        bundle.start();
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    logger.info("Bundle: " + string(bundle, false));
                 }
             }
             logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
-            
             return context;
             
         } catch (Exception e) {

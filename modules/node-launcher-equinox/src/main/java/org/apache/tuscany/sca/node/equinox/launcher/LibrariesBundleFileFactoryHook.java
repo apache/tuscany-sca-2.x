@@ -64,7 +64,6 @@ public class LibrariesBundleFileFactoryHook implements org.eclipse.osgi.baseadap
             
             @Override
             public InputStream getInputStream() throws IOException {
-                System.out.println(new String(bytes));
                 return new ByteArrayInputStream(bytes);
             }
             
@@ -138,7 +137,8 @@ public class LibrariesBundleFileFactoryHook implements org.eclipse.osgi.baseadap
     }
 
     public BundleFile createBundleFile(Object content, BaseData data, boolean base) throws IOException {
-        if ("org.apache.tuscany.sca.node.launcher.equinox.libraries".equals(data.getLocation())) {
+        // Equinox will resolve external classpath against the base bundle
+        if ("org.apache.tuscany.sca.node.launcher.equinox.libraries".equals(data.getLocation()) && base) {
             return new LibrariesBundleFile(content, manifest);
         } else {
             return null;
