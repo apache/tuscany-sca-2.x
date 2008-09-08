@@ -47,7 +47,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 /**
  * Common functions and constants used by the admin components.
@@ -55,6 +54,8 @@ import org.osgi.framework.BundleContext;
  * @version $Rev$ $Date$
  */
 final class NodeLauncherUtil {
+
+    private static final String SCANODE_FACTORY = "org.apache.tuscany.sca.node.SCANodeFactory";
 
     private static final String DOMAIN_MANAGER_LAUNCHER_BOOTSTRAP =
         "org.apache.tuscany.sca.domain.manager.launcher.DomainManagerLauncherBootstrap";
@@ -67,33 +68,18 @@ final class NodeLauncherUtil {
 
     /**
      * Collect JAR files under the given directory.
+     * @param contributions
      * 
-     * @p @param contributions
-     * @param bundleContext TODO
      * @throws LauncherException
      */
     static Object node(String configurationURI,
                        String compositeURI,
                        String compositeContent,
                        Contribution[] contributions,
-                       ClassLoader contributionClassLoader,
-                       BundleContext bundleContext) throws LauncherException {
+                       ClassLoader contributionClassLoader) throws LauncherException {
         try {
-
-//            Bundle bundle = null;
-//            for (Bundle b : bundleContext.getBundles()) {
-//                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
-//                    bundle = b;
-//                    break;
-//                }
-//            }
-//            if (bundle == null) {
-//                throw new IllegalStateException(
-//                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
-//            }
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
-            String className = NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP;
             Class<?> bootstrapClass = Class.forName(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
 
             Object bootstrap;
@@ -139,7 +125,7 @@ final class NodeLauncherUtil {
 
             Object node = bootstrapClass.getMethod("getNode").invoke(bootstrap);
             try {
-                Class<?> type = Class.forName("org.apache.tuscany.sca.node.SCANodeFactory");
+                Class<?> type = Class.forName(SCANODE_FACTORY);
                 type = type.getDeclaredClasses()[0];
                 return type.getMethod("createProxy", Class.class, Object.class).invoke(null, type, node);
             } catch (ClassNotFoundException e) {
@@ -150,8 +136,6 @@ final class NodeLauncherUtil {
         } catch (Exception e) {
             NodeLauncher.logger.log(Level.SEVERE, "SCA Node could not be created", e);
             throw new LauncherException(e);
-        } finally {
-            // 
         }
     }
 
@@ -226,7 +210,7 @@ final class NodeLauncherUtil {
             return new File(filename);
         }
     }
-    
+
     static Pattern pattern = Pattern.compile("-([0-9.]+)");
 
     private static String version(String jarFile) {
@@ -249,9 +233,11 @@ final class NodeLauncherUtil {
         ZipEntry entry;
         while ((entry = is.getNextEntry()) != null) {
             String entryName = entry.getName();
-            if (!entry.isDirectory() && entryName != null && entryName.length() > 0 &&
-                !entryName.startsWith(".") && !entryName.startsWith("META-INF") &&
-                entryName.lastIndexOf("/") > 0) {
+            if (!entry.isDirectory() && entryName != null
+                && entryName.length() > 0
+                && !entryName.startsWith(".")
+                && !entryName.startsWith("META-INF")
+                && entryName.lastIndexOf("/") > 0) {
                 String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
                 packages.add(pkg);
             }
@@ -266,14 +252,14 @@ final class NodeLauncherUtil {
             StringBuffer classpath = new StringBuffer();
             StringBuffer exports = new StringBuffer();
             StringBuffer imports = new StringBuffer();
-            Set<String> packages = new HashSet<String>(); 
-            for (String jarFile: jarFiles) {
+            Set<String> packages = new HashSet<String>();
+            for (String jarFile : jarFiles) {
                 addPackages(jarFile, packages);
                 classpath.append("\"external:");
                 classpath.append(file(new URL(jarFile)).getAbsolutePath().replace(File.separatorChar, '/'));
                 classpath.append("\",");
             }
-            
+
             Set<String> importPackages = new HashSet<String>();
             for (String pkg : packages) {
                 exports.append(pkg);
@@ -290,32 +276,31 @@ final class NodeLauncherUtil {
                     importPackages.add(importPackage);
                 }
             }
-    
-            
+
             // Create a manifest
             Manifest manifest = new Manifest();
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
             attributes.putValue(BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
-            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() -1));
-            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() -1));
-            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
+            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
+            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
+            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
-            
+
             return manifest;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
-    
+
     static byte[] generateBundle(Manifest mf) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         JarOutputStream jos = new JarOutputStream(bos, mf);
         jos.close();
         return bos.toByteArray();
     }
-    
+
     /**
      * Returns the location of this bundle.
      * 
@@ -323,13 +308,13 @@ final class NodeLauncherUtil {
      * @throws IOException
      */
     static String bundleLocation() throws IOException, URISyntaxException {
-        String resource = NodeLauncherUtil.class.getName().replace('.', '/') + ".class"; 
+        String resource = NodeLauncherUtil.class.getName().replace('.', '/') + ".class";
         URL url = NodeLauncherUtil.class.getClassLoader().getResource(resource);
         if (url == null) {
             throw new FileNotFoundException(resource);
         }
         URI uri = url.toURI();
-            
+
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
             String path = uri.toString().substring(4);
@@ -342,7 +327,7 @@ final class NodeLauncherUtil {
             return path;
         }
     }
-    
+
     static String string(Bundle b, boolean verbose) {
         StringBuffer sb = new StringBuffer();
         sb.append(b.getBundleId()).append(" ").append(b.getSymbolicName());
@@ -365,7 +350,7 @@ final class NodeLauncherUtil {
         if ((s & Bundle.ACTIVE) != 0) {
             sb.append(" ACTIVE");
         }
-    
+
         if (verbose) {
             sb.append(" ").append(b.getLocation());
             sb.append(" ").append(b.getHeaders());

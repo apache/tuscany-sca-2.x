@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
@@ -101,7 +102,9 @@ public class EquinoxHost {
             // Set startup properties
             props.put(EclipseStarter.PROP_CLEAN, "true");
             
-            props.put("osgi.console", "8085");
+            if (logger.isLoggable(Level.FINE)) {
+                props.put("osgi.console", "8085");
+            }
             
             // Set location properties
             // FIXME Use proper locations
@@ -160,8 +163,7 @@ public class EquinoxHost {
                     try {
                         bundle.start();
                     } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.log(Level.SEVERE, e.getMessage(), e);
                     }
                     logger.info("Bundle: " + string(bundle, false));
                 }

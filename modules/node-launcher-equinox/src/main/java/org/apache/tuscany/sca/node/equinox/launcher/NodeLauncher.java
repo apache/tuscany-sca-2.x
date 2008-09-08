@@ -65,7 +65,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
-        return (T)node(configurationURL, null, null, null, null, bundleContext);
+        return (T)node(configurationURL, null, null, null, null);
     }
 
     /**
@@ -80,7 +80,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, Contribution... contributions) throws LauncherException {
-        return (T)node(null, compositeURI, null, contributions, null, bundleContext);
+        return (T)node(null, compositeURI, null, contributions, null);
     }
 
     /**
@@ -94,7 +94,7 @@ public class NodeLauncher {
      */
     public <T> T createNode(String compositeURI, String compositeContent, Contribution... contributions)
         throws LauncherException {
-        return (T)node(null, compositeURI, compositeContent, contributions, null, bundleContext);
+        return (T)node(null, compositeURI, compositeContent, contributions, null);
     }
 
     /**
@@ -112,7 +112,7 @@ public class NodeLauncher {
      * @return A newly created SCA node
      */
     public <T> T createNodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
-        return (T)node(null, compositeURI, null, null, classLoader, bundleContext);
+        return (T)node(null, compositeURI, null, null, classLoader);
     }
 
     public static void main(String[] args) throws Exception {
