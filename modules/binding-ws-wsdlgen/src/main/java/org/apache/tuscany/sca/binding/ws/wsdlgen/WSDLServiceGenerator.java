@@ -280,9 +280,9 @@ public class WSDLServiceGenerator {
         if (wsBinding.getBinding() == null && ports.size() == 0) {
             Binding binding = helper.createBinding(def, portType);
             if (BindingWSDLGenerator.requiresSOAP12(wsBinding)) {
-                def.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+                def.addNamespace("SOAP12", "http://schemas.xmlsoap.org/wsdl/soap12/");
             } else {
-                def.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
+                def.addNamespace("SOAP11", "http://schemas.xmlsoap.org/wsdl/soap/");
             }
             helper.createBindingOperations(def, binding, portType);
             binding.setUndefined(false);
@@ -310,9 +310,9 @@ public class WSDLServiceGenerator {
                 String endpointURI = computeActualURI(wsBinding, null);
                 Port port = helper.createPort(def, wsBinding.getBinding(), service, endpointURI);
                 if (BindingWSDLGenerator.requiresSOAP12(wsBinding)) {
-                    def.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+                    def.addNamespace("SOAP12", "http://schemas.xmlsoap.org/wsdl/soap12/");
                 } else {
-                    def.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
+                    def.addNamespace("SOAP11", "http://schemas.xmlsoap.org/wsdl/soap/");
                 }
                 wsBinding.setPort(port);
             }
@@ -349,10 +349,10 @@ public class WSDLServiceGenerator {
             List bindingExtensions = binding.getExtensibilityElements();
             for (final Object extension : bindingExtensions) {
                 if (extension instanceof SOAPBinding) {
-                    newDef.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
+                    newDef.addNamespace("SOAP11", "http://schemas.xmlsoap.org/wsdl/soap/");
                 }
                 if (extension instanceof SOAP12Binding) {
-                    newDef.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+                    newDef.addNamespace("SOAP12", "http://schemas.xmlsoap.org/wsdl/soap12/");
                 }
             }
         }
@@ -412,7 +412,7 @@ public class WSDLServiceGenerator {
         for (final Object extension : portExtensions) {
             ExtensibilityElement newExt = null;
             if (extension instanceof SOAPAddress) {
-                def.addNamespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/");
+                def.addNamespace("SOAP11", "http://schemas.xmlsoap.org/wsdl/soap/");
                 try {
                     newExt = def.getExtensionRegistry().createExtension(
                              Port.class, WSDLDefinitionGenerator.SOAP_ADDRESS);
@@ -422,7 +422,7 @@ public class WSDLServiceGenerator {
                 ((SOAPAddress)newExt).setLocationURI(uri);
                 newPort.addExtensibilityElement(newExt);
             } else if (extension instanceof SOAP12Address) {
-                def.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+                def.addNamespace("SOAP12", "http://schemas.xmlsoap.org/wsdl/soap12/");
                 try {
                     newExt = def.getExtensionRegistry().createExtension(
                              Port.class, WSDLDefinitionGenerator.SOAP12_ADDRESS);

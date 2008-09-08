@@ -25,22 +25,22 @@
             xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
             
-    <sca:bindingType type="sca:binding.ws"  mayProvide="soap soap.1_1 soap.1_2" alwaysProvides=""/>
+    <sca:bindingType type="sca:binding.ws"  mayProvide="SOAP SOAP.1_1 SOAP.1_2" alwaysProvides=""/>
 
     <!-- PolicyIntents defined by the SCA Runtime Extension for WS Binding Axis 2 -->
-    <sca:intent name="soap" constrains="sca:binding.ws">
+    <sca:intent name="SOAP" constrains="sca:binding.ws">
         <sca:description>
             Communication through this binding requires SOAP
         </sca:description>
     </sca:intent>
     
-    <sca:intent name="soap.1_1">
+    <sca:intent name="SOAP.1_1">
         <sca:description>
             Communication through this binding requires SOAP 1.1
         </sca:description>
     </sca:intent>
     
-    <sca:intent name="soap.1_2">
+    <sca:intent name="SOAP.1_2">
         <sca:description>
             Communication through this binding requires SOAP 1.2
         </sca:description>

@@ -25,13 +25,13 @@
         <binding.ws uri="http://localhost:8085/helloWorld"/>
     </service>
     <service name="helloWorldSOAP" promote="HelloWorldService">
-        <binding.ws requires="soap" uri="http://localhost:8085/helloWorldSOAP"/>
+        <binding.ws requires="SOAP" uri="http://localhost:8085/helloWorldSOAP"/>
     </service>
     <service name="helloWorldSOAP11" promote="HelloWorldService">
-        <binding.ws requires="soap.1_1" uri="http://localhost:8085/helloWorldSOAP11"/>
+        <binding.ws requires="SOAP.1_1" uri="http://localhost:8085/helloWorldSOAP11"/>
     </service>
     <service name="helloWorldSOAP12" promote="HelloWorldService">
-        <binding.ws requires="soap.1_2" uri="http://localhost:8085/helloWorldSOAP12"/>
+        <binding.ws requires="SOAP.1_2" uri="http://localhost:8085/helloWorldSOAP12"/>
     </service>
 
     <component name="HelloWorldService">
@@ -59,13 +59,13 @@
         <binding.ws uri="http://localhost:8085/helloWorld"/>
     </reference>
     <reference name="helloWorldWS" promote="HelloWorldClientSOAP/helloWorldWS">
-        <binding.ws uri="http://localhost:8085/helloWorldSOAP" requires="soap"/>
+        <binding.ws uri="http://localhost:8085/helloWorldSOAP" requires="SOAP"/>
     </reference>
     <reference name="helloWorldWS" promote="HelloWorldClientSOAP11/helloWorldWS">
-        <binding.ws uri="http://localhost:8085/helloWorldSOAP11" requires="soap.1_1"/>
+        <binding.ws uri="http://localhost:8085/helloWorldSOAP11" requires="SOAP.1_1"/>
     </reference>
     <reference name="helloWorldWS" promote="HelloWorldClientSOAP12/helloWorldWS">
-        <binding.ws uri="http://localhost:8085/helloWorldSOAP12" requires="soap.1_2"/>
+        <binding.ws uri="http://localhost:8085/helloWorldSOAP12" requires="SOAP.1_2"/>
     </reference>
 
 </composite>
