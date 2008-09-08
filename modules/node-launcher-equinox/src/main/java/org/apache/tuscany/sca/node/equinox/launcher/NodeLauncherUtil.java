@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
+import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
+import static org.osgi.framework.Constants.EXPORT_PACKAGE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -260,10 +266,11 @@ final class NodeLauncherUtil {
             Manifest manifest = new Manifest();
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
-            attributes.putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(Constants.BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
-            attributes.putValue(Constants.EXPORT_PACKAGE, exports.substring(0, exports.length() -1));
-            attributes.putValue(Constants.BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
+            attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
+            attributes.putValue(BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
+            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() -1));
+            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
+            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
             
             return manifest;
         } catch (IOException e) {

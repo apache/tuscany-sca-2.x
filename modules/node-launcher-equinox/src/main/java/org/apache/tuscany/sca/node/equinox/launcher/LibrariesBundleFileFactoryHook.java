@@ -64,6 +64,7 @@ public class LibrariesBundleFileFactoryHook implements org.eclipse.osgi.baseadap
             
             @Override
             public InputStream getInputStream() throws IOException {
+                System.out.println(new String(bytes));
                 return new ByteArrayInputStream(bytes);
             }
             
