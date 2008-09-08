@@ -24,6 +24,7 @@ import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
 import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
 import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
+import static org.osgi.framework.Constants.IMPORT_PACKAGE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,7 +35,6 @@ import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -46,10 +46,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
 /**
  * Common functions and constants used by the admin components.
@@ -82,21 +80,21 @@ final class NodeLauncherUtil {
                        BundleContext bundleContext) throws LauncherException {
         try {
 
-            Bundle bundle = null;
-            for (Bundle b : bundleContext.getBundles()) {
-                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
-                    bundle = b;
-                    break;
-                }
-            }
-            if (bundle == null) {
-                throw new IllegalStateException(
-                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
-            }
+//            Bundle bundle = null;
+//            for (Bundle b : bundleContext.getBundles()) {
+//                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
+//                    bundle = b;
+//                    break;
+//                }
+//            }
+//            if (bundle == null) {
+//                throw new IllegalStateException(
+//                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
+//            }
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
             String className = NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP;
-            Class<?> bootstrapClass = bundle.loadClass(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
+            Class<?> bootstrapClass = Class.forName(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
 
             Object bootstrap;
             if (configurationURI != null) {
@@ -267,6 +265,7 @@ final class NodeLauncherUtil {
             // List exported packages and bundle classpath entries
             StringBuffer classpath = new StringBuffer();
             StringBuffer exports = new StringBuffer();
+            StringBuffer imports = new StringBuffer();
             Set<String> packages = new HashSet<String>(); 
             for (String jarFile: jarFiles) {
                 addPackages(jarFile, packages);
@@ -274,11 +273,25 @@ final class NodeLauncherUtil {
                 classpath.append(file(new URL(jarFile)).getAbsolutePath().replace(File.separatorChar, '/'));
                 classpath.append("\",");
             }
-            for (String pkg: packages) {
+            
+            Set<String> importPackages = new HashSet<String>();
+            for (String pkg : packages) {
                 exports.append(pkg);
                 exports.append(',');
+
+                String importPackage = pkg;
+                int index = pkg.indexOf(';');
+                if (index != -1) {
+                    importPackage = pkg.substring(0, index);
+                }
+                if (!importPackages.contains(importPackage)) {
+                    imports.append(importPackage);
+                    imports.append(',');
+                    importPackages.add(importPackage);
+                }
             }
     
+            
             // Create a manifest
             Manifest manifest = new Manifest();
             Attributes attributes = manifest.getMainAttributes();
@@ -286,18 +299,10 @@ final class NodeLauncherUtil {
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
             attributes.putValue(BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
             attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() -1));
+            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() -1));
             attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
             
-            try {
-                ManifestElement[] elements = ManifestElement.parseHeader(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() -1));
-                for(ManifestElement e: elements) {
-                    System.out.println(Arrays.asList(e.getValueComponents()));
-                }
-            } catch (BundleException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             return manifest;
         } catch (IOException e) {
             throw new IllegalStateException(e);
