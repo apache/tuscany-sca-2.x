@@ -22,9 +22,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -145,7 +147,10 @@ public class SCADomainContext {
             }
             
             // Wire the top level component's composite
-            buildComposite(composites.get(0), assemblyFactory, scaBindingFactory, mapper);
+            DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+            TransformerFactory transformerFactory = modelFactories.getFactory(TransformerFactory.class);
+            buildComposite(composites.get(0), assemblyFactory, scaBindingFactory,
+                           documentBuilderFactory, transformerFactory, mapper);
             
         } catch (ContributionException e) {
             throw new RuntimeException(e);
@@ -157,7 +162,10 @@ public class SCADomainContext {
     }
     
     private void buildComposite(Composite composite, AssemblyFactory assemblyFactory,
-                                SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
+                                SCABindingFactory scaBindingFactory,
+                                DocumentBuilderFactory documentBuilderFactory,
+                                TransformerFactory transformerFactory,
+                                InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
 
         Monitor monitor = new Monitor() {
 
@@ -170,7 +178,8 @@ public class SCADomainContext {
         };
 
         // Configure and wire the composite
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), interfaceContractMapper, monitor);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(),
+                                                                      documentBuilderFactory, transformerFactory, interfaceContractMapper, monitor);
         compositeUtil.build(composite);
 
     }

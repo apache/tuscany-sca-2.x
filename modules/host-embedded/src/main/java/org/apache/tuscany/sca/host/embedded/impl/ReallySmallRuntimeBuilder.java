@@ -24,8 +24,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -142,6 +144,8 @@ public class ReallySmallRuntimeBuilder {
                                                           SCABindingFactory scaBindingFactory,
                                                           EndpointFactory endpointFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
+                                                          DocumentBuilderFactory documentBuilderFactory,
+                                                          TransformerFactory transformerFactory,
                                                           InterfaceContractMapper interfaceContractMapper,
                                                           SCADefinitions policyDefinitions) {
       
@@ -150,6 +154,8 @@ public class ReallySmallRuntimeBuilder {
                                         endpointFactory,
                                         scaBindingFactory, 
                                         intentAttachPointTypeFactory, 
+                                        documentBuilderFactory,
+                                        transformerFactory,
                                         interfaceContractMapper,
                                         policyDefinitions,
                                         monitor);
@@ -211,7 +217,12 @@ public class ReallySmallRuntimeBuilder {
 
         // Create and register document processors for SCA assembly XML
         documentProcessors.getProcessor(Composite.class);
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, policyDefinitions, monitor));
+        DocumentBuilderFactory documentBuilderFactory = AccessController.doPrivileged(new PrivilegedAction<DocumentBuilderFactory>() {
+            public DocumentBuilderFactory run() {
+                return DocumentBuilderFactory.newInstance();
+            }
+        });           
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, documentBuilderFactory, policyDefinitions, monitor));
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);

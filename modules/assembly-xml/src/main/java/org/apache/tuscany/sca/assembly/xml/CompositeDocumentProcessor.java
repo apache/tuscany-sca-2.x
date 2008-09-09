@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -55,6 +56,7 @@ import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
  */
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
     private XMLInputFactory inputFactory;
+    private DocumentBuilderFactory documentBuilderFactory;
     private List scaDefnSink;
     private Collection<PolicySet> domainPolicySets = null;
     private int scaDefnsCount = 0;
@@ -65,9 +67,27 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param policyFactory
      * @param staxProcessor
      */
+    @Deprecated
     public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
-    								  XMLInputFactory inputFactory, List scaDefnsSink, Monitor monitor) {
+                                                                  XMLInputFactory inputFactory,
+                                                                  List scaDefnsSink, Monitor monitor) {
         super(null, null, staxProcessor, monitor);
+        this.inputFactory = inputFactory;
+        this.scaDefnSink = scaDefnsSink;
+    }
+
+    /**
+     * Construct a new composite processor
+     * @param assemblyFactory
+     * @param policyFactory
+     * @param staxProcessor
+     */
+    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
+    								  XMLInputFactory inputFactory,
+    								  DocumentBuilderFactory documentBuilderFactory,
+    								  List scaDefnsSink, Monitor monitor) {
+        super(null, null, staxProcessor, monitor);
+        this.documentBuilderFactory = documentBuilderFactory;
         this.inputFactory = inputFactory;
         this.scaDefnSink = scaDefnsSink;
     }
@@ -81,6 +101,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     								  StAXArtifactProcessor staxProcessor, Monitor monitor) {
         super(null, null, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
+        this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
     }
     
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
@@ -109,7 +130,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             try {
                 if ( domainPolicySets != null ) {
                     transformedArtifactContent =
-                        PolicyComputationUtils.addApplicablePolicySets(scdlStream, domainPolicySets);
+                        PolicyComputationUtils.addApplicablePolicySets(scdlStream, domainPolicySets, documentBuilderFactory);
                     scdlStream = new ByteArrayInputStream(transformedArtifactContent);
                 } 
             } catch ( IOException e ) {

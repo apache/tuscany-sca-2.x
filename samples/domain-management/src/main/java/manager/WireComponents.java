@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -92,6 +93,8 @@ public class WireComponents {
     private static WorkspaceFactory workspaceFactory;
     private static AssemblyFactory assemblyFactory;
     private static XMLOutputFactory outputFactory;
+    private static DocumentBuilderFactory documentBuilderFactory;
+    private static TransformerFactory transformerFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
     private static ContributionDependencyBuilder contributionDependencyBuilder;
     private static CompositeBuilder domainCompositeBuilder;
@@ -116,6 +119,8 @@ public class WireComponents {
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+        transformerFactory = modelFactories.getFactory(TransformerFactory.class);
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
@@ -139,7 +144,8 @@ public class WireComponents {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory,
+                                                          documentBuilderFactory, transformerFactory, contractMapper, monitor);
         
     }
     

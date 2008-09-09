@@ -20,6 +20,9 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultEndpointFactory;
@@ -62,16 +65,65 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * 
      * @param assemblyFactory
      * @param scaBindingFactory
+     * @param endpointFactory
      * @param intentAttachPointTypeFactory
+     * @param interfaceContractMapper
+     * @param policyDefinitions
+     * @param monitor
+     */
+    @Deprecated
+    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                EndpointFactory endpointFactory,
+                                SCABindingFactory scaBindingFactory,
+                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                InterfaceContractMapper interfaceContractMapper,
+                                SCADefinitions policyDefinitions,
+                                Monitor monitor) {
+        this(assemblyFactory, endpointFactory, scaBindingFactory, intentAttachPointTypeFactory,
+             null, null, interfaceContractMapper, policyDefinitions, monitor);
+    }
+        
+    /**
+     * Constructs a new composite builder.
+     * 
+     * @param assemblyFactory
+     * @param scaBindingFactory
+     * @param endpointFactory
+     * @param intentAttachPointTypeFactory
+     * @param interfaceContractMapper
+     * @param policyDefinitions
+     * @param monitor
+     */
+    @Deprecated
+    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                SCABindingFactory scaBindingFactory,
+                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                InterfaceContractMapper interfaceContractMapper,
+                                Monitor monitor) {
+        this(assemblyFactory, null, scaBindingFactory, intentAttachPointTypeFactory,
+             null, null, interfaceContractMapper, null, monitor);
+    }
+        
+    /**
+     * Constructs a new composite builder.
+     * 
+     * @param assemblyFactory
+     * @param scaBindingFactory
+     * @param intentAttachPointTypeFactory
+     * @param documentBuilderFactory
+     * @param transformerFactory
      * @param interfaceContractMapper
      * @param monitor
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                DocumentBuilderFactory documentBuilderFactory,
+                                TransformerFactory transformerFactory,
                                 InterfaceContractMapper interfaceContractMapper,
                                 Monitor monitor) {
-        this(assemblyFactory, null, scaBindingFactory,  intentAttachPointTypeFactory, interfaceContractMapper, null, monitor);
+        this(assemblyFactory, null, scaBindingFactory,  intentAttachPointTypeFactory,
+             documentBuilderFactory, transformerFactory, interfaceContractMapper, null, monitor);
     }
     
     /**
@@ -89,6 +141,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 EndpointFactory endpointFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                DocumentBuilderFactory documentBuilderFactory,
+                                TransformerFactory transformerFactory,
                                 InterfaceContractMapper interfaceContractMapper,
                                 SCADefinitions policyDefinitions,
                                 Monitor monitor) {
@@ -102,10 +156,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
         compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
         compositeCloneBuilder = new CompositeCloneBuilderImpl(monitor);
-        componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper, policyDefinitions, monitor);
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory);
         compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
-        compositeBindingURIBuilder = new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        compositeBindingURIBuilder = new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper, policyDefinitions, monitor);
         componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
         compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);

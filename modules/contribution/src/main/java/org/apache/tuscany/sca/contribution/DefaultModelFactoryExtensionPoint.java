@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.contribution;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -116,8 +115,7 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
 
                 // Call the newInstance static method on the factory abstract class
                 try {
-                    Method newInstanceMethod = factoryInterface.getMethod("newInstance");
-                    factory = newInstanceMethod.invoke(null);
+                    factory = ServiceDiscovery.getInstance().newFactoryClassInstance(factoryInterface);
                 } catch (Exception e) {
                     throw new IllegalArgumentException(e);
                 }

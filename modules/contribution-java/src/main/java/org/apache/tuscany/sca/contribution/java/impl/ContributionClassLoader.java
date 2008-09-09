@@ -64,18 +64,6 @@ public class ContributionClassLoader extends URLClassLoader {
     }
 
     /*
-     * @return the context ClassLoader of the current thread.
-     */
-    protected static ClassLoader getContextClassLoader() {
-       ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });           
-       return contextClassLoader;
-    }
-    
-    /*
      * Return the ClassLoader corresponding to a contribution providing an export
      * Create a new ClassLoader for the contribution if one does not exist
      */
@@ -83,7 +71,7 @@ public class ContributionClassLoader extends URLClassLoader {
     	ClassLoader cl = exportingContribution.getClassLoader();
         if (!(cl instanceof ContributionClassLoader)) {
             if (cl == null) {
-                cl = getContextClassLoader();
+                cl = getParent();
             }
 
             cl = new ContributionClassLoader(exportingContribution, cl);
@@ -390,7 +378,7 @@ public class ContributionClassLoader extends URLClassLoader {
     
     @Override
     public String toString() {
-        return "SCA contribution classloader for : " + contribution.getLocation();
+        return "SCA Contribution ClassLoader location: " + contribution.getLocation() + " parent ClassLoader: " + getParent();
     }
     
     

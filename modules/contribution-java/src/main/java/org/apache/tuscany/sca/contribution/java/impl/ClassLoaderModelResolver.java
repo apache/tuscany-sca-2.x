@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultDelegatingModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -49,16 +50,12 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     private Contribution contribution;
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
     
-    private static ClassLoader contextClassLoader() {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });           
+    private static ClassLoader parentClassLoader() {
+        return ServiceDiscovery.class.getClassLoader();
     }
     
     public ClassLoaderModelResolver(final Contribution contribution, ModelFactoryExtensionPoint modelFactories) throws MalformedURLException {
-        super(new URL[] {new URL(contribution.getLocation())}, contextClassLoader());
+        super(new URL[] {new URL(contribution.getLocation())}, parentClassLoader());
         this.contribution = contribution;
         
         // Index Java import resolvers by package name

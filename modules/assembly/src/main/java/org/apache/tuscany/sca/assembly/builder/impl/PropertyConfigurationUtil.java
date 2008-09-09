@@ -59,10 +59,8 @@ import org.xml.sax.InputSource;
  * @version $Rev$ $Date$
  */
 abstract class PropertyConfigurationUtil {
-    private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
-    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     
-    private static Document evaluate(Document node, XPathExpression expression)
+    private static Document evaluate(Document node, XPathExpression expression, DocumentBuilderFactory documentBuilderFactory)
         throws XPathExpressionException, ParserConfigurationException {
 
         Node value = node.getDocumentElement();
@@ -72,7 +70,7 @@ abstract class PropertyConfigurationUtil {
         }
 
         // TODO: How to wrap the result into a Document?
-        Document document = DOC_BUILDER_FACTORY.newDocumentBuilder().newDocument();
+        Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         if (result instanceof Document) {
             return (Document)result;
         } else {
@@ -83,7 +81,7 @@ abstract class PropertyConfigurationUtil {
         }
     }
     
-    private static Document loadFromFile(String file) throws MalformedURLException, IOException,
+    private static Document loadFromFile(String file, TransformerFactory transformerFactory) throws MalformedURLException, IOException,
         TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
         // URI resolution for relative URIs is done when the composite is resolved.
@@ -96,7 +94,7 @@ abstract class PropertyConfigurationUtil {
     
             Source streamSource = new SAXSource(new InputSource(is));
             DOMResult result = new DOMResult();
-            javax.xml.transform.Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
             transformer.transform(streamSource, result);
             
             Document document = (Document)result.getNode();
@@ -115,7 +113,9 @@ abstract class PropertyConfigurationUtil {
     }
     
     static void sourceComponentProperties(Map<String, Property> compositeProperties,
-                                                 Component componentDefinition) throws CompositeBuilderException,
+                                                 Component componentDefinition,
+                                                 DocumentBuilderFactory documentBuilderFactory,
+                                                 TransformerFactory transformerFactory) throws CompositeBuilderException,
                                                                                ParserConfigurationException,
                                                                                XPathExpressionException,
                                                                                TransformerException,
@@ -143,7 +143,7 @@ abstract class PropertyConfigurationUtil {
                     Document compositePropDefValues = (Document)compositeProp.getValue();
 
                     // FIXME: How to deal with namespaces?
-                    Document node = evaluate(compositePropDefValues, aProperty.getSourceXPathExpression());
+                    Document node = evaluate(compositePropDefValues, aProperty.getSourceXPathExpression(), documentBuilderFactory);
 
                     if (node != null) {
                         aProperty.setValue(node);
@@ -152,7 +152,7 @@ abstract class PropertyConfigurationUtil {
                     throw new CompositeBuilderException("The 'source' has an invalid value: " + source);
                 }
             } else if (file != null) {
-                aProperty.setValue(loadFromFile(aProperty.getFile()));
+                aProperty.setValue(loadFromFile(aProperty.getFile(), transformerFactory));
 
             }
         }

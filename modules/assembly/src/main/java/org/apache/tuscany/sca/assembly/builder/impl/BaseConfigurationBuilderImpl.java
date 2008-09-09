@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -34,7 +36,6 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
@@ -69,14 +70,20 @@ public abstract class BaseConfigurationBuilderImpl {
     private Monitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
     private SCADefinitions policyDefinitions;
+    private DocumentBuilderFactory documentBuilderFactory;
+    private TransformerFactory transformerFactory;
 
     protected BaseConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
+                                             DocumentBuilderFactory documentBuilderFactory,
+                                             TransformerFactory transformerFactory,
                                              InterfaceContractMapper interfaceContractMapper,
                                              SCADefinitions policyDefinitions,
                                              Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
+        this.documentBuilderFactory = documentBuilderFactory;
+        this.transformerFactory = transformerFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.policyDefinitions = policyDefinitions;
         this.monitor = monitor;
@@ -818,7 +825,8 @@ public abstract class BaseConfigurationBuilderImpl {
     
         for (Component component : composite.getComponents()) {
             try {
-                PropertyConfigurationUtil.sourceComponentProperties(compositeProperties, component);
+                PropertyConfigurationUtil.sourceComponentProperties(compositeProperties, component,
+                                                                    documentBuilderFactory, transformerFactory);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

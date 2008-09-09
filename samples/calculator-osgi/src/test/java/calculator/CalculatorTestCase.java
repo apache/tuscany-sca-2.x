@@ -39,7 +39,7 @@ public class CalculatorTestCase extends TestCase {
     protected void setUp() throws Exception {
         launcher = NodeLauncher.newInstance();
         node = launcher.createNodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
-        System.out.println(node.getClass().getClassLoader());
+        System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
         node.start();
     }
 

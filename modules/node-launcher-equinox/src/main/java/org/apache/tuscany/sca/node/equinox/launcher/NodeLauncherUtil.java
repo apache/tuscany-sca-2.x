@@ -250,7 +250,6 @@ final class NodeLauncherUtil {
             if (!entry.isDirectory() && entryName != null
                 && entryName.length() > 0
                 && !entryName.startsWith(".")
-                && !entryName.startsWith("META-INF")
                 && entryName.lastIndexOf("/") > 0) {
                 String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
                 packages.add(pkg);
