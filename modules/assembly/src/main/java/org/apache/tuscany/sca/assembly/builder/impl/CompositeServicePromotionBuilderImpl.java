@@ -54,7 +54,7 @@ public class CompositeServicePromotionBuilderImpl implements CompositeBuilder {
                 // Create a new component service to represent this composite
                 // service on the promoted component
                 ComponentService newComponentService = assemblyFactory.createComponentService();
-                newComponentService.setName("$promoted$." + compositeService.getName());
+                newComponentService.setName("$promoted$" + compositeService.getName());
                 promotedComponent.getServices().add(newComponentService);
                 newComponentService.setService(promotedService.getService());
                 newComponentService.getBindings().addAll(compositeService.getBindings());

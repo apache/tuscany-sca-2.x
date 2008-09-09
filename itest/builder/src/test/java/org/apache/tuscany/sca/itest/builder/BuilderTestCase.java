@@ -75,13 +75,13 @@ public class BuilderTestCase extends TestCase {
 
         Component componentD = TestUtils.getComponent(domainComposite, "ComponentD");
         if (!nonWiring) {
-            // Should create component service $promoted$.Service1 on innermost component
+            // Should create component service $promoted$Service1 on innermost component
             //  ComponentD, with <binding.ws> and uri="/Service1"
             // No other services on ComponentD should have <binding.ws>
             WebServiceBinding wsBinding = null;
             for (ComponentService service : componentD.getServices()) {
                 WebServiceBinding wsb = service.getBinding(WebServiceBinding.class);
-                if ("$promoted$.Service1".equals(service.getName())) {
+                if ("$promoted$Service1".equals(service.getName())) {
                     wsBinding = wsb;
                 } else {
                     assert wsb == null;
@@ -89,16 +89,16 @@ public class BuilderTestCase extends TestCase {
             }
             assert "/Service1".equals(wsBinding.getURI());
 
-            // Should create WSDL document for ComponentD/$promoted$.Service1 with endpoint uri="/Service1"
+            // Should create WSDL document for ComponentD/$promoted$Service1 with endpoint uri="/Service1"
             Definition def = wsBinding.getWSDLDocument();
             javax.wsdl.Service svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
             Port port = svc.getPort("Service3Port");
             assert "/Service1".equals(TestUtils.getPortAddress(port));
         } else {
-            // Should not create component service $promoted$.Service1 on innermost component ComponentD
+            // Should not create component service $promoted$Service1 on innermost component ComponentD
             // No component services on ComponentD should have <binding.ws>
             for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$.Service1".equals(service.getName());
+                assert !"$promoted$Service1".equals(service.getName());
                 assert service.getBinding(WebServiceBinding.class) == null;
             }
         }
@@ -168,25 +168,25 @@ public class BuilderTestCase extends TestCase {
 
         Component componentD = TestUtils.getComponent(domainComposite, "ComponentD");
         if (!nonWiring) {
-            // Should create component service $promoted$.ComponentB.Service2 on innermost component
+            // Should create component service $promoted$ComponentB$slash$Service2 on innermost component
             //  ComponentD, with <binding.ws> and uri="/ComponentB/Service2"
             wsBinding = null;
             for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$.ComponentB.Service2".equals(service.getName())) {
+                if ("$promoted$ComponentB$slash$Service2".equals(service.getName())) {
                     wsBinding = service.getBinding(WebServiceBinding.class);
                 }
             }
             assert "/ComponentB/Service2".equals(wsBinding.getURI());
 
-            // Should create WSDL document for ComponentD/$promoted$.ComponentB.Service2 with endpoint uri="/ComponentB/Service2"
+            // Should create WSDL document for ComponentD/$promoted$ComponentB$slash$Service2 with endpoint uri="/ComponentB/Service2"
             def = wsBinding.getWSDLDocument();
             svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
             port = svc.getPort("Service3Port");
             assert "/ComponentB/Service2".equals(TestUtils.getPortAddress(port));
         } else {
-            // Should not create component service $promoted$.ComponentB.Service2 on innermost component ComponentD
+            // Should not create component service $promoted$ComponentB$slash$Service2 on innermost component ComponentD
             for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$.ComponentB.Service2".equals(service.getName());
+                assert !"$promoted$ComponentB$slash$Service2".equals(service.getName());
             }
         }
 
@@ -204,17 +204,17 @@ public class BuilderTestCase extends TestCase {
         }
 
         if (!nonWiring) {
-            // Should create component service $promoted$.Service1 on innermost component
+            // Should create component service $promoted$Service1 on innermost component
             //  ComponentD, with <binding.ws> and uri="/Service1"
             wsBinding = null;
             for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$.Service1".equals(service.getName())) {
+                if ("$promoted$Service1".equals(service.getName())) {
                     wsBinding = service.getBinding(WebServiceBinding.class);
                 }
             }
             assert "/Service1".equals(wsBinding.getURI());
 
-            // Should create WSDL document for ComponentD/$promoted$.Service1 with endpoint uri="/Service1"
+            // Should create WSDL document for ComponentD/$promoted$Service1 with endpoint uri="/Service1"
             def = wsBinding.getWSDLDocument();
             svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
             port = svc.getPort("Service3Port");
@@ -222,15 +222,15 @@ public class BuilderTestCase extends TestCase {
         } else {
             // Should not create component service $promoted$.Service1 on innermost component ComponentD
             for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$.Service1".equals(service.getName());
+                assert !"$promoted$Service1".equals(service.getName());
             }
         }
 
-        // No services on ComponentD should have <binding.ws>, except for $promoted$.Service1
-        // and $promoted$.ComponentB.Service2  
+        // No services on ComponentD should have <binding.ws>, except for $promoted$Service1
+        // and $promoted$ComponentB$slash$Service2  
         for (ComponentService service : componentD.getServices()) {
-            if (!"$promoted$.Service1".equals(service.getName()) &&
-                !"$promoted$.ComponentB.Service2".equals(service.getName())) {
+            if (!"$promoted$Service1".equals(service.getName()) &&
+                !"$promoted$ComponentB$slash$Service2".equals(service.getName())) {
                 assert service.getBinding(WebServiceBinding.class) == null;
             }
         }
@@ -334,25 +334,25 @@ public class BuilderTestCase extends TestCase {
         assert "/ComponentB/Service2".equals(TestUtils.getPortAddress(port));
 
         if (!nonWiring) {
-            // Should create component service $promoted$.ComponentB.Service2 on innermost component
+            // Should create component service $promoted$ComponentB$slash$Service2 on innermost component
             //  ComponentD, with <binding.ws> and uri="/ComponentB/Service2"
             wsBinding = null;
             for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$.ComponentB.Service2".equals(service.getName())) {
+                if ("$promoted$ComponentB$slash$Service2".equals(service.getName())) {
                     wsBinding = service.getBinding(WebServiceBinding.class);
                 }
             }
             assert "/ComponentB/Service2".equals(wsBinding.getURI());
 
-            // Should create WSDL document for ComponentD/$promoted$.ComponentB.Service2 with endpoint uri="/ComponentB/Service2"
+            // Should create WSDL document for ComponentD/$promoted$ComponentB$slash$Service2 with endpoint uri="/ComponentB/Service2"
             def = wsBinding.getWSDLDocument();
             svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
             port = svc.getPort("Service3Port");
             assert "/ComponentB/Service2".equals(TestUtils.getPortAddress(port));
         } else {
-            // Should not create component service $promoted$.ComponentB.Service2 on innermost component ComponentD
+            // Should not create component service $promoted$ComponentB$slash$Service2 on innermost component ComponentD
             for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$.ComponentB.Service2".equals(service.getName());
+                assert !"$promoted$ComponentB$slash$Service2".equals(service.getName());
             }
         }
 
@@ -370,17 +370,17 @@ public class BuilderTestCase extends TestCase {
         }
 
         if (!nonWiring) {
-            // Should create component service $promoted$.Service1 on innermost component
+            // Should create component service $promoted$Service1 on innermost component
             //  ComponentD, with <binding.ws> and uri="/Service1"
             wsBinding = null;
             for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$.Service1".equals(service.getName())) {
+                if ("$promoted$Service1".equals(service.getName())) {
                     wsBinding = service.getBinding(WebServiceBinding.class);
                 }
             }
             assert "/Service1".equals(wsBinding.getURI());
 
-            // Should create WSDL document for ComponentD/$promoted$.Service1 with endpoint uri="/Service1"
+            // Should create WSDL document for ComponentD/$promoted$Service1 with endpoint uri="/Service1"
             def = wsBinding.getWSDLDocument();
             svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
             port = svc.getPort("Service3Port");
@@ -388,7 +388,7 @@ public class BuilderTestCase extends TestCase {
         } else {
             // Should not create component service $promoted$.Service1 on innermost component ComponentD
             for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$.Service1".equals(service.getName());
+                assert !"$promoted$Service1".equals(service.getName());
             }
         }
 
@@ -396,8 +396,8 @@ public class BuilderTestCase extends TestCase {
         //  $promoted$.Service1 and $promoted$.ComponentB.Service2
         for (ComponentService service : componentD.getServices()) {
             if (!"Service3".equals(service.getName()) &&
-                !"$promoted$.Service1".equals(service.getName()) &&
-                !"$promoted$.ComponentB.Service2".equals(service.getName())) {
+                !"$promoted$Service1".equals(service.getName()) &&
+                !"$promoted$ComponentB$slash$Service2".equals(service.getName())) {
                 assert service.getBinding(WebServiceBinding.class) == null;
             }
         }
