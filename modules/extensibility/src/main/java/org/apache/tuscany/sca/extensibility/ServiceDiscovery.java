@@ -55,7 +55,7 @@ public class ServiceDiscovery {
         return INSTANCE;
     }
 
-    private ServiceDiscoverer getServiceDiscoverer() {
+    public ServiceDiscoverer getServiceDiscoverer() {
         if (discoverer == null) {
             discoverer = new ContextClassLoaderServiceDiscoverer();
         }

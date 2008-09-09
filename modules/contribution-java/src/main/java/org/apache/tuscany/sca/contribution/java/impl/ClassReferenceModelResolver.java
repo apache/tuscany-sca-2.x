@@ -62,7 +62,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
                 //        return Thread.currentThread().getContextClassLoader();
                 //    }
                 //});
-                ClassLoader contextClassLoader = ServiceDiscovery.class.getClassLoader();
+                ClassLoader contextClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
                 cl = new ContributionClassLoader(contribution, contextClassLoader);
                 contribution.setClassLoader(cl);
             }

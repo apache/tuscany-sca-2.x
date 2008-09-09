@@ -19,12 +19,32 @@
 
 package hello;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
+
 /**
- * HelloWorldImpl
+ * This client program shows how to create an SCA runtime, start it,
+ * and locate and invoke a SCA component
  */
-public class HelloWorldImpl implements HelloWorld {
-    public String hello(String name) {
-        System.out.println("Name: " + name);
-        return "Hello, " + name;
+@Scope("COMPOSITE")
+@EagerInit
+public class HelloWorldClient {
+
+    private HelloWorld hw;
+
+    @Reference
+    public void setHelloWorld(HelloWorld hw) {
+        this.hw = hw;
     }
+
+    @Init
+    public void hello() {
+        // Say hello
+        System.out.println("Contribution ClassLoader: " + getClass().getClassLoader());
+        System.out.println("SCA API ClassLoader: " + Reference.class.getClassLoader());
+        System.out.println(hw.hello("Equinox"));
+    }
+
 }
