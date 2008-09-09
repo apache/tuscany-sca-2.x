@@ -96,7 +96,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         //        what are the implications of this here?
 
         if (RemoteBindingHelper.isTargetRemote()) {
-            targetIsRemote = true;
+            if (reference.getInterfaceContract() != null && reference.getInterfaceContract().getInterface().isRemotable()) {
+                targetIsRemote = true;
+            } else {
+                targetIsRemote = false;
+            }
         } else if (optimizableBinding.getTargetComponentService() != null) {
             if (optimizableBinding.getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
