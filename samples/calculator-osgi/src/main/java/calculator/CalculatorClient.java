@@ -42,11 +42,21 @@ public class CalculatorClient {
     public void calculate() {
 
         // Calculate
-        System.out.println("SCA API ClassLoader: " + Reference.class.getClassLoader());
+        System.out.println("SCA API ClassLoader: " + print(Reference.class.getClassLoader()));
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
+    }
+    
+    private static String print(ClassLoader cl) {
+        StringBuffer buf = new StringBuffer();
+        for (; cl != null;) {
+            buf.append(cl.toString());
+            buf.append(' ');
+            cl = cl.getParent();
+        }
+        return buf.toString();
     }
 
 }
