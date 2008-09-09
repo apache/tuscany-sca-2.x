@@ -100,7 +100,7 @@ public class EquinoxHost {
             props.put("osgi.contextClassLoaderParent", "boot");
             
             // Set the extension bundle
-            props.put("osgi.framework.extensions", "org.apache.tuscany.sca.extensibility.equinox");
+            props.put("osgi.framework.extensions", "org.apache.tuscany.sca.node.launcher.equinox");
             
             // Set startup properties
             props.put(EclipseStarter.PROP_CLEAN, "true");
@@ -205,6 +205,9 @@ public class EquinoxHost {
      * @throws IOException
      */
     private static String getBundleName(File file) throws IOException {
+        if (!file.exists()) {
+            return null;
+        }
         String bundleName = null;
         if (file.isDirectory()) {
             File mf = new File(file, "META-INF/MANIFEST.MF");

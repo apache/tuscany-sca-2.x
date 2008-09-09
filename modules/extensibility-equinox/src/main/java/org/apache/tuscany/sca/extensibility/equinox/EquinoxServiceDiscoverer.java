@@ -28,6 +28,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,7 +47,7 @@ import org.osgi.framework.BundleContext;
 /**
  * A ServiceDiscoverer that find META-INF/services/... in installed bundles
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoverer.class.getName());
@@ -182,67 +185,90 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         serviceName = "META-INF/services/" + serviceName;
 
         for (Bundle bundle : context.getBundles()) {
-            final URL url = bundle.getEntry(serviceName);
-            if (url == null) {
+            if (bundle.getBundleId() == 0) {
+                // Skip system bundle as it has access to the application classloader
                 continue;
             }
-            if (debug) {
-                logger.fine("Reading service provider file: " + url.toExternalForm());
-            }
+            Enumeration<URL> urls = null;
             try {
-                // Allow privileged access to open URL stream. Add FilePermission to added to security
-                // policy file.
-                InputStream is;
-                try {
-                    is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-                        public InputStream run() throws IOException {
-                            return url.openStream();
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                    throw (IOException)e.getException();
-                }
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(is));
-                    int count = 0;
-                    while (true) {
-                        String line = reader.readLine();
-                        if (line == null)
-                            break;
-                        line = line.trim();
-                        if (!line.startsWith("#") && !"".equals(line)) {
-                            String reg = line.trim();
-                            if (debug) {
-                                logger.fine("Registering service provider: " + reg);
-                            }
-
-                            Map<String, String> attributes = parseServiceDeclaration(reg);
-                            String className = attributes.get("class");
-                            if (className == null) {
-                                // Add a unique class name to prevent equals() from returning true
-                                className = "_class_" + count;
-                                count++;
-                            }
-                            ServiceDeclarationImpl descriptor =
-                                new ServiceDeclarationImpl(bundle, url, className, attributes);
-                            descriptors.add(descriptor);
-                            if (firstOnly) {
-                                return descriptors;
-                            }
-                        }
-                    }
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            // Ignore
-                        }
+                // Use getResources to find resources on the classpath of the bundle
+                // Please note if there is an DynamicImport-Package=*, and another bundle
+                // exports the resource package, there is a possiblity that it doesn't
+                // find the containing entry
+                urls = bundle.getResources(serviceName);
+                if (urls == null) {
+                    URL entry = bundle.getEntry(serviceName);
+                    if (entry != null) {
+                        urls = Collections.enumeration(Arrays.asList(entry));
                     }
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+            if (urls == null) {
+                continue;
+            }
+            while (urls.hasMoreElements()) {
+                final URL url = urls.nextElement();
+
+                if (debug) {
+                    logger.fine("Reading service provider file: " + url.toExternalForm());
+                }
+                try {
+                    // Allow privileged access to open URL stream. Add FilePermission to added to security
+                    // policy file.
+                    InputStream is;
+                    try {
+                        is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                            public InputStream run() throws IOException {
+                                return url.openStream();
+                            }
+                        });
+                    } catch (PrivilegedActionException e) {
+                        throw (IOException)e.getException();
+                    }
+                    BufferedReader reader = null;
+                    try {
+                        reader = new BufferedReader(new InputStreamReader(is));
+                        int count = 0;
+                        while (true) {
+                            String line = reader.readLine();
+                            if (line == null)
+                                break;
+                            line = line.trim();
+                            if (!line.startsWith("#") && !"".equals(line)) {
+                                String reg = line.trim();
+                                if (debug) {
+                                    logger.fine("Registering service provider: " + reg);
+                                }
+
+                                Map<String, String> attributes = parseServiceDeclaration(reg);
+                                String className = attributes.get("class");
+                                if (className == null) {
+                                    // Add a unique class name to prevent equals() from returning true
+                                    className = "_class_" + count;
+                                    count++;
+                                }
+                                ServiceDeclarationImpl descriptor =
+                                    new ServiceDeclarationImpl(bundle, url, className, attributes);
+                                descriptors.add(descriptor);
+                                if (firstOnly) {
+                                    return descriptors;
+                                }
+                            }
+                        }
+                    } finally {
+                        if (reader != null) {
+                            try {
+                                reader.close();
+                            } catch (IOException e) {
+                                // Ignore
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                }
             }
         }
         return descriptors;

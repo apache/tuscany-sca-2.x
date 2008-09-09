@@ -42,7 +42,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Test the Equinox service discoverer.
  * 
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class EquinoxServiceDiscovererTestCase {
     private static EquinoxServiceDiscoverer discoverer;
@@ -133,10 +133,20 @@ public class EquinoxServiceDiscovererTestCase {
     @Test
     public void testDiscovery() {
         Set<ServiceDeclaration> descriptors =
-            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory", false);
+            discoverer.discover("test.TestService", false);
         Assert.assertEquals(1, descriptors.size());
         descriptors = discoverer.discover("notthere", false);
         Assert.assertEquals(0, descriptors.size());
     }
+
+    @Test
+    public void testDiscoveryFirst() {
+        Set<ServiceDeclaration> descriptors =
+            discoverer.discover("test.TestService", true);
+        Assert.assertEquals(1, descriptors.size());
+        descriptors = discoverer.discover("notthere", true);
+        Assert.assertEquals(0, descriptors.size());
+    }    
+    
 
 }

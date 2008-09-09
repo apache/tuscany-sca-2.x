@@ -22,9 +22,13 @@
 	targetNamespace="http://sample/composite"
 	xmlns:sc="http://sample/composite"
 	name="HelloWorld">
-
+    
     <component name="HelloWorld">
-        <implementation.java class="hello.HelloWorldImpl"/>
+        <implementation.java class="hello.HelloWorldImpl" />
+    </component>
+    <component name="HelloWorldClient">
+        <implementation.java class="hello.HelloWorldClient" />
+        <reference name="helloWorld" target="HelloWorld"></reference>
     </component>
 
 </composite>

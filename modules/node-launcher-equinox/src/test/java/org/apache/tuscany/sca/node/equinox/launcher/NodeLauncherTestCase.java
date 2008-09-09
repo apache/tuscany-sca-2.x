@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
-import hello.HelloWorld;
-
-import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,10 +52,6 @@ public class NodeLauncherTestCase {
     public void testLaunch() throws Exception {
         SCANode node = launcher.createNodeFromClassLoader("HelloWorld.composite", getClass().getClassLoader());
         node.start();
-
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
-        hw.hello("OSGi");
-
         node.stop();
     }
 
