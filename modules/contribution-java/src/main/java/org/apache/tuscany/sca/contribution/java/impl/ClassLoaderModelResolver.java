@@ -51,7 +51,8 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
     
     private static ClassLoader parentClassLoader() {
-        return ServiceDiscovery.class.getClassLoader();
+        ClassLoader parentClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
+        return parentClassLoader;
     }
     
     public ClassLoaderModelResolver(final Contribution contribution, ModelFactoryExtensionPoint modelFactories) throws MalformedURLException {
