@@ -99,7 +99,7 @@ public class OSGiServiceDiscovererTestCase {
     @Test
     public void testDiscovery() {
         Set<ServiceDeclaration> descriptors =
-            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory", false);
+            discoverer.discover("test.TestService", false);
         Assert.assertEquals(1, descriptors.size());
         descriptors = discoverer.discover("notthere", false);
         Assert.assertEquals(0, descriptors.size());
@@ -108,7 +108,7 @@ public class OSGiServiceDiscovererTestCase {
     @Test
     public void testDiscoveryFirst() {
         Set<ServiceDeclaration> descriptors =
-            discoverer.discover("org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory", true);
+            discoverer.discover("test.TestService", true);
         Assert.assertEquals(1, descriptors.size());
         descriptors = discoverer.discover("notthere", true);
         Assert.assertEquals(0, descriptors.size());
@@ -116,7 +116,7 @@ public class OSGiServiceDiscovererTestCase {
     
     @Test
     public void testClassLoader () throws IOException {
-        Enumeration<URL> resources = discoverer.getContextClassLoader().getResources("META-INF/services/org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory");
+        Enumeration<URL> resources = discoverer.getContextClassLoader().getResources("META-INF/services/test.TestService");
         List<URL> list = Collections.list(resources);
         Assert.assertEquals(1, list.size());
     }
