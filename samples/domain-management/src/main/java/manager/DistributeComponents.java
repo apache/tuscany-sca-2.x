@@ -37,6 +37,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -113,6 +114,8 @@ public class DistributeComponents {
     private static WorkspaceFactory workspaceFactory;
     private static AssemblyFactory assemblyFactory;
     private static XMLOutputFactory outputFactory;
+    private static DocumentBuilderFactory documentBuilderFactory;
+    private static TransformerFactory transformerFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
     private static ContributionDependencyBuilder contributionDependencyBuilder;
     private static CompositeBuilder domainCompositeBuilder;
@@ -140,6 +143,8 @@ public class DistributeComponents {
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+        transformerFactory = modelFactories.getFactory(TransformerFactory.class);
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
@@ -165,10 +170,12 @@ public class DistributeComponents {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory,
+                                                          documentBuilderFactory, transformerFactory, contractMapper, monitor);
         
         // Create a node composite builder
-        nodeCompositeBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
+        nodeCompositeBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory,
+                                                            documentBuilderFactory, transformerFactory, contractMapper, null, monitor);
     }
     
 

@@ -24,8 +24,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -143,11 +145,14 @@ public class RuntimeBuilder {
                                                           SCABindingFactory scaBindingFactory,
                                                           EndpointFactory endpointFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
+                                                          DocumentBuilderFactory documentBuilderFactory,
+                                                          TransformerFactory transformerFactory,
                                                           InterfaceContractMapper interfaceContractMapper,
                                                           SCADefinitions policyDefinitions) {
 
         return new CompositeBuilderImpl(assemblyFactory, endpointFactory, scaBindingFactory,
-                                        intentAttachPointTypeFactory, interfaceContractMapper, policyDefinitions,
+                                        intentAttachPointTypeFactory, documentBuilderFactory, transformerFactory,
+                                        interfaceContractMapper, policyDefinitions,
                                         monitor);
     }
 
@@ -170,13 +175,7 @@ public class RuntimeBuilder {
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
 
         // Create a new XML input factory
-        // Allow privileged access to factory. Requires RuntimePermission in security policy file.
-        XMLInputFactory inputFactory = AccessController.doPrivileged(new PrivilegedAction<XMLInputFactory>() {
-            public XMLInputFactory run() {
-                return XMLInputFactory.newInstance();
-            }
-        });
-        modelFactories.addFactory(inputFactory);
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
 
         // Create a validation XML schema extension point
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
@@ -191,11 +190,7 @@ public class RuntimeBuilder {
 
         // Create and register StAX processors for SCA assembly XML
         // Allow privileged access to factory. Requires RuntimePermission in security policy file.
-        XMLOutputFactory outputFactory = AccessController.doPrivileged(new PrivilegedAction<XMLOutputFactory>() {
-            public XMLOutputFactory run() {
-                return XMLOutputFactory.newInstance();
-            }
-        });
+        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, monitor);
 
@@ -204,9 +199,11 @@ public class RuntimeBuilder {
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
         // Create and register document processors for SCA assembly XML
+        DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+        documentBuilderFactory.setNamespaceAware(true);
         documentProcessors.getProcessor(Composite.class);
         documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory,
-                                                                               policyDefinitions, monitor));
+                                                                               documentBuilderFactory, policyDefinitions, monitor));
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);

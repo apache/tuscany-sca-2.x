@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
@@ -147,6 +149,22 @@ public class ServiceDiscovery {
             return null;
         }
         return services.iterator().next().loadClass();
+    }
+    
+    /**
+     * Create a new instance of a factory service class.
+     * 
+     * @param serviceInterface
+     * @return service implementation class
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public Object newFactoryClassInstance(final Class<?> serviceInterface) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method newInstanceMethod = serviceInterface.getMethod("newInstance");
+        Object factory = newInstanceMethod.invoke(null);
+        return factory;
     }
 
 }

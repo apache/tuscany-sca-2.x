@@ -27,6 +27,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
@@ -218,6 +221,8 @@ public class RuntimeBootStrapper {
         IntentAttachPointTypeFactory intentAttachPointTypeFactory =
             factories.getFactory(IntentAttachPointTypeFactory.class);
         EndpointFactory endpointFactory = factories.getFactory(EndpointFactory.class);
+        DocumentBuilderFactory documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);
+        TransformerFactory transformerFactory = factories.getFactory(TransformerFactory.class);
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
@@ -232,6 +237,8 @@ public class RuntimeBootStrapper {
                                                   scaBindingFactory,
                                                   endpointFactory,
                                                   intentAttachPointTypeFactory,
+                                                  documentBuilderFactory,
+                                                  transformerFactory,
                                                   mapper,
                                                   aggregatedDefinitions);
         compositeBuilder.build(composite);

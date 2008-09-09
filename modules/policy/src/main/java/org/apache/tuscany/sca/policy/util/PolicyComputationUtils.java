@@ -341,10 +341,9 @@ public class PolicyComputationUtils {
         }
     }
 
-    public static byte[] addApplicablePolicySets(InputStream is, Collection<PolicySet> domainPolicySets) throws Exception {
-        DocumentBuilderFactory dbFac = DocumentBuilderFactory.newInstance();
-        dbFac.setNamespaceAware(true);
-        DocumentBuilder db = dbFac.newDocumentBuilder();
+    public static byte[] addApplicablePolicySets(InputStream is, Collection<PolicySet> domainPolicySets, DocumentBuilderFactory documentBuilderFactory) throws Exception {
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
         Document doc = db.parse(is);
         is.close();
         return addApplicablePolicySets(doc, domainPolicySets);

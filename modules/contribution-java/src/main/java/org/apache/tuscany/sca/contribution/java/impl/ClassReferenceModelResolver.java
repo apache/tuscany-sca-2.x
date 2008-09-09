@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -56,11 +57,12 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
             if (cl == null) {
                 // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.
-                ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });           
+                //ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                //    public ClassLoader run() {
+                //        return Thread.currentThread().getContextClassLoader();
+                //    }
+                //});
+                ClassLoader contextClassLoader = ServiceDiscovery.class.getClassLoader();
                 cl = new ContributionClassLoader(contribution, contextClassLoader);
                 contribution.setClassLoader(cl);
             }

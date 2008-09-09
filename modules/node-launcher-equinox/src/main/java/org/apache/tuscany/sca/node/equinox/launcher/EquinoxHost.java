@@ -96,6 +96,9 @@ public class EquinoxHost {
             // Set system packages
             props.put("org.osgi.framework.system.packages", systemPackages);
 
+            // Use the boot classloader as the parent classloader
+            props.put("osgi.contextClassLoaderParent", "boot");
+            
             // Set the extension bundle
             props.put("osgi.framework.extensions", "org.apache.tuscany.sca.extensibility.equinox");
             

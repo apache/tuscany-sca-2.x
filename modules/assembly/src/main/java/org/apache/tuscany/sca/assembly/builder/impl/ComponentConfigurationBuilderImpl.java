@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerFactory;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -35,12 +38,27 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ComponentConfigurationBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
 
+    @Deprecated
     public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
                                              InterfaceContractMapper interfaceContractMapper,
                                              SCADefinitions policyDefinitions,
                                              Monitor monitor) {
-        super(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        super(assemblyFactory, scaBindingFactory,
+              null, null,
+              interfaceContractMapper, policyDefinitions, monitor);
+    }
+
+    public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
+                                             SCABindingFactory scaBindingFactory,
+                                             DocumentBuilderFactory documentBuilderFactory,
+                                             TransformerFactory transformerFactory,
+                                             InterfaceContractMapper interfaceContractMapper,
+                                             SCADefinitions policyDefinitions,
+                                             Monitor monitor) {
+        super(assemblyFactory, scaBindingFactory,
+              documentBuilderFactory, transformerFactory,
+              interfaceContractMapper, policyDefinitions, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
