@@ -47,6 +47,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * Common functions and constants used by the admin components.
@@ -54,6 +55,8 @@ import org.osgi.framework.Bundle;
  * @version $Rev$ $Date$
  */
 final class NodeLauncherUtil {
+
+    private static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
 
     private static final String SCANODE_FACTORY = "org.apache.tuscany.sca.node.SCANodeFactory";
 
@@ -69,18 +72,29 @@ final class NodeLauncherUtil {
     /**
      * Collect JAR files under the given directory.
      * @param contributions
-     * 
+     * @param bundleContext TODO
      * @throws LauncherException
      */
     static Object node(String configurationURI,
                        String compositeURI,
                        String compositeContent,
                        Contribution[] contributions,
-                       ClassLoader contributionClassLoader) throws LauncherException {
+                       ClassLoader contributionClassLoader, BundleContext bundleContext) throws LauncherException {
         try {
+            Bundle bundle = null;
+            for (Bundle b : bundleContext.getBundles()) {
+                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
+                    bundle = b;
+                    break;
+                }
+            }
+            if (bundle == null) {
+                throw new IllegalStateException(
+                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
+            }
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
-            Class<?> bootstrapClass = Class.forName(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
+            Class<?> bootstrapClass = bundle.loadClass(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
 
             Object bootstrap;
             if (configurationURI != null) {
@@ -256,7 +270,7 @@ final class NodeLauncherUtil {
             for (String jarFile : jarFiles) {
                 addPackages(jarFile, packages);
                 classpath.append("\"external:");
-                classpath.append(file(new URL(jarFile)).getAbsolutePath().replace(File.separatorChar, '/'));
+                classpath.append(file(new URL(jarFile)).getPath().replace(File.separatorChar, '/'));
                 classpath.append("\",");
             }
 
@@ -282,7 +296,7 @@ final class NodeLauncherUtil {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(BUNDLE_SYMBOLICNAME, "org.apache.tuscany.sca.node.launcher.equinox.libraries");
+            attributes.putValue(BUNDLE_SYMBOLICNAME, LAUNCHER_EQUINOX_LIBRARIES);
             attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
             attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
             attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
