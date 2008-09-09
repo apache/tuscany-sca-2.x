@@ -23,8 +23,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -41,6 +39,7 @@ public class CalculatorTestCase extends TestCase {
     protected void setUp() throws Exception {
         launcher = NodeLauncher.newInstance();
         node = launcher.createNodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
+        System.out.println(node.getClass().getClassLoader());
         node.start();
     }
 
