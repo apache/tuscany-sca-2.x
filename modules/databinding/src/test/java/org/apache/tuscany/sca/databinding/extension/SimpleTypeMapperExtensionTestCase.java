@@ -50,9 +50,11 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         SAMPLE_VALUES.put("duration", new String[] {"P8M3DT7H33M2S", "P5Y2M10DT15H"});
         SAMPLE_VALUES.put("float", new String[] {"3.1415292", "INF", "NaN"});
         SAMPLE_VALUES.put("gDay", "---11");
-        if (System.getProperty("java.vendor").toUpperCase().contains("SUN") && System.getProperty("java.version")
-                .contains("1.5.0")) {
-            // Work around a bug in SUN JDK
+        if (System.getProperty("java.vendor").toUpperCase().contains("SUN") && System.getProperty("java.version").contains("1.5.0") 
+            ||
+            System.getProperty("java.vendor").toUpperCase().contains("APPLE INC.") && System.getProperty("java.version").contains("1.5.0")) {
+
+            // Work around a bug in SUN JDK (including Mac OS JDK)
             SAMPLE_VALUES.put("gMonth", "--02--");
         } else {
             SAMPLE_VALUES.put("gMonth", "--02");
