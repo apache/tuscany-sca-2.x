@@ -18,10 +18,13 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
+import org.osoa.sca.annotations.Remotable;
+
 
 /**
  * The client interface
  */
+@Remotable
 public interface MsgClientService {
 
     void aClientMethod();

@@ -19,7 +19,12 @@
 
 package org.apache.tuscany.sca.binding.jms;
 
+import org.osoa.sca.annotations.AllowsPassByReference;
+import org.osoa.sca.annotations.Remotable;
 
+
+@Remotable 
+@AllowsPassByReference
 public interface MsgService {
     
     void onMessage(javax.jms.Message msg);
