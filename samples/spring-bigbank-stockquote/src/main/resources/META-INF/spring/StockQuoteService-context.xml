@@ -22,12 +22,15 @@
        xmlns:sca="http://www.springframework.org/schema/sca"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
-
+       http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
+       
     <sca:service name="StockQuoteService"
         type="bigbank.stockquote.StockQuoteService" target="StockQuoteServiceBean"/>
 
     <bean id="StockQuoteServiceBean" class="bigbank.stockquote.StockQuoteImpl">
+    </bean>
+    
+    <bean id="applicationContextProvider" class="bigbank.stockquote.server.SCAApplicationContextProvider">
     </bean>
 
 </beans>
