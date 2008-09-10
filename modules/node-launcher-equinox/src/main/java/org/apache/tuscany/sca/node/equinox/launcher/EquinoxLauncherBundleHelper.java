@@ -9,23 +9,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
-import org.osgi.framework.Constants;
 
 /**
  * Bundle activator which installs Tuscany modules into an OSGi runtime.
  *
  */
-public class LauncherBundleActivator implements BundleActivator, Constants, BundleListener {
-    private static Logger logger = Logger.getLogger(LauncherBundleActivator.class.getName());
+public class EquinoxLauncherBundleHelper implements BundleListener {
+    private static Logger logger = Logger.getLogger(EquinoxLauncherBundleHelper.class.getName());
 
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
     private BundleContext bundleContext;
 
-    public LauncherBundleActivator() {
+    public EquinoxLauncherBundleHelper() {
         super();
     }
 
@@ -47,8 +45,8 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
         long libraryStart = System.currentTimeMillis();
         //InputStream library = NodeLauncherUtil.libraryBundle(jarFiles);
         Bundle libraryBundle = bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", new ByteArrayInputStream(new byte[0]));
-        installedBundles.add(libraryBundle);
         logger.info("Third-party library bundle installed in " + (System.currentTimeMillis() - libraryStart) + " ms: " + NodeLauncherUtil.string(libraryBundle, false));
+        installedBundles.add(libraryBundle);
         
         // Get the set of already installed bundles
         Set<String> alreadyInstalledBundleNames = new HashSet<String>();
@@ -84,10 +82,11 @@ public class LauncherBundleActivator implements BundleActivator, Constants, Bund
     public void stop(BundleContext bundleContext) throws Exception {
         
         // Uninstall all the bundles we've installed
-        for (Bundle bundle : installedBundles) {
+        for (int i = installedBundles.size() -1; i >= 0; i--) {
+            Bundle bundle = installedBundles.get(i);
             try {
                 //if (logger.isLoggable(Level.FINE)) {
-                // logger.info("Uninstalling bundle: " + NodeLauncherUtil.string(bundle, false));
+                logger.info("Uninstalling bundle: " + NodeLauncherUtil.string(bundle, false));
                 //}
                 bundle.uninstall();
             } catch (Exception e) {
