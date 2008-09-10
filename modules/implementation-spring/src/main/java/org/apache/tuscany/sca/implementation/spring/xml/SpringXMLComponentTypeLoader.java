@@ -42,9 +42,11 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
@@ -71,6 +73,7 @@ public class SpringXMLComponentTypeLoader {
     private static final QName SERVICE_ELEMENT = new QName(SCA_NS, "service");
     private static final QName REFERENCE_ELEMENT = new QName(SCA_NS, "reference");
     private static final QName SCAPROPERTY_ELEMENT = new QName(SCA_NS, "property");
+    private static final QName IMPORT_ELEMENT = new QName(SPRING_NS, "import");
     private static final QName BEANS_ELEMENT = new QName(SPRING_NS, "beans");
     private static final QName BEAN_ELEMENT = new QName(SPRING_NS, "bean");
     private static final QName PROPERTY_ELEMENT = new QName(SPRING_NS, "property");
@@ -129,8 +132,7 @@ public class SpringXMLComponentTypeLoader {
         List<SpringBeanElement> beans = new ArrayList<SpringBeanElement>();
         List<SpringSCAServiceElement> services = new ArrayList<SpringSCAServiceElement>();
         List<SpringSCAReferenceElement> references = new ArrayList<SpringSCAReferenceElement>();
-        List<SpringSCAPropertyElement> scaproperties = new ArrayList<SpringSCAPropertyElement>();
-        SpringBeanElement bean = null;
+        List<SpringSCAPropertyElement> scaproperties = new ArrayList<SpringSCAPropertyElement>();        
 
         Resource resource;
 
@@ -148,15 +150,53 @@ public class SpringXMLComponentTypeLoader {
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
             reader = xmlFactory.createXMLStreamReader(resource.getInputStream());
 
-            // System.out.println("Spring TypeLoader - starting to read context file");
+            // System.out.println("Spring TypeLoader - starting to read context file");            
+            readBeanDefinition(reader, beans, services, references, scaproperties);            
 
+        } catch (IOException e) {
+            throw new ContributionReadException(e);
+        } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        }
+
+        /* At this point, the complete application-context.xml file has been read and its contents  */
+        /* stored in the lists of beans, services, references.  These are now used to generate      */
+        /* the implied componentType for the application context								    */
+        generateComponentType(implementation, beans, services, references, scaproperties);
+
+        return;
+    } // end method loadFromXML
+    
+    
+    /**
+     * Method which reads the bean definitions from Spring application-context.xml file and identifies
+     * the defined beans, properties, services and references     
+     */
+    private void readBeanDefinition(XMLStreamReader reader, 
+            List<SpringBeanElement> beans,
+            List<SpringSCAServiceElement> services,
+            List<SpringSCAReferenceElement> references,
+            List<SpringSCAPropertyElement> scaproperties) throws ContributionReadException {
+        
+        SpringBeanElement bean = null;
+        
+        try {
             boolean completed = false;
             while (!completed) {
                 switch (reader.next()) {
                     case START_ELEMENT:
                         QName qname = reader.getName();
                         //System.out.println("Spring TypeLoader - found element with name: " + qname.toString());
-                        if (SERVICE_ELEMENT.equals(qname)) {
+                        if (IMPORT_ELEMENT.equals(qname)) {
+                            String location = reader.getAttributeValue(null, "resource");
+                            // Create an input stream for the imported resource file
+                            cl = Thread.currentThread().getContextClassLoader();
+                            Resource resource = getApplicationContextResource(location, cl);
+                            XMLInputFactory xmlFactory = XMLInputFactory.newInstance();                            
+                            XMLStreamReader ireader = xmlFactory.createXMLStreamReader(resource.getInputStream());
+                            // Call this method to read the bean definition for the imported resource
+                            readBeanDefinition(ireader, beans, services, references, scaproperties);
+                        } else if (SERVICE_ELEMENT.equals(qname)) {
                             SpringSCAServiceElement service =
                                 new SpringSCAServiceElement(reader.getAttributeValue(null, "name"), reader
                                     .getAttributeValue(null, "type"), reader.getAttributeValue(null, "target"));
@@ -172,11 +212,7 @@ public class SpringXMLComponentTypeLoader {
                                     .getAttributeValue(null, "type"));
                             scaproperties.add(scaproperty);
                         } else if (BEAN_ELEMENT.equals(qname)) {
-                            // TODO FIX THIS !!
-                            //FIXME count is never used
-                            //int count = reader.getAttributeCount();
-                            bean =
-                                new SpringBeanElement(reader.getAttributeValue(null, "id"), reader
+                            bean = new SpringBeanElement(reader.getAttributeValue(null, "id"), reader
                                     .getAttributeValue(null, "class"));
                             beans.add(bean);
                         } else if (PROPERTY_ELEMENT.equals(qname)) {
@@ -194,20 +230,12 @@ public class SpringXMLComponentTypeLoader {
                         } // end if
                 } // end switch
             } // end while
-
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         }
-
-        /* At this point, the complete application-context.xml file has been read and its contents  */
-        /* stored in the lists of beans, services, references.  These are now used to generate      */
-        /* the implied componentType for the application context								    */
-        generateComponentType(implementation, beans, services, references, scaproperties);
-
-        return;
-    } // end method loadFromXML
+    }
 
     /**
      * Generates the Spring implementation component type from the configuration contained in the
