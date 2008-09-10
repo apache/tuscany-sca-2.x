@@ -55,11 +55,13 @@ public class NonSCAClientTestCase {
 
         synchronized (OneWayServiceImpl.mutex) {
 
-            sendTextMessage("dynamicQueues/OneWayService", "<arg0>Petra</arg0>");
+            sendTextMessage("dynamicQueues/OneWayService", "<ns2:sayHello xmlns:ns2=\"http://jms.binding.sca.tuscany.apache.org/\"><arg0>Petra</arg0></ns2:sayHello>");
 
             // wait up to 10 seconds but it will likely be a lot less
             // as the service invocation will wake this up earlier
-            OneWayServiceImpl.mutex.wait(10000);
+            if (OneWayServiceImpl.name == null) {
+                OneWayServiceImpl.mutex.wait(10000);
+            }
         }
         assertEquals("Petra", OneWayServiceImpl.name);
     }
