@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Tuscany SCA Calculator RCP Sample
+Bundle-SymbolicName: sample.calculator.rcp;singleton:=true
+Bundle-Version: 1.4.0.SNAPSHOT
+Bundle-Activator: calculator.rcp.Activator
+Bundle-Vendor: The Apache Software Foundation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Import-Package: org.osoa.sca;version="1.4.0",
+ org.osoa.sca.annotations;version="1.4.0"
+Bundle-ClassPath: .,
+ cglib-nodep-2.1_3.jar,
+ jaxb-impl-2.1.7.jar,
+ activation-1.1.jar,
+ jsr250-api-1.0.jar,
+ jsr181-api-1.0-MR1.jar,
+ jaxb-api-2.1.jar,
+ stax-api-1.0-2.jar,
+ jaxws-api-2.1.jar,
+ geronimo-commonj_1.1_spec-1.0.jar,
+ XmlSchema-1.3.2.jar,
+ wstx-asl-3.2.1.jar
