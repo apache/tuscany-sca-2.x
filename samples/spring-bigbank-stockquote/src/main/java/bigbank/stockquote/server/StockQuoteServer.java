@@ -20,6 +20,7 @@ package bigbank.stockquote.server;
 
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
  * This server program shows how to bootstrap SCA from a simple J2SE program
@@ -34,12 +35,16 @@ public class StockQuoteServer {
         SCANodeFactory factory = SCANodeFactory.newInstance();
         SCANode node = factory.createSCANodeFromClassLoader("StockQuote.composite", StockQuoteServer.class.getClassLoader());
         node.start();
-
+        
+        // Method 1: To access the Spring Application Context instance
+        ApplicationContext ctx = SCAApplicationContextProvider.getApplicationContext();
+        if (ctx.containsBean("StockQuoteServiceBean"))
+            System.out.println("StockQuoteServiceBean is now available for use...");        
+        
         System.out.println("Press Enter to Exit...");
         System.in.read();
 
         node.stop();
         System.out.println("Bye");
     }
-
 }
