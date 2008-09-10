@@ -92,7 +92,10 @@
                 <module>interop-soap-service</module>
                 -->
                 <module>jms</module>
+                <module>jms-args</module>
+                <module>jms-callbacks</module>
                 <module>jms-definitions</module>
+                <module>jms-selectors</module>
                 <module>large-sdo-ws</module>
                 <module>late-reference-resolution</module>
                 <module>oneway</module>
