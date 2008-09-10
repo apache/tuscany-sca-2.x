@@ -46,7 +46,9 @@ import org.osgi.framework.BundleContext;
 public class EquinoxHost {
     private static Logger logger = Logger.getLogger(EquinoxHost.class.getName());
 
-    private BundleContext context;
+    private BundleContext bundleContext;
+    private Bundle launcherBundle;
+    private EquinoxLauncherBundleHelper launcherActivator;
 
     private final static String systemPackages =
         "org.osgi.framework; version=1.3.0," + "org.osgi.service.packageadmin; version=1.2.0, "
@@ -149,18 +151,22 @@ public class EquinoxHost {
             EclipseStarter.setInitialProperties(props);
             
             // Start Eclipse
-            context = EclipseStarter.startup(new String[]{}, null);
+            bundleContext = EclipseStarter.startup(new String[]{}, null);
             
             // Install the launcher bundle
             String bundleLocation = bundleLocation();
             logger.info("Installing launcher bundle: " + bundleLocation);
-            Bundle launcherBundle = context.installBundle(bundleLocation);
+            launcherBundle = bundleContext.installBundle(bundleLocation);
             logger.info("Starting bundle: " + string(launcherBundle, false));
             launcherBundle.start();
             
+            // Manually call the LauncherBundleActivator for now
+            launcherActivator = new EquinoxLauncherBundleHelper();
+            launcherActivator.start(launcherBundle.getBundleContext());
+            
             // Start all bundles for now to help diagnose any class loading issues
             long activateStart = System.currentTimeMillis();
-            for (Bundle bundle: context.getBundles()) {
+            for (Bundle bundle: bundleContext.getBundles()) {
                 if ((bundle.getState() & Bundle.ACTIVE) == 0) {
                     logger.info("Starting bundle: " + string(bundle, false));
                     try {
@@ -172,7 +178,7 @@ public class EquinoxHost {
                 }
             }
             logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
-            return context;
+            return bundleContext;
             
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -181,7 +187,19 @@ public class EquinoxHost {
     
     public void stop() {
         try {
+            
+            // Uninstall the launcher bundle
+            if (launcherActivator != null) {
+                launcherActivator.stop(launcherBundle.getBundleContext());
+            }
+            if (launcherBundle != null) {
+                logger.info("Uninstalling bundle: " + string(launcherBundle, false));
+                launcherBundle.uninstall();
+            }
+
+            // Shutdown Eclipse
             EclipseStarter.shutdown();
+            
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
