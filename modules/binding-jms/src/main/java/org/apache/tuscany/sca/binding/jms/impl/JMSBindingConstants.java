@@ -63,7 +63,7 @@ public interface JMSBindingConstants {
     String DEFAULT_MP_CLASSNAME = XML_MP_CLASSNAME;
     String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
-    String FAULT_PROPERTY = "org.apache.tuscany.sca.fault";
+    String FAULT_PROPERTY = "org_apache_tuscany_sca_fault";
     
     String CALLBACK_ID_PROPERTY = "CallbackID";
     String CALLBACK_Q_PROPERTY = "scaCallbackQueue ";
