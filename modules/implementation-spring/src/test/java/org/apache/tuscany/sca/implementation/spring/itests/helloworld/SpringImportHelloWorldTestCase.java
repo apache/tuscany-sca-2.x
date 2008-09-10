@@ -16,37 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.spring.xml;
+
+package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
 
 /**
- * Represents an <sca:property> element in a Spring application-context
- * - this has name and type attributes
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
+ * A basic test case of:
+ * 1) A composite containing a component with a Spring implementation
+ * 2) The composite has a component with a Java POJO implementation which uses the
+ * Spring implementation to satisfy a reference
+ *
+ * @version $Rev$ $Date$
  */
-public class SpringSCAPropertyElement {
-
-    private String name;
-    private String type;
-
-    public SpringSCAPropertyElement(String name, String type) {
-        this.name = name;
-        this.type = type;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-    
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-} // end class SpringPropertyElement
+public class SpringImportHelloWorldTestCase extends AbstractHelloWorldTestCase {
+    // super class does it all getting composite based on this class name
+}
