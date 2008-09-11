@@ -31,10 +31,10 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     @Override
     protected void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
-        service = (T)domain.getService(getServiceClass(), "ClientComponent");
+        service = domain.getService(getServiceClass(), "ClientComponent");
     }
 
-    abstract protected Class getServiceClass();
+    abstract protected Class<T> getServiceClass();
 
     @Override
     protected void tearDown() throws Exception {
