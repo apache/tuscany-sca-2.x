@@ -24,10 +24,14 @@ import java.util.List;
 
 import javax.jms.JMSException;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -46,10 +50,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private JMSBinding jmsBinding;
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
     private JMSResourceFactory jmsResourceFactory;
+    private RuntimeComponent component;
+    private InterfaceContract wsdlInterfaceContract; 
+    private ExtensionPointRegistry extensions;
 
-    public JMSBindingReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
+    public JMSBindingReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding,  ExtensionPointRegistry extensions) {
         this.reference = reference;
         this.jmsBinding = binding;
+        this.extensions = extensions;
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
@@ -57,19 +65,28 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         }
 
     }
-
+    
     protected void setXMLDataBinding(RuntimeComponentReference reference) {
-        try {
-            InterfaceContract ic = (InterfaceContract)reference.getInterfaceContract().clone();
-
-            Interface ii = (Interface)ic.getInterface().clone();
-            ii.resetDataBinding("org.apache.axiom.om.OMElement");
-            ic.setInterface(ii);
-            reference.setInterfaceContract(ic);
-
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        
+        WebServiceBindingFactory wsFactory = extensions.getExtensionPoint(WebServiceBindingFactory.class);
+        WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+        BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, extensions, null);
+        wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
+        wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
+        
+        // TODO: TUSCANY-xxx, section 5.2 "Default Data Binding" in the JMS binding spec  
+        
+//        try {
+//            InterfaceContract ic = (InterfaceContract)reference.getInterfaceContract().clone();
+//
+//            Interface ii = (Interface)ic.getInterface().clone();
+//            ii.resetDataBinding("org.apache.axiom.om.OMElement");
+//            ic.setInterface(ii);
+//            reference.setInterfaceContract(ic);
+//
+//        } catch (CloneNotSupportedException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public Invoker createInvoker(Operation operation) {
@@ -90,10 +107,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (reference.getInterfaceContract() == null) {
-            return reference.getReference().getInterfaceContract();
+        if (wsdlInterfaceContract != null) {
+            return wsdlInterfaceContract;
         } else {
-            return reference.getInterfaceContract();
+            if (reference.getInterfaceContract() == null) {
+                return reference.getReference().getInterfaceContract();
+            } else {
+                return reference.getInterfaceContract();
+            }
         }
     }
 

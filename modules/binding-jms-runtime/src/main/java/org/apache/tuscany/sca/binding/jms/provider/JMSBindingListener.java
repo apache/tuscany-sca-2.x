@@ -102,7 +102,7 @@ public class JMSBindingListener implements MessageListener {
         MessageImpl tuscanyMsg = new MessageImpl();
         tuscanyMsg.setOperation(operation);
         if ("onMessage".equals(operation.getName())) {
-            tuscanyMsg.setBody(requestJMSMsg);
+            tuscanyMsg.setBody(new Object[]{requestJMSMsg});
         } else {
             Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(requestJMSMsg);
             tuscanyMsg.setBody(requestPayload);

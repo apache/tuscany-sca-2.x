@@ -31,11 +31,15 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.NamingException;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -60,11 +64,18 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
     private Destination destination;
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler) {
+    private ExtensionPointRegistry extensionPoints;
+
+    private RuntimeComponent component;
+    private InterfaceContract wsdlInterfaceContract;
+
+    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints) {
+        this.component = component;
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
         this.targetBinding = targetBinding;
+        this.extensionPoints = extensionPoints;
 
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
@@ -76,32 +87,54 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         }
 
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
-            setXMLDataBinding(service);
+            if (!isOnMessage()) {
+                setXMLDataBinding(service);
+            }
         }
 
+    }
+    
+    protected boolean isOnMessage() {
+        InterfaceContract ic = getBindingInterfaceContract();
+        if (ic.getInterface().getOperations().size() != 1) {
+            return false;
+        }
+        return "onMessage".equals(ic.getInterface().getOperations().get(0).getName());
     }
 
     protected void setXMLDataBinding(RuntimeComponentService service) {
         if (service.getInterfaceContract() != null) {
-            try {
-                InterfaceContract ic = (InterfaceContract)service.getInterfaceContract().clone();
-                Interface ii = ic.getInterface();
-                if (ii.getOperations().size() == 1 && "onMessage".equals(ii.getOperations().get(0).getName())) {
-                    return;
-                }
-                ii = (Interface)ii.clone();
-                ii.resetDataBinding("org.apache.axiom.om.OMElement");
-                ic.setInterface(ii);
-                service.setInterfaceContract(ic);
+            WebServiceBindingFactory wsFactory = extensionPoints.getExtensionPoint(WebServiceBindingFactory.class);
+            WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+            BindingWSDLGenerator.generateWSDL(component, service, wsBinding, extensionPoints, null);
+            wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
+            wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
+            
+            // TODO: TUSCANY-xxx, section 5.2 "Default Data Binding" in the JMS binding spec  
 
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                InterfaceContract ic = (InterfaceContract)service.getInterfaceContract().clone();
+//                Interface ii = ic.getInterface();
+//                if (ii.getOperations().size() == 1 && "onMessage".equals(ii.getOperations().get(0).getName())) {
+//                    return;
+//                }
+//                ii = (Interface)ii.clone();
+//                ii.resetDataBinding("org.apache.axiom.om.OMElement");
+//                ic.setInterface(ii);
+//                service.setInterfaceContract(ic);
+//
+//            } catch (CloneNotSupportedException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        if (wsdlInterfaceContract != null) {
+            return wsdlInterfaceContract;
+        } else {
+            return service.getInterfaceContract();
+        }
     }
 
     public boolean supportsOneWayInvocation() {
