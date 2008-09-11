@@ -33,11 +33,31 @@
             <groupId>org.eclipse.jdt.debug</groupId>
             <artifactId>ui</artifactId>
             <version>3.2.100-v20070531-1800</version>
+            <!--
+                Exclude org.eclipse.equinox:app to avoid maven bug/bad equinox version scheme. i.e.:
+
+                Couldn't find a version in [1.0.0-v20070606] to match range [1.0.0,2.0.0)
+                org.eclipse.equinox:app:jar:null
+              -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.swt.win32.win32</groupId>
             <artifactId>x86</artifactId>
             <version>3.3.0-v3346</version>
+        </dependency>
+        <!--
+            Now include org.eclipse.equinox:app explicitly
+          -->
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>app</artifactId>
+            <version>1.0.0-v20070606</version>
         </dependency>
     </dependencies>
 
