@@ -40,8 +40,10 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 public class JMSSCABindingProviderFactory implements BindingProviderFactory<DistributedSCABinding> {
     
     private WorkScheduler workScheduler;
+    private ExtensionPointRegistry extensionPoints;
 
     public JMSSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         workScheduler = utilities.getUtility(WorkScheduler.class);
         assert workScheduler != null;
@@ -56,9 +58,9 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
         // aren't replicated around the broker cluster. Maybe it needs an AMQ specific
         // impl of the Tuscany JMSResourceFactory which uses use physical destinations 
         // instead of JNDI
-        //jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_NEVER);
+        // jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_NEVER);
 
-        return new JMSBindingReferenceBindingProvider(component, reference, jmsBinding);
+        return new JMSBindingReferenceBindingProvider(component, reference, jmsBinding, extensionPoints);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
@@ -66,7 +68,7 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
                                                                DistributedSCABinding binding) {
         JMSBinding jmsBinding = createBinding(binding);
         jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_ALWAYS);
-        return new JMSBindingServiceBindingProvider(component, service, binding.getSCABinding(), jmsBinding, workScheduler);
+        return new JMSBindingServiceBindingProvider(component, service, binding.getSCABinding(), jmsBinding, workScheduler, extensionPoints);
     }
 
     private JMSBinding createBinding(DistributedSCABinding binding) {
