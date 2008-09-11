@@ -41,62 +41,6 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-        <!--dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-api</artifactId>
-            <version>1.2.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>                
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.8.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.neethi</groupId>
-            <artifactId>neethi</artifactId>
-            <version>2.0.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>wsdl4j</groupId>
-                    <artifactId>wsdl4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.woodstox</groupId>
-                    <artifactId>wstx-asl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-		<dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-impl</artifactId>
-            <version>1.2.5</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mail</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency-->
-                
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
@@ -109,19 +53,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <!--dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
-            <scope>runtime</scope>
-            <exclusions>
-               <exclusion>
-                   <groupId>commons-logging</groupId>
-                   <artifactId>commons-logging</artifactId>
-               </exclusion>
-            </exclusions>
-        </dependency-->        
     </dependencies>
 
     <build>
