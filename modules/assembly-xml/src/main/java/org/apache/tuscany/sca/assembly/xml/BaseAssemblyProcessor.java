@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -58,9 +59,11 @@ import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -832,6 +835,45 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         }
     }
     
+    /**
+     * 
+     * @param reader
+     * @param elementName
+     * @param estensibleElement
+     * @param extensionAttributeProcessor
+     * @throws ContributionReadException
+     * @throws XMLStreamException
+     */
+    protected void readExtendedAttributes(XMLStreamReader reader, QName elementName, Extensible estensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionReadException, XMLStreamException {
+    	 for (int a = 0; a < reader.getAttributeCount(); a++) {
+         	QName attributeName = reader.getAttributeName(a);
+         	if( attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+             	if( ! elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
+             		String attributeExtension = (String) extensionAttributeProcessor.read(attributeName, reader);
+             		estensibleElement.getExtensions().add(attributeExtension);
+             	}
+         	}
+         }
+    }
+    
+
+    /**
+     * 
+     * @param attributeModel
+     * @param writer
+     * @param extensibleElement
+     * @param extensionAttributeProcessor
+     * @throws ContributionWriteException
+     * @throws XMLStreamException
+     */
+    protected void writeExtendedAttributes(XMLStreamWriter writer, Extensible extensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionWriteException, XMLStreamException {
+        for(Object o : extensibleElement.getExtensions()) {
+        	//FIXME How to identify it's a extended attribute ? 
+        	if(o instanceof String) {
+        		extensionAttributeProcessor.write(o, writer);
+        	}
+        }
+    }
     
     /*protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint) 
                                                             throws ContributionResolveException {

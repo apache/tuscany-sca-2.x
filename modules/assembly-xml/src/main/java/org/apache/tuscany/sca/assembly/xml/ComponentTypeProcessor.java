@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -45,10 +46,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.w3c.dom.Document;
 
 /**
@@ -65,7 +66,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      * @param registry
      */
     public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, 
-    							  StAXArtifactProcessor extensionProcessor, Monitor monitor) {
+    							  StAXArtifactProcessor extensionProcessor, StAXAttributeProcessor extensionAttributeProcessor, Monitor monitor) {
         super(factory, policyFactory, extensionProcessor, monitor);
     }
 
@@ -77,6 +78,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      */
     public ComponentTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
     							  StAXArtifactProcessor extensionProcessor,
+    							  StAXAttributeProcessor extensionAttributeProcessor,
     							  Monitor monitor) {
         super(modelFactories.getFactory(AssemblyFactory.class),
               modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
