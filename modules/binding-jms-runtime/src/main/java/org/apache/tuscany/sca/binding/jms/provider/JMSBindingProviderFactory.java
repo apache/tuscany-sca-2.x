@@ -38,18 +38,20 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
 
     private WorkScheduler workScheduler;
+    private ExtensionPointRegistry extensionPoints;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         workScheduler = utilities.getUtility(WorkScheduler.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
-        return new JMSBindingReferenceBindingProvider(component, reference, binding);
+        return new JMSBindingReferenceBindingProvider(component, reference, binding, extensionPoints);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
-        return new JMSBindingServiceBindingProvider(component, service, binding, binding, workScheduler);
+        return new JMSBindingServiceBindingProvider(component, service, binding, binding, workScheduler, extensionPoints);
     }
 
     public Class<JMSBinding> getModelType() {
