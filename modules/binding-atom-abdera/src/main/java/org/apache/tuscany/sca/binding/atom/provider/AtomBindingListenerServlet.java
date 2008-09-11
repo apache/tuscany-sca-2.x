@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import javax.xml.namespace.QName;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.i18n.iri.IRI;
+import org.apache.abdera.model.Category;
 import org.apache.abdera.model.Collection;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Feed;
@@ -193,22 +195,50 @@ class AtomBindingListenerServlet extends HttpServlet {
             // Return the Atom service document
             response.setContentType("application/atomsvc+xml; charset=utf-8");
             
+            String href = request.getRequestURL().toString();
+            href = href.substring(0, href.length() - "/atomsvc".length());
+
+            String workspaceURL = new String( href );
+            int pathIndex = workspaceURL.indexOf( request.getServletPath() );
+            if ( -1 != pathIndex )
+            	workspaceURL = workspaceURL.substring( 0, pathIndex ) + "/";
+
             Service service = abderaFactory.newService();
             //service.setText("service");
             
             Workspace workspace = abderaFactory.newWorkspace();
-            workspace.setTitle("resource");
-
-            String href = request.getRequestURL().toString();
-            href = href.substring(0, href.length() - "/atomsvc".length());
+            if ( title != null )
+                workspace.setTitle(title);
+            else
+                workspace.setTitle("workspace"); 
+            workspace.setBaseUri( new IRI( workspaceURL ));
             
-            Collection collection = workspace.addCollection("collection", "atom/feed");
-            collection.setTitle("entries");
-            collection.setAttributeValue("href", href);
-            collection.setAccept("entry");
-            collection.addCategories().setFixed(false);
-            
-            workspace.addCollection(collection);
+        	Collection collection = workspace.addCollection("collection", href );
+            Feed feed = getFeed( request );
+            if ( feed != null ) {
+            	String title = feed.getTitle();
+            	if ( title != null )
+            		collection.setTitle(title);
+            	else
+                	collection.setTitle("entries");
+            	collection.addAccepts("application/atom+xml;type=feed");
+            	collection.addAccepts("application/json;type=feed");
+            	collection.addAccepts("application/atom+xml;type=entry");
+            	collection.addAccepts("application/json;type=entry");
+            	List<Category> categories = feed.getCategories();
+            	if ( categories != null ) {
+                   	collection.addCategories(categories, false, null); 
+            	} else
+                	collection.addCategories().setFixed(false);                        		
+            	
+            } else {
+            	collection.setTitle("entries");
+            	// collection.addAccepts("application/atom+xml;type=feed");
+            	collection.addAccepts("application/atom+xml; type=entry");
+            	collection.addAccepts("application/json;type=entry");
+            	collection.addCategories().setFixed(false);            
+            }
+        	workspace.addCollection(collection);
 
             service.addWorkspace(workspace);
 
@@ -222,71 +252,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         } else if (path == null || path.length() == 0 || path.equals("/")) {
 
             // Return a feed containing the entries in the collection
-            Feed feed = null;
-            if (supportsFeedEntries) {
-
-                // The service implementation supports feed entries, invoke its getFeed operation
-                Message requestMessage = messageFactory.createMessage();
-                Message responseMessage;
-                if (request.getQueryString() != null) {
-                    requestMessage.setBody(new Object[] {request.getQueryString()});
-                    responseMessage = queryInvoker.invoke(requestMessage);
-                } else {
-                    responseMessage = getFeedInvoker.invoke(requestMessage);
-                }
-                if (responseMessage.isFault()) {
-                    throw new ServletException((Throwable)responseMessage.getBody());
-                }
-                feed = (Feed)responseMessage.getBody();
-                
-            } else {
-
-                // The service implementation does not support feed entries,
-                // invoke its getAll operation to get the data item collection, then create
-                // feed entries from the items
-                Message requestMessage = messageFactory.createMessage();
-                Message responseMessage;
-                if (request.getQueryString() != null) {
-                    requestMessage.setBody(new Object[] {request.getQueryString()});
-                    responseMessage = queryInvoker.invoke(requestMessage);
-                } else {
-                    responseMessage = getAllInvoker.invoke(requestMessage);
-                }
-                if (responseMessage.isFault()) {
-                    throw new ServletException((Throwable)responseMessage.getBody());
-                }
-                Entry<Object, Object>[] collection =
-                    (Entry<Object, Object>[])responseMessage.getBody();
-                if (collection != null) {
-                    
-                    // Create the feed
-                    feed = abderaFactory.newFeed();
-                    
-                    // Set the feed title
-                    if (title != null) {
-                        feed.setTitle(title);
-                    } else {
-                        feed.setTitle("Feed");
-                    }
-                    // All feeds must provide Id and updated elements.
-                    // However, some do not, so provide some program protection.
-                    feed.setId( "Feed" + feed.hashCode());
-                    Date responseLastModified = new Date( 0 );
-                    
-                    // Add entries to the feed
-                    for (Entry<Object, Object> entry: collection) {
-                        org.apache.abdera.model.Entry feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
-                        // Use the most recent entry update as the feed update
-                        Date entryUpdated = feedEntry.getUpdated();
-                        if (( entryUpdated != null ) && (entryUpdated.compareTo( responseLastModified  ) > 0 ))
-                        	responseLastModified = entryUpdated;
-                        feed.addEntry(feedEntry);
-                    }
-                    // If no entries were newly updated,
-                    if ( responseLastModified.compareTo( new Date( 0 ) ) == 0 ) 
-                    	responseLastModified = new Date();
-                }
-            }
+            Feed feed = getFeed( request );
             if (feed != null) {
                 String feedETag = "\"" + generateFeedETag( feed ) + "\"";
                 Date feedUpdated = feed.getUpdated();
@@ -483,6 +449,73 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
         
     }
+
+	protected Feed getFeed( HttpServletRequest request ) throws ServletException {
+		if (supportsFeedEntries) {
+		    // The service implementation supports feed entries, invoke its getFeed operation
+		    Message requestMessage = messageFactory.createMessage();
+		    Message responseMessage;
+		    if (request.getQueryString() != null) {
+		        requestMessage.setBody(new Object[] {request.getQueryString()});
+		        responseMessage = queryInvoker.invoke(requestMessage);
+		    } else {
+		        responseMessage = getFeedInvoker.invoke(requestMessage);
+		    }
+		    if (responseMessage.isFault()) {
+		        throw new ServletException((Throwable)responseMessage.getBody());
+		    }
+		    return (Feed)responseMessage.getBody();		    
+		} else {
+
+		    // The service implementation does not support feed entries,
+		    // invoke its getAll operation to get the data item collection, then create
+		    // feed entries from the items
+		    Message requestMessage = messageFactory.createMessage();
+		    Message responseMessage;
+		    if (request.getQueryString() != null) {
+		        requestMessage.setBody(new Object[] {request.getQueryString()});
+		        responseMessage = queryInvoker.invoke(requestMessage);
+		    } else {
+		        responseMessage = getAllInvoker.invoke(requestMessage);
+		    }
+		    if (responseMessage.isFault()) {
+		        throw new ServletException((Throwable)responseMessage.getBody());
+		    }
+		    Entry<Object, Object>[] collection =
+		        (Entry<Object, Object>[])responseMessage.getBody();
+		    if (collection != null) {
+		        
+		        // Create the feed
+		        Feed feed = abderaFactory.newFeed();
+		        
+		        // Set the feed title
+		        if (title != null) {
+		            feed.setTitle(title);
+		        } else {
+		            feed.setTitle("Feed");
+		        }
+		        // All feeds must provide Id and updated elements.
+		        // However, some do not, so provide some program protection.
+		        feed.setId( "Feed" + feed.hashCode());
+		        Date responseLastModified = new Date( 0 );
+		        
+		        // Add entries to the feed
+		        for (Entry<Object, Object> entry: collection) {
+		            org.apache.abdera.model.Entry feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
+		            // Use the most recent entry update as the feed update
+		            Date entryUpdated = feedEntry.getUpdated();
+		            if (( entryUpdated != null ) && (entryUpdated.compareTo( responseLastModified  ) > 0 ))
+		            	responseLastModified = entryUpdated;
+		            feed.addEntry(feedEntry);
+		        }
+		        // If no entries were newly updated,
+		        if ( responseLastModified.compareTo( new Date( 0 ) ) == 0 ) 
+		        	responseLastModified = new Date();
+				return feed;
+		    }
+		}
+		return null;
+	}
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
