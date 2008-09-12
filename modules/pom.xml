@@ -156,9 +156,7 @@
                 <module>node-api</module>
                 <module>node-impl</module>
                 <module>node-launcher</module>
-                <!--
                 <module>node-launcher-equinox</module>
-                -->
                 <module>node-launcher-osgi</module>
                 <module>node-launcher-webapp</module>
                 <module>node-manager</module>
@@ -206,30 +204,53 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>
-                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-                        </manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>1.4.3</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+               <artifactId>maven-eclipse-plugin</artifactId>
+               <version>2.5.1</version>
+               <configuration>
+                   <buildcommands>
+                       <buildcommand>org.eclipse.pde.ManifestBuilder</buildcommand>
+                       <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                   </buildcommands>
+                   <projectnatures>
+                       <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+                       <projectnature>org.eclipse.pde.PluginNature</projectnature>
+                   </projectnatures>
+                   <classpathContainers>
+                       <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                       <!--
+                       <classpathContainer>org.eclipse.pde.core.requiredPlugins</classpathContainer>
+                        -->
+                   </classpathContainers>
+               </configuration>
+           </plugin>
+
+           <plugin>
+               <groupId>org.apache.felix</groupId>
+               <artifactId>maven-bundle-plugin</artifactId>
+               <version>1.4.3</version>
+               <extensions>true</extensions>
+               <executions>
+                   <execution>
+                       <id>bundle-manifest</id>
+                       <phase>process-classes</phase>
+                       <goals>
+                           <goal>manifest</goal>
+                       </goals>
+                       <configuration>
+                           <manifestLocation>${basedir}/META-INF</manifestLocation>
+                       </configuration>
+                   </execution>
+               </executions>
+           </plugin> 
+
+           <plugin>
+               <artifactId>maven-jar-plugin</artifactId>
+               <configuration>
+                   <archive>
+                       <manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
+                   </archive>
+               </configuration>
+           </plugin>
         </plugins>
     </build>
     
