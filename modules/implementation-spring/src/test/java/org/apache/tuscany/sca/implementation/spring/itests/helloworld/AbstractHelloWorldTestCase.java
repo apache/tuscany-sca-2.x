@@ -33,6 +33,7 @@ public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<Hel
      */
     public void testCalculator() throws Exception {
         assertEquals("Hello petra", service.sayHello("petra"));
+        System.out.println("Test " + this.getClass().getSimpleName() + " completed successfully");
     }
 
     @Override
