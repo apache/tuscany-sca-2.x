@@ -100,7 +100,6 @@ public class SCATestCaseRunner {
                     throw new AssertionError(e);
                 }
             } catch (Throwable e) {
-                System.out.println( "DOB: Caught bad throwable");
                 e.printStackTrace();
             } finally {
                 // Thread.currentThread().setContextClassLoader(tccl);
