@@ -198,6 +198,7 @@ public class SpringXMLComponentTypeLoader {
                         QName qname = reader.getName();
                         //System.out.println("Spring TypeLoader - found element with name: " + qname.toString());
                         if (Constants.IMPORT_ELEMENT.equals(qname)) {
+                        	//FIXME - put the sequence of code below which gets the ireader into a subsidiary method
                             String location = reader.getAttributeValue(null, "resource");
                             if (location != null) {
                                 XMLStreamReader ireader = getApplicationContextReader(location);
