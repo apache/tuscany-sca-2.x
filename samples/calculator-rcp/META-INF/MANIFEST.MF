@@ -9,7 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Import-Package: org.osoa.sca;version="1.4.0",
+Import-Package: org.apache.tuscany.sca.extensibility.equinox;version="1.4.0",
+ org.apache.tuscany.sca.node;version="1.4.0",
+ org.osoa.sca;version="1.4.0",
  org.osoa.sca.annotations;version="1.4.0"
 Bundle-ClassPath: .,
  cglib-nodep-2.1_3.jar,
