@@ -1,6 +1,12 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
-import java.io.ByteArrayInputStream;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.libraryBundle;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.string;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,20 +38,22 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
         this.bundleContext.addBundleListener(this);
 
         // Install the Tuscany bundles
-        long start = System.currentTimeMillis();
+        long start = currentTimeMillis();
 
         // FIXME: SDO bundles dont have the correct dependencies
-        System.setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
+        setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
 
         // Get the list of JAR files to install
-        String jarFilesProperty = System.getProperty("org.apache.tuscany.sca.node.launcher.equinox.jarFiles");
+        String jarFilesProperty = getProperty("org.apache.tuscany.sca.node.launcher.equinox.jarFiles");
         String[] jarFiles = jarFilesProperty.split(";");
         
         // Create a single 'library' bundle for them
-        long libraryStart = System.currentTimeMillis();
-        //InputStream library = NodeLauncherUtil.libraryBundle(jarFiles);
-        Bundle libraryBundle = bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", new ByteArrayInputStream(new byte[0]));
-        logger.info("Third-party library bundle installed in " + (System.currentTimeMillis() - libraryStart) + " ms: " + NodeLauncherUtil.string(libraryBundle, false));
+        long libraryStart = currentTimeMillis();
+        InputStream library = libraryBundle(jarFiles);
+        logger.info("Third-party library bundle generated in " + (currentTimeMillis() - libraryStart) + " ms.");
+        libraryStart = currentTimeMillis();
+        Bundle libraryBundle = bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", library);
+        logger.info("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart) + " ms: " + string(libraryBundle, false));
         installedBundles.add(libraryBundle);
         
         // Get the set of already installed bundles
@@ -55,9 +63,9 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
         }
 
         // Get the list of bundle files and names to install
-        String bundleFilesProperty = System.getProperty("org.apache.tuscany.sca.node.launcher.equinox.bundleFiles");
+        String bundleFilesProperty = getProperty("org.apache.tuscany.sca.node.launcher.equinox.bundleFiles");
         String[] bundleFiles = bundleFilesProperty.split(";");
-        String bundleNamesProperty = System.getProperty("org.apache.tuscany.sca.node.launcher.equinox.bundleNames");
+        String bundleNamesProperty = getProperty("org.apache.tuscany.sca.node.launcher.equinox.bundleNames");
         String[] bundleNames = bundleNamesProperty.split(";");
         
         // Install all the bundles that are not already installed
@@ -68,14 +76,14 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
                 if (bundleName.contains("org.eclipse.jdt.junit")) {
                     continue;
                 }
-                long installStart = System.currentTimeMillis();
+                long installStart = currentTimeMillis();
                 Bundle bundle = bundleContext.installBundle(bundleFile);
-                logger.info("Bundle installed in " + (System.currentTimeMillis() - installStart) + " ms: " + NodeLauncherUtil.string(bundle, false));
+                logger.info("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                 installedBundles.add(bundle);
             }
         }
 
-        long end = System.currentTimeMillis();
+        long end = currentTimeMillis();
         logger.info("Tuscany bundles are installed in " + (end - start) + " ms.");
     }
 
@@ -86,7 +94,7 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
             Bundle bundle = installedBundles.get(i);
             try {
                 //if (logger.isLoggable(Level.FINE)) {
-                logger.info("Uninstalling bundle: " + NodeLauncherUtil.string(bundle, false));
+                logger.info("Uninstalling bundle: " + string(bundle, false));
                 //}
                 bundle.uninstall();
             } catch (Exception e) {

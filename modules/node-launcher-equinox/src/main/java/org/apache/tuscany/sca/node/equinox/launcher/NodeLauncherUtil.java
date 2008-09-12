@@ -26,11 +26,13 @@ import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
 import static org.osgi.framework.Constants.IMPORT_PACKAGE;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -308,11 +310,12 @@ final class NodeLauncherUtil {
         }
     }
 
-    static byte[] generateBundle(Manifest mf) throws IOException {
+    static InputStream libraryBundle(String[] jarFiles) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Manifest mf = libraryManifest(jarFiles);
         JarOutputStream jos = new JarOutputStream(bos, mf);
         jos.close();
-        return bos.toByteArray();
+        return new ByteArrayInputStream(bos.toByteArray());
     }
 
     /**

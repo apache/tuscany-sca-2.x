@@ -111,9 +111,6 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.node.launcher.equinox</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <!-- 
-                        <Bundle-Activator>org.apache.tuscany.sca.node.equinox.launcher.LauncherBundleActivator</Bundle-Activator>
-                        -->
                         <Export-Package>org.apache.tuscany.sca.node.equinox.launcher*</Export-Package>
                         <Eclipse-AutoStart>true</Eclipse-AutoStart> 
                     </instructions>

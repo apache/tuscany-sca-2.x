@@ -101,9 +101,6 @@ public class EquinoxHost {
             // Use the boot classloader as the parent classloader
             props.put("osgi.contextClassLoaderParent", "boot");
             
-            // Set the extension bundle
-            props.put("osgi.framework.extensions", "org.apache.tuscany.sca.node.launcher.equinox");
-            
             // Set startup properties
             props.put(EclipseStarter.PROP_CLEAN, "true");
             
