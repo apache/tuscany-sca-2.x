@@ -147,10 +147,12 @@ public class NodeLauncher {
                 shutdown = new ShutdownThread(node);
                 Runtime.getRuntime().addShutdownHook(shutdown);
                 
-                logger.info("Press 'q' to shutdown, any other key to restart.");
+                logger.info("Press 'q' to quit, 'r' to restart.");
                 int k = 0;
                 try {
-                    k = System.in.read();
+                    while ((k != 'q') && (k != 'r')) {
+                        k = System.in.read();
+                    }
                 } catch (IOException e) {
                     
                     // Wait forever
