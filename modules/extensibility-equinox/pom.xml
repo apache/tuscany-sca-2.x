@@ -101,7 +101,8 @@
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Bundle-Activator>org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator</Bundle-Activator>
                         <Export-Package>org.apache.tuscany.sca.extensibility.equinox*</Export-Package>
-                        <Eclipse-AutoStart>true</Eclipse-AutoStart> 
+                        <Eclipse-LazyStart>true</Eclipse-LazyStart>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         <DynamicImport-Package>*</DynamicImport-Package> 
                     </instructions>
                 </configuration>

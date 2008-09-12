@@ -116,6 +116,10 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
 
     }
+    
+    public static void init() {
+        // Empty static method to trigger the activation of this bundle
+    }
 
     private static String toString(Bundle b) {
         StringBuffer sb = new StringBuffer();
