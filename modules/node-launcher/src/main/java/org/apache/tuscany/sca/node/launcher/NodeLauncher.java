@@ -117,56 +117,78 @@ public class NodeLauncher {
         Object node = null;
         ShutdownThread shutdown = null;
         try {
-            if (args.length ==1) {
+            while (true) {
+                if (args.length ==1) {
+                    
+                    // Create a node from a configuration URI
+                    String configurationURI = args[0];
+                    logger.info("SCA Node configuration: " + configurationURI);
+                    node = launcher.createNodeFromURL(configurationURI);
+                } else {
+                    
+                    // Create a node from a composite URI and a contribution location
+                    String compositeURI = args[0];
+                    String contributionLocation = args[1];
+                    logger.info("SCA composite: " + compositeURI);
+                    logger.info("SCA contribution: " + contributionLocation);
+                    node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+                }
                 
-                // Create a node from a configuration URI
-                String configurationURI = args[0];
-                logger.info("SCA Node configuration: " + configurationURI);
-                node = launcher.createNodeFromURL(configurationURI);
-            } else {
+                // Start the node
+                try {
+                    node.getClass().getMethod("start").invoke(node);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "SCA Node could not be started", e);
+                    throw e;
+                }
+                logger.info("SCA Node is now started.");
                 
-                // Create a node from a composite URI and a contribution location
-                String compositeURI = args[0];
-                String contributionLocation = args[1];
-                logger.info("SCA composite: " + compositeURI);
-                logger.info("SCA contribution: " + contributionLocation);
-                node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
-            }
-            
-            // Start the node
-            try {
-                node.getClass().getMethod("start").invoke(node);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Node could not be started", e);
-                throw e;
-            }
-            logger.info("SCA Node is now started.");
-            
-            // Install a shutdown hook
-            shutdown = new ShutdownThread(node);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-            
-            logger.info("Press enter to shutdown.");
-            try {
-                System.in.read();
-            } catch (IOException e) {
+                // Install a shutdown hook
+                shutdown = new ShutdownThread(node);
+                Runtime.getRuntime().addShutdownHook(shutdown);
                 
-                // Wait forever
-                Object lock = new Object();
-                synchronized(lock) {
-                    lock.wait();
+                logger.info("Press 'q' to shutdown, any other key to restart.");
+                int k = 0;
+                try {
+                    k = System.in.read();
+                } catch (IOException e) {
+                    
+                    // Wait forever
+                    Object lock = new Object();
+                    synchronized(lock) {
+                        lock.wait();
+                    }
+                }
+                
+                // Stop the node
+                if (node != null) {
+                    Object n = node;
+                    node = null;
+                    stopNode(n);
+                }
+                
+                // Quit
+                if (k == 'q' ) {
+                    break;
                 }
             }
+        } catch (Exception e) {
+            // Stop the node
+            if (node != null) {
+                try {
+                    Object n = node;
+                    node = null;
+                    stopNode(n);
+                } catch (Exception e2) {
+                }
+            }
+            throw e;
+            
         } finally {
 
             // Remove the shutdown hook
             if (shutdown != null) {
                 Runtime.getRuntime().removeShutdownHook(shutdown);
-            }
-            
-            // Stop the node
-            if (node != null) {
-                stopNode(node);
             }
         }
     }
