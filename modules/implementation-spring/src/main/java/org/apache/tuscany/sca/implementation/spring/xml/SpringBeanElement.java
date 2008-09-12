@@ -33,6 +33,7 @@ public class SpringBeanElement {
     private String id;
     private String className;
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
+    private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
     public SpringBeanElement(String id, String className) {
         this.id = id;
@@ -53,6 +54,14 @@ public class SpringBeanElement {
 
     public void addProperty(SpringPropertyElement property) {
         properties.add(property);
+    }
+    
+    public List<SpringConstructorArgElement> getCustructorArgs() {
+        return constructorargs;
+    }
+
+    public void addCustructorArgs(SpringConstructorArgElement args) {
+        constructorargs.add(args);
     }
 
 } // end class SpringBeanElement
