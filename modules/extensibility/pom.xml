@@ -41,7 +41,6 @@
                         <Bundle-SymbolicName>org.apache.tuscany.sca.extensibility</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.*</Export-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package> 
                     </instructions>
                 </configuration>
             </plugin>
