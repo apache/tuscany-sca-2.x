@@ -69,42 +69,66 @@ public class NodeDaemonLauncher {
         Object node = null;
         ShutdownThread shutdown = null;
         try {
-            
-            // Start the node
-            node = launcher.createNodeDaemon();
-            try {
-                node.getClass().getMethod("start").invoke(node);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
-                throw e;
-            }
-            logger.info("SCA Node Daemon is now started.");
-            
-            // Install a shutdown hook
-            shutdown = new ShutdownThread(node);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-            
-            logger.info("Press enter to shutdown.");
-            try {
-                System.in.read();
-            } catch (IOException e) {
+            while (true) {
                 
-                // Wait forever
-                Object lock = new Object();
-                synchronized(lock) {
-                    lock.wait();
+                // Start the node
+                node = launcher.createNodeDaemon();
+                try {
+                    node.getClass().getMethod("start").invoke(node);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
+                    throw e;
+                }
+                logger.info("SCA Node Daemon is now started.");
+                
+                // Install a shutdown hook
+                shutdown = new ShutdownThread(node);
+                Runtime.getRuntime().addShutdownHook(shutdown);
+                
+                logger.info("Press 'q' to quit, 'r' to restart.");
+                int k = 0;
+                try {
+                    while ((k != 'q') && (k != 'r')) {
+                        k = System.in.read();
+                    }
+                } catch (IOException e) {
+                    
+                    // Wait forever
+                    Object lock = new Object();
+                    synchronized(lock) {
+                        lock.wait();
+                    }
+                }
+
+                // Stop the node
+                if (node != null) {
+                    Object n = node;
+                    node = null;
+                    stopNode(n);
+                }
+                
+                // Quit
+                if (k == 'q' ) {
+                    break;
+                }
+            } 
+        } catch (Exception e) {
+            // Stop the node
+            if (node != null) {
+                try {
+                    Object n = node;
+                    node = null;
+                    stopNode(n);
+                } catch (Exception e2) {
                 }
             }
+            throw e;
+            
         } finally {
 
             // Remove the shutdown hook
             if (shutdown != null) {
                 Runtime.getRuntime().removeShutdownHook(shutdown);
-            }
-            
-            // Stop the node
-            if (node != null) {
-                stopNode(node);
             }
         }
     }

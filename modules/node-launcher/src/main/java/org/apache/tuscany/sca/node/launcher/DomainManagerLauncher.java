@@ -80,43 +80,66 @@ public class DomainManagerLauncher {
         Object domainManager = null;
         ShutdownThread shutdown = null;
         try {
-            
-            // Start the domain manager
-            domainManager = launcher.createDomainManager();
-            try {
-                domainManager.getClass().getMethod("start").invoke(domainManager);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
-                throw e;
-            }
-            logger.info("SCA Domain Manager is now started.");
-            
-            // Install a shutdown hook
-            shutdown = new ShutdownThread(domainManager);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-            
-            logger.info("Press enter to shutdown.");
-    
-            try {
-                System.in.read();
-            } catch (IOException e) {
+            while (true) {
                 
-                // Wait forever
-                Object lock = new Object();
-                synchronized(lock) {
-                    lock.wait();
+                // Start the domain manager
+                domainManager = launcher.createDomainManager();
+                try {
+                    domainManager.getClass().getMethod("start").invoke(domainManager);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
+                    throw e;
+                }
+                logger.info("SCA Domain Manager is now started.");
+                
+                // Install a shutdown hook
+                shutdown = new ShutdownThread(domainManager);
+                Runtime.getRuntime().addShutdownHook(shutdown);
+                
+                logger.info("Press 'q' to quit, 'r' to restart.");
+                int k = 0;
+                try {
+                    while ((k != 'q') && (k != 'r')) {
+                        k = System.in.read();
+                    }
+                } catch (IOException e) {
+                    
+                    // Wait forever
+                    Object lock = new Object();
+                    synchronized(lock) {
+                        lock.wait();
+                    }
+                }
+
+                // Stop the domain manager
+                if (domainManager != null) {
+                    Object dm = domainManager;
+                    domainManager = null;
+                    stopDomainManager(dm);
+                }
+                
+                // Quit
+                if (k == 'q' ) {
+                    break;
                 }
             }
+        } catch (Exception e) {
+            // Stop the domain manager
+            if (domainManager != null) {
+                try {
+                    Object dm = domainManager;
+                    domainManager = null;
+                    stopDomainManager(dm);
+                } catch (Exception e2) {
+                }
+            }
+            throw e;
+            
         } finally {
             
             // Remove the shutdown hook
             if (shutdown != null) {
                 Runtime.getRuntime().removeShutdownHook(shutdown);
-            }
-            
-            // Stop the domain manager
-            if (domainManager != null) {
-                stopDomainManager(domainManager);
             }
         }
     }
