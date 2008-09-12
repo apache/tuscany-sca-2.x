@@ -48,7 +48,6 @@ public class HTTPServiceListenerServlet implements Servlet {
      * Constructs a new HTTPServiceListenerServlet.
      */
     public HTTPServiceListenerServlet(Invoker serviceInvoker, MessageFactory messageFactory) {
-    	System.out.println( "DOB: HTTPServiceListenerServlet.service cons");
         this.serviceInvoker = serviceInvoker;
         this.messageFactory = messageFactory;
     }
@@ -69,7 +68,6 @@ public class HTTPServiceListenerServlet implements Servlet {
     }
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-    	System.out.println( "DOB: HTTPServiceListenerServlet.service entry");
         
         // Dispatch the service interaction to the service invoker
         Message requestMessage = messageFactory.createMessage();
