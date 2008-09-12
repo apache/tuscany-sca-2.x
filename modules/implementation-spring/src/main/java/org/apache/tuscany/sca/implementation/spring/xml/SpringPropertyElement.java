@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.spring.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a <property> element in a Spring application-context
  * - this has name and ref attributes
@@ -28,6 +31,7 @@ public class SpringPropertyElement {
 
     private String name;
     private String ref;
+    private List<String> values = new ArrayList<String>();
 
     public SpringPropertyElement(String name, String ref) {
         this.name = name;
@@ -40,6 +44,18 @@ public class SpringPropertyElement {
 
     public String getRef() {
         return ref;
+    }
+    
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+    
+    public List<String> getProperties() {
+        return values;
+    }
+
+    public void addProperty(String value) {
+        values.add(value);
     }
 
 } // end class SpringPropertyElement
