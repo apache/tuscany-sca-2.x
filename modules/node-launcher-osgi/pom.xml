@@ -132,7 +132,6 @@
                 </configuration>
             </plugin>
 
-<!-- 
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -146,7 +145,6 @@
                     </instructions>
                 </configuration>
             </plugin>
- -->            
         </plugins>
     </build>
 
