@@ -29,12 +29,13 @@ import static org.osgi.framework.Constants.EXPORT_PACKAGE;
 import static org.osgi.framework.Constants.IMPORT_PACKAGE;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -99,15 +100,18 @@ public final class LibraryBundleUtil {
                 && entryName.length() > 0
                 && !entryName.startsWith(".")
                 && entryName.endsWith(".class") // Exclude resources from Export-Package
-                && entryName.lastIndexOf("/") > 0) {
-                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
-                packages.add(pkg);
+                && entryName.lastIndexOf("/") > 0
+                && Character.isJavaIdentifierStart(entryName.charAt(0))) {
+                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.');
+                if (!("org.apache.commons.lang.enum".equals(pkg))) {
+                    packages.add(pkg + version);
+                }
             }
         }
         is.close();
     }
 
-    static Manifest libraryManifest(List<File> jarFiles, String name, String version, boolean copyJars)
+    static Manifest libraryManifest(Set<File> jarFiles, String name, String version, boolean copyJars)
         throws IllegalStateException {
         try {
 
@@ -119,9 +123,9 @@ public final class LibraryBundleUtil {
             for (File jarFile : jarFiles) {
                 addPackages(jarFile, packages);
                 if (copyJars) {
-                    classpath.append("\"lib/");
+                    classpath.append("lib/");
                     classpath.append(jarFile.getName());
-                    classpath.append("\",");
+                    classpath.append(",");
                 } else {
                     classpath.append("\"external:");
                     classpath.append(jarFile.getPath().replace(File.separatorChar, '/'));
@@ -154,10 +158,10 @@ public final class LibraryBundleUtil {
             attributes.putValue(BUNDLE_SYMBOLICNAME, LAUNCHER_EQUINOX_LIBRARIES);
             attributes.putValue(BUNDLE_NAME, name);
             attributes.putValue(BUNDLE_VERSION, version);
+            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
             attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
             attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
             attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
-            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
 
             return manifest;
         } catch (IOException e) {
@@ -176,6 +180,39 @@ public final class LibraryBundleUtil {
         JarOutputStream jos = new JarOutputStream(bos, mf);
         jos.close();
         return bos.toByteArray();
+    }
+
+    static void write(Manifest manifest, OutputStream out) throws IOException {
+        DataOutputStream dos = new DataOutputStream(out);
+        Attributes attributes = manifest.getMainAttributes();
+        write(attributes, "Manifest-Version", dos);
+        write(attributes, BUNDLE_MANIFESTVERSION, dos);
+        write(attributes, BUNDLE_SYMBOLICNAME, dos);
+        write(attributes, BUNDLE_NAME, dos);
+        write(attributes, BUNDLE_VERSION, dos);
+        write(attributes, DYNAMICIMPORT_PACKAGE, dos);
+        write(attributes, EXPORT_PACKAGE, dos);
+        write(attributes, IMPORT_PACKAGE, dos);
+        write(attributes, BUNDLE_CLASSPATH, dos);
+        dos.flush();
+    }
+    
+    private static void write(Attributes attributes, String key, DataOutputStream dos) throws IOException {
+        StringBuffer line = new StringBuffer();
+        line.append(key);
+        line.append(": ");
+        String value = attributes.getValue(key); 
+        line.append(new String(value.getBytes("UTF8")));
+        line.append("\r\n");
+        int l = line.length();
+        if (l > 72) {
+            for (int i = 70; i < l - 2;) {
+                line.insert(i, "\r\n ");
+                i += 72;
+                l += 3;
+            }
+        }
+        dos.writeBytes(line.toString());
     }
 
     /**

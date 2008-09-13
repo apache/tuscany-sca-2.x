@@ -18,19 +18,33 @@
  */
 package org.apache.tuscany.tools.sca.tuscany.bundle.plugin;
 
+import static org.apache.tuscany.tools.sca.tuscany.bundle.plugin.LibraryBundleUtil.write;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactCollector;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.dependency.tree.DependencyTree;
+import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
+import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
 /**
  * @version $Rev$ $Date$
@@ -55,7 +69,7 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @parameter expression="${basedir}"
      * @required @readonly
      */
-    protected File basedir;
+    private File basedir;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -64,7 +78,7 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    protected org.apache.maven.artifact.factory.ArtifactFactory factory;
+    private org.apache.maven.artifact.factory.ArtifactFactory factory;
 
     /**
      * Used to look up Artifacts in the remote repository.
@@ -73,7 +87,7 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+    private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
 
     /**
      * Location of the local repository.
@@ -82,7 +96,7 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    protected org.apache.maven.artifact.repository.ArtifactRepository local;
+    private org.apache.maven.artifact.repository.ArtifactRepository local;
 
     /**
      * List of Remote Repositories used by the resolver
@@ -91,42 +105,128 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @readonly
      * @required
      */
-    protected java.util.List remoteRepos;
+    private java.util.List remoteRepos;
 
     /**
      * @parameter
      */
-    protected boolean copyJars = false;
+    private boolean copyJars = false;
+
+    /**
+     * Dependency tree builder
+     * 
+     * @component
+     */
+    private DependencyTreeBuilder dependencyTreeBuilder;
+
+    /**
+     * Artifact factory
+     * 
+     * @component
+     */
+    private ArtifactFactory artifactFactory;
+    
+    /**
+     * @component
+     */
+    private ArtifactMetadataSource artifactMetadataSource;    
+    
+    /**
+     * @component
+     */
+    private ArtifactCollector collector;
+
+    /**
+     * The local repository
+     *
+     * @parameter expression="${localRepository}"
+     * @required
+     */
+    private ArtifactRepository localRepository;
+
+    /**
+     * The remote repositories
+     *
+     * @parameter expression="${project.remoteArtifactRepositories}"
+     */
+    private List remoteRepositories;
+    
+    /**
+     * Artifact resolver
+     * 
+     * @component
+     */
+    private ArtifactResolver artifactResolver;
 
     public void execute() throws MojoExecutionException {
+        Log log = getLog();
+
         if (project.getPackaging().equals("pom")) {
             return;
         }
 
-        Log log = getLog();
-        List<File> jarFiles = new ArrayList<File>();
-        for (Object o : project.getArtifacts()) {
-            Artifact a = (Artifact)o;
-            if (!(Artifact.SCOPE_COMPILE.equals(a.getScope()) || Artifact.SCOPE_RUNTIME.equals(a.getScope()))) {
+        DependencyTree dependencyTree;
+        try {
+            dependencyTree = dependencyTreeBuilder.buildDependencyTree(project, 
+                                                                                  localRepository, artifactFactory,
+                                                                                  artifactMetadataSource, collector );
+                                                                          
+        } catch (DependencyTreeBuilderException e) {
+            throw new MojoExecutionException("Could not build dependency tree", e);
+        }
+        
+        Set<File> jarFiles = new HashSet<File>();
+        for (Object o : dependencyTree.getArtifacts()) {
+            Artifact artifact = (Artifact)o;
+
+            if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope()))) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Skipping artifact: " + a);
+                    log.debug("Skipping artifact: " + artifact);
                 }
                 continue;
             }
+            if (!"jar".equals(artifact.getType())) {
+                continue;
+            }
+            if ("org.apache.tuscany.sca".equals(artifact.getGroupId())) {
+                continue;
+            }
+            
+            VersionRange versionRange = artifact.getVersionRange();
+            if (versionRange == null)
+                versionRange = VersionRange.createFromVersion(artifact.getVersion());
+            Artifact dependencyArtifact = artifactFactory.createDependencyArtifact(artifact.getGroupId(), 
+                                                                                   artifact.getArtifactId(), 
+                                                                                   versionRange, 
+                                                                                   artifact.getType(), 
+                                                                                   artifact.getClassifier(), 
+                                                                                   artifact.getScope());
+                                                                           
+           try {
+               artifactResolver.resolve(dependencyArtifact, remoteRepositories, localRepository);
+           } catch (ArtifactResolutionException e) {
+               log.warn("Artifact " + artifact + " could not be resolved.");
+           } catch (ArtifactNotFoundException e) {
+               log.warn("Artifact " + artifact + " could not be found.");
+           }
+           artifact = dependencyArtifact;
+
             if (log.isDebugEnabled()) {
-                log.debug("Artifact: " + a);
+                log.debug("Artifact: " + artifact);
             }
             String bundleName = null;
             try {
-                bundleName = LibraryBundleUtil.getBundleName(a.getFile());
+                bundleName = LibraryBundleUtil.getBundleName(artifact.getFile());
             } catch (IOException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
             if (bundleName == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Adding non-OSGi jar: " + a);
+                if (artifact.getFile().exists()) {
+                    log.info("Adding third party jar: " + artifact);
+                    jarFiles.add(artifact.getFile());
+                } else {
+                    log.warn("Third party jar not found: " + artifact);
                 }
-                jarFiles.add(a.getFile());
             }
         }
 
@@ -145,7 +245,7 @@ public class LibraryBundleMojo extends AbstractMojo {
             }
 
             FileOutputStream fos = new FileOutputStream(file);
-            mf.write(fos);
+            write(mf, fos);
             fos.close();
 
             if (copyJars) {
@@ -164,11 +264,12 @@ public class LibraryBundleMojo extends AbstractMojo {
                     }
                     FileInputStream in = new FileInputStream(jar);
                     FileOutputStream out = new FileOutputStream(jarFile);
-                    int len = 0;
-                    while (len > 0) {
-                        len = in.read(buf);
+                    for (;;) {
+                        int len = in.read(buf);
                         if (len > 0) {
                             out.write(buf, 0, len);
+                        } else {
+                            break;
                         }
                     }
                     in.close();
