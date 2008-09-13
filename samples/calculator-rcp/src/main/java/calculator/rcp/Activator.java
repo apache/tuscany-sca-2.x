@@ -18,6 +18,12 @@
  */
 package calculator.rcp;
 
+import java.io.File;
+
+import org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer;
+import org.apache.tuscany.sca.node.SCAContribution;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -33,6 +39,8 @@ public class Activator extends AbstractUIPlugin {
     // The shared instance
     private static Activator plugin;
 
+    private SCANode node;
+
     /**
      * The constructor
      */
@@ -46,6 +54,10 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        Class<?> cls = EquinoxServiceDiscoverer.class;
+        SCANodeFactory factory = SCANodeFactory.newInstance();
+        node = factory.createSCANode("Calculator.composite", new SCAContribution("c1", new File("target/classes").toURI().toString()));
+        node.start();
     }
 
     /*
@@ -55,6 +67,9 @@ public class Activator extends AbstractUIPlugin {
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
+        if (node != null) {
+            node.stop();
+        }
     }
 
     /**
