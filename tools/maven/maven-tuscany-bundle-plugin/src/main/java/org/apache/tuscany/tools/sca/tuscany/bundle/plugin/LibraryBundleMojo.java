@@ -137,12 +137,13 @@ public class LibraryBundleMojo extends AbstractMojo {
             }
 
             Manifest mf = LibraryBundleUtil.libraryManifest(jarFiles, project.getName(), version, copyJars);
-            File file = new File(project.getBasedir(), "META-INF/MANIFEST.MF");
+            File file = new File(project.getBasedir(), "META-INF");
+            file.mkdir();
+            file= new File(file, "MANIFEST.MF");
             if (log.isDebugEnabled()) {
                 log.debug("Generating " + file);
             }
 
-            file.mkdirs();
             FileOutputStream fos = new FileOutputStream(file);
             mf.write(fos);
             fos.close();
