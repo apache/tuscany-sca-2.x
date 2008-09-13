@@ -157,6 +157,7 @@
                 <module>node-impl</module>
                 <module>node-launcher</module>
                 <module>node-launcher-equinox</module>
+                <module>thirdparty-library</module>
                 <module>node-launcher-osgi</module>
                 <module>node-launcher-webapp</module>
                 <module>node-manager</module>
