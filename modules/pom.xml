@@ -154,6 +154,7 @@
                 <module>monitor</module>
                 <module>monitor-logging</module>
                 <module>node-api</module>
+                <module>node-dynamic</module>
                 <module>node-impl</module>
                 <module>node-launcher</module>
                 <!--
