@@ -45,12 +45,8 @@
                 <module>assembly-xsd</module>
                 <module>binding-corba</module>
                 <module>binding-corba-runtime</module>
-                <module>binding-dwr</module>
                 <module>binding-ejb</module>
                 <module>binding-ejb-runtime</module>
-                <!-- obsolete -->
-                <module>binding-feed</module>
-                <!-- new bindings -->
                 <module>binding-atom</module>
                 <module>binding-atom-abdera</module>
                 <module>binding-gdata</module>
@@ -63,14 +59,12 @@
                 <module>binding-jms-runtime</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-jsonrpc-runtime</module>
-                <module>binding-notification</module>
                 <module>binding-rmi</module>
                 <module>binding-rss</module>
                 <module>binding-rss-rome</module>
                 <module>binding-sca</module>
                 <module>binding-sca-axis2</module>
                 <module>binding-sca-corba</module>
-                <module>binding-sca-jms</module>
                 <module>binding-sca-xml</module>
                 <module>binding-ws</module>
                 <module>binding-ws-axis2</module>
@@ -78,17 +72,14 @@
                 <module>binding-ws-wsdlgen</module>
                 <module>binding-ws-xml</module>
                 <module>contribution</module>
-                <module>contribution-groovy</module>
                 <module>contribution-namespace</module>
                 <module>contribution-java</module>
                 <module>contribution-impl</module>
-                <module>contribution-osgi</module>
                 <module>contribution-resource</module>
                 <module>contribution-xml</module>
                 <module>core</module>
                 <module>core-databinding</module>
                 <module>core-spi</module>
-                <module>core-spring</module>
                 <module>data-api</module>
                 <module>databinding</module>
                 <module>databinding-axiom</module>
@@ -100,14 +91,12 @@
                 <module>databinding-saxon</module>
                 <module>databinding-xmlbeans</module>
                 <module>databinding-fastinfoset</module>
-                <module>databinding-xstream</module>
                 <module>data-engine-helper</module>
                 <module>definitions</module>
                 <module>definitions-xml</module>
                 <module>domain-manager</module>
                 <module>endpoint</module>
                 <module>extensibility</module>
-                <module>extensibility-osgi</module>
                 <module>extensibility-equinox</module>
                 <module>extension-helper</module>
                 <module>host-corba</module>
@@ -140,14 +129,10 @@
                 <module>implementation-java-runtime</module>
                 <module>implementation-node</module>
                 <module>implementation-node-runtime</module>
-                <module>implementation-notification</module>
-                <module>implementation-osgi</module>
                 <module>implementation-resource</module>
                 <module>implementation-resource-runtime</module>
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
-                <module>implementation-web</module>
-                <module>implementation-web-runtime</module>
                 <module>implementation-widget</module>
                 <module>implementation-widget-runtime</module>
                 <module>implementation-xquery</module>
@@ -158,10 +143,8 @@
                 <module>node-launcher</module>
                 <module>node-launcher-equinox</module>
                 <module>thirdparty-library</module>
-                <module>node-launcher-osgi</module>
                 <module>node-launcher-webapp</module>
                 <module>node-manager</module>
-                <module>osgi-runtime</module>
                 <module>policy</module>
                 <module>policy-xml</module>
                 <module>policy-xml-ws</module>
@@ -170,16 +153,13 @@
                 <module>policy-security-jsr250</module>
                 <module>policy-security-ws</module>
                 <module>policy-transaction</module>
-                <module>runtime</module>
-                <module>runtime-tomcat</module>
-                <!--module>runtime-war</module-->
                 <module>sca-api</module>
+                <module>tracing-aspectj</module>
                 <module>workspace</module>
                 <module>workspace-impl</module>
                 <module>workspace-xml</module>
                 <module>xsd</module>
                 <module>xsd-xml</module>
-                <module>tracing-aspectj</module>
             </modules>
         </profile>
 

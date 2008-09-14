@@ -45,13 +45,13 @@
             <modules>
                 <module>binding-echo</module>
                 <module>binding-echo-extension</module>
-                <module>binding-notification-broker</module>
-                <module>binding-notification-consumer</module>
-                <module>binding-notification-producer</module>
                 <module>calculator</module>
-                <module>calculator-lean</module>
+                <module>calculator2</module>
                 <module>calculator-distributed</module>
 		<module>calculator-implementation-policies</module>
+                <module>calculator-lean</module>
+                <module>calculator-osgi</module>
+                <module>calculator-rcp</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
@@ -60,44 +60,46 @@
                 <module>calculator-ws-webapp</module>
                 <module>callback-ws-client</module>
                 <module>callback-ws-service</module>
-                <module>chat-webapp</module>
                 <module>customer-dojo</module>
                 <module>databinding-echo</module>
-                <!--module>domain-webapp</module-->
                 <module>domain-management</module>
                 <module>feed-aggregator</module>
                 <module>feed-aggregator-webapp</module>
                 <module>helloworld-bpel</module>
+                <module>helloworld-bpel-ws</module>
                 <module>helloworld-dojo-webapp</module>
                 <module>helloworld-jms-webapp</module>
                 <module>helloworld-jsonrpc-webapp</module>
+                <module>helloworld-jsp</module>
                 <module>helloworld-reference-jms</module>
                 <module>helloworld-service-jms</module>
-                <module>helloworld-ws-service</module>
-                <module>helloworld-ws-service-jms</module>
-                <module>helloworld-ws-service-secure</module>
+                <module>helloworld-servlet</module>
+                <module>helloworld-web</module>
+                <module>helloworld-web-callback</module>
                 <module>helloworld-ws-reference</module>
                 <module>helloworld-ws-reference-lean</module>
                 <module>helloworld-ws-reference-jms</module>
                 <module>helloworld-ws-reference-secure</module>
                 <module>helloworld-ws-sdo</module>
                 <module>helloworld-ws-sdo-webapp</module>
+                <module>helloworld-ws-service</module>
+                <module>helloworld-ws-service-jms</module>
+                <module>helloworld-ws-service-secure</module>
+                <module>helloworld-ws-service-webapp</module>
                 <module>implementation-composite</module>
                 <module>implementation-crud</module>
                 <module>implementation-crud-extension</module>
-                <module>implementation-notification</module>
                 <module>implementation-pojo-extension</module>
                 <module>loanapplication</module>
-                <module>osgi-supplychain</module>
                 <module>photo-gallery</module>
                 <module>quote-xquery</module>
                 <module>simple-bigbank</module>
                 <module>simple-bigbank-spring</module>
-                <module>spring-bigbank-checkaccount</module>
-                <module>spring-bigbank-calculator</module>
-                <module>spring-bigbank-stockquote</module>
                 <module>simple-callback</module>
                 <module>simple-callback-ws</module>
+                <module>spring-bigbank-calculator</module>
+                <module>spring-bigbank-checkaccount</module>
+                <module>spring-bigbank-stockquote</module>
                 <module>store</module>
                 <module>store-distributed</module>
                 <module>supplychain</module>
