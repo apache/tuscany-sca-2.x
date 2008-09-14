@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -51,6 +53,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
 
+    private static final Logger logger = Logger.getLogger(JavaRuntimeModuleActivator.class.getName());
+
     public JavaRuntimeModuleActivator() {
     }
 
@@ -63,7 +67,11 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         InterfaceContractMapper interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
         ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        proxyFactories.setClassProxyFactory(new CglibProxyFactory(messageFactory, interfaceContractMapper));
+        try {
+            proxyFactories.setClassProxyFactory(new CglibProxyFactory(messageFactory, interfaceContractMapper));
+        } catch (NoClassDefFoundError e) {
+            logger.warning("Class proxys not supported due to NoClassDefFoundError:" + e.getMessage());
+        }
 
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
 
