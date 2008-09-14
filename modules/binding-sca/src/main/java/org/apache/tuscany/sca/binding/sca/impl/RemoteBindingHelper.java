@@ -30,6 +30,7 @@ public class RemoteBindingHelper {
     static {
         try {
             Class.forName("org.apache.tuscany.sca.binding.sca.jms.JMSSCABindingProviderFactory");
+            Class.forName("javax.jms.IllegalStateException");
             alwaysRemote = true;
         } catch (ClassNotFoundException e) {
             alwaysRemote = false;
