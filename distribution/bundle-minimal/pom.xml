@@ -241,59 +241,12 @@
             <version>1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.neethi</groupId>
-            <artifactId>neethi</artifactId>
-            <version>2.0.2</version>
-        </dependency>
-
-        <!-- dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>2.1_3</version>
-        </dependency -->
-
        <dependency>
            <groupId>org.apache.activemq</groupId>
            <artifactId>activemq-all</artifactId>
            <version>5.1.0</version>
        </dependency>
 
-<!-- 
-       <dependency>
-           <groupId>org.apache.activemq</groupId>
-           <artifactId>activemq-core</artifactId>
-           <version>5.1.0</version>
-           <exclusions>
-              <exclusion>
-                 <artifactId>activemq-camel</artifactId>
-                 <groupId>org.apache.activemq</groupId>
-              </exclusion>
-              <exclusion>
-                 <artifactId>activeio-core</artifactId>
-                 <groupId>org.apache.activemq</groupId>
-              </exclusion>
-           </exclusions>
-       </dependency>
-
-       <dependency>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-jms_1.1_spec</artifactId>
-          <version>1.1.1</version>
-       </dependency>
-
-       <dependency>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
-          <version>1.0</version>
-       </dependency>
-
-       <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging-api</artifactId>
-          <version>1.1</version>
-       </dependency>
--->
     </dependencies>
 
     <build>
