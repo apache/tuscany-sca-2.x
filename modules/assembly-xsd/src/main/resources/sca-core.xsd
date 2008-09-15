@@ -19,7 +19,7 @@
         	</choice>
         	<!-- 
         	<any namespace="##other" processContents="lax" minOccurs="0" 
-        		maxOccurs="unbounded"/>
+        		maxOccurs="unbounded"/>  
         	-->
         </sequence>
         <attribute name="constrainingType" type="QName" use="optional"/>
@@ -36,12 +36,10 @@
                  <element name="component" type="sca:Component"/>
                  <element name="reference" type="sca:Reference"/>
                  <element name="wire" type="sca:Wire"/>
-                 <any namespace="##other" processContents="lax"/>
+                 <!-- <any namespace="##other" processContents="lax"  minOccurs="0" maxOccurs="unbounded"/>  -->  
              </choice>
-             <!-- 
              <any namespace="##other" processContents="lax" minOccurs="0" 
              	maxOccurs="unbounded"/>
-             -->
         </sequence>
         <attribute name="name" type="NCName" use="required"/>
         <attribute name="targetNamespace" type="anyURI" use="optional"/>

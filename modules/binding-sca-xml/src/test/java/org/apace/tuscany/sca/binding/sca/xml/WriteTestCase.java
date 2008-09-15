@@ -60,9 +60,9 @@ public class WriteTestCase extends TestCase {
         assertNotNull(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos));
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?><componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\"><service name=\"CalculatorService\"><binding.sca /></service><reference name=\"addService\"><binding.sca /></reference></componentType>",
-                     bos.toString());
-    }
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\"><service name=\"CalculatorService\"><binding.sca /><interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" class=\"calculator.CalculatorService\" /></service><reference name=\"addService\"><binding.sca /><interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" class=\"calculator.AddService\" /></reference></componentType>",
+        		     bos.toString());
+        }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("/Calculator.composite");
@@ -70,8 +70,8 @@ public class WriteTestCase extends TestCase {
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\"><binding.sca /></service><component name=\"CalculatorServiceComponent\"><reference name=\"addService\" target=\"AddServiceComponent\"><binding.sca /></reference><reference name=\"subtractService\" target=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceComponent\" /></component><component name=\"AddServiceComponent\"><service><binding.sca /></service></component><component name=\"SubtractServiceComponent\" /><component name=\"MultiplyServiceComponent\" /><component name=\"DivideServiceComponent\" /></composite>",
-            bos.toString() );
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\"><binding.sca /><interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" interface=\"calculator.CalculatorService\" /></service><component name=\"CalculatorServiceComponent\"><reference name=\"addService\" target=\"AddServiceComponent\"><binding.sca /></reference><reference name=\"subtractService\" target=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceComponent\" /></component><component name=\"AddServiceComponent\"><service><binding.sca /><interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" interface=\"calculator.AddService\" /></service></component><component name=\"SubtractServiceComponent\" /><component name=\"MultiplyServiceComponent\" /><component name=\"DivideServiceComponent\" /></composite>",
+                 	 bos.toString() );
     }
 
 }
