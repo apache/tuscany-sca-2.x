@@ -19,12 +19,8 @@
 package org.apache.tuscany.sca.policy.authentication.basic;
 
 
-import java.security.Principal;
-
 import javax.security.auth.Subject;
-import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -32,7 +28,6 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.SecurityUtil;
 
-import com.ibm.security.auth.JAASPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName

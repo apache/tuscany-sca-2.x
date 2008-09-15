@@ -18,21 +18,14 @@
  */
 package org.apache.tuscany.sca.policy.authentication.basic;
 
-import java.security.Principal;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
-import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
+
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.SecurityUtil;
 
