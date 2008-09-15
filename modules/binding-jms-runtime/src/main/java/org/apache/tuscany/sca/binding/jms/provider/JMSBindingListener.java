@@ -37,9 +37,12 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -62,6 +65,7 @@ public class JMSBindingListener implements MessageListener {
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
     private List<Operation> serviceOperations;
+    protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
 
     public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
         this.jmsBinding = jmsBinding;
@@ -72,6 +76,20 @@ public class JMSBindingListener implements MessageListener {
         responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         correlationScheme = jmsBinding.getCorrelationScheme();
         serviceOperations = service.getInterfaceContract().getInterface().getOperations();
+        
+        // find out which policies are active
+        if (jmsBinding instanceof PolicySetAttachPoint) {
+            List<PolicySet> policySets = ((PolicySetAttachPoint)jmsBinding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
+                        jmsTokenAuthenticationPolicy = (JMSTokenAuthenticationPolicy)p;
+                    }else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }        
 
     }
 
@@ -183,6 +201,12 @@ public class JMSBindingListener implements MessageListener {
             if (callbackID != null) {
                 parameters.setCallbackID(callbackID);
             }
+        }
+        
+        if (jmsTokenAuthenticationPolicy != null) {
+            String token = requestJMSMsg.getStringProperty(jmsTokenAuthenticationPolicy.getTokenName().toString());
+            tuscanyMsg.getHeaders().put(jmsTokenAuthenticationPolicy.getTokenName().toString(),
+                                        token);
         }
     }
 

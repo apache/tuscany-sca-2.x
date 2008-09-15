@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import java.security.Principal;
+
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -30,8 +29,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -39,16 +39,14 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationReferencePolicyInterceptor implements Interceptor {
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, "wsBasicAuthentication");
-
+public class JMSTokenAuthenticationServicePolicyInterceptor implements Interceptor {
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
     private String context;
-    private Axis2BasicAuthenticationPolicy policy;
+    private JMSTokenAuthenticationPolicy policy;
 
-    public Axis2BasicAuthenticationReferencePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
+    public JMSTokenAuthenticationServicePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
         super();
         this.operation = operation;
         this.policySet = policySet;
@@ -59,8 +57,8 @@ public class Axis2BasicAuthenticationReferencePolicyInterceptor implements Inter
     private void init() {
         if (policySet != null) {
             for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof Axis2BasicAuthenticationPolicy){
-                    policy = (Axis2BasicAuthenticationPolicy)policyObject;
+                if (policyObject instanceof JMSTokenAuthenticationPolicy){
+                    policy = (JMSTokenAuthenticationPolicy)policyObject;
                     break;
                 }
             }
@@ -68,9 +66,20 @@ public class Axis2BasicAuthenticationReferencePolicyInterceptor implements Inter
     }
 
     public Message invoke(Message msg) {
-        // TODO - We might use interceptors to do the Axis2 config
-        //        if we can change the infrastructure split the 
-        //        invoker up
+        
+        String token = (String)msg.getHeaders().get(policy.getTokenName().toString());
+        
+        if (token != null) {
+            System.out.println("Token: " + token);
+            
+            // call out here to some 3rd party system to do whatever you 
+            // need to turn header credentials into an authenticated principal 
+            
+            Subject subject = SecurityUtil.getSubject(msg);
+            Principal principal = new TokenPrincipal(token);
+            subject.getPrincipals().add(principal);              
+        }
+    
         return getNext().invoke(msg);
     }
 

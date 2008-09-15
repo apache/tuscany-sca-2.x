@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
 
 import java.util.List;
 
@@ -35,12 +35,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 /**
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationReferencePolicyProvider implements PolicyProvider {
+public class Axis2TokenAuthenticationReferencePolicyProvider implements PolicyProvider {
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private Binding binding;
 
-    public Axis2BasicAuthenticationReferencePolicyProvider(RuntimeComponent component,
+    public Axis2TokenAuthenticationReferencePolicyProvider(RuntimeComponent component,
                                              RuntimeComponentReference reference,
                                              Binding binding) {
         super();
@@ -54,7 +54,7 @@ public class Axis2BasicAuthenticationReferencePolicyProvider implements PolicyPr
             List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
             for (PolicySet ps : policySets) {
                 for (Object p : ps.getPolicies()) {
-                    if (Axis2BasicAuthenticationPolicy.class.isInstance(p)) {
+                    if (Axis2TokenAuthenticationPolicy.class.isInstance(p)) {
                         return ps;
                     }
                 }
@@ -77,7 +77,7 @@ public class Axis2BasicAuthenticationReferencePolicyProvider implements PolicyPr
      */
     public Interceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet();
-        return ps == null ? null : new Axis2BasicAuthenticationReferencePolicyInterceptor(getContext(), operation, ps);
+        return ps == null ? null : new Axis2TokenAuthenticationReferencePolicyInterceptor(getContext(), operation, ps);
     }
 
     /**

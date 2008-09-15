@@ -61,6 +61,7 @@
                 <module>binding-http-runtime</module>
                 <module>binding-jms</module>
                 <module>binding-jms-runtime</module>
+                <module>binding-jms-policy</module>
                 <module>binding-jsonrpc</module>
                 <module>binding-jsonrpc-runtime</module>
                 <module>binding-notification</module>
@@ -170,7 +171,7 @@
                 <module>policy-logging</module>
                 <module>policy-security</module>
                 <module>policy-security-jsr250</module>
-                <module>policy-security-ws</module>
+                <!--module>policy-security-ws</module-->
                 <module>policy-transaction</module>
                 <module>runtime</module>
                 <module>runtime-tomcat</module>

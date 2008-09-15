@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.policy.authentication.basic;
 
 
+import java.security.Principal;
+
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -27,6 +30,9 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
+
+import com.ibm.security.auth.JAASPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -35,8 +41,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationServicePolicyInterceptor implements Interceptor {
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, "wsBasicAuthentication");
-
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
@@ -64,16 +68,20 @@ public class BasicAuthenticationServicePolicyInterceptor implements Interceptor 
 
     public Message invoke(Message msg) {
         
-        String username = (String)msg.getQoSContext().get(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_USERNAME);
-        String password = (String)msg.getQoSContext().get(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_PASSWORD);
-        
-        if (username != null) {
+        Subject subject = SecurityUtil.getSubject(msg);
+        BasicAuthenticationPrincipal principal =  SecurityUtil.getPrincipal(subject, 
+                                                                            BasicAuthenticationPrincipal.class);
+
+        if (principal != null){
             
-            System.out.println("Username: " + username + " Password: " + password);
-            // could call out here to some 3rd part system to do whatever you 
-            // need to turn credentials into a principal            
+            System.out.println("Username: " + 
+                               principal.getName() + 
+                               " Password: " + 
+                               principal.getPassword());
             
-            msg.getQoSContext().put(Message.QOS_CTX_SECURITY_PRINCIPAL, username);             
+            // could call out here to some 3rd party system to do whatever you 
+            // need to do do with username and password
+           
         }
     
         return getNext().invoke(msg);

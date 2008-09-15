@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -39,18 +40,18 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor<Axis2BasicAuthenticationPolicy> {
+public class JMSTokenAuthenticationPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<JMSTokenAuthenticationPolicy> {
     
     public QName getArtifactType() {
-        return Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME;
+        return JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_POLICY_QNAME;
     }
     
-    public Axis2BasicAuthenticationPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JMSTokenAuthenticationPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     
-    public Axis2BasicAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Axis2BasicAuthenticationPolicy policy = new Axis2BasicAuthenticationPolicy();
+    public JMSTokenAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        JMSTokenAuthenticationPolicy policy = new JMSTokenAuthenticationPolicy();
         int event = reader.getEventType();
         QName name = null;
         
@@ -60,12 +61,8 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
                 case START_ELEMENT : {
                     name = reader.getName();
                     if ( name.equals(getArtifactType()) ) {
-                        // no attributes at the moment
-                    } else if ( Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_USERNAME.equals(name.getLocalPart()) ) {
-                        policy.setUserName(reader.getElementText());
-                    } else if ( Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_PASSWORD.equals(name.getLocalPart()) ) {
-                        policy.setPassword(reader.getElementText());
-                    }
+                        policy.setTokenName(getQName(reader, JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_TOKEN_NAME));
+                    } 
                     break;
                 }
             }
@@ -85,7 +82,7 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
         return policy;
     }
 
-    public void write(Axis2BasicAuthenticationPolicy policy, XMLStreamWriter writer) 
+    public void write(JMSTokenAuthenticationPolicy policy, XMLStreamWriter writer) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -93,30 +90,22 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
                                  getArtifactType().getNamespaceURI());
         writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
 
-        if ( policy.getUserName() != null ) {
+        if ( policy.getTokenName() != null ) {
             writer.writeStartElement(prefix, 
-                                     Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_USERNAME,
+                                     JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_TOKEN_NAME,
                                      getArtifactType().getNamespaceURI());
-            writer.writeCharacters(policy.getUserName());
+            writer.writeCharacters(policy.getTokenName().toString());
             writer.writeEndElement();
-        }
-        
-        if ( policy.getPassword() != null ) {
-            writer.writeStartElement(prefix, 
-                                     Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_PASSWORD,
-                                     getArtifactType().getNamespaceURI());
-            writer.writeCharacters(policy.getPassword());
-            writer.writeEndElement();
-        }        
+        }      
         
         writer.writeEndElement();
     }
 
-    public Class<Axis2BasicAuthenticationPolicy> getModelType() {
-        return Axis2BasicAuthenticationPolicy.class;
+    public Class<JMSTokenAuthenticationPolicy> getModelType() {
+        return JMSTokenAuthenticationPolicy.class;
     }
 
-    public void resolve(Axis2BasicAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(JMSTokenAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
     

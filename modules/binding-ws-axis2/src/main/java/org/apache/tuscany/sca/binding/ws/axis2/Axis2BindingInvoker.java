@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -41,7 +42,10 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationReferenceBindingConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -74,7 +78,10 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     private SOAPFactory soapFactory;    
     private List<PolicyHandler> policyHandlerList = null;
     private WebServiceBinding wsBinding;
+    
     private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
+    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
+    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
 
     public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
@@ -96,7 +103,11 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
                 for (Object p : ps.getPolicies()) {
                     if (BasicAuthenticationPolicy.class.isInstance(p)) {
                         basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
-                    } else {
+                    } else if (Axis2TokenAuthenticationPolicy.class.isInstance(p)) {
+                        axis2TokenAuthenticationPolicy = (Axis2TokenAuthenticationPolicy)p;
+                    } else if (Axis2HeaderPolicy.class.isInstance(p)) {
+                        axis2HeaderPolicies.add((Axis2HeaderPolicy)p);
+                    }else {
                         // etc. check for other types of policy being present
                     }
                 }
@@ -138,8 +149,17 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             policyHandler.beforeInvoke(msg, requestMC, operationClient);
         }
         
+        // set policy specified headers
+        for (Axis2HeaderPolicy policy : axis2HeaderPolicies){
+            Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, policy.getHeaderName());
+        }
+        
         if (basicAuthenticationPolicy != null) {
-            Axis2BasicAuthenticationReferenceBindingConfigurator.setOperationOptions(operationClient, msg, basicAuthenticationPolicy);
+            Axis2BindingBasicAuthenticationConfigurator.setOperationOptions(operationClient, msg, basicAuthenticationPolicy);
+        }
+        
+        if (axis2TokenAuthenticationPolicy != null) {
+            Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, axis2TokenAuthenticationPolicy.getTokenName());
         }
         
         // Allow privileged access to read properties. Requires PropertiesPermission read in
@@ -238,6 +258,11 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             sh.addChild(epr);
             requestMC.setFrom(fromEPR);
         }
+        
+        // Set any message headers required by policy
+        // Get the header from the tuscany message
+        // If its not already an OM convert it to OM
+        // add it to the envelope header
 
         // if target endpoint was not specified when this invoker was created, 
         // use dynamically specified target endpoint passed in on this call

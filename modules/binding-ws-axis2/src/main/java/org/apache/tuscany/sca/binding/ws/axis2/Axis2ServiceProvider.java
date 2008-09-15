@@ -74,7 +74,12 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationServiceBindingConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -86,7 +91,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
@@ -126,7 +130,10 @@ public class Axis2ServiceProvider {
     private List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
     private Map<String, Port> urlMap = new HashMap<String, Port>();
+    
     private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
+    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
+    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
 
     public static final QName QNAME_WSA_ADDRESS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
@@ -207,6 +214,10 @@ public class Axis2ServiceProvider {
                 for (Object p : ps.getPolicies()) {
                     if (BasicAuthenticationPolicy.class.isInstance(p)) {
                         basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
+                    } else if (Axis2TokenAuthenticationPolicy.class.isInstance(p)) {
+                        axis2TokenAuthenticationPolicy = (Axis2TokenAuthenticationPolicy)p;
+                    } else if (Axis2HeaderPolicy.class.isInstance(p)) {
+                        axis2HeaderPolicies.add((Axis2HeaderPolicy)p);
                     } else {
                         // etc. check for other types of policy being present
                     }
@@ -640,6 +651,11 @@ public class Axis2ServiceProvider {
         String callbackAddress = null;
         String callbackID = null;
         Object conversationID = null;
+        
+        // create a message object and set the args as its body
+        Message msg = messageFactory.createMessage();
+        msg.setBody(args);
+        msg.setOperation(op);
 
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
@@ -668,12 +684,20 @@ public class Axis2ServiceProvider {
                     }
                 }
             }
+            
+            // get policy specified headers
+            for (Axis2HeaderPolicy policy : axis2HeaderPolicies){
+                //Axis2BindingHeaderConfigurator.getHeader(inMC, msg, policy.getHeaderName());
+            }
+            
+            if (axis2TokenAuthenticationPolicy != null) {
+                Axis2SOAPHeaderString tokenHeader = new Axis2SOAPHeaderString();
+                Axis2BindingHeaderConfigurator.getHeader(inMC, 
+                                                         msg, 
+                                                         axis2TokenAuthenticationPolicy.getTokenName(), 
+                                                         tokenHeader);
+            }
         }
-
-        // create a message object and set the args as its body
-        Message msg = messageFactory.createMessage();
-        msg.setBody(args);
-        msg.setOperation(op);
         
         //fill message with QoS context info 
         fillQoSContext(msg, inMC);
@@ -705,7 +729,7 @@ public class Axis2ServiceProvider {
         }
                 
         if (basicAuthenticationPolicy != null) {
-            Axis2BasicAuthenticationServiceBindingConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
+            Axis2BindingBasicAuthenticationConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
         }
         
         // find the runtime wire and invoke it with the message

@@ -35,6 +35,12 @@
             <artifactId>tuscany-binding-jms</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms-policy</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>         
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

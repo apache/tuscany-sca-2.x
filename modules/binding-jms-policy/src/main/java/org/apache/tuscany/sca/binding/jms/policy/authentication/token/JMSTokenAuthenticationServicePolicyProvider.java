@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
 
 import java.util.List;
 
@@ -35,12 +35,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationServicePolicyProvider implements PolicyProvider {
+public class JMSTokenAuthenticationServicePolicyProvider implements PolicyProvider {
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private Binding binding;
 
-    public Axis2BasicAuthenticationServicePolicyProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    public JMSTokenAuthenticationServicePolicyProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
         super();
         this.component = component;
         this.service = service;
@@ -52,7 +52,7 @@ public class Axis2BasicAuthenticationServicePolicyProvider implements PolicyProv
             List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
             for (PolicySet ps : policySets) {
                 for (Object p : ps.getPolicies()) {
-                    if (Axis2BasicAuthenticationPolicy.class.isInstance(p)) {
+                    if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
                         return ps;
                     }
                 }
@@ -69,14 +69,13 @@ public class Axis2BasicAuthenticationServicePolicyProvider implements PolicyProv
             + binding.getClass().getName()
             + ")";
     }
- 
 
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
     public Interceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet();
-        return ps == null ? null : new Axis2BasicAuthenticationReferencePolicyInterceptor(getContext(), operation, ps);
+        return ps == null ? null : new JMSTokenAuthenticationServicePolicyInterceptor(getContext(), operation, ps);
     }
 
     /**

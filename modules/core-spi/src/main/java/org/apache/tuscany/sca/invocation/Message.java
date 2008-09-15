@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
  */
 public interface Message {
     String QOS_CTX_SECURITY_PRINCIPAL = "PRINCIPAL";
+    String QOS_CTX_SECURITY_SUBJECT = "SUBJECT";
 
     /**
      * Returns the body of the message, which will be the payload or parameters associated with the wire
@@ -120,5 +121,5 @@ public interface Message {
      * 
      * @return
      */
-    Map<String, Object> getHeader();
+    Map<String, Object> getHeaders();
 }

@@ -186,7 +186,7 @@ public class NonBlockingInterceptor implements Interceptor {
             return null;
         }
         
-        public Map<String, Object> getHeader() {
+        public Map<String, Object> getHeaders() {
             return null;
         }        
     }

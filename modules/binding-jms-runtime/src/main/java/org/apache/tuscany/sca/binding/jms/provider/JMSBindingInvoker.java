@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 
 import javax.jms.DeliveryMode;
@@ -33,10 +34,13 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -59,6 +63,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected Destination bindingRequestDest;
     protected Destination bindingReplyDest;
     protected RuntimeComponentReference reference;
+    protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
 
     public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
 
@@ -71,6 +76,20 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
 
+        // find out which policies are active
+        if (jmsBinding instanceof PolicySetAttachPoint) {
+            List<PolicySet> policySets = ((PolicySetAttachPoint)jmsBinding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
+                        jmsTokenAuthenticationPolicy = (JMSTokenAuthenticationPolicy)p;
+                    }else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }
+        
         try {
 
             bindingRequestDest = lookupDestination();
@@ -352,6 +371,11 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
                 Object value = operationProperties.get(propName);
                 jmsMsg.setObjectProperty(propName, value);
             }
+        }
+        
+        if (jmsTokenAuthenticationPolicy != null) {
+            String token = (String)tuscanyMsg.getHeaders().get(jmsTokenAuthenticationPolicy.getTokenName().toString());
+            jmsMsg.setStringProperty(jmsTokenAuthenticationPolicy.getTokenName().toString(), token);
         }
     }
 

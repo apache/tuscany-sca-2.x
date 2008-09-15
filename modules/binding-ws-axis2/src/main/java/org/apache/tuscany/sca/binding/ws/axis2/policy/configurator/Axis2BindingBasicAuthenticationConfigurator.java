@@ -17,10 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.ws.axis2.policy.configurator;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import javax.security.auth.Subject;
 
 import org.apache.axiom.om.util.Base64;
 import org.apache.axis2.AxisFault;
@@ -29,20 +33,58 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.Parameter;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.http.HttpTransportProperties;
+import org.apache.axis2.transport.http.HttpTransportProperties.Authenticator;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * Deal with basic authentication configuration at the service
+ * Policy handler to handle PolicySet that contain Axis2ConfigParamPolicy instances
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationServiceBindingConfigurator {
+public class Axis2BindingBasicAuthenticationConfigurator {
+    
+    
+    public static void setOperationOptions(OperationClient operationClient, Message msg, BasicAuthenticationPolicy policy) {
+        String username = null;
+        String password = null;
         
+        // get the security context
+        Subject subject = SecurityUtil.getSubject(msg);
+        BasicAuthenticationPrincipal principal = SecurityUtil.getPrincipal(subject, 
+                                                                           BasicAuthenticationPrincipal.class);
+
+        // could use the security principal to look up basic auth credentials
+        if (  principal != null ) {
+            username = ((BasicAuthenticationPrincipal)principal).getName();
+            password = ((BasicAuthenticationPrincipal)principal).getPassword();
+        }
+        
+        if (username == null || password == null ){
+            throw new ServiceRuntimeException("Basic authentication username or password is null");
+        }
+        
+        HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
+        List<String> auth = new ArrayList<String>();
+        auth.add(Authenticator.BASIC);
+        authenticator.setAuthSchemes(auth);
+        authenticator.setPreemptiveAuthentication(true);
+        authenticator.setUsername(username);
+        authenticator.setPassword(password);
+    
+        operationClient.getOptions().setProperty(HTTPConstants.AUTHENTICATE,
+                                                 authenticator);
+    }
+    
     public static void parseHTTPHeader(MessageContext messageContext, Message msg, BasicAuthenticationPolicy policy) {
-          
+        
         Map httpHeaderProperties = (Map)messageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
                          
         String basicAuthString = (String)httpHeaderProperties.get("Authorization");
@@ -67,11 +109,11 @@ public class Axis2BasicAuthenticationServiceBindingConfigurator {
             }
         }
         
-        // set the security context. 
-        msg.getQoSContext().put(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_USERNAME,
-                                username);
-        msg.getQoSContext().put(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_PASSWORD,
-                                password);
+        // get the security context
+        Subject subject = SecurityUtil.getSubject(msg);
+        BasicAuthenticationPrincipal principal =  new BasicAuthenticationPrincipal(username,
+                                                                                   password);
+        subject.getPrincipals().add(principal);
 
         // Set the http headers
         // This is just an experiment, looking at the alternatives to extracting
@@ -79,8 +121,8 @@ public class Axis2BasicAuthenticationServiceBindingConfigurator {
         // could be deferred to the interceptor. Asymetric though when compared with the
         // reference support. 
         // how to defined the scheme for message headers?
-        msg.getHeader().put("httpheaders", httpHeaderProperties); 
+        msg.getHeaders().put("httpheaders", httpHeaderProperties); 
     }    
-    
-    
+        
+
 }

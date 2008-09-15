@@ -17,4 +17,5 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wsConfigParam,model=org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy
-org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#axis2BasicAuthentication,model=org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicy
+org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#axis2TokenAuthentication,model=org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy
+org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#axis2Header,model=org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy

@@ -33,26 +33,14 @@
         <reference name="helloworldWS" requires="authentication">
             <binding.ws uri="http://localhost:8085/HelloWorldServiceWSComponent"/>
         </reference>
-        <reference name="helloworldJMS">
-            <binding.jms uri="jms:HelloWorldService"/>
-        </reference>
     </component>           
 
     <component name="HelloWorldServiceWSComponent">
-        <implementation.java class="helloworld.HelloWorldServiceImpl" />
+        <implementation.java class="helloworld.HelloWorldServiceImpl" requires="tuscany:identity"/>
         <service name="HelloWorldService" requires="authentication">
         	<interface.java interface="helloworld.HelloWorldService"/>
             <binding.ws uri="http://localhost:8085/HelloWorldServiceWSComponent"/>
         </service>
     </component>
     
-    <component name="HelloWorldServiceJMSComponent">
-        <implementation.java class="helloworld.HelloWorldServiceImpl" />
-        
-        <!--service name="HelloWorldService" requires="authentication"-->
-        <service name="HelloWorldService" >
-            <interface.java interface="helloworld.HelloWorldService"/>
-            <binding.jms/>
-        </service>
-    </component>    
 </composite>
