@@ -46,7 +46,6 @@
                 <module>binding-echo</module>
                 <module>binding-echo-extension</module>
                 <module>calculator</module>
-                <module>calculator2</module>
                 <module>calculator-distributed</module>
 		<module>calculator-implementation-policies</module>
                 <module>calculator-lean</module>
