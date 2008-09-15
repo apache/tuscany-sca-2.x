@@ -16,21 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.awt.Image;
+import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
@@ -86,8 +91,8 @@ public class JAXBContextCache {
     */
 
     protected LRUCache<Object, JAXBContext> cache;
-    protected LRUCache<JAXBContext, Unmarshaller> upool;
-    protected LRUCache<JAXBContext, Marshaller> mpool;
+    protected Pool<JAXBContext, Marshaller>  mpool;
+    protected Pool<JAXBContext, Unmarshaller> upool;
     
     // protected JAXBContext commonContext;
     protected JAXBContext defaultContext;
@@ -98,8 +103,8 @@ public class JAXBContextCache {
 
     public JAXBContextCache(int contextSize, int marshallerSize, int unmarshallerSize) {
         cache = new LRUCache<Object, JAXBContext>(contextSize);
-        upool = new LRUCache<JAXBContext, Unmarshaller>(unmarshallerSize);
-        mpool = new LRUCache<JAXBContext, Marshaller>(marshallerSize);
+        mpool = new Pool<JAXBContext, Marshaller>();
+        upool = new Pool<JAXBContext, Unmarshaller>();
         defaultContext = getDefaultJAXBContext();
     }
     
@@ -180,27 +185,38 @@ public class JAXBContextCache {
     }
 
     public Marshaller getMarshaller(JAXBContext context) throws JAXBException {
-        synchronized (mpool) {
-            Marshaller marshaller = mpool.get(context);
-            if (marshaller == null) {
-                marshaller = context.createMarshaller();
-                mpool.put(context, marshaller);
-            }
-            return marshaller;
+        Marshaller marshaller = mpool.get(context);
+        if (marshaller == null) {
+            marshaller = context.createMarshaller();
         }
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE); 
+        return marshaller;
     }
 
+    public void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {   
+        if (marshaller != null) {
+            marshaller.setAttachmentMarshaller(null);
+            mpool.put(context, marshaller);
+            // No point unsetting marshaller's JAXB_FRAGMENT property, since we'll just reset it when
+            // doing the next get.
+        }
+    }
+    
     public Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
-        synchronized (upool) {
-            Unmarshaller unmarshaller = upool.get(context);
-            if (unmarshaller == null) {
-                unmarshaller = context.createUnmarshaller();
-                upool.put(context, unmarshaller);
-            }
-            return unmarshaller;
+        Unmarshaller unmarshaller = upool.get(context);
+        if (unmarshaller == null) {
+            unmarshaller = context.createUnmarshaller();
         }
+        return unmarshaller;
     }
 
+    public void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {   
+        if (unmarshaller != null) {
+            unmarshaller.setAttachmentUnmarshaller(null);
+            upool.put(context, unmarshaller);
+        }
+    }
+    
     public LRUCache<Object, JAXBContext> getCache() {
         return cache;
     }
@@ -282,12 +298,123 @@ public class JAXBContextCache {
         synchronized (cache) {
             cache.clear();
         }
+        /*
         synchronized (upool) {
             upool.clear();
         }
         synchronized (upool) {
             upool.clear();
         }
+        */
     }
 
+    //
+    // This inner class is copied in its entirety from the Axis2 utility class,
+    // org.apache.axis2.jaxws.message.databinding.JAXBUtils.   We could look into extending but it's such a basic data structure
+    // without other dependencies so we might be better off copying it and avoiding a new
+    // Axis2 dependency here.
+    //
+    
+    /**
+     * Pool a list of items for a specific key
+     *
+     * @param <K> Key
+     * @param <V> Pooled object
+     */
+    private static class Pool<K,V> {
+        private SoftReference<Map<K,List<V>>> softMap = 
+            new SoftReference<Map<K,List<V>>>(
+                    new ConcurrentHashMap<K, List<V>>());
+
+        // The maps are freed up when a LOAD FACTOR is hit
+        private static int MAX_LIST_FACTOR = 50;
+        private static int MAX_LOAD_FACTOR = 32;  // Maximum number of JAXBContext to store
+        
+        /**
+         * @param key
+         * @return removed item from pool or null.
+         */
+        public V get(K key) {
+            List<V> values = getValues(key);
+            synchronized (values) {
+                if (values.size()>0) {
+                    V v = values.remove(values.size()-1);
+                    return v;
+                    
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Add item back to pool
+         * @param key
+         * @param value
+         */
+        public void put(K key, V value) {
+            adjustSize();
+            List<V> values = getValues(key);
+            synchronized (values) {
+                if (values.size() < MAX_LIST_FACTOR) {
+                    values.add(value);
+                }
+            }
+        }
+
+        /**
+         * Get or create a list of the values for the key
+         * @param key
+         * @return list of values.
+         */
+        private List<V> getValues(K key) {
+            Map<K,List<V>> map = softMap.get();
+            List<V> values = null;
+            if (map != null) {
+                values = map.get(key);
+                if(values !=null) {
+                    return values;
+                }
+            }
+            synchronized (this) {
+                if (map != null) {
+                    values = map.get(key);
+                }
+                if (values == null) {
+                    if (map == null) {
+                        map = new ConcurrentHashMap<K, List<V>>();
+                        softMap = 
+                            new SoftReference<Map<K,List<V>>>(map);
+                    }
+                    values = new ArrayList<V>();
+                    map.put(key, values);
+
+                }
+                return values;
+            }
+        }
+        
+        /**
+         * AdjustSize
+         * When the number of keys exceeds the maximum load, half
+         * of the entries are deleted.
+         * 
+         * The assumption is that the JAXBContexts, UnMarshallers, Marshallers, etc. require
+         * a large footprint.
+         */
+        private void adjustSize() {
+            Map<K,List<V>> map = softMap.get();
+            if (map != null && map.size() > MAX_LOAD_FACTOR) {
+                // Remove every other Entry in the map.
+                Iterator it = map.entrySet().iterator();
+                boolean removeIt = false;
+                while (it.hasNext()) {
+                    it.next();
+                    if (removeIt) {
+                        it.remove();
+                    }
+                    removeIt = !removeIt;
+                }
+            }
+        }
+    }
 }
