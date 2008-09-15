@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
 
-import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -26,8 +25,15 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.util.Base64;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.OMText;
+import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -41,16 +47,15 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationServicePolicyInterceptor implements Interceptor {
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, "wsBasicAuthentication");
+public class Axis2TokenAuthenticationReferencePolicyInterceptor implements Interceptor {
 
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
     private String context;
-    private Axis2BasicAuthenticationPolicy policy;
+    private Axis2TokenAuthenticationPolicy policy;
 
-    public Axis2BasicAuthenticationServicePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
+    public Axis2TokenAuthenticationReferencePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
         super();
         this.operation = operation;
         this.policySet = policySet;
@@ -61,8 +66,8 @@ public class Axis2BasicAuthenticationServicePolicyInterceptor implements Interce
     private void init() {
         if (policySet != null) {
             for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof Axis2BasicAuthenticationPolicy){
-                    policy = (Axis2BasicAuthenticationPolicy)policyObject;
+                if (policyObject instanceof Axis2TokenAuthenticationPolicy){
+                    policy = (Axis2TokenAuthenticationPolicy)policyObject;
                     break;
                 }
             }
@@ -70,9 +75,19 @@ public class Axis2BasicAuthenticationServicePolicyInterceptor implements Interce
     }
 
     public Message invoke(Message msg) {
-        // TODO - We might use interceptors to do the Axis2 config
-        //        if we can change the infrastructure split the 
-        //        invoker up
+        // could call out here to some 3rd party system to get credentials
+        
+        if ( policy.getTokenName() != null){
+            // create Axis representation of header
+            Axis2SOAPHeaderString header = new Axis2SOAPHeaderString();
+            header.setHeaderName(policy.getTokenName());
+            header.setHeaderString("SomeWSAuthorizationToken");
+    
+            // add header to Tuscany message
+            msg.getHeaders().put(policy.getTokenName().toString(),
+                                 header);  
+        }
+        
         return getNext().invoke(msg);
     }
 

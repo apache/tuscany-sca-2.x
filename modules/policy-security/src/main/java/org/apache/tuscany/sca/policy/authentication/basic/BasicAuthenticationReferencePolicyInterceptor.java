@@ -18,11 +18,13 @@
  */
 package org.apache.tuscany.sca.policy.authentication.basic;
 
+import java.security.Principal;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -32,15 +34,13 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
 
 /**
- * Policy handler to handle PolicySet related to Logging with the QName
- * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationReferencePolicyInterceptor implements Interceptor {
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, "wsBasicAuthentication");
 
     private Invoker next;
     private Operation operation;
@@ -68,11 +68,26 @@ public class BasicAuthenticationReferencePolicyInterceptor implements Intercepto
     }
 
     public Message invoke(Message msg) {
-        // could call out here to some 3rd part system to get credentials
-        msg.getQoSContext().put(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_USERNAME,
-                                policy.getUserName());
-        msg.getQoSContext().put(BasicAuthenticationPolicy.BASIC_AUTHENTICATION_PASSWORD,
-                                policy.getPassword());
+        
+        // get the security context
+        Subject subject = SecurityUtil.getSubject(msg);
+        BasicAuthenticationPrincipal principal = SecurityUtil.getPrincipal(subject, 
+                                                                           BasicAuthenticationPrincipal.class);
+
+        // if no credentials propogated from the reference then use 
+        // the ones from the policy
+        if (principal == null && 
+            policy.getUserName() != null && 
+            !policy.getUserName().equals("")) {
+            principal = new BasicAuthenticationPrincipal(policy.getUserName(),
+                                                         policy.getPassword());
+            subject.getPrincipals().add(principal);
+        }
+
+        if (principal == null){
+            // alternatively we could call out here to some 3rd party system to get credentials
+            // or convert from some other security principal
+        }
         
         return getNext().invoke(msg);
     }

@@ -137,9 +137,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.policy.security.ws</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.ws.axis2.policy</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.policy.security.ws*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.ws.axis2.policy*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -41,7 +41,7 @@
             <attribute name="requestConnection" type="QName"/>
             <attribute name="responseConnection" type="QName"/>
             <attribute name="operationProperties" type="QName"/>
-            <anyAttribute/>
+            <anyAttribute namespace="##any" processContents="lax"/>
          </extension>
       </complexContent>
    </complexType>

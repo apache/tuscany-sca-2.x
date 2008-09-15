@@ -48,7 +48,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public Subject getSecuritySubject() {
-        throw new UnsupportedOperationException();
+        return (Subject)ThreadMessageContext.getMessageContext().getQoSContext().get(Message.QOS_CTX_SECURITY_SUBJECT);
     }
 
     public String getServiceName() {

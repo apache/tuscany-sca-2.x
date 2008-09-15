@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.policy.identity;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -31,10 +31,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationPolicyProviderFactory implements PolicyProviderFactory<Axis2BasicAuthenticationPolicy> {
+public class SecurityIdentityPolicyProviderFactory implements PolicyProviderFactory<SecurityIdentityPolicy> {
     private ExtensionPointRegistry registry;
     
-    public Axis2BasicAuthenticationPolicyProviderFactory(ExtensionPointRegistry registry) {
+    public SecurityIdentityPolicyProviderFactory(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
     }
@@ -43,7 +43,7 @@ public class Axis2BasicAuthenticationPolicyProviderFactory implements PolicyProv
      * @see org.apache.tuscany.sca.provider.PolicyProviderFactory#createImplementationPolicyProvider(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.assembly.Implementation)
      */
     public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component, Implementation implementation) {
-        return null;//new WSBasicAuthenticationImplementationPolicyProvider(component, implementation);
+        return new SecurityIdentityImplementationPolicyProvider(component, implementation);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Axis2BasicAuthenticationPolicyProviderFactory implements PolicyProv
     public PolicyProvider createReferencePolicyProvider(RuntimeComponent component,
                                                         RuntimeComponentReference reference,
                                                         Binding binding) {
-        return new Axis2BasicAuthenticationReferencePolicyProvider(component, reference, binding);
+        return null; 
     }
 
     /**
@@ -61,7 +61,7 @@ public class Axis2BasicAuthenticationPolicyProviderFactory implements PolicyProv
     public PolicyProvider createServicePolicyProvider(RuntimeComponent component,
                                                       RuntimeComponentService service,
                                                       Binding binding) {
-        return new Axis2BasicAuthenticationServicePolicyProvider(component, service, binding);
+        return null; 
     }
 
     /**

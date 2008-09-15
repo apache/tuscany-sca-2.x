@@ -30,13 +30,11 @@ public class HelloWorldClientImpl implements HelloWorldService {
     @Reference
     protected HelloWorldService helloworldWS;
     
-    @Reference
-    protected HelloWorldService helloworldJMS;    
+
 
     public String getGreetings(String name) {
         return "Hello " + 
-                helloworldWS.getGreetings(name) + 
-                helloworldJMS.getGreetings(name);
+                helloworldWS.getGreetings(name);
     }
 
 }

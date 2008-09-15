@@ -27,21 +27,18 @@
     <sca:policySet name="BasicAuthenticationPolicySet"
                    provides="authentication"
                    appliesTo="sca:binding.ws">
-                   
         <tuscany:basicAuthentication>
           <tuscany:userName>myname</tuscany:userName>
           <tuscany:password>mypassword</tuscany:password>
         </tuscany:basicAuthentication>
-        
     </sca:policySet>
-      
-    <!-- some authentication implementation policies - may think about these later 
-    <policySet name="allowed_users" appliesTo="sca:implementation.java">
-    	<permitAll/>
-    </policySet>
     
-    <policySet name="runAsAdmin" appliesTo="sca:implementation.java">
-    	<runAs role="Administrator"/>
-    </policySet>
-    -->
+    <sca:policySet name="ImplementationIdentityPolicySet"
+                    provides="tuscany:identity"
+                   appliesTo="sca:implementation.java">
+        <securityIdentity>
+            <useCallerIdentity/>
+        </securityIdentity>  
+    </sca:policySet>      
+      
 </definitions>

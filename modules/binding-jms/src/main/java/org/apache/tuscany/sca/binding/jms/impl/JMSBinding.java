@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Models a binding to a JMS resource.
@@ -32,7 +36,7 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 
-public class JMSBinding implements Binding {
+public class JMSBinding implements Binding, PolicySetAttachPoint {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -44,7 +48,15 @@ public class JMSBinding implements Binding {
     private String name = null;
     private boolean unresolved = false;
     private List<Object> extensions = new ArrayList<Object>();
-
+    
+    // properties required by PolicySetAttachPoint
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    
+    // properties required by IntentAttachPoint 
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private IntentAttachPointType intentAttachPointType;
+    
     // Properties required to describe the JMS binding model
 
     private String correlationScheme = JMSBindingConstants.CORRELATE_MSG_ID;
@@ -569,4 +581,27 @@ public class JMSBinding implements Binding {
     public JMSBinding getResponseConnectionBinding() {
         return responseConnectionBinding;
     }
+    
+    // operations required by PolicySetAttachPoint
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }     
+    
+    // operations required by IntentAttachPoint 
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    } 
+
+    public IntentAttachPointType getType() {
+        return intentAttachPointType;
+    }
+    
+    public void setType(IntentAttachPointType intentAttachPointType) {
+        this.intentAttachPointType = intentAttachPointType;
+    }
+     
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
 
 import javax.xml.namespace.QName;
 
@@ -29,33 +29,22 @@ import org.apache.tuscany.sca.policy.Policy;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BasicAuthenticationPolicy implements Policy {
-    public static final QName AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "axis2BasicAuthentication");
-    public static final String AXIS2_BASIC_AUTHENTICATION_USERNAME = "username";
-    public static final String AXIS2_BASIC_AUTHENTICATION_PASSWORD = "password";
-    public static final String AXIS2_BASIC_AUTHENTICATION_HTTP_HEADER = "httpheader";
+public class JMSTokenAuthenticationPolicy implements Policy {
+    public static final QName JMS_TOKEN_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jmsTokenAuthentication");
+    public static final String JMS_TOKEN_AUTHENTICATION_TOKEN_NAME = "tokenName";
 
-    private String userName;
-    private String password;
-    
-    public String getUserName() {
-        return userName;
-    }
-    
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-    
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private QName tokenName;
 
+    public QName getTokenName() {
+        return tokenName;
+    }
+    
+    public void setTokenName(QName tokenName) {
+        this.tokenName = tokenName;
+    }
+    
     public QName getSchemaName() {
-        return AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME;
+        return JMS_TOKEN_AUTHENTICATION_POLICY_QNAME;
     }
 
     public boolean isUnresolved() {

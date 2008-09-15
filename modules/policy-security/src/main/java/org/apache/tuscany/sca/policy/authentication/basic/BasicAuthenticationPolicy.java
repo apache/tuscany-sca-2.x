@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.policy.Policy;
  */
 public class BasicAuthenticationPolicy implements Policy {
     public static final QName BASIC_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "basicAuthentication");
-    public static final String BASIC_AUTHENTICATION_USERNAME = "username";
+    public static final String BASIC_AUTHENTICATION_USERNAME = "userName";
     public static final String BASIC_AUTHENTICATION_PASSWORD = "password";
 
     private String userName;
