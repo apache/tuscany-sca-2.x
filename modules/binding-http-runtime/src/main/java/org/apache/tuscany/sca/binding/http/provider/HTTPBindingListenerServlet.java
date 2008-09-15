@@ -311,10 +311,21 @@ public class HTTPBindingListenerServlet extends HttpServlet {
             throw new ServletException((Throwable)responseMessage.getBody());
         }
 
-        // Put ETag and LastModified in response.
-        CacheContext cc = (CacheContext)responseMessage.getBody();
-        response.setHeader( "ETag", cc.getETag() );
-        response.setHeader( "LastModified", cc.getLastModified() );
+
+        // Test if the ETag and LastModified are returned as a cache context.
+    	Object body = responseMessage.getBody();
+    	if ( body.getClass() == CacheContext.class ) {
+    		// Transfer to header if so.
+    		CacheContext cc = (CacheContext)responseMessage.getBody();
+    		if (( cc != null ) && ( cc.isEnabled() )) {
+    			String eTag = cc.getETag();
+            	if ( eTag != null )
+            		response.setHeader( "ETag", cc.getETag() );
+            	String lastModified = cc.getLastModified();
+            	if ( lastModified != null)
+            		response.setHeader( "LastModified", cc.getLastModified() );
+    		}
+    	}
     }
 
 	/**
