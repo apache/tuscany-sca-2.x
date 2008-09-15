@@ -18,6 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:x="http://x"
 	xmlns:calc="http://calc"
 	targetNamespace="http://calc"
 	name="Calculator">
@@ -25,7 +26,6 @@
     <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
     </service>
-
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent"/>
@@ -49,5 +49,11 @@
     <component name="DivideServiceComponent">
         <implementation.java class="calculator.DivideServiceImpl"/>
     </component>
+    
+    <x:unknownElement uknAttr="attribute1">
+		<x:subUnknownElement1 uknAttr1="attribute1"/>
+		<x:subUnknownElement2/>
+	</x:unknownElement>
+
 
 </composite>

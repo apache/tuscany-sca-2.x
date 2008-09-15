@@ -94,6 +94,7 @@ public class ReadDocumentTestCase extends TestCase {
         reader.setFeature("http://xml.org/sax/features/namespaces", true);
         reader.setContentHandler(handler);
         reader.parse(new InputSource(url.openStream()));
+           
     }
 
     public void testValidateImplementation() throws Exception {
