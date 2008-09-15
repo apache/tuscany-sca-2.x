@@ -19,19 +19,26 @@
 
 package org.apache.tuscany.sca.binding.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 /**
- * Test service implementation that implements a get method.
- *
+ * Indicates that a resource was not modified.
+ * 
  * @version $Rev$ $Date$
  */
-public class TestGetImpl {
-    
-    public InputStream get(String id) {
-        return new ByteArrayInputStream(("<html><body><p>item=" + id + "</body></html>").getBytes());
+public class PreconditionFailedException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
+    public PreconditionFailedException() {
     }
 
+    public PreconditionFailedException(String message) {
+        super(message);
+    }
+
+    public PreconditionFailedException(Throwable cause) {
+        super(cause);
+    }
+
+    public PreconditionFailedException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
