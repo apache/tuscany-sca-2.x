@@ -273,6 +273,12 @@ public class NodeImpl implements SCANode, SCAClient {
                 // workaround for evil url/uri from maven 
                 contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
 
+            } else if ("zip".equals(protocol)) {
+                // See https://issues.apache.org/jira/browse/TUSCANY-2598
+                // zip contribution, remove the zip prefix and pad with file:
+                String location = "file:"+url.substring(4, url.lastIndexOf("!/"));
+                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
+                
             } else if (protocol != null && (protocol.equals("bundle") || protocol.equals("bundleresource"))) {
                 contributionURL =
                     new URL(contributionArtifactURL.getProtocol(), contributionArtifactURL.getHost(),
