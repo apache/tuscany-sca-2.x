@@ -132,7 +132,6 @@ public class ExtensibleStAXArtifactProcessor
             source.nextTag();
         }
         QName name = source.getName();
-        System.out.println(">>>" + name);
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {
         	DefaultUnknownElementProcessor unknownElementProcessor = new DefaultUnknownElementProcessor(monitor);
