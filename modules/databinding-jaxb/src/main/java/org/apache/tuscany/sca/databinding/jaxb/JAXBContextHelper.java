@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -374,7 +373,7 @@ public class JAXBContextHelper {
                 elementNamespace = namespace;
             }
             if (elementName.equals("##default")) {
-                elementName = Introspector.decapitalize(javaType.getSimpleName());
+                elementName = jaxbDecapitalize(javaType.getSimpleName());
             }
             elementQName = new QName(elementNamespace, elementName);
         }
@@ -389,13 +388,13 @@ public class JAXBContextHelper {
             }
 
             if (typeName.equals("##default")) {
-                typeName = Introspector.decapitalize(javaType.getSimpleName());
+                typeName = jaxbDecapitalize(javaType.getSimpleName());
             }
             typeQName = new QName(typeNamespace, typeName);
         } else {
             XmlEnum xmlEnum = javaType.getAnnotation(XmlEnum.class);
             if (xmlEnum != null) {
-                name = Introspector.decapitalize(javaType.getSimpleName());
+                name = jaxbDecapitalize(javaType.getSimpleName());
                 typeQName = new QName(namespace, name);
             }
         }
@@ -403,6 +402,38 @@ public class JAXBContextHelper {
             return null;
         }
         return new XMLType(elementQName, typeQName);
+    }
+
+    /**
+     * The JAXB RI doesn't implement the decapitalization algorithm in the
+     * JAXB spec.  See Sun bug 6505643 for details.  This means that instead
+	 * of calling java.beans.Introspector.decapitalize() as the JAXB spec says,
+	 * Tuscany needs to mimic the incorrect JAXB RI algorithm.
+     */
+    public static String jaxbDecapitalize(String name) {
+        // find first lower case char in name
+        int lower = name.length();
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isLowerCase(name.charAt(i))) {
+                lower = i;
+                break;
+            }
+        }
+
+        int decap;
+        if (name.length() == 0) {
+            decap = 0;  // empty string: nothing to do
+        } else if (lower == 0) {
+            decap = 0;  // first char is lower case: nothing to do
+        } else if (lower == 1) {
+            decap = 1;  // one upper followed by lower: decapitalize 1 char
+        } else if (lower < name.length()) { 
+            decap = lower - 1;  // n uppers followed by at least one lower: decapitalize n-1 chars
+        } else {
+            decap = name.length();  // all upper case: decapitalize all chars
+        }
+
+        return name.substring(0, decap).toLowerCase() + name.substring(decap);
     }
 
     public static Node generateSchema(JAXBContext context) throws Exception {
