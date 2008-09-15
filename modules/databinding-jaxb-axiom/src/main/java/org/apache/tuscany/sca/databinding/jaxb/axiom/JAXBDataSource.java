@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.databinding.jaxb.axiom;
 
 import java.io.OutputStream;
@@ -37,6 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.util.StAXUtils;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 
 /**
  *
@@ -55,10 +55,13 @@ public class JAXBDataSource implements OMDataSource {
     private Marshaller getMarshaller() throws JAXBException {
         if (marshaller == null) {
             // For thread safety, not sure we can cache the marshaller
-            // marshaller = JAXBContextHelper.getMarshaller(context); 
-            marshaller = context.createMarshaller();
+            marshaller = JAXBContextHelper.getMarshaller(context); 
         }
         return marshaller;
+    }
+    
+    private void releaseMarshaller(Marshaller marshaller) {
+        JAXBContextHelper.releaseJAXBMarshaller(context, marshaller);
     }
 
     public XMLStreamReader getReader() throws XMLStreamException {
@@ -75,11 +78,12 @@ public class JAXBDataSource implements OMDataSource {
             // marshaller.setProperty(Marshaller.JAXB_ENCODING, format.getCharSetEncoding());
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws Exception {
-                    Marshaller marshaller = getMarshaller();
-                    // Set the FRAGEMENT property to avoid duplicate XML declaration
-                    marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-                    marshaller.marshal(element, xmlWriter);
-                    marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+                    try {
+                        Marshaller marshaller = getMarshaller();
+                        marshaller.marshal(element, xmlWriter);                  
+                    } finally {
+                        releaseMarshaller(marshaller);
+                    } 
                     return null;
                 }
             });
@@ -93,8 +97,12 @@ public class JAXBDataSource implements OMDataSource {
             // marshaller.setProperty(Marshaller.JAXB_ENCODING, format.getCharSetEncoding());
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws Exception {
-                    Marshaller marshaller = getMarshaller();
-                    marshaller.marshal(element, output);
+                    try {
+                        Marshaller marshaller = getMarshaller();
+                        marshaller.marshal(element, output);
+                    } finally {
+                        releaseMarshaller(marshaller);
+                    }
                     return null;
                 }
             });
@@ -107,8 +115,12 @@ public class JAXBDataSource implements OMDataSource {
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws Exception {
-                    Marshaller marshaller = getMarshaller();
-                    marshaller.marshal(element, writer);
+                    try {
+                        Marshaller marshaller = getMarshaller();
+                        marshaller.marshal(element, writer);
+                    } finally {
+                        releaseMarshaller(marshaller);
+                    }
                     return null;
                 }
             });

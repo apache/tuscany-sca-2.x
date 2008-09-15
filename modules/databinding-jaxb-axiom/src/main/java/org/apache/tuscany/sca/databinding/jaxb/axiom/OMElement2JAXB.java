@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.databinding.jaxb.axiom;
 
 import java.security.AccessController;
@@ -51,15 +50,21 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws JAXBException, XMLStreamException {
+                    Unmarshaller unmarshaller = null;
+                    XMLStreamReader reader = null;
+                    Object result = null;
                     // Marshalling directly to the output stream is faster than marshalling through the
                     // XMLStreamWriter. 
                     // Take advantage of this optimization if there is an output stream.
                     JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
-                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                    XMLStreamReader reader = source.getXMLStreamReaderWithoutCaching();
-                    Object result =
-                        unmarshaller.unmarshal(reader, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-                    reader.close();
+                    try {
+                        unmarshaller = JAXBContextHelper.getUnmarshaller(jaxbContext);
+                        reader = source.getXMLStreamReaderWithoutCaching();
+                        result = unmarshaller.unmarshal(reader, JAXBContextHelper.getJavaType(context.getTargetDataType()));
+                    } finally {
+                        reader.close();
+                        JAXBContextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+                    }
                     return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
                 }
             });

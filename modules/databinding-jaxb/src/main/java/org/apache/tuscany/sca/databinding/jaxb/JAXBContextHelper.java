@@ -112,10 +112,18 @@ public class JAXBContextHelper {
         return cache.getUnmarshaller(context);
     }
 
+    public static void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {
+        cache.releaseJAXBUnmarshaller(context, unmarshaller);
+    }
+    
     public static Marshaller getMarshaller(JAXBContext context) throws JAXBException {
         return cache.getMarshaller(context);
     }
 
+    public static void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {
+        cache.releaseJAXBMarshaller(context, marshaller);
+    }
+    
     @SuppressWarnings("unchecked")
     public static Object createJAXBElement(JAXBContext context, DataType dataType, Object value) {
         Class<?> type = dataType == null ? value.getClass() : dataType.getPhysical();
