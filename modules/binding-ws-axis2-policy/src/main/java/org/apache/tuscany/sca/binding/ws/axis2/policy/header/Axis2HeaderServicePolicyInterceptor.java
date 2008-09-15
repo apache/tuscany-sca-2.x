@@ -16,21 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
+package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
 
-import java.security.Principal;
+import javax.xml.namespace.QName;
 
-import javax.security.auth.Subject;
-
-import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
+import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.SecurityUtil;
-import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -38,14 +35,14 @@ import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interceptor {
+public class Axis2HeaderServicePolicyInterceptor implements Interceptor {
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
     private String context;
-    private Axis2TokenAuthenticationPolicy policy;
+    private Axis2HeaderPolicy policy;
 
-    public Axis2TokenAuthenticationServicePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
+    public Axis2HeaderServicePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
         super();
         this.operation = operation;
         this.policySet = policySet;
@@ -56,8 +53,8 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
     private void init() {
         if (policySet != null) {
             for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof Axis2TokenAuthenticationPolicy){
-                    policy = (Axis2TokenAuthenticationPolicy)policyObject;
+                if (policyObject instanceof Axis2HeaderPolicy){
+                    policy = (Axis2HeaderPolicy)policyObject;
                     break;
                 }
             }
@@ -66,17 +63,15 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
 
     public Message invoke(Message msg) {
         
-        Axis2SOAPHeaderString header = (Axis2SOAPHeaderString)msg.getHeaders().get(policy.getTokenName().toString());
+        OMElement header = (OMElement)msg.getHeaders().get(policy.getHeaderName().toString());
         
         if (header != null) {
-            System.out.println("Token: " + header.getHeaderString());
             
-            // call out here to some 3rd party system to do whatever you 
-            // need to turn header credentials into an authenticated principal  
+            System.out.println("Token: " + header.getText());
+            // could call out here to some 3rd part system to do whatever you 
+            // need to turn credentials into a principal            
             
-            Subject subject = SecurityUtil.getSubject(msg);
-            Principal principal = new TokenPrincipal(header.getHeaderString());
-            subject.getPrincipals().add(principal);            
+            msg.getQoSContext().put(Message.QOS_CTX_SECURITY_PRINCIPAL, header.getText());             
         }
     
         return getNext().invoke(msg);

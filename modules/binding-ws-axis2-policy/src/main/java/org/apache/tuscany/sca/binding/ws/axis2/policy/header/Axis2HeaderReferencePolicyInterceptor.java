@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
+package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import java.security.Principal;
+import javax.xml.namespace.QName;
 
-import javax.security.auth.Subject;
-
-import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.OMText;
+import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
+import org.apache.axiom.soap.SOAPFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.SecurityUtil;
-import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -38,14 +46,14 @@ import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interceptor {
+public class Axis2HeaderReferencePolicyInterceptor implements Interceptor {
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
     private String context;
-    private Axis2TokenAuthenticationPolicy policy;
+    private Axis2HeaderPolicy policy;
 
-    public Axis2TokenAuthenticationServicePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
+    public Axis2HeaderReferencePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
         super();
         this.operation = operation;
         this.policySet = policySet;
@@ -56,8 +64,8 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
     private void init() {
         if (policySet != null) {
             for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof Axis2TokenAuthenticationPolicy){
-                    policy = (Axis2TokenAuthenticationPolicy)policyObject;
+                if (policyObject instanceof Axis2HeaderPolicy){
+                    policy = (Axis2HeaderPolicy)policyObject;
                     break;
                 }
             }
@@ -65,20 +73,24 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
     }
 
     public Message invoke(Message msg) {
+        // could call out here to some 3rd party system to get credentials
         
-        Axis2SOAPHeaderString header = (Axis2SOAPHeaderString)msg.getHeaders().get(policy.getTokenName().toString());
-        
-        if (header != null) {
-            System.out.println("Token: " + header.getHeaderString());
+        if ( policy.getHeaderName() != null){
+            // create Axis representation of header
+            //OMElement header = SOAPFactory
             
-            // call out here to some 3rd party system to do whatever you 
-            // need to turn header credentials into an authenticated principal  
-            
-            Subject subject = SecurityUtil.getSubject(msg);
-            Principal principal = new TokenPrincipal(header.getHeaderString());
-            subject.getPrincipals().add(principal);            
-        }
+            OMFactory factory = OMAbstractFactory.getOMFactory();
+            OMNamespace ns1 = factory.createOMNamespace(policy.getHeaderName().getNamespaceURI(),
+                                                        policy.getHeaderName().getPrefix());
+            OMElement header = factory.createOMElement(policy.getHeaderName().getLocalPart(),ns1);
+            OMText headerText = factory.createOMText(header,"SomeAuthTokenText");
+            header.addChild(headerText);
     
+            // add header to Tuscany message
+            msg.getHeaders().put(policy.getHeaderName().toString(),
+                                 policy);  
+        }
+        
         return getNext().invoke(msg);
     }
 
