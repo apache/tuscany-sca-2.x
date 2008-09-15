@@ -400,18 +400,20 @@ public class Interface2WSDLGenerator {
                             if ("".equals(nsURI)) {
                                 xsElement.setAttribute("type", typeName.getLocalPart());
                                 addSchemaImport(schema, "", schemaDoc);
-                            } else if (targetNS.equals(nsURI)) {
-                                xsElement.setAttribute("type", typeName.getLocalPart());
                             } else if (SCHEMA_NS.equals(nsURI)) {
                                 xsElement.setAttribute("type", "xs:" + typeName.getLocalPart());
                             } else {
                                 Map<String, String> prefixMap = prefixMaps.get(schema);
                                 String prefix = prefixMap.get(nsURI);
                                 if (prefix == null) {
-                                    prefix = "ns" + i++;
+                                    if (targetNS.equals(nsURI)) {
+									    prefix = "tns";
+									} else {
+                                        prefix = "ns" + i++;
+                                        addSchemaImport(schema, nsURI, schemaDoc);
+									}
                                     prefixMap.put(nsURI, prefix);
                                     schema.setAttributeNS(XMLNS_NS, "xmlns:" + prefix, nsURI);
-                                    addSchemaImport(schema, nsURI, schemaDoc);
                                 }
                                 xsElement.setAttribute("type", prefix + ":" + typeName.getLocalPart());
                             }
