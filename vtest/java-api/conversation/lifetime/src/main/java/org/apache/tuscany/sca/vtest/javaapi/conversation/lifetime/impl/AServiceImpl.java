@@ -57,7 +57,7 @@ public class AServiceImpl implements AService, AServiceCallback {
     }
 
     public void testConversationStarted2() {
-        ServiceReference<CService> ref = context.getServiceReference(CService.class, "c");
+        ServiceReference<BService> ref = context.getServiceReference(BService.class, "b");
         ref.getService().setState("Some state");
         Assert.assertNotNull(ref.getConversation().getConversationID());
     }
