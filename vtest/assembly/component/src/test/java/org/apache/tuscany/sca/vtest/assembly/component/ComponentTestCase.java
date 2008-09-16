@@ -76,7 +76,7 @@ public class ComponentTestCase {
      * across all the components in the composite.
      */
     @Test(expected = ServiceRuntimeException.class)
-    @Ignore("TUSCANY-2455")
+    //@Ignore("TUSCANY-2455")
     public void components3() throws Exception {
         initDomain("nonuniquename.composite");
         cleanupDomain();
