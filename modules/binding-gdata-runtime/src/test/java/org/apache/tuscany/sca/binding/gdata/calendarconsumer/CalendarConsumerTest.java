@@ -28,7 +28,7 @@ import com.google.gdata.data.extensions.When;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 
 import org.junit.Test;
 import org.junit.BeforeClass;

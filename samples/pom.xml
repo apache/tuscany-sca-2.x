@@ -59,7 +59,9 @@
                 <module>calculator-ws-webapp</module>
                 <module>callback-ws-client</module>
                 <module>callback-ws-service</module>
+                <!--
                 <module>customer-dojo</module>
+                -->
                 <module>databinding-echo</module>
                 <module>domain-management</module>
                 <module>feed-aggregator</module>
@@ -99,7 +101,9 @@
                 <module>store-distributed</module>
                 <module>supplychain</module>
                 <module>web-resource</module>
+                <!--
                 <module>zipcode-jaxws</module>
+                -->
             </modules>
         </profile>
     </profiles>

@@ -220,7 +220,7 @@ public class LibraryBundleMojo extends AbstractMojo {
             } catch (IOException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
-            if (bundleName == null) {
+            if (bundleName == null || true) {
                 if (artifact.getFile().exists()) {
                     log.info("Adding third party jar: " + artifact);
                     jarFiles.add(artifact.getFile());

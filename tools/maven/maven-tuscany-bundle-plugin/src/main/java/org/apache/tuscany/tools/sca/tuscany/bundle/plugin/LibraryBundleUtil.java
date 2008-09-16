@@ -75,11 +75,19 @@ public final class LibraryBundleUtil {
     }
 
     static Pattern pattern = Pattern.compile("-([0-9.]+)");
+    static Pattern pattern2 = Pattern.compile("_([0-9.]+)");
 
     private static String version(String jarFile) {
-        Matcher matcher = pattern.matcher(jarFile);
         String version = "1.0.0";
+        boolean found = false;
+        Matcher matcher = pattern2.matcher(jarFile);
         if (matcher.find()) {
+            found = true;
+        } else {
+            matcher = pattern.matcher(jarFile);
+            found = matcher.find();
+        }            
+        if (found) {
             version = matcher.group();
             if (version.endsWith(".")) {
                 version = version.substring(1, version.length() - 1);
@@ -91,24 +99,31 @@ public final class LibraryBundleUtil {
     }
 
     private static void addPackages(File jarFile, Set<String> packages) throws IOException {
-        String version = ";version=" + version(jarFile.getPath());
-        ZipInputStream is = new ZipInputStream(new FileInputStream(jarFile));
-        ZipEntry entry;
-        while ((entry = is.getNextEntry()) != null) {
-            String entryName = entry.getName();
-            if (!entry.isDirectory() && entryName != null
-                && entryName.length() > 0
-                && !entryName.startsWith(".")
-                && entryName.endsWith(".class") // Exclude resources from Export-Package
-                && entryName.lastIndexOf("/") > 0
-                && Character.isJavaIdentifierStart(entryName.charAt(0))) {
-                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.');
-                if (!("org.apache.commons.lang.enum".equals(pkg))) {
-                    packages.add(pkg + version);
+        if (getBundleName(jarFile) == null) {
+            String version = ";version=" + version(jarFile.getPath());
+            ZipInputStream is = new ZipInputStream(new FileInputStream(jarFile));
+            ZipEntry entry;
+            while ((entry = is.getNextEntry()) != null) {
+                String entryName = entry.getName();
+                if (!entry.isDirectory() && entryName != null
+                    && entryName.length() > 0
+                    && !entryName.startsWith(".")
+                    && entryName.endsWith(".class") // Exclude resources from Export-Package
+                    && entryName.lastIndexOf("/") > 0
+                    && Character.isJavaIdentifierStart(entryName.charAt(0))) {
+                    String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.');
+                    if (!("org.apache.commons.lang.enum".equals(pkg))) {
+                        packages.add(pkg + version);
+                    }
                 }
             }
+            is.close();
+        } else {
+            Set<String> exportedPackages = getExportedPackages(jarFile);
+            if (exportedPackages != null) {
+                packages.addAll(exportedPackages);
+            }
         }
-        is.close();
     }
 
     static Manifest libraryManifest(Set<File> jarFiles, String name, String version, boolean copyJars)
@@ -191,9 +206,9 @@ public final class LibraryBundleUtil {
         write(attributes, BUNDLE_NAME, dos);
         write(attributes, BUNDLE_VERSION, dos);
         write(attributes, DYNAMICIMPORT_PACKAGE, dos);
-        write(attributes, EXPORT_PACKAGE, dos);
-        write(attributes, IMPORT_PACKAGE, dos);
         write(attributes, BUNDLE_CLASSPATH, dos);
+        write(attributes, IMPORT_PACKAGE, dos);
+        write(attributes, EXPORT_PACKAGE, dos);
         dos.flush();
     }
     
@@ -247,6 +262,59 @@ public final class LibraryBundleUtil {
             bundleName = bundleName.substring(0, sc);
         }
         return bundleName;
+    }
+
+    /**
+     * Returns the packages exported by a bundle.
+     *  
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    static Set<String> getExportedPackages(File file) throws IOException {
+        if (!file.exists()) {
+            return null;
+        }
+        String exports = null;
+        if (file.isDirectory()) {
+            File mf = new File(file, "META-INF/MANIFEST.MF");
+            if (mf.isFile()) {
+                Manifest manifest = new Manifest(new FileInputStream(mf));
+                exports = manifest.getMainAttributes().getValue(EXPORT_PACKAGE);
+            }
+        } else {
+            JarFile jar = new JarFile(file, false);
+            Manifest manifest = jar.getManifest();
+            exports = manifest.getMainAttributes().getValue(EXPORT_PACKAGE);
+            jar.close();
+        }
+        if (exports == null) {
+            return null;
+        }
+        System.out.println("##### Exports: " + exports);
+        Set<String> exportedPackages = new HashSet<String>();
+        StringBuffer export = new StringBuffer();
+        boolean q = false;
+        for (int i =0, n = exports.length(); i <n; i++) {
+            char c = exports.charAt(i);
+            if (c == '\"') {
+                q = !q;
+            }
+            if (!q) {
+                if (c == ',') {
+                    exportedPackages.add(export.toString());
+                    System.out.println("##### Package: " + export);
+                    export = new StringBuffer();
+                    continue;
+                }
+            }
+            export.append(c);
+        }
+        if (export.length() != 0) {
+            exportedPackages.add(export.toString());
+            System.out.println("##### Package: " + export);
+        }
+        return exportedPackages;
     }
 
     public static String string(Bundle b, boolean verbose) {

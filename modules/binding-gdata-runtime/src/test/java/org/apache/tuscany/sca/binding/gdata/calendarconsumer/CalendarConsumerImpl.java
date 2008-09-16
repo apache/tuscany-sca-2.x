@@ -37,15 +37,15 @@ public class CalendarConsumerImpl {
         return resourceCollection.post(entry);
     }
 
-    public BaseEntry get(String id) throws org.apache.tuscany.sca.implementation.data.collection.NotFoundException {
+    public BaseEntry get(String id) throws org.apache.tuscany.sca.data.collection.NotFoundException {
         return resourceCollection.get(id);
     }
 
-    public BaseEntry put(String id, BaseEntry entry) throws org.apache.tuscany.sca.implementation.data.collection.NotFoundException {
+    public BaseEntry put(String id, BaseEntry entry) throws org.apache.tuscany.sca.data.collection.NotFoundException {
         return resourceCollection.put(id, entry);
     }
 
-    public void delete(String id) throws org.apache.tuscany.sca.implementation.data.collection.NotFoundException {
+    public void delete(String id) throws org.apache.tuscany.sca.data.collection.NotFoundException {
         resourceCollection.delete(id);
     }
 

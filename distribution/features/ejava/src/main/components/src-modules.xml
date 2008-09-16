@@ -33,8 +33,11 @@
                 <include>binding-ejb-runtime/**/*</include>
                 <include>binding-jms/**/*</include>
                 <include>binding-jms-runtime/**/*</include>
+                <include>binding-rmi/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-xml/**/*</include>
+                <include>binding-ws/**/*</include>
+                <include>binding-ws-wsdlgen/**/*</include>
                 <include>contribution/**/*</include>
                 <include>contribution-impl/**/*</include>
                 <include>contribution-java/**/*</include>
@@ -55,10 +58,13 @@
                 <include>extensibility-equinox/**/*</include>
                 <include>extension-helper/**/*</include>
                 <include>host-corba/**/*</include>
+                <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
                 <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
+                <include>host-openejb/**/*</include>
+                <include>host-rmi/**/*</include>
                 <include>implementation-ejb/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
@@ -82,6 +88,9 @@
                 <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
+                <include>policy-security-jsr250/**/*</include>
+                <include>policy-security-ws/**/*</include>
+                <include>policy-transaction/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
                 <include>xsd/**/*</include>

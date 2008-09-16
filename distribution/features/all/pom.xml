@@ -38,30 +38,35 @@
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-ejava</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-manager</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-process</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-web20</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-webservice</artifactId>
@@ -71,29 +76,37 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-maven-ant-generator</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-binding-gdata-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-maven-java2wsdl</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-binding-gdata-runtime-gsoc</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-maven-wsdl2java</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-databinding-fastinfoset</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-maven-incremental-build</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-databinding-xmlbeans</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-das</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-tracing-aspectj</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
@@ -147,12 +160,17 @@
                 <module>../../../modules/binding-corba-runtime</module>
                 <module>../../../modules/binding-ejb</module>
                 <module>../../../modules/binding-ejb-runtime</module>
+                <module>../../../modules/binding-gdata</module>
+                <module>../../../modules/binding-gdata-gsoc</module>
+                <module>../../../modules/binding-gdata-runtime</module>
+                <module>../../../modules/binding-gdata-runtime-gsoc</module>
                 <module>../../../modules/binding-http</module>
                 <module>../../../modules/binding-http-runtime</module>
                 <module>../../../modules/binding-jms</module>
                 <module>../../../modules/binding-jms-runtime</module>
                 <module>../../../modules/binding-jsonrpc</module>
                 <module>../../../modules/binding-jsonrpc-runtime</module>
+                <module>../../../modules/binding-rmi</module>
                 <module>../../../modules/binding-rss</module>
                 <module>../../../modules/binding-rss-rome</module>
                 <module>../../../modules/binding-sca</module>
@@ -174,12 +192,15 @@
                 <module>../../../modules/data-api</module>
                 <module>../../../modules/databinding</module>
                 <module>../../../modules/databinding-axiom</module>
+                <module>../../../modules/databinding-fastinfoset</module>
                 <module>../../../modules/databinding-jaxb</module>
                 <module>../../../modules/databinding-jaxb-axiom</module>
                 <module>../../../modules/databinding-json</module>
                 <module>../../../modules/databinding-saxon</module>
                 <module>../../../modules/databinding-sdo</module>
                 <module>../../../modules/databinding-sdo-axiom</module>
+                <module>../../../modules/databinding-xmlbeans</module>
+                <module>../../../modules/data-engine-helper</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/domain-manager</module>
@@ -188,13 +209,17 @@
                 <module>../../../modules/extensibility-equinox</module>
                 <module>../../../modules/extension-helper</module>
                 <module>../../../modules/host-corba</module>
+                <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
                 <module>../../../modules/host-ejb</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
+                <module>../../../modules/host-openejb</module>
+                <module>../../../modules/host-rmi</module>
                 <module>../../../modules/implementation-bpel</module>
                 <module>../../../modules/implementation-bpel-ode</module>
+                <module>../../../modules/implementation-das</module>
                 <module>../../../modules/implementation-ejb</module>
                 <module>../../../modules/implementation-java</module>
                 <module>../../../modules/implementation-java-runtime</module>
@@ -224,10 +249,13 @@
                 <module>../../../modules/node-manager</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
+                <module>../../../modules/policy-security-jsr250</module>
                 <module>../../../modules/policy-security-ws</module>
+                <module>../../../modules/policy-transaction</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/policy-xml-ws</module>
                 <module>../../../modules/sca-api</module>
+                <module>../../../modules/tracing-aspectj</module>
                 <module>../../../modules/workspace</module>
                 <module>../../../modules/workspace-impl</module>
                 <module>../../../modules/workspace-xml</module>

@@ -77,6 +77,7 @@
                 <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
+                <include>policy-security-jsr250/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
                 <include>xsd/**/*</include>

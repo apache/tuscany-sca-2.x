@@ -52,7 +52,6 @@
                 <exclude>org.apache.tuscany.sca:tuscany-extensibility-equinox</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-corba</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-corba-jse</exclude>
-                <exclude>org.apache.tuscany.sca:tuscany-host-embedded</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-host-http</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-implementation-java</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-implementation-java-runtime</exclude>
@@ -74,6 +73,7 @@
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher-webapp</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy-security</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-policy-security-jsr250</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-sca-api</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-xsd</exclude>
@@ -88,6 +88,7 @@
             <excludes>
                 <exclude>asm:asm-all</exclude>
                 <exclude>cglib:cglib-nodep</exclude>
+                <exclude>com.sun:tools</exclude>
                 <exclude>com.sun.xml.bind:jaxb-impl</exclude>
                 <exclude>javax.activation:activation</exclude>
                 <exclude>javax.annotation:jsr250-api</exclude>

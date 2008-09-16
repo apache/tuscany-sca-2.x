@@ -73,7 +73,7 @@
 
     </dependencies>
 
-    <!-- Declare tuscany-host-tomcat dependency in the default profile so that it can be replaced -->
+    <!-- Declare tuscany-host-jetty dependency in the default profile so that it can be replaced -->
     <profiles>
         <profile>
             <id>default</id>
@@ -83,7 +83,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
+                    <artifactId>tuscany-host-jetty</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <scope>runtime</scope>
                 </dependency>

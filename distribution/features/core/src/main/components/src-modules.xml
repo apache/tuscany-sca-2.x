@@ -49,7 +49,6 @@
                 <include>extensibility-equinox/**/*</include>
                 <include>host-corba/**/*</include>
                 <include>host-corba-jse/**/*</include>
-                <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
@@ -71,6 +70,7 @@
                 <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
+                <include>policy-security-jsr250/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
                 <include>xsd/**/*</include>

@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.data.collection.NotFoundException;
 
 /**
  * Provides access to a collection of resources using Atom.

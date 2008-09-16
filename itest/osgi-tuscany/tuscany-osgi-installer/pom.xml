@@ -445,7 +445,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
+                    <artifactId>tuscany-host-jetty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -537,7 +537,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
+                    <artifactId>tuscany-host-jetty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

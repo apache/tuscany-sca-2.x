@@ -33,12 +33,17 @@
                 <include>binding-corba-runtime/**/*</include>
                 <include>binding-ejb/**/*</include>
                 <include>binding-ejb-runtime/**/*</include>
+                <include>binding-gdata/**/*</include>
+                <include>binding-gdata-gsoc/**/*</include>
+                <include>binding-gdata-runtime/**/*</include>
+                <include>binding-gdata-runtime-gsoc/**/*</include>
                 <include>binding-http/**/*</include>
                 <include>binding-http-runtime/**/*</include>
                 <include>binding-jms/**/*</include>
                 <include>binding-jms-runtime/**/*</include>
                 <include>binding-jsonrpc/**/*</include>
                 <include>binding-jsonrpc-runtime/**/*</include>
+                <include>binding-rmi/**/*</include>
                 <include>binding-rss/**/*</include>
                 <include>binding-rss-rome/**/*</include>
                 <include>binding-sca/**/*</include>
@@ -60,12 +65,15 @@
                 <include>data-api/**/*</include>
                 <include>databinding/**/*</include>
                 <include>databinding-axiom/**/*</include>
+                <include>databinding-fastinfoset/**/*</include>
                 <include>databinding-jaxb/**/*</include>
                 <include>databinding-jaxb-axiom/**/*</include>
                 <include>databinding-json/**/*</include>
                 <include>databinding-saxon/**/*</include>
                 <include>databinding-sdo/**/*</include>
                 <include>databinding-sdo-axiom/**/*</include>
+                <include>databinding-xmlbeans/**/*</include>
+                <include>data-engine-helper/**/*</include>
                 <include>definitions/**/*</include>
                 <include>definitions-xml/**/*</include>
                 <include>distribution-core/**/*</include>
@@ -80,13 +88,17 @@
                 <include>extensibility-equinox/**/*</include>
                 <include>extension-helper/**/*</include>
                 <include>host-corba/**/*</include>
+                <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
                 <include>host-ejb/**/*</include>
                 <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
+                <include>host-openejb/**/*</include>
+                <include>host-rmi/**/*</include>
                 <include>implementation-bpel/**/*</include>
                 <include>implementation-bpel-ode/**/*</include>
+                <include>implementation-das/**/*</include>
                 <include>implementation-ejb/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
@@ -121,10 +133,13 @@
                 <include>node-manager/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
+                <include>policy-security-jsr250/**/*</include>
                 <include>policy-security-ws/**/*</include>
+                <include>policy-transaction/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>policy-xml-ws/**/*</include>
                 <include>sca-api/**/*</include>
+                <include>tracing-aspectj/**/*</include>
                 <include>workspace/**/*</include>
                 <include>workspace-impl/**/*</include>
                 <include>workspace-xml/**/*</include>

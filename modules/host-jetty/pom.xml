@@ -67,6 +67,16 @@
                         <Bundle-SymbolicName>org.apache.tuscany.sca.host.jetty</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.http.jetty*</Export-Package>
+                        <Import-Package>
+                            org.mortbay.jetty;version="6.1.7",
+                            org.mortbay.jetty.handler;version="6.1.7",
+                            org.mortbay.jetty.nio;version="6.1.7",
+                            org.mortbay.jetty.security;version="6.1.7",
+                            org.mortbay.jetty.servlet;version="6.1.7",
+                            org.mortbay.log;version="6.1.7",
+                            org.mortbay.resource;version="6.1.7",
+                            org.mortbay.thread;version="6.1.7"
+                         </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

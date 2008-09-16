@@ -170,7 +170,6 @@
                 <module>../../../modules/extensibility-equinox</module>
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
                 <module>../../../modules/implementation-java</module>
@@ -197,6 +196,7 @@
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
+                <module>../../../modules/policy-security-jsr250</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/sca-api</module>
                 <module>../../../modules/xsd</module>

@@ -216,6 +216,7 @@
                 <module>../../../modules/node-launcher-webapp</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
+                <module>../../../modules/policy-security-jsr250</module>
                 <module>../../../modules/policy-security-ws</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/policy-xml-ws</module>

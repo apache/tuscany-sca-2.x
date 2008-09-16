@@ -111,7 +111,9 @@
                 <module>host-webapp</module>
                 <module>host-webapp-junit</module>
                 <module>host-jetty</module>
-                <module>host-tomcat</module>
+                <!--
+                <module>host-jetty</module>
+                -->
                 <module>interface</module>
                 <module>interface-java</module>
                 <module>interface-java-jaxws</module>
@@ -122,7 +124,6 @@
                 <module>implementation-bpel-ode</module>
                 <module>implementation-bpel-jbpm</module>
                 <module>implementation-das</module>
-                <module>implementation-data-xml</module>
                 <module>implementation-ejb</module>
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
@@ -198,9 +199,6 @@
                    </projectnatures>
                    <classpathContainers>
                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-                       <!--
-                       <classpathContainer>org.eclipse.pde.core.requiredPlugins</classpathContainer>
-                        -->
                    </classpathContainers>
                </configuration>
            </plugin>
