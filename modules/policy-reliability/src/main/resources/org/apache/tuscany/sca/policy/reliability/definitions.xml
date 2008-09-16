@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 			 targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+ 			 xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+    
+	<!-- Policy Intents Defined by the SCA Runtime -->
+	<intent name="atLeastOnce" 
+	 		constrains="sca:binding">
+		<description>
+            This intent is used to indicate that a message sent
+            by a client is always delivered to the component.
+		</description>
+	</intent>
+	
+	<intent name="atMostOnce" 
+	 		constrains="sca:binding">
+		<description>
+            This intent is used to indicate that a message that was
+            successfully sent by a client is not delivered more than 
+            once to the component.
+		</description>
+	</intent>
+	
+	<intent name="ordered" 
+	 		constrains="sca:binding">
+		<description>
+            This intent is used to indicate that all the messages
+            are delivered to the component in the order they were
+            sent by the client.
+		</description>
+	</intent>
+    
+    <intent name="exactlyOnce" 
+            constrains="sca:binding"
+            requires="atLeastOnce atMostOnce">
+        <description>
+            This profile intent is used to indicate that a message
+            sent by a client is always delivered to the component.
+            It also indicates that duplicate messages are not
+            delivered to the component.
+        </description>
+    </intent>    
+</definitions>
