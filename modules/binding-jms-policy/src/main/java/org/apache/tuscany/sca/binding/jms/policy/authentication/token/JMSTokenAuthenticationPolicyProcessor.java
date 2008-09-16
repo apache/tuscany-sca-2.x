@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -91,11 +92,10 @@ public class JMSTokenAuthenticationPolicyProcessor extends BaseStAXArtifactProce
         writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
 
         if ( policy.getTokenName() != null ) {
-            writer.writeStartElement(prefix, 
-                                     JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_TOKEN_NAME,
-                                     getArtifactType().getNamespaceURI());
-            writer.writeCharacters(policy.getTokenName().toString());
-            writer.writeEndElement();
+            writer.writeAttribute(prefix,
+                                  getArtifactType().getNamespaceURI(),
+                                  JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_TOKEN_NAME, 
+                                  policy.getTokenName().toString());
         }      
         
         writer.writeEndElement();
