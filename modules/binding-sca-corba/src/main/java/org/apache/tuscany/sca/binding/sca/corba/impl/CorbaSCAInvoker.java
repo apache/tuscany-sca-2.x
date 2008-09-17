@@ -69,7 +69,7 @@ public class CorbaSCAInvoker implements Invoker {
                 OMElement exceptionOM = AXIOMUtil.stringToOM(e.getFault());
                 // AxisFault axisFault = new AxisFault("");
                 // axisFault.setDetail(exceptionOM);
-                FaultException f = new FaultException(e.getMessage(), exceptionOM, null);
+                FaultException f = new FaultException(e.getMessage(), exceptionOM, e);
                 f.setFaultName(exceptionOM.getQName());
                 msg.setFaultBody(f);
             } catch (XMLStreamException e1) {
