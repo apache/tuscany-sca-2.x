@@ -16,62 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.sca.extension.helper.utils.AbstractBinding;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
- * Represents a binding to an RMI service.
- *
- * @version $Rev$ $Date$
+ * RMI Binding model
  */
-public class RMIBinding extends AbstractBinding {
-
-    private String host;
-    private String port;
-    private String serviceName;
+public interface RMIBinding extends Binding {
 
     /**
      * @return the host name of the RMI Service
      */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * @param rmiHostName the hostname of the RMI Service
-     */
-    public void setHost(String rmiHostName) {
-        this.host = rmiHostName;
-    }
+    String getHost();
 
     /**
      * @return the port number for the RMI Service
      */
-    public String getPort() {
-        return port;
-    }
-
-    /**
-     * @param rmiPort the port number for the RMI Service
-     */
-    public void setPort(String rmiPort) {
-        this.port = rmiPort;
-    }
+    String getPort();
 
     /**
      * @return returns the RMI Service Name
      */
-    public String getServiceName() {
-        return serviceName;
-    }
+    String getServiceName();
+
+    /**
+     * @param rmiHostName the hostname of the RMI Service
+     */
+    void setHost(String rmiHostName);
+
+    /**
+     * @param rmiPort the port number for the RMI Service
+     */
+    void setPort(String rmiPort);
 
     /**
      * Sets the service name for the RMI Server
      * 
      * @param rmiServiceName the name of the RMI service
      */
-    public void setServiceName(String rmiServiceName) {
-        this.serviceName = rmiServiceName;
-    }
+    void setServiceName(String rmiServiceName);
+
 }
