@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
-import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
@@ -68,10 +67,10 @@ public class CorbaSCAInvoker implements Invoker {
         } catch (WrappedSCAException e) {
             try {
                 OMElement exceptionOM = AXIOMUtil.stringToOM(e.getFault());
-                AxisFault axisFault = new AxisFault("");
-                axisFault.setDetail(exceptionOM);
-                FaultException f = new FaultException(axisFault.getMessage(), axisFault.getDetail(), axisFault);
-                f.setFaultName(axisFault.getDetail().getQName());
+                // AxisFault axisFault = new AxisFault("");
+                // axisFault.setDetail(exceptionOM);
+                FaultException f = new FaultException(e.getMessage(), exceptionOM, null);
+                f.setFaultName(exceptionOM.getQName());
                 msg.setFaultBody(f);
             } catch (XMLStreamException e1) {
             }
