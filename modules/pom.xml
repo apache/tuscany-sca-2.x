@@ -91,7 +91,6 @@
                 <module>databinding-saxon</module>
                 <module>databinding-xmlbeans</module>
                 <module>databinding-fastinfoset</module>
-                <module>data-engine-helper</module>
                 <module>definitions</module>
                 <module>definitions-xml</module>
                 <module>domain-manager</module>
@@ -123,7 +122,6 @@
                 <module>implementation-bpel</module>
                 <module>implementation-bpel-ode</module>
                 <module>implementation-bpel-jbpm</module>
-                <module>implementation-das</module>
                 <module>implementation-ejb</module>
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>
