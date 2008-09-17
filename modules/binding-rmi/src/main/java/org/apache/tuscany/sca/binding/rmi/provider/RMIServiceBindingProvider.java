@@ -87,6 +87,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void stop() {
+        rmiHost.unregisterService(binding.getServiceName(), getPort(binding.getPort()));
     }
 
     protected int getPort(String port) {
@@ -131,9 +132,9 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         });
         Class targetJavaInterface = getTargetJavaClass(serviceInterface);
         if (!Remote.class.isAssignableFrom(targetJavaInterface)) {
-            RMIServiceClassLoader classloader = new RMIServiceClassLoader(getClass().getClassLoader());
+            RMIServiceClassLoader classloader = new RMIServiceClassLoader(targetJavaInterface.getClassLoader());
             final byte[] byteCode = generateRemoteInterface(targetJavaInterface);
-            targetJavaInterface = classloader.defineClass(byteCode);
+            targetJavaInterface = classloader.defineClass(targetJavaInterface.getName(), byteCode);
             enhancer.setClassLoader(classloader);
         }
         enhancer.setInterfaces(new Class[] {targetJavaInterface});
@@ -151,7 +152,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
      * caller of this method, since it requires a ClassLoader to be created to define and load this interface.
      */
     protected byte[] generateRemoteInterface(Class serviceInterface) {
-        String interfazeName = serviceInterface.getCanonicalName();
+        String interfazeName = serviceInterface.getName();
         ClassWriter cw = new ClassWriter(false);
 
         String simpleName = serviceInterface.getSimpleName();
@@ -194,8 +195,8 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
             super(parent);
         }
 
-        public Class defineClass(byte[] byteArray) {
-            return defineClass(null, byteArray, 0, byteArray.length);
+        public Class<?> defineClass(String name, byte[] byteArray) {
+            return super.defineClass(name, byteArray, 0, byteArray.length);
         }
     }
 
