@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,13 +34,15 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostException;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -51,7 +53,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class RMIService implements ComponentLifecycle {
+public class RMIServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -59,7 +61,7 @@ public class RMIService implements ComponentLifecycle {
     private RMIHost rmiHost;
     private RuntimeWire wire;
 
-    public RMIService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
+    public RMIServiceBindingProvider(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
         this.component = rc;
         this.service = rcs;
         this.binding = binding;
@@ -195,5 +197,13 @@ public class RMIService implements ComponentLifecycle {
         public Class defineClass(byte[] byteArray) {
             return defineClass(null, byteArray, 0, byteArray.length);
         }
+    }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return service.getInterfaceContract();
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 }

@@ -22,7 +22,9 @@ import helloworld.HelloException;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +36,7 @@ import org.junit.Test;
  */
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
-    private static SCADomain domain;
+    private static SCANode node;
 
     @Test
     public void testRmiService() {
@@ -60,8 +62,9 @@ public class BindingTestCase {
     @BeforeClass
     public static void init() throws Exception {
         try {
-            domain = SCADomain.newInstance("RMIBindingTest.composite");
-            helloWorldRmiService = domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
+            node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("RMIBindingTest.composite", BindingTestCase.class.getClassLoader());
+            node.start();
+            helloWorldRmiService = ((SCAClient) node).getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +72,7 @@ public class BindingTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 
 }

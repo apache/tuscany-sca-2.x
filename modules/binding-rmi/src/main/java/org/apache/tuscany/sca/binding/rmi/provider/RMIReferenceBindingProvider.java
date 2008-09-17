@@ -17,16 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.extension.helper.InvokerFactory;
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -37,13 +39,12 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class RMIReferenceInvokerFactory implements InvokerFactory {
+public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
+    private RuntimeComponentReference reference;
+    private RMIHost rmiHost;
+    private RMIBinding binding;
 
-    RuntimeComponentReference reference;
-    RMIHost rmiHost;
-    RMIBinding binding;
-
-    public RMIReferenceInvokerFactory(RuntimeComponent rc, RuntimeComponentReference rcr, RMIBinding binding, RMIHost rmiHost) {
+    public RMIReferenceBindingProvider(RuntimeComponent rc, RuntimeComponentReference rcr, RMIBinding binding, RMIHost rmiHost) {
         this.reference = rcr;
         this.rmiHost = rmiHost;
         this.binding = binding;
@@ -60,6 +61,20 @@ public class RMIReferenceInvokerFactory implements InvokerFactory {
         } catch (NoSuchMethodException e) {
             throw new ServiceRuntimeException(operation.toString(), e);
         }
+    }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return reference.getInterfaceContract();
+    }
+
+    public void start() {
+    }
+
+    public void stop() {
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
 }
