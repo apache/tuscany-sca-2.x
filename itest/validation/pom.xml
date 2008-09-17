@@ -80,12 +80,6 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-osgi</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-ejb</artifactId>
             <version>1.4-SNAPSHOT</version>
             <exclusions>
@@ -96,19 +90,6 @@
             </exclusions>            
         </dependency>
 
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-osgi-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.main</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
