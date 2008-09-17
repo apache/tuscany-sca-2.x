@@ -26,6 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.osoa.sca.ServiceRuntimeException;
+
 /**
  * This test class tests the ComponentContext interface described in 1.7.1 of
  * the SCA Java Annotations & APIs Specification 1.0. Relevant sections of 1.4
@@ -164,6 +166,10 @@ public class ComponentContextTestCase {
             a.illegalCast();
         } catch (IllegalArgumentException iae) {
             check = "IllegalCast";
+        } catch (ServiceRuntimeException sre) {
+            if (sre.getCause() instanceof IllegalArgumentException) { 
+                check = "IllegalCast";
+            }
         }
         Assert.assertEquals("IllegalCast", check);
     }
