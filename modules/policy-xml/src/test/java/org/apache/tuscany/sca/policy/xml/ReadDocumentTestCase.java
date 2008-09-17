@@ -62,6 +62,8 @@ public class ReadDocumentTestCase extends TestCase {
     private ModelResolver resolver;
     private StAXArtifactProcessor<Object> staxProcessor;
     private Monitor monitor;
+    
+    private static final QName elementToProcess = new QName("http://www.osoa.org/xmlns/sca/1.0", "implementationType");
         
     private Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     private Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
@@ -98,11 +100,20 @@ public class ReadDocumentTestCase extends TestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
-        
+               
         URL url = getClass().getResource("test_definitions.xml");
         InputStream urlStream = url.openStream();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
         reader.next();
+        
+      //position on the right element qname to get processed
+        while(reader.hasNext()) {
+        	reader.next();
+        	int event = reader.getEventType();
+        	if(event == START_ELEMENT && reader.getName().equals(elementToProcess)) {
+        		break;
+        	}
+        }
         while ( true ) {
             int event = reader.getEventType();
             switch (event) {

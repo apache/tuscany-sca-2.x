@@ -49,21 +49,22 @@ public class ReadWriteAttributeTestCase extends TestCase {
 
     private static final QName ATTRIBUTE = new QName("http://test", "customAttribute");
     
-    private static final String XML = 
-    	"<?xml version='1.0' encoding='UTF-8'?>" +
-    	"<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\">" + 
-    	"<service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\" />" +
-    	"<component name=\"CalculatorServiceComponent\" customAttribute=\"customValue\">" + 
-    	   "<reference name=\"addService\" target=\"AddServiceComponent\" />" +
-    	   "<reference name=\"subtractService\" target=\"SubtractServiceComponent\" />"+
-    	   "<reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" />" + 
-    	   "<reference name=\"divideService\" target=\"DivideServiceComponent\" />" + 
-    	"</component>"+
-    	"<component name=\"AddServiceComponent\" />" + 
-    	"<component name=\"SubtractServiceComponent\" />" + 
-    	"<component name=\"MultiplyServiceComponent\" />" + 
-    	"<component name=\"DivideServiceComponent\" />" + 
-    	"</composite>";
+    private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
+		 	 "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\">"+
+		 	 "<service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\">"+
+		 	 	"<interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" interface=\"calculator.CalculatorService\" />"+
+	 	 	 "</service>"+
+	 	 	 "<component name=\"CalculatorServiceComponent\" customAttribute=\"customValue\">"+
+	 	 	 	"<reference name=\"addService\" target=\"AddServiceComponent\" />"+
+	 	 	 	"<reference name=\"subtractService\" target=\"SubtractServiceComponent\" />"+
+	 	 	 	"<reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" />"+
+	 	 	 	"<reference name=\"divideService\" target=\"DivideServiceComponent\" />"+
+ 	 	 	 "</component>"+
+ 	 	 	 "<component name=\"AddServiceComponent\" />"+
+ 	 	 	 "<component name=\"SubtractServiceComponent\" />"+
+ 	 	 	 "<component name=\"MultiplyServiceComponent\" />"+
+ 	 	 	 "<component name=\"DivideServiceComponent\" />"+
+ 	 	 	 "</composite>";
     
     @Override
     public void setUp() throws Exception {
@@ -100,6 +101,7 @@ public class ReadWriteAttributeTestCase extends TestCase {
         
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
+        System.out.println(bos.toString());
         
         assertEquals(XML, bos.toString());
     }

@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
+import org.apache.tuscany.sca.contribution.processor.DefaultUnknownElementProcessor;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -131,14 +132,17 @@ public class ExtensibleStAXArtifactProcessor
             source.nextTag();
         }
         QName name = source.getName();
+        System.out.println(">>>" + name);
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {
+        	DefaultUnknownElementProcessor unknownElementProcessor = new DefaultUnknownElementProcessor(monitor);
         	Location location = source.getLocation();
             if (logger.isLoggable(Level.WARNING)) {                
                 logger.warning("Element " + name + " cannot be processed. (" + location + ")");
             }
             warning("ElementCannotBeProcessed", processors, name, location);
-            return null;
+            //return null;
+        	return unknownElementProcessor.read(source,name);
         }
         return processor.read(source);
     }
@@ -152,6 +156,8 @@ public class ExtensibleStAXArtifactProcessor
             if (processor != null) {
                 processor.write(model, outputSource);
             } else {
+            	DefaultUnknownElementProcessor unknownElementProcessor = new DefaultUnknownElementProcessor(monitor);
+            	unknownElementProcessor.write(model,outputSource);
                 if (logger.isLoggable(Level.WARNING)) {
                     logger.warning("No StAX processor is configured to handle " + model.getClass());
                 }
