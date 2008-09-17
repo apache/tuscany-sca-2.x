@@ -94,13 +94,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
      * Dynamically load transformers registered under META-INF/services.
      *
      */
-    private void loadTransformers() {
+    private synchronized void loadTransformers() {
         if (loadedTransformers) {
             return;
         }
+        loadedTransformers = true;
         loadTransformers(PullTransformer.class);
         loadTransformers(PushTransformer.class);
-        loadedTransformers = true;
+        
     }
 
     /**
