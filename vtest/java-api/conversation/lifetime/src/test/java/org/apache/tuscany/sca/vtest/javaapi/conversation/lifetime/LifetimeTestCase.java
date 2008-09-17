@@ -73,7 +73,7 @@ public class LifetimeTestCase {
      * method of the service is called.
      */
     @Test
-    @Ignore("TUSCANY-2243")
+    //@Ignore("TUSCANY-2243")
     public void lifetime2() throws Exception {
         aService.testConversationStarted2();
     }
