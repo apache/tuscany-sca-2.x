@@ -18,6 +18,8 @@
  */
 package org.osoa.sca;
 
+import java.util.Collection;
+
 /**
  * Interface providing programmatic access to a component's SCA context as an alternative to injection.
  * It provides access to reference and property values for the component and provides a mechanism for
@@ -106,4 +108,26 @@ public interface ComponentContext {
      * @return the SCA request context; may be null
      */
     RequestContext getRequestContext();
+    
+    
+    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
+
+    /**
+     * Returns a Collection of typed service proxies for a business interface type and a reference name.
+     * @param businessInterface the interface that will be used to invoke the service
+     * @param referenceName the name of the reference
+     * @param <B> the Java type of the business interface for the reference
+     * @return a Collection of objects that implements the business interface 
+     */
+    <B> Collection<B> getServices(Class<B> businessInterface, String referenceName); 
+ 
+
+    /**
+     * Returns a Collection of typed service reference for a business interface type and a reference name. 
+     * @param businessInterface the interface that will be used to invoke the service
+     * @param referenceName the name of the reference
+     * @param <B> the Java type of the business interface for the reference
+     * @return a Collection of objects that implements the business interface
+     */
+    <B> Collection<ServiceReference<B>> getServiceReferences(Class<B> businessInterface, String referenceName); 
 }
