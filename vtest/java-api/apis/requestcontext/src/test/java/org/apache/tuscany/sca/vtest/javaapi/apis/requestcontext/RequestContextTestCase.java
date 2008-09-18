@@ -60,7 +60,7 @@ public class RequestContextTestCase {
      * 
      * @throws Exception
      */
-    @Ignore
+    @Ignore("TUSCANY-2608")
     public void testGetSecuritySubject() throws Exception {
         Assert.assertTrue(a.isJAASSubject());
     }

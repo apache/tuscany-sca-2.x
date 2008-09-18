@@ -182,7 +182,8 @@ public class ComponentContextTestCase {
      * 
      * @throws Exception
      */
-    @Ignore
+    @Test
+    @Ignore("TUSCANY-2609")
     public void testServiceLookup() throws Exception {
         Assert.assertEquals("ComponentD", a.testServiceLookup());
     }

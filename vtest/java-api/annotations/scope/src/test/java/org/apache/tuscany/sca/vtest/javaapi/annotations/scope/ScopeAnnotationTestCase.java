@@ -277,8 +277,7 @@ public class ScopeAnnotationTestCase {
      * Same as atScope6 but the timer triggers KService multiple times.<br>
      */
     @Test
-    @Ignore
-    // JIRA T-2256
+    @Ignore("TUSCANY-2256")
     public void atScope7() throws Exception {
         System.out.println("atScope7");
 

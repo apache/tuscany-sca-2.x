@@ -85,7 +85,7 @@ public class ConversationAttributesAnnotationTestCase {
      * started the conversation has authority to continue the conversation.
      * The default value is false.
      */
-    @Ignore
+    @Ignore("TUSCANY-2608")
     @Test(expected = Exception.class)
     public void singlePrincipal() throws Exception {
         aService.testSinglePrincipal();
