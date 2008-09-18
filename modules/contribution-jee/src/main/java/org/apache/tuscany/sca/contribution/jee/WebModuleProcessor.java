@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.openejb.config.WebModule;
 import org.apache.openejb.jee.EjbRef;
+import org.apache.openejb.jee.EjbRefType;
 import org.apache.openejb.jee.EjbReference;
 import org.apache.openejb.jee.EnvEntry;
 import org.apache.openejb.jee.WebApp;
@@ -69,9 +70,20 @@ public class WebModuleProcessor {
         // Process Remote EJB References
         for (Map.Entry<String, EjbRef> entry : webApp.getEjbRefMap().entrySet()) {
             EjbRef ejbRef = entry.getValue();
+            if(ejbRef.getHome() != null) {
+                // References to only EJB3 beans need to be considered.
+                // Skip the current on as it is not a reference to an EJB3 bean.
+                continue;
+            }
             if (ejbRef.getRefType().compareTo(EjbReference.Type.REMOTE) != 0) {
                 // Only Remote EJB references need to be considered.
-                // Skip the current one as it is a remote reference.
+                // Skip the current one as it is not a remote reference.
+                continue;
+            }
+            //FIXME: ejbRef.getEjbRefType() is null sometimes.  Need a different way to figure the type.
+            if(ejbRef.getEjbRefType() != null && ejbRef.getEjbRefType().compareTo(EjbRefType.SESSION) != 0) {
+                // Only references to Session beans need to be considered.
+                // Skip the current one as it is not a Session bean.
                 continue;
             }
             String referenceName = entry.getKey();
