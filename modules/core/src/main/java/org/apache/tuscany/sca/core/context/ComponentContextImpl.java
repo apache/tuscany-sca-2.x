@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.core.context;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.ArrayList;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -107,6 +109,14 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         try {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
+                    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
+                    Multiplicity multiplicity = ref.getMultiplicity();
+                    if( multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N)
+                    {
+                      throw new IllegalArgumentException("Reference " + referenceName + " has multiplicity " + multiplicity);
+                    }
+                    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
+                    
                     return getServiceReference(businessInterface, (RuntimeComponentReference)ref, null);
                 }
             }
@@ -400,4 +410,43 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     public void write(RuntimeComponentReference reference, Writer writer) throws IOException {
         compositeActivator.getComponentContextHelper().write(component, reference, writer);
     }
+
+    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
+    
+    /**
+     * @see ComponentContext#getServices(Class<B>, String)
+     */
+    public <B> Collection<B> getServices(Class<B> businessInterface, String referenceName) {
+      ArrayList<B> services = new ArrayList<B>();
+      Collection<ServiceReference<B>> serviceRefs = getServiceReferences(businessInterface, referenceName);
+      for (ServiceReference<B> serviceRef : serviceRefs) {
+        services.add(serviceRef.getService());
+      }
+      return services;
+    }
+    
+    /**
+     * @see ComponentContext#getServiceReferences(Class<B>, String)
+     */
+    public <B> Collection<ServiceReference<B>> getServiceReferences(Class<B> businessInterface, String referenceName) {
+      try {
+        for (ComponentReference ref : component.getReferences()) {
+          if (referenceName.equals(ref.getName())) {
+            ArrayList<ServiceReference<B>> serviceRefs = new ArrayList<ServiceReference<B>>();
+            for(Binding binding :  ref.getBindings())
+            {
+              serviceRefs.add( getServiceReference(businessInterface, (RuntimeComponentReference) ref, binding) );
+            }
+            return serviceRefs;
+          }
+        }
+        throw new ServiceRuntimeException("Reference not found: " + referenceName);
+      } catch (ServiceRuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new ServiceRuntimeException(e.getMessage(), e);
+      }
+    }
+    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
+    
 }
