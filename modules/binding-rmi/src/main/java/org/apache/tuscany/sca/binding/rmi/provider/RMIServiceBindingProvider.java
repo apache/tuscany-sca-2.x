@@ -94,6 +94,9 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
             portNumber = Integer.decode(port);
+            if (portNumber == -1) {
+                portNumber = RMIHost.RMI_DEFAULT_PORT;
+            }
         }
         return portNumber;
     }
