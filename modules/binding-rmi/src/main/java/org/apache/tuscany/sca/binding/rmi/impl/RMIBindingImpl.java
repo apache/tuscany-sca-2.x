@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.rmi.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 
 /**
@@ -81,6 +84,7 @@ public class RMIBindingImpl implements RMIBinding {
     }
 
     public String getURI() {
+        compose();
         return uri;
     }
 
@@ -90,6 +94,7 @@ public class RMIBindingImpl implements RMIBinding {
 
     public void setURI(String uri) {
         this.uri = uri;
+        parse(uri);
     }
 
     
@@ -105,5 +110,48 @@ public class RMIBindingImpl implements RMIBinding {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     
+    
+    /*
+    rmi://[host][:port][/[object]]
+    rmi:[/][object]
+    */
+    private void parse(String uriStr) {
+        if (uriStr == null) {
+            return;
+        }
+        URI uri = URI.create(uriStr);
+        if (host == null) {
+            this.host = uri.getHost();
+        }
+        if (port == null) {
+            this.port = String.valueOf(uri.getPort());
+        }
+        if (serviceName == null) {
+            String path = uri.getPath();
+            if (path != null && path.charAt(0) == '/') {
+                path = path.substring(1);
+            }
+            this.serviceName = path;
+        }
+    }
+    
+    private void compose() {
+        if (uri == null) {
+            int p = -1;
+            if (port != null && port.length() > 0) {
+                p = Integer.decode(port);
+            }
+            String path = serviceName;
+            if (path != null) {
+                path = "/" + path;
+            }
+            try {
+                uri = new URI("rmi", null, host, p, path, null, null).toString();
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+
 
 }

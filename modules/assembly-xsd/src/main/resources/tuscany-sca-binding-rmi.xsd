@@ -36,7 +36,7 @@
                 </sequence>
 			 <attribute name="host" type="anyURI" use="optional"/>
 			 <attribute name="port" type="int" use="optional"/>
-			 <attribute name="serviceName" type="anyURI" use="required"/>
+			 <attribute name="serviceName" type="anyURI" use="optional"/>
             </extension>
         </complexContent>
     </complexType>

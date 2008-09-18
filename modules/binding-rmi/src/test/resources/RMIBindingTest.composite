@@ -23,7 +23,7 @@
 
 	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <tuscany:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
+        <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
     </service>
       
     <component name="HelloWorldServiceComponent">
