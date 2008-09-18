@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.openejb.config.EjbModule;
 import org.apache.openejb.jee.EjbJar;
 import org.apache.openejb.jee.EjbRef;
+import org.apache.openejb.jee.EjbRefType;
 import org.apache.openejb.jee.EjbReference;
 import org.apache.openejb.jee.EnterpriseBean;
 import org.apache.openejb.jee.EnvEntry;
@@ -96,7 +97,10 @@ public class EJBModuleProcessor {
             } else {
                 continue;
             }
-            ejbComponentTypes.put(bean.getEjbName(), ct);
+            if (ct != null) {
+                // Bean is an EJB3 bean
+                ejbComponentTypes.put(bean.getEjbName(), ct);
+            }
         }
 
         // Adjust the references to STATEFUL beans
@@ -216,6 +220,10 @@ public class EJBModuleProcessor {
     }
 
     private ComponentType getEjbComponentType(SessionBean bean, ClassLoader cl) throws ContributionException {
+        if(bean.getBusinessRemote().size() == 0 && bean.getBusinessLocal().size() == 0) {
+            // Not an EJB3 Session bean
+            return null;
+        }
         ComponentType componentType = helper.createComponentType();
 
         boolean conversational = bean.getSessionType().equals(SessionType.STATEFUL);
@@ -278,7 +286,20 @@ public class EJBModuleProcessor {
         // Process Remote EJB References
         for (Map.Entry<String, EjbRef> entry : bean.getEjbRefMap().entrySet()) {
             EjbRef ejbRef = entry.getValue();
+            if(ejbRef.getHome() != null) {
+                // References to only EJB3 beans need to be considered.
+                // Skip the current on as it is not a reference to an EJB3 bean.
+                continue;
+            }
             if (ejbRef.getRefType().compareTo(EjbReference.Type.REMOTE) != 0) {
+                // Only Remote EJB references need to be considered.
+                // Skip the current one as it is not a remote reference.
+                continue;
+            }
+            //FIXME: ejbRef.getEjbRefType() is null sometimes.  Need a different way to figure the type.
+            if(ejbRef.getEjbRefType() != null && ejbRef.getEjbRefType().compareTo(EjbRefType.SESSION) != 0) {
+                // Only references to Session beans need to be considered.
+                // Skip the current one as it is not a Session bean.
                 continue;
             }
             String referenceName = entry.getKey();
@@ -318,12 +339,33 @@ public class EJBModuleProcessor {
     }
 
     private ComponentType getEjbComponentType(MessageDrivenBean bean, ClassLoader cl) throws ContributionException {
+        try {
+            if(javax.ejb.MessageDrivenBean.class.isAssignableFrom(cl.loadClass(bean.getEjbClass()))) {
+                // Not an EJB3 bean
+                return null;
+            }
+        } catch (ClassNotFoundException ignored) {
+            // Should not happen
+        }
         ComponentType componentType = helper.createComponentType();
 
         // Process Remote EJB References
         for (Map.Entry<String, EjbRef> entry : bean.getEjbRefMap().entrySet()) {
             EjbRef ejbRef = entry.getValue();
+            if(ejbRef.getHome() != null) {
+                // References to only EJB3 beans need to be considered.
+                // Skip the current on as it is not a reference to an EJB3 bean.
+                continue;
+            }
             if (ejbRef.getRefType().compareTo(EjbReference.Type.REMOTE) != 0) {
+                // Only Remote EJB references need to be considered.
+                // Skip the current one as it is not a remote reference.
+                continue;
+            }
+            //FIXME: ejbRef.getEjbRefType() is null sometimes.  Need a different way to figure the type.
+            if(ejbRef.getEjbRefType() != null && ejbRef.getEjbRefType().compareTo(EjbRefType.SESSION) != 0) {
+                // Only references to Session beans need to be considered.
+                // Skip the current one as it is not a Session bean.
                 continue;
             }
             String referenceName = entry.getKey();
