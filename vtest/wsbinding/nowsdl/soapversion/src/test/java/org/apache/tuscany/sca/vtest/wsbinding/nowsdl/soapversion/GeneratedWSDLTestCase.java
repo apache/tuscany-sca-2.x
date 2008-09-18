@@ -92,7 +92,7 @@ public class GeneratedWSDLTestCase {
      * different services of the same component do not clash.<br>
      */
     @Test
-    @Ignore
+    @Ignore("TUSCANY-2607")
     // Don't know why target namespaces are same
     public void testSoapVersion4() throws Exception {
     	String cTargetNamespace = cWSDL.getTargetNamespace();
@@ -107,7 +107,7 @@ public class GeneratedWSDLTestCase {
      * Base System URI for HTTP / Component Name / Service Name<br>
      */
     @Test
-    @Ignore
+    @Ignore("TUSCANY-2607")
     //  The target namespace does not follow the convention
     public void testSoapVersion5() throws Exception {
     	String bTargetNamespace = bWSDL.getTargetNamespace();
