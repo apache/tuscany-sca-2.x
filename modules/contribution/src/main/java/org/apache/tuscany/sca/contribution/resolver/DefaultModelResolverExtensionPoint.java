@@ -97,7 +97,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         // Get the model resolver service declarations
         Set<ServiceDeclaration> modelResolverDeclarations; 
         try {
-            modelResolverDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModelResolver.class);
+            modelResolverDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModelResolver.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

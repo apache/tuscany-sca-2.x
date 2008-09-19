@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -181,8 +183,17 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return attributes;
     }
+    
+    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException {
+        Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
+        if (declarations.isEmpty()) {
+            return null;
+        } else {
+            return declarations.iterator().next();
+        }
+    }
 
-    public Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly) {
+    public Set<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
         boolean debug = logger.isLoggable(Level.FINE);
         Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
@@ -256,9 +267,6 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                                 ServiceDeclarationImpl descriptor =
                                     new ServiceDeclarationImpl(bundle, url, className, attributes);
                                 descriptors.add(descriptor);
-                                if (firstOnly) {
-                                    return descriptors;
-                                }
                             }
                         }
                     } finally {
@@ -276,6 +284,13 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             }
         }
         return descriptors;
+    }
+
+    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        Class<?> factoryClass = Class.forName(name, false, getClass().getClassLoader());
+        Method newInstanceMethod = factoryClass.getMethod("newInstance");
+        Object factory = newInstanceMethod.invoke(null);
+        return factory;
     }
 
 }

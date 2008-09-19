@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.extensibility;
 
+import java.io.IOException;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -44,21 +45,20 @@ public class ContextClassLoaderServiceDiscovererTestCase {
     @Test
     public void testDiscovery() {
         Set<ServiceDeclaration> discriptors =
-            discover.discover("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint", false);
+            discover.getServiceDeclarations("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint");
         Assert.assertEquals(1, discriptors.size());
         discriptors =
-            discover.discover("notthere", false);
+            discover.getServiceDeclarations("notthere");
         Assert.assertEquals(0, discriptors.size());
     }
     
     @Test
-    public void testDiscoveryFirst() {
-        Set<ServiceDeclaration> discriptors =
-            discover.discover("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint", true);
-        Assert.assertEquals(1, discriptors.size());
-        discriptors =
-            discover.discover("notthere", true);
-        Assert.assertEquals(0, discriptors.size());
+    public void testDiscoveryFirst() throws IOException {
+        ServiceDeclaration descriptor =
+            discover.getFirstServiceDeclaration("org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint");
+        Assert.assertNotNull(descriptor);
+        descriptor = discover.getFirstServiceDeclaration("notthere");
+        Assert.assertNull(descriptor);
     }
 
 

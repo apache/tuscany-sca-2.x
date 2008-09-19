@@ -75,7 +75,8 @@
                             org.mortbay.jetty.servlet;version="6.1.7",
                             org.mortbay.log;version="6.1.7",
                             org.mortbay.resource;version="6.1.7",
-                            org.mortbay.thread;version="6.1.7"
+                            org.mortbay.thread;version="6.1.7",
+                            *
                          </Import-Package>
                     </instructions>
                 </configuration>

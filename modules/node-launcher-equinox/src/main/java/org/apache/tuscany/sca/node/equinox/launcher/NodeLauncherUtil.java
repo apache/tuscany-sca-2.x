@@ -31,8 +31,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +52,7 @@ import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * Common functions and constants used by the admin components.
@@ -343,6 +346,31 @@ final class NodeLauncherUtil {
             path = path.substring(0, path.length() - resource.length());
             return path;
         }
+    }
+    
+    static Bundle installBundle(BundleContext bundleContext, String location) throws BundleException, IOException {
+        // Development mode, copy the MANIFEST.MF file to the bundle location
+        if (location.endsWith("/target/classes/")) {
+            File target = file(new URL(location));
+            File targetManifest = new File(target, "META-INF/MANIFEST.MF");
+            File sourceManifest = new File(target.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
+            targetManifest.getParentFile().mkdirs();
+            OutputStream os = new FileOutputStream(targetManifest);
+            InputStream is = new FileInputStream(sourceManifest);
+            byte[] buf = new byte[2048];
+            for (;;) {
+                int l = is.read(buf);
+                if (l == -1) {
+                    break;
+                }
+                os.write(buf, 0, l);
+            }
+            is.close();
+            os.close();
+        }
+            
+        Bundle bundle = bundleContext.installBundle(location);
+        return bundle;
     }
 
     static String string(Bundle b, boolean verbose) {

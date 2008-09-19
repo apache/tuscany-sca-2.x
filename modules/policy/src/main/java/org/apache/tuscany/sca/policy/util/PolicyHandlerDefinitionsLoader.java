@@ -42,7 +42,7 @@ public class PolicyHandlerDefinitionsLoader {
         // Get the processor service declarations
         Set<ServiceDeclaration> sds;
         try {
-            sds = ServiceDiscovery.getInstance().getServiceDeclarations(PolicyHandler.class);
+            sds = ServiceDiscovery.getInstance().getServiceDeclarations(PolicyHandler.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

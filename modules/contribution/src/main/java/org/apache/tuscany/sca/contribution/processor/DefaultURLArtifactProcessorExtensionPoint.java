@@ -127,7 +127,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         // Get the processor service declarations
         Set<ServiceDeclaration> processorDeclarations; 
         try {
-            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class);
+            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class.getName());
         } catch (IOException e) {
         	IllegalStateException ie = new IllegalStateException(e);
         	error("IllegalStateException", staxProcessor, ie);

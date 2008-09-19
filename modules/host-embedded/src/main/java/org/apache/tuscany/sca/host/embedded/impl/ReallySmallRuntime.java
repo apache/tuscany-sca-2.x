@@ -305,7 +305,7 @@ public class ReallySmallRuntime {
         modules = new ArrayList<ModuleActivator>();
         try {
             Set<ServiceDeclaration> moduleActivators =
-                ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class);
+                ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName());
             Set<String> moduleClasses = new HashSet<String>();
             for (ServiceDeclaration moduleDeclarator : moduleActivators) {
                 if (moduleClasses.contains(moduleDeclarator.getClassName())) {

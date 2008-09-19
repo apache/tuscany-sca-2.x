@@ -67,7 +67,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
         // Get the processor service declarations
         Set<ServiceDeclaration> processorDeclarations; 
         try {
-            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(PackageProcessor.class);
+            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(PackageProcessor.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

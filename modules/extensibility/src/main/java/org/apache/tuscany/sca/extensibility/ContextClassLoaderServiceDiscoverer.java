@@ -24,13 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,7 +86,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         }
 
         public Class<?> loadClass(String className) throws ClassNotFoundException {
-            return classLoaderReference.get().loadClass(className);
+            return Class.forName(className, false, classLoaderReference.get());
         }
 
         public String toString() {
@@ -112,21 +113,12 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
 
-    private List<URL> getResources(final String name, final boolean firstOnly) throws IOException {
+    private List<URL> getResources(final String name) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<List<URL>>() {
                 public List<URL> run() throws IOException {
-                    if (firstOnly) {
-                        URL url = classLoaderReference.get().getResource(name);
-                        if (url != null) {
-                            return Arrays.asList(url);
-                        } else {
-                            return Collections.emptyList();
-                        }
-                    } else {
-                        List<URL> urls = Collections.list(classLoaderReference.get().getResources(name));
-                        return urls;
-                    }
+                    List<URL> urls = Collections.list(classLoaderReference.get().getResources(name));
+                    return urls;
                 }
             });
         } catch (PrivilegedActionException e) {
@@ -169,13 +161,22 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         return attributes;
     }
 
-    public Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly) {
+    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException {
+        Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
+        if (declarations.isEmpty()) {
+            return null;
+        } else {
+            return declarations.iterator().next();
+        }
+    }
+
+    public Set<ServiceDeclaration> getServiceDeclarations(String serviceName) {
         Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
         String name = "META-INF/services/" + serviceName;
         boolean debug = logger.isLoggable(Level.FINE);
         try {
-            for (final URL url : getResources(name, firstOnly)) {
+            for (final URL url : getResources(name)) {
                 if (debug) {
                     logger.fine("Reading service provider file: " + url.toExternalForm());
                 }
@@ -223,9 +224,6 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                             }
                             ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, className, attributes);
                             descriptors.add(descriptor);
-                            if (firstOnly) {
-                                return descriptors;
-                            }
                         }
                     }
                 } finally {
@@ -243,6 +241,13 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         }
         return descriptors;
 
+    }
+
+    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        Class<?> factoryClass = Class.forName(name, false, classLoaderReference.get());
+        Method newInstanceMethod = factoryClass.getMethod("newInstance");
+        Object factory = newInstanceMethod.invoke(null);
+        return factory;
     }
 
 }

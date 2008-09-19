@@ -82,7 +82,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
         // Get the listener service declarations
         Set<ServiceDeclaration> listenerDeclarations; 
         try {
-            listenerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionListener.class);
+            listenerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionListener.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

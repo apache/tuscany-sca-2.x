@@ -25,7 +25,7 @@
         <version>1.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-calculator-osgi</artifactId>
+    <artifactId>sample-calculator-equinox</artifactId>
     <name>Apache Tuscany SCA Calculator OSGi Sample</name>
 
     <repositories>
@@ -42,6 +42,12 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-launcher-equinox</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>   
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
@@ -70,20 +76,6 @@
             <scope>runtime</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-launcher-equinox</artifactId>
-            <version>1.4-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>   
-        
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version> <!-- To be compatible with Jetty 6 --> 
-            <scope>provided</scope>
-        </dependency>     
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

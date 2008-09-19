@@ -43,7 +43,7 @@ public class DiscoveryUtils {
         List<T> activators;
         try {
             Set<ServiceDeclaration> activatorClasses =
-                ServiceDiscovery.getInstance().getServiceDeclarations(activatorClass);
+                ServiceDiscovery.getInstance().getServiceDeclarations(activatorClass.getName());
             activators = new ArrayList<T>();
             for (ServiceDeclaration declaration : activatorClasses) {
                 try {

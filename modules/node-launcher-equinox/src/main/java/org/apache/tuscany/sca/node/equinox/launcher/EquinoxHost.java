@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.bundleLocation;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.installBundle;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.string;
 import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
 
@@ -153,7 +154,7 @@ public class EquinoxHost {
             // Install the launcher bundle
             String bundleLocation = bundleLocation();
             logger.info("Installing launcher bundle: " + bundleLocation);
-            launcherBundle = bundleContext.installBundle(bundleLocation);
+            launcherBundle = installBundle(bundleContext, bundleLocation);
             logger.info("Starting bundle: " + string(launcherBundle, false));
             launcherBundle.start();
             
@@ -229,6 +230,15 @@ public class EquinoxHost {
             if (mf.isFile()) {
                 Manifest manifest = new Manifest(new FileInputStream(mf));
                 bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+            } else {
+                if (file.getPath().endsWith("target/classes")) {
+                    // Development mode, MANIFEST.MF is outside the bundle location
+                    mf = new File(file.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
+                    if (mf.isFile()) {
+                        Manifest manifest = new Manifest(new FileInputStream(mf));
+                        bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+                    }
+                }
             }
         } else {
             JarFile jar = new JarFile(file, false);

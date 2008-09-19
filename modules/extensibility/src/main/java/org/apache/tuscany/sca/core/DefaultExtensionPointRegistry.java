@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -103,9 +104,10 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             
             // Dynamically load an extension point class declared under META-INF/services           
             try {
-                Class<?> extensionPointClass = 
-                	ServiceDiscovery.getInstance().loadFirstServiceClass(extensionPointType);
-                if (extensionPointClass != null) {
+                ServiceDeclaration extensionPointDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(extensionPointType.getName());
+                if (extensionPointDeclaration != null) {
+                    Class<?> extensionPointClass = extensionPointDeclaration.loadClass();
+                    
                     // Construct the extension point
                     Constructor<?>[] constructors = extensionPointClass.getConstructors();
                     Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});

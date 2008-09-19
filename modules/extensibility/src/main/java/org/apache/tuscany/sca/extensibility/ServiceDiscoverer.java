@@ -19,19 +19,44 @@
 
 package org.apache.tuscany.sca.extensibility;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
  * A SPI that allows different implementations of discovering service declarations
  */
 public interface ServiceDiscoverer {
+    
     /**
-     * Discover the service descriptors by name
-     * @param serviceName The name of the service
-     * @param firstOnly A flag to indicate if only the first instance is to be discovered
-     *  
-     * @return A set of service descriptors
+     * Get all service declarations for this interface
+     * 
+     * @param name
+     * @return set of service declarations
+     * @throws IOException
      */
-    Set<ServiceDeclaration> discover(String serviceName, boolean firstOnly);
-
+    public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException;
+    
+    /**
+     * Get first service declaration class for the given interface
+     * 
+     * @param name
+     * @return service implementation class
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException;
+    
+    /**
+     * Create a new instance of a factory service class.
+     * 
+     * @param name
+     * @return service implementation class
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException;
+    
 }

@@ -68,7 +68,7 @@ public class DefaultSCADefinitionsProviderExtensionPoint implements
 
         try {
             defnProviderDecls =
-                ServiceDiscovery.getInstance().getServiceDeclarations(SCADefinitionsProvider.class);
+                ServiceDiscovery.getInstance().getServiceDeclarations(SCADefinitionsProvider.class.getName());
     
             for (ServiceDeclaration aDefnProviderDecl : defnProviderDecls) {
                 providerClass = aDefnProviderDecl.loadClass();

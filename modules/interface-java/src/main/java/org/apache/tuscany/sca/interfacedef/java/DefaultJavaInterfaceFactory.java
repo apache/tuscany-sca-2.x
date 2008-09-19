@@ -70,7 +70,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         // Get the databinding service declarations
         Set<ServiceDeclaration> visitorDeclarations; 
         try {
-            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class);
+            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

@@ -25,7 +25,7 @@
         <version>1.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample.calculator.rcp</artifactId>
+    <artifactId>sample-calculator-rcp</artifactId>
     <name>Apache Tuscany SCA Calculator RCP Sample</name>
     <repositories>
         <repository>
@@ -34,6 +34,7 @@
             </url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -70,13 +71,79 @@
             <version>1.4-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <!-- 
+
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>ui</artifactId>
             <version>3.3.0-I20070614-0800</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>swt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>help</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>swt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>jface</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>expressions</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>databinding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jface</groupId>
+                    <artifactId>databinding</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-         -->
+
+        <dependency>
+            <groupId>org.eclipse.swt.win32.win32</groupId>
+            <artifactId>x86</artifactId>
+            <version>3.3.0-v3346</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>jface</artifactId>
+            <version>3.3.0-I20070606-0010</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>swt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>commands</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>commands</artifactId>
+            <version>3.3.0-I20070605-0010</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -90,6 +157,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>${artifactId}</finalName>
         <plugins>
@@ -107,8 +175,6 @@
                     </projectnatures>
                     <classpathContainers>
                         <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
-                        </classpathContainer>
-                        <classpathContainer>org.eclipse.pde.core.requiredPlugins
                         </classpathContainer>
                     </classpathContainers>
                 </configuration>

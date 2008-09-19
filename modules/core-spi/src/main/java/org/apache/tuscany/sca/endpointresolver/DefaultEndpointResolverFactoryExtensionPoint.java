@@ -100,7 +100,7 @@ public class DefaultEndpointResolverFactoryExtensionPoint implements EndpointRes
         Set<ServiceDeclaration> factoryDeclarations;
         ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
         try {
-            factoryDeclarations = serviceDiscovery.getServiceDeclarations(EndpointResolverFactory.class);
+            factoryDeclarations = serviceDiscovery.getServiceDeclarations(EndpointResolverFactory.class.getName());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

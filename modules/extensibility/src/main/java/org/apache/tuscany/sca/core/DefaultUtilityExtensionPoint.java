@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -103,9 +104,10 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             
             // Dynamically load a utility class declared under META-INF/utilities           
             try {
-                Class<?> utilityClass = 
-                	ServiceDiscovery.getInstance().loadFirstServiceClass(utilityType);
-                if (utilityClass != null) {
+                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getFirstServiceDeclaration(utilityType.getName());
+                if (utilityDeclaration != null) {
+                    Class<?> utilityClass = utilityDeclaration.loadClass();
+                    
                     // Construct the utility
                     Constructor<?>[] constructors = utilityClass.getConstructors();
                     Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});

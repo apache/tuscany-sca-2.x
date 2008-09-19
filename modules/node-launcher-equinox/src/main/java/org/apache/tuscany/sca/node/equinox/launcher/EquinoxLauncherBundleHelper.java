@@ -3,6 +3,7 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.installBundle;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.libraryBundle;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.string;
 
@@ -77,9 +78,10 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
                     continue;
                 }
                 long installStart = currentTimeMillis();
-                Bundle bundle = bundleContext.installBundle(bundleFile);
+                Bundle bundle = installBundle(bundleContext, bundleFile);
                 logger.info("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                 installedBundles.add(bundle);
+                alreadyInstalledBundleNames.add(bundleName);
             }
         }
 

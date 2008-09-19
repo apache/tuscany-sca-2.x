@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.extensibility.equinox;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -131,21 +132,19 @@ public class EquinoxServiceDiscovererTestCase {
     }
 
     @Test
-    public void testDiscovery() {
-        Set<ServiceDeclaration> descriptors =
-            discoverer.discover("test.TestService", false);
+    public void testDiscovery() throws IOException {
+        Set<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("test.TestService");
         Assert.assertEquals(1, descriptors.size());
-        descriptors = discoverer.discover("notthere", false);
+        descriptors = discoverer.getServiceDeclarations("notthere");
         Assert.assertEquals(0, descriptors.size());
     }
 
     @Test
-    public void testDiscoveryFirst() {
-        Set<ServiceDeclaration> descriptors =
-            discoverer.discover("test.TestService", true);
-        Assert.assertEquals(1, descriptors.size());
-        descriptors = discoverer.discover("notthere", true);
-        Assert.assertEquals(0, descriptors.size());
+    public void testDiscoveryFirst() throws IOException {
+        ServiceDeclaration descriptor = discoverer.getFirstServiceDeclaration("test.TestService");
+        Assert.assertNotNull(descriptor);
+        descriptor = discoverer.getFirstServiceDeclaration("notthere");
+        Assert.assertNull(descriptor);
     }    
     
 

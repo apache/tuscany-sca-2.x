@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -93,8 +94,9 @@ public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtens
 
             // Dynamically load a factory class declared under META-INF/services
             try {
-                Class<?> factoryClass = ServiceDiscovery.getInstance().loadFirstServiceClass(factoryInterface);
-                if (factoryClass != null) {
+                ServiceDeclaration factoryDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
+                if (factoryDeclaration != null) {
+                    Class<?> factoryClass = factoryDeclaration.loadClass();
             
                     // Default empty constructor
                     Constructor<?> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);

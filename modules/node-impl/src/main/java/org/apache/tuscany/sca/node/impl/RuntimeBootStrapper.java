@@ -299,6 +299,7 @@ public class RuntimeBootStrapper {
 
             //now that all system sca definitions have been read, lets resolve them right away
             definitionsProcessor.resolve(systemSCADefinitions, policyDefinitionsResolver);
+            
         } catch (Exception e) {
             throw new ActivationException(e);
         }
@@ -310,7 +311,7 @@ public class RuntimeBootStrapper {
         modules = new ArrayList<ModuleActivator>();
         try {
             Set<ServiceDeclaration> moduleActivators =
-                ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class);
+                ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName());
             Set<String> moduleClasses = new HashSet<String>();
             for (ServiceDeclaration moduleDeclarator : moduleActivators) {
                 if (moduleClasses.contains(moduleDeclarator.getClassName())) {

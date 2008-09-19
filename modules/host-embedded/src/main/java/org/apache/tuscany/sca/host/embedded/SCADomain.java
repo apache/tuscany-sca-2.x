@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.host.embedded;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
@@ -174,9 +175,9 @@ public abstract class SCADomain {
             final ClassLoader runtimeClassLoader = SCADomain.class.getClassLoader();
             final ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
 
-            Class<?> implClass = ServiceDiscovery.getInstance().loadFirstServiceClass(SCADomain.class);
+            ServiceDeclaration implDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(SCADomain.class.getName());
 
-            if (implClass == null) {
+            if (implDeclaration == null) {
 
                 // Create a default SCA domain implementation
                 domain =
@@ -187,6 +188,7 @@ public abstract class SCADomain {
                 // Create an instance of the discovered SCA domain implementation
                 Constructor<?> constructor = null;
                 try {
+                    Class<?> implClass = implDeclaration.loadClass();
                     constructor =
                         implClass.getConstructor(ClassLoader.class,
                                                  ClassLoader.class,
@@ -204,6 +206,7 @@ public abstract class SCADomain {
                                                            composites);
                 } else {
 
+                    Class<?> implClass = implDeclaration.loadClass();
                     constructor = implClass.getConstructor(ClassLoader.class, String.class);
                     domain = (SCADomain)constructor.newInstance(runtimeClassLoader, domainURI);
                 }

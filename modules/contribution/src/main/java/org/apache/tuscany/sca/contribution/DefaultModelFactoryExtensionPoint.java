@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 
@@ -91,8 +92,9 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
                 
                 // Dynamically load a factory class declared under META-INF/services 
                 try {
-                	Class<?> factoryClass = ServiceDiscovery.getInstance().loadFirstServiceClass(factoryInterface);
-                    if (factoryClass != null) {
+                    ServiceDeclaration factoryDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
+                    if (factoryDeclaration != null) {
+                        Class<?> factoryClass = factoryDeclaration.loadClass(); 
                     	
                         try {
                             // Default empty constructor
@@ -115,7 +117,7 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
 
                 // Call the newInstance static method on the factory abstract class
                 try {
-                    factory = ServiceDiscovery.getInstance().newFactoryClassInstance(factoryInterface);
+                    factory = ServiceDiscovery.getInstance().newFactoryClassInstance(factoryInterface.getName());
                 } catch (Exception e) {
                     throw new IllegalArgumentException(e);
                 }

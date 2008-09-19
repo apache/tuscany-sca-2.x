@@ -161,7 +161,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         // Get the processor service declarations
         Set<ServiceDeclaration> processorDeclarations;
         try {
-            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class);
+            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class.getName());
         } catch (IOException e) {
         	IllegalStateException ie = new IllegalStateException(e);
         	error("IllegalStateException", extensibleStAXProcessor, ie);

@@ -21,12 +21,9 @@ package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,13 +34,12 @@ import java.util.logging.Logger;
  *
  * @version $Rev$ $Date$
  */
-public class ServiceDiscovery {
+public class ServiceDiscovery implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
 
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
     private ServiceDiscoverer discoverer;
-    private Set<ClassLoader> registeredClassLoaders = new HashSet<ClassLoader>();
 
     /**
      * Get an instance of Service discovery, one instance is created per
@@ -69,101 +65,27 @@ public class ServiceDiscovery {
         discoverer = sd;
     }
 
-    /**
-     * @deprecated
-     * Register a ClassLoader with this discovery mechanism. Tuscany extension
-     * ClassLoaders are registered here.
-     * 
-     * @param classLoader
-     */
-    @Deprecated
-    public synchronized void registerClassLoader(ClassLoader classLoader) {
-        registeredClassLoaders.add(classLoader);
-    }
-
-    /**
-     * @deprecated
-     * Unregister a ClassLoader with this discovery mechanism. 
-     * 
-     * @param classLoader
-     */
-    @Deprecated
-    public synchronized void unregisterClassLoader(ClassLoader classLoader) {
-        registeredClassLoaders.remove(classLoader);
-    }
-
-    /**
-     * Get all service declarations for this name
-     * 
-     * @param name
-     * @return set of service declarations
-     * @throws IOException
-     */
     public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
-        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(name, false);
+        Set<ServiceDeclaration> services = getServiceDiscoverer().getServiceDeclarations(name);
         return services;
     }
 
-    /**
-     * Get all service declarations for this interface
-     * 
-     * @param serviceInterface
-     * @return set of service declarations
-     * @throws IOException
-     */
-    public Set<ServiceDeclaration> getServiceDeclarations(Class<?> serviceInterface) throws IOException {
-
-        return getServiceDeclarations(serviceInterface.getName());
-    }
-
-    /**
-     * Load one service implementation class for this interface
-     * 
-     * @param serviceInterface
-     * @return service implementation class
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
-    public Class<?> loadFirstServiceClass(final Class<?> serviceInterface) throws IOException, ClassNotFoundException {
+    public ServiceDeclaration getFirstServiceDeclaration(final String name) throws IOException {
         // Try System property first
         String className = AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
-                return System.getProperty(serviceInterface.getName());
+                return System.getProperty(name);
             }
         });
-        if (className != null) {
-            try {
-                // Try the classloader for the service interface first 
-                return Class.forName(className, false, serviceInterface.getClassLoader());
-            } catch (ClassNotFoundException e) {
-                try {
-                    // Try the thread context classloader
-                    return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-                } catch (ClassNotFoundException ex) {
-                    logger.log(Level.WARNING, ex.getMessage(), ex);
-                }
-            }
+        if (className == null) {
+            className = name;
         }
-        Set<ServiceDeclaration> services = getServiceDiscoverer().discover(serviceInterface.getName(), true);
-        if (services.isEmpty()) {
-            return null;
-        }
-        return services.iterator().next().loadClass();
+        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(className);
+        return service;
     }
     
-    /**
-     * Create a new instance of a factory service class.
-     * 
-     * @param serviceInterface
-     * @return service implementation class
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
-    public Object newFactoryClassInstance(final Class<?> serviceInterface) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method newInstanceMethod = serviceInterface.getMethod("newInstance");
-        Object factory = newInstanceMethod.invoke(null);
+    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        Object factory = getServiceDiscoverer().newFactoryClassInstance(name);
         return factory;
     }
 

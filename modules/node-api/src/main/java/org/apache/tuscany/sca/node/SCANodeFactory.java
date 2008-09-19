@@ -123,13 +123,11 @@ public abstract class SCANodeFactory {
             // final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
             try {
-                Class<?> discoveryClass =
-                    Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
+                Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                 Object instance = discoveryClass.getMethod("getInstance").invoke(null);
-                Class<?> factoryImplClass =
-                    (Class<?>)discoveryClass.getMethod("loadFirstServiceClass", Class.class)
-                        .invoke(instance, SCANodeFactory.class);
-                if (factoryImplClass != null) {
+                Object factoryDeclaration = discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance, SCANodeFactory.class.getName());
+                if (factoryDeclaration != null) {
+                    Class<?> factoryImplClass = (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
                     scaNodeFactory = (SCANodeFactory)factoryImplClass.newInstance();
                     return scaNodeFactory;
                 }

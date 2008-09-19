@@ -37,11 +37,13 @@ public interface ServiceDeclaration {
      * @throws ClassNotFoundException
      */
     Class<?> loadClass(String className) throws ClassNotFoundException;
+    
     /**
      * Get the java class for the service impl
      * @return The java class
      */
     Class<?> loadClass() throws ClassNotFoundException;
+    
     /**
      * Get all attributes (name=value pairs) defined for the given entry
      * @return All attributes keyed by name

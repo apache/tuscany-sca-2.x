@@ -64,7 +64,7 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
         // Get the scanner service declarations
         Set<ServiceDeclaration> scannerDeclarations; 
         try {
-            scannerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionScanner.class);
+            scannerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionScanner.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
