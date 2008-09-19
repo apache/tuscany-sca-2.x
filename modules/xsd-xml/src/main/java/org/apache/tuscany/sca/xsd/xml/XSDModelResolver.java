@@ -49,6 +49,7 @@ import org.xml.sax.InputSource;
  * @version $Rev$ $Date$
  */
 public class XSDModelResolver implements ModelResolver {
+    private static final String AGGREGATED_XSD = "http://tuscany.apache.org/aggregated.xsd";
     private XSDFactory factory;
     private Contribution contribution;
     private Map<String, List<XSDefinition>> map = new HashMap<String, List<XSDefinition>>();
@@ -166,6 +167,12 @@ public class XSDModelResolver implements ModelResolver {
             }
             // Read an XSD document
             InputSource xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
+            for (XmlSchema d : schemaCollection.getXmlSchemas()) {
+                if (d.getTargetNamespace().equals(definition.getNamespace())) {
+                    if (d.getSourceURI().equals(definition.getLocation().toString()))
+                        return;
+                }
+            }
             XmlSchema schema = schemaCollection.read(xsd, null);
             definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
@@ -193,10 +200,25 @@ public class XSDModelResolver implements ModelResolver {
             loadOnDemand(d);
         }
         String ns = definitions.get(0).getNamespace();
-        XmlSchema facade = new XmlSchema(ns, schemaCollection);
+        
+        XmlSchema facade = null;
+        // Check if the facade XSD is already in the collection
+        for (XmlSchema s : schemaCollection.getXmlSchema(AGGREGATED_XSD)) {
+            if (ns.equals(s.getTargetNamespace())) {
+                facade = s;
+                break;
+            }
+        }
+        if (facade == null) {
+            // This will add the facade into the collection
+            facade = new XmlSchema(ns, AGGREGATED_XSD, schemaCollection);
+        }
 
         for (XmlSchema d : schemaCollection.getXmlSchemas()) {
             if (ns.equals(d.getTargetNamespace())) {
+                if (d == facade) {
+                    continue;
+                }
                 XmlSchemaInclude include = new XmlSchemaInclude();
                 include.setSchema(d);
                 include.setSourceURI(d.getSourceURI());

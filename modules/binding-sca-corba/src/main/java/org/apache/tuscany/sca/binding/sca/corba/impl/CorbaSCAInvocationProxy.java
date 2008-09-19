@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
 import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.impl.service.InvocationException;
 import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
@@ -69,7 +68,7 @@ public class CorbaSCAInvocationProxy implements InvocationProxy {
 
     public Object invoke(String operationName, List<Object> arguments) throws InvocationException {
         try {
-            OMElement omContent = AXIOMUtil.stringToOM((String)arguments.get(0));
+            OMElement omContent = CorbaSCAInvoker.stringToOM((String)arguments.get(0));
             String componentOperationName = omContent.getQName().getLocalPart();
             Operation componentOperation = null;
             for (Operation operation : componentInterface.getOperations()) {

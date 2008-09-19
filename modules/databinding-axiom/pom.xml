@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>1.2.5</version>			
+            <version>1.2.7</version>			
             <exclusions>
                 <exclusion>
                     <groupId>xerces</groupId>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.7</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -82,14 +82,14 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-           <version>1.1</version>
+           <version>1.1.1</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.4</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>

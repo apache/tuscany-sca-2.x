@@ -30,7 +30,6 @@
         </javac>
         <copy todir="target/classes">
             <fileset dir="src\main\resources"/>
-            <fileset dir="." includes="*" excludes="src, target, pom.xml, build.xml"/>
         </copy>
         <war destfile="target/sample-helloworld-webapp.war" webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>
@@ -112,7 +111,7 @@
         <include name="geronimo-j2ee-management_1.0_spec-1.0.jar"/>
         <include name="geronimo-jms_1.1_spec-1.1.1.jar"/>
         <include name="jaxb-api-2.1.jar"/>
-        <include name="jaxb-impl-2.1.3.jar"/>
+        <include name="jaxb-impl-2.1.7.jar"/>
         <include name="jaxen-1.1-beta-9.jar"/>
         <include name="jaxws-api-2.1.jar"/>
         <include name="jsr181-api-1.0-MR1.jar"/>

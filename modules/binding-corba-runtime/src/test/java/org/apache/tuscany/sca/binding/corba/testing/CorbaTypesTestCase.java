@@ -713,7 +713,7 @@ public class CorbaTypesTestCase {
             for (int i = 0; i < arg.field2.length; i++) {
                 for (int j = 0; j < arg.field2[i].length; j++) {
                     for (int k = 0; k < arg.field3[i][j].length; k++) {
-                        assertEquals(arg.field3[i][j][k], result.field3[i][j][k]);
+                        assertEquals(arg.field3[i][j][k], result.field3[i][j][k], 0.0);
                     }
                 }
             }

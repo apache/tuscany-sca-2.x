@@ -47,10 +47,14 @@ public class DatabindingTestCase {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        try {
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/helloservice.composite", null);
         node.start();
         client = (SCAClient)node;
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     /**

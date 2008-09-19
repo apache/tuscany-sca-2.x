@@ -60,7 +60,11 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.policy.security</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.policy.security*</Export-Package>
+                        <Export-Package>
+                        org.apache.tuscany.sca.policy.identity,
+                        org.apache.tuscany.sca.policy.authorization,
+                        org.apache.tuscany.sca.policy.security*
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
