@@ -49,6 +49,10 @@ public class EquinoxLauncherBundleHelper implements BundleListener {
         String[] jarFiles = jarFilesProperty.split(";");
         
         // Create a single 'library' bundle for them
+        logger.info("Generating third-party library bundle.");
+        for (String jarFile: jarFiles) {
+            logger.info("Adding third-party jar: " + jarFile);
+        }
         long libraryStart = currentTimeMillis();
         InputStream library = libraryBundle(jarFiles);
         logger.info("Third-party library bundle generated in " + (currentTimeMillis() - libraryStart) + " ms.");
