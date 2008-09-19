@@ -180,7 +180,7 @@ public class ScenarioSixTestCase {
             inner.setY(10f);
             arg.setIu(inner);
             TRichUnion result = ref.passRichUnion(arg);
-            assertEquals(arg.getIu().getY(), result.getIu().getY());
+            assertEquals(arg.getIu().getY(), result.getIu().getY(), 0.0f);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -190,7 +190,7 @@ public class ScenarioSixTestCase {
             TRichUnion arg = new TRichUnion();
             arg.setY(15f);
             TRichUnion result = ref.passRichUnion(arg);
-            assertEquals(arg.getY(), result.getY());
+            assertEquals(arg.getY(), result.getY(), 0.0f);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -214,11 +214,11 @@ public class ScenarioSixTestCase {
             inner.y(20f);
             arg.iu(inner);
             RichUnion result = ref.passRichUnion(arg);
-            assertEquals(arg.iu().y(), result.iu().y());
+            assertEquals(arg.iu().y(), result.iu().y(), 0.0f);
             arg = new RichUnion();
             arg.y(15f);
             result = ref.passRichUnion(arg);
-            assertEquals(arg.y(), result.y());
+            assertEquals(arg.y(), result.y(), 0.0f);
         } catch (Exception e) {
             e.printStackTrace();
             fail();

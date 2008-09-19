@@ -182,5 +182,17 @@ final class NodeLauncherUtil {
     static void stopOSGi(OSGiHost host) {
         host.stop();
     }
+    
+    /*
+    static OSGiHost getOSGiHost() throws Exception {
+        ServiceDiscovery discovery = ServiceDiscovery.getInstance(Thread.currentThread().getContextClassLoader());
+        Class<?> hostClass = discovery.loadFirstServiceClass(OSGiHost.class);
+        if (hostClass != null) {
+            return (OSGiHost) hostClass.newInstance();
+        } else {
+            return null;
+        }
+    }
+    */
 
 }

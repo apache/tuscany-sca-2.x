@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -28,12 +27,16 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOM;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public abstract class AbstractHelloWorldOMTestCase extends TestCase {
+public abstract class AbstractHelloWorldOMTestCase {
 
     private SCADomain domain;
     private HelloWorldOM helloWorld;
 
+    @Test
     public void testHelloWorld() throws Exception {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement requestOM = fac.createOMElement("getGreetings", "http://helloworld-om", "helloworld");
@@ -45,14 +48,14 @@ public abstract class AbstractHelloWorldOMTestCase extends TestCase {
         Assert.assertEquals("Hello petra", ((OMText)child.getFirstOMChild()).getText());
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         domain = SCADomain.newInstance(getCompositeName());
         helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         domain.close();
     }
     
