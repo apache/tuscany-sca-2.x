@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.java.introspect.impl;
+package org.apache.tuscany.sca.policy.jsr250.introspect.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -31,12 +31,14 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.jsr250.introspect.impl.JSR250PolicyProcessor;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 

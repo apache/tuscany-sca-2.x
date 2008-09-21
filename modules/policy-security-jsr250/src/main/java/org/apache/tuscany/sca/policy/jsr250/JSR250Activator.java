@@ -17,15 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.impl;
+package org.apache.tuscany.sca.policy.jsr250;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.JSR250PolicyProcessor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.jsr250.introspect.impl.JSR250PolicyProcessor;
 
 /**
  * A module activator for the Java implementation model.

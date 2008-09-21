@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.java.introspect.impl;
+package org.apache.tuscany.sca.policy.jsr250.introspect.impl;
 
 import java.lang.reflect.Method;
 
@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy;

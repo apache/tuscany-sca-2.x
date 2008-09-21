@@ -71,9 +71,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.java</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.policy.security.jsr250</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.implementation.java*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.policy.jsr250*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
