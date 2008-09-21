@@ -18,18 +18,20 @@
  */
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.sca.extension.helper.utils.AbstractBinding;
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * Represents a binding to an RMI service.
  *
  * @version $Rev$ $Date$
  */
-public class RMIBinding extends AbstractBinding {
+public class RMIBinding implements Binding {
 
     private String host;
     private String port;
     private String serviceName;
+    private String uri;
+    private String name;
 
     /**
      * @return the host name of the RMI Service
@@ -73,5 +75,36 @@ public class RMIBinding extends AbstractBinding {
      */
     public void setServiceName(String rmiServiceName) {
         this.serviceName = rmiServiceName;
+    }
+    
+    public String getURI() {
+        return uri;
+    }
+    
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public boolean isUnresolved() {
+        // The binding is always resolved
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        // The binding is always resolved
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        // TODO Auto-generated method stub
+        return super.clone();
     }
 }

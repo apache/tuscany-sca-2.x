@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
  *
  * @version $Rev$ $Date$
  */
-public class RMIReferenceInvoker implements Invoker, DataExchangeSemantics {
+public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
 
     private RMIHost rmiHost;
     private String host;
@@ -41,7 +41,7 @@ public class RMIReferenceInvoker implements Invoker, DataExchangeSemantics {
     private Method remoteMethod;
     private Remote proxy;
 
-    public RMIReferenceInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
+    public RMIBindingInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
         this.rmiHost = rmiHost;
         this.remoteMethod = remoteMethod;
         this.host = host;

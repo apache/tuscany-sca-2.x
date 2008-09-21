@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rmi;
+package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,13 +34,15 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostException;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -51,7 +53,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class RMIService implements ComponentLifecycle {
+public class RMIServiceBindingProvider implements ServiceBindingProvider {
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -59,7 +61,7 @@ public class RMIService implements ComponentLifecycle {
     private RMIHost rmiHost;
     private RuntimeWire wire;
 
-    public RMIService(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
+    public RMIServiceBindingProvider(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
         this.component = rc;
         this.service = rcs;
         this.binding = binding;
@@ -87,7 +89,7 @@ public class RMIService implements ComponentLifecycle {
     public void stop() {
     }
 
-    protected int getPort(String port) {
+    private int getPort(String port) {
         int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
             portNumber = Integer.decode(port);
@@ -95,7 +97,7 @@ public class RMIService implements ComponentLifecycle {
         return portNumber;
     }
 
-    protected Remote createRmiService(final Interface serviceInterface) {
+    private Remote createRmiService(final Interface serviceInterface) {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UnicastRemoteObject.class);
         enhancer.setCallback(new MethodInterceptor() {
@@ -138,7 +140,7 @@ public class RMIService implements ComponentLifecycle {
         return (Remote)enhancer.create();
     }
 
-    protected Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
+    private Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
         return wire.invoke(op, args);
     }
 
@@ -148,7 +150,7 @@ public class RMIService implements ComponentLifecycle {
      * generating the bytecode. Defining the class from the byte code must be the responsibility of the 
      * caller of this method, since it requires a ClassLoader to be created to define and load this interface.
      */
-    protected byte[] generateRemoteInterface(Class serviceInterface) {
+    private byte[] generateRemoteInterface(Class serviceInterface) {
         String interfazeName = serviceInterface.getCanonicalName();
         ClassWriter cw = new ClassWriter(false);
 
@@ -179,7 +181,7 @@ public class RMIService implements ComponentLifecycle {
         return cw.toByteArray();
     }
 
-    protected Class<?> getTargetJavaClass(Interface targetInterface) {
+    private Class<?> getTargetJavaClass(Interface targetInterface) {
         // TODO: right now assume that the target is always a Java
         // Implementation. Need to figure out
         // how to generate Java Interface in cases where the target is not a
@@ -196,4 +198,13 @@ public class RMIService implements ComponentLifecycle {
             return defineClass(null, byteArray, 0, byteArray.length);
         }
     }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return service.getInterfaceContract();
+    }
+
+    public boolean supportsOneWayInvocation() {
+        return false;
+    }
+    
 }
