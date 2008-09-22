@@ -60,6 +60,7 @@
                 <module>binding-jsonrpc</module>
                 <module>binding-jsonrpc-runtime</module>
                 <module>binding-rmi</module>
+                <module>binding-rmi-runtime</module>
                 <module>binding-rss</module>
                 <module>binding-rss-rome</module>
                 <module>binding-sca</module>
@@ -97,7 +98,6 @@
                 <module>endpoint</module>
                 <module>extensibility</module>
                 <module>extensibility-equinox</module>
-                <module>extension-helper</module>
                 <module>host-corba</module>
                 <module>host-corba-jee</module>
                 <module>host-corba-jse</module>
@@ -105,14 +105,14 @@
                 <module>host-ejb</module>
                 <module>host-embedded</module>
                 <module>host-http</module>
+                <module>host-jetty</module>
                 <module>host-openejb</module>
                 <module>host-rmi</module>
+                <!--
+                <module>host-tomcat</module>
+                -->
                 <module>host-webapp</module>
                 <module>host-webapp-junit</module>
-                <module>host-jetty</module>
-                <!--
-                <module>host-jetty</module>
-                -->
                 <module>interface</module>
                 <module>interface-java</module>
                 <module>interface-java-jaxws</module>
@@ -130,7 +130,10 @@
                 <module>implementation-node-runtime</module>
                 <module>implementation-resource</module>
                 <module>implementation-resource-runtime</module>
+                <!--
                 <module>implementation-script</module>
+                <module>implementation-script-runtime</module>
+                -->
                 <module>implementation-spring</module>
                 <module>implementation-widget</module>
                 <module>implementation-widget-runtime</module>

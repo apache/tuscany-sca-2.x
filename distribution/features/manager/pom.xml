@@ -63,6 +63,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rmi</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rss</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
@@ -189,6 +194,7 @@
                 <module>../../../modules/binding-http</module>
                 <module>../../../modules/binding-http-runtime</module>
                 <module>../../../modules/binding-jsonrpc</module>
+                <module>../../../modules/binding-rmi</module>
                 <module>../../../modules/binding-rss</module>
                 <module>../../../modules/binding-sca</module>
                 <module>../../../modules/binding-sca-xml</module>

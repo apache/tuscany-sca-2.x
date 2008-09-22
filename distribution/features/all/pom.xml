@@ -171,6 +171,7 @@
                 <module>../../../modules/binding-jsonrpc</module>
                 <module>../../../modules/binding-jsonrpc-runtime</module>
                 <module>../../../modules/binding-rmi</module>
+                <module>../../../modules/binding-rmi-runtime</module>
                 <module>../../../modules/binding-rss</module>
                 <module>../../../modules/binding-rss-rome</module>
                 <module>../../../modules/binding-sca</module>
@@ -207,7 +208,6 @@
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
                 <module>../../../modules/extensibility-equinox</module>
-                <module>../../../modules/extension-helper</module>
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
@@ -228,7 +228,6 @@
                 <module>../../../modules/implementation-node-runtime</module>
                 <module>../../../modules/implementation-resource</module>
                 <module>../../../modules/implementation-resource-runtime</module>
-                <module>../../../modules/implementation-script</module>
                 <module>../../../modules/implementation-spring</module>
                 <module>../../../modules/implementation-widget</module>
                 <module>../../../modules/implementation-widget-runtime</module>

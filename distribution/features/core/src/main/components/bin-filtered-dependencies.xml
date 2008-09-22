@@ -93,6 +93,7 @@
                 <exclude>javax.activation:activation</exclude>
                 <exclude>javax.annotation:jsr250-api</exclude>
                 <exclude>javax.jws:jsr181-api</exclude>
+                <exclude>javax.servlet:servlet-api</exclude>
                 <exclude>javax.xml.bind:jaxb-api</exclude>
                 <exclude>javax.xml.stream:stax-api</exclude>
                 <exclude>javax.xml.ws:jaxws-api</exclude>

@@ -53,7 +53,9 @@
                 <module>calculator-rcp</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
+                <!--
                 <module>calculator-script</module>
+                -->
                 <module>calculator-webapp</module>
                 <module>calculator-ws-secure-webapp</module>
                 <module>calculator-ws-webapp</module>
@@ -94,9 +96,11 @@
                 <module>simple-bigbank-spring</module>
                 <module>simple-callback</module>
                 <module>simple-callback-ws</module>
+                <!--
                 <module>spring-bigbank-calculator</module>
                 <module>spring-bigbank-checkaccount</module>
                 <module>spring-bigbank-stockquote</module>
+                -->
                 <module>store</module>
                 <module>store-distributed</module>
                 <module>supplychain</module>

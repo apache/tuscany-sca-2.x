@@ -37,12 +37,14 @@
             </activation>
             <modules>
                 <module>alert-aggregator-webapp</module>
+                <!--
 		<module>bigbank</module>
                 <module>bigbank-account</module>
                 <module>bigbank-calculator</module>
                 <module>bigbank-stockquote</module>
                 <module>mortgage-creditcheck</module>
                 <module>mortgage-loanapproval</module>
+                -->
                 <module>xml-bigbank</module>
             </modules>
         </profile>

@@ -44,6 +44,7 @@
                 <include>binding-jsonrpc/**/*</include>
                 <include>binding-jsonrpc-runtime/**/*</include>
                 <include>binding-rmi/**/*</include>
+                <include>binding-rmi-runtime/**/*</include>
                 <include>binding-rss/**/*</include>
                 <include>binding-rss-rome/**/*</include>
                 <include>binding-sca/**/*</include>
@@ -86,7 +87,6 @@
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
                 <include>extensibility-equinox/**/*</include>
-                <include>extension-helper/**/*</include>
                 <include>host-corba/**/*</include>
                 <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
@@ -107,7 +107,6 @@
                 <include>implementation-node-runtime/**/*</include>
                 <include>implementation-resource/**/*</include>
                 <include>implementation-resource-runtime/**/*</include>
-                <include>implementation-script/**/*</include>
                 <include>implementation-spring/**/*</include>
                 <include>implementation-widget/**/*</include>
                 <include>implementation-widget-runtime/**/*</include>
@@ -118,11 +117,6 @@
                 <include>interface-java-xml/**/*</include>
                 <include>interface-wsdl/**/*</include>
                 <include>interface-wsdl-xml/**/*</include>
-                <include>java2wsdl/**/*</include>
-                <include>maven-ant-generator/**/*</include>
-                <include>maven-incremental-build/**/*</include>
-                <include>maven-java2wsdl/**/*</include>
-                <include>maven-wsdl2java/**/*</include>
                 <include>monitor/**/*</include>
                 <include>monitor-logging/**/*</include>
                 <include>node-api/**/*</include>
@@ -143,7 +137,6 @@
                 <include>workspace/**/*</include>
                 <include>workspace-impl/**/*</include>
                 <include>workspace-xml/**/*</include>
-                <include>wsdl2java/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>

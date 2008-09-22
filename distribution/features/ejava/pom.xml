@@ -43,6 +43,11 @@
         <!-- Bindings -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rmi-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
@@ -51,13 +56,13 @@
             <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rmi</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
 
         <!-- Hosts -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-rmi</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-corba-jee</artifactId>
@@ -71,11 +76,6 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-openejb</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-rmi</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
@@ -148,6 +148,7 @@
                 <module>../../../modules/binding-jms</module>
                 <module>../../../modules/binding-jms-runtime</module>
                 <module>../../../modules/binding-rmi</module>
+                <module>../../../modules/binding-rmi-runtime</module>
                 <module>../../../modules/binding-sca</module>
                 <module>../../../modules/binding-sca-xml</module>
                 <module>../../../modules/binding-ws</module>
@@ -169,7 +170,6 @@
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
                 <module>../../../modules/extensibility-equinox</module>
-                <module>../../../modules/extension-helper</module>
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
@@ -184,7 +184,6 @@
                 <module>../../../modules/implementation-java-xml</module>
                 <module>../../../modules/implementation-node</module>
                 <module>../../../modules/implementation-node-runtime</module>
-                <module>../../../modules/implementation-script</module>
                 <module>../../../modules/implementation-spring</module>
                 <module>../../../modules/interface</module>
                 <module>../../../modules/interface-java</module>
