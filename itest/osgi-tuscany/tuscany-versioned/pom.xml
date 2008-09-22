@@ -39,6 +39,7 @@
             <artifactId>tuscany-distribution-all</artifactId>
             <version>${pom.version}</version>
         </dependency>
+    </dependencies>
 
 
     <build>
