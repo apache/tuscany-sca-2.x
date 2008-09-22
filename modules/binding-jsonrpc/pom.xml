@@ -61,8 +61,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jsonrpc</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.jsonrpc*</Export-Package>
-                        <Import-Package>org.apache.tuscany.sca.assembly.xml,*</Import-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.jsonrpc</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
