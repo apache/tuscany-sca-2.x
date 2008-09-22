@@ -155,6 +155,8 @@
                 <module>../../../modules/implementation-node-runtime</module>
                 <module>../../../modules/implementation-resource</module>
                 <module>../../../modules/implementation-resource-runtime</module>
+                <module>../../../modules/implementation-script</module>
+                <module>../../../modules/implementation-script-runtime</module>
                 <module>../../../modules/implementation-spring</module>
                 <module>../../../modules/implementation-widget</module>
                 <module>../../../modules/implementation-widget-runtime</module>

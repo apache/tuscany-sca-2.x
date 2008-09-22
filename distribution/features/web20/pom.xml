@@ -91,6 +91,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-script-runtime</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-widget-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
@@ -179,6 +184,8 @@
                 <module>../../../modules/implementation-node-runtime</module>
                 <module>../../../modules/implementation-resource</module>
                 <module>../../../modules/implementation-resource-runtime</module>
+                <module>../../../modules/implementation-script</module>
+                <module>../../../modules/implementation-script-runtime</module>
                 <module>../../../modules/implementation-widget</module>
                 <module>../../../modules/implementation-widget-runtime</module>
                 <module>../../../modules/interface</module>

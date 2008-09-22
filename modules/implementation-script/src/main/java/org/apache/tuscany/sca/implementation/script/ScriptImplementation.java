@@ -18,82 +18,96 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.tuscany.sca.contribution.Artifact;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
+import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 
 /**
  * Represents a Script implementation.
  *
  * @version $Rev$ $Date$
  */
-public class ScriptImplementation {
+public class ScriptImplementation implements Implementation {
 
-    protected String scriptName;
-    protected URL scriptURL;
-    protected String scriptSrc;
-    protected String scriptLanguage;
-
-    public String getScript() {
-        return scriptName;
+    private String uri;
+    private String language;
+    private List<Property> properties = new ArrayList<Property>();
+    private List<Reference> references = new ArrayList<Reference>();
+    private List<Service> services = new ArrayList<Service>();
+    private String location;
+    private boolean unresolved;
+    
+    public ScriptImplementation() {
     }
 
-    public void setScript(String scriptName) {
-        this.scriptName = scriptName;
+    public String getScript() {
+        return uri;
+    }
+
+    public void setScript(String uri) {
+        this.uri = uri;
+    }
+    
+    public String getLocation() {
+        return location;
+    }
+    
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setLanguage(String language) {
-        this.scriptLanguage = language;
+        this.language = language;
     }
 
-    public void setElementText(String elementText) {
-        scriptSrc = elementText;
+    public String getLanguage() {
+        return language;
     }
 
-    public String getScriptLanguage() {
-        if (scriptLanguage == null || scriptLanguage.length() < 1) {
-            int i = scriptName.lastIndexOf('.');
-            if (i > 0) {
-                scriptLanguage = scriptName.substring(i + 1);
-            }
-        }
-        return scriptLanguage;
+    public ConstrainingType getConstrainingType() {
+        // The script implementation does not support constrainingTypes
+        return null;
     }
 
-    public String getScriptSrc() {
-        if (scriptSrc == null) {
-            if (scriptName == null) {
-                throw new IllegalArgumentException("script name is null and no inline source used");
-            }
-            if (scriptURL == null) {
-                throw new RuntimeException("No script: " + scriptName);
-            }
+    public List<Property> getProperties() {
+        return properties;
+    }
 
-            scriptSrc = ResourceHelper.readResource(scriptURL);
-        }
-        return scriptSrc;
+    public List<Service> getServices() {
+        return services;
     }
     
-    public void resolve(ModelResolver resolver) {
-    	
-    	if (scriptName != null) {
-    	    //FIXME The contribution factory should be injected
-    	    ContributionFactory contributionFactory = new DefaultContributionFactory();
-            Artifact artifact = contributionFactory.createArtifact();
-            artifact.setURI(scriptName);
-            artifact = resolver.resolveModel(Artifact.class, artifact);
-            if (artifact.getLocation() != null) {
-                try {
-                    scriptURL = new URL(artifact.getLocation());
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-    	}
+    public List<Reference> getReferences() {
+        return references;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setConstrainingType(ConstrainingType constrainingType) {
+        // The script implementation does not support constrainingTypes
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }    
+
+    @Override
+    public String toString() {
+        return "Script : " + getURI(); 
     }
 }

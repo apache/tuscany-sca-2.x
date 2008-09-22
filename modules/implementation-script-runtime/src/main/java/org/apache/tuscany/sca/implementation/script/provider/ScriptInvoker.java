@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.script;
+package org.apache.tuscany.sca.implementation.script.provider;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -36,9 +36,9 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public class ScriptInvoker implements Invoker {
 
-    protected ScriptEngine scriptEngine;
-    protected XMLHelper xmlHelper;
-    protected Operation operation;
+    private ScriptEngine scriptEngine;
+    private XMLHelper xmlHelper;
+    private Operation operation;
 
     public ScriptInvoker(ScriptEngine scriptEngine, XMLHelper xmlHelper, Operation operation) {
         this.scriptEngine = scriptEngine;
@@ -46,7 +46,7 @@ public class ScriptInvoker implements Invoker {
         this.operation = operation;
     }
 
-    protected Object doInvoke(Object[] objects, Operation op) throws ScriptException {
+    private Object doInvoke(Object[] objects, Operation op) throws ScriptException {
         if (xmlHelper != null) {
             objects[0] = xmlHelper.toScriptXML((OMElement)objects[0]);
         }

@@ -69,6 +69,8 @@
                 <include>implementation-node-runtime/**/*</include>
                 <include>implementation-resource/**/*</include>
                 <include>implementation-resource-runtime/**/*</include>
+                <include>implementation-script/**/*</include>
+                <include>implementation-script-runtime/**/*</include>
                 <include>implementation-widget/**/*</include>
                 <include>implementation-widget-runtime/**/*</include>
                 <include>interface/**/*</include>
