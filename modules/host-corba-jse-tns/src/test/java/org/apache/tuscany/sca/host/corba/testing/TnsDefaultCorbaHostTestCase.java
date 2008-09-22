@@ -25,7 +25,7 @@ import static junit.framework.Assert.fail;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
+import org.apache.tuscany.sca.binding.corba.provider.service.DynaCorbaServant;
 import org.apache.tuscany.sca.host.corba.jse.tns.TnsDefaultCorbaHost;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

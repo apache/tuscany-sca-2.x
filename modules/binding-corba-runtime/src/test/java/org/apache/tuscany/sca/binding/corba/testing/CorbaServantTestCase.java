@@ -27,14 +27,14 @@ import java.lang.reflect.Array;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
-import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
-import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
-import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
-import org.apache.tuscany.sca.binding.corba.impl.service.ComponentInvocationProxy;
-import org.apache.tuscany.sca.binding.corba.impl.service.DynaCorbaServant;
-import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
-import org.apache.tuscany.sca.binding.corba.impl.types.util.Utils;
+import org.apache.tuscany.sca.binding.corba.provider.exceptions.CorbaException;
+import org.apache.tuscany.sca.binding.corba.provider.exceptions.RequestConfigurationException;
+import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaRequest;
+import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.provider.service.ComponentInvocationProxy;
+import org.apache.tuscany.sca.binding.corba.provider.service.DynaCorbaServant;
+import org.apache.tuscany.sca.binding.corba.provider.service.InvocationProxy;
+import org.apache.tuscany.sca.binding.corba.provider.types.util.Utils;
 import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.ArraysUnionsTests;
 import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.ArraysUnionsTestsHelper;
 import org.apache.tuscany.sca.binding.corba.testing.arrays_unions.TestStruct;

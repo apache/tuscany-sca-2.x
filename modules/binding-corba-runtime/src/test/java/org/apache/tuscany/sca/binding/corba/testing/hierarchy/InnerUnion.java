@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.binding.corba.testing.hierarchy;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
-import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaUnionElementType;
 
 public final class InnerUnion {
 

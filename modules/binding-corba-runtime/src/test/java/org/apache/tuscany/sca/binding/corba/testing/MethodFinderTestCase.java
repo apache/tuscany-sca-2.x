@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.binding.corba.impl.util.MethodFinder;
+import org.apache.tuscany.sca.binding.corba.provider.util.MethodFinder;
 import org.junit.Test;
 
 /**

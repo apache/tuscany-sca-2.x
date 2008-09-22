@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.binding.corba.testing.servants;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaArray;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.ArraysTestStruct;
 import org.apache.tuscany.sca.binding.corba.testing.hierarchy.RichUnion;
 

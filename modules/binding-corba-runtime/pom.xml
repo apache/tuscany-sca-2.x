@@ -131,9 +131,15 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.corba</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.corba.runtime</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.corba*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.binding.corba.provider,
+                            org.apache.tuscany.sca.binding.corba.provider.exceptions,
+                            org.apache.tuscany.sca.binding.corba.provider.reference,
+                            org.apache.tuscany.sca.binding.corba.provider.service,
+                            org.apache.tuscany.sca.binding.corba.provider.types
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

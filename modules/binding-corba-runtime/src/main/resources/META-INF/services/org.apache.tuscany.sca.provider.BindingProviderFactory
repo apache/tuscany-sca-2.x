@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.corba.impl.CorbaBindingProviderFactory;model=org.apache.tuscany.sca.binding.corba.CorbaBinding
+org.apache.tuscany.sca.binding.corba.provider.CorbaBindingProviderFactory;model=org.apache.tuscany.sca.binding.corba.CorbaBinding

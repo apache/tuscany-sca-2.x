@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.sca.binding.corba.impl.util.OperationMapper;
+import org.apache.tuscany.sca.binding.corba.provider.util.OperationMapper;
 import org.junit.Test;
 
 /**

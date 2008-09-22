@@ -29,10 +29,10 @@ import java.lang.reflect.Array;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.binding.corba.impl.exceptions.CorbaException;
-import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
-import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaRequest;
-import org.apache.tuscany.sca.binding.corba.impl.reference.DynaCorbaResponse;
+import org.apache.tuscany.sca.binding.corba.provider.exceptions.CorbaException;
+import org.apache.tuscany.sca.binding.corba.provider.exceptions.RequestConfigurationException;
+import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaRequest;
+import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaResponse;
 import org.apache.tuscany.sca.binding.corba.testing.enums.Color;
 import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.DivByZero;
 import org.apache.tuscany.sca.binding.corba.testing.exceptions.CalcPackage.NotSupported;

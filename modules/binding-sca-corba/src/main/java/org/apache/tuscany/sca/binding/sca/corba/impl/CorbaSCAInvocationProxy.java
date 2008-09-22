@@ -29,12 +29,12 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
-import org.apache.tuscany.sca.binding.corba.impl.exceptions.RequestConfigurationException;
-import org.apache.tuscany.sca.binding.corba.impl.service.InvocationException;
-import org.apache.tuscany.sca.binding.corba.impl.service.InvocationProxy;
-import org.apache.tuscany.sca.binding.corba.impl.service.OperationTypes;
-import org.apache.tuscany.sca.binding.corba.impl.types.TypeTree;
-import org.apache.tuscany.sca.binding.corba.impl.types.TypeTreeCreator;
+import org.apache.tuscany.sca.binding.corba.provider.exceptions.RequestConfigurationException;
+import org.apache.tuscany.sca.binding.corba.provider.service.InvocationException;
+import org.apache.tuscany.sca.binding.corba.provider.service.InvocationProxy;
+import org.apache.tuscany.sca.binding.corba.provider.service.OperationTypes;
+import org.apache.tuscany.sca.binding.corba.provider.types.TypeTree;
+import org.apache.tuscany.sca.binding.corba.provider.types.TypeTreeCreator;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
