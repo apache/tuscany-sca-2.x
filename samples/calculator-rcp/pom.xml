@@ -41,30 +41,35 @@
             <artifactId>tuscany-node-api</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-node-runtime</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility-equinox</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-launcher-equinox</artifactId>
@@ -173,6 +178,34 @@
                     </classpathContainers>
                 </configuration>
             </plugin>
+
+           <plugin>
+               <groupId>org.apache.felix</groupId>
+               <artifactId>maven-bundle-plugin</artifactId>
+               <version>1.4.3</version>
+               <extensions>true</extensions>
+               <executions>
+                   <execution>
+                       <id>bundle-manifest</id>
+                       <phase>process-classes</phase>
+                       <goals>
+                           <goal>manifest</goal>
+                       </goals>
+                       <configuration>
+                          <instructions>
+                              <Bundle-Version>1.4</Bundle-Version>
+                              <Bundle-SymbolicName>sample.calculator.rcp;singleton:=true</Bundle-SymbolicName>
+                              <Bundle-Description>${pom.name}</Bundle-Description>
+                              <Bundle-Activator>calculator.rcp.Activator</Bundle-Activator>
+                              <Eclipse-LazyStart>true</Eclipse-LazyStart>
+                              <Export-Package>calculator.rcp*</Export-Package>
+                          </instructions>
+                          <manifestLocation>${basedir}/META-INF</manifestLocation>
+                       </configuration>
+                   </execution>
+               </executions>
+           </plugin> 
+
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>

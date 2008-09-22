@@ -35,15 +35,15 @@ import org.osgi.framework.BundleContext;
 public class NodeLauncher {
 
     static final Logger logger = Logger.getLogger(NodeLauncher.class.getName());
-    private EquinoxHost host;
+    private EquinoxHost equinoxHost;
     private BundleContext bundleContext;
 
     /**
      * Constructs a new node launcher.
      */
     private NodeLauncher() {
-        host = new EquinoxHost();
-        bundleContext = host.start();
+        equinoxHost = new EquinoxHost();
+        bundleContext = equinoxHost.start();
     }
 
     /**
@@ -121,7 +121,7 @@ public class NodeLauncher {
         // Create a node launcher
         NodeLauncher launcher = newInstance();
 
-        EquinoxHost equinox = launcher.host;
+        EquinoxHost equinox = launcher.equinoxHost;
         Object node = null;
         ShutdownThread shutdown = null;
         try {
@@ -184,8 +184,8 @@ public class NodeLauncher {
     }
     
     public void destroy() {
-        if (host != null) {
-            host.stop();
+        if (equinoxHost != null) {
+            equinoxHost.stop();
             bundleContext = null;
         }
     }

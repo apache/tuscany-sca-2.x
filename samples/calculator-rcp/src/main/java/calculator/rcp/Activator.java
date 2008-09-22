@@ -20,7 +20,6 @@ package calculator.rcp;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
@@ -42,28 +41,18 @@ public class Activator extends AbstractUIPlugin {
     private NodeLauncher launcher;
     private SCANode node;
 
-    /**
-     * The constructor
-     */
     public Activator() {
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-     */
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        
         launcher = NodeLauncher.newInstance();
         node = launcher.createNode("Calculator.composite", new Contribution("c1", new File("target/classes").toURI().toString()));
         node.start();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-     */
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);

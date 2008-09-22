@@ -33,6 +33,7 @@ import org.osgi.framework.BundleContext;
  * 
  */
 public class EquinoxOSGiHostTestCase {
+
     @Test
     public void testStartThenStop() {
         EquinoxHost host = new EquinoxHost();
@@ -45,17 +46,22 @@ public class EquinoxOSGiHostTestCase {
     }
 
     @Test
-    public void testStartTwice() {
+    public void testStartThenStopTwice() {
         EquinoxHost host = new EquinoxHost();
-        host.start();
-        try {
-            host.start();
-            Assert.fail();
-        } catch (IllegalStateException e) {
-            Assert.assertTrue(IllegalStateException.class.isInstance(e.getCause()));
-        } finally {
-            host.stop();
+        BundleContext context = host.start();
+        Assert.assertNotNull(context);
+        for (Bundle b : context.getBundles()) {
+            System.out.println(toString(b, false));
         }
+        host.stop();
+        
+        host = new EquinoxHost();
+        context = host.start();
+        Assert.assertNotNull(context);
+        for (Bundle b : context.getBundles()) {
+            System.out.println(toString(b, false));
+        }
+        host.stop();
     }
 
     public static String toString(Bundle b, boolean verbose) {
