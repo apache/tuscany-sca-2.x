@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
 
 /**
  * @version $Rev$ $Date$

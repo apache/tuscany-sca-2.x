@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
@@ -52,7 +53,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         Scope scope = clazz.getAnnotation(Scope.class);
         if (scope == null) {
             // implicitly assume conversation
-            type.setJavaScope(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION);
+            type.setJavaScope(org.apache.tuscany.sca.implementation.java.JavaScopeImpl.CONVERSATION);
         } else if (conversation != null) {
             long maxAge;
             long maxIdleTime;

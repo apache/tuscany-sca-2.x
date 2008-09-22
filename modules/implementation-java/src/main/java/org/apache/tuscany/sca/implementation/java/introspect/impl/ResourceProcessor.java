@@ -24,10 +24,12 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 
 /**
  * Processes an {@link @Resource} annotation, updating the component type with

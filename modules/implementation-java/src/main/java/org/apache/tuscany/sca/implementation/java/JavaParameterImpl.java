@@ -17,9 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java;
 
 import java.lang.reflect.Constructor;
+
 
 /**
  * @version $Rev$ $Date$

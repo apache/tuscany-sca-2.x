@@ -31,10 +31,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 
 

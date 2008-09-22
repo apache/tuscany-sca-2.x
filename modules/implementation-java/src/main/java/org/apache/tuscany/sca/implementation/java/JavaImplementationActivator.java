@@ -17,16 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;

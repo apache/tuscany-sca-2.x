@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;

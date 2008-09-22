@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLComponentTypeLoader;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -59,6 +60,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
 
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
+    private JavaImplementationFactory javaImplementationFactory;
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private Monitor monitor;
@@ -66,6 +68,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     public SpringImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        this.javaImplementationFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.monitor = monitor;
@@ -190,7 +193,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
 
         /* Load the Spring component type by reading the Spring application context */
         SpringXMLComponentTypeLoader springLoader =
-            new SpringXMLComponentTypeLoader(assemblyFactory, javaFactory, policyFactory);
+            new SpringXMLComponentTypeLoader(assemblyFactory, javaFactory, javaImplementationFactory, policyFactory);
         try {
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation);

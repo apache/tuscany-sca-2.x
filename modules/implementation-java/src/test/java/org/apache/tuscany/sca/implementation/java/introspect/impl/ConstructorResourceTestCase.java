@@ -36,7 +36,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         visitConstructor(ctor, type);
-        org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl resource = type.getResources().get("myResource");
+        org.apache.tuscany.sca.implementation.java.JavaResourceImpl resource = type.getResources().get("myResource");
         assertFalse(resource.isOptional());
     }
 

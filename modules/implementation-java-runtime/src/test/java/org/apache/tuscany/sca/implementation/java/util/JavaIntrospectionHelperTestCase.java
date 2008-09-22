@@ -27,7 +27,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 
 /**
  *

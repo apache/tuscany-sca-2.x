@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java;
 
 import java.lang.reflect.Constructor;
+
 
 /**
  * Hold injection information for the constructor used to instantiate a

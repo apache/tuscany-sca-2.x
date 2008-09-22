@@ -55,7 +55,7 @@ public class ConversationProcessorTestCase extends TestCase {
     public void testImplicitScope() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(ImplicitFooScope.class, type);
-        assertEquals(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
+        assertEquals(org.apache.tuscany.sca.implementation.java.JavaScopeImpl.CONVERSATION, type.getJavaScope());
     }
 
     /* TUSCANY-1999 - apply conversation properties to all scopes
@@ -81,7 +81,7 @@ public class ConversationProcessorTestCase extends TestCase {
         // TODO do we want these semantics
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooJustConversation.class, type);
-        assertEquals(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
+        assertEquals(org.apache.tuscany.sca.implementation.java.JavaScopeImpl.CONVERSATION, type.getJavaScope());
         assertEquals(-1, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
     }

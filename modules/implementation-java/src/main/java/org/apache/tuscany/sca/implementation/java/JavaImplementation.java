@@ -26,10 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 
 /**

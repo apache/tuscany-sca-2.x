@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
+import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
 import org.easymock.EasyMock;
 
 /**

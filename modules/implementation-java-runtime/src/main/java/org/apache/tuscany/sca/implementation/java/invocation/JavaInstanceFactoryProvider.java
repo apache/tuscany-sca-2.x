@@ -30,19 +30,19 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.context.InstanceFactoryProvider;
 import org.apache.tuscany.sca.implementation.java.context.ReflectiveInstanceFactory;
-import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.FieldInjector;
 import org.apache.tuscany.sca.implementation.java.injection.Injector;
 import org.apache.tuscany.sca.implementation.java.injection.InvalidAccessorException;
 import org.apache.tuscany.sca.implementation.java.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 
 /**
  * Encapsulates configuration for a Java-based atomic component

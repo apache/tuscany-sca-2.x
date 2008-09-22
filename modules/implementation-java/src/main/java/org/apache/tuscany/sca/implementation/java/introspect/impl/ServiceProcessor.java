@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import static org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper.getAllInterfaces;
+import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,8 +33,10 @@ import javax.jws.WebService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;

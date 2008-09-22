@@ -22,9 +22,10 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 
 /**
  * Handles processing of a constructor decorated with

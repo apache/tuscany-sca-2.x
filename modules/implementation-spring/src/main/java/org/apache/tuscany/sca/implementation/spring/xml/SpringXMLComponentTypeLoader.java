@@ -47,7 +47,8 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -75,12 +76,13 @@ public class SpringXMLComponentTypeLoader {
 
     public SpringXMLComponentTypeLoader(AssemblyFactory assemblyFactory,
                                         JavaInterfaceFactory javaFactory,
+                                        JavaImplementationFactory javaImplementationFactory,
                                         PolicyFactory policyFactory) {
         super();
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
         beanIntrospector =
-            new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory);
+            new SpringBeanIntrospector(assemblyFactory, javaFactory, javaImplementationFactory, policyFactory);
     }
 
     protected Class<SpringImplementation> getImplementationClass() {

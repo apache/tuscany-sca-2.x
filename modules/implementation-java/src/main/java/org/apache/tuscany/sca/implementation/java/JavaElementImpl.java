@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.java.impl;
+package org.apache.tuscany.sca.implementation.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -41,12 +41,6 @@ public class JavaElementImpl {
     private int index = -1;
     private String name;
     private Class<? extends Annotation> classifer;
-
-    public JavaElementImpl(Package pkg) {
-        this.anchor = pkg;
-        this.elementType = ElementType.PACKAGE;
-        this.name = pkg.getName();
-    }
 
     public JavaElementImpl(Class<?> cls) {
         this.anchor = cls;

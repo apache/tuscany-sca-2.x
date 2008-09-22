@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
-import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.BeforeClass;

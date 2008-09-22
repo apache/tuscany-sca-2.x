@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.java.introspect.impl;
+package org.apache.tuscany.sca.implementation.java.introspect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,8 +25,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 
 /**
  * A convenience class for annotation processors which alleviates the need to

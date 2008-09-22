@@ -27,7 +27,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 
 /**
