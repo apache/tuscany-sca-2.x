@@ -147,6 +147,17 @@ public class ExtensibleStAXAttributeProcessor
         	return processor.read(attributeName, source);
         }
         
+        
+        //handle extension attributes without processors
+        processor = (StAXAttributeProcessor<?>)processors.getProcessor(UNKNOWN_ATTRIBUTE);
+        if (processor == null) {
+        	Location location = source.getLocation();
+            if (logger.isLoggable(Level.WARNING)) {                
+                logger.warning("Could not find Default Attribute processor !");
+            }
+            warning("DefaultAttributeProcessorNotAvailable", processors, UNKNOWN_ATTRIBUTE, location);            
+        }        	
+        
         return processor == null ? null : processor.read(attributeName, source);
     }
     
@@ -168,6 +179,18 @@ public class ExtensibleStAXAttributeProcessor
     		processor.write(model, outputSource);
     		return;
     	}
+    	
+    	 //handle extension attributes without processors
+        processor = (StAXAttributeProcessor<?>)processors.getProcessor(UNKNOWN_ATTRIBUTE);
+        if(processor == null) {
+    		if (logger.isLoggable(Level.WARNING)) {
+    			logger.warning("No Default StAX processor is configured to handle " + model.getClass());
+    		}
+    		warning("NoDefaultStaxProcessor", processors, model.getClass());    		        	
+        } else {
+    		processor.write(model, outputSource);
+    		return;        	
+        }
     }
     
     

@@ -25,6 +25,8 @@ package org.apache.tuscany.sca.contribution;
  * @version $Rev$ $Date$
  */
 public interface Constants {
-    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    String XMLSCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+    
+	String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
 }
