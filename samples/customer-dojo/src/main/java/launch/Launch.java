@@ -25,7 +25,8 @@ public class Launch {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCADomain scaDomain = SCADomain.newInstance("customer.composite");
-        System.out.println("store.composite ready for big business !!!");
+        System.out.println("customer.composite ready for big business !!!");
+        System.out.println("url : http://localhost:8080/customer.html");
         System.in.read();
         System.out.println("Stopping ...");
         scaDomain.close();
