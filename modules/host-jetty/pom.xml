@@ -66,7 +66,9 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.host.jetty</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.http.jetty*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.http.jetty,
+                        </Export-Package>
                         <Import-Package>
                             org.mortbay.jetty;version="6.1.7",
                             org.mortbay.jetty.handler;version="6.1.7",

@@ -272,7 +272,7 @@ public class EquinoxHost {
                     if ((bundle.getState() & Bundle.ACTIVE) == 0) {
                         logger.info("Starting bundle: " + string(bundle, false));
                         try {
-                            bundle.start();
+                            //bundle.start();
                         } catch (Exception e) {
                             logger.log(Level.SEVERE, e.getMessage(), e);
                             throw e;

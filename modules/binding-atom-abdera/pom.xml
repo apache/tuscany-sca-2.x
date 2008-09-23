@@ -206,7 +206,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.atom.abdera</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.atom*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.binding.atom.collection,
+                            org.apache.tuscany.sca.binding.atom.provider
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

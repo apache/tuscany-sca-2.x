@@ -73,7 +73,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.policy.transaction</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.policy.transaction*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.policy.transaction</Export-Package>
                         <Import-Package>javax.transaction;version="1.0.1",*</Import-Package>
                     </instructions>
                 </configuration>

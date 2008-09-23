@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.http.jetty.module;
+package org.apache.tuscany.sca.http.jetty;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.http.jetty.JettyServer;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
