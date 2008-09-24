@@ -19,9 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
