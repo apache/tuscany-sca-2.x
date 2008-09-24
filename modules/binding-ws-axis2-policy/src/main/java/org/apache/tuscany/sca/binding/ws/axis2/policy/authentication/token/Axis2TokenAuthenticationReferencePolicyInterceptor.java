@@ -84,8 +84,7 @@ public class Axis2TokenAuthenticationReferencePolicyInterceptor implements Inter
             header.setHeaderString("SomeWSAuthorizationToken");
     
             // add header to Tuscany message
-            msg.getHeaders().put(policy.getTokenName().toString(),
-                                 header);  
+            msg.getHeaders().add(header);  
         }
         
         return getNext().invoke(msg);

@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.invocation;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -29,8 +30,6 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
  * @version $Rev $Date$
  */
 public interface Message {
-    String QOS_CTX_SECURITY_PRINCIPAL = "PRINCIPAL";
-    String QOS_CTX_SECURITY_SUBJECT = "SUBJECT";
 
     /**
      * Returns the body of the message, which will be the payload or parameters associated with the wire
@@ -109,17 +108,9 @@ public interface Message {
     void setOperation(Operation op);
     
     /** 
-     * Returns a map of objects that represents the QoS context that wraps this message such as 
-     * invoking authenticated principal and so on.
-     * 
-     * @return
-     */
-    Map<String, Object> getQoSContext();
-    
-    /** 
      * Returns a map of objects that are contained in the message header
      * 
      * @return
      */
-    Map<String, Object> getHeaders();
+    List<Object> getHeaders();
 }

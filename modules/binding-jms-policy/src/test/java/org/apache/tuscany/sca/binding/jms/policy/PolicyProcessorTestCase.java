@@ -49,7 +49,7 @@ import org.junit.Test;
  */
 public class PolicyProcessorTestCase {
     private final static List<String> SEQ =
-        Arrays.asList("<tuscany:jmsHeader xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" JMSType=\"ABC\" JMSDeliveryMode=\"PERSISTENT\" JMSDeliveryMode=\"PERSISTENT\" JMSTimeToLive=\"123\" JMSPriority=\"4\"><tuscany:property name=\"aProperty\">property value</tuscany:property></tuscany:jmsHeader>",
+        Arrays.asList("<tuscany:jmsHeader xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" JMSType=\"ABC\" JMSDeliveryMode=\"PERSISTENT\" JMSTimeToLive=\"123\" JMSPriority=\"4\"><tuscany:property name=\"aProperty\">property value</tuscany:property></tuscany:jmsHeader>",
                       "<tuscany:jmsTokenAuthentication xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" tuscany:tokenName=\"{http://tuscany.apache.org/foo}myname\" />");
     
     @Test

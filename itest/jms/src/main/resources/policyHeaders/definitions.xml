@@ -22,7 +22,7 @@
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
  			 xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
 
-    <policySet name="JMSPolicySet"
+    <policySet name="JMSPolicySet1"
                provides="priority"
                appliesTo="sca:binding.jms">
         <intentMap provides="priority" default="medium">
@@ -37,5 +37,18 @@
             </qualifier>
         </intentMap>
     </policySet>
+    
+    <policySet name="JMSPolicySet2"
+               provides="deliveryMode"
+               appliesTo="sca:binding.jms">
+        <intentMap provides="deliveryMode" default="nonPersistent">
+            <qualifier name="persistent">
+                <tuscany:jmsHeader JMSDeliveryMode="PERSISTENT"/>
+            </qualifier>
+            <qualifier name="nonPersistent">
+                <tuscany:jmsHeader JMSDeliveryMode="NON_PERSISTENT"/>
+            </qualifier>
+        </intentMap>
+    </policySet>    
 
 </definitions>

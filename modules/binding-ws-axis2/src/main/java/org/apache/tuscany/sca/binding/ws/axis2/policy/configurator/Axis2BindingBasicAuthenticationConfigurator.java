@@ -114,15 +114,5 @@ public class Axis2BindingBasicAuthenticationConfigurator {
         BasicAuthenticationPrincipal principal =  new BasicAuthenticationPrincipal(username,
                                                                                    password);
         subject.getPrincipals().add(principal);
-
-        // Set the http headers
-        // This is just an experiment, looking at the alternatives to extracting
-        // username and password in the binding. With HTTP headers in the message it
-        // could be deferred to the interceptor. Asymetric though when compared with the
-        // reference support. 
-        // how to defined the scheme for message headers?
-        msg.getHeaders().put("httpheaders", httpHeaderProperties); 
     }    
-        
-
 }

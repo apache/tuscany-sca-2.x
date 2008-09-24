@@ -23,6 +23,8 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyUtil;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeader;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -66,7 +68,7 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
 
     public Message invoke(Message msg) {
         
-        Axis2SOAPHeaderString header = (Axis2SOAPHeaderString)msg.getHeaders().get(policy.getTokenName().toString());
+        Axis2SOAPHeaderString header = (Axis2SOAPHeaderString)Axis2HeaderPolicyUtil.getHeader(msg, policy.getTokenName());
         
         if (header != null) {
             System.out.println("Token: " + header.getHeaderString());

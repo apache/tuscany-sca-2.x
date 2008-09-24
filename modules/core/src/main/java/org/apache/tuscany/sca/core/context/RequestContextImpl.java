@@ -48,7 +48,15 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public Subject getSecuritySubject() {
-        return (Subject)ThreadMessageContext.getMessageContext().getQoSContext().get(Message.QOS_CTX_SECURITY_SUBJECT);
+        Subject subject = null;
+        
+        for (Object header : ThreadMessageContext.getMessageContext().getHeaders()){
+            if (header instanceof Subject){
+                subject  = (Subject)header;
+                break;
+            }
+        }
+        return subject;
     }
 
     public String getServiceName() {

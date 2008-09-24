@@ -23,6 +23,7 @@ import java.security.Principal;
 
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
@@ -39,10 +40,11 @@ public class CheckingsDeptAuthorizationPolicyHandler implements PolicyHandler {
             if ( context[count] instanceof Message ) {
                 Message msg = (Message)context[count];
                 Object args[] = (Object[])msg.getBody();
-                if ( msg.getQoSContext().get(Message.QOS_CTX_SECURITY_PRINCIPAL) != null ) {
-                        BigbankCheckingsAcl.authorize((Principal)msg.getQoSContext().get(Message.QOS_CTX_SECURITY_PRINCIPAL),
-                                                      (String)args[0]);
-                }
+                Principal principal = SecurityUtil.getPrincipal(msg);
+                if (principal != null){
+                    BigbankCheckingsAcl.authorize(principal,
+                                                 (String)args[0]);
+                }                
             }
         }
     }

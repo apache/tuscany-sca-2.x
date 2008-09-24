@@ -19,11 +19,15 @@
 package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
 
 
+import javax.security.auth.Subject;
+
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -63,9 +67,13 @@ public class JMSTokenAuthenticationReferencePolicyInterceptor implements Interce
         
         if ( policy.getTokenName() != null){
     
-            // add header to Tuscany message
-            msg.getHeaders().put(policy.getTokenName().toString(),
-                                 "SomeJMSAuthorizationToken");  
+            Subject subject = SecurityUtil.getSubject(msg);
+            TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
+            
+            if (principal == null){
+                principal = new TokenPrincipal("SomeJMSAuthorizationToken");
+                subject.getPrincipals().add(principal);
+            }
         }
         
         return getNext().invoke(msg);
