@@ -108,7 +108,7 @@ public interface Message {
     void setOperation(Operation op);
     
     /** 
-     * Returns a map of objects that are contained in the message header
+     * Returns a list of objects that are contained in the message header
      * 
      * @return
      */
