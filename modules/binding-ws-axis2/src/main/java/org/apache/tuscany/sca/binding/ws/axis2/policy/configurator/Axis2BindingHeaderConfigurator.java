@@ -27,6 +27,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.context.MessageContext;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyUtil;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeader;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -46,9 +47,11 @@ public class Axis2BindingHeaderConfigurator {
             OMFactory factory = envelope.getOMFactory();
             SOAPHeader soapHeader = envelope.getHeader();
             
-            Axis2SOAPHeader header = (Axis2SOAPHeader)msg.getHeaders().get(headerQName.toString());
+            Axis2SOAPHeader header = Axis2HeaderPolicyUtil.getHeader(msg, headerQName) ;
             
-            soapHeader.addChild(header.getAsSOAPHeaderBlock(factory));
+            if (header != null){
+                soapHeader.addChild(header.getAsSOAPHeaderBlock(factory));
+            } 
         }
     }
     
@@ -60,7 +63,7 @@ public class Axis2BindingHeaderConfigurator {
         
         header.setAsSOAPHeaderBlock(omHeader);
         
-        msg.getHeaders().put(headerQName.toString(), header); 
+        msg.getHeaders().add(header); 
     }  
 
 }

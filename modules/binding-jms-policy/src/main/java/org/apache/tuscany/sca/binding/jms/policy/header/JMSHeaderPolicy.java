@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.policy.Policy;
 public class JMSHeaderPolicy implements Policy {
     public static final QName JMS_HEADER_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jmsHeader");
     public static final String JMS_HEADER_JMS_TYPE = "JMSType";
-    public static final String JMS_HEADER_JMS_CORRELATION_ID = "JMSDeliveryMode";
+    public static final String JMS_HEADER_JMS_CORRELATION_ID = "JMSCorrelationID";
     public static final String JMS_HEADER_JMS_DELIVERY_MODE = "JMSDeliveryMode";
     public static final String JMS_HEADER_JMS_TIME_TO_LIVE = "JMSTimeToLive";
     public static final String JMS_HEADER_JMS_PRIORITY = "JMSPriority";

@@ -78,7 +78,7 @@ public class CustomCompositeBuilder {
     private Composite domainComposite;
     private boolean nonWiring;
 
-    protected CustomCompositeBuilder(boolean nonWiring) {
+    public CustomCompositeBuilder(boolean nonWiring) {
         this.nonWiring = nonWiring;
     }
 

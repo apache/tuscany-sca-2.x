@@ -62,17 +62,7 @@ public class Axis2HeaderServicePolicyInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        
-        OMElement header = (OMElement)msg.getHeaders().get(policy.getHeaderName().toString());
-        
-        if (header != null) {
-            
-            System.out.println("Token: " + header.getText());
-            // could call out here to some 3rd part system to do whatever you 
-            // need to turn credentials into a principal            
-            
-            msg.getQoSContext().put(Message.QOS_CTX_SECURITY_PRINCIPAL, header.getText());             
-        }
+        // TODO - not yet implemented       
     
         return getNext().invoke(msg);
     }

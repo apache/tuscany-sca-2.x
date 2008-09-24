@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -186,7 +187,7 @@ public class NonBlockingInterceptor implements Interceptor {
             return null;
         }
         
-        public Map<String, Object> getHeaders() {
+        public List<Object> getHeaders() {
             return null;
         }        
     }

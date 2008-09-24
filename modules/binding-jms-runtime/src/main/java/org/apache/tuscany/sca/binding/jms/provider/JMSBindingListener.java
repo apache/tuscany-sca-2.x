@@ -32,6 +32,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.NamingException;
+import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
@@ -43,6 +44,8 @@ import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -205,8 +208,15 @@ public class JMSBindingListener implements MessageListener {
         
         if (jmsTokenAuthenticationPolicy != null) {
             String token = requestJMSMsg.getStringProperty(jmsTokenAuthenticationPolicy.getTokenName().toString());
-            tuscanyMsg.getHeaders().put(jmsTokenAuthenticationPolicy.getTokenName().toString(),
-                                        token);
+            
+            Subject subject = SecurityUtil.getSubject(tuscanyMsg);
+            TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
+            
+            if (principal == null){
+                principal = new TokenPrincipal(token);
+                subject.getPrincipals().add(principal);
+            }
+
         }
     }
 

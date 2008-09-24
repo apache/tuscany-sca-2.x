@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.notification;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -89,11 +90,8 @@ public class ImmutableMessage implements Message {
         return null;
     }
 
-    public Map<String, Object> getQoSContext() {
-        return null;
-    }
     
-    public Map<String, Object> getHeaders() {
+    public List<Object> getHeaders() {
         return null;
     }
 

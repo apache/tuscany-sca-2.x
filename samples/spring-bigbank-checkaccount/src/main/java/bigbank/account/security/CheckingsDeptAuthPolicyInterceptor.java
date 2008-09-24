@@ -7,6 +7,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.SecurityUtil;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -46,10 +47,11 @@ public class CheckingsDeptAuthPolicyInterceptor implements Interceptor {
         Object msgBody = msg.getBody();
         if (msgBody instanceof Object[]) {
         	Object args[] = (Object[])msg.getBody();
-            if ( msg.getQoSContext().get(Message.QOS_CTX_SECURITY_PRINCIPAL) != null ) {
-                    BigbankCheckingsAcl.authorize((Principal)msg.getQoSContext().get(Message.QOS_CTX_SECURITY_PRINCIPAL),
-                                                  (String)args[0]);
-            }
+            Principal principal = SecurityUtil.getPrincipal(msg);
+            if (principal != null){
+                BigbankCheckingsAcl.authorize(principal,
+                                             (String)args[0]);
+            }        	
         } 
         
         Message responseMsg = null;

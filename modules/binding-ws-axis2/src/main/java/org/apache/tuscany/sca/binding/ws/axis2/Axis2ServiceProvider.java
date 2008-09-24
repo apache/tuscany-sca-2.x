@@ -808,7 +808,7 @@ public class Axis2ServiceProvider {
                             WSSecurityEngineResult securityResult = 
                                 (WSSecurityEngineResult)wshr.getResults().elementAt(count2);
                             if ( securityResult.get("principal") != null ) {
-                                message.getQoSContext().put(Message.QOS_CTX_SECURITY_PRINCIPAL, securityResult.get("principal"));
+                                message.getHeaders().add(securityResult.get("principal"));
                             }
                         }
                     }

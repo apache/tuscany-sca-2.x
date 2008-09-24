@@ -73,23 +73,7 @@ public class Axis2HeaderReferencePolicyInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        // could call out here to some 3rd party system to get credentials
-        
-        if ( policy.getHeaderName() != null){
-            // create Axis representation of header
-            //OMElement header = SOAPFactory
-            
-            OMFactory factory = OMAbstractFactory.getOMFactory();
-            OMNamespace ns1 = factory.createOMNamespace(policy.getHeaderName().getNamespaceURI(),
-                                                        policy.getHeaderName().getPrefix());
-            OMElement header = factory.createOMElement(policy.getHeaderName().getLocalPart(),ns1);
-            OMText headerText = factory.createOMText(header,"SomeAuthTokenText");
-            header.addChild(headerText);
-    
-            // add header to Tuscany message
-            msg.getHeaders().put(policy.getHeaderName().toString(),
-                                 policy);  
-        }
+        // TODO - not yet implemented  
         
         return getNext().invoke(msg);
     }

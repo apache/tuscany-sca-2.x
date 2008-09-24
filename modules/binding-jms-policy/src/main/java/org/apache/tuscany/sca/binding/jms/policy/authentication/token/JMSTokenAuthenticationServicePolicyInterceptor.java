@@ -66,18 +66,14 @@ public class JMSTokenAuthenticationServicePolicyInterceptor implements Intercept
     }
 
     public Message invoke(Message msg) {
+        Subject subject = SecurityUtil.getSubject(msg);
+        TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
         
-        String token = (String)msg.getHeaders().get(policy.getTokenName().toString());
-        
-        if (token != null) {
-            System.out.println("Token: " + token);
+        if (principal != null) {
+            System.out.println("Token: " + principal.getName());
             
             // call out here to some 3rd party system to do whatever you 
-            // need to turn header credentials into an authenticated principal 
-            
-            Subject subject = SecurityUtil.getSubject(msg);
-            Principal principal = new TokenPrincipal(token);
-            subject.getPrincipals().add(principal);              
+            // need to authenticate the principal
         }
     
         return getNext().invoke(msg);

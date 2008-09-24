@@ -33,11 +33,19 @@ import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPri
 public class SecurityUtil {
     
     public static Subject getSubject(Message msg){
-        Subject subject = (Subject)msg.getQoSContext().get(Message.QOS_CTX_SECURITY_SUBJECT);
+        
+        Subject subject = null;
+        
+        for (Object header : msg.getHeaders()){
+            if (header instanceof Subject){
+                subject  = (Subject)header;
+                break;
+            }
+        }
         
         if (subject == null){
             subject = new Subject(); 
-            msg.getQoSContext().put(Message.QOS_CTX_SECURITY_SUBJECT, subject); 
+            msg.getHeaders().add(subject); 
         }
         
         return subject;
@@ -52,4 +60,18 @@ public class SecurityUtil {
         
         return null;
     }
+    
+    public static Principal getPrincipal(Message msg){
+        
+        Principal principal = null;
+        
+        for (Object header : msg.getHeaders()){
+            if (header instanceof Principal){
+                principal  = (Principal)header;
+                break;
+            }
+        }
+        
+        return principal;
+    }    
 }

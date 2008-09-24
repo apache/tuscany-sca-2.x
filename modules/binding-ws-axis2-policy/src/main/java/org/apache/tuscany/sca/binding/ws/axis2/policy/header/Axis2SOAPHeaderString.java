@@ -54,6 +54,7 @@ public class Axis2SOAPHeaderString extends Axis2SOAPHeader {
     }
 
     public void setAsSOAPHeaderBlock(OMElement header) {
+        super.setAsSOAPHeaderBlock(header);
         headerString = header.getText();
     }
 }
