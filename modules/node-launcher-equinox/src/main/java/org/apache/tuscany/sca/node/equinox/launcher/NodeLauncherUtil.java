@@ -499,7 +499,7 @@ final class NodeLauncherUtil {
                 Manifest manifest = new Manifest(new FileInputStream(mf));
                 bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
             } else {
-                if (file.getPath().endsWith("target/classes")) {
+                if (file.toURI().getPath().endsWith("/target/classes/")) {
                     // Development mode, MANIFEST.MF is outside the bundle location
                     mf = new File(file.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
                     if (mf.isFile()) {
@@ -652,7 +652,7 @@ final class NodeLauncherUtil {
                     }
                 }
             }
-        } else if (uri.getPath().endsWith("target/classes/")) {
+        } else if (uri.getPath().endsWith("/target/classes/")) {
             
             // Development mode, we're running off classes in a workspace
             // and not from Maven surefire, collect all bundles in the workspace

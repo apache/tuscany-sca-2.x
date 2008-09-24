@@ -275,7 +275,7 @@ public class EquinoxHost {
                             //bundle.start();
                         } catch (Exception e) {
                             logger.log(Level.SEVERE, e.getMessage(), e);
-                            throw e;
+                            // throw e;
                         }
                         logger.info("Bundle: " + string(bundle, false));
                     }
