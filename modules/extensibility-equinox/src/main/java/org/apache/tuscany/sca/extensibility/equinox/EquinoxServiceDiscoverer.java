@@ -209,14 +209,18 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             Enumeration<URL> urls = null;
             try {
                 // Use getResources to find resources on the classpath of the bundle
-                // Please note if there is an DynamicImport-Package=*, and another bundle
-                // exports the resource package, there is a possiblity that it doesn't
+                // Please note there are cases that getResources will return null even
+                // the bundle containing such entries:
+                // 1. There is a match on Import-Package or DynamicImport-Package, and another 
+                // bundle exports the resource package, there is a possiblity that it doesn't
                 // find the containing entry
+                // 2. The bundle cannot be resolved, then getResources will return null
                 urls = bundle.getResources(serviceName);
                 if (urls == null) {
                     URL entry = bundle.getEntry(serviceName);
                     if (entry != null) {
-                        urls = Collections.enumeration(Arrays.asList(entry));
+                        logger.warning("Unresolved resource " + serviceName + " found in " + toString(bundle));
+                        // urls = Collections.enumeration(Arrays.asList(entry));
                     }
                 }
             } catch (IOException e) {
