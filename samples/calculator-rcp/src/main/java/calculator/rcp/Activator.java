@@ -49,7 +49,8 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
         
         launcher = NodeLauncher.newInstance();
-        node = launcher.createNode("Calculator.composite", new Contribution("c1", new File("target/classes").toURI().toString()));
+        String location = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+        node = launcher.createNode("Calculator.composite", new Contribution("c1", location));
         node.start();
     }
 
