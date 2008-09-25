@@ -48,7 +48,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Wraps the Equinox runtime.
  */
-public class EquinoxHost {
+class EquinoxHost {
     private static Logger logger = Logger.getLogger(EquinoxHost.class.getName());
 
     private BundleContext bundleContext;
@@ -118,7 +118,7 @@ public class EquinoxHost {
      * 
      * @return
      */
-    public BundleContext start() {
+    BundleContext start() {
         try {
             if (!EclipseStarter.isRunning()) {
 
@@ -292,7 +292,7 @@ public class EquinoxHost {
     /**
      * Stop the Equinox host.
      */
-    public void stop() {
+    void stop() {
         try {
             
             // Uninstall all the bundles we've installed

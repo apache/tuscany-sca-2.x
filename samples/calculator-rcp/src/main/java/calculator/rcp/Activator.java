@@ -18,10 +18,9 @@
  */
 package calculator.rcp;
 
-import java.io.File;
-
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
+import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -49,7 +48,7 @@ public class Activator extends AbstractUIPlugin {
         plugin = this;
         
         launcher = NodeLauncher.newInstance();
-        String location = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+        String location = ContributionLocationHelper.getContributionLocation(getClass());
         node = launcher.createNode("Calculator.composite", new Contribution("c1", location));
         node.start();
     }

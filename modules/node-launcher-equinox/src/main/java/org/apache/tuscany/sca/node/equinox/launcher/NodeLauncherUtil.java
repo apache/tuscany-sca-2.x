@@ -103,7 +103,6 @@ final class NodeLauncherUtil {
                        String compositeURI,
                        String compositeContent,
                        Contribution[] contributions,
-                       ClassLoader contributionClassLoader,
                        BundleContext bundleContext) throws LauncherException {
         try {
             
@@ -128,12 +127,6 @@ final class NodeLauncherUtil {
 
                 // Construct the node with a configuration URI
                 bootstrap = bootstrapClass.getConstructor(String.class).newInstance(configurationURI);
-
-            } else if (contributionClassLoader != null) {
-
-                // Construct the node with a compositeURI and a classloader
-                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, ClassLoader.class);
-                bootstrap = constructor.newInstance(compositeURI, contributionClassLoader);
 
             } else if (compositeContent != null) {
 

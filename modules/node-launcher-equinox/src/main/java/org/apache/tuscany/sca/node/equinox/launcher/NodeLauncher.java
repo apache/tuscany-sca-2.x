@@ -65,7 +65,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
-        return (T)node(configurationURL, null, null, null, null, bundleContext);
+        return (T)node(configurationURL, null, null, null, bundleContext);
     }
 
     /**
@@ -80,7 +80,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, Contribution... contributions) throws LauncherException {
-        return (T)node(null, compositeURI, null, contributions, null, bundleContext);
+        return (T)node(null, compositeURI, null, contributions, bundleContext);
     }
 
     /**
@@ -94,25 +94,7 @@ public class NodeLauncher {
      */
     public <T> T createNode(String compositeURI, String compositeContent, Contribution... contributions)
         throws LauncherException {
-        return (T)node(null, compositeURI, compositeContent, contributions, null, bundleContext);
-    }
-
-    /**
-     * Create a SCA node based on the discovery of the contribution on the classpath for the 
-     * given classloader. This method should be treated a convenient shortcut with the following
-     * assumptions:
-     * <ul>
-     * <li>This is a standalone application and there is a deployable composite file on the classpath.
-     * <li>There is only one contribution which contains the deployable composite file physically in its packaging hierarchy.
-     * </ul> 
-     * 
-     * @param compositeURI The URI of the composite file relative to the root of the enclosing contribution
-     * @param classLoader The ClassLoader used to load the composite file as a resource. If the value is null,
-     * then thread context classloader will be used
-     * @return A newly created SCA node
-     */
-    public <T> T createNodeFromClassLoader(String compositeURI, ClassLoader classLoader) throws LauncherException {
-        return (T)node(null, compositeURI, null, null, classLoader, bundleContext);
+        return (T)node(null, compositeURI, compositeContent, contributions, bundleContext);
     }
 
     public static void main(String[] args) throws Exception {

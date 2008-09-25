@@ -21,6 +21,8 @@ package calculator;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
+import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Scope;
@@ -38,7 +40,8 @@ public class CalculatorTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         launcher = NodeLauncher.newInstance();
-        node = launcher.createNodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
+        String location = ContributionLocationHelper.getContributionLocation(getClass());
+        node = launcher.createNode("Calculator.composite", new Contribution("test", location));
         System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
         node.start();
     }

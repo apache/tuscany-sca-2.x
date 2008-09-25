@@ -50,7 +50,8 @@ public class NodeLauncherTestCase {
 
     @Test
     public void testLaunch() throws Exception {
-        SCANode node = launcher.createNodeFromClassLoader("HelloWorld.composite", getClass().getClassLoader());
+        String location = ContributionLocationHelper.getContributionLocation(getClass());
+        SCANode node = launcher.createNode("HelloWorld.composite", new Contribution("test",  location));
         node.start();
         node.stop();
     }
