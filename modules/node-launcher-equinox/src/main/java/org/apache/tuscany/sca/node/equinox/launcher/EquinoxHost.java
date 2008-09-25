@@ -208,7 +208,9 @@ class EquinoxHost {
             if (libraryBundle == null) {
                 logger.info("Generating third-party library bundle.");
                 for (String jarFile: jarFiles) {
-                    logger.info("Adding third-party jar: " + jarFile);
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Adding third-party jar: " + jarFile);
+                    }
                 }
                 long libraryStart = currentTimeMillis();
                 InputStream library = thirdPartyLibraryBundle(jarFiles);
@@ -240,7 +242,9 @@ class EquinoxHost {
                 if (bundle == null) {
                     long installStart = currentTimeMillis();
                     bundle = bundleContext.installBundle(bundleFile);
-                    logger.info("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
+                    }
                     allBundles.put(bundleName, bundle);
                     installedBundles.add(bundle);
                 }
@@ -254,34 +258,42 @@ class EquinoxHost {
             String extensibilityBundleName = "org.apache.tuscany.sca.extensibility.equinox";
             Bundle extensibilityBundle = allBundles.get(extensibilityBundleName);
             if ((extensibilityBundle.getState() & Bundle.ACTIVE) == 0) {
-                logger.info("Starting bundle: " + string(extensibilityBundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Starting bundle: " + string(extensibilityBundle, false));
+                }
                 extensibilityBundle.start();
-            } else {
-                logger.info("Bundle is already started: " + string(extensibilityBundle, false));
+            } else if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Bundle is already started: " + string(extensibilityBundle, false));
             }
             if ((launcherBundle.getState() & Bundle.ACTIVE) == 0) {
-                logger.info("Starting bundle: " + string(launcherBundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Starting bundle: " + string(launcherBundle, false));
+                }
                 launcherBundle.start();
-            } else {
-                logger.info("Bundle is already started: " + string(launcherBundle, false));
+            } else if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Bundle is already started: " + string(launcherBundle, false));
             }
 
             // Start all our bundles for now to help diagnose any class loading issues
-            for (Bundle bundle: bundleContext.getBundles()) {
-                if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
-                    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
-                        logger.info("Starting bundle: " + string(bundle, false));
-                        try {
-                            //bundle.start();
-                        } catch (Exception e) {
-                            logger.log(Level.SEVERE, e.getMessage(), e);
-                            // throw e;
-                        }
-                        logger.info("Bundle: " + string(bundle, false));
-                    }
-                }
-            }
-            logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
+//            for (Bundle bundle: bundleContext.getBundles()) {
+//                if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
+//                    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
+//                        if (logger.isLoggable(Level.FINE)) {
+//                            logger.fine("Starting bundle: " + string(bundle, false));
+//                        }
+//                        try {
+//                            //bundle.start();
+//                        } catch (Exception e) {
+//                            logger.log(Level.SEVERE, e.getMessage(), e);
+//                            // throw e;
+//                        }
+//                        if (logger.isLoggable(Level.FINE)) {
+//                            logger.fine("Bundle: " + string(bundle, false));
+//                        }
+//                    }
+//                }
+//            }
+//            logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
             return bundleContext;
             
         } catch (Exception e) {
@@ -299,9 +311,9 @@ class EquinoxHost {
             for (int i = installedBundles.size() -1; i >= 0; i--) {
                 Bundle bundle = installedBundles.get(i);
                 try {
-                    //if (logger.isLoggable(Level.FINE)) {
-                    logger.info("Uninstalling bundle: " + string(bundle, false));
-                    //}
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Uninstalling bundle: " + string(bundle, false));
+                    }
                     bundle.uninstall();
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
