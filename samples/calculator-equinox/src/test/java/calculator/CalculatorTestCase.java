@@ -40,7 +40,7 @@ public class CalculatorTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         launcher = NodeLauncher.newInstance();
-        String location = ContributionLocationHelper.getContributionLocation(getClass());
+        String location = ContributionLocationHelper.getContributionLocation(CalculatorClient.class);
         node = launcher.createNode("Calculator.composite", new Contribution("test", location));
         System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
         node.start();
