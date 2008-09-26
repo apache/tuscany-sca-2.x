@@ -35,7 +35,8 @@
         </repository>
     </repositories>
 
-    <dependencies>     
+    <dependencies>  
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-api</artifactId>
