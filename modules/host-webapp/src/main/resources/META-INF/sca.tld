@@ -37,18 +37,21 @@
     <attribute>
       <name>name</name>
       <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
       <type>java.lang.String</type>
     </attribute>
 
     <attribute>
       <name>type</name>
       <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
       <type>java.lang.String</type>
     </attribute>
 
     <attribute>
       <name>scope</name>
       <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
       <type>java.lang.Integer</type>
     </attribute>
 
