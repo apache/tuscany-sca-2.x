@@ -42,6 +42,11 @@
             <artifactId>tuscany-node-api</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-security</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
