@@ -55,7 +55,7 @@
 	}
 	
 	function shoppingCart_getResponse(feedDoc) {
-	    // var xmlString = new XMLSerializer().serializeToString(feed);
+	    // var xmlString = new XMLSerializer().serializeToString(feedDoc);
 	    // alert("shoppingCart_getResponse feed xml=" + xmlString);
 		var feed = new Feed( feedDoc );
 		
@@ -65,7 +65,7 @@
 			var list = "";
 			for (var i=0; i<entries.length; i++) {
 				// var item = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				var item = entries[i].getContent().getText();
+				var item = entries[ i ].getContent().getText();
 				list += item + ' <br>';
 			}
 			document.getElementById("shoppingCart").innerHTML = list;
