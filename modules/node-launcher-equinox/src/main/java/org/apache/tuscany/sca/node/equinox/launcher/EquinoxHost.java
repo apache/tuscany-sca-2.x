@@ -158,7 +158,18 @@ class EquinoxHost {
             }
             
             // Determine the runtime classpath entries
-            Set<URL> urls = runtimeClasspathEntries();
+            Set<URL> urls;
+            if (!startedEclipse) {
+                
+                // Use classpath entries from a distribution if there is one and the modules
+                // directories available in a dev environment for example
+                urls = runtimeClasspathEntries(true, false, true);
+            } else {
+                
+                // Use classpath entries from a distribution if there is one and the classpath
+                // entries on the current application's classloader
+                urls = runtimeClasspathEntries(true, true, false);
+            }
 
             // Sort out which are bundles (and not already installed) and which are just
             // regular JARs

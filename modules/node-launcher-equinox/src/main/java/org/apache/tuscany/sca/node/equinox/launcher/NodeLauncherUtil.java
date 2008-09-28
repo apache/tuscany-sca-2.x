@@ -610,10 +610,13 @@ final class NodeLauncherUtil {
 
     /**
      * Determine the Tuscany runtime classpath entries.
-     * 
+     *
+     * @param useDistribution
+     * @param useAppClasspath
+     * @param useModulesDirectory
      * @return
      */
-    static Set<URL> runtimeClasspathEntries() throws FileNotFoundException,
+    static Set<URL> runtimeClasspathEntries(boolean useDistribution, boolean useAppClasspath, boolean useModulesDirectory) throws FileNotFoundException,
         URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
@@ -627,37 +630,41 @@ final class NodeLauncherUtil {
         // that JAR (e.g. the Tuscany modules directory) as well as the ../modules and
         // ../lib directories
         if (uri.getPath().endsWith(".jar")) {
-    
-            File file = new File(uri);
-            if (file.exists()) {
-                File jarDirectory = file.getParentFile();
-                if (jarDirectory != null && jarDirectory.exists()) {
-    
-                    // Collect JAR files from the directory containing the input JAR
-                    // (e.g. the Tuscany modules directory)
-                    URL jarDirectoryURL = jarDirectory.toURI().toURL();
-                    jarDirectoryURLs.add(jarDirectoryURL);
-                    collectClasspathEntries(jarDirectory, jarURLs, new StandAloneJARFileNameFilter());
-    
-                    File homeDirectory = jarDirectory.getParentFile();
-                    if (homeDirectory != null && homeDirectory.exists()) {
-                        collectDistributionClasspathEntries(homeDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+            if (useDistribution) {
+        
+                File file = new File(uri);
+                if (file.exists()) {
+                    File jarDirectory = file.getParentFile();
+                    if (jarDirectory != null && jarDirectory.exists()) {
+        
+                        // Collect JAR files from the directory containing the input JAR
+                        // (e.g. the Tuscany modules directory)
+                        URL jarDirectoryURL = jarDirectory.toURI().toURL();
+                        jarDirectoryURLs.add(jarDirectoryURL);
+                        collectClasspathEntries(jarDirectory, jarURLs, new StandAloneJARFileNameFilter());
+        
+                        File homeDirectory = jarDirectory.getParentFile();
+                        if (homeDirectory != null && homeDirectory.exists()) {
+                            collectDistributionClasspathEntries(homeDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+                        }
                     }
                 }
             }
         } else if (uri.getPath().endsWith("/target/classes/")) {
-            
+                
             // Development mode, we're running off classes in a workspace
             // and not from Maven surefire, collect all bundles in the workspace
-            ClassLoader cl = NodeLauncherUtil.class.getClassLoader();
-            if (!cl.getClass().getName().startsWith("org.apache.maven.surefire")) {
-                File file = new File(uri);
-                if (file.exists()) {
-                    File moduleDirectory = file.getParentFile().getParentFile();
-                    if (moduleDirectory != null) {
-                        File modulesDirectory = moduleDirectory.getParentFile();
-                        if (modulesDirectory != null && modulesDirectory.exists() && modulesDirectory.getName().equals("modules")) {
-                            collectDevelopmentClasspathEntries(modulesDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneDevelopmentClassesFileNameFilter());
+            if (useModulesDirectory) {
+                ClassLoader cl = NodeLauncherUtil.class.getClassLoader();
+                if (!cl.getClass().getName().startsWith("org.apache.maven.surefire")) {
+                    File file = new File(uri);
+                    if (file.exists()) {
+                        File moduleDirectory = file.getParentFile().getParentFile();
+                        if (moduleDirectory != null) {
+                            File modulesDirectory = moduleDirectory.getParentFile();
+                            if (modulesDirectory != null && modulesDirectory.exists() && modulesDirectory.getName().equals("modules")) {
+                                collectDevelopmentClasspathEntries(modulesDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneDevelopmentClassesFileNameFilter());
+                            }
                         }
                     }
                 }
@@ -667,26 +674,30 @@ final class NodeLauncherUtil {
         // Look for a TUSCANY_HOME system property or environment variable
         // Add all the JARs found under $TUSCANY_HOME, $TUSCANY_HOME/modules
         // and $TUSCANY_HOME/lib
-        String home = getProperty(TUSCANY_HOME);
-        if (home != null && home.length() != 0) {
-            logger.info(TUSCANY_HOME + ": " + home);
-            collectDistributionClasspathEntries(home, jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
-        }
-    
-        // Look for a TUSCANY_PATH system property or environment variable
-        // Add all the JARs found under $TUSCANY_PATH, $TUSCANY_PATH/modules
-        // and $TUSCANY_PATH/lib
-        String ext = getProperty(TUSCANY_PATH);
-        if (ext != null && ext.length() != 0) {
-            logger.info(TUSCANY_PATH + ": " + ext);
-            String separator = getProperty("path.separator");
-            for (StringTokenizer tokens = new StringTokenizer(ext, separator); tokens.hasMoreTokens();) {
-                collectDistributionClasspathEntries(tokens.nextToken(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+        if (useDistribution) {
+            String home = getProperty(TUSCANY_HOME);
+            if (home != null && home.length() != 0) {
+                logger.info(TUSCANY_HOME + ": " + home);
+                collectDistributionClasspathEntries(home, jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+            }
+        
+            // Look for a TUSCANY_PATH system property or environment variable
+            // Add all the JARs found under $TUSCANY_PATH, $TUSCANY_PATH/modules
+            // and $TUSCANY_PATH/lib
+            String ext = getProperty(TUSCANY_PATH);
+            if (ext != null && ext.length() != 0) {
+                logger.info(TUSCANY_PATH + ": " + ext);
+                String separator = getProperty("path.separator");
+                for (StringTokenizer tokens = new StringTokenizer(ext, separator); tokens.hasMoreTokens();) {
+                    collectDistributionClasspathEntries(tokens.nextToken(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+                }
             }
         }
         
         // Add the classpath entries from the current classloader
-        collectClassLoaderClasspathEntries(jarURLs, NodeLauncherUtil.class.getClassLoader(), false);
+        if (useAppClasspath) {
+            collectClassLoaderClasspathEntries(jarURLs, NodeLauncherUtil.class.getClassLoader());
+        }
     
         return jarURLs;
     
@@ -700,7 +711,7 @@ final class NodeLauncherUtil {
      */
     static List<URL> jarFilesOnClasspath(ClassLoader classLoader) {
         Set<URL> entries = new HashSet<URL>();
-        collectClassLoaderClasspathEntries(entries, classLoader, false);
+        collectClassLoaderClasspathEntries(entries, classLoader);
         return new ArrayList<URL>(entries);
     }
 
@@ -723,7 +734,7 @@ final class NodeLauncherUtil {
      * @param urls
      * @param cl
      */
-    private static void collectClassLoaderClasspathEntries(Set<URL> urls, ClassLoader cl, boolean recursive) {
+    private static void collectClassLoaderClasspathEntries(Set<URL> urls, ClassLoader cl) {
         if (cl == null) {
             return;
         }
@@ -735,12 +746,11 @@ final class NodeLauncherUtil {
                 for (URL jarURL : jarURLs) {
                     urls.add(jarURL);
                 }
+                int count = jarURLs.length;
+                if (count != 0) {
+                    logger.info("Runtime classpath: " + count + " JAR" + (count > 1? "s":"")+ " from application classpath.");
+                }
             }
-        }
-    
-        // Collect JARs from the parent ClassLoader
-        if (recursive) {
-            collectClassLoaderClasspathEntries(urls, cl.getParent(), recursive);
         }
     }
 
