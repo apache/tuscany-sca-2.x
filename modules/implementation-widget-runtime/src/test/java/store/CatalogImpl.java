@@ -34,9 +34,9 @@ public class CatalogImpl implements Catalog {
 
     @Init
     public void init() {
-        catalog.add("Apple - US$ 2.99");
-        catalog.add("Orange - US$ 3.55");
-        catalog.add("Pear - US$ 1.55");
+        catalog.add("Apple - $ 2.99");
+        catalog.add("Orange - $ 3.55");
+        catalog.add("Pear - $ 1.55");
     }
 
     public String[] get() {

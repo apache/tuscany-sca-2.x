@@ -47,7 +47,6 @@ public class ShoppingCartImpl implements Collection {
         for (Entry entry : cart.values()) {
             feed.addEntry(entry);
         }
-
         return feed;
     }
     
@@ -83,7 +82,7 @@ public class ShoppingCartImpl implements Collection {
         entry.addLink(id, "edit");
         entry.addLink(id, "alternate");
         
-        entry.setEdited(new Date());
+        entry.setUpdated(new Date());
 
         cart.put(id, entry);
         return entry;
@@ -106,6 +105,7 @@ public class ShoppingCartImpl implements Collection {
         String currencySymbol = "";
         if (!cart.isEmpty()) {
             String item = ((Entry)cart.values().iterator().next()).getContent();
+            // Select first symbol after dash.
             currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
         }
         for (Entry entry : cart.values()) {
