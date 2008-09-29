@@ -29,7 +29,7 @@
 		
 		<properties>
 	        <property name="openjpa.ConnectionDriverName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-	        <property name="openjpa.ConnectionURL" value="jdbc:derby:target/classes/customer"/>
+	        <property name="openjpa.ConnectionURL" value="jdbc:derby:target/classes/customer-db"/>
 			<property name="openjpa.ConnectionUserName" value=""/>
 			<property name="openjpa.ConnectionPassword" value=""/>		
 			

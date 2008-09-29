@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.1.2.1</version>
+			<version>10.3.1.4</version>
 		</dependency>		
 
         <dependency>
@@ -214,7 +214,7 @@
                         </goals>
                         <configuration>
                             <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-                            <url>jdbc:derby:${pom.basedir}/target/classes/customer;create=true</url>
+                            <url>jdbc:derby:${pom.basedir}/target/classes/customer-db;create=true</url>
                             <autocommit>true</autocommit>
                             <onError>continue</onError>
                             <onConnectionError>skip</onConnectionError>
@@ -234,7 +234,7 @@
                     	</goals>
                     	<configuration>
                     	    <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-                    		<url>jdbc:derby:${pom.basedir}/target/classes/customer;shutdown=true</url>
+                    		<url>jdbc:derby:${pom.basedir}/target/classes/customer-db;shutdown=true</url>
                     		<skipOnConnectionError>true</skipOnConnectionError>
                     	</configuration>
                     </execution>
