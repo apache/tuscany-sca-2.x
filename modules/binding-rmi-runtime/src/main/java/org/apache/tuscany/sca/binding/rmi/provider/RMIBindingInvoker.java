@@ -35,18 +35,14 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
 
     private RMIHost rmiHost;
-    private String host;
-    private String port;
-    private String svcName;
+    private String uri;
     private Method remoteMethod;
     private Remote proxy;
 
-    public RMIBindingInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
+    public RMIBindingInvoker(RMIHost rmiHost, String uri, Method remoteMethod) {
         this.rmiHost = rmiHost;
         this.remoteMethod = remoteMethod;
-        this.host = host;
-        this.port = port;
-        this.svcName = svcName;
+        this.uri = uri;
     }
 
     public Message invoke(Message msg) {
@@ -67,8 +63,7 @@ public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
         if (proxy == null) {
-            proxy = rmiHost.findService(host, port, svcName);
-            // proxy = Naming.lookup(serviceURI);
+            proxy = rmiHost.findService(uri);
         }
 
         remoteMethod = proxy.getClass().getMethod(remoteMethod.getName(), remoteMethod.getParameterTypes());

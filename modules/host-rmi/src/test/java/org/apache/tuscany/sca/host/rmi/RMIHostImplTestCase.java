@@ -36,7 +36,7 @@ public class RMIHostImplTestCase extends TestCase {
 
     public void testFindServiceBadHost() throws RMIHostRuntimeException, RMIHostException {
         try {
-            new DefaultRMIHost().findService(null, "9994", "$BAD$");
+            new DefaultRMIHost().findService("rmi://locahost:9994/$BAD$");
             fail();
         } catch (RMIHostRuntimeException e) {
             // expected
@@ -45,40 +45,40 @@ public class RMIHostImplTestCase extends TestCase {
 
     public void testRegisterService1() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host = new DefaultRMIHost();
-        host.registerService("foo1", 9996, new MockRemote());
-        host.unregisterService("foo1", 9996);
+        host.registerService("rmi://localhost:9996/foo1", new MockRemote());
+        host.unregisterService("rmi://localhost:9996/foo1");
     }
 
     public void testExistingRegistry() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host1 = new DefaultRMIHost();
-        host1.registerService("foo1", 9995, new MockRemote());
+        host1.registerService("rmi://localhost:9995/foo1", new MockRemote());
         DefaultRMIHost host2 = new DefaultRMIHost();
-        host2.registerService("foo2", 9995, new MockRemote());
-        host2.unregisterService("foo1", 9995);
-        host2.unregisterService("foo2", 9995);
+        host2.registerService("rmi://localhost:9995/foo2", new MockRemote());
+        host2.unregisterService("rmi://localhost:9995/foo1");
+        host2.unregisterService("rmi://localhost:9995/foo2");
     }
 
     public void testRegisterService2() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host = new DefaultRMIHost();
-        host.registerService("bar1", 9999, new MockRemote());
-        host.unregisterService("bar1", 9999);
+        host.registerService("rmi://localhost:9999/bar1", new MockRemote());
+        host.unregisterService("rmi://localhost:9999/bar1");
     }
 
     public void testRegisterServiceAlreadyBound() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host = new DefaultRMIHost();
-        host.registerService("bar2", 9997, new MockRemote());
+        host.registerService("rmi://localhost:9997/bar2", new MockRemote());
         try {
-            host.registerService("bar2", 9997, new MockRemote());
+            host.registerService("rmi://localhost:9997/bar2", new MockRemote());
         } catch (RMIHostException e) {
             // expected
-            host.unregisterService("bar2", 9997);
+            host.unregisterService("rmi://localhost:9997/bar2");
         }
     }
 
     public void testUnRegisterService() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host = new DefaultRMIHost();
         try {
-            host.unregisterService("bar3", 9998);
+            host.unregisterService("rmi://localhost:9998/bar3");
             fail();
         } catch (RMIHostRuntimeException e) {
             // expected

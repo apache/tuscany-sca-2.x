@@ -65,7 +65,7 @@ public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
             throw new IllegalArgumentException(e);
         }
 
-        return new RMIBindingInvoker(rmiHost, binding.getHost(), binding.getPort(), binding.getServiceName(), remoteMethod);
+        return new RMIBindingInvoker(rmiHost, binding.getURI(), remoteMethod);
     }
 
     public void start() {

@@ -27,56 +27,9 @@ import org.apache.tuscany.sca.assembly.Binding;
  */
 public class RMIBinding implements Binding {
 
-    private String host;
-    private String port;
-    private String serviceName;
     private String uri;
     private String name;
 
-    /**
-     * @return the host name of the RMI Service
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * @param rmiHostName the hostname of the RMI Service
-     */
-    public void setHost(String rmiHostName) {
-        this.host = rmiHostName;
-    }
-
-    /**
-     * @return the port number for the RMI Service
-     */
-    public String getPort() {
-        return port;
-    }
-
-    /**
-     * @param rmiPort the port number for the RMI Service
-     */
-    public void setPort(String rmiPort) {
-        this.port = rmiPort;
-    }
-
-    /**
-     * @return returns the RMI Service Name
-     */
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    /**
-     * Sets the service name for the RMI Server
-     * 
-     * @param rmiServiceName the name of the RMI service
-     */
-    public void setServiceName(String rmiServiceName) {
-        this.serviceName = rmiServiceName;
-    }
-    
     public String getURI() {
         return uri;
     }

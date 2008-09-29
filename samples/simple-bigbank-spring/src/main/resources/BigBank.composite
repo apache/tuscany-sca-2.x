@@ -53,7 +53,7 @@
         <reference name="stockAccountService" target="StockAccountServiceComponent"/>
         
         <reference name="calculatorService">
-            <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+            <tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
         </reference>      
         
         <reference name="stockQuoteService">

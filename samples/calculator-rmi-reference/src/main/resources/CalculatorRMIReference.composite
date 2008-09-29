@@ -26,16 +26,16 @@
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
 		<reference name="addService">
-	    	<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
 		</reference>
         <reference name="subtractService">
-    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
         </reference>
         <reference name="multiplyService">
-    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
         </reference>
         <reference name="divideService">
-    		<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	    	<tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
         </reference>
     </component>
     

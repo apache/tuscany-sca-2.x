@@ -27,7 +27,7 @@
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
 		
 	    <service name="CalculatorService">
-	        <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+	        <tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
 	    </service>
 
         <reference name="addService" target="AddServiceComponent" />

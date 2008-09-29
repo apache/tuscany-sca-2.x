@@ -34,9 +34,6 @@
                     <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/>
                 </sequence>
-			 <attribute name="host" type="anyURI" use="optional"/>
-			 <attribute name="port" type="int" use="optional"/>
-			 <attribute name="serviceName" type="anyURI" use="required"/>
             </extension>
         </complexContent>
     </complexType>

@@ -79,7 +79,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
 
         try {
 
-            rmiHost.registerService(binding.getServiceName(), getPort(binding.getPort()), rmiProxy);
+            rmiHost.registerService(binding.getURI(), rmiProxy);
 
         } catch (RMIHostException e) {
             throw new ServiceRuntimeException(e);
@@ -87,7 +87,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void stop() {
-        rmiHost.unregisterService(binding.getServiceName(), getPort(binding.getPort()));
+        rmiHost.unregisterService(binding.getURI());
     }
 
     private int getPort(String port) {

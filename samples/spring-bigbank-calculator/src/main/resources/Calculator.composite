@@ -25,7 +25,7 @@
 	
 	<service name="CalculatorService" promote="CalculatorServiceComponent">
 	    <interface.java interface="bigbank.calculator.CalculatorService"/>
-        <tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
+        <tuscany:binding.rmi uri="rmi://localhost:8099/CalculatorRMIService"/>
     </service>
 
     <component name="CalculatorServiceComponent">
