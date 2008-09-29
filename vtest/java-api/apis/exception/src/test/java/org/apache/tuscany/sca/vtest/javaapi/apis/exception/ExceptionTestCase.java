@@ -85,7 +85,8 @@ public class ExceptionTestCase {
      * 
      * @throws Exception
      */
-    @Ignore
+    @Test
+    //@Ignore
     public void testServiceUnavailableException() throws Exception {
         domain.getComponentManager().stopComponent("AComponent");
 
