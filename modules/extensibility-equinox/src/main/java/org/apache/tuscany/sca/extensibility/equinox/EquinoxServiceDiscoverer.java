@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscoverer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * A ServiceDiscoverer that find META-INF/services/... in installed bundles
@@ -220,6 +221,11 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                     URL entry = bundle.getEntry(serviceName);
                     if (entry != null) {
                         logger.warning("Unresolved resource " + serviceName + " found in " + toString(bundle));
+                        try {
+                            bundle.start();
+                        } catch (BundleException e) {
+                            throw new IllegalStateException(e);
+                        }
                         // urls = Collections.enumeration(Arrays.asList(entry));
                     }
                 }

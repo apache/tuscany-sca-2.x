@@ -246,9 +246,6 @@ class EquinoxHost {
                 if (bundleName.contains("org.eclipse.jdt.junit")) {
                     continue;
                 }
-                if (bundleName.contains("host.openejb")) {
-                    continue;
-                }
                 Bundle bundle = allBundles.get(bundleName);
                 if (bundle == null) {
                     long installStart = currentTimeMillis();
@@ -256,6 +253,7 @@ class EquinoxHost {
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                     }
+                    logger.info("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                     allBundles.put(bundleName, bundle);
                     installedBundles.add(bundle);
                 }
