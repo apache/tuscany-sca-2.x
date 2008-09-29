@@ -62,7 +62,9 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                         reader = source.getXMLStreamReaderWithoutCaching();
                         result = unmarshaller.unmarshal(reader, JAXBContextHelper.getJavaType(context.getTargetDataType()));
                     } finally {
-                        reader.close();
+                        if (reader != null) {
+                            reader.close();
+                        }
                         JAXBContextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
                     }
                     return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
