@@ -217,11 +217,21 @@ public class XQueryIntrospector {
         service.setName(name);
 
         // Set the call interface and, if present, the callback interface
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        JavaInterface callInterface = null;
+        try {
+            callInterface = (JavaInterface) javaFactory.createJavaInterface(interfaze).clone();
+        } catch (CloneNotSupportedException e) {
+            // Ignore
+        }
         //setDataBindingForInterface(callInterface, DataObject.class.getName());
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = null;
+            try {
+                callbackInterface = (JavaInterface) javaFactory.createJavaInterface(callInterface.getCallbackClass()).clone();
+            } catch (CloneNotSupportedException e) {
+                //Ignore
+            }
             //setDataBindingForInterface(callbackInterface, DataObject.class.getName());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
@@ -253,10 +263,21 @@ public class XQueryIntrospector {
         reference.setMultiplicity(Multiplicity.ONE_ONE);
 
         // Set the call interface and, if present, the callback interface
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        // Set the call interface and, if present, the callback interface
+        JavaInterface callInterface = null;
+        try {
+            callInterface = (JavaInterface) javaFactory.createJavaInterface(interfaze).clone();
+        } catch (CloneNotSupportedException e) {
+            // Ignore
+        }
         reference.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = null;
+            try {
+                callbackInterface = (JavaInterface) javaFactory.createJavaInterface(callInterface.getCallbackClass()).clone();
+            } catch (CloneNotSupportedException e) {
+                //Ignore
+            }
             reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
 
