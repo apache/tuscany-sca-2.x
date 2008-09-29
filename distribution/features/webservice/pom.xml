@@ -110,11 +110,6 @@
         <!-- Policy models -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-security-ws</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-xml-ws</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
@@ -169,6 +164,7 @@
                 <module>../../../modules/binding-sca-xml</module>
                 <module>../../../modules/binding-ws</module>
                 <module>../../../modules/binding-ws-axis2</module>
+                <module>../../../modules/binding-ws-axis2-policy</module>
                 <module>../../../modules/binding-ws-wsdlgen</module>
                 <module>../../../modules/binding-ws-xml</module>
                 <module>../../../modules/contribution</module>
