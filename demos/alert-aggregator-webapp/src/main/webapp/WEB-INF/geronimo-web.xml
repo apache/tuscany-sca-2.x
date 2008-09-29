@@ -26,7 +26,12 @@
             <d:version>1.4-SNAPSHOT</d:version>
             <d:type>war</d:type>
         </d:moduleId>
-        <!-- TUSCANY-1986 -->
-        <d:inverse-classloading />
+        <!-- TUSCANY-2622 -->
+        <d:hidden-classes>
+	    <d:filter>org.apache.axiom</d:filter>
+	    <d:filter>org.apache.axis2</d:filter>
+            <d:filter>org.apache.commons</d:filter>
+	    <d:filter>org.jdom</d:filter>
+        </d:hidden-classes>    
     </d:environment>
 </web-app>
