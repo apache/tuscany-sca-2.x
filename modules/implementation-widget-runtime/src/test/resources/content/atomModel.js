@@ -119,15 +119,15 @@ function Text( content, /* optional */ type ) {
    this.type = type;
    if (!type) this.type = "text"; // If undefined or null, use text
    
-   this.getValue = function() {
-      return this.value;
-   };
-
    this.setText = function(content) {
       this.content = content;
    };
 
    this.getText = function() {
+      return this.content;
+   };
+
+   this.getValue = function() {
       return this.content;
    };
 
@@ -662,12 +662,18 @@ function Entry( init ) {
          if (node.nodeType == 1 /*Node.ELEMENT_NODE*/) {
             var tagName = node.tagName;
             if (tagName == "title" ) {
-               var title = new Text( getTextContent( node ) );
-               title.setType( "text" );
+               var text = getTextContent( node );
+               var type = node.getAttribute( "type" );
+               if ( type == undefined )
+                  type = "text";
+               var title = new Text( text, type );
                this.setTitle( title );
             } else if ( tagName == "subtitle" ) {
-               var title = new Text( getTextContent( node ) );
-               title.setType( "text" );
+               var text = getTextContent( node );
+               var type = node.getAttribute( "type" );
+               if ( type == undefined )
+                  type = "text";
+               var title = new Text( text, type );
                this.setSubTitle( title );
             } else if ( tagName == "id" ) {
                var id = new Id( getTextContent( node ) );
@@ -677,17 +683,19 @@ function Entry( init ) {
                var date = new Date( dateText ); // 2008-09-21T23:06:43.921Z
                this.setUpdated( date );
             } else if ( tagName == "link" ) {
-               var href = node.attributes[ "href" ];
-               var link = new Link( href.value );
-               var rel = node.attributes[ "rel" ];
-               link.setRelation( rel.value );
+               // var href = node.attributes[ "href" ]; // Works on modern browsers.
+               var attrVal = node.getAttribute( "href" );
+               var link = new Link( attrVal );
+               attrVal = node.getAttribute( "rel" );
+               if ( attrVal )
+                  link.setRelation( attrVal );
                this.addLink( link );
             } else if ( tagName == "content" ) {
-               var content = new Text( getTextContent( node ) );
-               var attr = node.attributes[ "type" ];
-               if ( attr != null ) {
-                  content.setType( attr.value );
-               }
+               var text = getTextContent( node );
+               var type = node.getAttribute( "type" );
+               if (type == undefined)
+                  type = "text";
+               var content = new Text( text, type );
                this.setContent( content );
             } else {
                // To Do - implement rest of nodes
@@ -1047,11 +1055,6 @@ function Feed( init ) {
       }
    }
    this.readFromNode = function( feedNode ) {
-      var entries = this.getEntries();
-      var entryCount = 0;
-      if ( entries != null ) {
-         entryCount = entries.length;
-      }
       // Expect feed node
       var childNodes = feedNode.childNodes;
       for ( var i = 0; i < childNodes.length; i++ ) {
@@ -1059,12 +1062,18 @@ function Feed( init ) {
          if (node.nodeType == 1 /*Node.ELEMENT_NODE*/) {
             var tagName = node.tagName;
             if (tagName == "title" ) {
-               var title = new Text( getTextContent( node ) );
-               title.setType( "text" );
+               var text = getTextContent( node );
+               var type = node.getAttribute( "type" );
+               if ( type == undefined )
+                  type = "text";
+               var title = new Text( text, type );
                this.setTitle( title );
             } else if ( tagName == "subtitle" ) {
-               var title = new Text( getTextContent( node ) );
-               title.setType( "text" );
+               var text = getTextContent( node );
+               var type = node.getAttribute( "type" );
+               if ( type == undefined )
+                  type = "text";
+               var title = new Text( text, type );
                this.setSubTitle( title );
             } else if ( tagName == "entry" ) {
                var entry = new Entry();
@@ -1078,10 +1087,12 @@ function Feed( init ) {
                var date = new Date( dateText ); //2008-09-21T23:06:53.750Z
                this.setUpdated( date );
             } else if ( tagName == "link" ) {
-               var href = node.attributes[ "href" ];
-               var link = new Link( href.value );
-               var rel = node.attributes[ "rel" ];
-               link.setRelation( rel.value );
+               // var href = node.attributes[ "href" ]; // Works on modern browsers.
+               var attrVal = node.getAttribute( "href" );
+               var link = new Link( attrVal );
+               attrVal = node.getAttribute( "rel" );
+               if ( attrVal )
+                  link.setRelation( attrVal );
                this.addLink( link );
             } else {
                // To Do - implement rest of nodes
@@ -1113,7 +1124,21 @@ function error( message ) {
 }
 
 /* Returns inner text on both IE and modern browsers. */
-function getTextContent(obj) {
-   // innerText for IE, textContent for others, "" for others.
-   return (obj.innerText) ? obj.innerText : (obj.textContent) ? obj.textContent : "";
+function getTextContent(node) {
+   // innerText for IE, textContent for others, child text node, "" for others.
+   if ( node.innerText )
+      return node.innerText;
+   if ( node.textContent )
+      return node.textContent;
+   if ( node.hasChildNodes() ) {
+      var childNodes = node.childNodes
+      for ( var j = 0; j < childNodes.length; j++ ) {
+         var childNode = childNodes[ j ];
+         var childType = childNode.nodeType;
+         if (childNode.nodeType == 3 /*Node.TEXT_NODE*/) {
+            return childNode.nodeValue;
+         }
+      } 
+   }
+   return undefined;
 } 
