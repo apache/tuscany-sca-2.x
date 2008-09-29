@@ -30,6 +30,7 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -254,7 +255,9 @@ class AtomBindingListenerServlet extends HttpServlet {
             // Return a feed containing the entries in the collection
             Feed feed = getFeed( request );
             if (feed != null) {
-                String feedETag = "\"" + generateFeedETag( feed ) + "\"";
+                String feedETag = null;
+                if (feed.getId() != null)
+                	feedETag = feed.getId().toString();
                 Date feedUpdated = feed.getUpdated();
                 // Test request for predicates.
                 String predicate = request.getHeader( "If-Match" );
@@ -297,8 +300,10 @@ class AtomBindingListenerServlet extends HttpServlet {
                 		}
                 	}
                 }
-        		// Provide Etag based on Id and time.               
-        		response.addHeader(ETAG, feedETag );
+                // Provide Etag based on Id and time if given.
+                // Ignore if not given. (Browser may cache if trivial ETag is given.)
+                if ( feedETag != null )
+        		   response.addHeader(ETAG, feedETag );
         		if ( feedUpdated != null )
         			response.addHeader(LASTMODIFIED, dateFormat.format( feedUpdated ));
         		
@@ -354,7 +359,9 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
             // Write the Atom entry
             if (feedEntry != null) {
-                String entryETag = "\"" + generateEntryETag( feedEntry ) + "\"";
+                String entryETag = null;
+                if (feedEntry.getId() != null)
+                	entryETag = feedEntry.getId().toString();
                 Date entryUpdated = feedEntry.getUpdated();
                 if ( entryUpdated != null )
                    response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
@@ -412,10 +419,12 @@ class AtomBindingListenerServlet extends HttpServlet {
                 		}
                 	}
                 }
-        		// Provide Etag based on Id and time.               
-        		response.addHeader(ETAG, entryETag );
-        		if ( entryUpdated != null )
-        			response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
+                // Provide Etag based on Id and time if given.
+                // Ignore if not given. (Browser may cache if trivial ETag is given.)
+                if (entryETag != null)
+                	response.addHeader(ETAG, entryETag );
+                if ( entryUpdated != null )
+                	response.addHeader(LASTMODIFIED, dateFormat.format( entryUpdated ));
         		
                 // Content negotiation
                 String acceptType = request.getHeader( "Accept" );
@@ -814,58 +823,6 @@ class AtomBindingListenerServlet extends HttpServlet {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
     
-    /**
-     * Generate ETag based on feed Id and updated fields.
-     * Note that the feed id should be unique per feed, immutable, and unchanging,
-     * but the ETag should change whenever the feed contents change. 
-     * @param feed
-     * @return ETag
-     */
-    public static String generateFeedETag( Feed feed ) {
-    	if ( feed == null ) {
-    		return null; 
-    	}
-        
-    	IRI feedIdIRI = feed.getId();
-        String feedId = "ID";
-        if ( feedIdIRI != null ) {
-        	feedId = feedIdIRI.toString();
-        }
-        
-        Date feedUpdated = feed.getUpdated();
-        if ( feedUpdated == null ) {
-        	return feedId;
-        }
-        
-        return feedId + "-" + feedUpdated.hashCode();
-    }
-
-    /**
-     * Generate ETag based on entry Id and updated fields.
-     * Note that the entry id should be unique per entry, immutable, and unchanging,
-     * but the ETag should change whenever the entry contents change. 
-     * @param feed
-     * @return ETag
-     */
-    public static String generateEntryETag( org.apache.abdera.model.Entry entry ) {
-    	if ( entry == null ) {
-    		return null; 
-    	}
-        
-    	IRI entryIdIRI = entry.getId();
-        String entryId = "ID";
-        if ( entryIdIRI != null ) {
-        	entryId = entryIdIRI.toString();
-        }
-        
-        Date entryUpdated = entry.getUpdated();
-        if ( entryUpdated == null ) {
-        	return entryId;
-        }
-        
-        return entryId + "-" + entryUpdated.hashCode();
-    }
-
     public static String getContentPreference( String acceptType ) {
     	if (( acceptType == null ) || ( acceptType.length() < 1 )) {
             return "application/atom+xml";    		
