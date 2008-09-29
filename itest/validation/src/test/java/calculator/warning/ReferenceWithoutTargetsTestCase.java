@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
@@ -62,7 +61,7 @@ public class ReferenceWithoutTargetsTestCase extends TestCase {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
-        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+        Problem problem = monitor.getLastProblem();
         
         assertNotNull(problem);
         assertEquals("ReferenceWithoutTargets", problem.getMessageId());

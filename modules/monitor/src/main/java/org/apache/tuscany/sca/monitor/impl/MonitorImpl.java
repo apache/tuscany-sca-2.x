@@ -75,7 +75,7 @@ public class MonitorImpl implements Monitor {
         return problemCache;
     }
     
-    public Problem getLastLoggedProblem(){
+    public Problem getLastProblem(){
         if (problemCache.isEmpty()) {
             return null;
         }

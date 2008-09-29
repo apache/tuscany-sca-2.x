@@ -98,7 +98,7 @@ public class ResourceImportProcessorTestCase extends TestCase {
             assertTrue(true);
         }*/
         staxProcessor.read(reader);
-        Problem problem = monitor.getLastLoggedProblem();           
+        Problem problem = monitor.getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributeURIMissing", problem.getMessageId());
     }    

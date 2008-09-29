@@ -103,7 +103,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
             assertTrue(true);
         }*/
         staxProcessor.read(reader);
-        Problem problem = monitor.getLastLoggedProblem();           
+        Problem problem = monitor.getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributeCompositeMissing", problem.getMessageId());
     }    

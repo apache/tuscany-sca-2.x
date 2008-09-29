@@ -48,7 +48,7 @@ public interface Monitor {
      * 
      * @return
      */
-    public Problem getLastLoggedProblem();
+    public Problem getLastProblem();
     
     /**
      * Create a new problem.

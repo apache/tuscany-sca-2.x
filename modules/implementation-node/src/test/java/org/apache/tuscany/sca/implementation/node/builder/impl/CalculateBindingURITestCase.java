@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.node.builder.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -42,8 +41,6 @@ import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.impl.NodeImplementationFactoryImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -63,24 +60,6 @@ public class CalculateBindingURITestCase extends TestCase {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestBindingFactory();
         nodeImplementationFactory = new NodeImplementationFactoryImpl();
-        monitor = new Monitor() {
-            public void problem(Problem problem) {
-                if (problem.getSeverity() == Severity.INFO) {
-                    logger.info(problem.toString());
-                } else if (problem.getSeverity() == Severity.WARNING) {
-                    logger.warning(problem.toString());
-                } else if (problem.getSeverity() == Severity.ERROR) {
-                    if (problem.getCause() != null) {
-                        logger.log(Level.SEVERE, problem.toString(), problem.getCause());
-                    } else {
-                        logger.severe(problem.toString());
-                    }
-                }
-            }
-            public List<Problem> getProblems() {
-                return null;
-            }
-        };
         configurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, null, monitor);
         Binding defaultBinding = new TestBindingImpl();
         defaultBinding.setURI("http://myhost:8080/root");

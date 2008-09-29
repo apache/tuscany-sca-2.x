@@ -18,21 +18,10 @@
  */
 package calculator.warning;
 
-import java.io.File;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 import domain.CustomCompositeBuilder;
 
@@ -73,7 +62,7 @@ public class ReferenceNotFoundTestCase extends TestCase {
 
     public void testCalculator() throws Exception {
         Monitor monitor = customDomain.getMonitorInstance();
-        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+        Problem problem = monitor.getLastProblem();
         
         assertNotNull(problem);
         assertEquals("ReferenceNotFound", problem.getMessageId());

@@ -95,7 +95,7 @@ public class NamespaceExportProcessorTestCase extends TestCase {
             assertTrue(true);
         }*/
         staxProcessor.read(reader);
-        Problem problem = monitor.getLastLoggedProblem();           
+        Problem problem = monitor.getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributeNameSpaceMissing", problem.getMessageId());
     }    

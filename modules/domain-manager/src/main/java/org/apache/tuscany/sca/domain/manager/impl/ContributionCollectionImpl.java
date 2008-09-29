@@ -77,6 +77,7 @@ import org.apache.tuscany.sca.domain.manager.impl.ContributionCollectionImpl.Cac
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
@@ -181,7 +182,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
                 continue;
             }
-            entries.add(entry(workspace, contribution));
+            entries.add(entry(workspace, contribution, monitor));
         }
         return entries.toArray(new Entry[entries.size()]);
     }
@@ -193,7 +194,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         Workspace workspace = readContributions(readWorkspace());
         for (Contribution contribution: workspace.getContributions()) {
             if (key.equals(contribution.getURI())) {
-                return item(workspace, contribution);
+                return item(workspace, contribution, monitor);
             }
         }
         throw new NotFoundException(key);
@@ -292,7 +293,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                             // Skip the specified contribution
                             continue;
                         }
-                        entries.add(entry(workspace, dependency));
+                        entries.add(entry(workspace, dependency, monitor));
                     }
                     break;
                 }
@@ -362,7 +363,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                     Contribution contribution = contributionFactory.createContribution();
                     contribution.setURI(uri);
                     contribution.setLocation(locationPath);
-                    entries.add(entry(suggestionWorkspace, contribution));
+                    entries.add(entry(suggestionWorkspace, contribution, monitor));
                 }
             }
             
@@ -378,20 +379,22 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      * @param contribution
      * @return
      */
-    private static Entry<String, Item> entry(Workspace workspace, Contribution contribution) {
+    private static Entry<String, Item> entry(Workspace workspace, Contribution contribution, Monitor monitor) {
         Entry<String, Item> entry = new Entry<String, Item>();
         entry.setKey(contribution.getURI());
-        entry.setData(item(workspace, contribution));
+        entry.setData(item(workspace, contribution, monitor));
         return entry;
     }
     
     /**
      * Returns an item representing a contribution.
      * 
+     * @param workspace
      * @param contribution
+     * @param monitor
      * @return
      */
-    private static Item item(Workspace workspace, Contribution contribution) {
+    private static Item item(Workspace workspace, Contribution contribution, final Monitor monitor) {
         String contributionURI = contribution.getURI();
         Item item = new Item();
         item.setTitle(title(contributionURI));
@@ -400,7 +403,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         
         // List the contribution dependencies in the item contents
         final List<String> problems = new ArrayList<String>();
-        Monitor monitor = new Monitor() {
+        Monitor recordingMonitor = new Monitor() {
             public void problem(Problem problem) {
                 problems.add(problem.getMessageId() + " " + problem.getProblemObject().toString());
             }
@@ -408,10 +411,23 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             public List<Problem> getProblems() {
                 return null;
             }
+            
+            public Problem getLastProblem() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause) {
+                return monitor.createProblem(sourceClassName, bundleName, severity, problemObject, messageId, cause);
+            }
+            
+            public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams) {
+                return monitor.createProblem(sourceClassName, bundleName, severity, problemObject, messageId, messageParams);
+            }
         };
         
         StringBuffer sb = new StringBuffer();
-        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(monitor);
+        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(recordingMonitor);
         List<Contribution> dependencies = analyzer.buildContributionDependencies(contribution, workspace);
         if (dependencies.size() > 1) {
             sb.append("Dependencies: <span id=\"dependencies\">");

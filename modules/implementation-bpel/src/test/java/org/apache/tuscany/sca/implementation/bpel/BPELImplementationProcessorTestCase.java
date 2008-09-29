@@ -103,7 +103,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
         staxProcessor.read(reader);
-        Problem problem = monitor.getLastLoggedProblem();           
+        Problem problem = monitor.getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributeProcessMissing", problem.getMessageId());
     }    
