@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#contribution,model=org.apache.tuscany.sca.contribution.ContributionMetadata
+org.apache.tuscany.sca.contribution.processor.xml.AnyElementProcessor;qname=http://www.w3.org/2001/XMLSchema#anyElement,model=java.lang.Object
