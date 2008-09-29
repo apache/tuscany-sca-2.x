@@ -69,7 +69,7 @@ public class CorbaSCAInvocationProxy implements InvocationProxy {
 
     public Object invoke(String operationName, List<Object> arguments) throws InvocationException {
         try {
-            OMElement omContent = AXIOMUtil.stringToOM((String)arguments.get(0));
+            OMElement omContent = CorbaSCAInvoker.stringToOM((String)arguments.get(0));
             String componentOperationName = omContent.getQName().getLocalPart();
             Operation componentOperation = null;
             for (Operation operation : componentInterface.getOperations()) {

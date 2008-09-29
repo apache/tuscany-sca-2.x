@@ -76,7 +76,7 @@ WS Security and in a WebApp</name>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.2</version>
+            <version>4.5</version>
             <scope>test</scope>
         </dependency>
 

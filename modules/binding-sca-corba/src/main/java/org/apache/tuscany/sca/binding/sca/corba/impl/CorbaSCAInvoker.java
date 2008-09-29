@@ -19,13 +19,14 @@
 
 package org.apache.tuscany.sca.binding.sca.corba.impl;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.corba.provider.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaRequest;
 import org.apache.tuscany.sca.binding.corba.provider.reference.DynaCorbaResponse;
@@ -62,11 +63,11 @@ public class CorbaSCAInvoker implements Invoker {
             String arg = omElement.toStringWithConsume();
             request.addArgument(arg);
             DynaCorbaResponse response = request.invoke();
-            OMElement responseOM = AXIOMUtil.stringToOM((String)response.getContent());
+            OMElement responseOM = stringToOM((String)response.getContent());
             msg.setBody(responseOM);
         } catch (WrappedSCAException e) {
             try {
-                OMElement exceptionOM = AXIOMUtil.stringToOM(e.getFault());
+                OMElement exceptionOM = stringToOM(e.getFault());
                 FaultException f = new FaultException(e.getMessage(), exceptionOM, e);
                 f.setFaultName(exceptionOM.getQName());
                 msg.setFaultBody(f);
@@ -78,5 +79,19 @@ public class CorbaSCAInvoker implements Invoker {
             msg.setFaultBody(e);
         }
         return msg;
+    }
+    
+    /**
+     * This will help you to create an OMElement from an xml fragment which you have as a string.
+     *
+     * @param xmlFragment - the well-formed xml fragment
+     * @return The OMElement created out of the string xml fragment.
+     * @throws XMLStreamException
+     */
+    static OMElement stringToOM(String xmlFragment) throws XMLStreamException {
+        if (xmlFragment != null) {
+            return new StAXOMBuilder(new ByteArrayInputStream(xmlFragment.getBytes())).getDocumentElement();
+        }
+        return null;
     }
 }

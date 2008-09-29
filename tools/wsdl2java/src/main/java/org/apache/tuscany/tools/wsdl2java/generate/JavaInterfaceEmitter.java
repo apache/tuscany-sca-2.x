@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axis2.description.AxisBindingOperation;
 import org.apache.axis2.description.AxisMessage;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.util.FileWriter;
@@ -129,20 +130,20 @@ public class JavaInterfaceEmitter extends JavaEmitter {
     }
 
     @Override
-    protected Element getInputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
+    protected Element getInputElement(Document doc, AxisBindingOperation operation, List headerParameterQNameList) {
         return getElement(doc,
                           "input",
-                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE),
-                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE).isWrapped(),
+                          operation.getAxisOperation().getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE),
+                          operation.getAxisOperation().getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE).isWrapped(),
                           headerParameterQNameList);
     }
 
     @Override
-    protected Element getOutputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
+    protected Element getOutputElement(Document doc, AxisBindingOperation operation, List headerParameterQNameList) {
         return getElement(doc,
                           "output",
-                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE),
-                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE).isWrapped(),
+                          operation.getAxisOperation().getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE),
+                          operation.getAxisOperation().getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE).isWrapped(),
                           headerParameterQNameList);
     }
 

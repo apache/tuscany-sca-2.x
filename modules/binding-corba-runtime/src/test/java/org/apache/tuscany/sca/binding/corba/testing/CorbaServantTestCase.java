@@ -551,7 +551,7 @@ public class CorbaServantTestCase {
             for (int i = 0; i < struct.threeDimArray.length; i++) {
                 for (int j = 0; j < struct.threeDimArray[i].length; j++) {
                     for (int k = 0; k < struct.threeDimArray[i][j].length; k++) {
-                        assertEquals(struct.threeDimArray[i][j][k], structResult.threeDimArray[i][j][k]);
+                        assertEquals(struct.threeDimArray[i][j][k], structResult.threeDimArray[i][j][k], 0.0);
                     }
                 }
             }
