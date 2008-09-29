@@ -44,10 +44,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -87,7 +87,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
      */
      private void error(String message, Object model, Exception ex) {
     	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+    		 Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
     	 }        
      }

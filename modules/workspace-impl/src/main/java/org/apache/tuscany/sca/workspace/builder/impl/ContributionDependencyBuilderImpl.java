@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
@@ -35,6 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 
@@ -137,7 +137,7 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
      */
     private void warning(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(getClass().getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(getClass().getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }

@@ -37,7 +37,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -62,6 +61,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -171,7 +171,7 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }

@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
@@ -61,6 +60,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -98,7 +98,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
      */
      private void error(String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message,(Object[])messageParameters);
+    		 Problem problem = monitor.createProblem(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message,(Object[])messageParameters);
     	     monitor.problem(problem);
     	 }        
      }
@@ -112,7 +112,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
       */
       private void error(String message, Object model, Exception ex) {
      	 if (monitor != null) {
-     		 Problem problem = new ProblemImpl(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message, ex);
+     		 Problem problem = monitor.createProblem(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message, ex);
      	     monitor.problem(problem);
      	 }        
       }

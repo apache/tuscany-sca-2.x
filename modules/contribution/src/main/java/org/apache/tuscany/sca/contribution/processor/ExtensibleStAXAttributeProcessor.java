@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -41,6 +40,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Implementation of an extensible StAX attribute processor.
@@ -91,7 +91,7 @@ public class ExtensibleStAXAttributeProcessor
      */
      private void warning(String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
     	 }
      }
@@ -105,7 +105,7 @@ public class ExtensibleStAXAttributeProcessor
       */
      private void error(String message, Object model, Object... messageParameters) {
      	if (monitor != null) {
- 	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+ 	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
  	        monitor.problem(problem);
      	}
      }
@@ -119,7 +119,7 @@ public class ExtensibleStAXAttributeProcessor
      */
      private void error(String message, Object model, Exception ex) {
     	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
+    		 Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
     	 }        
      }

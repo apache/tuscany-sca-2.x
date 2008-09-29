@@ -34,7 +34,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -47,6 +46,7 @@ import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * A SCA Definitions Document processor.
@@ -98,7 +98,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      */
      private void error(String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
     	 }
      }
@@ -112,7 +112,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      */
      private void error(String message, Object model, Exception ex) {
     	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, ex);
+    		 Problem problem = monitor.createProblem(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
     	 }        
      }

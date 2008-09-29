@@ -20,23 +20,15 @@ package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 //FIXME: trim the import list down to what's really needed
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.wsdl.Binding;
-import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Port;
@@ -46,36 +38,22 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
-import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -120,7 +98,7 @@ public class WSDLServiceGenerator {
      * @param parameters
      */
     private static void warning(Monitor monitor, String message, WebServiceBinding wsBinding, String... messageParameters) {
-        Problem problem = new ProblemImpl(WSDLServiceGenerator.class.getName(), "wsdlgen-validation-messages", Severity.WARNING, wsBinding, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(WSDLServiceGenerator.class.getName(), "wsdlgen-validation-messages", Severity.WARNING, wsBinding, message, (Object[])messageParameters);
         if (monitor != null) {
             monitor.problem(problem);
         } else {
@@ -135,7 +113,7 @@ public class WSDLServiceGenerator {
      * @param parameters
      */
     private static void error(Monitor monitor, String message, WebServiceBinding wsBinding, String... messageParameters) {
-        Problem problem = new ProblemImpl(WSDLServiceGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(WSDLServiceGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, (Object[])messageParameters);
         if (monitor != null) {
             monitor.problem(problem);
         } else {

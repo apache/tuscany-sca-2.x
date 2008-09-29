@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.ws.wsdlgen;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
@@ -31,8 +32,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -89,7 +88,7 @@ public class BindingWSDLGenerator {
      * @param parameters
      */
     private static void warning(Monitor monitor, String message, WebServiceBinding wsBinding, String... messageParameters) {
-        Problem problem = new ProblemImpl(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.WARNING, wsBinding, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.WARNING, wsBinding, message, (Object[])messageParameters);
         if (monitor != null) {
             monitor.problem(problem);
         } else {
@@ -104,7 +103,7 @@ public class BindingWSDLGenerator {
      * @param parameters
      */
     private static void error(Monitor monitor, String message, WebServiceBinding wsBinding, String... messageParameters) {
-        Problem problem = new ProblemImpl(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, (Object[])messageParameters);
         if (monitor != null) {
             monitor.problem(problem);
         } else {
@@ -119,7 +118,7 @@ public class BindingWSDLGenerator {
      * @param exception
      */
     private static void error(Monitor monitor, String message, WebServiceBinding wsBinding, Exception ex) {
-        Problem problem = new ProblemImpl(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, ex);
+        Problem problem = monitor.createProblem(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, ex);
         if (monitor != null) {
             monitor.problem(problem);
         } else {
@@ -134,7 +133,7 @@ public class BindingWSDLGenerator {
      * @param exception
      */
     private static void fatal(Monitor monitor, String message, WebServiceBinding wsBinding, String... messageParameters) {
-        Problem problem = new ProblemImpl(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR,wsBinding, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR,wsBinding, message, (Object[])messageParameters);
         throw new WSDLGenerationException(problem.toString(), null, problem);
     }
   
@@ -145,7 +144,7 @@ public class BindingWSDLGenerator {
      * @param exception
      */
     private static void fatal(Monitor monitor, String message, WebServiceBinding wsBinding, Exception ex) {
-        Problem problem = new ProblemImpl(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, ex);
+        Problem problem = monitor.createProblem(BindingWSDLGenerator.class.getName(), "wsdlgen-validation-messages", Severity.ERROR, wsBinding, message, ex);
         throw new WSDLGenerationException(problem.toString(), ex, problem);
     }
 

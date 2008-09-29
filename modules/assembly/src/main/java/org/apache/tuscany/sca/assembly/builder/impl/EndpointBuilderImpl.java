@@ -43,7 +43,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
     
     private void warning(String message, Object model, String... messageParameters) {
         if (monitor != null){
-            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -51,7 +51,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
     private void error(String message, Object model, Exception ex) {
         if (monitor != null){
             Problem problem = null;
-            problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
+            problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }
     }

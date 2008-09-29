@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.Map;
+
 import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
@@ -34,7 +35,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
@@ -103,7 +103,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
      */
     private void warning(String message, Object model, Object... messageParameters) {
        if (monitor != null) {
-           Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+           Problem problem = monitor.createProblem(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
            monitor.problem(problem);
        }
     }
@@ -117,7 +117,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
      */
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }        
     }

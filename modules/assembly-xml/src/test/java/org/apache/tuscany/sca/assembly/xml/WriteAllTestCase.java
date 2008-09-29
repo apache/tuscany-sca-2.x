@@ -49,9 +49,9 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
@@ -85,7 +85,7 @@ public class WriteAllTestCase extends TestCase {
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();
+        MonitorFactory monitorFactory = new DefaultMonitorFactory();
         monitor = monitorFactory.createMonitor();
         
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, monitor);

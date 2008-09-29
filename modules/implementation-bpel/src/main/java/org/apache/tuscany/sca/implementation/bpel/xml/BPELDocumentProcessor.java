@@ -37,7 +37,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -55,6 +54,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.xml.BPELPartnerLinkTypeExt;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
@@ -497,7 +497,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      */
     private void warning(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -511,7 +511,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      */
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -525,7 +525,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      */
     private void error(String message, Object model, Exception ex) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }
     }

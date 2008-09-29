@@ -32,12 +32,6 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-monitor-logging</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-resource</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>        

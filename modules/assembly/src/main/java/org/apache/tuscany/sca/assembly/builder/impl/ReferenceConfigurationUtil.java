@@ -52,7 +52,7 @@ abstract class ReferenceConfigurationUtil {
      */
     private static void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(ReferenceConfigurationUtil.class.getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(ReferenceConfigurationUtil.class.getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }

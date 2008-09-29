@@ -20,11 +20,10 @@
 package org.apache.tuscany.sca.monitor.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -34,8 +33,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultMonitorImpl implements Monitor {
-    private static final Logger logger = Logger.getLogger(DefaultMonitorImpl.class.getName());
+public class MonitorImpl implements Monitor {
+    private static final Logger logger = Logger.getLogger(MonitorImpl.class.getName());
     
     // Cache all the problem reported to monitor for further analysis
     private List<Problem> problemCache = new ArrayList<Problem>();
@@ -77,26 +76,17 @@ public class DefaultMonitorImpl implements Monitor {
     }
     
     public Problem getLastLoggedProblem(){
+        if (problemCache.isEmpty()) {
+            return null;
+        }
         return problemCache.get(problemCache.size() - 1);
     }
     
-    public boolean isMessageLogged(String messageId) {
-        for (Problem problem : problemCache){
-            if (problem.getMessageId().equals(messageId)){
-                return true;
-            }
-        }
-        
-        return false;
+    public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause) {
+        return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, cause);
     }
     
-    public Problem getProblem(String messageId) {
-        for (Problem problem : problemCache){
-            if (problem.getMessageId().equals(messageId)){
-                return problem;
-            }
-        }
-        
-        return null;
+    public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams) {
+        return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, messageParams);
     }
 }

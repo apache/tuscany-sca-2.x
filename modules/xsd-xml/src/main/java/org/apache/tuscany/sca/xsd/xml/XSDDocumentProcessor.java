@@ -24,7 +24,6 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -33,6 +32,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 
@@ -60,7 +60,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
      */
     private void error(String message, Object model, Exception ex) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "xsd-xml-validation-messages", Severity.ERROR, model, message, ex);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "xsd-xml-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }        
     }

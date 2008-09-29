@@ -48,9 +48,9 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
@@ -77,7 +77,7 @@ public class BuildPolicyTestCase extends TestCase {
         List<SCADefinitions> policyDefinitions = new ArrayList<SCADefinitions>();
         resolver = new DefaultModelResolver();
         
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();
+        MonitorFactory monitorFactory = new DefaultMonitorFactory();
         monitor = monitorFactory.createMonitor();
         
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);

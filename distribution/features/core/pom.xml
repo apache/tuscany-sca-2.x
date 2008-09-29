@@ -200,11 +200,6 @@
             <artifactId>tuscany-monitor</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-monitor-logging</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
         
         <!-- Policy models -->
         <dependency>
@@ -325,7 +320,6 @@
                 <module>../../../modules/interface-wsdl</module>
                 <module>../../../modules/interface-wsdl-xml</module>
                 <module>../../../modules/monitor</module>
-                <module>../../../modules/monitor-logging</module>
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>

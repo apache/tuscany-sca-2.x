@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.monitor;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.logging.impl.MonitorFactoryImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,7 +53,7 @@ public class MonitorTestCase {
         
         Problem problem = null;
         
-        problem = new ProblemImpl(this.getClass().getName(), 
+        problem = monitor.createProblem(this.getClass().getName(), 
                                   "tuscany-monitor-test-messages", 
                                   Severity.WARNING, 
                                   dummyModelObject, 
@@ -62,7 +62,7 @@ public class MonitorTestCase {
         
         String param = "Some Parameter";
         
-        problem = new ProblemImpl(this.getClass().getName(), 
+        problem = monitor.createProblem(this.getClass().getName(), 
                                   "tuscany-monitor-test-messages", 
                                   Severity.WARNING, 
                                   dummyModelObject, 
@@ -70,7 +70,7 @@ public class MonitorTestCase {
                                   param);
         monitor.problem(problem);
         
-        problem = new ProblemImpl(this.getClass().getName(), 
+        problem = monitor.createProblem(this.getClass().getName(), 
                                   "tuscany-monitor-test-messages", 
                                   Severity.WARNING, 
                                   dummyModelObject, 
@@ -82,7 +82,7 @@ public class MonitorTestCase {
         
         Exception ex = new IllegalStateException("TEST_MESSAGE");
         
-        problem = new ProblemImpl(this.getClass().getName(), 
+        problem = monitor.createProblem(this.getClass().getName(), 
                                   "tuscany-monitor-test-messages", 
                                   Severity.ERROR, 
                                   dummyModelObject, 

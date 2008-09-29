@@ -47,7 +47,6 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -136,7 +135,7 @@ public class Interface2WSDLGenerator {
      * @param parameters
      */
     private void warning(String message, Interface interfaze, String... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "wsdlgen-validation-messages", Severity.WARNING, interfaze, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(this.getClass().getName(), "wsdlgen-validation-messages", Severity.WARNING, interfaze, message, (Object[])messageParameters);
         if (monitor != null) {
             monitor.problem(problem);
         } else {
@@ -151,7 +150,7 @@ public class Interface2WSDLGenerator {
      * @param parameters
      */
     private void fatal(String message, Interface interfaze, String... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "wsdlgen-validation-messages", Severity.ERROR, interfaze, message, (Object[])messageParameters);
+        Problem problem = monitor.createProblem(this.getClass().getName(), "wsdlgen-validation-messages", Severity.ERROR, interfaze, message, (Object[])messageParameters);
         throw new WSDLGenerationException(problem.toString(), null, problem);
     }
     

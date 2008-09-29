@@ -29,7 +29,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -38,6 +37,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.workspace.Workspace;
 
 /**
@@ -73,7 +73,7 @@ public class WorkspaceDocumentProcessor implements URLArtifactProcessor<Workspac
      */
      private void error(String message, Object model, Exception ex) {
     	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "workspace-xml-validation-messages", Severity.ERROR, model, message, ex);
+    		 Problem problem = monitor.createProblem(this.getClass().getName(), "workspace-xml-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
     	 }        
      }

@@ -61,9 +61,9 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
@@ -147,7 +147,7 @@ public class RuntimeBootStrapper {
         if (monitorFactory != null) {
             monitor = monitorFactory.createMonitor();
         } else {
-            monitorFactory = new DefaultMonitorFactoryImpl();
+            monitorFactory = new DefaultMonitorFactory();
             monitor = monitorFactory.createMonitor();
             utilities.addUtility(monitorFactory);
             //logger.fine("No MonitorFactory is found on the classpath.");

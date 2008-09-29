@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.monitor;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.monitor.Problem.Severity;
+
 /**
  * A monitor for the watching for validation problems
  *
@@ -40,5 +42,38 @@ public interface Monitor {
      * @return the list of problems. The list may be empty
      */
     List<Problem> getProblems();
+    
+    /**
+     * Returns the last logged problem.
+     * 
+     * @return
+     */
+    public Problem getLastLoggedProblem();
+    
+    /**
+     * Create a new problem.
+     * 
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
+     * @param cause             the exception which caused the problem
+     * @return
+     */
+    Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause);
+
+    /**
+     * Create a new problem.
+     *  
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
+     * @param messageParams     the parameters of the problem message
+     * @return
+     */
+    Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams );
     
 }

@@ -34,11 +34,10 @@ import org.apache.tuscany.sca.contribution.resource.ResourceExport;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * Test NamespaceExportProcessorTestCase
@@ -65,7 +64,7 @@ public class ResourceExportProcessorTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        MonitorFactory monitorFactory = new DefaultMonitorFactory();  
         if (monitorFactory != null) {
         	monitor = monitorFactory.createMonitor();
         	utilities.addUtility(monitorFactory);
@@ -97,7 +96,7 @@ public class ResourceExportProcessorTestCase extends TestCase {
             assertTrue(true);
         }*/
         staxProcessor.read(reader);
-        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
+        Problem problem = monitor.getLastLoggedProblem();           
         assertNotNull(problem);
         assertEquals("AttributeURIMissing", problem.getMessageId());
     }    

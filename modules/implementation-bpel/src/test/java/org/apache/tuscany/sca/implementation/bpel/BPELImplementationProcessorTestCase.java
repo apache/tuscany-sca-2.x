@@ -35,11 +35,10 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
-import org.apache.tuscany.sca.monitor.impl.DefaultMonitorImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -74,7 +73,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        MonitorFactory monitorFactory = new DefaultMonitorFactory();  
         if (monitorFactory != null) {
         	monitor = monitorFactory.createMonitor();
         	utilities.addUtility(monitorFactory);
@@ -104,7 +103,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
         staxProcessor.read(reader);
-        Problem problem = ((DefaultMonitorImpl)monitor).getLastLoggedProblem();           
+        Problem problem = monitor.getLastLoggedProblem();           
         assertNotNull(problem);
         assertEquals("AttributeProcessMissing", problem.getMessageId());
     }    

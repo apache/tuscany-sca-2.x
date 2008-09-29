@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder.impl;
+package org.apache.tuscany.sca.monitor.impl;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;

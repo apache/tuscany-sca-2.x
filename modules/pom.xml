@@ -141,7 +141,6 @@
                 <module>implementation-widget-runtime</module>
                 <module>implementation-xquery</module>
                 <module>monitor</module>
-                <module>monitor-logging</module>
                 <module>node-api</module>
                 <module>node-impl</module>
                 <module>node-launcher</module>

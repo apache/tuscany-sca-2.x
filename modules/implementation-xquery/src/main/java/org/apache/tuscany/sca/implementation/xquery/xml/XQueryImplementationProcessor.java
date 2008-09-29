@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -42,6 +41,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Processor for the XQuery implementation type artifact
@@ -75,7 +75,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
      */
     private void error(String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-xquery-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-xquery-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
     	 }
     }

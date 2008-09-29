@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -29,6 +28,7 @@ import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Implementation of an extensible URL artifact processor.
@@ -63,7 +63,7 @@ public class ExtensibleURLArtifactProcessor
      */
     private void error(String message, Object model, Object... messageParameters) {
     	if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
     	}
     }

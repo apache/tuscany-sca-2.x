@@ -50,7 +50,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
 
     private void warning(String message, Object model, String... messageParameters) {
         if (monitor != null){
-            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }

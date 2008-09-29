@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.monitor;
 
+
 /**
  * A factory for validation monitors
  * 
@@ -26,7 +27,7 @@ package org.apache.tuscany.sca.monitor;
 public interface MonitorFactory {
 
     /**
-     * Create a new monitor
+     * Create a new monitor.
      * 
      * @return a new monitor
      */

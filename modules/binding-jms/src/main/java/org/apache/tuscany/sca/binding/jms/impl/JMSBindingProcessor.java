@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -135,7 +134,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     */
     private void warning(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-jms-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
     	    monitor.problem(problem);
         }        
     }
@@ -149,7 +148,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     */
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-jms-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
      	    monitor.problem(problem);
         }        
     }
@@ -445,12 +444,12 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     }
 
     /**
-     * <headers JMSType=”string”?
-     *          JMSCorrelationID=”string”?
-     *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *          JMSTimeToLive=”long”?      
-     *          JMSPriority=”0 .. 9”?>
-     *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
+     * <headers JMSType=ï¿½stringï¿½?
+     *          JMSCorrelationID=ï¿½stringï¿½?
+     *          JMSDeliveryMode=ï¿½PERSISTENT or NON_PERSISTENTï¿½?
+     *          JMSTimeToLive=ï¿½longï¿½?      
+     *          JMSPriority=ï¿½0 .. 9ï¿½?>
+     *     <property name=ï¿½NMTOKENï¿½ type=ï¿½NMTOKENï¿½?>*    
      * </headers>?
      */
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
@@ -536,14 +535,14 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     }
 
     /**
-     * <operationProperties name=”string” nativeOperation=”string”?>
-     *   <property name=”NMTOKEN” type=”NMTOKEN”?>*
-     *   <headers JMSType=”string”?
-     *            JMSCorrelationId=”string”?
-     *            JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *            JMSTimeToLive=”long”?
-     *            JMSPriority=”0 .. 9”?>
-     *       <property name=”NMTOKEN” type=”NMTOKEN”?>*
+     * <operationProperties name=ï¿½stringï¿½ nativeOperation=ï¿½stringï¿½?>
+     *   <property name=ï¿½NMTOKENï¿½ type=ï¿½NMTOKENï¿½?>*
+     *   <headers JMSType=ï¿½stringï¿½?
+     *            JMSCorrelationId=ï¿½stringï¿½?
+     *            JMSDeliveryMode=ï¿½PERSISTENT or NON_PERSISTENTï¿½?
+     *            JMSTimeToLive=ï¿½longï¿½?
+     *            JMSPriority=ï¿½0 .. 9ï¿½?>
+     *       <property name=ï¿½NMTOKENï¿½ type=ï¿½NMTOKENï¿½?>*
      *   </headers>?
      * </operationProperties>*
      */

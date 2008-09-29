@@ -17,10 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.monitor.impl;
+package org.apache.tuscany.sca.monitor;
 
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.impl.MonitorImpl;
 
 
 /**
@@ -28,14 +27,15 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultMonitorFactoryImpl implements MonitorFactory {
+public class DefaultMonitorFactory implements MonitorFactory {
     
     private Monitor monitor = null;
 
     public Monitor createMonitor() {
-        if (monitor == null){
-            monitor = new DefaultMonitorImpl();
+        if (monitor == null) {
+            monitor = new MonitorImpl();
         }
         return monitor ;
     }
+
 }

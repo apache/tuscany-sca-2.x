@@ -235,7 +235,6 @@
                 <module>../../../modules/interface-wsdl</module>
                 <module>../../../modules/interface-wsdl-xml</module>
                 <module>../../../modules/monitor</module>
-                <module>../../../modules/monitor-logging</module>
                 <module>../../../modules/node-api</module>
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>

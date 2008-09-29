@@ -48,7 +48,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
@@ -56,6 +55,7 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * The default implementation of ContributionRepository
@@ -84,7 +84,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      */
     protected void warning(String message, Object model, String... messageParameters) {
         if (monitor != null){
-            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-impl-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -98,7 +98,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      */
     protected void error(String message, Object model, Object... messageParameters) {
     	if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
     	}
     }
@@ -112,7 +112,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
      */
     protected void error(String message, Object model, Exception ex) {
     	if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, ex);
+	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, ex);
 	        monitor.problem(problem);
     	}
     }
