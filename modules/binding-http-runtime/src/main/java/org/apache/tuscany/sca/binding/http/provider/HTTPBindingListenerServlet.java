@@ -24,16 +24,25 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.binding.http.CacheContext;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
+import org.apache.tuscany.sca.binding.http.util.HTTPHeadersParser;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 
 /**
  * Servlet responsible for dispatching HTTP requests to the
@@ -44,6 +53,13 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 public class HTTPBindingListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 2865466417329430610L;
     
+    private static final QName AUTEHTICATION_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","authentication");
+    
+    transient private Binding binding;
+
+    transient private boolean requiresAuthentication = false;
+    transient private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
+
     private MessageFactory messageFactory;
     private Invoker getInvoker;
     private Invoker conditionalGetInvoker;
@@ -57,10 +73,47 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     /**
      * Constructs a new HTTPServiceListenerServlet.
      */
-    public HTTPBindingListenerServlet(MessageFactory messageFactory) {
+    public HTTPBindingListenerServlet(Binding binding, MessageFactory messageFactory) {
+        this.binding = binding;
         this.messageFactory = messageFactory;
+        
+
+        // find out which policies are active
+        if (binding instanceof PolicySetAttachPoint) {
+            List<Intent> intents = ((PolicySetAttachPoint)binding).getRequiredIntents();
+            for(Intent intent : intents) {
+                if(intent.getName().equals(AUTEHTICATION_INTENT)) {
+                    requiresAuthentication = true;
+                }
+            }
+
+
+            List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
+                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
+                    } else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }        
     }
 
+    
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        if(requiresAuthentication) {
+            if(! hasAuthenticationHeader(request, response)) {
+                response.setHeader("WWW-Authenticate", "BASIC realm=\"Tuscany\"");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            }
+        }
+        
+        super.service(request, response);
+    }    
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -75,12 +128,16 @@ public class HTTPBindingListenerServlet extends HttpServlet {
 
         // Invoke the get operation on the service implementation
         Message requestMessage = messageFactory.createMessage();
+
+        //store http headers to message
+        requestMessage.getHeaders().addAll(HTTPHeadersParser.getHeaders(request));
+        
         String id = path.substring(1);
         
         Message responseMessage = null;
-        CacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = CacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
 
@@ -144,9 +201,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        CacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = CacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -210,9 +267,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        CacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = CacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -276,9 +333,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         // String id = path.substring(1);
         
         Message responseMessage = null;
-        CacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = CacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -314,9 +371,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
 
         // Test if the ETag and LastModified are returned as a cache context.
     	Object body = responseMessage.getBody();
-    	if ( body.getClass() == CacheContext.class ) {
+    	if ( body.getClass() == HTTPCacheContext.class ) {
     		// Transfer to header if so.
-    		CacheContext cc = (CacheContext)responseMessage.getBody();
+    		HTTPCacheContext cc = (HTTPCacheContext)responseMessage.getBody();
     		if (( cc != null ) && ( cc.isEnabled() )) {
     			String eTag = cc.getETag();
             	if ( eTag != null )
@@ -328,116 +385,132 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     	}
     }
 
-	/**
-	 * @return the getInvoker
-	 */
-	public Invoker getGetInvoker() {
-		return getInvoker;
-	}
+    /**
+     * @return the getInvoker
+     */
+    public Invoker getGetInvoker() {
+        return getInvoker;
+    }
 
-	/**
-	 * @param getInvoker the getInvoker to set
-	 */
-	public void setGetInvoker(Invoker getInvoker) {
-		this.getInvoker = getInvoker;
-	}
+    /**
+     * @param getInvoker the getInvoker to set
+     */
+    public void setGetInvoker(Invoker getInvoker) {
+        this.getInvoker = getInvoker;
+    }
 
-	/**
-	 * @return the conditionalGetInvoker
-	 */
-	public Invoker getConditionalGetInvoker() {
-		return conditionalGetInvoker;
-	}
+    /**
+     * @return the conditionalGetInvoker
+     */
+    public Invoker getConditionalGetInvoker() {
+        return conditionalGetInvoker;
+    }
 
-	/**
-	 * @param conditionalGetInvoker the conditionalGetInvoker to set
-	 */
-	public void setConditionalGetInvoker(Invoker conditionalGetInvoker) {
-		this.conditionalGetInvoker = conditionalGetInvoker;
-	}
+    /**
+     * @param conditionalGetInvoker the conditionalGetInvoker to set
+     */
+    public void setConditionalGetInvoker(Invoker conditionalGetInvoker) {
+        this.conditionalGetInvoker = conditionalGetInvoker;
+    }
+
+    /**
+     * @return the putInvoker
+     */
+    public Invoker getPutInvoker() {
+        return putInvoker;
+    }
+
+    /**
+     * @param putInvoker the putInvoker to set
+     */
+    public void setPutInvoker(Invoker putInvoker) {
+        this.putInvoker = putInvoker;
+    }
+
+    /**
+     * @return the conditionalPutInvoker
+     */
+    public Invoker getConditionalPutInvoker() {
+        return conditionalPutInvoker;
+    }
+
+    /**
+     * @param conditionalPutInvoker the conditionalPutInvoker to set
+     */
+    public void setConditionalPutInvoker(Invoker conditionalPutInvoker) {
+        this.conditionalPutInvoker = conditionalPutInvoker;
+    }
+
+    /**
+     * @return the postInvoker
+     */
+    public Invoker getPostInvoker() {
+        return postInvoker;
+    }
+
+    /**
+     * @param postInvoker the postInvoker to set
+     */
+    public void setPostInvoker(Invoker postInvoker) {
+        this.postInvoker = postInvoker;
+    }
+
+    /**
+     * @return the conditionalPostInvoker
+     */
+    public Invoker getConditionalPostInvoker() {
+        return conditionalPostInvoker;
+    }
+
+    /**
+     * @param conditionalPostInvoker the conditionalPostInvoker to set
+     */
+    public void setConditionalPostInvoker(Invoker conditionalPostInvoker) {
+        this.conditionalPostInvoker = conditionalPostInvoker;
+    }
+
+    /**
+     * @return the deleteInvoker
+     */
+    public Invoker getDeleteInvoker() {
+        return deleteInvoker;
+    }
+
+    /**
+     * @param deleteInvoker the deleteInvoker to set
+     */
+    public void setDeleteInvoker(Invoker deleteInvoker) {
+        this.deleteInvoker = deleteInvoker;
+    }
+
+    /**
+     * @return the conditionalDeleteInvoker
+     */
+    public Invoker getConditionalDeleteInvoker() {
+        return conditionalDeleteInvoker;
+    }
+
+    /**
+     * @param conditionalDeleteInvoker the conditionalDeleteInvoker to set
+     */
+    public void setConditionalDeleteInvoker(Invoker conditionalDeleteInvoker) {
+        this.conditionalDeleteInvoker = conditionalDeleteInvoker;
+    }
+
     
-	/**
-	 * @return the putInvoker
-	 */
-	public Invoker getPutInvoker() {
-		return putInvoker;
-	}
+    /** 
+     * Utility Methods related to Policy
+     */
+    
 
-	/**
-	 * @param putInvoker the putInvoker to set
-	 */
-	public void setPutInvoker(Invoker putInvoker) {
-		this.putInvoker = putInvoker;
-	}
+    private boolean hasAuthenticationHeader(HttpServletRequest request, ServletResponse response) {
+        boolean result = false;
+        if(request.getHeader("Authorization") != null) {
+            result = true;
+        }
+        
+        return result;
+    }
 
-	/**
-	 * @return the conditionalPutInvoker
-	 */
-	public Invoker getConditionalPutInvoker() {
-		return conditionalPutInvoker;
-	}
-
-	/**
-	 * @param conditionalPutInvoker the conditionalPutInvoker to set
-	 */
-	public void setConditionalPutInvoker(Invoker conditionalPutInvoker) {
-		this.conditionalPutInvoker = conditionalPutInvoker;
-	}
-
-	/**
-	 * @return the postInvoker
-	 */
-	public Invoker getPostInvoker() {
-		return postInvoker;
-	}
-
-	/**
-	 * @param postInvoker the postInvoker to set
-	 */
-	public void setPostInvoker(Invoker postInvoker) {
-		this.postInvoker = postInvoker;
-	}
-
-	/**
-	 * @return the conditionalPostInvoker
-	 */
-	public Invoker getConditionalPostInvoker() {
-		return conditionalPostInvoker;
-	}
-
-	/**
-	 * @param conditionalPostInvoker the conditionalPostInvoker to set
-	 */
-	public void setConditionalPostInvoker(Invoker conditionalPostInvoker) {
-		this.conditionalPostInvoker = conditionalPostInvoker;
-	}
-
-	/**
-	 * @return the deleteInvoker
-	 */
-	public Invoker getDeleteInvoker() {
-		return deleteInvoker;
-	}
-
-	/**
-	 * @param deleteInvoker the deleteInvoker to set
-	 */
-	public void setDeleteInvoker(Invoker deleteInvoker) {
-		this.deleteInvoker = deleteInvoker;
-	}
-
-	/**
-	 * @return the conditionalDeleteInvoker
-	 */
-	public Invoker getConditionalDeleteInvoker() {
-		return conditionalDeleteInvoker;
-	}
-
-	/**
-	 * @param conditionalDeleteInvoker the conditionalDeleteInvoker to set
-	 */
-	public void setConditionalDeleteInvoker(Invoker conditionalDeleteInvoker) {
-		this.conditionalDeleteInvoker = conditionalDeleteInvoker;
-	}
 
 }

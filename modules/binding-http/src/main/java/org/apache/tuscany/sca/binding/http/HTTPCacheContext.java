@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
  * If-Modified-Since, If-Unmodified-Since, If-Range.
 
  */
-public class CacheContext {
+public class HTTPCacheContext {
     public static final SimpleDateFormat RFC822DateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
     
     public boolean enabled;
@@ -211,8 +211,8 @@ public class CacheContext {
      * @param request
      * @return
      */
-    public static CacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
-    	CacheContext context = new CacheContext();
+    public static HTTPCacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
+    	HTTPCacheContext context = new HTTPCacheContext();
     	
     	String eTag = request.getHeader( "If-Match" );    	
     	if ( eTag != null ) {
