@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.policy.configurator;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,18 +26,12 @@ import java.util.Map;
 import javax.security.auth.Subject;
 
 import org.apache.axiom.om.util.Base64;
-import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
-import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.description.Parameter;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.axis2.transport.http.HttpTransportProperties.Authenticator;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.Policy;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
