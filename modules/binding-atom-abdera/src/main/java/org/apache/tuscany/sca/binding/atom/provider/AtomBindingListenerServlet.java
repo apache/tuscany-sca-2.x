@@ -56,7 +56,7 @@ import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.sca.binding.http.CacheContext;
+import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -164,9 +164,9 @@ class AtomBindingListenerServlet extends HttpServlet {
         // No authentication required for a get request
     	
     	// Test for any cache info in the request
- 	    CacheContext cacheContext = null;    	
+ 	    HTTPCacheContext cacheContext = null;    	
     	try { 
-    	   cacheContext = CacheContext.getCacheContextFromRequest( request );
+    	   cacheContext = HTTPCacheContext.getCacheContextFromRequest( request );
     	} catch ( java.text.ParseException e ) {    
     	}
     	// System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );
