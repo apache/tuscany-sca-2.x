@@ -49,7 +49,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalGet(String id, CacheContext cacheContext)
+	public InputStream conditionalGet(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -99,7 +99,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalDelete(String id, CacheContext cacheContext)
+	public InputStream conditionalDelete(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -151,7 +151,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public CacheContext conditionalPost(CacheContext cacheContext)
+	public HTTPCacheContext conditionalPost(HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 		String id = "" + (new java.util.Random()).nextInt(Integer.MAX_VALUE);
 
@@ -180,7 +180,7 @@ public class TestBindingCacheImpl {
 		}
 
 		// Return the ETag and LastModfied fields by serialize to a byte array
-		CacheContext returnContext = new CacheContext();
+		HTTPCacheContext returnContext = new HTTPCacheContext();
 		returnContext.setETag( "ETag" + (new java.util.Random()).nextInt(Integer.MAX_VALUE) );
 		returnContext.setLastModified( new Date() );
 		return returnContext;
@@ -202,7 +202,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalPut(String id, CacheContext cacheContext)
+	public InputStream conditionalPut(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
