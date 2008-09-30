@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.xsd.xml;
 
 import java.net.URL;
 
+import javax.xml.stream.XMLInputFactory;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -42,7 +44,7 @@ public class XMLDocumentHelperTestCase {
 
     @Test
     public void testReadTNS() throws Exception {
-        String tns = XMLDocumentHelper.readTargetNamespace(xsd, XMLDocumentHelper.XSD, true, null);
+        String tns = XMLDocumentHelper.readTargetNamespace(xsd, XMLDocumentHelper.XSD, true, null, XMLInputFactory.newInstance());
         Assert.assertEquals("http://greeting", tns);
     }
 
