@@ -23,7 +23,6 @@ import java.security.Principal;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
 
 
 /**
