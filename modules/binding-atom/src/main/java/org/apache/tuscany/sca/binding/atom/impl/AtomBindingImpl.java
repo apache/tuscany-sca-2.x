@@ -47,10 +47,6 @@ class AtomBindingImpl implements AtomBinding, PolicySetAttachPoint {
     private IntentAttachPointType intentAttachPointType;
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
-
     public String getName() {
         return name;
     }
@@ -84,6 +80,8 @@ class AtomBindingImpl implements AtomBinding, PolicySetAttachPoint {
         // The binding is always resolved
     }
 
+    //Policy related getters/setters
+    
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
@@ -106,6 +104,10 @@ class AtomBindingImpl implements AtomBinding, PolicySetAttachPoint {
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 
     @Override
