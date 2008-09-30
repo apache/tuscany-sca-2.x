@@ -16,4 +16,4 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;type=javax.xml.bind.JAXBElement,name=jaxb
+org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;name=javax.xml.bind.JAXBElement

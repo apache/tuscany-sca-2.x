@@ -26,12 +26,11 @@ import org.osoa.sca.CallableReference;
 public class CallableReferenceDataBinding extends BaseDataBinding {
     
     public static final String NAME = CallableReference.class.getName();
-    public static final String[] ALIASES = new String[] {"callablereference"};
 
     private CallableReferenceTypeHelper xmlTypeHelper;
 
     public CallableReferenceDataBinding() {
-        super(NAME, ALIASES, CallableReference.class);
+        super(NAME, CallableReference.class);
         this.xmlTypeHelper = new CallableReferenceTypeHelper();
     }
 

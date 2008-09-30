@@ -33,10 +33,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 public class AxiomDataBinding extends BaseDataBinding {
     
     public static final String NAME = OMElement.class.getName();
-    public static final String[] ALIASES = new String[] {"axiom"};
 
     public AxiomDataBinding() {
-        super(NAME, ALIASES, OMElement.class);
+        super(NAME, OMElement.class);
     }
 
     /**

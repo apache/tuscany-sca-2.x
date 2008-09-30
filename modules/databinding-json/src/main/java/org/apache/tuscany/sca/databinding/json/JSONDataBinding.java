@@ -35,13 +35,12 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class JSONDataBinding extends BaseDataBinding {
     public static final String NAME = "JSON";
-    public static final String[] ALIASES = new String[] {"json"};
 
     public static final String ROOT_NAMESPACE = "http://tuscany.apache.org/xmlns/sca/databinding/json/1.0";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
 
     public JSONDataBinding() {
-        super(NAME, ALIASES, org.json.JSONObject.class);
+        super(NAME, org.json.JSONObject.class);
     }
 
     @Override

@@ -54,7 +54,6 @@ public class DataBindingRegistryImplTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testRegistry() {
         DataBinding db1 = createMock(DataBinding.class);
-        expect(db1.getAliases()).andReturn(new String[] {"db1"}).anyTimes();
         expect(db1.getName()).andReturn(ContentHandler.class.getName()).anyTimes();
         DataType<Class> dataType1 = new DataTypeImpl<Class>(ContentHandler.class, ContentHandler.class);
         expect(db1.introspect(dataType1, null)).andReturn(true);
@@ -65,7 +64,6 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         registry.addDataBinding(db1);
 
         DataBinding db2 = createMock(DataBinding.class);
-        expect(db2.getAliases()).andReturn(new String[] {"db2"}).anyTimes();
         expect(db2.getName()).andReturn(XMLStreamReader.class.getName()).anyTimes();
         DataType<Class> dataType2 = new DataTypeImpl<Class>(XMLStreamReader.class, XMLStreamReader.class);
         expect(db2.introspect(dataType2, null)).andReturn(true);
@@ -80,10 +78,6 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         DataBinding db3 = registry.getDataBinding(name);
         assertSame(db1, db3);
 
-        // Look up by alias
-        DataBinding db5 = registry.getDataBinding("db1");
-        assertSame(db1, db5);
-        
         DataType dt = new DataTypeImpl<Class>(ContentHandler.class, null);
         registry.introspectType(dt, null);
         assertEquals(dataType1.getLogical(), ContentHandler.class);

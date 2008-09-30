@@ -16,4 +16,4 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.sdo.SDODataBinding;type=commonj.sdo.DataObject,name=sdo
+org.apache.tuscany.sca.databinding.sdo.SDODataBinding;name=commonj.sdo.DataObject

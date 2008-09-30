@@ -58,7 +58,7 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
         }
         // HACK: [rfeng] By pass the one know to XMLString
         String db = type.getDataBinding();
-        if (db != null && (XMLStringDataBinding.NAME.equals(db) || XMLStringDataBinding.ALIASES[0].equals(db))) {
+        if (db != null && (XMLStringDataBinding.NAME.equals(db))) {
             return false;
         }
         if (SimpleTypeMapperImpl.JAVA2XML.keySet().contains(cls)) {

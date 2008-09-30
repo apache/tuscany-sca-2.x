@@ -16,5 +16,5 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.xstream.XObjectDataBinding;type=org.apache.tuscany.sca.databinding.xstream.XObject,name=xobject
+org.apache.tuscany.sca.databinding.xstream.XObjectDataBinding;name=org.apache.tuscany.sca.databinding.xstream.XObject
 
