@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
