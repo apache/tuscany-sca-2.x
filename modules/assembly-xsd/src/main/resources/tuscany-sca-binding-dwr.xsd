@@ -34,6 +34,7 @@
                     <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/>
                 </sequence>
+                <anyAttribute namespace="##any" processContents="lax"/>
             </extension>
         </complexContent>
     </complexType>
