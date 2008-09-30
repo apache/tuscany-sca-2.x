@@ -16,10 +16,10 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.xml.DOMDataBinding;type=org.w3c.dom.Node,name=dom
-org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;type=java.lang.String,name=xml.string
-org.apache.tuscany.sca.databinding.xml.XMLGroupDataBinding;type=databinding:group
-org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;type=java:complexType
-org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;type=java:simpleType
-org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;type=java:exception
-org.apache.tuscany.sca.databinding.externalizable.ExternalizableDataBinding;type=java.io.Externalizable,name=externalizable
+org.apache.tuscany.sca.databinding.xml.DOMDataBinding;name=org.w3c.dom.Node
+org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;name=java.lang.String
+org.apache.tuscany.sca.databinding.xml.XMLGroupDataBinding;name=databinding:group
+org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;name=java:complexType
+org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;name=java:simpleType
+org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;name=java:exception
+org.apache.tuscany.sca.databinding.externalizable.ExternalizableDataBinding;name=java.io.Externalizable

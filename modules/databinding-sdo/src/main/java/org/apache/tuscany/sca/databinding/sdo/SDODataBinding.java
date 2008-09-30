@@ -24,7 +24,6 @@ import java.security.PrivilegedAction;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
@@ -46,7 +45,6 @@ import commonj.sdo.helper.XMLDocument;
  */
 public class SDODataBinding extends BaseDataBinding {
     public static final String NAME = DataObject.class.getName();
-    public static final String[] ALIASES = new String[] {"sdo"};
 
     public static final String ROOT_NAMESPACE = "commonj.sdo";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "dataObject");
@@ -55,7 +53,7 @@ public class SDODataBinding extends BaseDataBinding {
     private XMLTypeHelper xmlTypeHelper;
 
     public SDODataBinding() {
-        super(NAME, ALIASES, DataObject.class);
+        super(NAME, DataObject.class);
         wrapperHandler = new SDOWrapperHandler();
         xmlTypeHelper = new SDOTypeHelper();
     }
@@ -120,11 +118,6 @@ public class SDODataBinding extends BaseDataBinding {
     @Override
     public WrapperHandler getWrapperHandler() {
         return wrapperHandler;
-    }
-
-    @Override
-    public SimpleTypeMapper getSimpleTypeMapper() {
-        return new SDOSimpleTypeMapper();
     }
 
     @Override

@@ -16,4 +16,4 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.xmlbeans.XMLBeansDataBinding;type=org.apache.xmlbeans.XmlObject,name=xmlbeans
+org.apache.tuscany.sca.databinding.xmlbeans.XMLBeansDataBinding;name=org.apache.xmlbeans.XmlObject

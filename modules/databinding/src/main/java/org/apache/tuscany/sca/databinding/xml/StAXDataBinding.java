@@ -34,10 +34,9 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public class StAXDataBinding extends BaseDataBinding {
     public static final String NAME = XMLStreamReader.class.getName();
-    public static final String[] ALIASES = new String[] {"stax"};
 
     public StAXDataBinding() {
-        super(NAME, ALIASES, XMLStreamReader.class);
+        super(NAME, XMLStreamReader.class);
     }
 
     @Override

@@ -71,17 +71,11 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                 className = ((LazyDataBinding)dataBinding).dataBindingDeclaration.getClassName();
                 lazy = true;
             }
-            logger.fine("Adding databinding: " + className + ";type=" + dataBinding.getName() + ",lazy=" + lazy);
+            logger.fine("Adding databinding: " + className + ";name=" + dataBinding.getName() + ",lazy=" + lazy);
         }
         databindings.add(dataBinding);
         bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
 
-        String[] aliases = dataBinding.getAliases();
-        if (aliases != null) {
-            for (String alias : aliases) {
-                bindings.put(alias.toLowerCase(), dataBinding);
-            }
-        }
     }
 
     public DataBinding removeDataBinding(String id) {
@@ -91,12 +85,6 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         DataBinding dataBinding = bindings.remove(id.toLowerCase());
         if (dataBinding != null) {
             databindings.remove(dataBinding);
-            String[] aliases = dataBinding.getAliases();
-            if (aliases != null) {
-                for (String alias : aliases) {
-                    bindings.remove(alias.toLowerCase());
-                }
-            }
         }
         return dataBinding;
     }
@@ -119,11 +107,10 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         // Load data bindings
         for (ServiceDeclaration dataBindingDeclaration : dataBindingDeclarations) {
             Map<String, String> attributes = dataBindingDeclaration.getAttributes();
-            String type = attributes.get("type");
             String name = attributes.get("name");
 
             // Create a data binding wrapper and register it
-            DataBinding dataBinding = new LazyDataBinding(type, name, dataBindingDeclaration);
+            DataBinding dataBinding = new LazyDataBinding(name, dataBindingDeclaration);
             addDataBinding(dataBinding);
         }
 
@@ -137,15 +124,11 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     private static class LazyDataBinding implements DataBinding {
 
         private String name;
-        private String[] aliases;
         private ServiceDeclaration dataBindingDeclaration;
         private DataBinding dataBinding;
 
-        private LazyDataBinding(String type, String name, ServiceDeclaration dataBindingDeclaration) {
+        private LazyDataBinding(String type, ServiceDeclaration dataBindingDeclaration) {
             this.name = type;
-            if (name != null) {
-                this.aliases = new String[] {name};
-            }
             this.dataBindingDeclaration = dataBindingDeclaration;
         }
 
@@ -172,16 +155,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return getDataBinding().copy(object, dataType, operation);
         }
 
-        public String[] getAliases() {
-            return aliases;
-        }
-
         public String getName() {
             return name;
-        }
-
-        public SimpleTypeMapper getSimpleTypeMapper() {
-            return getDataBinding().getSimpleTypeMapper();
         }
 
         public XMLTypeHelper getXMLTypeHelper() {

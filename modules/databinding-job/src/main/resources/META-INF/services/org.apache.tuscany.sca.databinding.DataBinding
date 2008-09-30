@@ -16,5 +16,5 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.job.JobDataBinding;type=org.apache.tuscany.sca.databinding.job.Job,name=job
+org.apache.tuscany.sca.databinding.job.JobDataBinding;name=org.apache.tuscany.sca.databinding.job.Job
 

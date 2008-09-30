@@ -27,10 +27,9 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 public class JobDataBinding extends BaseDataBinding {
 
     public static final String NAME = Job.class.getName();
-    public static final String[] ALIASES = new String[] {"job"};
 
     public JobDataBinding() {
-        super(NAME, ALIASES, Job.class);
+        super(NAME, Job.class);
     }
 
 }

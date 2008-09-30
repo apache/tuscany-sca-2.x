@@ -43,7 +43,6 @@ import org.w3c.dom.Document;
  */
 public class JAXBDataBinding extends BaseDataBinding {
     public static final String NAME = JAXBElement.class.getName();
-    public static final String[] ALIASES = new String[] {"jaxb"};
 
     public static final String ROOT_NAMESPACE = "http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
@@ -52,7 +51,7 @@ public class JAXBDataBinding extends BaseDataBinding {
     private JAXBTypeHelper xmlTypeHelper;
     
     public JAXBDataBinding() {
-        super(NAME, ALIASES, JAXBElement.class);
+        super(NAME, JAXBElement.class);
         this.wrapperHandler = new JAXBWrapperHandler();
         this.xmlTypeHelper = new JAXBTypeHelper();
     }

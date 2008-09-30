@@ -29,10 +29,9 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 public class XObjectDataBinding extends BaseDataBinding {
 
     public static final String NAME = XObject.class.getName();
-    public static final String[] ALIASES = new String[] {"xobject"};
 
     public XObjectDataBinding() {
-        super(NAME, ALIASES, XObject.class);
+        super(NAME, XObject.class);
     }
 
 }

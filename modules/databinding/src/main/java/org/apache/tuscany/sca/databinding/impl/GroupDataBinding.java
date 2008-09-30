@@ -40,7 +40,7 @@ public abstract class GroupDataBinding extends BaseDataBinding {
     protected Class[] markerTypes;
 
     public GroupDataBinding(Class[] types) {
-        super(NAME, null, GroupDataBinding.class);
+        super(NAME, GroupDataBinding.class);
         this.markerTypes = types;
     }
 
