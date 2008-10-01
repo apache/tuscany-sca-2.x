@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
@@ -28,8 +29,6 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
-import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.jvnet.jaxb.reflection.model.annotation.RuntimeInlineAnnotationReader;
 import org.jvnet.jaxb.reflection.model.core.Ref;
 import org.jvnet.jaxb.reflection.model.impl.RuntimeModelBuilder;
@@ -38,7 +37,6 @@ import org.jvnet.jaxb.reflection.model.runtime.RuntimePropertyInfo;
 import org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet;
 import org.jvnet.jaxb.reflection.runtime.IllegalAnnotationsException;
 import org.jvnet.jaxb.reflection.runtime.JAXBContextImpl;
-import org.w3c.dom.Node;
 
 import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
@@ -52,8 +50,8 @@ public class JAXBReflectionTestCase extends TestCase {
 
     public void testGenerateSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance("com.example.ipo.jaxb");
-        Node schema = JAXBContextHelper.generateSchema(context);
-        System.out.println(new Node2String().transform(schema, null));
+        Map<String, String> schemas = JAXBTypeHelper.generateSchema(context);
+        System.out.println(schemas);
     }
 
     /**
