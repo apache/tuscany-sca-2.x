@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -34,7 +35,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
-import org.apache.tuscany.sca.databinding.jaxb.JAXB2XMLStreamReader;
 
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Ref;
@@ -50,6 +50,24 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
  * @version $Rev$ $Date$
  */
 public class POJOTestCase extends TestCase {
+    public void testAdapter() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(MyJaxbBean.class, MyInterfaceImpl.class);
+        StringWriter writer = new StringWriter();
+        MyJaxbBean bean = new MyJaxbBean();
+        bean.myBean = new MySubBean();
+        bean.myBean.setName("Ray");
+        bean.myInterface = new MyInterfaceImpl();
+        bean.myInterface.setId("001");
+        bean.myObject = new MyBean();
+        ((MyBean) bean.myObject).setName("Y");
+        context.createMarshaller().marshal(bean, writer);
+        System.out.println(writer.toString());
+        Object result = context.createUnmarshaller().unmarshal(new StringReader(writer.toString()));
+        assertTrue(result instanceof MyJaxbBean);
+        Map<String, String> schemas = JAXBTypeHelper.generateSchema(context);
+        System.out.println(schemas);
+    }
+    
     public void testPOJO() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);
         StringWriter writer = new StringWriter();
@@ -76,7 +94,7 @@ public class POJOTestCase extends TestCase {
     }
     
     public void testPOJOArray() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(MyBean[].class);
+        JAXBContext context = JAXBContext.newInstance(MyBean[].class, MySubBean.class);
         StringWriter writer = new StringWriter();
         MySubBean bean = new MySubBean();
         bean.setAddtional("SUB");
@@ -98,7 +116,7 @@ public class POJOTestCase extends TestCase {
         JAXBElement e2 = (JAXBElement)result;
         assertTrue(e2.getValue() instanceof MyBean[]);
         MyBean newBean = ((MyBean[])e2.getValue())[0];
-        assertFalse(newBean instanceof MySubBean);
+        assertTrue(newBean instanceof MySubBean);
     }
 
     public void testXMLStreamReader() throws Exception {
