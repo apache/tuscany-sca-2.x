@@ -70,7 +70,7 @@
 			}
 			document.getElementById("shoppingCart").innerHTML = list;
 			// document.getElementById('total').innerHTML = feed.getElementsByTagName("subtitle")[0].firstChild.nodeValue;
-			var text =  feed.getSubTitle().getText();
+			var text =  feed.getSubtitle().getText();
 			document.getElementById('total').innerHTML = text;
 		}
 	}
@@ -84,6 +84,9 @@
 		var j = 0;
 		for (var i=0; i<items.length; i++)
 			if (items[i].checked) {
+				var entry = new Entry( "cart-item" );
+				entry.setContent( items[i].value );
+				var entryXML = entry.toXML();
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>cart-item</title><content type="text">'+items[i].value+'</content></entry>'
 				shoppingCart.post(entry, shoppingCart_postResponse);
 				items[i].checked = false;
@@ -109,7 +112,14 @@
 		document.getElementById('shoppingCart').innerHTML = "";
 		document.getElementById('total').innerHTML = "";	
 	}	
-
+	function testFeedtoXML() {
+		if(exception){
+			alert(exception.message);
+			return;
+		}
+    	document.getElementById('results').innerHTML = text;
+	}
+	
     //alert(locale);
 	catalog.get(catalog_getResponse);
 	shoppingCart.get("", shoppingCart_getResponse);

@@ -33,6 +33,17 @@ function Uri( value ) {
    this.toString = function() {
        return "Uri value=" + this.value;
    };
+
+   /**
+    * Serialize this element to XML.
+    * atomUri = text
+    */
+   this.toXML = function() {
+      xml = "<uri>";
+      xml += this.value;
+      xml += "</uri>\n";      
+      return xml;
+   };
 }
 
 /* Updated is Date */
@@ -54,6 +65,17 @@ function Email( value ) {
    this.toString = function() {
        return "Email value=" + this.value;
    };
+
+   /**
+    * Serialize this element to XML.
+    * atomEmailAddress = xsd:string { pattern = ".+@.+" }
+    */
+   this.toXML = function() {
+      xml = "<email>";
+      xml += this.value;
+      xml += "</email>\n";      
+      return xml;
+   };
 }
 
 /**
@@ -72,6 +94,27 @@ function Id( value ) {
    this.toString = function() {
        return "Id value=" + this.value;
    };
+
+   /**
+    * Serialize this element to XML.  
+    * atomId = element atom:id {
+    *    atomCommonAttributes,
+    *    (atomUri)
+    * }
+    */
+   this.toXML = function() {
+      xml = "<id";
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += ">";
+      xml += this.value;
+      xml += "</id>\n";      
+      return xml;
+   };
 }
 
 
@@ -88,26 +131,30 @@ function Logo( value ) {
       this.value = value;
    };
 
+
    this.toString = function() {
        return "Logo value=" + this.value;
    };
-}
 
-/**
- * Class that defines an Name represented as a string,
- */
-function Name( value ) {
-   this.value = value;
-   this.getValue = function() {
-      return this.value;
-   };
-
-   this.setValue = function(value) {
-      this.value = value;
-   };
-
-   this.toString = function() {
-       return "Name value=" + this.value;
+   /**
+    * Serialize this element to XML.  
+    * atomLogo = element atom:logo {
+    *    atomCommonAttributes,
+    *    (atomUri)
+    * }
+    */
+   this.toXML = function() {
+      xml = "<logo";
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += ">";
+      xml += this.value;
+      xml += "</logo>\n";      
+      return xml;
    };
 }
 
@@ -117,7 +164,7 @@ function Name( value ) {
 function Text( content, /* optional */ type ) {
    this.content = content;
    this.type = type;
-   if (!type) this.type = "text"; // If undefined or null, use text
+   if (type == null) this.type = "text"; // If undefined or null, use text
    
    this.setText = function(content) {
       this.content = content;
@@ -161,23 +208,56 @@ function Text( content, /* optional */ type ) {
    this.toString = function() {
        return "Text type=" + this.type + ", content=" + this.content;
    };
+   
+   /** Serialize this text element to XML. 
+    *  atomPlainTextConstruct =
+    *     atomCommonAttributes,
+    *     attribute type { "text" | "html" }?,
+    *     text
+    *
+    *  atomXHTMLTextConstruct =
+    *     atomCommonAttributes,
+    *     attribute type { "xhtml" },
+    *     xhtmlDiv
+    * 
+    *  atomTextConstruct = atomPlainTextConstruct | atomXHTMLTextConstruct
+    */
+   this.toXML = function( elementName ) {
+      if ( elementName == null ) {
+         elementName = "text";
+      }
+      xml = "<" + elementName;
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += " type=\"" + this.type + "\"";
+      xml += ">";
+      if ( this.type === "xhtml" ) {
+         xml += "<div xmlns=\"http://www.w3.org/1999/xhtml\">";      
+      }
+      xml += this.content;
+      if ( this.type === "xhtml" ) {
+         xml += "</div>";      
+      }
+      xml += "</" + elementName + ">";      
+      return xml;
+   }
 }
 
 /**
  * Class that defines a Person object.
- * atomPersonConstruct =
- *     atomCommonAttributes,
- *     (element atom:name { text }
- *      & element atom:uri { atomUri }?
- *      & element atom:email { atomEmailAddress }?
- *      & extensionElement*) 
  */
 function Person( name, email ) {
-   this.name = new Name( name );
-   this.email = new Email( email );
+   this.name = name;
+   if ( email != null ) {
+      this.email = new Email( email );
+   }
    
    this.setName = function( name ) {
-      this.name = new Name( name );
+      this.name = name;
    };
 
    this.getName = function() {
@@ -211,17 +291,50 @@ function Person( name, email ) {
    this.toString = function() {
        return "Person name=" + this.name + ", email=" + this.email;
    };
-}
+
+  /** Serialize this text element to XML. 
+    * atomPersonConstruct =
+    *     atomCommonAttributes,
+    *     (element atom:name { text }
+    *      & element atom:uri { atomUri }?
+    *      & element atom:email { atomEmailAddress }?
+    *      & extensionElement*) 
+    */
+   this.toXML = function( elementName ) {
+      if ( elementName == null ) {
+         elementName = "person";
+      }
+      xml = "<" + elementName;
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += ">\n";
+      if ( this.name != null ) {
+         xml += "<name>" + this.name + "</name>\n";
+      }
+      if ( this.uri != null ) {
+         xml += "<uri>" + this.uri + "</uri>\n";
+      }
+      if ( this.email != null) {
+         xml += this.email.toXML();
+      }      
+      xml += "</" + elementName + ">\n";      
+      return xml;
+   }
+ }
 
 /**
  * Class that defines a Generator object.
  */
 function Generator( name, uri ) {
-   this.name = new Name( name );
+   this.name = name;
    this.uri = new Uri( uri );
    
    this.setName = function( name ) {
-      this.name = new Name( name );
+      this.name = name;
    };
 
    this.getName = function() {
@@ -247,6 +360,33 @@ function Generator( name, uri ) {
    this.toString = function() {
        return "Generator name=" + this.name + ", email=" + this.email;
    };
+
+  /** Serialize this text element to XML. 
+    * atomGenerator = element atom:generator {
+    *    atomCommonAttributes,
+    *    attribute uri { atomUri }?,
+    *    attribute version { text }?,
+    *    text
+    * }
+    */
+   this.toXML = function() {
+      xml = "<generator";
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri.getValue() + "\"";
+      }
+      if ( this.lang != null) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      if ( this.version != null ) {
+         xml += " version=\"" + this.version + "\"";
+      }
+      xml += ">";
+      if ( this.name != null ) {
+         xml += this.name;
+      }
+      xml += "</generator>\n";      
+      return xml;
+   }
 }
 
 /**
@@ -260,8 +400,9 @@ function Generator( name, uri ) {
  *        undefinedContent
  *     }
  */
-function Category( label, uri ) {
-   this.label = new Label( label );
+function Category( label, content ) {
+   this.label = label;
+   this.content = content;
    
    this.setLabel = function( label ) {
       this.label = label;
@@ -295,16 +436,60 @@ function Category( label, uri ) {
       return this.scheme;
    };
 
+   this.setContent = function( content ) {
+      this.content = content;
+   };
+
+   this.getContent = function() {
+      return this.content;
+   };
+
    this.toString = function() {
        return "Category label=" + this.label;
    };
+
+   /** Serialize this text element to XML. 
+    *  atomCategory =
+    *     element atom:category {
+    *        atomCommonAttributes,
+    *        attribute term { text },
+    *        attribute scheme { atomUri }?,
+    *        attribute label { text }?,
+    *        undefinedContent
+    *     }
+    */
+   this.toXML = function() {
+      xml = "<category>\n";
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      if ( this.term != null) {
+         xml += " term=\"" + this.term + "\"";
+      }
+      if ( this.scheme != null) {
+         xml += " scheme=\"" + this.scheme + "\"";
+      }
+      if ( this.label != null) {
+         xml += " label=\"" + this.label + "\"";
+      }
+      xml += ">\n";
+      if ( this.content != null ) {
+         xml += this.content + "\n";
+      }
+      xml += "</category>\n";      
+      return xml;
+   }
 }
 
 /**
  * Class that defines a Link object.
  */
-function Link( href ) {
+function Link( href, relation ) {
    this.href = new Uri( href );
+   this.relation = relation;
    
    this.setHRef = function( uri ) {
       this.href = new Uri( uri );
@@ -337,6 +522,7 @@ function Link( href ) {
    this.getTitleLang = function() {
       return this.titleLang;
    };
+   
    this.setLength= function( length ) {
       this.length= length;
    };
@@ -357,6 +543,14 @@ function Link( href ) {
 
    this.getMimeType = function() {
       return this.mimeType;
+   };
+
+   this.setContent= function( content ) {
+      this.content = content;
+   };
+
+   this.getContent = function() {
+      return this.content;
    };
 
 /*
@@ -388,6 +582,52 @@ function Link( href ) {
    this.toString = function() {
        return "Link href=" + this.href + ", title=" + this.title;
    };
+   
+   /** Serialize this text element to XML. 
+     * atomLink =
+     *     element atom:link {
+     *     atomCommonAttributes,
+     *     attribute href { atomUri },
+     *     attribute rel { atomNCName | atomUri }?,
+     *     attribute type { atomMediaType }?,
+     *     attribute hreflang { atomLanguageTag }?,
+     *     attribute title { text }?,
+     *     attribute length { text }?,
+     *     undefinedContent
+     *  }
+     */
+   this.toXML = function() {
+      xml = "<link";
+      if ( this.relation != null ) {
+         xml += " rel=\"" + this.relation + "\"";
+      }
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri.getValue() + "\"";
+      }
+      if ( this.lang != null) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      if ( this.href != null ) {
+         xml += " href=\"" + this.href.getValue() + "\"";
+      }
+      if ( this.hreflang != null ) {
+         xml += " hreflang=\"" + this.hreflang + "\"";
+      }
+      if ( this.title != null ) {
+         xml += " title=\"" + this.title + "\"";
+      }
+      if ( this.length != null ) {
+         xml += " length=\"" + this.length + "\"";
+      }
+      if ( this.content != null ) {
+         xml += this.content + "\n";
+         xml += "</link>\n";
+      } else {
+         xml += "/>\n";
+      }      
+      return xml;
+   }
+   
 }          
 
 /**
@@ -413,10 +653,29 @@ function Link( href ) {
 function Entry( init ) {
    // Constructor code at bottom after function definition
    
-   var authors = new Array();
-   var contributors = new Array();
-   var categories = new Array();
-   var links = new Array();
+   this.authors = new Array();
+   this.contributors = new Array();
+   this.categories = new Array();
+   this.links = new Array();
+
+   this.setNamespace = function( namespace ) {
+      this.namespace = namespace;
+   };
+
+   this.getNamespace = function() {
+      return this.namespace;
+   };
+
+   this.setId = function( id ) {
+      if (!((typeof id == "object") && (id instanceof Id)))
+         this.id = new Id( id );
+      else 
+         this.id = id;
+   }
+
+   this.getId = function() {
+      return this.id;
+   };
 
    this.setPublished = function( published ) {
       this.published = published;
@@ -434,28 +693,7 @@ function Entry( init ) {
       return this.updated;
    };
 
-   this.setNamespace = function( namespace ) {
-      this.namespace = namespace;
-   };
-
-   this.getNamespace = function() {
-      return this.namespace;
-   };
-
-   this.setContent = function( content ) {
-      if (!((typeof content == "object") && (content instanceof Text)))
-         error( "Entry content must be of type Text" );
-
-      this.content = content;
-   }
-
-   this.getContent = function() {
-      return this.content;
-   };
-
    this.setRights = function( rights ) {
-      if (!((typeof rights == "object") && (rights instanceof Text)))
-         error( "Entry rights must be of type Text" );
       this.rights = rights;
    }
 
@@ -463,9 +701,32 @@ function Entry( init ) {
       return this.rights;
    };
 
+   this.setSource = function( source ) {
+      this.source = source;
+   }
+
+   this.getSource = function() {
+      return this.source;
+   };
+
+   /* Type Text */
+   this.setTitle = function( title ) {
+      if (!((typeof title == "object") && (title instanceof Text)))
+         this.title = new Text( title, "text" );
+      else 
+         this.title = title;
+   }
+
+   this.getTitle = function() {
+      return this.title;
+   };
+
    /* Type Text */
    this.setSummary = function( summary ) {
-      this.summary = summary;
+      if (!((typeof summary == "object") && (summary instanceof Text)))
+         this.summary = new Text( summary, "text" );
+      else
+         this.summary = summary;
    }
 
    this.getSummary = function() {
@@ -473,23 +734,15 @@ function Entry( init ) {
    };
 
    /* Type Text */
-   this.setTitle = function( title ) {
-      if (!((typeof title == "object") && (title instanceof Text)))
-         error( "Entry title must be of type Text" );
-      this.title = title;
+   this.setContent = function( content ) {
+      if (!((typeof content == "object") && (content instanceof Text)))
+         this.content = new Text( content, "text" );
+      else
+         this.content = content;
    }
 
-   this.getTitle = function() {
-      return this.title;
-   };
-
-   /* Type Id */
-   this.setId = function( id ) {
-      this.id = id;
-   }
-
-   this.getId = function() {
-      return this.id;
+   this.getContent = function() {
+      return this.content;
    };
 
    /**
@@ -499,8 +752,8 @@ function Entry( init ) {
    this.addAuthor = function(person) {
       if (!((typeof person == "object") && (person instanceof Person)))
          error( "Entry author must be of type Person" );
-      var i = authors.length;
-      authors[ i ] = person;
+      var i = this.authors.length;
+      this.authors[ i ] = person; 
    }
    
    /**
@@ -508,7 +761,7 @@ function Entry( init ) {
     * @param name Author
     */
    this.getAuthor = function(name) {
-      return authors[ name ];
+      return this.authors[ name ];
    }
    
    /**
@@ -524,7 +777,7 @@ function Entry( init ) {
     * @param name Author
     */
    this.getAuthors = function() {
-      return authors;
+      return this.authors;
    }
    
    /**
@@ -534,8 +787,8 @@ function Entry( init ) {
    this.addContributor = function(person) {
       if (!((typeof person == "object") && (person instanceof Person)))
          error( "Entry contributor must be of type Person" );
-      var i = contributors.length;
-      contributors[ i ] = person;
+      var i = this.contributors.length;
+      this.contributors[ i ] = person;
    }
    
    /**
@@ -543,7 +796,7 @@ function Entry( init ) {
     * @param name Contributor
     */
    this.getContributor = function(name) {
-      return contributors[ name ];
+      return this.contributors[ name ];
    }
    
    /**
@@ -559,26 +812,26 @@ function Entry( init ) {
     * @param name Contributor
     */
    this.getContributors = function() {
-      return contributors;
+      return this.contributors;
    }
    
    /**
-    * Add an contributor.
+    * Add a category.
     * @param name Category
     */
    this.addCategory = function(category) {
-      if (!((typeof category == "object") && (person instanceof Category)))
+      if (!((typeof category == "object") && (category instanceof Category)))
          error( "Entry category must be of type Category" );
-      var i = categories.length
-      categories[ i ] = category;
+      var i = this.categories.length
+      this.categories[ i ] = category;
    }
    
    /**
-    * Get an contributor.
+    * Get a names category.
     * @param name Category
     */
    this.getCategory = function(name) {
-      return categories[ name ];
+      return this.categories[ name ];
    }
    
    /**
@@ -590,11 +843,11 @@ function Entry( init ) {
    }
    
    /**
-    * Get an contributor.
+    * Get all categories.
     * @param name Category
     */
    this.getCategories = function() {
-      return categories;
+      return this.categories;
    }
    
    /**
@@ -604,8 +857,8 @@ function Entry( init ) {
    this.addLink = function(link) {
       if (!((typeof link == "object") && (link instanceof Link)))
          error( "Entry link must be of type Link" );
-      var i = links.length;
-      links[ i ] = link;
+      var i = this.links.length;
+      this.links[ i ] = link;
    }
    
    /**
@@ -674,7 +927,7 @@ function Entry( init ) {
                if ( type == undefined )
                   type = "text";
                var title = new Text( text, type );
-               this.setSubTitle( title );
+               this.setSubtitle( title );
             } else if ( tagName == "id" ) {
                var id = new Id( getTextContent( node ) );
                this.setId( id );
@@ -711,7 +964,90 @@ function Entry( init ) {
    this.toString = function() {
        return "Entry title=" + this.title + ", updated=" + this.updated;
    };
-   
+
+   /** Serialize this text element to XML. 
+	 * atomEntry =
+	 *     element atom:entry {
+	 *        atomCommonAttributes,
+	 *        (atomAuthor*
+	 *         & atomContributor*
+	 *         & atomCategory*
+	 *         & atomLink*
+	 *         & atomTitle
+	 *         & atomId
+	 *         & atomPublished?
+	 *         & atomUpdated
+	 *         & atomContent?
+	 *         & atomRights?
+	 *         & atomSource?
+	 *         & atomSummary?
+	 *         & extensionElement*)
+	 *     }    
+     */
+   this.toXML = function() {
+      xml = "<entry";
+      if ( this.namespace != null ) {
+         xml += " namespace=\"" + this.namespace + "\"";
+      }
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += ">";
+      if ( this.title != null ) {
+         xml += this.title.toXML( "title" );
+      }
+      if ( this.id != null ) {
+         xml += this.id.toXML();
+      }
+      if ( this.published != null ) {
+         xml += "<published>" + this.published + "</published>\n";
+      }
+      if ( this.updated != null ) {
+         xml += "<updated>" + this.updated + "</updated>\n";
+      }
+      if ( this.authors != null ) {
+      for ( var i = 0; i < this.authors.length; i++ ) {
+         var author = this.authors[ i ];
+         xml += author.toXML( "author" );
+      }
+      }
+      if ( this.contributors != null ) {
+      for ( var i = 0; i < this.contributors.length; i++ ) {
+         var contributor = this.contributors[ i ];
+         xml += contributor.toXML( "contributor" );
+      }
+      }
+      if ( this.categories != null ) {
+      for ( var i = 0; i < this.categories.length; i++ ) {
+         var category = this.categories[ i ];
+         xml += category.toXML();
+      }
+      }
+      if ( this.links != null ) {
+      for ( var i = 0; i < this.links.length; i++ ) {
+         var link = this.links[ i ];
+         xml += link.toXML();
+      }
+      }
+      if ( this.rights != null ) {
+         xml += "<rights>" + this.rights + "</rights>\n";
+      }
+      if ( this.source != null ) {
+         xml += "<source>" + this.source + "</source>\n";
+      }
+      if ( this.summary != null ) {
+         xml += this.summary.toXML( "summary" );
+      }
+      if ( this.content != null ) {
+         xml += this.content.toXML( "content" );
+      }
+      xml += "</entry>";      
+      return xml;
+   }
+  
    // Initialize from constructor   
    if (typeof init == 'object') {
       if ( init.nodeType == 1 ) { /* Document Node.ELEMENT_NODE 1 */
@@ -719,7 +1055,10 @@ function Entry( init ) {
       } else {      
          error( "Feed init unknown type" );
       }
-   }  
+   }  else if ( typeof init === 'string' ) {
+      this.setTitle( init );
+   }
+   this.namespace = "http://www.w3.org/2005/Atom";
 }
 
 /**
@@ -745,11 +1084,19 @@ function Entry( init ) {
 function Feed( init ) {
    // See init after functions have been defined.
 
-   var authors = new Array();
-   var contributors = new Array();
-   var categories = new Array();
-   var links = new Array();
-   var entries = new Array();
+   this.authors = new Array();
+   this.contributors = new Array();
+   this.categories = new Array();
+   this.links = new Array();
+   this.entries = new Array();
+
+   this.setNamespace = function( namespace ) {
+      this.namespace = namespace;
+   };
+
+   this.getNamespace = function() {
+      return this.namespace;
+   };
 
    this.setPublished = function( published ) {
       this.published = published;
@@ -767,14 +1114,6 @@ function Feed( init ) {
       return this.updated;
    };
 
-   this.setNamespace = function( namespace ) {
-      this.namespace = namespace;
-   };
-
-   this.getNamespace = function() {
-      return this.namespace;
-   };
-
    this.setContent = function( content ) {
       if (!((typeof content == "object") && (content instanceof Text)))
          error( "Entry content must be of type Text" );
@@ -788,8 +1127,9 @@ function Feed( init ) {
 
    this.setRights = function( rights ) {
       if (!((typeof rights == "object") && (rights instanceof Text)))
-         error( "Feed rights must be of type Text" );
-      this.rights = rights;
+         this.rights = new Text( rights, "text" );
+      else 
+         this.rights = rights;
    }
 
    this.getRights = function() {
@@ -808,27 +1148,32 @@ function Feed( init ) {
 
    this.setTitle = function( title ) {
       if (!((typeof title == "object") && (title instanceof Text)))
-         error( "Feed title must be of type Text" );
-      this.title = title;
+         this.title = new Text( title, "text" );
+      else 
+         this.title = title;
    }
 
    this.getTitle = function() {
       return this.title;
    };
 
-   this.setSubTitle = function( subtitle ) {
+   this.setSubtitle = function( subtitle ) {
       if (!((typeof subtitle == "object") && (subtitle instanceof Text)))
-         error( "Feed subtitle must be of type Text" );
-      this.subtitle = subtitle;
+         this.subtitle = new Text( subtitle, "text" );
+      else 
+         this.subtitle = subtitle;
    }
 
-   this.getSubTitle = function() {
+   this.getSubtitle = function() {
       return this.subtitle;
    };
 
    /* Type Id */
    this.setId = function( id ) {
-      this.id = id;
+      if (!((typeof id == "object") && (id instanceof Id)))
+         this.id = new Id( id );
+      else 
+         this.id = id;
    }
 
    this.getId = function() {
@@ -868,8 +1213,8 @@ function Feed( init ) {
    this.addAuthor = function(person) {
       if (!((typeof person == "object") && (person instanceof Person)))
          error( "Entry author must be of type Person" );
-      var i = authors.length;
-      authors[ i ] = person;
+      var i = this.authors.length;
+      this.authors[ i ] = person;
    }
    
    /**
@@ -877,7 +1222,7 @@ function Feed( init ) {
     * @param name Author
     */
    this.getAuthor = function(name) {
-      return authors[ name ];
+      return this.authors[ name ];
    }
    
    /**
@@ -893,7 +1238,7 @@ function Feed( init ) {
     * @param name Author
     */
    this.getAuthors = function() {
-      return authors;
+      return this.authors;
    }
    
    /**
@@ -903,8 +1248,8 @@ function Feed( init ) {
    this.addContributor = function(person) {
       if (!((typeof person == "object") && (person instanceof Person)))
          error( "Entry contributor must be of type Person" );
-      var i = contributors.length;
-      contributors[ i ] = person;
+      var i = this.contributors.length;
+      this.contributors[ i ] = person;
    }
    
    /**
@@ -912,7 +1257,7 @@ function Feed( init ) {
     * @param name Contributor
     */
    this.getContributor = function(name) {
-      return contributors[ name ];
+      return this.contributors[ name ];
    }
    
    /**
@@ -928,42 +1273,42 @@ function Feed( init ) {
     * @param name Contributor
     */
    this.getContributors = function() {
-      return contributors;
+      return this.contributors;
    }
    
    /**
-    * Add an contributor.
+    * Add a category.
     * @param name Category
     */
    this.addCategory = function(category) {
-      if (!((typeof category == "object") && (person instanceof Category)))
-         error( "Entry category must be of type Category" );
-      var i = categories.length;
-      categories[ i ] = category;
+      if (!((typeof category == "object") && (category instanceof Category)))
+         error( "Feed category must be of type Category" );
+      var i = this.categories.length;
+      this.categories[ i ] = category;
    }
    
    /**
-    * Get an contributor.
+    * Get a named contributor.
     * @param name Category
     */
    this.getCategory = function(name) {
-      return categories[ name ];
+      return this.categories[ name ];
    }
    
    /**
     * Set list of categories
-    * @param name Author
+    * @param category
     */
    this.setCategories = function( categories ) {
       return this.categories = categories;
    }
    
    /**
-    * Get an contributor.
+    * Get all categories.
     * @param name Category
     */
    this.getCategories = function() {
-      return categories;
+      return this.categories;
    }
    
    /**
@@ -973,8 +1318,8 @@ function Feed( init ) {
    this.addLink = function(link) {
       if (!((typeof link == "object") && (link instanceof Link)))
          error( "Entry link must be of type Link" );
-      var i = links.length
-      links[ i ] = link;
+      var i = this.links.length;
+      this.links[ i ] = link;
    }
    
    /**
@@ -982,7 +1327,7 @@ function Feed( init ) {
     * @param name Link
     */
    this.getLink = function(name) {
-      return links[ name ];
+      return this.links[ name ];
    }
    
    /**
@@ -998,7 +1343,7 @@ function Feed( init ) {
     * @param name Link
     */
    this.getLinks = function() {
-      return links;
+      return this.links;
    }
    
    /**
@@ -1008,8 +1353,8 @@ function Feed( init ) {
    this.addEntry = function(entry) {
       if (!((typeof entry == "object") && (entry instanceof Entry)))
          error( "Entry entry must be of type Entry" );
-      var i = entries.length;
-      entries[ i ] = entry;
+      var i = this.entries.length;
+      this.entries[ i ] = entry;
    }
    
    /**
@@ -1017,7 +1362,7 @@ function Feed( init ) {
     * @param name Entry
     */
    this.getEntry = function(name) {
-      return entries[ name ];
+      return this.entries[ name ];
    }
    
    /**
@@ -1033,7 +1378,7 @@ function Feed( init ) {
     * @param name Entry
     */
    this.getEntries = function() {
-      return entries;
+      return this.entries;
    }
    
    this.readFromXML = function( xml ) {
@@ -1074,7 +1419,7 @@ function Feed( init ) {
                if ( type == undefined )
                   type = "text";
                var title = new Text( text, type );
-               this.setSubTitle( title );
+               this.setSubtitle( title );
             } else if ( tagName == "entry" ) {
                var entry = new Entry();
                entry.readFromNode( node );
@@ -1109,6 +1454,104 @@ function Feed( init ) {
        return "Feed title=" + this.title + ", updated=" + this.updated;
    };
 
+   /** Serialize this text element to XML. 
+	 *  atomFeed =
+	 *     element atom:feed {
+	 *        atomCommonAttributes,
+	 *        (atomAuthor*
+	 *         & atomContributor*
+	 *         & atomCategory*
+	 *         & atomLink*
+	 *         & atomTitle
+	 *         & atomSubtitle?
+	 *         & atomId
+	 *         & atomUpdated
+	 *         & atomRights?	 
+	 *         & atomGenerator?
+	 *         & atomIcon?
+	 *         & atomLogo?
+	 *         & extensionElement*),
+	 *        atomEntry* 
+     */
+   this.toXML = function() {
+      xml = "<feed";
+      if ( this.namespace != null ) {
+         xml += " namespace=\"" + this.namespace + "\"";
+      }
+      if ( this.uri != null ) {
+         xml += " uri=\"" + this.uri + "\"";
+      }
+      if ( this.lang != null ) {
+         xml += " lang=\"" + this.lang + "\"";
+      }
+      xml += ">\n";
+      if ( this.title != null ) {
+         xml += this.title.toXML( "title" );
+      }
+      if ( this.subtitle != null ) {
+         xml += this.subtitle.toXML( "subtitle" );
+      }
+      if ( this.id != null ) {
+         xml += this.id.toXML();
+      }
+      if ( this.published != null ) {
+         xml += "<published>" + this.published + "</published>\n";
+      }
+      if ( this.updated != null ) {
+         xml += "<updated>" + this.updated + "</updated>\n";
+      }
+      if ( this.authors != null ) {      
+      for ( var i = 0; i < this.authors.length; i++ ) {
+         var author = this.authors[ i ];
+         xml += author.toXML( "author" );
+      }
+      }
+      if ( this.contributors != null ) {      
+      for ( var i = 0; i < this.contributors.length; i++ ) {
+         var contributor = this.contributors[ i ];
+         xml += contributor.toXML( "contributor" );
+      }
+      }
+      if ( this.categories != null ) {      
+      for ( var i = 0; i < this.categories.length; i++ ) {
+         var category = this.categories[ i ];
+         xml += category.toXML();
+      }
+      }
+      if ( this.links != null ) {      
+      for ( var i = 0; i < this.links.length; i++ ) {
+         var link = this.links[ i ];
+         xml += link.toXML();
+      }
+      }
+      if ( this.rights != null ) {
+         xml += this.rights.toXML( "rights" );
+      }
+      if ( this.source != null ) {
+         xml += "<source>" + this.source + "</source>\n";
+      }
+      if ( this.logo != null ) {
+         xml += "<logo>" + this.logo + "</logo>\n";
+      }
+      if ( this.icon != null ) {
+         xml += "<icon>" + this.icon + "</icon>\n";
+      }
+      if ( this.generator != null ) {
+         xml += this.generator.toXML( "generator" );
+      }
+      if ( this.summary != null ) {
+         xml += this.summary.toXML( "summary" );
+      }
+      if ( this.entries != null ) {
+      for ( var i = 0; i < this.entries.length; i++ ) {
+         var entry = this.entries[ i ];
+         xml += entry.toXML();
+      }      
+      }      
+      xml += "</feed>\n";      
+      return xml;
+   }
+  
    // Initialize from constructor   
    if (typeof init == 'object') {
       if ( init.nodeType == 9 ) { /* Document Node.DOCUMENT_NODE 9 */
@@ -1116,7 +1559,10 @@ function Feed( init ) {
       } else {      
          error( "Feed init unknown type" );
       }
-   }  
+   }  else if ( typeof init === 'string' ) {
+      this.setTitle( init );
+   }   
+   this.namespace = "http://www.w3.org/2005/Atom";
 }
 
 function error( message ) {
