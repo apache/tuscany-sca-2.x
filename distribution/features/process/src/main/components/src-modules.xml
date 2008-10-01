@@ -69,7 +69,6 @@
                 <include>interface-wsdl/**/*</include>
                 <include>interface-wsdl-xml/**/*</include>
                 <include>monitor/**/*</include>
-                <include>monitor-logging/**/*</include>
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>

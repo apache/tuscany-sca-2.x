@@ -175,10 +175,8 @@
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-ejb</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
-                <module>../../../modules/host-openejb</module>
                 <module>../../../modules/host-rmi</module>
                 <module>../../../modules/implementation-ejb</module>
                 <module>../../../modules/implementation-java</module>

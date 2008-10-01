@@ -106,6 +106,7 @@
                 <module>../../../modules/binding-sca-xml</module>
                 <module>../../../modules/binding-ws</module>
                 <module>../../../modules/binding-ws-axis2</module>
+                <module>../../../modules/binding-ws-axis2-policy</module>
                 <module>../../../modules/binding-ws-wsdlgen</module>
                 <module>../../../modules/binding-ws-xml</module>
                 <module>../../../modules/contribution</module>
@@ -128,7 +129,6 @@
                 <module>../../../modules/databinding-sdo</module>
                 <module>../../../modules/databinding-sdo-axiom</module>
                 <module>../../../modules/databinding-xmlbeans</module>
-                <module>../../../modules/data-engine-helper</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
                 <module>../../../modules/domain-manager</module>
@@ -138,15 +138,12 @@
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-ejb</module>
                 <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
-                <module>../../../modules/host-openejb</module>
                 <module>../../../modules/host-rmi</module>
                 <module>../../../modules/implementation-bpel</module>
                 <module>../../../modules/implementation-bpel-ode</module>
-                <module>../../../modules/implementation-das</module>
                 <module>../../../modules/implementation-ejb</module>
                 <module>../../../modules/implementation-java</module>
                 <module>../../../modules/implementation-java-runtime</module>

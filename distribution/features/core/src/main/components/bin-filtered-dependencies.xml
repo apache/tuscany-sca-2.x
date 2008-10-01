@@ -65,7 +65,6 @@
                 <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-interface-wsdl-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-monitor</exclude>
-                <exclude>org.apache.tuscany.sca:tuscany-monitor-logging</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-api</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-impl</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-node-launcher</exclude>

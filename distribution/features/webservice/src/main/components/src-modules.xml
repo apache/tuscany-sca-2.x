@@ -34,6 +34,7 @@
                 <include>binding-sca-xml/**/*</include>
                 <include>binding-ws/**/*</include>
                 <include>binding-ws-axis2/**/*</include>
+                <include>binding-ws-axis2-policy/**/*</include>
                 <include>binding-ws-wsdlgen/**/*</include>
                 <include>binding-ws-xml/**/*</include>
                 <include>contribution/**/*</include>
@@ -59,7 +60,6 @@
                 <include>extensibility-equinox/**/*</include>
                 <include>host-corba/**/*</include>
                 <include>host-corba-jse/**/*</include>
-                <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
                 <include>implementation-java/**/*</include>
@@ -74,7 +74,6 @@
                 <include>interface-wsdl/**/*</include>
                 <include>interface-wsdl-xml/**/*</include>
                 <include>monitor/**/*</include>
-                <include>monitor-logging/**/*</include>
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
