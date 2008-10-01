@@ -1,0 +1,250 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<html>
+<head>
+<title>Atom JavaScript Client Unit Tests</title>
+
+<!-- Include Tuscany JavaScript client model for Atom.  
+	 Using this JavaScript model, users can use syntax such as:
+	 item += "name=" + entry.getName() + ", price=" + entry.getContent() 
+	 rather than
+     item += entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+	-->
+<script type="text/javascript" src="atomModel.js"></script>
+
+<script language="JavaScript">
+	
+	function testUritoXML() {
+       var test = new Uri( "http://example.org/edit/first-post.atom" );
+       var text = text.toXML();
+       alert( "Uri=" + text );
+	}
+	
+	function testEmailtoXML() {
+       var test = new Email( "john.doe@ibm.com" );
+       var text = test.toXML();
+       alert( "Email=" + text );
+	}
+
+	function testIdtoXML() {
+       var test = new Id( "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a" );
+       var text = test.toXML();
+       alert( "Id=" + text );
+	}
+
+	function testLogotoXML() {
+       var test = new Logo( "goofyGraphic.png" );
+       var text = test.toXML();
+       alert( "Logo=" + text );
+	 	document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+
+	function testTexttoXML() {
+       var test = new Text( "This is ordinary text." );
+       var text = test.toXML();
+       alert( "Text=" + text );
+       var test = new Text( "This is <b>HTML</b> text.", "html" );
+       var text = test.toXML( "supertext" );
+       alert( "Text=" + text );
+	 document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+
+	function testPersontoXML() {
+       var test = new Person( "John Doe", "john.doe@ibm.com" );
+       var text = test.toXML();
+       alert( "Person=" + text );
+	 document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+	function testGeneratortoXML() {
+       var test = new Generator( "Power Station", "http://www.powerstation.com" );
+       var text = test.toXML();
+       alert( "Generator=" + text );
+	 document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+	function testCategorytoXML() {
+       var test = new Category( "CategoryXYZ", "http://www.site.com/?category=CategoryXYZ" );
+       var text = test.toXML();
+       alert( "Category=" + text );
+	 document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+	function testLinktoXML() {
+       var test = new Link( "http://example.org/edit/first-post.atom", "edit" );
+       var text = test.toXML();
+       alert( "Link=" + text );
+	 document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+	function testEntrytoXML() {
+       // <?xml version="1.0"?>
+       // <entry xmlns="http://www.w3.org/2005/Atom">
+       //   <title>Atom-Powered Robots Run Amok</title>
+       //   <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+       //   <updated>2003-12-13T18:30:02Z</updated>
+       //   <author><name>John Doe</name></author>
+       //   <content>Some text.</content>
+       //   <link rel="edit" href="http://example.org/edit/first-post.atom"/>
+       // </entry>
+
+       var entry = new Entry();
+       entry.setNamespace( "http://www.w3.org/2005/Atom" );
+       entry.setTitle( "Atom-Powered Robots Run Amok" );
+       entry.setId( "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a" );
+       entry.setUpdated( "2003-12-13T18:30:02Z" );
+       entry.setContent( "Some text." );
+       entry.addAuthor( new Person( "John Doe" ) );
+       entry.addAuthor( new Person( "Mark Pilgrim", "f8dy@example.com" ));
+       entry.addContributor( new Person( "Sam Ruby" ));
+       entry.addContributor( new Person( "Joe Gregorio" ));
+       entry.addLink( new Link( "http://example.org/edit/first-post.atom", "edit" ));
+       var text = entry.toXML();
+        		
+	 	document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+	function testFeedtoXML() {
+       // <feed xmlns="http://www.w3.org/2005/Atom">
+       // <title type="text">dive into mark</title>
+       // <subtitle type="html">A &lt;em&gt;lot&lt;/em&gt; of effort went into making this effortless </subtitle>
+       // <updated>2005-07-31T12:29:29Z</updated>
+       // <id>tag:example.org,2003:3</id>
+       // <link rel="alternate" type="text/html" hreflang="en" href="http://example.org/"/>
+       // <link rel="self" type="application/atom+xml" href="http://example.org/feed.atom"/>
+       // <rights>Copyright (c) 2003, Mark Pilgrim</rights>
+       // <generator uri="http://www.example.com/" version="1.0">Example Toolkit</generator>
+       // <entry>
+       //    <title>Atom draft-07 snapshot</title>
+       //    <link rel="alternate" type="text/html" href="http://example.org/2005/04/02/atom"/>
+       //    <link rel="enclosure" type="audio/mpeg" length="1337" href="http://example.org/audio/ph34r_my_podcast.mp3"/>
+       //    <id>tag:example.org,2003:3.2397</id>
+       //    <updated>2005-07-31T12:29:29Z</updated>
+       //    <published>2003-12-13T08:29:29-04:00</published>
+       //    <author><name>Mark Pilgrim</name><uri>http://example.org/</uri><email>f8dy@example.com</email></author>
+       //    <contributor><name>Sam Ruby</name></contributor>
+       //    <contributor><name>Joe Gregorio</name></contributor>
+       //    <content type="xhtml" xml:lang="en"  xml:base="http://diveintomark.org/">
+       //    <div xmlns="http://www.w3.org/1999/xhtml">
+       //       <p><i>[Update: The Atom draft is finished.]</i></p>
+       //    </div>
+       //    </content>
+       // </entry>
+       // <entry>
+       //    <title>Dan Becker's Triathlon Site - Best Hills In Austin</title>
+       //    <category term="triathlons"/>
+       //    <id>tag:www.io.com,2008-09-05:/~beckerdo/triathlons/besthills.html</id>
+       //    <link href="http://www.io.com/~beckerdo/triathlons/besthills.html"/>
+       //    <published>2008-09-05T14:09:32-05:00</published>
+       //    <updated>2008-09-06T08:49:12-05:00</updated>
+       //    <summary type='html'>
+       //    &lt;a href='http://www.io.com/~beckerdo/triathlons/besthills.html'&gt;&lt;img src='http://www.io.com/~beckerdo/pictures/LittleDan25.png' width='25' height='25' alt='Little Dan' align='left'&gt;&lt;/a&gt;
+       //    A description and Google maps of the best running and biking hills in Austin, Texas.
+       //    </summary>
+       //    </entry>
+       // </feed>
+
+       var feed = new Feed( "Dive into Mark" );
+       feed.setSubtitle( new Text( "A &lt;em&gt;lot&lt;/em&gt; of effort went into making this effortless", "html" ));
+       feed.setUpdated( "2005-07-31T12:29:29Z" );
+       feed.setId( "tag:example.org,2003:3" );
+       var link = new Link( "http://example.org", "alternate" );
+       link.setMimeType( "text/html" );
+       link.setHRefLang( "en" );
+       feed.addLink( link ); 
+       feed.addLink( new Link( "http://example.org/feed.atom", "self" ));
+       feed.setRights( "Copyright (c) 2003, Mark Pilgrim" );
+       feed.setGenerator( new Generator(  "Example Toolkit", "http://www.example.com/" ));
+       feed.addAuthor( new Person( "Mark Pilgrim", "f8dy@example.com" ));
+       feed.addContributor( new Person( "Sam Ruby" ));
+       feed.addContributor( new Person( "Joe Gregorio" ));
+       // <entry>
+       //    <title>Atom draft-07 snapshot</title>
+       //    <link rel="alternate" type="text/html" href="http://example.org/2005/04/02/atom"/>
+       //    <link rel="enclosure" type="audio/mpeg" length="1337" href="http://example.org/audio/ph34r_my_podcast.mp3"/>
+       //    <id>tag:example.org,2003:3.2397</id>
+       //    <updated>2005-07-31T12:29:29Z</updated>
+       //    <published>2003-12-13T08:29:29-04:00</published>
+       //    <author><name>Mark Pilgrim</name><uri>http://example.org/</uri><email>f8dy@example.com</email></author>
+       //    <contributor><name>Sam Ruby</name></contributor>
+       //    <contributor><name>Joe Gregorio</name></contributor>
+       //    <content type="xhtml" xml:lang="en"  xml:base="http://diveintomark.org/">
+       //    <div xmlns="http://www.w3.org/1999/xhtml">
+       //       <p><i>[Update: The Atom draft is finished.]</i></p>
+       //    </div>
+       //    </content>
+       // </entry>
+       // <entry>
+       //    <title>Dan Becker's Triathlon Site - Best Hills In Austin</title>
+       //    <category term="triathlons"/>
+       //    <id>tag:www.io.com,2008-09-05:/~beckerdo/triathlons/besthills.html</id>
+       //    <link href="http://www.io.com/~beckerdo/triathlons/besthills.html"/>
+       //    <published>2008-09-05T14:09:32-05:00</published>
+       //    <updated>2008-09-06T08:49:12-05:00</updated>
+       //    <summary type='html'>
+       //    &lt;a href='http://www.io.com/~beckerdo/triathlons/besthills.html'&gt;&lt;img src='http://www.io.com/~beckerdo/pictures/LittleDan25.png' width='25' height='25' alt='Little Dan' align='left'&gt;&lt;/a&gt;
+       //    A description and Google maps of the best running and biking hills in Austin, Texas.
+       //    </summary>
+       //    </entry>
+       // </feed>
+       var entry = new Entry( "Dan Becker's Triathlon Site - Best Hills In Austin" );
+       entry.addCategory( new Category( "running" ));
+       entry.addCategory( new Category( "triathlons" ));
+       entry.setId( "tag:www.io.com,2008-09-05:/~beckerdo/triathlons/besthills.html" );
+       entry.addLink( new Link ( "http://www.io.com/~beckerdo/triathlons/besthills.html" ));
+       entry.setPublished( "2008-09-05T14:09:32-05:00" );
+       entry.setUpdated( "2008-09-06T08:49:12-05:00" );
+       entry.setSummary( new Text (
+          "&lt;a href='http://www.io.com/~beckerdo/triathlons/besthills.html'&gt;&lt;img src='http://www.io.com/~beckerdo/pictures/LittleDan25.png' width='25' height='25' alt='Little Dan' align='left'&gt;&lt;/a&gt;\n" + 
+          "A description and Google maps of the best running and biking hills in Austin, Texas.", "html" ));
+       feed.addEntry( entry );
+       
+       var text = feed.toXML();
+       alert( "Feed xml=" + text );        		
+	 	document.getElementById('results').innerHTML = removeBrackets( text );
+	}
+	
+    function removeBrackets( input ) {
+       input = input.replace( /</g, "&lt;" ); // replaceAll
+       input = input.replace( />/g, "&gt;" ); // replaceAll
+       return input;
+    }
+</script>
+</head>
+
+<body>
+<h1>Atom JavaScript Client Unit Tests</h1>
+<p>This document tests the serialization and deserialization of the Atom JavaScript client.
+   	<h2>Model to XML Tests</h2>
+		<input type="button" onClick="testUritoXML()" value="Uri to XML"><br> 
+		<input type="button" onClick="testEmailtoXML()" value="Email to XML"><br> 
+		<input type="button" onClick="testIdtoXML()" value="Id to XML"><br> 
+		<input type="button" onClick="testLogotoXML()" value="Logo to XML"><br> 
+		<input type="button" onClick="testTexttoXML()" value="Text to XML"><br> 
+		<input type="button" onClick="testPersontoXML()" value="Person to XML"><br> 
+		<input type="button" onClick="testGeneratortoXML()" value="Generator to XML"><br> 
+		<input type="button" onClick="testCategorytoXML()" value="Category to XML"><br> 
+		<input type="button" onClick="testLinktoXML()" value="Link to XML"><br> 
+		<input type="button" onClick="testEntrytoXML()" value="Entry to XML"><br> 
+		<input type="button" onClick="testFeedtoXML()" value="Feed to XML"><br> 
+   	<h2>Results</h2>
+   	<code id="results">
+   	</code>
+</body>
+</html>
