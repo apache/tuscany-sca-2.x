@@ -1,3 +1,77 @@
+Changes With Apache Tuscany SCA 1.3.2 October 2008 
+==================================================
+
+Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * TUSCANY-2628 Fix some other file license headers that should refer to the OSOA license
+  * TUSCANY-2620 Fix license header for sca.tld
+  * TUSCANY-2618 Add required attribute elements to sca.tld
+  * TUSCANY-2615 Fix NPE in databinding and a nested exception test in vtests
+  * TUSCANY-2614 Fix missing headers reported by RAT during release
+  * TUSCANY-2598 Patch to support zip protocol type
+  * TUSCANY-2592 Reduce size of demo/mortgage-loanapproval doc
+  * TUSCANY-2591 Invalid JMS Message Property in binding.jms
+  * TUSCANY-2590 Pool JAXB marshaller/unmarshallers for a given JAXBContext
+  * TUSCANY-2587 Inconsistent service naming in promoted service scenarios
+  * TUSCANY-2561 Soap intents are lower case while the policy framework says that they should be upper case
+  * TUSCANY-2538 Tuscany object model does not handle unknown content in composite files
+  * TUSCANY-2531 Problems with generated wsdl when using non service package
+  * TUSCANY-2513 Java intfs with @WebService should be treated like @Remotable intfs wrt calculation of services implemented by a Java implementation
+  * TUSCANY-2501 InterfaceContract is not established on reference when it's not calculated by introspection
+  * TUSCANY-2463 Provide capability for handling attribute extensions to standard SCA elements in composite file
+  * TUSCANY-2398 Problem with using interface.java on reference when using interface.wsdl in service with a doc/lit/bare wsdl
+
+Changes With Apache Tuscany SCA 1.3.1 August 2008 
+=================================================
+
+Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * TUSCANY-2539 File handle on composite affecting behaviour of tuscany deployments in websphere.
+  * TUSCANY-2535 Tuscany dosn't run if install on a WebSphere server that has itself been installed in a directory with a space in the name
+  * TUSCANY-2534 WebSphere issue java.lang.ClassCastException
+  * TUSCANY-2531 Problems with generated wsdl when using non service package
+  * TUSCANY-2519 "throws Exception" causes failure in JAXB type generation
+  * TUSCANY-2514 tuscany-host-{tomcat,jetty} and jsr181-api should be optional dependencies for binding.ws clients
+  * TUSCANY-2505 Problem in case: start with DLW wsdl, generate Java w/ wsimport, throw away WSDL and use <intf.java>, when wrapper elem used named type (not anonymous)
+  * TUSCANY-2389 null elements in Object array not getting passed over binding.ws
+
+
+Changes With Apache Tuscany SCA 1.3 August 2008 
+===============================================
+
+- Features and/or Enhancements
+
+  We have graduated as a top level Apache project. The incubating disclaimer has been removed
+  and the artifact names and version no longer containg the "-incubating" string.
+
+  * Core
+    - More improvements to the Distributed Domain story
+      - Old domain and node code has been removed
+    - Improved runtime Java2WSDL processing
+      - No longer relies on Axis code
+    - Support for core validation monitoring
+      - A pluggable monitor can be used to trap and process validation messages 
+    - Performance improvements
+    - Java 2 security enablement across the code base
+  * Extensions
+    - Validation monitoring added to extension processors
+    - Databinding improvements
+    - JSR250 annotation support
+    - OSGi support improvements 
+    - Better BPEL support
+  * Tools
+    - No significant changes
+  * Samples/Tutorial/Demos
+    - No significant changes
+  * Testing
+    - more spec verifaction tests
+    - validation itests
+
+Changes With Apache Tuscany SCA 1.2.1 (incubating) June 2008 
+============================================================
+
+Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * TUSCANY-2304 SCA client Hang Forver after getting exceptions from remote web service
+
+
 Changes With Apache Tuscany SCA 1.2 (incubating) April 2008 
 ===========================================================
 
