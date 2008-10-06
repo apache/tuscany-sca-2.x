@@ -37,7 +37,16 @@
         <reference name="dServiceReferences" target="DComponent DComponent1" />
 
     </component>
+    
+    <component name="AComponentAutowire" autowire="true">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.AComponentImpl" />
+        <reference name="bReference" target="BComponent" />
+    </component>    
 
+    <component name="BComponentWrongTarget">
+        <implementation.java class="org.apache.tuscany.sca.itest.references.BComponentWrongTargetImpl" />
+    </component>
+    
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.references.BComponentImpl" />
     </component>
