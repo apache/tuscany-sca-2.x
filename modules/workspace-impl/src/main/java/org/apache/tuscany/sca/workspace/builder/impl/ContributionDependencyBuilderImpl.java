@@ -31,47 +31,45 @@ import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.workspace.Workspace;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderException;
 
 /**
  * A contribution dependency builder.
  *
  * @version $Rev$ $Date$
  */
-public class ContributionDependencyBuilderImpl implements ContributionDependencyBuilder {
+public class ContributionDependencyBuilderImpl implements ContributionBuilder {
     private static final Logger logger = Logger.getLogger(ContributionDependencyBuilderImpl.class.getName());
-    
-    private Monitor monitor;
     
     /**
      * Constructs a new ContributionDependencyBuilder.
      */
-    public ContributionDependencyBuilderImpl(Monitor monitor) {
-               
-        this.monitor = monitor;
+    public ContributionDependencyBuilderImpl(FactoryExtensionPoint factories) {
     }
     
-    /**
-     * Calculate the set of contributions that a contribution depends on.
-     * @param contribution
-     * @param workspace
-     * @return
-     */
-    public List<Contribution> buildContributionDependencies(Contribution contribution, Workspace workspace) {
+    public String getID() {
+        return "org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder";
+    }
+    
+    public void build(Contribution contribution, Workspace workspace, Monitor monitor) throws ContributionBuilderException{
+        contribution.getDependencies().clear();
+        
         List<Contribution> dependencies = new ArrayList<Contribution>();
         Set<Contribution> set = new HashSet<Contribution>();
 
         dependencies.add(contribution);
         set.add(contribution);
-        addContributionDependencies(contribution, workspace, dependencies, set);
+        addContributionDependencies(contribution, workspace, dependencies, set, monitor);
         
         Collections.reverse(dependencies);
-        return dependencies;
+        
+        contribution.getDependencies().addAll(dependencies);
     }
     
     /**
@@ -80,8 +78,9 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
      * @param workspace
      * @param dependencies
      * @param set
+     * @param monitor
      */
-    private void addContributionDependencies(Contribution contribution, Workspace workspace, List<Contribution> dependencies, Set<Contribution> set) {
+    private void addContributionDependencies(Contribution contribution, Workspace workspace, List<Contribution> dependencies, Set<Contribution> set, Monitor monitor) {
         
         // Go through the contribution imports
         for (Import import_: contribution.getImports()) {
@@ -107,7 +106,7 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
                             dependencies.add(dependency);
                             
                             // Now add the dependencies of that contribution 
-                            addContributionDependencies(dependency, workspace, dependencies, set);
+                            addContributionDependencies(dependency, workspace, dependencies, set, monitor);
                         }
                     }
                 }
@@ -122,7 +121,7 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
             } else {
                 // Record import resolution issue
                 if (!(import_ instanceof DefaultImport)) {
-                    warning("UnresolvedImport", import_, import_);
+                    warning(monitor, "UnresolvedImport", import_, import_);
                 }
             }
         }
@@ -135,9 +134,9 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private static void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(getClass().getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(ContributionDependencyBuilderImpl.class.getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }

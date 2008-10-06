@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.binding.gdata.provider;
 
 import org.apache.tuscany.sca.binding.gdata.GDataBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
@@ -50,7 +50,7 @@ public class GDataBindingProviderFactory implements BindingProviderFactory<GData
     public GDataBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         this.mediator = new MediatorImpl(extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class),
                                          extensionPoints.getExtensionPoint(TransformerExtensionPoint.class));

@@ -47,7 +47,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -60,6 +59,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.data.collection.LocalItemCollection;
@@ -91,7 +91,7 @@ public class CompositeGeneratorServiceImpl extends HttpServlet implements Servle
     @Reference
     public DomainManagerConfiguration domainManagerConfiguration;
     
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
     private URLArtifactProcessor<Contribution> contributionProcessor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
@@ -124,7 +124,7 @@ public class CompositeGeneratorServiceImpl extends HttpServlet implements Servle
         Monitor monitor = monitorFactory.createMonitor();
         
         // Get model factories
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);

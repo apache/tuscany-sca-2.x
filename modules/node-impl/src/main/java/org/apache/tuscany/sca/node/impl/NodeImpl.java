@@ -19,47 +19,57 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import static org.apache.tuscany.sca.node.impl.NodeUtil.collectJARs;
+import static org.apache.tuscany.sca.node.impl.NodeUtil.createContribution;
+import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
+import static org.apache.tuscany.sca.node.impl.NodeUtil.getContributionURL;
+import static org.apache.tuscany.sca.node.impl.NodeUtil.getResource;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -74,12 +84,16 @@ import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
+import org.apache.tuscany.sca.workspace.Workspace;
+import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * A local representation of the SCADomain running on a single node
+ * Represents an SCA runtime node.
  * 
  * @version $Rev$ $Date$
  */
@@ -90,18 +104,27 @@ public class NodeImpl implements SCANode, SCAClient {
     // The node configuration name, used for logging
     private String configurationName;
 
-    // The Tuscany runtime that does the hard work
-    private RuntimeBootStrapper runtime;
-    private CompositeActivator compositeActivator;
-    private XMLInputFactory inputFactory;
-    private ModelFactoryExtensionPoint modelFactories;
-    private StAXArtifactProcessorExtensionPoint artifactProcessors;
-    private URLArtifactProcessorExtensionPoint documentProcessors;
-    private Monitor monitor;
-
-    private List<Contribution> contributions;
     // The composite loaded into this node
     private Composite composite;
+
+    private Monitor monitor;
+    private URLArtifactProcessor<Contribution> contributionProcessor;
+    private ModelResolverExtensionPoint modelResolvers;
+    private FactoryExtensionPoint modelFactories;
+    private WorkspaceFactory workspaceFactory;
+    private ContributionFactory contributionFactory;
+    private AssemblyFactory assemblyFactory;
+    private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
+    private DocumentBuilderFactory documentBuilderFactory;
+    private TransformerFactory transformerFactory;
+    private StAXArtifactProcessor<Object> xmlProcessor; 
+    private ContributionBuilder contributionDependencyBuilder;
+    private CompositeBuilder domainCompositeBuilder;
+    private StAXArtifactProcessorExtensionPoint xmlProcessors;
+    private URLArtifactProcessorExtensionPoint documentProcessors;
+    private RuntimeBootStrapper runtime;
+    private CompositeActivator compositeActivator;
 
     /** 
      * Constructs a new SCA node.
@@ -114,11 +137,10 @@ public class NodeImpl implements SCANode, SCAClient {
 
         try {
             // Initialize the runtime
-            initRuntime();
+            init();
 
             // Read the node configuration feed
-            StAXArtifactProcessor<ConfiguredNodeImplementation> configurationProcessor =
-                artifactProcessors.getProcessor(ConfiguredNodeImplementation.class);
+            StAXArtifactProcessor<ConfiguredNodeImplementation> configurationProcessor = xmlProcessors.getProcessor(ConfiguredNodeImplementation.class);
             URL configurationURL = new URL(configurationURI);
             InputStream is = configurationURL.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -161,7 +183,7 @@ public class NodeImpl implements SCANode, SCAClient {
         }
         try {
             // Initialize the runtime
-            initRuntime();
+            init();
 
             ConfiguredNodeImplementation config = findNodeConfiguration(compositeURI, classLoader);
             configureNode(config);
@@ -227,75 +249,9 @@ public class NodeImpl implements SCANode, SCAClient {
 
     private Contribution getContribution(URL contributionArtifactURL, String contributionArtifactPath) {
         URL contributionURL = getContributionURL(contributionArtifactURL, contributionArtifactPath);
-
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-
         SCAContribution contribution = new SCAContribution(contributionURL.toString(), contributionURL.toString());
         Contribution c = createContribution(contributionFactory, contribution);
         return c;
-    }
-
-    public static URL getContributionURL(URL contributionArtifactURL, String contributionArtifactPath) {
-        URL contributionURL = null;
-        // "jar:file://....../something.jar!/a/b/c/app.composite"
-        try {
-            String url = contributionArtifactURL.toExternalForm();
-            String protocol = contributionArtifactURL.getProtocol();
-            if ("file".equals(protocol)) {
-                // directory contribution
-                if (url.endsWith(contributionArtifactPath)) {
-                    final String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
-                    // workaround from evil URL/URI form Maven
-                    // contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-                    // Allow privileged access to open URL stream. Add FilePermission to added to
-                    // security policy file.
-                    try {
-                        contributionURL = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
-                            public URL run() throws IOException {
-                                return FileHelper.toFile(new URL(location)).toURI().toURL();
-                            }
-                        });
-                    } catch (PrivilegedActionException e) {
-                        throw (MalformedURLException)e.getException();
-                    }
-                }
-
-            } else if ("jar".equals(protocol)) {
-                // jar contribution
-                String location = url.substring(4, url.lastIndexOf("!/"));
-                // workaround for evil URL/URI from Maven
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-
-            } else if ("wsjar".equals(protocol)) {
-                // See https://issues.apache.org/jira/browse/TUSCANY-2219
-                // wsjar contribution 
-                String location = url.substring(6, url.lastIndexOf("!/"));
-                // workaround for evil url/uri from maven 
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-
-            } else if ("zip".equals(protocol)) {
-                // See https://issues.apache.org/jira/browse/TUSCANY-2598
-                // zip contribution, remove the zip prefix and pad with file:
-                String location = "file:"+url.substring(4, url.lastIndexOf("!/"));
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-                
-            } else if (protocol != null && (protocol.equals("bundle") || protocol.equals("bundleresource"))) {
-                contributionURL =
-                    new URL(contributionArtifactURL.getProtocol(), contributionArtifactURL.getHost(),
-                            contributionArtifactURL.getPort(), "/");
-            }
-        } catch (MalformedURLException mfe) {
-            throw new IllegalArgumentException(mfe);
-        }
-        return contributionURL;
-    }
-
-    private static URL getResource(final ClassLoader classLoader, final String compositeURI) {
-        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
-            public URL run() {
-                return classLoader.getResource(compositeURI);
-            }
-        });
     }
 
     /** 
@@ -310,7 +266,7 @@ public class NodeImpl implements SCANode, SCAClient {
 
         try {
             // Initialize the runtime
-            initRuntime();
+            init();
 
             URI uri = compositeURI == null ? null : URI.create(compositeURI);
             ConfiguredNodeImplementation configuration = null;
@@ -329,9 +285,7 @@ public class NodeImpl implements SCANode, SCAClient {
                 Composite composite = compositeURI == null ? null : createComposite(compositeURI);
                 configuration.setComposite(composite);
   
-
                 // Create contribution models
-                ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
                 for (SCAContribution c : contributions) {
                     Contribution contribution = createContribution(contributionFactory, c);
                     configuration.getContributions().add(contribution);
@@ -348,7 +302,6 @@ public class NodeImpl implements SCANode, SCAClient {
 
     private Composite createComposite(String compositeURI) {
         // Create composite model
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         Composite composite = assemblyFactory.createComposite();
         composite.setURI(compositeURI);
         composite.setUnresolved(true);
@@ -368,7 +321,7 @@ public class NodeImpl implements SCANode, SCAClient {
 
         try {
             // Initialize the runtime
-            initRuntime();
+            init();
 
             ConfiguredNodeImplementation configuration = null;
             if (contributions == null || contributions.length == 0) {
@@ -380,22 +333,18 @@ public class NodeImpl implements SCANode, SCAClient {
                 configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
                 // Read the composite model
-                StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
+                StAXArtifactProcessor<Composite> compositeProcessor = xmlProcessors.getProcessor(Composite.class);
                 // URL compositeURL = new URL(compositeURI);
                 logger.log(Level.INFO, "Loading composite: " + compositeURI);
 
-                CompositeDocumentProcessor compositeDocProcessor =
-                    (CompositeDocumentProcessor)documentProcessors.getProcessor(Composite.class);
-                composite =
-                    compositeDocProcessor.read(URI.create(compositeURI), new ByteArrayInputStream(compositeContent
-                        .getBytes("UTF-8")));
+                CompositeDocumentProcessor compositeDocProcessor = (CompositeDocumentProcessor)documentProcessors.getProcessor(Composite.class);
+                composite = compositeDocProcessor.read(URI.create(compositeURI), new ByteArrayInputStream(compositeContent.getBytes("UTF-8")));
 
                 analyzeProblems();
 
                 configuration.setComposite(composite);
 
                 // Create contribution models
-                ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
                 for (SCAContribution c : contributions) {
                     Contribution contribution = createContribution(contributionFactory, c);
                     configuration.getContributions().add(contribution);
@@ -410,14 +359,53 @@ public class NodeImpl implements SCANode, SCAClient {
         }
     }
 
-    private static Contribution createContribution(ContributionFactory contributionFactory, SCAContribution c) {
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setURI(c.getURI());
-        contribution.setLocation(c.getLocation());
-        contribution.setUnresolved(true);
-        return contribution;
-    }
+    private void init() {
+        
+        // Create extension point registry 
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor(); 
+        
+        // Initialize the Tuscany module activators
+        ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+        for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
+            activator.start(extensionPoints);
+        }
 
+        // Get XML input/output factories
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        
+        // Get contribution workspace and assembly model factories
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        
+        // Create XML artifact processors
+        xmlProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessors, inputFactory, outputFactory, monitor);
+        
+        // Create contribution content processor
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
+        
+        // Get the model resolvers
+        modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
+        
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
+        
+        // Get composite builders
+        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        domainCompositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+    }
+    
     /**
      * Initialize the Tuscany runtime.
      * 
@@ -429,131 +417,67 @@ public class NodeImpl implements SCANode, SCAClient {
         runtime = new RuntimeBootStrapper(Thread.currentThread().getContextClassLoader());
         runtime.start();
 
-        // Get the various factories we need
-        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
-        modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-
-        // Create the required artifact processors
-        artifactProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-
-        documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-
         // Save the composite activator
         compositeActivator = runtime.getCompositeActivator();
 
-        // save the monitor
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
-    }
-
-    /**
-     * Escape the space in URL string
-     * @param uri
-     * @return
-     */
-    private static URI createURI(String uri) {
-        if (uri.indexOf(' ') != -1) {
-            uri = uri.replace(" ", "%20");
-        }
-        return URI.create(uri);
     }
 
     private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
 
-        // Find if any contribution JARs already available locally on the classpath
-        Map<String, URL> localContributions = localContributions();
+        // Create workspace model
+        Workspace workspace = workspaceFactory.createWorkspace();
+        workspace.setModelResolver(new ExtensibleModelResolver(workspace, modelResolvers, modelFactories));
 
         // Load the specified contributions
-        ContributionService contributionService = runtime.getContributionService();
-        contributions = new ArrayList<Contribution>();
-        for (Contribution contribution : configuration.getContributions()) {
-            URI uri = createURI(contribution.getLocation());
+        for (Contribution c : configuration.getContributions()) {
+            URI contributionURI = URI.create(c.getURI());
+            
+            URI uri = createURI(c.getLocation());
             if (uri.getScheme() == null) {
-                uri = new File(contribution.getLocation()).toURI();
+                uri = new File(c.getLocation()).toURI();
             }
             URL contributionURL = uri.toURL();
 
-            // Extract contribution file name
-            String file = contributionURL.getPath();
-            int i = file.lastIndexOf('/');
-            if (i != -1 && i < file.length() - 1) {
-                file = file.substring(i + 1);
-
-                // If we find the local contribution file on the classpath, use it in
-                // place of the original contribution URL
-                URL localContributionURL = localContributions.get(file);
-                if (localContributionURL != null) {
-                    contributionURL = localContributionURL;
-                }
-            }
-
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
-            contributions.add(contributionService.contribute(contribution.getURI(), contributionURL, false));
+            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
+            workspace.getContributions().add(contribution);
             analyzeProblems();
         }
 
-        composite = configuration.getComposite();
-
-        // FIXME: This is a hack to get a list of deployable composites. By design, the deployment composite should
-        // has been configured
-        if (composite == null) {
-            List<Composite> deployables = new ArrayList<Composite>();
-            for (Contribution c : contributions) {
-                deployables.addAll(c.getDeployables());
-            }
-            aggregate(deployables);
-            configuration.setComposite(composite);
-        }
-
-        Contribution contribution = null;
-        if (composite.getName() == null) {
-            // Load the specified composite
-            URL compositeURL;
-
-            URI uri = createURI(configuration.getComposite().getURI());
-            if (uri.getScheme() == null) {
-
-                // If the composite URI is a relative URI, try to resolve it within the contributions
-                contribution = contribution(contributions, uri.toString());
-                if (contribution == null) {
-                    throw new IllegalArgumentException("Composite is not found in contributions: " + uri);
+        // Build the contribution dependencies
+        Set<Contribution> resolved = new HashSet<Contribution>();
+        for (Contribution contribution: workspace.getContributions()) {
+            contributionDependencyBuilder.build(contribution, workspace, monitor);
+            
+            // Resolve contributions
+            for (Contribution dependency: contribution.getDependencies()) {
+                if (!resolved.contains(dependency)) {
+                    resolved.add(dependency);
+                    contributionProcessor.resolve(dependency, workspace.getModelResolver());
                 }
-                compositeURL = new URL(location(contribution, uri.toString()));
-
-            } else {
-
-                // If the composite URI is an absolute URI, use it as is
-                compositeURL = uri.toURL();
             }
-
-            URLArtifactProcessor<Composite> compositeDocProcessor = documentProcessors.getProcessor(Composite.class);
-            // Read the composite
-            logger.log(Level.INFO, "Loading composite: " + compositeURL);
-            // InputStream is = compositeURL.openStream();
-            // XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            composite = compositeDocProcessor.read(null, uri, compositeURL);
-            // reader.close();
-
-            analyzeProblems();
-
         }
-        // And resolve the composite within the scope of the last contribution
-        if (contribution == null && contributions.size() != 0) {
-            contribution = contributions.get(contributions.size() - 1);
+        
+        composite = configuration.getComposite();
+        if (composite.isUnresolved()) {
+            
+            // Find the composite in the given contributions
+            for (Contribution contribution: workspace.getContributions()) {
+                composite = contribution.getModelResolver().resolveModel(Composite.class, composite);
+                if (!composite.isUnresolved()) {
+                    break;
+                }
+            }
         }
 
-        // Resolve the given composite within the scope of the selected contribution
-        if (contribution != null) {
-            StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
-            compositeProcessor.resolve(composite, contribution.getModelResolver());
-            analyzeProblems();
-        }
+        // Build the composite and wire the components included in it
+        domainCompositeBuilder.build(composite);
+
+        analyzeProblems();
+        
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
-        AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
         Composite tempComposite = assemblyFactory.createComposite();
         tempComposite.setName(new QName("http://tempuri.org", "temp"));
         tempComposite.setURI("http://tempuri.org");
@@ -566,92 +490,6 @@ public class NodeImpl implements SCANode, SCAClient {
         // available
         compositeActivator.setDomainComposite(tempComposite);
 
-        // Build the composite
-        runtime.buildComposite(composite);
-
-        analyzeProblems();
-    }
-
-    /**
-     * Create a deployment composite that includes a list of deployable composites
-     * @param composites
-     */
-    private void aggregate(List<Composite> composites) {
-        if (composites.size() == 0) {
-            throw new IllegalArgumentException("No deployable composite is declared");
-        } else if (composites.size() == 1) {
-            composite = composites.get(0);
-        } else {
-            // Include all composites
-            AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
-            Composite aggregated = assemblyFactory.createComposite();
-            aggregated.setName(new QName("http://tempuri.org", "aggregated"));
-            aggregated.setURI("http://tempuri.org/aggregated");
-            aggregated.getIncludes().addAll(composites);
-            composite = aggregated;
-        }
-    }
-
-    /**
-     * Returns the artifact representing the given composite.
-     * 
-     * @param contribution
-     * @param compositeURI
-     * @return
-     */
-    private String location(Contribution contribution, String uri) {
-        if (uri != null && uri.startsWith("/")) {
-            uri = uri.substring(1);
-        }
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        Artifact compositeFile = contributionFactory.createArtifact();
-        compositeFile.setUnresolved(true);
-        compositeFile.setURI(uri);
-        ModelResolver resolver = contribution.getModelResolver();
-        Artifact resolved = resolver.resolveModel(Artifact.class, compositeFile);
-        if (resolved != null && !resolved.isUnresolved()) {
-            return resolved.getLocation();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the contribution containing the given composite.
-     * 
-     * @param contributions
-     * @param compositeURI
-     * @return
-     */
-    private Contribution contribution(List<Contribution> contributions, String compositeURI) {
-        if (compositeURI != null && compositeURI.startsWith("/")) {
-            compositeURI = compositeURI.substring(1);
-        }
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        Artifact compositeFile = contributionFactory.createArtifact();
-        compositeFile.setUnresolved(true);
-        compositeFile.setURI(compositeURI);
-        for (Contribution c : contributions) {
-            ModelResolver resolver = c.getModelResolver();
-            Artifact resolved = resolver.resolveModel(Artifact.class, compositeFile);
-            if (resolved != null && !resolved.isUnresolved()) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    private void analyzeProblems() throws Exception {
-
-        for (Problem problem : monitor.getProblems()) {
-            if ((problem.getSeverity() == Severity.ERROR) && (!problem.getMessageId().equals("SchemaError"))) {
-                if (problem.getCause() != null) {
-                    throw problem.getCause();
-                } else {
-                    throw new ServiceRuntimeException(problem.toString());
-                }
-            }
-        }
     }
 
     public void start() {
@@ -760,65 +598,20 @@ public class NodeImpl implements SCANode, SCAClient {
     }
 
     /**
-     * Returns the extension point registry used by this node.
+     * Analyze problems reported by the artifact processors and builders.
      * 
-     * @return
+     * @throws Exception
      */
-    public ExtensionPointRegistry getExtensionPointRegistry() {
-        return runtime.getExtensionPointRegistry();
-    }
-
-    /**
-     * Returns the composite being run by this node.
-     * 
-     * @return
-     */
-    public Composite getComposite() {
-        return composite;
-    }
-
-    /**
-     * Returns contribution JARs available on the classpath.
-     * 
-     * @return
-     */
-    private static Map<String, URL> localContributions() {
-        Map<String, URL> localContributions = new HashMap<String, URL>();
-        collectJARs(localContributions, Thread.currentThread().getContextClassLoader());
-        return localContributions;
-    }
-
-    /**
-     * Collect JARs on the classpath of a URLClassLoader
-     * @param urls
-     * @param cl
-     */
-    private static void collectJARs(Map<String, URL> urls, ClassLoader cl) {
-        if (cl == null) {
-            return;
-        }
-
-        // Collect JARs from the URLClassLoader's classpath
-        if (cl instanceof URLClassLoader) {
-            URL[] jarURLs = ((URLClassLoader)cl).getURLs();
-            if (jarURLs != null) {
-                for (URL jarURL : jarURLs) {
-                    String file = jarURL.getPath();
-                    int i = file.lastIndexOf('/');
-                    if (i != -1 && i < file.length() - 1) {
-                        file = file.substring(i + 1);
-                        urls.put(file, jarURL);
-                    }
+    private void analyzeProblems() throws Exception {
+        for (Problem problem : monitor.getProblems()) {
+            if ((problem.getSeverity() == Severity.ERROR) && (!problem.getMessageId().equals("SchemaError"))) {
+                if (problem.getCause() != null) {
+                    throw problem.getCause();
+                } else {
+                    throw new ServiceRuntimeException(problem.toString());
                 }
             }
         }
-
-        // Collect JARs from the parent ClassLoader
-        collectJARs(urls, cl.getParent());
-    }
-
-    public CompositeActivator getCompositeActivator() {
-        return compositeActivator;
     }
 
 }

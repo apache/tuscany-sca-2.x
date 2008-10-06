@@ -58,19 +58,15 @@ import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
  */
 class BaseWireBuilderImpl {
 
-    private Monitor monitor;
-    private AssemblyFactory assemblyFactory;
     private EndpointFactory endpointFactory;
     private InterfaceContractMapper interfaceContractMapper;
     private EndpointBuilder endpointBuilder;
     
     
-    protected BaseWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
-        this.assemblyFactory = assemblyFactory;
+    protected BaseWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper) {
         this.endpointFactory = endpointFactory;
         this.interfaceContractMapper = interfaceContractMapper;
-        this.monitor = monitor;
-        this.endpointBuilder = new DefaultEndpointBuilder(monitor);
+        this.endpointBuilder = new DefaultEndpointBuilder();
         
     }
     
@@ -80,13 +76,13 @@ class BaseWireBuilderImpl {
      * 
      * @param composite
      */
-    protected void wireComponentReferences(Composite composite) {
+    protected void wireComponentReferences(Composite composite, Monitor monitor) {
 
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireComponentReferences((Composite)implementation);
+                wireComponentReferences((Composite)implementation, monitor);
             }
         }
 
@@ -105,10 +101,10 @@ class BaseWireBuilderImpl {
         //computePolicies(composite);
 
         // Connect component references as described in wires
-        connectWires(composite, componentServices, componentReferences);
+        connectWires(composite, componentServices, componentReferences, monitor);
 
         // Connect component references to their targets
-        connectComponentReferences(composite, components, componentServices, componentReferences);
+        connectComponentReferences(composite, components, componentServices, componentReferences, monitor);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -127,10 +123,10 @@ class BaseWireBuilderImpl {
                         }
                     }
                     if (!promoted && !componentReference.isCallback()) {
-                        warning("ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
+                        warning(monitor, "ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
                     }
                 } else {
-                    warning("TooManyReferenceTargets", composite, componentReference.getName());
+                    warning(monitor, "TooManyReferenceTargets", composite, componentReference.getName());
                 }
             }
         }
@@ -206,7 +202,7 @@ class BaseWireBuilderImpl {
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, String... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -220,7 +216,7 @@ class BaseWireBuilderImpl {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = null;
             problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
@@ -235,12 +231,12 @@ class BaseWireBuilderImpl {
      * @param componentServices
      * @param problems
      */
-    protected void connectCompositeReferencesAndServices(Composite composite){
+    protected void connectCompositeReferencesAndServices(Composite composite, Monitor monitor){
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                connectCompositeReferencesAndServices((Composite)implementation);
+                connectCompositeReferencesAndServices((Composite)implementation, monitor);
             }
         }
 
@@ -252,8 +248,8 @@ class BaseWireBuilderImpl {
 
         // Connect composite services and references to the component
         // services and references that they promote
-        connectCompositeServices(composite, components, componentServices);
-        connectCompositeReferences(composite, componentReferences);
+        connectCompositeServices(composite, components, componentServices, monitor);
+        connectCompositeReferences(composite, componentReferences, monitor);
     }
             
     /**
@@ -265,7 +261,8 @@ class BaseWireBuilderImpl {
      */
     private void connectCompositeServices(Composite composite,
                                           Map<String, Component> components,
-                                          Map<String, ComponentService> componentServices) {
+                                          Map<String, ComponentService> componentServices,
+                                          Monitor monitor) {
     
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -316,12 +313,12 @@ class BaseWireBuilderImpl {
                     	// Check the compositeServiceInterfaceContract and promotedServiceInterfaceContract
                     	boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract, promotedServiceInterfaceContract);
                     	if(!isCompatible){
-                    	    warning("ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
+                    	    warning(monitor, "ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
                     	}
                     }
     
                 } else {
-                    warning("PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
+                    warning(monitor, "PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
                 }
             }
         }
@@ -335,7 +332,8 @@ class BaseWireBuilderImpl {
      * @param componentReferences
      * @param problems
      */
-    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) {
+    private void connectCompositeReferences(Composite composite,
+                                            Map<String, ComponentReference> componentReferences, Monitor monitor) {
     
         // Propagate interfaces from inner composite components' references to
         // their component references
@@ -379,11 +377,11 @@ class BaseWireBuilderImpl {
                         	// Check the compositeInterfaceContract and componentInterfaceContract
                         	boolean isCompatible = interfaceContractMapper.isCompatible(compositeReferenceInterfaceContract, componentReferenceInterfaceContract);
                         	if (!isCompatible) {
-                        	    warning("ReferenceInterfaceNotSubSet", compositeReference, componentReferenceName);
+                        	    warning(monitor, "ReferenceInterfaceNotSubSet", compositeReference, componentReferenceName);
                         	}
                         }
                     } else {
-                        warning("PromotedReferenceNotFound", composite, composite.getName().toString(), componentReferenceName);
+                        warning(monitor, "PromotedReferenceNotFound", composite, composite.getName().toString(), componentReferenceName);
                     }
                 }
             }
@@ -393,7 +391,8 @@ class BaseWireBuilderImpl {
     private List<Endpoint> createComponentReferenceTargets(Composite composite,
                                                            Map<String, Component> components,
                                                            Map<String, ComponentService> componentServices,
-                                                          ComponentReference componentReference) {
+                                                          ComponentReference componentReference,
+                                                          Monitor monitor) {
 
         List<Endpoint> endpoints = new ArrayList<Endpoint>();
         
@@ -436,7 +435,7 @@ class BaseWireBuilderImpl {
             
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
                 if (endpoints.size() == 0) {
-                    warning("NoComponentReferenceTarget", componentReference, componentReference.getName());
+                    warning(monitor, "NoComponentReferenceTarget", componentReference, componentReference.getName());
                 }
             }
 
@@ -446,7 +445,7 @@ class BaseWireBuilderImpl {
                // binding elements with target endpoints specified via the target attribute
                for (Binding binding : componentReference.getBindings()) {
         	    if (binding.getURI() != null) {
-        	        warning("ReferenceEndPointMixWithTarget", composite, componentReference.getName());
+        	        warning(monitor, "ReferenceEndPointMixWithTarget", composite, componentReference.getName());
         	    }
         	}
 
@@ -485,7 +484,7 @@ class BaseWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        warning("ReferenceIncompatibleInterface", composite, composite.getName().toString(), 
+                        warning(monitor, "ReferenceIncompatibleInterface", composite, composite.getName().toString(), 
                         		                    componentReference.getName(), componentService.getName());
                     }
                 } else {
@@ -503,7 +502,7 @@ class BaseWireBuilderImpl {
                     
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
-                    warning("ComponentReferenceTargetNotFound", composite, 
+                    warning(monitor, "ComponentReferenceTargetNotFound", composite, 
                     		composite.getName().toString(), componentService.getName());
                 }
             }
@@ -546,7 +545,7 @@ class BaseWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        warning("ComponentIncompatibleInterface", composite, 
+                        warning(monitor, "ComponentIncompatibleInterface", composite, 
                         		componentReference.getName(), componentService.getName());
                     }
                 } else {
@@ -565,7 +564,7 @@ class BaseWireBuilderImpl {
                     endpoint.getCandidateBindings().addAll(componentReference.getBindings());
                     endpoints.add(endpoint);                    
                     
-                    warning("ComponentReferenceTargetNotFound", composite, 
+                    warning(monitor, "ComponentReferenceTargetNotFound", composite, 
                     		         composite.getName().toString(), componentService.getName());
                 }
             }
@@ -633,7 +632,7 @@ class BaseWireBuilderImpl {
                         endpoint.getCandidateBindings().add(binding);
                         endpoints.add(endpoint);                        
                     } else {
-                        warning("ReferenceIncompatibleInterface",
+                        warning(monitor, "ReferenceIncompatibleInterface",
                                 composite,
                                 composite.getName().toString(),
                                 componentReference.getName(),
@@ -668,14 +667,16 @@ class BaseWireBuilderImpl {
     private void connectComponentReferences(Composite composite,
                                             Map<String, Component> components,
                                             Map<String, ComponentService> componentServices,
-                                            Map<String, ComponentReference> componentReferences){
+                                            Map<String, ComponentReference> componentReferences,
+                                            Monitor monitor){
                
         for (ComponentReference componentReference : componentReferences.values()) {
             
             List<Endpoint> endpoints = createComponentReferenceTargets(composite, 
                                                                        components, 
                                                                        componentServices, 
-                                                                       componentReference);
+                                                                       componentReference,
+                                                                       monitor);
 
             componentReference.getEndpoints().addAll(endpoints);
             
@@ -691,7 +692,7 @@ class BaseWireBuilderImpl {
             if (endpointsRequireAutomaticResolution) { 
 
                 for(Endpoint endpoint : endpoints){
-                    endpointBuilder.build(endpoint);
+                    endpointBuilder.build(endpoint, monitor);
                 }
                 
                 // TODO - The following step ensures that the reference binding list remains 
@@ -890,7 +891,8 @@ class BaseWireBuilderImpl {
      */
     private void connectWires(Composite composite,
                               Map<String, ComponentService> componentServices,
-                              Map<String, ComponentReference> componentReferences) {
+                              Map<String, ComponentReference> componentReferences,
+                              Monitor monitor) {
     
         // For each wire, resolve the source reference, the target service, and
         // add it to the list of targets of the reference
@@ -908,7 +910,7 @@ class BaseWireBuilderImpl {
                 if (resolvedReference != null) {
                     wire.setSource(resolvedReference);
                 } else {
-                    warning("WireSourceNotFound", composite, source.getName());
+                    warning(monitor, "WireSourceNotFound", composite, source.getName());
                 }
             } else {
                 resolvedReference = wire.getSource();
@@ -921,7 +923,7 @@ class BaseWireBuilderImpl {
                 if (resolvedService != null) {
                     wire.setTarget(target);
                 } else {
-                    warning("WireTargetNotFound", composite, source.getName());
+                    warning(monitor, "WireTargetNotFound", composite, source.getName());
                 }
             } else {
                 resolvedService = wire.getTarget();
@@ -939,7 +941,7 @@ class BaseWireBuilderImpl {
                     //resolvedReference.getTargets().add(resolvedService);
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
-                    warning("WireIncompatibleInterface", composite, source.getName(), target.getName());
+                    warning(monitor, "WireIncompatibleInterface", composite, source.getName(), target.getName());
                 }
             }
         }
@@ -969,13 +971,13 @@ class BaseWireBuilderImpl {
     }
 
     
-    protected void computePolicies(Composite composite) {
+    protected void computePolicies(Composite composite, Monitor monitor) {
         
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                computePolicies((Composite)implementation);
+                computePolicies((Composite)implementation, monitor);
             }
         }
     
@@ -992,7 +994,7 @@ class BaseWireBuilderImpl {
             try {
                 PolicyConfigurationUtil.computeImplementationIntentsAndPolicySets(implemenation, component);
             } catch ( Exception e ) {
-                error("PolicyRelatedException", implemenation, e);
+                error(monitor, "PolicyRelatedException", implemenation, e);
                 //throw new RuntimeException(e);
             }
 
@@ -1032,7 +1034,7 @@ class BaseWireBuilderImpl {
                     PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentService, null);
     
                 } catch ( Exception e ) {
-                    error("PolicyRelatedException", componentService, e);
+                    error(monitor, "PolicyRelatedException", componentService, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -1063,7 +1065,7 @@ class BaseWireBuilderImpl {
                                                false);
                     }
                 } catch ( Exception e ) {
-                    error("PolicyRelatedException", componentReference, e);
+                    error(monitor, "PolicyRelatedException", componentReference, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -1083,7 +1085,7 @@ class BaseWireBuilderImpl {
                 PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(service);
                 PolicyConfigurationUtil.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
-                error("PolicyRelatedException", service, e);
+                error(monitor, "PolicyRelatedException", service, e);
                 //throw new RuntimeException(e);
             }
                 
@@ -1108,7 +1110,7 @@ class BaseWireBuilderImpl {
                 PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(reference);
                 PolicyConfigurationUtil.determineApplicableBindingPolicySets(reference, null);
             } catch ( Exception e ) {
-                error("PolicyRelatedException", reference, e);
+                error(monitor, "PolicyRelatedException", reference, e);
                 //throw new RuntimeException(e);
             }
         }

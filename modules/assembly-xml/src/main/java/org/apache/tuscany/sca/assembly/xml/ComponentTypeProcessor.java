@@ -36,13 +36,13 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
@@ -76,7 +76,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      * @param modelFactories
      * @param extensionProcessor
      */
-    public ComponentTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ComponentTypeProcessor(FactoryExtensionPoint modelFactories, 
     							  StAXArtifactProcessor extensionProcessor,
     							  StAXAttributeProcessor extensionAttributeProcessor,
     							  Monitor monitor) {

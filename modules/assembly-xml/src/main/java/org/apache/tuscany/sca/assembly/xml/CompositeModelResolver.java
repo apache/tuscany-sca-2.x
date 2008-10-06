@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A Model Resolver for Composite models.
@@ -41,7 +41,7 @@ public class CompositeModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<QName, Composite> map = new HashMap<QName, Composite>();
     
-    public CompositeModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public CompositeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
     }
 

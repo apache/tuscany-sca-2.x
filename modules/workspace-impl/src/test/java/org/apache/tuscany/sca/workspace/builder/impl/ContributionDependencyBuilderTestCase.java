@@ -56,7 +56,7 @@ public class ContributionDependencyBuilderTestCase extends TestCase {
     public void tearDown() throws Exception {
     }
 
-    public void testAnalyze() {
+    public void testAnalyze() throws Exception {
         Workspace workspace = workspaceFactory.createWorkspace();
         Contribution importer = contributionFactory.createContribution();
         importer.setURI("importer");
@@ -89,8 +89,9 @@ public class ContributionDependencyBuilderTestCase extends TestCase {
         export.setNamespace("http://another");
         another.getExports().add(export);
         
-        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(null);
-        List<Contribution> dependencies = analyzer.buildContributionDependencies(importer, workspace);
+        ContributionDependencyBuilderImpl builder = new ContributionDependencyBuilderImpl(null);
+        builder.build(importer, workspace, null);
+        List<Contribution> dependencies = importer.getDependencies();
         assertTrue(dependencies.size() == 3);
         assertTrue(dependencies.contains(importer));
         assertTrue(dependencies.contains(imported));

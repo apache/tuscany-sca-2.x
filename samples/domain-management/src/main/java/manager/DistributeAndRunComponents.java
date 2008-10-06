@@ -40,19 +40,16 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -63,22 +60,20 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
-import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -97,14 +92,13 @@ public class DistributeAndRunComponents {
     
     private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
-    private static ModelFactoryExtensionPoint modelFactories;
+    private static FactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
     private static AssemblyFactory assemblyFactory;
     private static XMLOutputFactory outputFactory;
-    private static DocumentBuilderFactory documentBuilderFactory;
-    private static TransformerFactory transformerFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
-    private static ContributionDependencyBuilder contributionDependencyBuilder;
+    private static Monitor monitor;
+    private static ContributionBuilder contributionDependencyBuilder;
     private static CompositeBuilder domainCompositeBuilder;
     private static CompositeBuilder nodeCompositeBuilder;
     private static NodeImplementationFactory nodeFactory;
@@ -118,7 +112,7 @@ public class DistributeAndRunComponents {
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();        
+        monitor = monitorFactory.createMonitor(); 
         
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
@@ -127,11 +121,9 @@ public class DistributeAndRunComponents {
         }
 
         // Get XML input/output factories
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-        documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
-        transformerFactory = modelFactories.getFactory(TransformerFactory.class);
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
@@ -150,19 +142,14 @@ public class DistributeAndRunComponents {
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         
-        // Create a contribution dependency builder
-        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
         
-        // Create a composite builder
-        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory,
-                                                          documentBuilderFactory, transformerFactory, contractMapper, monitor);
-        
-        // Create a node composite builder
-        nodeCompositeBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory,
-                                                            documentBuilderFactory, transformerFactory, contractMapper, null, monitor);
+        // Get composite builders
+        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        domainCompositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        nodeCompositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.implementation.node.builder.NodeCompositeBuilder");
     }
     
 
@@ -192,20 +179,17 @@ public class DistributeAndRunComponents {
         workspace.getContributions().add(clientContribution);
 
         // Build the contribution dependencies
-        Map<Contribution, List<Contribution>> contributionDependencies = new HashMap<Contribution, List<Contribution>>();
         Set<Contribution> resolved = new HashSet<Contribution>();
         for (Contribution contribution: workspace.getContributions()) {
-            List<Contribution> dependencies = contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
+            contributionDependencyBuilder.build(contribution, workspace, monitor);
             
             // Resolve contributions
-            for (Contribution dependency: dependencies) {
+            for (Contribution dependency: contribution.getDependencies()) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
                     contributionProcessor.resolve(dependency, workspace.getModelResolver());
                 }
             }
-            
-            contributionDependencies.put(contribution, dependencies);
         }
         
         // Create a set of nodes, and assign the sample deployables to them
@@ -237,7 +221,7 @@ public class DistributeAndRunComponents {
                 node.setImplementation(nodeImplementation);
                 
                 // Keep track of what contributions will be needed by the node
-                nodeDependencies.put(node, contributionDependencies.get(contribution));
+                nodeDependencies.put(node, contribution.getDependencies());
                 
                 nodeID++;
             }
@@ -249,7 +233,7 @@ public class DistributeAndRunComponents {
         
         // Build the nodes, this will apply their default binding configuration to the
         // composites assigned to them
-        nodeCompositeBuilder.build(cloudComposite);
+        nodeCompositeBuilder.build(cloudComposite, null, monitor);
         
         // Create a composite model for the domain
         Composite domainComposite = assemblyFactory.createComposite();
@@ -260,7 +244,7 @@ public class DistributeAndRunComponents {
         domainComposite.getIncludes().addAll(workspace.getDeployables());
         
         // Build the domain composite and wire the components included in it
-        domainCompositeBuilder.build(domainComposite);
+        domainCompositeBuilder.build(domainComposite, null, monitor);
 
         // Print out the resulting domain composite
         System.out.println("domain.composite");

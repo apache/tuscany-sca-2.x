@@ -41,28 +41,27 @@ public class CompositeBindingURIBuilderImpl extends BaseConfigurationBuilderImpl
     @Deprecated
     public CompositeBindingURIBuilderImpl(AssemblyFactory assemblyFactory,
                                           SCABindingFactory scaBindingFactory,
-                                          InterfaceContractMapper interfaceContractMapper,
-                                          SCADefinitions policyDefinitions,
-                                          Monitor monitor) {
+                                          InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, scaBindingFactory,
               null, null,
-              interfaceContractMapper, policyDefinitions, monitor);
+              interfaceContractMapper);
     }
 
     public CompositeBindingURIBuilderImpl(AssemblyFactory assemblyFactory,
                                           SCABindingFactory scaBindingFactory,
                                           DocumentBuilderFactory documentBuilderFactory,
                                           TransformerFactory transformerFactory,
-                                          InterfaceContractMapper interfaceContractMapper,
-                                          SCADefinitions policyDefinitions,
-                                          Monitor monitor) {
+                                          InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, scaBindingFactory,
-              documentBuilderFactory, transformerFactory,
-              interfaceContractMapper, policyDefinitions, monitor);
+              documentBuilderFactory, transformerFactory, interfaceContractMapper);
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        configureBindingURIsAndNames(composite);
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.CompositeBindingURIBuilder";
+    }
+
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        configureBindingURIsAndNames(composite, definitions, monitor);
     }
     
 }

@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import javax.wsdl.PortType;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -37,7 +37,7 @@ public abstract class WSDLFactoryImpl implements WSDLFactory {
     
     private WSDLInterfaceIntrospectorImpl introspector;
     
-    public WSDLFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
+    public WSDLFactoryImpl(FactoryExtensionPoint modelFactories) {
         introspector = new WSDLInterfaceIntrospectorImpl(modelFactories);
     }
 

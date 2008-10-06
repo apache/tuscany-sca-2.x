@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.core;
 
 /**
  * An extension point for model factories. Model factories are provided to 
@@ -28,7 +28,7 @@ package org.apache.tuscany.sca.contribution;
  *
  * @version $Rev$ $Date$
  */
-public interface ModelFactoryExtensionPoint {
+public interface FactoryExtensionPoint {
     
     /**
      * Add a model factory extension.

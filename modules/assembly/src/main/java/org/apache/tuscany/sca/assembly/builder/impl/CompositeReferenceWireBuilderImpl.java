@@ -22,16 +22,15 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -42,12 +41,14 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
     private EndpointFactory endpointFactory;
-    private Monitor monitor;
 
-    public CompositeReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, Monitor monitor) {
+    public CompositeReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory) {
         this.assemblyFactory = assemblyFactory;
         this.endpointFactory = endpointFactory;
-        this.monitor = monitor;
+    }
+
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceWireBuilder";
     }
 
     /**
@@ -55,7 +56,7 @@ public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
      * 
      * @param composite
      */
-    public void build(Composite composite) throws CompositeBuilderException {
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
     
         // Process composite references declared in this composite
         for (Reference reference : composite.getReferences()) {

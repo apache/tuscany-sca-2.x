@@ -44,6 +44,7 @@ class ContributionImpl implements Contribution {
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
     private List<Artifact> artifacts = new ArrayList<Artifact>();
+    private List<Contribution> dependencies = new ArrayList<Contribution>();
     private ModelResolver modelResolver;
     
     // FIXME remove this dependency on Java ClassLoaders
@@ -109,6 +110,10 @@ class ContributionImpl implements Contribution {
 
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
+    }
+    
+    public List<Contribution> getDependencies() {
+        return dependencies;
     }
     
     public List<Export> getExports() {

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.implementation.resource.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -35,7 +35,7 @@ public class ResourceImplementationFactoryImpl implements ResourceImplementation
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     
-    public ResourceImplementationFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
+    public ResourceImplementationFactoryImpl(FactoryExtensionPoint modelFactories) {
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }

@@ -34,11 +34,11 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultDelegatingModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -55,7 +55,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         return parentClassLoader;
     }
     
-    public ClassLoaderModelResolver(final Contribution contribution, ModelFactoryExtensionPoint modelFactories) throws MalformedURLException {
+    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws MalformedURLException {
         super(new URL[] {new URL(contribution.getLocation())}, parentClassLoader());
         this.contribution = contribution;
         

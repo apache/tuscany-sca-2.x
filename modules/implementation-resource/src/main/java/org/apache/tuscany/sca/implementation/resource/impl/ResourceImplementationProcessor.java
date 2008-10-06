@@ -31,12 +31,12 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -57,7 +57,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     private ResourceImplementationFactory implementationFactory;
     private Monitor monitor;
 
-    public ResourceImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ResourceImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = modelFactories.getFactory(ResourceImplementationFactory.class);
         this.monitor = monitor;

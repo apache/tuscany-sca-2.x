@@ -25,9 +25,9 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resource.ResourceImport;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A Model Resolver for contribution artifacts.
@@ -38,7 +38,7 @@ public class ArtifactModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<String, Artifact> map = new HashMap<String, Artifact>();
     
-    public ArtifactModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ArtifactModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     	this.contribution = contribution;
     }
 

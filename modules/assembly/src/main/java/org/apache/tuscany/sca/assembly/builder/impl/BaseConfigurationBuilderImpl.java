@@ -68,9 +68,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
-    private Monitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
-    private SCADefinitions policyDefinitions;
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
@@ -78,28 +76,23 @@ public abstract class BaseConfigurationBuilderImpl {
                                              SCABindingFactory scaBindingFactory,
                                              DocumentBuilderFactory documentBuilderFactory,
                                              TransformerFactory transformerFactory,
-                                             InterfaceContractMapper interfaceContractMapper,
-                                             SCADefinitions policyDefinitions,
-                                             Monitor monitor) {
+                                             InterfaceContractMapper interfaceContractMapper) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
         this.documentBuilderFactory = documentBuilderFactory;
         this.transformerFactory = transformerFactory;
         this.interfaceContractMapper = interfaceContractMapper;
-        this.policyDefinitions = policyDefinitions;
-        this.monitor = monitor;
     }
 
     /**
      * Configure components in the composite.
      * 
      * @param composite
-     * @param problems
+     * @param monitor
      */
-    protected void configureComponents(Composite composite) throws CompositeBuilderException {
-        configureComponents(composite, null);
+    protected void configureComponents(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        configureComponents(composite, null, monitor);
         configureSourcedProperties(composite, null);
-        //configureBindingURIs(composite, null, null);
     }
 
     /**
@@ -109,7 +102,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param uri
      * @param problems
      */
-    private void configureComponents(Composite composite, String uri) {
+    private void configureComponents(Composite composite, String uri, SCADefinitions definitions, Monitor monitor) {
         String parentURI = uri;
 
         // Process nested composites recursively
@@ -128,7 +121,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (implementation instanceof Composite) {
 
                 // Process nested composite
-                configureComponents((Composite)implementation, componentURI);
+                configureComponents((Composite)implementation, componentURI, definitions, monitor);
             }
         }
 
@@ -139,52 +132,18 @@ public abstract class BaseConfigurationBuilderImpl {
             
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding();
+                SCABinding scaBinding = createSCABinding(definitions);
                 service.getBindings().add(scaBinding);
             }
-/*
-            // Initialize binding names and URIs
-            for (Binding binding : service.getBindings()) {
-                
-                // Binding name defaults to the service name
-                if (binding.getName() == null) {
-                    binding.setName(service.getName());
-                }
-            }
-            
-            if (service.getCallback() != null) {
-                for (Binding binding : service.getCallback().getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(service.getName());
-                    }
-                }
-            }
-*/
         }
 
         // Initialize reference bindings
         for (Reference reference : composite.getReferences()) {
             // Create default SCA binding
             if (reference.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding();
+                SCABinding scaBinding = createSCABinding(definitions);
                 reference.getBindings().add(scaBinding);
             }
-/*
-            // Set binding names
-            for (Binding binding : reference.getBindings()) {
-                if (binding.getName() == null) {
-                    binding.setName(reference.getName());
-                }
-            }
-
-            if (reference.getCallback() != null) {
-                for (Binding binding : reference.getCallback().getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(reference.getName());
-                    }
-                }
-            }
-*/
         }
 
         // Initialize all component services and references
@@ -193,7 +152,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
-                error("DuplicateComponentName", component, composite.getName().toString(), component.getName());
+                error(monitor, "DuplicateComponentName", component, composite.getName().toString(), component.getName());
             } else {
                 components.put(component.getName(), component);
             }
@@ -214,28 +173,27 @@ public abstract class BaseConfigurationBuilderImpl {
             indexImplementationPropertiesServicesAndReferences(component,
                                                                services,
                                                                references,
-                                                               properties);
+                                                               properties,
+                                                               monitor);
 
             // Index component services, references and properties
             // Also check for duplicates
-            Map<String, ComponentService> componentServices =
-                new HashMap<String, ComponentService>();
-            Map<String, ComponentReference> componentReferences =
-                new HashMap<String, ComponentReference>();
-            Map<String, ComponentProperty> componentProperties =
-                new HashMap<String, ComponentProperty>();
+            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+            Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
             indexComponentPropertiesServicesAndReferences(component,
                                                           componentServices,
                                                           componentReferences,
-                                                          componentProperties);
+                                                          componentProperties,
+                                                          monitor);
 
             // Reconcile component services/references/properties and
             // implementation services/references and create component
             // services/references/properties for the services/references
             // declared by the implementation
-            reconcileServices(component, services, componentServices);
-            reconcileReferences(component, references, componentReferences);
-            reconcileProperties(component, properties, componentProperties);
+            reconcileServices(component, services, componentServices, monitor);
+            reconcileReferences(component, references, componentReferences, monitor);
+            reconcileProperties(component, properties, componentProperties, monitor);
 
             // Configure or create callback services for component's references
             // with callbacks
@@ -245,36 +203,14 @@ public abstract class BaseConfigurationBuilderImpl {
             // with callbacks
             configureCallbackReferences(component, componentReferences);
 
-            // Create self references to the component's services
-//            if (!(component.getImplementation() instanceof Composite)) {
-//                createSelfReferences(component);
-//            }
-
             // Initialize service bindings
             for (ComponentService componentService : component.getServices()) {
 
                 // Create default SCA binding
                 if (componentService.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding();
+                    SCABinding scaBinding = createSCABinding(definitions);
                     componentService.getBindings().add(scaBinding);
                 }
-/*
-                // Set binding names
-                for (Binding binding : componentService.getBindings()) {
-                    
-                    // Binding name defaults to the service name
-                    if (binding.getName() == null) {
-                        binding.setName(componentService.getName());
-                    }
-                }
-                if (componentService.getCallback() != null) {
-                    for (Binding binding : componentService.getCallback().getBindings()) {
-                        if (binding.getName() == null) {
-                            binding.setName(componentService.getName());
-                        }
-                    }
-                }
-*/
             }
 
             // Initialize reference bindings
@@ -282,24 +218,9 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Create default SCA binding
                 if (componentReference.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding();
+                    SCABinding scaBinding = createSCABinding(definitions);
                     componentReference.getBindings().add(scaBinding);
                 }
-/*
-                // Set binding names
-                for (Binding binding : componentReference.getBindings()) {
-                    if (binding.getName() == null) {
-                        binding.setName(componentReference.getName());
-                    }
-                }
-                if (componentReference.getCallback() != null) {
-                    for (Binding binding : componentReference.getCallback().getBindings()) {
-                        if (binding.getName() == null) {
-                            binding.setName(componentReference.getName());
-                        }
-                    }
-                }
-*/
             }
         }
     }
@@ -307,11 +228,12 @@ public abstract class BaseConfigurationBuilderImpl {
     /**
      * Report a warning.
      * 
+     * @param monitor
      * @param problems
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, String... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -321,11 +243,12 @@ public abstract class BaseConfigurationBuilderImpl {
     /**
      * Report a error.
      * 
+     * @param monitor
      * @param problems
      * @param message
      * @param model
      */
-    private void error(String message, Object model, String... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -343,7 +266,8 @@ public abstract class BaseConfigurationBuilderImpl {
      */
     private void reconcileProperties(Component component,
                                      Map<String, Property> properties,
-                                     Map<String, ComponentProperty> componentProperties) {
+                                     Map<String, ComponentProperty> componentProperties,
+                                     Monitor monitor) {
 
         // Connect component properties to their properties
         for (ComponentProperty componentProperty : component.getProperties()) {
@@ -351,7 +275,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                warning("PropertyNotFound", component, component.getName(), componentProperty.getName());
+                warning(monitor, "PropertyNotFound", component, component.getName(), componentProperty.getName());
             }
         }
 
@@ -378,7 +302,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    warning("PropertyMustSupplyIncompatible", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "PropertyMustSupplyIncompatible", component, component.getName(), componentProperty.getName());
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -397,14 +321,14 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning("PropertyMustSupplyNull", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty.getName());
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
 
-                    warning("PropertyOverrideManyAttribute", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "PropertyOverrideManyAttribute", component, component.getName(), componentProperty.getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -420,7 +344,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    warning("NoTypeForComponentProperty", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "NoTypeForComponentProperty", component, component.getName(), componentProperty.getName());
                 }
             }
         }
@@ -433,11 +357,12 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param component
      * @param references
      * @param componentReferences
-     * @param problems
+     * @param monitor
      */
     private void reconcileReferences(Component component,
                                      Map<String, Reference> references,
-                                     Map<String, ComponentReference> componentReferences) {
+                                     Map<String, ComponentReference> componentReferences,
+                                     Monitor monitor) {
 
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
@@ -449,7 +374,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    error("ReferenceNotFound", component, component.getName(), componentReference.getName());
+                    error(monitor, "ReferenceNotFound", component, component.getName(), componentReference.getName());
                 }
             }
         }
@@ -477,7 +402,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                    componentReference
                                                                        .getMultiplicity())) {
-                        warning("ReferenceIncompatibleMultiplicity", component, component.getName(), componentReference.getName());
+                        warning(monitor, "ReferenceIncompatibleMultiplicity", component, component.getName(), componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -490,7 +415,7 @@ public abstract class BaseConfigurationBuilderImpl {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning("ReferenceIncompatibleComponentInterface", component, component.getName(), componentReference.getName());
+                            warning(monitor, "ReferenceIncompatibleComponentInterface", component, component.getName(), componentReference.getName());
                         }
                     }
                 } else {
@@ -535,11 +460,12 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param component
      * @param services
      * @param componentServices
-     * @param problems
+     * @param monitor
      */
     private void reconcileServices(Component component,
                                    Map<String, Service> services,
-                                   Map<String, ComponentService> componentServices) {
+                                   Map<String, ComponentService> componentServices,
+                                   Monitor monitor) {
 
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
@@ -550,7 +476,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                warning("ServiceNotFoundForComponentService", component, component.getName(), componentService.getName());
+                warning(monitor, "ServiceNotFoundForComponentService", component, component.getName(), componentService.getName());
             }
         }
 
@@ -579,7 +505,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     if (interfaceContract != null && !componentService.getInterfaceContract().equals(interfaceContract)) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning("ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
+                            warning(monitor, "ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
                         }
                     }
                 } else {
@@ -610,24 +536,25 @@ public abstract class BaseConfigurationBuilderImpl {
     private void indexComponentPropertiesServicesAndReferences(Component component,
                                                                Map<String, ComponentService> componentServices,
                                                                Map<String, ComponentReference> componentReferences,
-                                                               Map<String, ComponentProperty> componentProperties) {
+                                                               Map<String, ComponentProperty> componentProperties,
+                                                               Monitor monitor) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning("DuplicateComponentServiceName", component, component.getName(), componentService.getName());
+                warning(monitor, "DuplicateComponentServiceName", component, component.getName(), componentService.getName());
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-                warning("DuplicateComponentReferenceName", component, component.getName(), componentReference.getName());
+                warning(monitor, "DuplicateComponentReferenceName", component, component.getName(), componentReference.getName());
             } else {
                 componentReferences.put(componentReference.getName(), componentReference);
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning("DuplicateComponentPropertyName", component, component.getName(), componentProperty.getName());
+                warning(monitor, "DuplicateComponentPropertyName", component, component.getName(), componentProperty.getName());
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
@@ -638,17 +565,18 @@ public abstract class BaseConfigurationBuilderImpl {
     private void indexImplementationPropertiesServicesAndReferences(Component component,
                                                                     Map<String, Service> services,
                                                                     Map<String, Reference> references,
-                                                                    Map<String, Property> properties) {
+                                                                    Map<String, Property> properties,
+                                                                    Monitor monitor) {
         // First check that the component has a resolved implementation
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
             // A component must have an implementation
-            warning("NoComponentImplementation", component, component.getName());
+            warning(monitor, "NoComponentImplementation", component, component.getName());
 
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            warning("UnresolvedComponentImplementation", component, component.getName(), implementation.getURI());
+            warning(monitor, "UnresolvedComponentImplementation", component, component.getName(), implementation.getURI());
 
         } else {
 
@@ -656,21 +584,21 @@ public abstract class BaseConfigurationBuilderImpl {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning("DuplicateImplementationPropertyName", component, component.getName(), property.getName());
+                    warning(monitor, "DuplicateImplementationPropertyName", component, component.getName(), property.getName());
                 } else {
                     properties.put(property.getName(), property);
                 }
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                    warning("DuplicateImplementationServiceName", component, component.getName(), service.getName());
+                    warning(monitor, "DuplicateImplementationServiceName", component, component.getName(), service.getName());
                 } else {
                     services.put(service.getName(), service);
                 }
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning("DuplicateImplementationReferenceName", component, component.getName(), reference.getName());
+                    warning(monitor, "DuplicateImplementationReferenceName", component, component.getName(), reference.getName());
                 } else {
                     references.put(reference.getName(), reference);
                 }
@@ -850,7 +778,7 @@ public abstract class BaseConfigurationBuilderImpl {
         return null;
     }
     
-    private SCABinding createSCABinding() {
+    private SCABinding createSCABinding(SCADefinitions definitions) {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
         
         // mark the bindings that are added automatically so that they can 
@@ -859,8 +787,8 @@ public abstract class BaseConfigurationBuilderImpl {
             ((AutomaticBinding)scaBinding).setIsAutomatic(true);
         }
         
-        if ( policyDefinitions != null ) {
-            for ( IntentAttachPointType attachPointType : policyDefinitions.getBindingTypes() ) {
+        if ( definitions != null ) {
+            for ( IntentAttachPointType attachPointType : definitions.getBindingTypes() ) {
                 if ( attachPointType.getName().equals(BINDING_SCA_QNAME)) {
                     ((IntentAttachPoint)scaBinding).setType(attachPointType);
                 }
@@ -875,9 +803,9 @@ public abstract class BaseConfigurationBuilderImpl {
      *  
      * @param composite the composite to be configured
      */
-    protected void configureBindingURIsAndNames(Composite composite) throws CompositeBuilderException {
-        configureBindingURIs(composite, null, null);
-        configureBindingNames(composite);
+    protected void configureBindingURIsAndNames(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        configureBindingURIs(composite, null, definitions, null, monitor);
+        configureBindingNames(composite, monitor);
     }
 
     /**
@@ -888,8 +816,10 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param composite the composite to be configured
      * @param defaultBindings list of default binding configurations
      */
-    protected void configureBindingURIs(Composite composite, List<Binding> defaultBindings) throws CompositeBuilderException {
-        configureBindingURIs(composite, null, defaultBindings);
+    protected void configureBindingURIs(Composite composite,
+                                        SCADefinitions definitions, List<Binding> defaultBindings,
+                                        Monitor monitor) throws CompositeBuilderException {
+        configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
     }
        
      /**
@@ -912,7 +842,9 @@ public abstract class BaseConfigurationBuilderImpl {
       * @param uri the path to the composite provided through any nested composite component implementations
       * @param defaultBindings list of default binding configurations
       */
-    private void configureBindingURIs(Composite composite, String uri, List<Binding> defaultBindings) throws CompositeBuilderException {
+    private void configureBindingURIs(Composite composite, String uri,
+                                      SCADefinitions definitions, List<Binding> defaultBindings,
+                                      Monitor monitor) throws CompositeBuilderException {
         
         String parentComponentURI = uri;
         
@@ -932,7 +864,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (implementation instanceof Composite) {
 
                 // Process nested composite
-                configureBindingURIs((Composite)implementation, componentURI, defaultBindings);
+                configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
             }
         }  
         
@@ -943,14 +875,14 @@ public abstract class BaseConfigurationBuilderImpl {
             
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding();
+                SCABinding scaBinding = createSCABinding(definitions);
                 service.getBindings().add(scaBinding);
             }
     
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {  
-                constructBindingName(service, binding);
-                constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings);
+                constructBindingName(service, binding, monitor);
+                constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
             }
         }
         
@@ -964,7 +896,8 @@ public abstract class BaseConfigurationBuilderImpl {
             indexImplementationPropertiesServicesAndReferences(component,
                                                                services,
                                                                references,
-                                                               properties);
+                                                               properties,
+                                                               monitor);
 
             // Index component services, references and properties
             // Also check for duplicates
@@ -977,29 +910,30 @@ public abstract class BaseConfigurationBuilderImpl {
             indexComponentPropertiesServicesAndReferences(component,
                                                           componentServices,
                                                           componentReferences,
-                                                          componentProperties);
+                                                          componentProperties,
+                                                          monitor);
 
             // Reconcile component services/references/properties and
             // implementation services/references and create component
             // services/references/properties for the services/references
             // declared by the implementation
-            reconcileServices(component, services, componentServices);
-            reconcileReferences(component, references, componentReferences);
-            reconcileProperties(component, properties, componentProperties);
+            reconcileServices(component, services, componentServices, monitor);
+            reconcileReferences(component, references, componentReferences, monitor);
+            reconcileProperties(component, properties, componentProperties, monitor);
             
             for (ComponentService service : component.getServices()) {
     
                 // Create default SCA binding
                 if (service.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding();
+                    SCABinding scaBinding = createSCABinding(definitions);
                     service.getBindings().add(scaBinding);
                 }
     
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
                     
-                    constructBindingName(service, binding);
-                    constructBindingURI(component, service, binding, defaultBindings);
+                    constructBindingName(service, binding, monitor);
+                    constructBindingURI(component, service, binding, defaultBindings, monitor);
                 }
             } 
         }
@@ -1010,7 +944,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * separate from configureBindingURIs() because configureBindingURIs() is called
      * by NodeConfigurationServiceImpl as well as by CompositeBuilderImpl.
      */
-    private void configureBindingNames(Composite composite) {
+    private void configureBindingNames(Composite composite, Monitor monitor) {
         
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -1019,7 +953,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (implementation instanceof Composite) {
 
                 // Process nested composite
-                configureBindingNames((Composite)implementation);
+                configureBindingNames((Composite)implementation, monitor);
             }
         }  
         
@@ -1028,7 +962,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
             if (service.getCallback() != null) {
                 for (Binding binding : service.getCallback().getBindings()) {
-                    constructBindingName(service, binding);
+                    constructBindingName(service, binding, monitor);
                 }
             }
         }
@@ -1037,12 +971,12 @@ public abstract class BaseConfigurationBuilderImpl {
         for (Reference reference : composite.getReferences()) {
 
             for (Binding binding : reference.getBindings()) {  
-                constructBindingName(reference, binding);
+                constructBindingName(reference, binding, monitor);
             }
 
             if (reference.getCallback() != null) {
                 for (Binding binding : reference.getCallback().getBindings()) {
-                    constructBindingName(reference, binding);
+                    constructBindingName(reference, binding, monitor);
                 }
             }
         }
@@ -1055,7 +989,7 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 if (service.getCallback() != null) {
                     for (Binding binding : service.getCallback().getBindings()) {
-                        constructBindingName(service, binding);
+                        constructBindingName(service, binding, monitor);
                     }
                 }
             } 
@@ -1065,12 +999,12 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Initialize binding names
                 for (Binding binding : reference.getBindings()) {  
-                    constructBindingName(reference, binding);
+                    constructBindingName(reference, binding, monitor);
                 }
 
                 if (reference.getCallback() != null) {
                     for (Binding binding : reference.getCallback().getBindings()) {
-                        constructBindingName(reference, binding);
+                        constructBindingName(reference, binding, monitor);
                     }
                 }
             }
@@ -1084,7 +1018,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param contract the service or reference
      * @param binding
      */
-    private void constructBindingName(Contract contract, Binding binding) {
+    private void constructBindingName(Contract contract, Binding binding, Monitor monitor) {
         
         // set the default binding name if one is required        
         // if there is no name on the binding then set it to the service or reference name 
@@ -1103,7 +1037,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 continue;
             }
             if (binding.getName().equals(otherBinding.getName())) {
-                warning(contract instanceof Service ? "MultipleBindingsForService" : "MultipleBindingsForReference",
+                warning(monitor, contract instanceof Service ? "MultipleBindingsForService" : "MultipleBindingsForReference",
                         binding, contract.getName(), binding.getName());
             }
         }
@@ -1121,12 +1055,13 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param binding
      * @param defaultBindings
      */
-    private void constructBindingURI(String parentComponentURI, Composite composite, Service service, Binding binding, List<Binding> defaultBindings) 
+    private void constructBindingURI(String parentComponentURI, Composite composite, Service service,
+                                     Binding binding, List<Binding> defaultBindings, Monitor monitor) 
     throws CompositeBuilderException{
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
         boolean includeBindingName = composite.getServices().size() != 1;
-        constructBindingURI(parentComponentURI, service, binding, includeBindingName, defaultBindings);
+        constructBindingURI(parentComponentURI, service, binding, includeBindingName, defaultBindings, monitor);
     }
 
      /**
@@ -1139,10 +1074,11 @@ public abstract class BaseConfigurationBuilderImpl {
       * @param binding the binding for which the URI is being constructed
       * @param defaultBindings the list of default binding configurations
       */
-    private void constructBindingURI(Component component, Service service, Binding binding, List<Binding> defaultBindings)
+    private void constructBindingURI(Component component, Service service,
+                                     Binding binding, List<Binding> defaultBindings, Monitor monitor)
         throws CompositeBuilderException{
         boolean includeBindingName = component.getServices().size() != 1;
-        constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings);
+        constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings, monitor);
     }
             
     /**
@@ -1155,7 +1091,8 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param defaultBindings the list of default binding configurations
      * @throws CompositeBuilderException
      */
-    private void constructBindingURI(String componentURIString, Service service, Binding binding, boolean includeBindingName, List<Binding> defaultBindings) 
+    private void constructBindingURI(String componentURIString, Service service, Binding binding,
+                                     boolean includeBindingName, List<Binding> defaultBindings, Monitor monitor) 
         throws CompositeBuilderException{
         
         try {
@@ -1196,28 +1133,6 @@ public abstract class BaseConfigurationBuilderImpl {
             }         
             
             // calculate the base URI
-            
-            // get the protocol for this binding/URI
-/* some code that allows binding specific code to run. Being discussed on ML            
-            BindingURICalculator uriCalculator = bindingURICalcualtorExtensionPoint.getBindingURICalculator(binding);
-            
-            if  (uriCalculator != null){
-                String protocol = uriCalculator.getProtocol(binding);
-                
-                // find the default binding with the right protocol
-                Binding defaultBinding = nodeInfo.getBindingDefault(binding, protocol);
-                
-                if (defaultBinding != null){
-                    baseURI = new URI(defaultBinding.getURI());
-                } else {
-                    baseURI = null;
-                }
-                
-            } else {
-                baseURI = null;
-            }
-*/
-            // as a simpler alternative to the above commented out code. 
             URI baseURI = null;
             if (defaultBindings != null) {
                 for (Binding defaultBinding : defaultBindings){
@@ -1230,7 +1145,7 @@ public abstract class BaseConfigurationBuilderImpl {
             
             binding.setURI(constructBindingURI(baseURI, componentURI, bindingURI, includeBindingName, bindingName));
         } catch (URISyntaxException ex) {
-            error("URLSyntaxException", binding, componentURIString, service.getName(), binding.getName());
+            error(monitor, "URLSyntaxException", binding, componentURIString, service.getName(), binding.getName());
         }      
     }
     

@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A Model Resolver for Contribution models.
@@ -35,7 +35,7 @@ public class ContributionModelResolver implements ModelResolver {
 
     private Map<String, Contribution> map = new HashMap<String, Contribution>();
     
-    public ContributionModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ContributionModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     }
 
     public void addModel(Object resolved) {

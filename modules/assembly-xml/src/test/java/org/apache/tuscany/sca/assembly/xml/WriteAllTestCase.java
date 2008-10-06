@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -46,6 +45,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -77,7 +77,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
         resolver = new DefaultModelResolver();
         
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
@@ -88,7 +88,7 @@ public class WriteAllTestCase extends TestCase {
         MonitorFactory monitorFactory = new DefaultMonitorFactory();
         monitor = monitorFactory.createMonitor();
         
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, monitor);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper);
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
@@ -126,7 +126,7 @@ public class WriteAllTestCase extends TestCase {
         policyDefinitionsProcessor.resolve(scaDefns, resolver);
         
         staxProcessor.resolve(composite, resolver);
-        compositeBuilder.build(composite);
+        compositeBuilder.build(composite, null, monitor);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
     }

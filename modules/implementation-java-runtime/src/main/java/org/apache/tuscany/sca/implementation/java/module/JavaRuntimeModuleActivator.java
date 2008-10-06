@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.CglibProxyFactory;
@@ -56,7 +56,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);

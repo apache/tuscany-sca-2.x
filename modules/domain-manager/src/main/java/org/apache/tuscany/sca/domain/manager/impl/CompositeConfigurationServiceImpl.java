@@ -40,25 +40,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -70,21 +65,20 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
-import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderException;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -115,7 +109,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
     @Reference 
     public LocalItemCollection cloudCollection;    
 
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
@@ -123,7 +117,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
     private StAXArtifactProcessorExtensionPoint staxProcessors;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
-    private ContributionDependencyBuilder contributionDependencyBuilder;
+    private ContributionBuilder contributionDependencyBuilder;
     private CompositeBuilder compositeBuilder;
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder nodeConfigurationBuilder;
@@ -143,7 +137,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         monitor = monitorFactory.createMonitor();
         
         // Get model factories
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
@@ -162,16 +156,16 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
         
-        // Create contribution and composite builders
-        DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
-        TransformerFactory transformerFactory = modelFactories.getFactory(TransformerFactory.class);
-        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
-        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, documentBuilderFactory, transformerFactory, contractMapper, monitor);
-        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor);
-        nodeConfigurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, contractMapper, null, monitor);
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
+        
+        // Get composite builders
+        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        nodeConfigurationBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.implementation.node.builder.NodeCompositeBuilder");
+        compositeIncludeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder");
+        nodeConfigurationBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.implementation.node.builder.NodeCompositeBuilder");
     }
     
     @Override
@@ -281,7 +275,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
 
             // Fuse includes into the deployable composite
             try {
-                compositeIncludeBuilder.build(deployable);
+                compositeIncludeBuilder.build(deployable, null, monitor);
             } catch (CompositeBuilderException e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             }
@@ -338,7 +332,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
                     Composite nodeComposite = assemblyFactory.createComposite();
                     nodeComposite.setName(nodeCompositeName);
                     nodeComposite.getComponents().add(nodeComponent);
-                    nodeConfigurationBuilder.build(nodeComposite);
+                    nodeConfigurationBuilder.build(nodeComposite, null, monitor);
                 } catch (CompositeBuilderException e) {
                     throw new ServletException(e);
                 }
@@ -347,7 +341,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         
         // Build the domain composite
         try {
-            compositeBuilder.build(domainComposite);
+            compositeBuilder.build(domainComposite, null, monitor);
         } catch (CompositeBuilderException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             return;
@@ -501,7 +495,10 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
             Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
             // Resolve the contribution dependencies
-            contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
+            try {
+                contributionDependencyBuilder.build(contribution, workspace, monitor);
+            } catch (ContributionBuilderException e) {
+            }
             
             contributionProcessor.resolve(contribution, workspace.getModelResolver());
             return contribution;

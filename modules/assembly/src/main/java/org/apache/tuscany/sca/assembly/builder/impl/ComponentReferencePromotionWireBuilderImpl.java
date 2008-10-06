@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -45,16 +46,18 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class ComponentReferencePromotionWireBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
     private EndpointFactory endpointFactory;
-    private Monitor monitor;
 
-    public ComponentReferencePromotionWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, Monitor monitor) {
+    public ComponentReferencePromotionWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory) {
         this.assemblyFactory = assemblyFactory;
         this.endpointFactory = endpointFactory;
-        this.monitor = monitor;
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        wireCompositeReferences(composite);
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        wireCompositeReferences(composite, monitor);
+    }
+
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.ComponentReferencePromotionWireBuilder";
     }
 
     /**
@@ -63,13 +66,13 @@ public class ComponentReferencePromotionWireBuilderImpl implements CompositeBuil
      * @param composite
      * @param problems
      */
-    private void wireCompositeReferences(Composite composite) {
+    private void wireCompositeReferences(Composite composite, Monitor monitor) {
     
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireCompositeReferences((Composite)implementation);
+                wireCompositeReferences((Composite)implementation, monitor);
             }
         }
     

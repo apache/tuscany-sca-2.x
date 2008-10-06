@@ -36,13 +36,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -64,7 +64,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     private XPathFactory xpathFactory = XPathFactory.newInstance();
     private Monitor monitor;
     
-    public PolicySetProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public PolicySetProcessor(FactoryExtensionPoint modelFactories, 
     						  StAXArtifactProcessor<Object> extensionProcessor,
     						  Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);

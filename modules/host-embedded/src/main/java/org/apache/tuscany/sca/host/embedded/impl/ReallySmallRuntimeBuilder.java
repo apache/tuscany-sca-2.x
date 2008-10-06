@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
@@ -61,6 +60,7 @@ import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryIm
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -123,7 +123,7 @@ public class ReallySmallRuntimeBuilder {
             registry.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);        
 
         JavaInterfaceFactory javaInterfaceFactory =
-            registry.getExtensionPoint(ModelFactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
+            registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(JavaInterfaceFactory.class);
         RequestContextFactory requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
 
@@ -179,7 +179,7 @@ public class ReallySmallRuntimeBuilder {
         throws ActivationException {
 
         // Get the model factory extension point
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
 
         // Create a new XML input factory
         // Allow privileged access to factory. Requires RuntimePermission in security policy file.

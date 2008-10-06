@@ -27,6 +27,9 @@ import java.util.Set;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -37,18 +40,22 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {   
-
-    private Monitor monitor;
         
-    public CompositeIncludeBuilderImpl(Monitor monitor) {
-        this.monitor = monitor;
+    public CompositeIncludeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
     }
       
-    public void build(Composite composite) throws CompositeBuilderException {
-        fuseIncludes(composite);
+    public CompositeIncludeBuilderImpl() {
+    }
+      
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
 
-    private void warning(String message, Object model, String... messageParameters) {
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        fuseIncludes(composite, monitor);
+    }
+
+    private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null){
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -61,16 +68,17 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
      * @param composite
      * @param includes
      */
-    private void collectIncludes(Composite composite, List<Composite> includes, Set<Composite> visited) {
+    private void collectIncludes(Composite composite, List<Composite> includes,
+                                 Set<Composite> visited, Monitor monitor) {
         for (Composite include : composite.getIncludes()) {
             if (visited.contains(include)) {
-                warning("CompositeAlreadyIncluded", composite, include.getName().toString());
+                warning(monitor, "CompositeAlreadyIncluded", composite, include.getName().toString());
                 continue;
             }
                         
             includes.add(include);
             visited.add(include);
-            collectIncludes(include, includes, visited);
+            collectIncludes(include, includes, visited, monitor);
         }
     }
 
@@ -79,13 +87,14 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
      * 
      * @param composite
      */
-    private void fuseIncludes(Composite composite) {
+    private void fuseIncludes(Composite composite, Monitor monitor) {
     
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
         Set<Composite> visited = new HashSet<Composite>();
         visited.add(composite);
-        collectIncludes(composite, includes, visited);
+        collectIncludes(composite, includes, visited, monitor);
+        
         // Then clone them
         for (Composite include : includes) {
             Composite clone;

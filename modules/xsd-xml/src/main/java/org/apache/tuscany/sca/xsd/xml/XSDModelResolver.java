@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.xsd.DefaultXSDFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
@@ -55,7 +55,7 @@ public class XSDModelResolver implements ModelResolver {
     private Map<String, List<XSDefinition>> map = new HashMap<String, List<XSDefinition>>();
     private XmlSchemaCollection schemaCollection;
 
-    public XSDModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public XSDModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.schemaCollection = new XmlSchemaCollection();
         schemaCollection.setSchemaResolver(new URIResolverImpl(contribution));

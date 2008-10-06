@@ -27,17 +27,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
@@ -45,6 +41,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -82,26 +79,20 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 public class RuntimeBootStrapper {
     private static final Logger logger = Logger.getLogger(RuntimeBootStrapper.class.getName());
     private List<ModuleActivator> modules;
-    private ExtensionPointRegistry registry;
 
     private ClassLoader classLoader;
-    private AssemblyFactory assemblyFactory;
-    private ContributionService contributionService;
     private CompositeActivator compositeActivator;
-    private CompositeBuilder compositeBuilder;
-    // private DomainBuilder domainBuilder;
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
     private List<SCADefinitions> policyDefinitions;
     private ModelResolver policyDefinitionsResolver;
-    private Monitor monitor;
 
     public RuntimeBootStrapper(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
-    public void start() throws ActivationException {
+    public void startRuntime() throws ActivationException {
         long start = System.currentTimeMillis();
 
         // Create our extension point registry
@@ -115,7 +106,7 @@ public class RuntimeBootStrapper {
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
         // Get factory extension point
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
 
         // Get Message factory
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
@@ -190,7 +181,7 @@ public class RuntimeBootStrapper {
         }
     }
 
-    public void stop() throws ActivationException {
+    public void stopRuntime() throws ActivationException {
         long start = System.currentTimeMillis();
 
         // Stop the runtime modules
@@ -203,7 +194,6 @@ public class RuntimeBootStrapper {
         modules = null;
         registry = null;
         assemblyFactory = null;
-        contributionService = null;
         compositeActivator = null;
         workScheduler = null;
         scopeRegistry = null;
@@ -215,50 +205,12 @@ public class RuntimeBootStrapper {
     }
 
     public void buildComposite(Composite composite) throws CompositeBuilderException {
-        //Get factory extension point
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-        IntentAttachPointTypeFactory intentAttachPointTypeFactory =
-            factories.getFactory(IntentAttachPointTypeFactory.class);
-        EndpointFactory endpointFactory = factories.getFactory(EndpointFactory.class);
-        DocumentBuilderFactory documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);
-        TransformerFactory transformerFactory = factories.getFactory(TransformerFactory.class);
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
-        //Create a composite builder
         SCADefinitions aggregatedDefinitions = new SCADefinitionsImpl();
         for (SCADefinitions definition : ((List<SCADefinitions>)policyDefinitions)) {
             SCADefinitionsUtil.aggregateSCADefinitions(definition, aggregatedDefinitions);
         }
-        compositeBuilder =
-            RuntimeBuilder.createCompositeBuilder(monitor,
-                                                  assemblyFactory,
-                                                  scaBindingFactory,
-                                                  endpointFactory,
-                                                  intentAttachPointTypeFactory,
-                                                  documentBuilderFactory,
-                                                  transformerFactory,
-                                                  mapper,
-                                                  aggregatedDefinitions);
-        compositeBuilder.build(composite);
-
-    }
-
-    public ContributionService getContributionService() {
-        return contributionService;
-    }
-
-    public CompositeActivator getCompositeActivator() {
-        return compositeActivator;
-    }
-
-    public CompositeBuilder getCompositeBuilder() {
-        return compositeBuilder;
-    }
-
-    public AssemblyFactory getAssemblyFactory() {
-        return assemblyFactory;
+        
     }
 
     private void loadSCADefinitions() throws ActivationException {
@@ -381,13 +333,6 @@ public class RuntimeBootStrapper {
      */
     public ProxyFactory getProxyFactory() {
         return proxyFactory;
-    }
-
-    /**
-     * @return the registry
-     */
-    public ExtensionPointRegistry getExtensionPointRegistry() {
-        return registry;
     }
 
 }

@@ -92,6 +92,13 @@ public interface Contribution extends Artifact {
     void setModelResolver(ModelResolver modelResolver);
     
     /**
+     * Returns the list of contributions that this contribution depends on.
+     * 
+     * @return
+     */
+    List<Contribution> getDependencies();
+    
+    /**
      * Returns the ClassLoader used to load classes and resources from
      * this contribution
      * 

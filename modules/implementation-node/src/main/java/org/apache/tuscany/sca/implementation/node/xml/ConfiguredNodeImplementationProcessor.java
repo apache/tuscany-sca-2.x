@@ -33,13 +33,13 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -63,7 +63,7 @@ public class ConfiguredNodeImplementationProcessor extends BaseStAXArtifactProce
     private AssemblyFactory assemblyFactory;
     private NodeImplementationFactory implementationFactory;
     
-    public ConfiguredNodeImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ConfiguredNodeImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.implementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);

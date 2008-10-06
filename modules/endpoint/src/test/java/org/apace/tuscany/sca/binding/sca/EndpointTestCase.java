@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -47,6 +46,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -71,7 +71,7 @@ public class EndpointTestCase {
 	
     private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
-    private static ModelFactoryExtensionPoint modelFactories;
+    private static FactoryExtensionPoint modelFactories;
     private static AssemblyFactory assemblyFactory;
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
@@ -79,6 +79,7 @@ public class EndpointTestCase {
     private static ModelResolver modelResolver;
     private static CompositeActivator compositeActivator;
     private static ExtensionPointRegistry extensionPoints;
+    private static Monitor monitor;
 
     @BeforeClass
     public static void init() {
@@ -89,9 +90,9 @@ public class EndpointTestCase {
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();        
+        monitor = monitorFactory.createMonitor();        
         
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
                 
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
@@ -124,7 +125,7 @@ public class EndpointTestCase {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper);
         
         // Runtime Init ===================
 /*        
@@ -186,7 +187,7 @@ public class EndpointTestCase {
             
             Composite composite = contribution.getDeployables().get(0);
             
-            compositeBuilder.build(composite);
+            compositeBuilder.build(composite, null, monitor);
             
             ComponentReference ref = (composite.getComponents().get(0).getReferences().get(0));
             

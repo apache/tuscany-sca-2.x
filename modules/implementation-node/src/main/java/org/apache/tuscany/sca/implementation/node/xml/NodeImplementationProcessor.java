@@ -28,13 +28,13 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -51,7 +51,7 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
     private AssemblyFactory assemblyFactory;
     private NodeImplementationFactory implementationFactory;
     
-    public NodeImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public NodeImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.implementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
     }

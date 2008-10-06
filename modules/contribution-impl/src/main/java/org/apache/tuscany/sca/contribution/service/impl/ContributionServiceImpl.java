@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -54,6 +53,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -107,7 +107,7 @@ public class ContributionServiceImpl implements ContributionService {
      * Model factory extension point
      */
 
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
 
     /**
      * XML factory used to create reader instance to load contribution metadata
@@ -140,7 +140,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    ExtensibleContributionListener contributionListener,
                                    ModelResolver policyDefinitionsResolver,
                                    ModelResolverExtensionPoint modelResolvers,
-                                   ModelFactoryExtensionPoint modelFactories,
+                                   FactoryExtensionPoint modelFactories,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory,

@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that handles the configuration of composite references.
@@ -44,7 +46,11 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
         this.assemblyFactory = assemblyFactory;
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.CompositeReferenceConfigurationBuilder";
+    }
+
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeReferences(composite);

@@ -27,8 +27,8 @@ import java.util.Vector;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -50,7 +50,7 @@ public class WSDLInterfaceIntrospectorImpl {
     private XSDFactory xsdFactory;
     private PolicyFactory policyFactory;
     
-    public WSDLInterfaceIntrospectorImpl(ModelFactoryExtensionPoint modelFactories) {
+    public WSDLInterfaceIntrospectorImpl(FactoryExtensionPoint modelFactories) {
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);;
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);;
     }

@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.policy.jsr250;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.policy.jsr250.introspect.impl.JSR250PolicyProcesso
 public class JSR250Activator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         

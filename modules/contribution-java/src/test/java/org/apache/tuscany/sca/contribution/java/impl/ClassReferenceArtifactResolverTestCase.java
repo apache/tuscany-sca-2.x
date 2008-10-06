@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * Test ClassReferenceArtifactResolver.
@@ -42,7 +42,7 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
         
         ModelResolverExtensionPoint resolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         resolvers.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         resolver = new ExtensibleModelResolver(null, resolvers, modelFactories);
     }
     

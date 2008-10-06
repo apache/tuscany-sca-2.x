@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.core.databinding.module;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
@@ -81,7 +81,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         transformers.addTransformer(new CallableReference2XMLStreamReader(), true);
         transformers.addTransformer(new XMLStreamReader2CallableReference(), false);
 
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
 
         // [rfeng] The JAX-WS processor should come before the Databinding processor to make sure @WebService

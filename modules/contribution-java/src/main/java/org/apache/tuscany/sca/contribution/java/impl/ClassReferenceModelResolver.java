@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -44,7 +44,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     private ModelResolver osgiResolver;
 
-    public ClassReferenceModelResolver(final Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ClassReferenceModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         if (this.contribution != null) {
             // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.
@@ -84,7 +84,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
                 Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiClassReferenceModelResolver");
             if (osgiResolverClass != null) {
                 Constructor constructor =
-                    osgiResolverClass.getConstructor(Contribution.class, ModelFactoryExtensionPoint.class);
+                    osgiResolverClass.getConstructor(Contribution.class, FactoryExtensionPoint.class);
                 this.osgiResolver = (ModelResolver)constructor.newInstance(contribution, modelFactories);
             }
         } catch (Throwable e) {

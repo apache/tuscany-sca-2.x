@@ -24,10 +24,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 public class GDataImplementationProcessor implements StAXArtifactProcessor<GDataBinding> {
@@ -35,7 +35,7 @@ public class GDataImplementationProcessor implements StAXArtifactProcessor<GData
     private GDataBindingFactory gdataFactory;
     protected static final QName BINDING_GDATA = new QName(Constants.SCA10_TUSCANY_NS, "binding.gdata");
 
-    public GDataImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public GDataImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
 
         this.gdataFactory = (GDataBindingFactory) modelFactories.getFactory(GDataBindingFactory.class);
     }

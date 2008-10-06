@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A Model Resolver for ConstrainingType models.
@@ -41,7 +41,7 @@ public class ConstrainingTypeModelResolver implements ModelResolver {
     private Contribution contribution;
     private Map<QName, ConstrainingType> map = new HashMap<QName, ConstrainingType>();
     
-    public ConstrainingTypeModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ConstrainingTypeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
     }
 

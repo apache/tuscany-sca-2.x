@@ -27,13 +27,13 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -52,7 +52,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     private JavaInterfaceFactory javaFactory;
     private Monitor monitor;
 
-    public JavaInterfaceProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JavaInterfaceProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         this.monitor = monitor;
     }

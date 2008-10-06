@@ -29,13 +29,13 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportAllModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionListener;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * Java Import/Export contribution listener
@@ -51,7 +51,7 @@ public class JavaImportExportListener implements ContributionListener {
     /**
      * Constructs a new JavaImportExportListener
      */
-    public JavaImportExportListener(ModelFactoryExtensionPoint modelFactories) {
+    public JavaImportExportListener(FactoryExtensionPoint modelFactories) {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     

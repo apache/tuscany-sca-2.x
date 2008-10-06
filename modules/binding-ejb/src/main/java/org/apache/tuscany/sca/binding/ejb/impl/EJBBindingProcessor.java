@@ -26,12 +26,12 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -62,7 +62,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
     private PolicyAttachPointProcessor policyProcessor;
     private Monitor monitor;
 
-    public EJBBindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public EJBBindingProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.monitor = monitor;

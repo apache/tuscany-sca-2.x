@@ -37,12 +37,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -88,7 +88,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     private WSDLFactory WSDLfactory;
     private Monitor monitor;
 
-    public BPELDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public BPELDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory     = modelFactories.getFactory(BPELFactory.class);
         this.WSDLfactory = modelFactories.getFactory(WSDLFactory.class);
         this.monitor = monitor;

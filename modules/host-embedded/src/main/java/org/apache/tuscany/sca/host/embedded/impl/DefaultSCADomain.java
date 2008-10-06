@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.node.impl.NodeUtil;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
@@ -117,7 +118,7 @@ public class DefaultSCADomain extends SCADomain {
                 if (url == null) {
                     continue;
                 }
-                String location = NodeImpl.getContributionURL(url, composites[i]).toString();
+                String location = NodeUtil.getContributionURL(url, composites[i]).toString();
                 if (!contributionURLs.contains(location)) {
                     contributionURLs.add(location);
                 }

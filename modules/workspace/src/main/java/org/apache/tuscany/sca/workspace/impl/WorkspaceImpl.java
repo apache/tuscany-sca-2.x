@@ -44,6 +44,7 @@ class WorkspaceImpl implements Workspace {
     private byte[] contents;
     private boolean unresolved;
     private ModelResolver modelResolver; 
+    private List<Contribution> dependencies = new ArrayList<Contribution>();
     
     /**
      * Constructs a new workspace. 
@@ -97,6 +98,10 @@ class WorkspaceImpl implements Workspace {
     
     public List<Artifact> getArtifacts() {
         return (List<Artifact>)(Object)contributions;
+    }
+    
+    public List<Contribution> getDependencies() {
+        return dependencies;
     }
 
     public ClassLoader getClassLoader() {

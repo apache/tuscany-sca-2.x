@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
@@ -40,13 +40,13 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
     
     private List<ContributionListener> listeners = new CopyOnWriteArrayList<ContributionListener>();
     private boolean loadedListeners;
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     
     /**
      * Constructs a new DefaultContributionListenerExtensionPoint.
      *  
      */
-    public DefaultContributionListenerExtensionPoint(ModelFactoryExtensionPoint modelFactories) {
+    public DefaultContributionListenerExtensionPoint(FactoryExtensionPoint modelFactories) {
         this.modelFactories = modelFactories;
     }
 
@@ -55,7 +55,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
      *  
      */
     public DefaultContributionListenerExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
     }
 
     public void addContributionListener(ContributionListener listener) {
@@ -93,7 +93,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
             try {
                 Class<ContributionListener> listenerClass = (Class<ContributionListener>)listenerDeclaration.loadClass();
                 try {
-                    Constructor<ContributionListener> constructor = listenerClass.getConstructor(ModelFactoryExtensionPoint.class);
+                    Constructor<ContributionListener> constructor = listenerClass.getConstructor(FactoryExtensionPoint.class);
                     try {
                         listener = constructor.newInstance(modelFactories);
                     } catch (InvocationTargetException e) {

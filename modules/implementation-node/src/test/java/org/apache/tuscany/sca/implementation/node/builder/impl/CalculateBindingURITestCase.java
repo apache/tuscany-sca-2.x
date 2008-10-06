@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingConfigurationBuilderImpl;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.impl.NodeImplementationFactoryImpl;
@@ -52,7 +53,8 @@ public class CalculateBindingURITestCase extends TestCase {
     private SCABindingFactory scaBindingFactory;
     private NodeImplementationFactory nodeImplementationFactory;
     private Monitor monitor;
-    private CompositeBuilder configurationBuilder;
+    private CompositeBuilder bindingConfigurationBuilder;
+    private CompositeBuilder nodeConfigurationBuilder;
     private List<Binding> defaultBindings = new ArrayList<Binding>();
     
     @Override
@@ -60,7 +62,8 @@ public class CalculateBindingURITestCase extends TestCase {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestBindingFactory();
         nodeImplementationFactory = new NodeImplementationFactoryImpl();
-        configurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, null, monitor);
+        bindingConfigurationBuilder = new CompositeBindingConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, null);
+        nodeConfigurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, bindingConfigurationBuilder);
         Binding defaultBinding = new TestBindingImpl();
         defaultBinding.setURI("http://myhost:8080/root");
         defaultBindings.add(defaultBinding);
@@ -238,7 +241,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1", b.getURI());
         } catch(Exception ex){
@@ -252,7 +255,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/s1", b.getURI());
         } catch(Exception ex){
@@ -267,7 +270,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setName("n");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/n", b.getURI());
         } catch(Exception ex){
@@ -283,7 +286,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/b", b.getURI());
         } catch(Exception ex){
@@ -299,7 +302,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("http://myhost:8080/b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
         } catch(Exception ex){
@@ -315,7 +318,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("../../b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
         } catch(Exception ex){
@@ -332,7 +335,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = composite.getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root", b.getURI());
         } catch(Exception ex){
@@ -346,7 +349,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = composite.getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/s1", b.getURI());
         } catch(Exception ex){
@@ -361,7 +364,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setName("n");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/n", b.getURI());
         } catch(Exception ex){
@@ -377,7 +380,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/b", b.getURI());
         } catch(Exception ex){
@@ -393,7 +396,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("http://myhost:8080/b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
         } catch(Exception ex){
@@ -410,7 +413,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2", b.getURI());
         } catch(Exception ex){
@@ -424,7 +427,7 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/s1", b.getURI());
         } catch(Exception ex){
@@ -439,7 +442,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setName("n");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/n", b.getURI());
         } catch(Exception ex){
@@ -455,7 +458,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/b", b.getURI());
         } catch(Exception ex){
@@ -471,7 +474,7 @@ public class CalculateBindingURITestCase extends TestCase {
         b.setURI("http://myhost:8080/b");
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
         } catch(Exception ex){
@@ -493,7 +496,7 @@ public class CalculateBindingURITestCase extends TestCase {
         
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
             fail();
         } catch(Exception ex){
             //System.out.println(ex.toString());
@@ -514,7 +517,7 @@ public class CalculateBindingURITestCase extends TestCase {
         
         
         try {
-            configurationBuilder.build(nodeComposite(composite));
+            nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
             fail();
         } catch(Exception ex){
             System.out.println(ex.toString());

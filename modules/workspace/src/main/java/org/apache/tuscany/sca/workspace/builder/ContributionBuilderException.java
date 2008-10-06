@@ -19,24 +19,27 @@
 
 package org.apache.tuscany.sca.workspace.builder;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.workspace.Workspace;
-
 /**
- * A contribution dependency builder.
+ * Reports a contribution builder exception.
  *
  * @version $Rev$ $Date$
  */
-public interface ContributionDependencyBuilder {
+public class ContributionBuilderException extends Exception {
+    private static final long serialVersionUID = -1198817287971778953L;
 
-    /**
-     * Build the set of contributions that a contribution depends on.
-     * @param workspace
-     * @param contribution
-     * @return
-     */
-    List<Contribution> buildContributionDependencies(Contribution contribution, Workspace workspace);
+    public ContributionBuilderException() {
+    }
+
+    public ContributionBuilderException(String message) {
+        super(message);
+    }
+
+    public ContributionBuilderException(Throwable cause) {
+        super(cause);
+    }
+
+    public ContributionBuilderException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

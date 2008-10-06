@@ -41,28 +41,28 @@ public class ComponentConfigurationBuilderImpl extends BaseConfigurationBuilderI
     @Deprecated
     public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
-                                             InterfaceContractMapper interfaceContractMapper,
-                                             SCADefinitions policyDefinitions,
-                                             Monitor monitor) {
+                                             InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, scaBindingFactory,
               null, null,
-              interfaceContractMapper, policyDefinitions, monitor);
+              interfaceContractMapper);
     }
 
     public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
                                              DocumentBuilderFactory documentBuilderFactory,
                                              TransformerFactory transformerFactory,
-                                             InterfaceContractMapper interfaceContractMapper,
-                                             SCADefinitions policyDefinitions,
-                                             Monitor monitor) {
+                                             InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, scaBindingFactory,
               documentBuilderFactory, transformerFactory,
-              interfaceContractMapper, policyDefinitions, monitor);
+              interfaceContractMapper);
+    }
+    
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder";
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        configureComponents(composite);
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        configureComponents(composite, definitions, monitor);
     }
     
 }

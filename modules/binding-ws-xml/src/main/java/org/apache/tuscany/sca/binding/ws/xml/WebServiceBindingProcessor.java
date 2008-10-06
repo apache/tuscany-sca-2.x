@@ -41,13 +41,13 @@ import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -80,7 +80,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     
     public WebServiceBindingProcessor(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsFactory = new DefaultWebServiceBindingFactory();
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);

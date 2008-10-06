@@ -34,7 +34,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.impl.BaseConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -46,17 +47,20 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class NodeCompositeBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
+public class NodeCompositeBuilderImpl implements CompositeBuilder {
+    
+    private CompositeBuilder bindingConfigurationBuilder;
+    
+    public NodeCompositeBuilderImpl(CompositeBuilderExtensionPoint compositeBuilders, FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
+        bindingConfigurationBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.assembly.builder.CompositeBindingConfigurationBuilder");
+    }
     
     @Deprecated
     public NodeCompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                     SCABindingFactory scaBindingFactory,
                                     InterfaceContractMapper interfaceContractMapper,
-                                    SCADefinitions policyDefinitions,
-                                    Monitor monitor) {
-        super(assemblyFactory, scaBindingFactory,
-              null, null,
-              interfaceContractMapper, policyDefinitions, monitor);
+                                    CompositeBuilder bindingConfigurationBuilder) {
+        this.bindingConfigurationBuilder = bindingConfigurationBuilder;
     }
 
     public NodeCompositeBuilderImpl(AssemblyFactory assemblyFactory,
@@ -64,24 +68,15 @@ public class NodeCompositeBuilderImpl extends BaseConfigurationBuilderImpl imple
                                                   DocumentBuilderFactory documentBuilderFactory,
                                                   TransformerFactory transformerFactory,
                                                   InterfaceContractMapper interfaceContractMapper,
-                                                  SCADefinitions policyDefinitions,
-                                                  Monitor monitor) {
-        super(assemblyFactory, scaBindingFactory,
-              documentBuilderFactory, transformerFactory,
-              interfaceContractMapper, policyDefinitions, monitor);
+                                                  CompositeBuilder bindingConfigurationBuilder) {
+        this.bindingConfigurationBuilder = bindingConfigurationBuilder;
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        configureNodeComponents(composite);
+    public String getID() {
+        return "org.apache.tuscany.sca.implementation.node.builder.NodeCompositeBuilder";
     }
 
-    /**
-     * Configure the node components in the given composite.
-     * 
-     * @param composite
-     * @throws CompositeBuilderException
-     */
-    private void configureNodeComponents(Composite composite) throws CompositeBuilderException {
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
         
         // Process each node component in the given composite
         for (Component component: composite.getComponents()) {
@@ -100,7 +95,9 @@ public class NodeCompositeBuilderImpl extends BaseConfigurationBuilderImpl imple
 
                 // Configure services in the application composite assigned to
                 // the node using the default bindings.
-                configureBindingURIs(applicationComposite, defaultBindings);
+                applicationComposite.getExtensions().add(defaultBindings);
+                bindingConfigurationBuilder.build(applicationComposite, definitions, monitor);
+                applicationComposite.getExtensions().remove(defaultBindings);
             }
         }
         

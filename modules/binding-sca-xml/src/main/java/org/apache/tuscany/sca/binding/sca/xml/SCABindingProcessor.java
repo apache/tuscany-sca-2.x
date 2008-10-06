@@ -30,12 +30,12 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -59,7 +59,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
 
-    public SCABindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public SCABindingProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         policyProcessor = new PolicyAttachPointProcessor(policyFactory);

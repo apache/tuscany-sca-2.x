@@ -32,12 +32,12 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -57,7 +57,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
     private WidgetImplementationFactory implementationFactory;
     private Monitor monitor;
     
-    public WidgetImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WidgetImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     	assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = new WidgetImplementationFactory(modelFactories); 

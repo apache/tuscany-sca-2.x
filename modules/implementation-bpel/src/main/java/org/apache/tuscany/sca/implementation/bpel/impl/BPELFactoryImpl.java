@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
  */
 public class BPELFactoryImpl implements BPELFactory {
     
-    public BPELFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
+    public BPELFactoryImpl(FactoryExtensionPoint modelFactories) {
     }
 
     public BPELImplementation createBPELImplementation() {

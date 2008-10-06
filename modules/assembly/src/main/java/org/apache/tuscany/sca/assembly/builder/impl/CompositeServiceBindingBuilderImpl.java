@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -37,23 +38,25 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositeServiceBindingBuilderImpl implements CompositeBuilder {
-    private Monitor monitor;
 
-    public CompositeServiceBindingBuilderImpl(Monitor monitor) {
-        this.monitor = monitor;
+    public CompositeServiceBindingBuilderImpl() {
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        buildServiceBindings(composite);
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.CompositeServiceBindingBuilder";
+    }
+
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        buildServiceBindings(composite, monitor);
     }
     
-    private void buildServiceBindings(Composite composite) {
+    private void buildServiceBindings(Composite composite, Monitor monitor) {
         
         // build bindings recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildServiceBindings((Composite)implementation);
+                buildServiceBindings((Composite)implementation, monitor);
             }
         }
 

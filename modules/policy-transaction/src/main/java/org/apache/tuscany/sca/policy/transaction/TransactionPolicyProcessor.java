@@ -26,12 +26,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -45,7 +45,7 @@ public class TransactionPolicyProcessor implements StAXArtifactProcessor<Transac
         return TransactionPolicy.NAME;
     }
 
-    public TransactionPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public TransactionPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     public TransactionPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

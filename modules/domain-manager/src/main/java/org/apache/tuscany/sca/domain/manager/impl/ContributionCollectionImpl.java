@@ -59,7 +59,6 @@ import org.apache.tuscany.sca.contribution.DefaultExport;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -67,6 +66,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
@@ -80,7 +80,9 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderException;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -120,6 +122,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private DocumentBuilder documentBuilder;
+    private ContributionBuilder contributionDependencyBuilder;
     
     /**
      * Cache workspace and contribution models. 
@@ -151,7 +154,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         monitor = monitorFactory.createMonitor();
         
         // Create model factories
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
@@ -169,6 +172,11 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
 
         // Create a document builder (used to pretty print XML)
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        
+        // Get contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder"); 
+        
     }
     
     public Entry<String, Item>[] getAll() {
@@ -182,7 +190,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
                 continue;
             }
-            entries.add(entry(workspace, contribution, monitor));
+            entries.add(entry(workspace, contribution, contributionDependencyBuilder, monitor));
         }
         return entries.toArray(new Entry[entries.size()]);
     }
@@ -194,7 +202,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         Workspace workspace = readContributions(readWorkspace());
         for (Contribution contribution: workspace.getContributions()) {
             if (key.equals(contribution.getURI())) {
-                return item(workspace, contribution, monitor);
+                return item(workspace, contribution, contributionDependencyBuilder, monitor);
             }
         }
         throw new NotFoundException(key);
@@ -282,8 +290,11 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                 if (key.equals(contribution.getURI())) {                
 
                     // Compute the contribution dependencies
-                    ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(monitor);
-                    List<Contribution> dependencies = analyzer.buildContributionDependencies(contribution, workspace);
+                    try {
+                        contributionDependencyBuilder.build(contribution, workspace, monitor);
+                    } catch (ContributionBuilderException e) {
+                    }
+                    List<Contribution> dependencies = contribution.getDependencies();
                     
                     // Returns entries for the dependencies
                     // optionally skip the specified contribution
@@ -293,7 +304,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                             // Skip the specified contribution
                             continue;
                         }
-                        entries.add(entry(workspace, dependency, monitor));
+                        entries.add(entry(workspace, dependency, contributionDependencyBuilder, monitor));
                     }
                     break;
                 }
@@ -363,7 +374,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                     Contribution contribution = contributionFactory.createContribution();
                     contribution.setURI(uri);
                     contribution.setLocation(locationPath);
-                    entries.add(entry(suggestionWorkspace, contribution, monitor));
+                    entries.add(entry(suggestionWorkspace, contribution, contributionDependencyBuilder, monitor));
                 }
             }
             
@@ -379,10 +390,11 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      * @param contribution
      * @return
      */
-    private static Entry<String, Item> entry(Workspace workspace, Contribution contribution, Monitor monitor) {
+    private static Entry<String, Item> entry(Workspace workspace, Contribution contribution,
+                                             ContributionBuilder contributionDependencyBuilder, Monitor monitor) {
         Entry<String, Item> entry = new Entry<String, Item>();
         entry.setKey(contribution.getURI());
-        entry.setData(item(workspace, contribution, monitor));
+        entry.setData(item(workspace, contribution, contributionDependencyBuilder, monitor));
         return entry;
     }
     
@@ -394,7 +406,8 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      * @param monitor
      * @return
      */
-    private static Item item(Workspace workspace, Contribution contribution, final Monitor monitor) {
+    private static Item item(Workspace workspace, Contribution contribution,
+                             ContributionBuilder contributionDependencyBuilder, final Monitor monitor) {
         String contributionURI = contribution.getURI();
         Item item = new Item();
         item.setTitle(title(contributionURI));
@@ -427,8 +440,11 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         };
         
         StringBuffer sb = new StringBuffer();
-        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(recordingMonitor);
-        List<Contribution> dependencies = analyzer.buildContributionDependencies(contribution, workspace);
+        try {
+            contributionDependencyBuilder.build(contribution, workspace, recordingMonitor);
+        } catch (ContributionBuilderException e) {
+        }
+        List<Contribution> dependencies = contribution.getDependencies();
         if (dependencies.size() > 1) {
             sb.append("Dependencies: <span id=\"dependencies\">");
             for (int i = 0, n = dependencies.size(); i < n ; i++) {

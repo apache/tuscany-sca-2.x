@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A test implementation of a model resolver, based on a map.
@@ -34,7 +34,7 @@ public class TestModelResolver implements ModelResolver {
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
-    public TestModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public TestModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {

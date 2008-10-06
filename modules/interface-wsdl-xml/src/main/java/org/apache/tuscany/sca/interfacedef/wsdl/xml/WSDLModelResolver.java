@@ -52,11 +52,11 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
@@ -111,7 +111,7 @@ public class WSDLModelResolver implements ModelResolver {
     private ContributionFactory contributionFactory;
     private XSDFactory xsdFactory;
 
-    public WSDLModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public WSDLModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
 
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);

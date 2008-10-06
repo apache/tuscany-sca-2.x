@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.contribution.DefaultExport;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -48,6 +47,7 @@ import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
@@ -61,13 +61,13 @@ import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 public class ContributionInfoProcessor implements URLArtifactProcessor<Contribution>{
     private ContributionFactory contributionFactory;
     private ModelResolverExtensionPoint modelResolvers;
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private URLArtifactProcessorExtensionPoint artifactProcessors;
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
 
     public ContributionInfoProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
-        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         hackResolvers(modelResolvers);
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
@@ -77,7 +77,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
-    public ContributionInfoProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
+    public ContributionInfoProcessor(FactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
         hackResolvers(modelResolvers);

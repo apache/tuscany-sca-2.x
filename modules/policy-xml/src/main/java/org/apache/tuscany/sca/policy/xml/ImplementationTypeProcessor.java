@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.policy.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -44,7 +44,7 @@ public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor 
         super(policyFactory, intentAttachPointTypeFactory, extensionProcessor, monitor);
     }
 
-    public ImplementationTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ImplementationTypeProcessor(FactoryExtensionPoint modelFactories, 
     								   StAXArtifactProcessor<Object> extensionProcessor,
     								   Monitor monitor) {
         super(modelFactories.getFactory(PolicyFactory.class),

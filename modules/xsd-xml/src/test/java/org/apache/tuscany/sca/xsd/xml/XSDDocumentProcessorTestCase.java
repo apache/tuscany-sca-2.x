@@ -26,13 +26,13 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
@@ -55,7 +55,7 @@ public class XSDDocumentProcessorTestCase {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         resolver = new XSDModelResolver(null, modelFactories);
     }
 

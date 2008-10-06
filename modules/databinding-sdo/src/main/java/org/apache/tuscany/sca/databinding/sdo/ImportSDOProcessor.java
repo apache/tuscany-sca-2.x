@@ -35,13 +35,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -62,7 +62,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     private ContributionFactory contributionFactory;
     private Monitor monitor;
 
-    public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ImportSDOProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.monitor = monitor;
     }

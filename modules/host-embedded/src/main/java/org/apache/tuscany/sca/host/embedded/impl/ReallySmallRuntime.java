@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
@@ -45,6 +44,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -115,7 +115,7 @@ public class ReallySmallRuntime {
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
         // Get factory extension point
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         
         // Get Message factory
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
@@ -214,7 +214,7 @@ public class ReallySmallRuntime {
     
     public void buildComposite(Composite composite) throws CompositeBuilderException {
         //Get factory extension point
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
         EndpointFactory endpointFactory = factories.getFactory(EndpointFactory.class);        

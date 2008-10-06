@@ -28,13 +28,13 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -55,7 +55,7 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
     private EJBImplementationFactory implementationFactory;
     private Monitor monitor;
     
-    public EJBImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public EJBImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.implementationFactory = modelFactories.getFactory(EJBImplementationFactory.class);
         this.monitor = monitor;

@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -74,7 +74,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         ServletHost servletHost = servletHosts.getServletHosts().get(0);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
 
         this.component = component;

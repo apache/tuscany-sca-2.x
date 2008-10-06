@@ -33,11 +33,11 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * Test writing SCA XML assemblies.
@@ -52,7 +52,7 @@ public class WriteNamespacesTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         //outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);

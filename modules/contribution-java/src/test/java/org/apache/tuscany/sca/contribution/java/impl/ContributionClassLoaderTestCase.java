@@ -28,12 +28,12 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class ContributionClassLoaderTestCase  {
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         javaImportExportFactory = modelFactories.getFactory(JavaImportExportFactory.class);
     }

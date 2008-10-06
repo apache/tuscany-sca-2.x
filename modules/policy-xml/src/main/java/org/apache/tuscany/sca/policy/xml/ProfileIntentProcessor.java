@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
@@ -35,7 +35,7 @@ public class ProfileIntentProcessor extends PolicyIntentProcessor<ProfileIntent>
         super(policyFactory, monitor);
     }
     
-    public ProfileIntentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ProfileIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         super(modelFactories, monitor);
     }
 

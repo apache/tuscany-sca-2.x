@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * An implementation of an extensible model resolver which delegates to the
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
  */
 public class ExtensibleModelResolver implements ModelResolver {
     private final ModelResolverExtensionPoint resolverExtensions;
-    private final ModelFactoryExtensionPoint modelFactories;
+    private final FactoryExtensionPoint modelFactories;
     private final Contribution contribution;
     private ModelResolver defaultResolver;
     private final Map<Class<?>, ModelResolver> resolversByModelType = new HashMap<Class<?>, ModelResolver>();
@@ -54,7 +54,7 @@ public class ExtensibleModelResolver implements ModelResolver {
     @Deprecated
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolverExtensions,
-                                   ModelFactoryExtensionPoint modelFactories,
+                                   FactoryExtensionPoint modelFactories,
                                    ModelResolver defaultResolver) {
         this.contribution = contribution;
         this.resolverExtensions = resolverExtensions;
@@ -74,7 +74,7 @@ public class ExtensibleModelResolver implements ModelResolver {
      */
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolverExtensions,
-                                   ModelFactoryExtensionPoint modelFactories) {
+                                   FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.resolverExtensions = resolverExtensions;
         this.modelFactories = modelFactories;
@@ -118,7 +118,7 @@ public class ExtensibleModelResolver implements ModelResolver {
                 try {
                     Constructor<? extends ModelResolver> constructor =
                         resolverClass
-                            .getConstructor(new Class[] {Contribution.class, ModelFactoryExtensionPoint.class});
+                            .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class});
                     if (constructor != null) {
 
                         resolverInstance = constructor.newInstance(contribution, modelFactories);

@@ -33,8 +33,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -146,8 +146,8 @@ public class TestNode  {
             composite.getComponents().add(component);
             RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
             reference.setName("default");
-            ModelFactoryExtensionPoint factories =
-                nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+            FactoryExtensionPoint factories =
+                nodeRuntime.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class);
             JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
             InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
             interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));

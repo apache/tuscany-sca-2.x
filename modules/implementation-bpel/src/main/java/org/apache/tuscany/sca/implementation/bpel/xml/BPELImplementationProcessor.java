@@ -38,13 +38,13 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
@@ -77,7 +77,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     private WSDLFactory wsdlFactory;
     private Monitor monitor;
     
-    public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public BPELImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.bpelFactory = modelFactories.getFactory(BPELFactory.class);

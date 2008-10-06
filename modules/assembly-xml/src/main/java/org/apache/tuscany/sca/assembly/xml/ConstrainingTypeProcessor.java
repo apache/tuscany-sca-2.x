@@ -33,12 +33,12 @@ import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
@@ -70,7 +70,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
      * @param modelFactories
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ConstrainingTypeProcessor(FactoryExtensionPoint modelFactories, 
     								 StAXArtifactProcessor extensionProcessor,
     								 Monitor monitor) {
         super(modelFactories.getFactory(AssemblyFactory.class),

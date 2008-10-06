@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -36,17 +37,19 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
-    private Monitor monitor;
 
-    public ComponentReferenceBindingBuilderImpl(Monitor monitor) {
-        this.monitor = monitor;
+    public ComponentReferenceBindingBuilderImpl() {
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
-        buildReferenceBindings(composite);
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        buildReferenceBindings(composite, monitor);
     }
     
-    private void buildReferenceBindings(Composite composite) {
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceBindingBuilder";
+    }
+
+    private void buildReferenceBindings(Composite composite, Monitor monitor) {
     
         // find all the component reference bindings (starting at top level)     
         for (Component component : composite.getComponents()) {
@@ -63,7 +66,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildReferenceBindings((Composite)implementation);
+                buildReferenceBindings((Composite)implementation, monitor);
             }
         }
     }

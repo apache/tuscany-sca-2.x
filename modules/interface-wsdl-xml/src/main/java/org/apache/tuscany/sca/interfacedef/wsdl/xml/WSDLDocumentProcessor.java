@@ -33,11 +33,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -64,7 +64,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private XSDFactory xsdFactory;
     private Monitor monitor;
 
-    public WSDLDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WSDLDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(WSDLFactory.class);
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.monitor = monitor;

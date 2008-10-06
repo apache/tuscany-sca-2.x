@@ -50,10 +50,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.data.collection.ItemCollection;
@@ -94,7 +94,7 @@ public class DeployedCompositeCollectionImpl implements ItemCollection, LocalIte
     @Reference
     public DomainManagerConfiguration domainManagerConfiguration;
     
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
@@ -118,7 +118,7 @@ public class DeployedCompositeCollectionImpl implements ItemCollection, LocalIte
         
         // Create factories
         ExtensionPointRegistry extensionPoints = domainManagerConfiguration.getExtensionPoints();
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);

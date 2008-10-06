@@ -30,12 +30,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -54,7 +54,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<StAXAttributeProcessor> implements StAXAttributeProcessorExtensionPoint {
 
     private ExtensionPointRegistry extensionPoints;
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private StAXAttributeProcessor<Object> extensibleStAXAttributeProcessor;
     private boolean loaded;
     private Monitor monitor = null;
@@ -64,7 +64,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
      */
     public DefaultStAXAttributeProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
-        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         UtilityExtensionPoint utilities = this.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -208,7 +208,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                                   String factoryName,
                                   ServiceDeclaration processorDeclaration,
                                   ExtensionPointRegistry extensionPoints,
-                                  ModelFactoryExtensionPoint modelFactories,
+                                  FactoryExtensionPoint modelFactories,
                                   StAXAttributeProcessor<Object> extensionProcessor,
                                   Monitor monitor) {
 
@@ -235,7 +235,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
         @SuppressWarnings("unchecked")
         private StAXAttributeProcessor getProcessor() {
             if (processor == null) {
-                ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+                FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
 
                 // Load and instantiate the processor class
                 try {
@@ -243,7 +243,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                         (Class<StAXAttributeProcessor>)processorDeclaration.loadClass();
                     try {
                         Constructor<StAXAttributeProcessor> constructor =
-                            processorClass.getConstructor(ModelFactoryExtensionPoint.class, Monitor.class);
+                            processorClass.getConstructor(FactoryExtensionPoint.class, Monitor.class);
                         processor = constructor.newInstance(modelFactories, monitor);
                     } catch (NoSuchMethodException e) {
                       try {
@@ -253,7 +253,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                       } catch (NoSuchMethodException e1) {
                         try {
                             Constructor<StAXAttributeProcessor> constructor =
-                                processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class, Monitor.class);
+                                processorClass.getConstructor(FactoryExtensionPoint.class, StAXArtifactProcessor.class, Monitor.class);
                             processor = constructor.newInstance(modelFactories, extensionProcessor, monitor);
                         } catch (NoSuchMethodException e2) {
                             try {
@@ -263,7 +263,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                             } catch (NoSuchMethodException e3) {
                                 try {
                                     Constructor<StAXAttributeProcessor> constructor =
-                                        processorClass.getConstructor(ModelFactoryExtensionPoint.class);
+                                        processorClass.getConstructor(FactoryExtensionPoint.class);
                                     processor = constructor.newInstance(modelFactories);
                                 } catch (NoSuchMethodException e4) {
                                   try {
@@ -273,7 +273,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                                   } catch (NoSuchMethodException e4a) {
                                     try {
                                         Constructor<StAXAttributeProcessor> constructor =
-                                            processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class);
+                                            processorClass.getConstructor(FactoryExtensionPoint.class, StAXArtifactProcessor.class);
                                         processor = constructor.newInstance(modelFactories, extensionProcessor);
                                     } catch (NoSuchMethodException e5) {
                                         Constructor<StAXAttributeProcessor> constructor =

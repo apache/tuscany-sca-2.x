@@ -34,13 +34,13 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -88,7 +88,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     	 }
      }
      
-    public ContributionMetadataProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ContributionMetadataProcessor(FactoryExtensionPoint modelFactories, 
     									 StAXArtifactProcessor<Object> extensionProcessor,
     									 Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);

@@ -30,13 +30,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -65,7 +65,7 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
      * @param modelFactories
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ConstrainingTypeDocumentProcessor(FactoryExtensionPoint modelFactories, 
     										 StAXArtifactProcessor staxProcessor,
     										 Monitor monitor) {
         super(null, null, staxProcessor, monitor);

@@ -57,7 +57,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -66,6 +65,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -117,7 +117,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param extensionProcessor
      * @param monitor
      */
-    private CompositeProcessor(ModelFactoryExtensionPoint modelFactories,
+    private CompositeProcessor(FactoryExtensionPoint modelFactories,
              StAXArtifactProcessor extensionProcessor,
              StAXAttributeProcessor extensionAttributeProcessor,
              Monitor monitor) {
@@ -1195,8 +1195,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param extensionPoints
      * @return
      */
-    private static ModelFactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
-        return extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+    private static FactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
+        return extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
     }
     
     /**

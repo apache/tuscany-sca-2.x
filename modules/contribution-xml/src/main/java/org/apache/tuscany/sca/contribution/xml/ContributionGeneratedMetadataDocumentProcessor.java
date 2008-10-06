@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.contribution.xml;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -37,7 +37,7 @@ public class ContributionGeneratedMetadataDocumentProcessor extends Contribution
         super(inputFactory, staxProcessor, monitor);
     }
     
-    public ContributionGeneratedMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ContributionGeneratedMetadataDocumentProcessor(FactoryExtensionPoint modelFactories, 
     													  StAXArtifactProcessor staxProcessor,
     													  Monitor monitor) {
         super(modelFactories, staxProcessor, monitor);

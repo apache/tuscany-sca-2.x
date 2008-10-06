@@ -31,13 +31,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A componentType processor.
@@ -65,7 +65,7 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
      * @param modelFactories
      * @param staxProcessor
      */
-    public ComponentTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ComponentTypeDocumentProcessor(FactoryExtensionPoint modelFactories, 
     									  StAXArtifactProcessor staxProcessor,
     									  Monitor monitor) {
         super(null, null, staxProcessor, monitor);

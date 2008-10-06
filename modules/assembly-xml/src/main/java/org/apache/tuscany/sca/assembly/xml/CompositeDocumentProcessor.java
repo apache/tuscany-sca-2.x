@@ -37,13 +37,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -97,7 +97,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param modelFactories
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public CompositeDocumentProcessor(FactoryExtensionPoint modelFactories, 
     								  StAXArtifactProcessor staxProcessor, Monitor monitor) {
         super(null, null, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);

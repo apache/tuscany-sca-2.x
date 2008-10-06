@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles the configuration of reference endpoints
@@ -34,7 +35,8 @@ public interface EndpointBuilder {
      * Build an endpoint.
      * 
      * @param endpoint
+     * @param monitor
      */
-    void build(Endpoint endpoint);
+    void build(Endpoint endpoint, Monitor monitor);
     
 }

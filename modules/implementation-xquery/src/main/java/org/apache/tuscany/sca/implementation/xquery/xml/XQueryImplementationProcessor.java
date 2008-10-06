@@ -29,12 +29,12 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -59,7 +59,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     private ContributionFactory contributionFactory;
     private Monitor monitor;
 
-    public XQueryImplementationProcessor(ModelFactoryExtensionPoint modelFactoryExtensionPoint, Monitor monitor) {
+    public XQueryImplementationProcessor(FactoryExtensionPoint modelFactoryExtensionPoint, Monitor monitor) {
         assemblyFactory = modelFactoryExtensionPoint.getFactory(AssemblyFactory.class);
         javaFactory = modelFactoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
         contributionFactory = modelFactoryExtensionPoint.getFactory(ContributionFactory.class);

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.implementation.widget;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
@@ -33,7 +33,7 @@ public class WidgetImplementationFactory {
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     
-    public WidgetImplementationFactory(ModelFactoryExtensionPoint modelFactories) {
+    public WidgetImplementationFactory(FactoryExtensionPoint modelFactories) {
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }

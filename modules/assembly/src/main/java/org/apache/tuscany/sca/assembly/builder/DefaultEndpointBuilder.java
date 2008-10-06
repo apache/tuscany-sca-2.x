@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class DefaultEndpointBuilder extends EndpointBuilderImpl {
-    public DefaultEndpointBuilder (Monitor monitor){
-        super(monitor);
+    public DefaultEndpointBuilder (){
+        super();
     }
 }

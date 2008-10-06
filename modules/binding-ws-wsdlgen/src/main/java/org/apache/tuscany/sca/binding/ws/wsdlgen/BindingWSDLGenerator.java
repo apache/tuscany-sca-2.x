@@ -33,10 +33,10 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -185,7 +185,7 @@ public class BindingWSDLGenerator {
                                            WebServiceBinding wsBinding,
                                            ExtensionPointRegistry extensionPoints,
                                            Monitor monitor) {
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);

@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.host.embedded.test.extension.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.embedded.test.extension.DefaultTestImplementationFactory;
 import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementationFactory;
@@ -43,7 +43,7 @@ public class TestModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
 
         // Create the test  implementation factory
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         TestImplementationFactory testFactory = new DefaultTestImplementationFactory(assemblyFactory, javaFactory);

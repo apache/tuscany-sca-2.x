@@ -33,11 +33,11 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
@@ -67,14 +67,14 @@ public class SCABindingTestCase {
         
         resolver = new CompositeModelResolver(null, null);
         
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper);
         
     }
     
@@ -98,7 +98,7 @@ public class SCABindingTestCase {
 	       
 	        staxProcessor.resolve(composite, resolver);
 	        
-	        compositeBuilder.build(composite);
+	        compositeBuilder.build(composite, null, null);
 	        
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
 	        SCABinding serviceSCABinding   = (SCABinding) composite.getComponents().get(1).getServices().get(0).getBindings().get(0);

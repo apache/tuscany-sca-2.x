@@ -31,12 +31,12 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -61,13 +61,13 @@ public class ReadTestCase extends TestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper);
     }
 
     public void testReadComposite() throws Exception {
@@ -76,7 +76,7 @@ public class ReadTestCase extends TestCase {
         Composite composite = (Composite) staxProcessor.read(reader);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite);
+        compositeBuilder.build(composite, null, null);
         
         assertTrue(((EJBImplementation) composite.getComponents().get(0).getImplementation()).getEJBLink().equals("module.jar#TestEJB"));
     }

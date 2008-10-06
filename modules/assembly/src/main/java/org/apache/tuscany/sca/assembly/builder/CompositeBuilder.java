@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles the configuration of the components inside a
@@ -28,13 +30,22 @@ import org.apache.tuscany.sca.assembly.Composite;
  * @version $Rev$ $Date$
  */
 public interface CompositeBuilder {
+
+    /**
+     * Returns the ID of the builder.
+     * 
+     * @return
+     */
+    String getID();
     
     /**
      * Build a composite.
      * 
      * @param composite
+     * @param definitions
+     * @param monitor
      * @throws CompositeBuilderException
      */
-    void build(Composite composite) throws CompositeBuilderException;
+    void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException;
     
 }

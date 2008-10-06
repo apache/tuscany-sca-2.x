@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that handles the creation of promoted services.
@@ -41,7 +43,11 @@ public class ComponentServicePromotionBuilderImpl implements CompositeBuilder {
         this.assemblyFactory = assemblyFactory;
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.ComponentServicePromotionBuilder";
+    }
+
+    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeServices(composite);

@@ -29,12 +29,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -58,7 +58,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         this.monitor = monitor;
     }
     
-    public ContributionMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories, 
     											 StAXArtifactProcessor staxProcessor,
     											 Monitor monitor) {
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);

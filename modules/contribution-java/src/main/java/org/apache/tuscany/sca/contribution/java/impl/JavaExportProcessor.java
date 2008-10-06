@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -35,6 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -54,7 +54,7 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     private final JavaImportExportFactory factory;
     private final Monitor monitor;
     
-    public JavaExportProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JavaExportProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         super();
         this.factory = modelFactories.getFactory(JavaImportExportFactory.class);
         this.monitor = monitor;

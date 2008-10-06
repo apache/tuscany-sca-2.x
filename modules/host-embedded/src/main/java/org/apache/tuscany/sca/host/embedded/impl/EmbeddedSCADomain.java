@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
@@ -154,8 +154,8 @@ public class EmbeddedSCADomain extends SCADomain {
             composite.getComponents().add(component);
             RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
             reference.setName("default");
-            ModelFactoryExtensionPoint factories =
-                runtime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+            FactoryExtensionPoint factories =
+                runtime.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class);
             JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
             InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
             interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));

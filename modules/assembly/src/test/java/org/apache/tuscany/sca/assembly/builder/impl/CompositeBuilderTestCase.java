@@ -68,7 +68,7 @@ public class CompositeBuilderTestCase extends TestCase {
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
         
-        new CompositeIncludeBuilderImpl(null).build(c);
+        new CompositeIncludeBuilderImpl().build(c, null, null);
         
         assertTrue(c.getComponents().get(0).getName().equals("a"));
         assertTrue(c.getComponents().get(1).getName().equals("b"));
@@ -110,7 +110,7 @@ public class CompositeBuilderTestCase extends TestCase {
         z.setImplementation(c1);
         c.getComponents().add(z);
         
-        new CompositeCloneBuilderImpl(null).build(c);
+        new CompositeCloneBuilderImpl().build(c, null, null);
         
         assertTrue(c.getComponents().get(0).getImplementation() != c1);
         assertTrue(c.getComponents().get(1).getImplementation() != c2);

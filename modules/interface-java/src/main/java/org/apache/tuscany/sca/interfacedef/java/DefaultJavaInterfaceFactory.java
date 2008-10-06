@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
@@ -36,13 +36,13 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * @version $Rev$ $Date$
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
-    private ModelFactoryExtensionPoint modelFactoryExtensionPoint;
+    private FactoryExtensionPoint modelFactoryExtensionPoint;
     private boolean loadedVisitors; 
     
     public DefaultJavaInterfaceFactory() {
     }
     
-    public DefaultJavaInterfaceFactory(ModelFactoryExtensionPoint modelFactoryExtensionPoint) {
+    public DefaultJavaInterfaceFactory(FactoryExtensionPoint modelFactoryExtensionPoint) {
         this.modelFactoryExtensionPoint = modelFactoryExtensionPoint;
     }
     

@@ -31,8 +31,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
@@ -81,7 +81,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
 
         // Get the model factories
         ExtensionPointRegistry extensionPoints = domainManagerConfiguration.getExtensionPoints();
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
     }

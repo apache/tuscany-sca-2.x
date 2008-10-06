@@ -43,13 +43,13 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -79,7 +79,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private ConfiguredOperationProcessor configuredOperationProcessor;
     private Monitor monitor;
 
-    public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JavaImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);

@@ -47,7 +47,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -59,6 +58,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
@@ -69,7 +69,8 @@ import org.apache.tuscany.sca.domain.manager.impl.DeployableCompositeCollectionI
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
@@ -94,11 +95,11 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
     @Reference
     public DomainManagerConfiguration domainManagerConfiguration;
     
-    private ModelFactoryExtensionPoint modelFactories;
+    private FactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
     private URLArtifactProcessor<Contribution> contributionProcessor;
     private XMLOutputFactory outputFactory;
-    private ContributionDependencyBuilder contributionDependencyBuilder;
+    private ContributionBuilder contributionDependencyBuilder;
     private Monitor monitor;
     
     /**
@@ -128,7 +129,7 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
         monitor = monitorFactory.createMonitor();        
         
         // Get model factories
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
@@ -144,8 +145,9 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
         
-        // Create contribution and composite builders
-        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
     }
     
     public Entry<String, Item>[] getAll() {

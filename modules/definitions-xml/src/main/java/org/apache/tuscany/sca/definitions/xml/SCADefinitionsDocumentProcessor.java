@@ -34,12 +34,12 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
@@ -81,7 +81,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param modelFactories
      * @param staxProcessor
      */
-    public SCADefinitionsDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    public SCADefinitionsDocumentProcessor(FactoryExtensionPoint modelFactories, 
     									   StAXArtifactProcessor<Object> staxProcessor,
     									   Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;

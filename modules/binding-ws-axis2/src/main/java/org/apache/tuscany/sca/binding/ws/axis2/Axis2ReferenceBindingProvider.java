@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -43,7 +43,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
     public Axis2ReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding,
-                                         ModelFactoryExtensionPoint modelFactories,
+                                         FactoryExtensionPoint modelFactories,
                                          List<PolicyHandlerTuple> policyHandlerClassnames,
                                          DataBindingExtensionPoint dataBindings) {
 

@@ -20,7 +20,7 @@
 package crud.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 import crud.CRUDImplementation;
@@ -35,7 +35,7 @@ public class CRUDImplementationFactoryImpl implements CRUDImplementationFactory 
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     
-    public CRUDImplementationFactoryImpl(ModelFactoryExtensionPoint modelFactories) {
+    public CRUDImplementationFactoryImpl(FactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }

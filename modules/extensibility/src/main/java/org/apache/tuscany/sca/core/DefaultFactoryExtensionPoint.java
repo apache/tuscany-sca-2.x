@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.core;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -26,19 +26,20 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 
+
 /**
  * Default implementation of a model factory extension point.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionPoint {
+public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
     
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
     
     /**
      * Constructs a new DefaultModelFactoryExtensionPoint.
      */
-    public DefaultModelFactoryExtensionPoint() {
+    public DefaultFactoryExtensionPoint() {
     }
 
     /**
@@ -103,7 +104,7 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
                         } catch (NoSuchMethodException e) {
                             
                             // Constructor taking the model factory extension point
-                            Constructor<?> constructor = factoryClass.getConstructor(ModelFactoryExtensionPoint.class);
+                            Constructor<?> constructor = factoryClass.getConstructor(FactoryExtensionPoint.class);
                             factory = constructor.newInstance(this);
                         }
                         

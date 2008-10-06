@@ -35,20 +35,17 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public abstract class EndpointBuilderImpl implements EndpointBuilder {
     
-    private Monitor monitor;
-    
-    public EndpointBuilderImpl (Monitor monitor){
-        this.monitor = monitor;
+    public EndpointBuilderImpl (){
     }
     
-    private void warning(String message, Object model, String... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null){
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
     
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null){
             Problem problem = null;
             problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
@@ -60,7 +57,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
      * Resolve an endpoint against the provided target information and the 
      * set of candidate bindings. 
      */
-    public void build(Endpoint endpoint) {
+    public void build(Endpoint endpoint, Monitor monitor) {
 
         // If this endpoint is not fully configured then don't try and resolve it
         if (endpoint.getTargetComponentService() == null){
@@ -90,7 +87,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
             PolicyConfigurationUtil.determineApplicableBindingPolicySets(endpoint.getSourceComponentReference(), 
                                                                          endpoint.getTargetComponentService());
         } catch ( Exception e ) {
-            error("PolicyRelatedException", endpoint, e);
+            error(monitor, "PolicyRelatedException", endpoint, e);
         }    
         
 
@@ -100,7 +97,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
                                                                         endpoint.getCandidateBindings(),
                                                                         endpoint.getTargetComponentService().getBindings());
         if (resolvedBinding == null) {
-            warning("NoMatchingBinding", 
+            warning(monitor, "NoMatchingBinding", 
                     endpoint.getSourceComponentReference(),
                     endpoint.getSourceComponentReference().getName(), 
                     endpoint.getTargetComponentService().getName());
@@ -114,7 +111,7 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
                                                                                     endpoint.getSourceComponentReference().getCallback().getBindings(),
                                                                                     endpoint.getTargetComponentService().getCallback().getBindings());
             if (resolvedBinding == null) {
-                warning("NoMatchingCallbackBinding", 
+                warning(monitor, "NoMatchingCallbackBinding", 
                         endpoint.getSourceComponentReference(),
                         endpoint.getSourceComponentReference().getName(), 
                         endpoint.getTargetComponentService().getName());

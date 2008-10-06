@@ -27,12 +27,12 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -42,7 +42,7 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
 
-    public CorbaBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public CorbaBindingProcessor(FactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
     }

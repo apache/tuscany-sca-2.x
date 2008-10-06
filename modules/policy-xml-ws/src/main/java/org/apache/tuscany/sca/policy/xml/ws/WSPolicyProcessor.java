@@ -33,13 +33,13 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.neethi.PolicyEngine;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.xml.PolicyConstants;
 
@@ -59,7 +59,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
     	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     
-    public WSPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WSPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     

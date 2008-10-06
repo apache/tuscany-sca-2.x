@@ -22,7 +22,6 @@ package manager;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -31,13 +30,13 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -46,8 +45,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 
 /**
  * Sample ListComponents task.
@@ -68,10 +67,11 @@ import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuild
 public class ListComponents {
     
     private static URLArtifactProcessor<Contribution> contributionProcessor;
+    private static Monitor monitor;
     private static ModelResolverExtensionPoint modelResolvers;
-    private static ModelFactoryExtensionPoint modelFactories;
+    private static FactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
-    private static ContributionDependencyBuilder contributionDependencyBuilder;
+    private static ContributionBuilder contributionDependencyBuilder;
 
     private static void init() {
         
@@ -85,7 +85,7 @@ public class ListComponents {
         }
 
         // Get workspace contribution factory
-        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         
         // Create contribution content processor
@@ -98,10 +98,11 @@ public class ListComponents {
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
+        monitor = monitorFactory.createMonitor();
         
-        // Create a contribution dependency builder
-        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
     }
     
 
@@ -125,10 +126,10 @@ public class ListComponents {
         workspace.getContributions().add(assetsContribution);
 
         // Build the store contribution dependencies
-        List<Contribution> dependencies = contributionDependencyBuilder.buildContributionDependencies(storeContribution, workspace);
+        contributionDependencyBuilder.build(storeContribution, workspace, monitor);
         
         // Resolve the contributions
-        for (Contribution contribution: dependencies) {
+        for (Contribution contribution: storeContribution.getDependencies()) {
             contributionProcessor.resolve(contribution, workspace.getModelResolver());
         }
         

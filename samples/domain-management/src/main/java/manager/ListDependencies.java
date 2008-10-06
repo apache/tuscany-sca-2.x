@@ -24,18 +24,18 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 
 /**
  * Sample ListDependencies task.
@@ -52,8 +52,9 @@ import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuild
 public class ListDependencies {
     
     private static URLArtifactProcessor<Contribution> contributionProcessor;
+    private static Monitor monitor;
     private static WorkspaceFactory workspaceFactory;
-    private static ContributionDependencyBuilder contributionDependencyBuilder;
+    private static ContributionBuilder contributionDependencyBuilder;
 
     private static void init() throws Exception {
         
@@ -61,7 +62,7 @@ public class ListDependencies {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
         // Get contribution, workspace and assembly model factories
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         
         // Create contribution info processor
@@ -71,10 +72,11 @@ public class ListDependencies {
         // Create a monitor
         UtilityExtensionPoint services = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = services.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
+        monitor = monitorFactory.createMonitor();
         
-        // Create a contribution dependency builder
-        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        // Get a contribution dependency builder
+        ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
+        contributionDependencyBuilder = contributionBuilders.getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
     }
     
 
@@ -99,7 +101,8 @@ public class ListDependencies {
         // List the contribution dependencies of each contribution
         for (Contribution contribution: workspace.getContributions()) {
             System.out.println("Contribution: " + contribution.getURI());
-            for (Contribution dependency: contributionDependencyBuilder.buildContributionDependencies(contribution, workspace)) {
+            contributionDependencyBuilder.build(contribution, workspace, monitor);
+            for (Contribution dependency: contribution.getDependencies()) {
                 System.out.println("  dependency: " + dependency.getURI());
             }
         }
