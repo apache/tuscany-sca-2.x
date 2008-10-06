@@ -29,11 +29,13 @@ import org.junit.Test;
 public class AutoWiredReferenceTestCase {
     private static SCADomain domain;
     private static AComponent acomponent;
+    private static AComponent acomponentAutowire;
 
     @BeforeClass
     public static void init() throws Exception {
         domain = SCADomain.newInstance("AutoWiredReferencesTest.composite");
         acomponent = domain.getService(AComponent.class, "AComponent");
+        acomponentAutowire = domain.getService(AComponent.class, "AComponentAutowire");
     }
 
     @AfterClass
@@ -83,6 +85,15 @@ public class AutoWiredReferenceTestCase {
     public void testRequiredFalseReference() {
         try {
             acomponent.getDReference().dFoo();
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+    
+    @Test
+    public void testTargetPrecendence() {
+        try {
+            assertEquals("BComponent", acomponentAutowire.fooB());
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
