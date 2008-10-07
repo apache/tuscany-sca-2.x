@@ -41,15 +41,16 @@ public abstract class TracingAspect {
     @Pointcut("")
     protected abstract void withinScope();
 
-    @Pointcut("withinScope() && call(* java..*.*(..))")
+    @Pointcut("call(* java..*.*(..))")
     protected void exit() {
     }
 
-    @Pointcut("withinScope() && entry() && !cflowbelow(entry())")
+    @Pointcut("entry() && !cflowbelow(entry())")
     void start() {
     }
 
-    @Pointcut("withinScope() && cflow(entry()) && !cflowbelow(exit()) && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
+    // @Pointcut("withinScope() && cflow(entry()) && !cflow(exit()) && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
+    @Pointcut("withinScope() && entry() && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
     void trace() {
     }
 
