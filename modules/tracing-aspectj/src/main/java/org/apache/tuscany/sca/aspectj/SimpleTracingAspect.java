@@ -37,10 +37,10 @@ public class SimpleTracingAspect extends TracingAspect {
 
     @Override
     protected void completeLog() {
-        System.out.println("completeLog()");
+        System.out.println("<<< ----------------------------------------------------");
     }
 
-    @Pointcut("execution(public * org.apache.tuscany.sca..*.*(..)) &&!within(java..*)")
+    @Pointcut("execution(public * org.apache.tuscany.sca..*.*(..))")
     protected void entry() {
     }
 
@@ -76,7 +76,7 @@ public class SimpleTracingAspect extends TracingAspect {
 
     @Override
     protected void startLog() {
-        System.out.println("startLog()");
+        System.out.println(">>> ----------------------------------------------------");
     }
 
 }
