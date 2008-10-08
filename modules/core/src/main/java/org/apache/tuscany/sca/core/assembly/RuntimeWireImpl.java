@@ -336,6 +336,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         copy.wireSource = (EndpointReference)wireSource.clone();
         copy.wireTarget = (EndpointReference)wireTarget.clone();
         copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
+        copy.cachedWire = null; // TUSCANY-2630
         return copy;
     }
 
