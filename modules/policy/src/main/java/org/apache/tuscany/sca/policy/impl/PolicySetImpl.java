@@ -127,7 +127,7 @@ public class PolicySetImpl implements PolicySet {
     
     @Override
     public String toString() {
-        return getName().toString();
+    	return ( this.name != null ) ? getName().toString() : "null";
     }
 
     public XPathExpression getAppliesToXPathExpression() {
