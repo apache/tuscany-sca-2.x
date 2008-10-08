@@ -128,6 +128,11 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
                 supportsFeedEntries = true;
             }
 
+            String entryURI = this.binding.getURI();
+            if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
+            	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
+            	binding.setURI(entryURI);
+            }
             return new GdataBindingInvoker.GetInvoker(operation, binding.getURI(), googleService, httpClient, authorizationHeader, this);
 
         } else if (operationName.equals("post")) {
@@ -136,9 +141,21 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
 
         } else if (operationName.equals("put")) {
 
+            String entryURI = this.binding.getURI();
+            if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
+            	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
+            	binding.setURI(entryURI);
+            }
             return new GdataBindingInvoker.PutInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                       this);
         } else if (operationName.equals("delete")) {
+        	
+        	
+            String entryURI = this.binding.getURI();
+            if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
+            	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
+            	binding.setURI(entryURI);
+            }
             return new GdataBindingInvoker.DeleteInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
                                                          this);
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
