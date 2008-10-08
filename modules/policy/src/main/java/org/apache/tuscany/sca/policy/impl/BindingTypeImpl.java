@@ -84,6 +84,7 @@ public class BindingTypeImpl implements IntentAttachPointType {
     
     @Override
     public String toString() {
-        return getName().toString();
+    	return ( this.typeName != null ) ? getName().toString() : "null";
     }
 }
+;
