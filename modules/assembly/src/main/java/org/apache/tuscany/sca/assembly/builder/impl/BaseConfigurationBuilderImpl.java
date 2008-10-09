@@ -91,7 +91,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param monitor
      */
     protected void configureComponents(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
-        configureComponents(composite, null, monitor);
+        configureComponents(composite, null, definitions, monitor);
         configureSourcedProperties(composite, null);
     }
 

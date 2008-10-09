@@ -148,21 +148,6 @@ public abstract class SCANodeFactory {
     }
 
     /**
-     * Create a SCA node based on the discovery of the contribution on the classpath for the 
-     * given classloader. This method should be treated a convinient shortcut with the following
-     * assumptions:
-     * <ul>
-     * <li>This is a standalone application and there is a deployable composite file on the classpath.
-     * <li>There is only one contribution which contains the deployable composite file physically in its packaging hierarchy.
-     * </ul> 
-     * @param compositeURI The URI of the composite file relative to the root of the enclosing contribution
-     * @param classLoader The ClassLoader used to load the composite file as a resource. If the value is null,
-     * then thread context classloader will be used
-     * @return A newly created SCA node
-     */
-    public abstract SCANode createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader);
-
-    /**
      * Creates a new SCA node from the configuration URL
      * 
      * @param configurationURL the URL of the node configuration which is the ATOM feed

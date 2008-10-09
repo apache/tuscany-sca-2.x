@@ -20,19 +20,28 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.service.util.FileHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
+import org.apache.tuscany.sca.core.scope.ScopeRegistry;
+import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
+import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.node.SCAContribution;
 
 /**
@@ -41,16 +50,9 @@ import org.apache.tuscany.sca.node.SCAContribution;
  * @version $Rev: $ $Date: $
  */
 public class NodeUtil {
+    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
-    static URL getResource(final ClassLoader classLoader, final String compositeURI) {
-        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
-            public URL run() {
-                return classLoader.getResource(compositeURI);
-            }
-        });
-    }
-
-    static Contribution createContribution(ContributionFactory contributionFactory, SCAContribution c) {
+    static Contribution contribution(ContributionFactory contributionFactory, SCAContribution c) {
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(c.getURI());
         contribution.setLocation(c.getLocation());
@@ -70,88 +72,118 @@ public class NodeUtil {
         return URI.create(uri);
     }
 
-    /**
-     * Collect JARs on the classpath of a URLClassLoader
-     * @param urls
-     * @param cl
-     */
-    static void collectJARs(Map<String, URL> urls, ClassLoader cl) {
-        if (cl == null) {
-            return;
-        }
-    
-        // Collect JARs from the URLClassLoader's classpath
-        if (cl instanceof URLClassLoader) {
-            URL[] jarURLs = ((URLClassLoader)cl).getURLs();
-            if (jarURLs != null) {
-                for (URL jarURL : jarURLs) {
-                    String file = jarURL.getPath();
-                    int i = file.lastIndexOf('/');
-                    if (i != -1 && i < file.length() - 1) {
-                        file = file.substring(i + 1);
-                        urls.put(file, jarURL);
-                    }
+    static List<ModuleActivator> loadModules(ExtensionPointRegistry registry) throws ActivationException {
+
+        // Load and instantiate the modules found on the classpath (or any registered ClassLoaders)
+        List<ModuleActivator> modules = new ArrayList<ModuleActivator>();
+        try {
+            Set<ServiceDeclaration> moduleActivators = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName());
+            Set<String> moduleClasses = new HashSet<String>();
+            for (ServiceDeclaration moduleDeclarator : moduleActivators) {
+                if (moduleClasses.contains(moduleDeclarator.getClassName())) {
+                    continue;
                 }
+                moduleClasses.add(moduleDeclarator.getClassName());
+                Class<?> moduleClass = moduleDeclarator.loadClass();
+                ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
+                modules.add(module);
             }
+        } catch (IOException e) {
+            throw new ActivationException(e);
+        } catch (ClassNotFoundException e) {
+            throw new ActivationException(e);
+        } catch (InstantiationException e) {
+            throw new ActivationException(e);
+        } catch (IllegalAccessException e) {
+            throw new ActivationException(e);
         }
-    
-        // Collect JARs from the parent ClassLoader
-        collectJARs(urls, cl.getParent());
+
+        return modules;
     }
 
-    static URL getContributionURL(URL contributionArtifactURL, String contributionArtifactPath) {
-        URL contributionURL = null;
-        // "jar:file://....../something.jar!/a/b/c/app.composite"
-        try {
-            String url = contributionArtifactURL.toExternalForm();
-            String protocol = contributionArtifactURL.getProtocol();
-            if ("file".equals(protocol)) {
-                // directory contribution
-                if (url.endsWith(contributionArtifactPath)) {
-                    final String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
-                    // workaround from evil URL/URI form Maven
-                    // contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-                    // Allow privileged access to open URL stream. Add FilePermission to added to
-                    // security policy file.
-                    try {
-                        contributionURL = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
-                            public URL run() throws IOException {
-                                return FileHelper.toFile(new URL(location)).toURI().toURL();
-                            }
-                        });
-                    } catch (PrivilegedActionException e) {
-                        throw (MalformedURLException)e.getException();
-                    }
-                }
-    
-            } else if ("jar".equals(protocol)) {
-                // jar contribution
-                String location = url.substring(4, url.lastIndexOf("!/"));
-                // workaround for evil URL/URI from Maven
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-    
-            } else if ("wsjar".equals(protocol)) {
-                // See https://issues.apache.org/jira/browse/TUSCANY-2219
-                // wsjar contribution 
-                String location = url.substring(6, url.lastIndexOf("!/"));
-                // workaround for evil url/uri from maven 
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-    
-            } else if ("zip".equals(protocol)) {
-                // See https://issues.apache.org/jira/browse/TUSCANY-2598
-                // zip contribution, remove the zip prefix and pad with file:
-                String location = "file:"+url.substring(4, url.lastIndexOf("!/"));
-                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-                
-            } else if (protocol != null && (protocol.equals("bundle") || protocol.equals("bundleresource"))) {
-                contributionURL =
-                    new URL(contributionArtifactURL.getProtocol(), contributionArtifactURL.getHost(),
-                            contributionArtifactURL.getPort(), "/");
+    static void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) throws ActivationException {
+        boolean debug = logger.isLoggable(Level.FINE);
+        
+        // Start all the extension modules
+        for (ModuleActivator module : modules) {
+            long start = 0L;
+            if (debug) {
+                logger.fine(module.getClass().getName() + " is starting.");
+                start = System.currentTimeMillis();
             }
-        } catch (MalformedURLException mfe) {
-            throw new IllegalArgumentException(mfe);
+            try {
+                module.start(registry);
+                if (debug) {
+                    long end = System.currentTimeMillis();
+                    logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
+                }
+            } catch (Throwable e) {
+                logger.log(Level.WARNING, "Exception starting module " + module.getClass().getName()
+                    + " :"
+                    + e.getMessage());
+                logger.log(Level.FINE, "Exception starting module " + module.getClass().getName(), e);
+            }
         }
-        return contributionURL;
     }
+
+    static void stopModules(final ExtensionPointRegistry registry, List<ModuleActivator> modules) {
+        boolean debug = logger.isLoggable(Level.FINE);
+        for (ModuleActivator module : modules) {
+            long start = 0L;
+            if (debug) {
+                logger.fine(module.getClass().getName() + " is stopping.");
+                start = System.currentTimeMillis();
+            }
+            module.stop(registry);
+            if (debug) {
+                long end = System.currentTimeMillis();
+                logger.fine(module.getClass().getName() + " is stopped in " + (end - start) + " ms.");
+            }
+        }
+    }
+
+//    private void loadSCADefinitions() throws ActivationException {
+//        try {
+//            URLArtifactProcessorExtensionPoint documentProcessors =
+//                registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+//            URLArtifactProcessor<SCADefinitions> definitionsProcessor =
+//                documentProcessors.getProcessor(SCADefinitions.class);
+//            SCADefinitionsProviderExtensionPoint scaDefnProviders =
+//                registry.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
+//
+//            SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
+//            SCADefinitions aSCADefn = null;
+//            for (SCADefinitionsProvider aProvider : scaDefnProviders.getSCADefinitionsProviders()) {
+//                aSCADefn = aProvider.getSCADefinition();
+//                SCADefinitionsUtil.aggregateSCADefinitions(aSCADefn, systemSCADefinitions);
+//            }
+//
+//            policyDefinitions.add(systemSCADefinitions);
+//
+//            //we cannot expect that providers will add the intents and policysets into the resolver
+//            //so we do this here explicitly
+//            for (Intent intent : systemSCADefinitions.getPolicyIntents()) {
+//                policyDefinitionsResolver.addModel(intent);
+//            }
+//
+//            for (PolicySet policySet : systemSCADefinitions.getPolicySets()) {
+//                policyDefinitionsResolver.addModel(policySet);
+//            }
+//
+//            for (IntentAttachPointType attachPoinType : systemSCADefinitions.getBindingTypes()) {
+//                policyDefinitionsResolver.addModel(attachPoinType);
+//            }
+//
+//            for (IntentAttachPointType attachPoinType : systemSCADefinitions.getImplementationTypes()) {
+//                policyDefinitionsResolver.addModel(attachPoinType);
+//            }
+//
+//            //now that all system sca definitions have been read, lets resolve them right away
+//            definitionsProcessor.resolve(systemSCADefinitions, policyDefinitionsResolver);
+//            
+//        } catch (Exception e) {
+//            throw new ActivationException(e);
+//        }
+//    }
 
 }

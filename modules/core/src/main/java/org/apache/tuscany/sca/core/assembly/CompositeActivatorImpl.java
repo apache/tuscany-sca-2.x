@@ -38,12 +38,19 @@ import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.context.ComponentContextHelper;
 import org.apache.tuscany.sca.core.context.ComponentContextImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.ConversationalScopeContainer;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
@@ -71,6 +78,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
@@ -96,15 +104,28 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final ComponentContextHelper componentContextHelper;
 
     private Composite domainComposite;
+    
+    public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
+        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.messageFactory = factories.getFactory(MessageFactory.class);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        this.scopeRegistry = utilities.getUtility(ScopeRegistry.class);
+        this.workScheduler = utilities.getUtility(WorkScheduler.class);
+        this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
+        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        this.endpointResolverFactories = extensionPoints.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
+        this.requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
+        ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+        this.conversationManager = utilities.getUtility(ConversationManager.class);
+        StAXArtifactProcessorExtensionPoint processors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        this.componentContextHelper = new ComponentContextHelper(assemblyFactory, javaInterfaceFactory, processors);
+    }
 
-    /**
-     * @param assemblyFactory
-     * @param interfaceContractMapper
-     * @param workScheduler
-     * @param conversationManager TODO
-     * @param workContext
-     * @param wirePostProcessorRegistry
-     */
     public CompositeActivatorImpl(AssemblyFactory assemblyFactory,
                                   MessageFactory messageFactory,
                                   JavaInterfaceFactory javaInterfaceFactory,

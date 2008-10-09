@@ -17,17 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
-
-
+package org.apache.tuscany.sca.core.scope;
 
 /**
- * Represents an SCA processing node.
- * A node is loaded with an SCA composites. It can start and stop that composite.
+ * A default scope registry implementation.
  *
- * @version $Rev$ $Date$
- * @deprecated Use SCANode instead
+ * @version $Rev: $ $Date: $
  */
-@Deprecated
-public interface SCANode2 extends SCANode {
+public class DefaultScopeRegistry extends ScopeRegistryImpl implements ScopeRegistry {
+
+    public DefaultScopeRegistry() {
+        ScopeContainerFactory[] factories =
+            new ScopeContainerFactory[] {new CompositeScopeContainerFactory(), new StatelessScopeContainerFactory(),
+                                         new RequestScopeContainerFactory(),
+                                         new ConversationalScopeContainerFactory(null),
+                                         // new HttpSessionScopeContainer(monitor)
+            };
+        for (ScopeContainerFactory f : factories) {
+            register(f);
+        }
+    }
 }

@@ -33,11 +33,6 @@ public class NodeFactoryImpl extends SCANodeFactory {
     }
     
     @Override
-    public SCANode createSCANodeFromClassLoader(String compositeURI, ClassLoader classLoader) {
-        return new NodeImpl(classLoader, compositeURI);
-    }
-
-    @Override
     public SCANode createSCANodeFromURL(String configurationURI) {
         return new NodeImpl(configurationURI);
     }
