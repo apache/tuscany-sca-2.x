@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.implementation.spring.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  *
@@ -29,20 +32,23 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public abstract class AbstractSCATestCase<T> extends TestCase {
 
-    protected SCADomain domain;
+    protected Node node;
     protected T service;
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance(getCompositeName());
-        service = (T)domain.getService(getServiceClass(), "ClientComponent");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode(getCompositeName(), new Contribution("test", contribution));
+        node.start();
+        service = (T)node.getService(getServiceClass(), "ClientComponent");
     }
 
     protected abstract Class getServiceClass();
 
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
     protected String getCompositeName() {

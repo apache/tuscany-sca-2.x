@@ -8,37 +8,47 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtomPutTestCase {
-    protected static SCADomain scaConsumerDomain;
-    protected static SCADomain scaProviderDomain;
+    protected static Node consumerNode;
+    protected static Node providerNode;
     protected static CustomerClient testService;
     protected static Abdera abdera;
 
     @BeforeClass
     public static void init() throws Exception {
         System.out.println(">>>AtomPutTestCase.init entry");
-        scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
-        scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
-        testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
+        String contribution = ContributionLocationHelper.getContributionLocation(AtomDeleteTestCase.class);
+        providerNode = NodeFactory.newInstance().createNode(
+                                                               "org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
+        consumerNode = NodeFactory.newInstance().createNode(
+                                                               "org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
+        providerNode.start();
+        consumerNode.start();
+        testService = consumerNode.getService(CustomerClient.class, "CustomerClient");
         abdera = new Abdera();
     }
 
     @AfterClass
     public static void destroy() throws Exception {
         // System.out.println(">>>AtomPutTestCase.destroy entry");
-        scaConsumerDomain.close();
-        scaProviderDomain.close();
+        consumerNode.stop();
+        consumerNode.destroy();
+        providerNode.stop();
+        providerNode.destroy();
     }
 
     @Test
     public void testPrelim() throws Exception {
-        Assert.assertNotNull(scaProviderDomain);
-        Assert.assertNotNull(scaConsumerDomain);
+        Assert.assertNotNull(providerNode);
+        Assert.assertNotNull(consumerNode);
         Assert.assertNotNull(testService);
         Assert.assertNotNull(abdera);
     }

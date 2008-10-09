@@ -16,15 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.host.embedded.test.extension;
+
+package org.apache.tuscany.sca.node;
+
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
- * Service interface for test component implementations.
- * 
- * @version $Rev$ $Date$
+ * ContributionLocationHelper
+ *
+ * @version $Rev: $ $Date: $
  */
-public interface TestService {
-
-    String ping(String name);
+public class ContributionLocationHelper {
+    
+    /**
+     * Returns the location of the SCA contribution containing the given class.
+     * 
+     * @param anchorClass
+     * @return
+     */
+    public static String getContributionLocation(final Class<?> anchorClass) {
+        URL url = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return anchorClass.getProtectionDomain().getCodeSource().getLocation();
+            }
+        });
+        String uri = url.toString();
+        return uri;
+    }
 
 }

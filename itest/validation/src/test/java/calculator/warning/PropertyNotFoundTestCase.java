@@ -27,10 +27,10 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
@@ -39,16 +39,16 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class PropertyNotFoundTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode node;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/PropertyNotFound/Calculator.composite").toURL().toString(),
-        		                 new SCAContribution("TestContribution", 
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        node = nodeFactory.createNode(new File("src/main/resources/PropertyNotFound/Calculator.composite").toURL().toString(),
+        		                 new Contribution("TestContribution", 
         		                                     new File("src/main/resources/PropertyNotFound").toURL().toString()));
         node.start();
-        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override

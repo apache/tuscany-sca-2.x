@@ -21,9 +21,9 @@ package calculator;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,10 +35,10 @@ import org.junit.Test;
  */
 public class CalculatorDistributedTestCase {
 
-    private static SCANode manager;
-    private static SCANode nodeA;
-    private static SCANode nodeB;
-    private static SCANode nodeC;
+    private static Node manager;
+    private static Node nodeA;
+    private static Node nodeB;
+    private static Node nodeC;
 
     private static CalculatorService calculatorService;
     
@@ -53,16 +53,16 @@ public class CalculatorDistributedTestCase {
             manager = managerLauncher.createDomainManager();
             manager.start();
             
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            nodeC  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeC");
-            nodeB  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeB");
-            nodeA  = nodeFactory.createSCANodeFromURL("http://localhost:9990/node-config/NodeA");
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            nodeC  = nodeFactory.createNode("http://localhost:9990/node-config/NodeC");
+            nodeB  = nodeFactory.createNode("http://localhost:9990/node-config/NodeB");
+            nodeA  = nodeFactory.createNode("http://localhost:9990/node-config/NodeA");
 
             nodeC.start();
             nodeB.start();
             nodeA.start();
             
-            SCAClient client = (SCAClient)nodeA;
+            Client client = (Client)nodeA;
             calculatorService = 
                 client.getService(CalculatorService.class, "CalculatorServiceComponentA");
 

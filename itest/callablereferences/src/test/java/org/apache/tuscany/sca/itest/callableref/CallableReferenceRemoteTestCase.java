@@ -25,10 +25,10 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,8 +40,8 @@ import org.junit.Test;
  */
 public class CallableReferenceRemoteTestCase {
     
-    private static SCANode nodeA;
-    private static SCANode nodeB;
+    private static Node nodeA;
+    private static Node nodeB;
    
     private static AComponent acomponent;
 
@@ -52,21 +52,21 @@ public class CallableReferenceRemoteTestCase {
             
             System.out.println("Setting up nodes");
                   
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            nodeA = nodeFactory.createSCANode(new File("src/main/resources/nodeA/CompositeA.composite").toURL().toString(),
-                                             new SCAContribution("TestContribution", 
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            nodeA = nodeFactory.createNode(new File("src/main/resources/nodeA/CompositeA.composite").toURL().toString(),
+                                             new Contribution("TestContribution", 
                                                                  new File("src/main/resources/nodeA").toURL().toString()));
             
      
-            nodeB = nodeFactory.createSCANode(new File("src/main/resources/nodeB/CompositeB.composite").toURL().toString(),
-                                             new SCAContribution("TestContribution", 
+            nodeB = nodeFactory.createNode(new File("src/main/resources/nodeB/CompositeB.composite").toURL().toString(),
+                                             new Contribution("TestContribution", 
                                                                  new File("src/main/resources/nodeB").toURL().toString()));
             
             
             nodeA.start();
             nodeB.start();
             
-            acomponent = ((SCAClient)nodeA).getService(AComponent.class, "AComponent/AComponent");
+            acomponent = ((Client)nodeA).getService(AComponent.class, "AComponent/AComponent");
                
         } catch (Throwable ex) {
             System.out.println(ex.toString());

@@ -17,32 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.embedded.management;
+package org.apache.tuscany.sca.node;
 
-import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 
 /**
- * Component Manager interface.
+ * Represents an SCA processing node.
+ * A node is loaded with an SCA composites. It can start and stop that composite.
  *
  * @version $Rev$ $Date$
  */
-public interface ComponentManager {
+public interface Node extends Client {
 
-    Set<String> getComponentNames();
+    /**
+     * Start the composite loaded in the node.
+     */
+    void start();
 
-    Component getComponent(String componentName);
+    /**
+     * Stop the composite loaded in the node.
+     */
+    void stop();
     
-    boolean isComponentStarted(String componentName);
+    /**
+     * Destroy the node.
+     */
+    void destroy();
 
-    void startComponent(String componentName) throws ActivationException;
-
-    void stopComponent(String componentName) throws ActivationException;
-
-    void addComponentListener(ComponentListener listener);
-
-    void removeComponentListener(ComponentListener listener);
-    
 }

@@ -20,7 +20,10 @@ package org.apache.tuscany.sca.binding.ejb.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import account.Customer;
 
@@ -31,7 +34,7 @@ import account.Customer;
  */
 public class EJBReferenceTestCase extends TestCase {
     private static final int MOCK_PORT = 8085;
-    private SCADomain scaDomain;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
@@ -39,7 +42,9 @@ public class EJBReferenceTestCase extends TestCase {
         System.setProperty("java.naming.provider.url", "ejbd://localhost:" + MOCK_PORT);
         System.setProperty("managed", "false");
 
-        scaDomain = SCADomain.newInstance("account/account.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(EJBReferenceTestCase.class);
+        node = NodeFactory.newInstance().createNode("account/account.composite", new Contribution("account", contribution));
+        node.start();
 
         // To capture the network traffic for the MockServer, uncomment the next line
         // new Thread(new SocketTracer(MOCK_PORT, OPENEJB_PORT)).start();
@@ -53,11 +58,12 @@ public class EJBReferenceTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 
     public void testCalculator() throws Exception {
-        Customer customer = scaDomain.getService(Customer.class, "CustomerComponent");
+        Customer customer = node.getService(Customer.class, "CustomerComponent");
         // This is one of the customer numbers in bank application running on Geronimo
         String accountNo = "1234567890";
         Double balance = customer.depositAmount(accountNo, new Double(100));

@@ -21,13 +21,19 @@ package org.apache.tuscany.sca.binding.gdata;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class Provider {
 
     public static void main(String[] args) {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Provider.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(Provider.class);
+        Node node = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/Provider.composite", new Contribution("provider", contribution));
+        node.start();
         System.out.println("Provider.composite ready...");
 
         try {
@@ -36,6 +42,7 @@ public class Provider {
             e.printStackTrace();
         }
 
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 }

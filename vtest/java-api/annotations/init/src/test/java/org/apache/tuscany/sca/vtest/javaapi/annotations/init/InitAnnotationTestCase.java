@@ -23,10 +23,10 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -50,12 +50,12 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitProper() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode(new File("src/main/resources/proper/AService.composite").toURL().toString(),
-                new SCAContribution("TestContribution", 
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        Node node = nodeFactory.createNode(new File("src/main/resources/proper/AService.composite").toURL().toString(),
+                new Contribution("TestContribution", 
                                     new File("src/main/resources/proper").toURL().toString()));
         node.start();
-        AService aService = ((SCAClient)node).getService(AService.class, "AComponent");
+        AService aService = ((Client)node).getService(AService.class, "AComponent");
         Assert.assertTrue(aService.isInitProper());
         Assert.assertEquals("Hello Pandu", aService.getGreetings("Pandu"));
         node.stop();
@@ -74,10 +74,10 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitProtectedMethod() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         try {
-            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err1/AServiceErr1.composite").toURL().toString(),
-                    new SCAContribution("TestContribution", 
+            Node node = nodeFactory.createNode(new File("src/main/resources/err1/AServiceErr1.composite").toURL().toString(),
+                    new Contribution("TestContribution", 
                                         new File("src/main/resources/err1").toURL().toString()));
             Assert.fail();
             node.stop();
@@ -100,10 +100,10 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitPrivateMethod() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         try {
-            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err2/AServiceErr2.composite").toURL().toString(),
-                    new SCAContribution("TestContribution", 
+            Node node = nodeFactory.createNode(new File("src/main/resources/err2/AServiceErr2.composite").toURL().toString(),
+                    new Contribution("TestContribution", 
                                         new File("src/main/resources/err2").toURL().toString()));
             Assert.fail();
             node.stop();
@@ -126,10 +126,10 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitNonVoidReturnType() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         try {
-            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err3/HelloWorldErr3.composite").toURL().toString(),
-                    new SCAContribution("TestContribution", 
+            Node node = nodeFactory.createNode(new File("src/main/resources/err3/HelloWorldErr3.composite").toURL().toString(),
+                    new Contribution("TestContribution", 
                                         new File("src/main/resources/err3").toURL().toString()));
             Assert.fail();
             node.stop();
@@ -152,10 +152,10 @@ public class InitAnnotationTestCase {
      */
     @Test
     public void atInitMethodWithArgs() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         try {
-            SCANode node = nodeFactory.createSCANode(new File("src/main/resources/err4/HelloWorldErr4.composite").toURL().toString(),
-                    new SCAContribution("TestContribution", 
+            Node node = nodeFactory.createNode(new File("src/main/resources/err4/HelloWorldErr4.composite").toURL().toString(),
+                    new Contribution("TestContribution", 
                                         new File("src/main/resources/err4").toURL().toString()));
             Assert.fail();
             node.stop();

@@ -25,9 +25,12 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.text.MessageFormat;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import junit.framework.TestCase;
 
 /**
  * HTTP binding unit tests.
@@ -65,16 +68,19 @@ public class HTTPBindingTestCase extends TestCase {
 
     private static final int HTTP_PORT = 8085;
 
-    private SCADomain scaDomain;
+    private Node node;
     
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("test.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
+        node = NodeFactory.newInstance().createNode("test.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 
     /**

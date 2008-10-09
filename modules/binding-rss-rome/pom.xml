@@ -106,7 +106,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <artifactId>tuscany-node-impl</artifactId>
             <version>1.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>

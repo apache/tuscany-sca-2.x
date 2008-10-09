@@ -22,7 +22,10 @@ import helloworld.HelloException;
 import helloworld.HelloWorldRmiService;
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +37,7 @@ import org.junit.Test;
  */
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
-    private static SCADomain domain;
+    private static Node node;
 
     @Test
     public void testRmiService() {
@@ -60,8 +63,10 @@ public class BindingTestCase {
     @BeforeClass
     public static void init() throws Exception {
         try {
-            domain = SCADomain.newInstance("RMIBindingTest.composite");
-            helloWorldRmiService = domain.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
+            String contribution = ContributionLocationHelper.getContributionLocation(BindingTestCase.class);
+            node = NodeFactory.newInstance().createNode("RMIBindingTest.composite", new Contribution("test", contribution));
+            node.start();
+            helloWorldRmiService = node.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +74,8 @@ public class BindingTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }

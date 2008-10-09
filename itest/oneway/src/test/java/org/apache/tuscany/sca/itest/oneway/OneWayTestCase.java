@@ -30,9 +30,9 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class OneWayTestCase {
      */
     private static final int MAX_SLEEP_TIME = 10000;
 
-    private SCANode node;
+    private Node node;
     
     /**
      * Initialise the SCADomain.
@@ -59,7 +59,7 @@ public class OneWayTestCase {
     @Before
     public void setUp() throws Exception {
         
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("OneWayContribution/META-INF/sca-deployables/oneWay.composite", null);
         node.start();
         
@@ -84,7 +84,7 @@ public class OneWayTestCase {
     @Test
     public void testOneWay() throws Exception {
         OneWayClient client =
-            ((SCAClient)node).getService(OneWayClient.class, "OneWayClientComponent");
+            ((Client)node).getService(OneWayClient.class, "OneWayClientComponent");
 
         int count = 100;
 
@@ -120,7 +120,7 @@ public class OneWayTestCase {
     @Test
     public void testOneWayUsingNonBlockingInterceptorThrowsAnException() {
         OneWayClient client =
-            ((SCAClient)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
+            ((Client)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
             
         // We need to modify the JDK Logger for the NonBlockingInterceptor so we
         // can check that it logs a message for the @OneWay invocation that throws

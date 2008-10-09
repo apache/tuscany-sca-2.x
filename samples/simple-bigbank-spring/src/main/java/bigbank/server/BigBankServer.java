@@ -19,8 +19,8 @@
 
 package bigbank.server;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -36,8 +36,8 @@ public class BigBankServer {
         
         System.out.println("Starting the Sample SCA Spring BigBank server...");
                 
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        SCANode node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankServer.class.getClassLoader());
+        NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createSCANodeFromClassLoader("BigBank.composite", BigBankServer.class.getClassLoader());
         node.start();
 
         if (timeout < 0) {

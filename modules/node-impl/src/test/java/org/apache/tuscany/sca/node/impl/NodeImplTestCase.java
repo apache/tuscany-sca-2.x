@@ -25,10 +25,10 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Test;
 
 /**
@@ -47,25 +47,25 @@ public class NodeImplTestCase {
 
     @Test
     public void testNodeWithCompositeContent() {
-        SCANodeFactory factory = new NodeFactoryImpl();
-        SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
+        NodeFactory factory = new NodeFactoryImpl();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
         String compositeURI = "HelloWorld.composite";
-        SCANode node = factory.createSCANode(compositeURI, composite, contribution);
+        Node node = factory.createNode(compositeURI, composite, contribution);
         testNode(node);
     }
     
     @Test
     public void testNodeWithRelativeCompositeURI() {
-        SCANodeFactory factory = new NodeFactoryImpl();
-        SCAContribution contribution = new SCAContribution("c1", new File("target/test-classes").toURI().toString());
+        NodeFactory factory = new NodeFactoryImpl();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
         String compositeURI = "HelloWorld.composite";
-        SCANode node = factory.createSCANode(compositeURI, contribution);
+        Node node = factory.createNode(compositeURI, contribution);
         testNode(node);
     }
 
-    private void testNode(SCANode node) {
+    private void testNode(Node node) {
         node.start();
-        HelloWorld hw = ((SCAClient)node).getService(HelloWorld.class, "HelloWorld");
+        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
         Assert.assertEquals("Hello, Node", hw.hello("Node"));
         node.stop();
     }

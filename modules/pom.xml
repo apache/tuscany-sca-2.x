@@ -105,7 +105,6 @@
                 <!--
                 <module>host-ejb</module>
                 -->
-                <module>host-embedded</module>
                 <module>host-http</module>
                 <module>host-jetty</module>
                 <!--
@@ -125,7 +124,6 @@
                 <module>interface-wsdl-xml</module>
                 <module>implementation-bpel</module>
                 <module>implementation-bpel-ode</module>
-                <module>implementation-bpel-jbpm</module>
                 <module>implementation-ejb</module>
                 <module>implementation-java</module>
                 <module>implementation-java-xml</module>

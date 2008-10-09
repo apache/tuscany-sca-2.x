@@ -19,31 +19,31 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * Default implementation of an SCA node factory.
  * 
  * @version $Rev$ $Date$
  */
-public class NodeFactoryImpl extends SCANodeFactory {
+public class NodeFactoryImpl extends NodeFactory {
     public NodeFactoryImpl() {
     }
     
     @Override
-    public SCANode createSCANodeFromURL(String configurationURI) {
+    public Node createNode(String configurationURI) {
         return new NodeImpl(configurationURI);
     }
     
     @Override
-    public SCANode createSCANode(String compositeURI, SCAContribution... contributions) {
+    public Node createNode(String compositeURI, Contribution... contributions) {
         return new NodeImpl(compositeURI, contributions);
     }
 
     @Override
-    public SCANode createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions) {
+    public Node createNode(String compositeURI, String compositeContent, Contribution... contributions) {
         return new NodeImpl(compositeURI, compositeContent, contributions);
     }
 

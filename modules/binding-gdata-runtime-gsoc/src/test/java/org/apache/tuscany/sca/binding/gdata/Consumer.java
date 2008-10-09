@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.binding.gdata;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
@@ -30,8 +33,11 @@ public class Consumer {
     public static void main(String[] args) throws Exception {
 
         //Initialize the GData client service (Reference Binding test)
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/ConsumerGoogleBlogger.composite");
-        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");          
+        String contribution = ContributionLocationHelper.getContributionLocation(Consumer.class);
+        Node node = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/ConsumerGoogleBlogger.composite", new Contribution("consumer", contribution));
+        node.start();
+        CustomerClient testService = node.getService(CustomerClient.class, "CustomerClient");          
         
         
         Feed feed = testService.clientGetFeed();

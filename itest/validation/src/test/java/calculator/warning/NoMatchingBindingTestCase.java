@@ -27,10 +27,10 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
@@ -39,17 +39,17 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class NoMatchingBindingTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode node;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         node =
-            nodeFactory.createSCANode("Calculator.composite", new SCAContribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
+            nodeFactory.createNode("Calculator.composite", new Contribution("TestContribution", new File("src/main/resources/NoMatchingBinding")
                 .toURL().toString()));
 
         node.start();
-        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override

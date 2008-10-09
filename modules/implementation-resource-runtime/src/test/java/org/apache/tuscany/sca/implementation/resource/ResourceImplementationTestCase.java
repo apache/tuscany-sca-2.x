@@ -25,27 +25,33 @@ import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ResourceImplementationTestCase extends TestCase {
 
-    private SCADomain scaDomain;
+    private Node node;
     
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("resource.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("resource.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
     
     public void testResource() throws Exception {
-        Resource resource = scaDomain.getService(Resource.class, "ResourceServiceComponent");
+        Resource resource = node.getService(Resource.class, "ResourceServiceComponent");
         InputStream is = resource.get("test.html");
         String document = read(is);
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);

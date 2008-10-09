@@ -19,8 +19,8 @@
 
 package node;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -29,7 +29,7 @@ import calculator.CalculatorService;
 public class LaunchCalculatorNodeA {
     public static void main(String[] args) throws Exception {
         
-        SCANode node = null;
+        Node node = null;
         try {
             
             NodeLauncher nodeLauncher = NodeLauncher.newInstance();
@@ -38,7 +38,7 @@ public class LaunchCalculatorNodeA {
             node.start();
             
             // get a reference to the calculator component
-            SCAClient client = (SCAClient)node;
+            Client client = (Client)node;
             CalculatorService calculatorService = 
                 client.getService(CalculatorService.class, "CalculatorServiceComponentA");
             

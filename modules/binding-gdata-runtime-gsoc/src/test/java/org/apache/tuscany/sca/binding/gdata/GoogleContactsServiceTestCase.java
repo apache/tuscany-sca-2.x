@@ -23,7 +23,10 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +39,7 @@ import com.google.gdata.data.PlainTextConstruct;
 
 public class GoogleContactsServiceTestCase extends TestCase{
 
-    private SCADomain scaDomainConsumer = null;
+    private Node consumerNode = null;
     private CustomerClient testService = null;    
     
     public GoogleContactsServiceTestCase(){
@@ -49,8 +52,11 @@ public class GoogleContactsServiceTestCase extends TestCase{
         System.out.println("Method Test Start-----------------------------------------------------------------------");
         
         //Initialize the GData client service (Reference Binding test)
-        scaDomainConsumer = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/ConsumerGoogleContacts.composite");
-        testService = scaDomainConsumer.getService(CustomerClient.class, "CustomerClient");  
+        String contribution = ContributionLocationHelper.getContributionLocation(GoogleContactsServiceTestCase.class);
+        consumerNode = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/ConsumerGoogleContacts.composite", new Contribution("consumer", contribution));
+        consumerNode.start();
+        testService = consumerNode.getService(CustomerClient.class, "CustomerClient");  
     }
 
     @After
@@ -58,6 +64,8 @@ public class GoogleContactsServiceTestCase extends TestCase{
     public void tearDown(){
         System.out.println("Method Test End------------------------------------------------------------------------");
         System.out.println("\n\n");
+        consumerNode.stop();
+        consumerNode.destroy();
     }        
     
     @Test

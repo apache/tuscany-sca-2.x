@@ -22,7 +22,10 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -42,16 +45,19 @@ public class JSONRPCServiceTestCase{
 
     private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
 
-    private SCADomain domain;
+    private Node node;
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance("JSONRPCBinding.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @After
     public void tearDown() throws Exception {
-    	domain.close();
+    	node.stop();
+    	node.destroy();
     }
 
     @Test

@@ -20,8 +20,10 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -33,7 +35,7 @@ import org.osoa.sca.annotations.Scope;
 public class CalculatorTestCase extends TestCase {
 
     private static CalculatorService calculatorService;
-    private SCANode node;
+    private Node node;
     
     @Reference
     public void setCalculatorService(CalculatorService calculatorService) {
@@ -42,14 +44,16 @@ public class CalculatorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANodeFromClassLoader("CalculatorTest.composite", getClass().getClassLoader());
+        NodeFactory factory = NodeFactory.newInstance();
+        String contribution = ContributionLocationHelper.getContributionLocation(CalculatorClient.class);
+        node = factory.createNode("CalculatorTest.composite", new Contribution("calculator", contribution));
         node.start();
     }
 
     @Override
     protected void tearDown() throws Exception {
         node.stop();
+        node.destroy();
     }
 
     public void testCalculator() throws Exception {

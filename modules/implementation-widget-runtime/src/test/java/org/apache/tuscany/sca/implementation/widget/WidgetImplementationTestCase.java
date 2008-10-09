@@ -22,23 +22,29 @@ import java.net.Socket;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WidgetImplementationTestCase extends TestCase {
 
-    private SCADomain scaDomain;
+    private Node node;
     
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("widget.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("widget.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
     
     public void testPing() throws Exception {

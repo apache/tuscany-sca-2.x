@@ -47,9 +47,9 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherUtil;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * ServletHost implementation for use in a Webapp Node environment.
@@ -62,7 +62,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final NodeWebAppServletHost servletHost = new NodeWebAppServletHost();
 
     private Map<String, Servlet> servlets = new HashMap<String, Servlet>();
-    private SCANode node;
+    private Node node;
     
     private String contextPath = "/";
     private int defaultPort = 8080;
@@ -112,8 +112,8 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         String nodeConfiguration = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
         
         // Create the SCA node
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        node = nodeFactory.createSCANodeFromURL(nodeConfiguration);
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        node = nodeFactory.createNode(nodeConfiguration);
         
         // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);
@@ -121,7 +121,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         servletHosts.addServletHost(servletHost);
 
         // Save the node in the Servlet context 
-        servletContext.setAttribute(SCAClient.class.getName(), node);
+        servletContext.setAttribute(Client.class.getName(), node);
         
         // Start the node
         node.start();
@@ -350,7 +350,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
      * 
      * @return
      */
-    private static ServletHostExtensionPoint servletHosts(SCANode node) {
+    private static ServletHostExtensionPoint servletHosts(Node node) {
         //FIXME Need a clean way to get the extension point registry
         // from the node
         ExtensionPointRegistry registry;

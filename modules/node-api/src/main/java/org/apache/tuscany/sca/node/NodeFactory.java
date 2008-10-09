@@ -31,9 +31,9 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class SCANodeFactory {
+public abstract class NodeFactory {
 
-    public static class NodeProxy implements SCANode, SCAClient {
+    public static class NodeProxy implements Node, Client {
         private Object node;
 
         private NodeProxy(Object node) {
@@ -95,6 +95,14 @@ public abstract class SCANodeFactory {
             }
         }
 
+        public void destroy() {
+            try {
+                node.getClass().getMethod("destroy").invoke(node);
+            } catch (Throwable e) {
+                handleException(e);
+            }
+        }
+
         private static void handleException(Throwable ex) {
             if (ex instanceof InvocationTargetException) {
                 ex = ((InvocationTargetException)ex).getTargetException();
@@ -116,8 +124,8 @@ public abstract class SCANodeFactory {
      *  
      * @return a new SCA node factory
      */
-    public static SCANodeFactory newInstance() {
-        SCANodeFactory scaNodeFactory = null;
+    public static NodeFactory newInstance() {
+        NodeFactory scaNodeFactory = null;
 
         try {
             // final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -125,10 +133,10 @@ public abstract class SCANodeFactory {
             try {
                 Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                 Object instance = discoveryClass.getMethod("getInstance").invoke(null);
-                Object factoryDeclaration = discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance, SCANodeFactory.class.getName());
+                Object factoryDeclaration = discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance, NodeFactory.class.getName());
                 if (factoryDeclaration != null) {
                     Class<?> factoryImplClass = (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
-                    scaNodeFactory = (SCANodeFactory)factoryImplClass.newInstance();
+                    scaNodeFactory = (NodeFactory)factoryImplClass.newInstance();
                     return scaNodeFactory;
                 }
             } catch (ClassNotFoundException e) {
@@ -139,7 +147,7 @@ public abstract class SCANodeFactory {
             String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
 
             Class<?> cls = Class.forName(className);
-            scaNodeFactory = (SCANodeFactory)cls.newInstance();
+            scaNodeFactory = (NodeFactory)cls.newInstance();
             return scaNodeFactory;
 
         } catch (Exception e) {
@@ -155,7 +163,7 @@ public abstract class SCANodeFactory {
      *  
      * @return a new SCA node.
      */
-    public abstract SCANode createSCANodeFromURL(String configurationURL);
+    public abstract Node createNode(String configurationURL);
 
     /**
      * Creates a new SCA node.
@@ -167,7 +175,7 @@ public abstract class SCANodeFactory {
      *   
      * @return a new SCA node.
      */
-    public abstract SCANode createSCANode(String compositeURI, SCAContribution... contributions);
+    public abstract Node createNode(String compositeURI, Contribution... contributions);
 
     /**
      * Creates a new SCA node.
@@ -177,8 +185,8 @@ public abstract class SCANodeFactory {
      * @param contributions the URI of the contributions that provides the composites and related artifacts 
      * @return a new SCA node.
      */
-    public abstract SCANode createSCANode(String compositeURI,
+    public abstract Node createNode(String compositeURI,
                                           String compositeContent,
-                                          SCAContribution... contributions);
+                                          Contribution... contributions);
 
 }

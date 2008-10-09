@@ -18,7 +18,7 @@
  */
 package calculator.rcp;
 
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
@@ -38,7 +38,7 @@ public class Activator extends AbstractUIPlugin {
     private static Activator plugin;
 
     private NodeLauncher launcher;
-    private SCANode node;
+    private Node node;
 
     public Activator() {
     }
@@ -58,6 +58,7 @@ public class Activator extends AbstractUIPlugin {
         super.stop(context);
         if (node != null) {
             node.stop();
+            node.destroy();
         }
         if (launcher != null) {
             launcher.destroy();

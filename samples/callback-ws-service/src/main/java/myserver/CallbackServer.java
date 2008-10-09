@@ -20,8 +20,8 @@ package myserver;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This server program shows how to create and start an SCA runtime that
@@ -31,7 +31,7 @@ public class CallbackServer {
 
     public static void main(String[] args) throws Exception {
         
-        SCANode node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("callbackws.composite", null);
+        Node node = NodeFactory.newInstance().createSCANodeFromClassLoader("callbackws.composite", null);
         node.start();
 
         try {

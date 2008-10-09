@@ -20,18 +20,23 @@
 package org.apache.tuscany.sca.binding.gdata;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
 import com.google.gdata.data.PlainTextConstruct;
 
 public class ConsumerProviderTestCase extends TestCase {
 
-    private SCADomain scaDomainProvider = null;
-    private SCADomain scaDomainConsumer = null;
+    private Node providerNode = null;
+    private Node consumerNode = null;
     private CustomerClient testService = null;
 
     @Before
@@ -40,18 +45,26 @@ public class ConsumerProviderTestCase extends TestCase {
         System.out.println("Method Test Start-----------------------------------------------------------------------");
 
         // Setup the local GData servlet (Service Binding test)
-        scaDomainProvider = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Provider.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(ConsumerProviderTestCase.class);
+        providerNode = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/Provider.composite", new Contribution("provider", contribution));
+        providerNode.start();
         System.out.println("[Debug Info] Provider.composite ready...");
 
         // Initialize the GData client service (Reference Binding test)
-        scaDomainConsumer = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Consumer.composite");
-        testService = scaDomainConsumer.getService(CustomerClient.class, "CustomerClient");
+        consumerNode = NodeFactory.newInstance().createNode(
+                                                                    "org/apache/tuscany/sca/binding/gdata/Consumer.composite", new Contribution("consumer", contribution));
+        consumerNode.start();
+        testService = consumerNode.getService(CustomerClient.class, "CustomerClient");
     }
 
     @After
     @Override
     public void tearDown() {
-        scaDomainProvider.close();
+        providerNode.stop();
+        providerNode.destroy();
+        consumerNode.stop();
+        consumerNode.destroy();
         System.out.println("Method Test End------------------------------------------------------------------------");
         System.out.println("\n\n");
     }

@@ -18,8 +18,8 @@
  */
 package bigbank.stockquote.server;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -32,8 +32,8 @@ public class StockQuoteServer {
 
         System.out.println("Starting the Sample SCA StockQuote Service...");
 
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        SCANode node = factory.createSCANodeFromClassLoader("StockQuote.composite", StockQuoteServer.class.getClassLoader());
+        NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createSCANodeFromClassLoader("StockQuote.composite", StockQuoteServer.class.getClassLoader());
         node.start();
         
         // Method 1: To access the Spring Application Context instance

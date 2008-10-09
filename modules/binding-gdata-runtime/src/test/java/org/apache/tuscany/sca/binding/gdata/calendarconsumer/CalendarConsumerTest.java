@@ -18,6 +18,20 @@
  */
 package org.apache.tuscany.sca.binding.gdata.calendarconsumer;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.tuscany.sca.data.collection.NotFoundException;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Feed;
@@ -25,20 +39,11 @@ import com.google.gdata.data.Person;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.extensions.EventEntry;
 import com.google.gdata.data.extensions.When;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.data.collection.NotFoundException;
-
-import org.junit.Test;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertNotNull;
 
 //FIX-ME: the tests are executed in an incorrect order
 public class CalendarConsumerTest {
 
-    private static SCADomain scaDomain;
+    private static Node node;
     private Feed feed;
     private BaseEntry returnedEntry;
     private BaseEntry searchedEntry;
@@ -47,13 +52,17 @@ public class CalendarConsumerTest {
 
     @BeforeClass
     public static void init() {
-        scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/CalendarConsumer.composite");
-        consumer = scaDomain.getService(CalendarConsumerImpl.class, "CalendarConsumer");
+        String contribution = ContributionLocationHelper.getContributionLocation(CalendarConsumer.class);
+        node = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/CalendarConsumer.composite", new Contribution("consumer", contribution));
+        node.start();
+        consumer = node.getService(CalendarConsumerImpl.class, "CalendarConsumer");
     }
 
     @AfterClass
     public static void close() {
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 
     @Test

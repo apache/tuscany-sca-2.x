@@ -28,7 +28,7 @@ import org.osoa.sca.ServiceReference;
  *
  * @version $Rev$ $Date$
  */
-public interface SCAClient {
+public interface Client {
 
     /**
      * Cast a type-safe reference to a CallahbleReference. Converts a type-safe

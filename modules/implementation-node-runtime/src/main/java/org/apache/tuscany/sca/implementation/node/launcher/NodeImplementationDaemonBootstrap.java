@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.node.launcher;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.ServiceReference;
 
 /**
  * Bootstrap class for the SCA node daemon.
@@ -28,15 +32,15 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
  * @version $Rev$ $Date$
  */
 public class NodeImplementationDaemonBootstrap {
-    private SCANode node;
+    private Node node;
 
     /**
      * A node wrappering an instance of a node daemon.
      */
-    public static class NodeFacade implements SCANode {
+    public static class NodeFacade implements Node {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCANode daemon;
+        private Node daemon;
         
         private NodeFacade() {
             runtimeClassLoader = Thread.currentThread().getContextClassLoader();
@@ -47,8 +51,9 @@ public class NodeImplementationDaemonBootstrap {
             boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                SCANodeFactory factory = SCANodeFactory.newInstance();
-                daemon = factory.createSCANodeFromClassLoader("NodeDaemon.composite", threadContextClassLoader);
+                NodeFactory factory = NodeFactory.newInstance();
+                String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+                daemon = factory.createNode("NodeDaemon.composite", new Contribution("node-runtime", contribution));
                 started = true;
             } finally {
                 if (!started) {
@@ -65,6 +70,27 @@ public class NodeImplementationDaemonBootstrap {
                 Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
         }
+
+        public void destroy() {
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                daemon.destroy();
+            } finally {
+                Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+            }
+        }
+
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> B getService(Class<B> businessInterface, String serviceName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+            throw new UnsupportedOperationException();
+        }
     }
     
     /**
@@ -78,7 +104,7 @@ public class NodeImplementationDaemonBootstrap {
      * Returns the node representing the daemon.
      * @return
      */
-    public SCANode getNode() {
+    public Node getNode() {
         return node;
     }
 

@@ -22,15 +22,13 @@ package org.apache.tuscany.sca.node.impl;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.contribution;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.loadModules;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.startModules;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.stopModules;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,9 +75,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -96,7 +93,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class NodeImpl implements SCANode, SCAClient {
+public class NodeImpl implements Node, Client {
 
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
@@ -120,7 +117,7 @@ public class NodeImpl implements SCANode, SCAClient {
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
     private StAXArtifactProcessor<Composite> compositeProcessor; 
     private ProxyFactory proxyFactory;
-    private List<ModuleActivator> modules;
+    private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
     private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
 
@@ -170,7 +167,7 @@ public class NodeImpl implements SCANode, SCAClient {
      * @param compositeURI
      * @param contributions
      */
-    NodeImpl(String compositeURI, SCAContribution[] contributions) {
+    NodeImpl(String compositeURI, org.apache.tuscany.sca.node.Contribution[] contributions) {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);
 
@@ -190,7 +187,7 @@ public class NodeImpl implements SCANode, SCAClient {
             }
   
                 // Create contribution models
-            for (SCAContribution c : contributions) {
+            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
                 Contribution contribution = contribution(contributionFactory, c);
                 configuration.getContributions().add(contribution);
             }
@@ -210,7 +207,7 @@ public class NodeImpl implements SCANode, SCAClient {
      * @param compositeContent
      * @param contributions
      */
-    NodeImpl(String compositeURI, String compositeContent, SCAContribution[] contributions) {
+    NodeImpl(String compositeURI, String compositeContent, org.apache.tuscany.sca.node.Contribution[] contributions) {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);
 
@@ -238,7 +235,7 @@ public class NodeImpl implements SCANode, SCAClient {
             configuration.setComposite(composite);
 
             // Create contribution models
-            for (SCAContribution c : contributions) {
+            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
                 Contribution contribution = contribution(contributionFactory, c);
                 configuration.getContributions().add(contribution);
             }
@@ -263,9 +260,10 @@ public class NodeImpl implements SCANode, SCAClient {
         monitor = monitorFactory.createMonitor(); 
         
         // Initialize the Tuscany module activators
-        ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-        for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
-            activator.start(extensionPoints);
+        ModuleActivatorExtensionPoint activators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+        for (ModuleActivator moduleActivator: activators.getModuleActivators()) {
+            moduleActivator.start(extensionPoints);
+            moduleActivators.add(moduleActivator);
         }
 
         // Get XML input/output factories
@@ -301,17 +299,6 @@ public class NodeImpl implements SCANode, SCAClient {
         compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
         // Initialize runtime
-
-        // Load the runtime modules
-        try {
-            modules = loadModules(extensionPoints);
-
-            // Start the runtime modules
-            startModules(extensionPoints, modules);
-            
-        } catch (ActivationException e) {
-            throw new IllegalStateException(e);
-        }
 
         // Get proxy factory
         ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
@@ -458,8 +445,13 @@ public class NodeImpl implements SCANode, SCAClient {
             throw new IllegalStateException(e);
         }
 
+    }
+    
+    public void destroy() {
         // Stop the runtime modules
-        stopModules(extensionPoints, modules);
+        for (ModuleActivator moduleActivator: moduleActivators) {
+            moduleActivator.stop(extensionPoints);
+        }
 
         // Stop and destroy the work manager
         workScheduler.destroy();

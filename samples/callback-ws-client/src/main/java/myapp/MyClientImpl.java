@@ -21,9 +21,9 @@ package myapp;
 import myserver.MyService;
 import myserver.MyServiceCallback;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -49,15 +49,15 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
     }
 
     public static void main(String[] args) throws Exception {
-        SCANode node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("myapp.composite", MyClientImpl.class.getClassLoader());
+        Node node = NodeFactory.newInstance().createSCANodeFromClassLoader("myapp.composite", MyClientImpl.class.getClassLoader());
         node.start();
         run(node);
         System.out.println("Closing the domain");
         node.stop();
     }
 
-    public static void run(SCANode node) throws InterruptedException {
-        MyClient myClient = ((SCAClient)node).getService(MyClient.class, "MyClientComponent");
+    public static void run(Node node) throws InterruptedException {
+        MyClient myClient = ((Client)node).getService(MyClient.class, "MyClientComponent");
         myClient.aClientMethod();
         Thread.sleep(5000);  // don't exit before callback arrives
     }

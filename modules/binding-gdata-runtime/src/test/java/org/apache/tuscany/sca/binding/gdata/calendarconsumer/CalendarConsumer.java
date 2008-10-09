@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.gdata.calendarconsumer;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+
 import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Entry;
@@ -26,18 +31,20 @@ import com.google.gdata.data.Person;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.extensions.EventEntry;
 import com.google.gdata.data.extensions.When;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class CalendarConsumer {
 
     public static void main(String... args) throws Exception {
 
-        SCADomain scaDomain;
+        Node node;
         CalendarConsumerImpl resourceCollection;
 
         //init
-        scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/CalendarConsumer.composite");
-        resourceCollection = scaDomain.getService(CalendarConsumerImpl.class, "CalendarConsumer");
+        String contribution = ContributionLocationHelper.getContributionLocation(CalendarConsumer.class);
+        node = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/CalendarConsumer.composite", new Contribution("consumer", contribution));
+        node.start();
+        resourceCollection = node.getService(CalendarConsumerImpl.class, "CalendarConsumer");
 
         //test methods
         System.out.println(
@@ -115,7 +122,8 @@ public class CalendarConsumer {
         }
 
         //close
-        scaDomain.close();
+        node.stop();
+        node.destroy();
 
     }
 }

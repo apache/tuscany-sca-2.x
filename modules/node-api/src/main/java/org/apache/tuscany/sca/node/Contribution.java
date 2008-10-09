@@ -16,29 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.host.embedded.test.extension;
-
-import org.apache.tuscany.sca.assembly.Implementation;
+package org.apache.tuscany.sca.node;
 
 /**
- * The model representing a test implementation in an SCA assembly model.
- * 
- * @version $Rev$ $Date$
+ * Represents an SCA contribution uri + location.
  */
-public interface TestImplementation extends Implementation {
-
+public final class Contribution {
+    private String uri;
+    private String location;
+    
     /**
-     * Returns the greeting string that can be configured on test implementations.
+     * Constructs a new SCA contribution.
      * 
-     * @return the greeting string that can be configured on test implementations
+     * @param uri The URI that uniquely identifies the contribution in the SCA domain
+     * @param location The URL of the contribution archive
      */
-    String getGreeting();
-
+    public Contribution(String uri, String location) {
+        this.uri = uri;
+        this.location = location;
+    }
+    
     /**
-     * Sets the greeting string that can be configured on test implementations.
-     * 
-     * @param greeting the greeting string that can be configured on test implementations
+     * Get the URI of the contribution
+     * @return The URI that uniquely identifies the contribution in the SCA domain
      */
-    void setGreeting(String greeting);
-
+    public String getURI() {
+        return uri;
+    }
+    
+    /**
+     * The location of the contribution
+     * @return The URL of the contribution archive
+     */
+    public String getLocation() {
+        return location;
+    }
 }

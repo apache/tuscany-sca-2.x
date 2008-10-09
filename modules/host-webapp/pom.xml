@@ -44,8 +44,9 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-	        <version>1.4-SNAPSHOT</version>
+            <artifactId>tuscany-node-impl</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

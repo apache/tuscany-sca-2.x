@@ -18,8 +18,8 @@
  */
 package myapp;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +29,12 @@ import org.junit.Test;
  */
 public class CallbackClientTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
         try {
-            node = SCANodeFactory.newInstance().createSCANodeFromClassLoader(null, getClass().getClassLoader());
+            node = NodeFactory.newInstance().createSCANodeFromClassLoader(null, getClass().getClassLoader());
             node.start();
         } catch (Exception ex) {
             System.out.println(ex.toString());

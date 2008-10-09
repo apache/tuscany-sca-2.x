@@ -20,7 +20,7 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Scope;
 public class CalculatorTestCase extends TestCase {
 
     private NodeLauncher launcher;
-    private SCANode node;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
@@ -48,8 +48,11 @@ public class CalculatorTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        if (launcher != null) {
+        if (node != null) {
             node.stop();
+            node.destroy();
+        }
+        if (launcher != null) {
             launcher.destroy();
         }
     }

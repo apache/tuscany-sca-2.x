@@ -33,16 +33,8 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.core.scope.CompositeScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.ConversationalScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.RequestScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.ScopeRegistry;
-import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
-import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
-import org.apache.tuscany.sca.node.SCAContribution;
 
 /**
  * NodeUtil
@@ -52,7 +44,7 @@ import org.apache.tuscany.sca.node.SCAContribution;
 public class NodeUtil {
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
-    static Contribution contribution(ContributionFactory contributionFactory, SCAContribution c) {
+    static Contribution contribution(ContributionFactory contributionFactory, org.apache.tuscany.sca.node.Contribution c) {
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(c.getURI());
         contribution.setLocation(c.getLocation());
@@ -70,76 +62,6 @@ public class NodeUtil {
             uri = uri.replace(" ", "%20");
         }
         return URI.create(uri);
-    }
-
-    static List<ModuleActivator> loadModules(ExtensionPointRegistry registry) throws ActivationException {
-
-        // Load and instantiate the modules found on the classpath (or any registered ClassLoaders)
-        List<ModuleActivator> modules = new ArrayList<ModuleActivator>();
-        try {
-            Set<ServiceDeclaration> moduleActivators = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName());
-            Set<String> moduleClasses = new HashSet<String>();
-            for (ServiceDeclaration moduleDeclarator : moduleActivators) {
-                if (moduleClasses.contains(moduleDeclarator.getClassName())) {
-                    continue;
-                }
-                moduleClasses.add(moduleDeclarator.getClassName());
-                Class<?> moduleClass = moduleDeclarator.loadClass();
-                ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
-                modules.add(module);
-            }
-        } catch (IOException e) {
-            throw new ActivationException(e);
-        } catch (ClassNotFoundException e) {
-            throw new ActivationException(e);
-        } catch (InstantiationException e) {
-            throw new ActivationException(e);
-        } catch (IllegalAccessException e) {
-            throw new ActivationException(e);
-        }
-
-        return modules;
-    }
-
-    static void startModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) throws ActivationException {
-        boolean debug = logger.isLoggable(Level.FINE);
-        
-        // Start all the extension modules
-        for (ModuleActivator module : modules) {
-            long start = 0L;
-            if (debug) {
-                logger.fine(module.getClass().getName() + " is starting.");
-                start = System.currentTimeMillis();
-            }
-            try {
-                module.start(registry);
-                if (debug) {
-                    long end = System.currentTimeMillis();
-                    logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
-                }
-            } catch (Throwable e) {
-                logger.log(Level.WARNING, "Exception starting module " + module.getClass().getName()
-                    + " :"
-                    + e.getMessage());
-                logger.log(Level.FINE, "Exception starting module " + module.getClass().getName(), e);
-            }
-        }
-    }
-
-    static void stopModules(final ExtensionPointRegistry registry, List<ModuleActivator> modules) {
-        boolean debug = logger.isLoggable(Level.FINE);
-        for (ModuleActivator module : modules) {
-            long start = 0L;
-            if (debug) {
-                logger.fine(module.getClass().getName() + " is stopping.");
-                start = System.currentTimeMillis();
-            }
-            module.stop(registry);
-            if (debug) {
-                long end = System.currentTimeMillis();
-                logger.fine(module.getClass().getName() + " is stopped in " + (end - start) + " ms.");
-            }
-        }
     }
 
 //    private void loadSCADefinitions() throws ActivationException {

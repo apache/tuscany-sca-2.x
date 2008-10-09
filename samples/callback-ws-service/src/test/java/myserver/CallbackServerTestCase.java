@@ -21,8 +21,8 @@ package myserver;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +32,11 @@ import org.junit.Test;
  */
 public class CallbackServerTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
-        node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("callbackws.composite", null);
+        node = NodeFactory.newInstance().createSCANodeFromClassLoader("callbackws.composite", null);
         node.start();
     }
 

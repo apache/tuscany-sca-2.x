@@ -19,17 +19,24 @@
 
 package org.apache.tuscany.sca.binding.atom;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class Consumer {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(AtomDeleteTestCase.class);
+        Node node = NodeFactory.newInstance().createNode(
+                                                         "org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
+        node.start();
 
-        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
+        CustomerClient testService = node.getService(CustomerClient.class, "CustomerClient");
         testService.testCustomerCollection();
 
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 }

@@ -20,9 +20,12 @@
 package org.apache.tuscany.sca.domain.manager.launcher;
 
 import org.apache.tuscany.sca.domain.manager.impl.DomainManagerConfiguration;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.osoa.sca.CallableReference;
+import org.osoa.sca.ServiceReference;
 
 /**
  * Bootstrap class for the SCA domain manager.
@@ -30,15 +33,15 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
  * @version $Rev$ $Date$
  */
 public class DomainManagerLauncherBootstrap {
-    private SCANode node;
+    private Node node;
 
     /**
      * A node wrappering an instance of a domain manager.
      */
-    public static class NodeFacade implements SCANode {
+    public static class NodeFacade implements Node {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
-        private SCANode node;
+        private Node node;
         private String rootDirectory;
         
         private NodeFacade(String rootDirectory) {
@@ -51,12 +54,13 @@ public class DomainManagerLauncherBootstrap {
             boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-                SCANodeFactory factory = SCANodeFactory.newInstance();
-                node = factory.createSCANodeFromClassLoader("DomainManager.composite", getClass().getClassLoader());
+                NodeFactory factory = NodeFactory.newInstance();
+                String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+                node = factory.createNode("DomainManager.composite", new Contribution("domain-manager", contribution));
                 node.start();
 
                 // Set the domain manager's root directory
-                DomainManagerConfiguration domainManagerConfiguration = ((SCAClient) node).getService(DomainManagerConfiguration.class, "DomainManagerConfigurationComponent");
+                DomainManagerConfiguration domainManagerConfiguration = node.getService(DomainManagerConfiguration.class, "DomainManagerConfigurationComponent");
                 domainManagerConfiguration.setRootDirectory(rootDirectory);
                 
                 started = true;
@@ -75,6 +79,28 @@ public class DomainManagerLauncherBootstrap {
                 Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
         }
+        
+        public void destroy() {
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                node.destroy();
+            } finally {
+                Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+            }
+        }
+
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> B getService(Class<B> businessInterface, String serviceName) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
+            throw new UnsupportedOperationException();
+        }
+
     }
     
     /**
@@ -88,7 +114,7 @@ public class DomainManagerLauncherBootstrap {
      * Returns the node representing the domain manager.
      * @return
      */
-    public SCANode getNode() {
+    public Node getNode() {
         return node;
     }
 

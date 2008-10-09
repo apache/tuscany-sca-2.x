@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Node;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -51,7 +51,7 @@ public class NodeLauncherTestCase {
     @Test
     public void testLaunch() throws Exception {
         String location = ContributionLocationHelper.getContributionLocation(getClass());
-        SCANode node = launcher.createNode("HelloWorld.composite", new Contribution("test",  location));
+        Node node = launcher.createNode("HelloWorld.composite", new Contribution("test",  location));
         node.start();
         node.stop();
     }

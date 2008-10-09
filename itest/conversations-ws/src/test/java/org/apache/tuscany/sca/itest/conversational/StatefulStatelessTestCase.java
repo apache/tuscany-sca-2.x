@@ -29,17 +29,17 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStat
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class StatefulStatelessTestCase {
 
-    private static SCANode node;
+    private static Node node;
     private static ConversationalClient conversationalStatelessClientStatelessService;
     private static ConversationalClient conversationalStatelessClientStatefulService;
     private static ConversationalClient conversationalStatefulClientStatelessService;
@@ -50,28 +50,28 @@ public class StatefulStatelessTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         try {
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            node = nodeFactory.createSCANode(new File("src/main/resources/Conversational/conversational.composite").toURL().toString(),
-                                             new SCAContribution("TestContribution", 
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            node = nodeFactory.createNode(new File("src/main/resources/Conversational/conversational.composite").toURL().toString(),
+                                             new Contribution("TestContribution", 
                                                                  new File("src/main/resources/Conversational").toURL().toString()));
                     
              
             node.start();
             
-            conversationalStatelessClientStatelessService = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatelessClientStatelessService = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatelessClientStatelessService");
         
-            conversationalStatelessClientStatefulService  = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatelessClientStatefulService  = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatelessClientStatefulService");
         
-            conversationalStatefulClientStatelessService  = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatefulClientStatelessService  = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatefulClientStatelessService");
         
-            conversationalStatefulClientStatefulService   = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatefulClientStatefulService   = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatefulClientStatefulService");
-            conversationalStatelessClientRequestService    = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatelessClientRequestService    = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatelessClientRequestService");
-            conversationalStatefulClientNonConversationalCallbackStatelessService    = ((SCAClient)node).getService(ConversationalClient.class, 
+            conversationalStatefulClientNonConversationalCallbackStatelessService    = ((Client)node).getService(ConversationalClient.class, 
                                                                                   "ConversationalStatefulClientNonConversationalCallbackStatefulService");
                 
             // reset the place where we record the sequence of calls passing

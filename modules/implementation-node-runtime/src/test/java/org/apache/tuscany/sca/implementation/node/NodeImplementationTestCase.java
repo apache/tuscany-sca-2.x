@@ -20,8 +20,10 @@ package org.apache.tuscany.sca.implementation.node;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * Test case for node component implementations.
@@ -30,11 +32,13 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
  */
 public class NodeImplementationTestCase extends TestCase {
 
-    private SCANode node;
+    private Node node;
     
     @Override
     protected void setUp() throws Exception {
-        node = SCANodeFactory.newInstance().createSCANodeFromClassLoader("TestNode.composite", null);
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("TestNode.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @Override

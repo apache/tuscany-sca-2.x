@@ -18,17 +18,23 @@
  */
 package org.apache.tuscany.sca.binding.gdata.consumerprovider;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class Provider {
 
     public static void main(String[] args) throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/gdata/Provider.composite");
-
+        String contribution = ContributionLocationHelper.getContributionLocation(Provider.class);
+        Node node = NodeFactory.newInstance().createNode(
+                                                     "org/apache/tuscany/sca/binding/gdata/Provider.composite", new Contribution("provider", contribution));
+        node.start();
         System.out.println("Ready for consultings...");
         System.in.read();
 
-        scaDomain.close();
+        node.stop();
+        node.destroy();
     }
 }

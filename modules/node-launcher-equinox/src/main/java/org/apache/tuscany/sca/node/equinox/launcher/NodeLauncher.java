@@ -64,7 +64,7 @@ public class NodeLauncher {
      * @return a new SCA node.
      * @throws LauncherException
      */
-    public <T> T createNodeFromURL(String configurationURL) throws LauncherException {
+    public <T> T createNode(String configurationURL) throws LauncherException {
         return (T)node(configurationURL, null, null, null, bundleContext);
     }
 
@@ -113,7 +113,7 @@ public class NodeLauncher {
                 // Create a node from a configuration URI
                 String configurationURI = args[0];
                 logger.info("SCA Node configuration: " + configurationURI);
-                node = launcher.createNodeFromURL(configurationURI);
+                node = launcher.createNode(configurationURI);
             } else {
                 
                 // Create a node from a composite URI and a contribution location
@@ -157,7 +157,7 @@ public class NodeLauncher {
             
             // Stop the node
             if (node != null) {
-                stopNode(node);
+                destroyNode(node);
             }
             if (equinox != null) {
                 equinox.stop();
@@ -178,9 +178,10 @@ public class NodeLauncher {
      * @param node
      * @throws Exception
      */
-    private static void stopNode(Object node) throws Exception {
+    private static void destroyNode(Object node) throws Exception {
         try {
             node.getClass().getMethod("stop").invoke(node);
+            node.getClass().getMethod("destroy").invoke(node);
             logger.info("SCA Node is now stopped.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
@@ -200,7 +201,7 @@ public class NodeLauncher {
 
         public void run() {
             try {
-                stopNode(node);
+                destroyNode(node);
             } catch (Exception e) {
                 // Ignore
             }

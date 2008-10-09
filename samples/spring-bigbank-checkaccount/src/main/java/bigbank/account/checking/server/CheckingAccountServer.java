@@ -21,8 +21,8 @@ package bigbank.account.checking.server;
 import java.io.IOException;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This server program shows how to create an SCA runtime, and start it which
@@ -39,8 +39,8 @@ public class CheckingAccountServer {
             jmsBroker.addConnector("tcp://localhost:61619");
             jmsBroker.start();
             
-            SCANodeFactory factory = SCANodeFactory.newInstance();
-            SCANode node = factory.createSCANodeFromClassLoader("CheckingsAccount.composite", CheckingAccountServer.class.getClassLoader());
+            NodeFactory factory = NodeFactory.newInstance();
+            Node node = factory.createSCANodeFromClassLoader("CheckingsAccount.composite", CheckingAccountServer.class.getClassLoader());
             node.start();
 
             System.out.println("CheckingsAccount server started (press enter to shutdown)");
