@@ -65,7 +65,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
         try {
             InitialContext ctx = new InitialContext();
             jsr237WorkManager = (WorkManager)ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
-        } catch (NamingException e) {
+        } catch (Throwable e) {
             // ignore
         }
         if (jsr237WorkManager == null) {
