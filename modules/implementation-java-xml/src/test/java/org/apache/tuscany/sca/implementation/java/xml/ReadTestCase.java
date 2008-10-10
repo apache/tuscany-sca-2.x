@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.java.xml;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -26,15 +30,11 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -42,47 +42,40 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test reading Java implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class ReadTestCase extends TestCase {
+public class ReadTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
-    private CompositeBuilder compositeBuilder;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static CompositeBuilder compositeBuilder;
     
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
 
-        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper);
+        compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class); 
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
     }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -93,7 +86,9 @@ public class ReadTestCase extends TestCase {
 
     }
 
-    public void fixmeTestPolicyIntents() throws Exception {
+    @Ignore("To be fixed")
+    @Test
+    public void testPolicyIntents() throws Exception {
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         
         URL url = getClass().getResource("definitions.xml");
@@ -157,6 +152,7 @@ public class ReadTestCase extends TestCase {
         }
     }
     
+    @Test
     public void testPolicySets() throws Exception {
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         

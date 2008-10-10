@@ -25,27 +25,29 @@ import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test writing Java implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteTestCase extends TestCase {
+public class WriteTestCase {
 
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private XMLInputFactory inputFactory;
-    private XMLOutputFactory outputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static XMLInputFactory inputFactory;
+    private static XMLOutputFactory outputFactory;
     
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
@@ -53,10 +55,11 @@ public class WriteTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
 
+    @Test
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
-        assertNotNull(composite);
+        Assert.assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
     }
