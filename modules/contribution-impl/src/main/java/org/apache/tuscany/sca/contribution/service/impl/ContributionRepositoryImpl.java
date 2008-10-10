@@ -55,7 +55,6 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * The default implementation of ContributionRepository

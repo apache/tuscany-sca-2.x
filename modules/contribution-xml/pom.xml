@@ -60,7 +60,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.contribution.xml</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package></Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.contribution.xml</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

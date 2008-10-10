@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * URLArtifactProcessor that handles sca-contribution.xml files.
@@ -50,17 +49,17 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     private final XMLInputFactory inputFactory;
     private final Monitor monitor;
 
-    public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory, 
-    											 StAXArtifactProcessor staxProcessor,
-    											 Monitor monitor) {
+    public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory,
+                                                 StAXArtifactProcessor staxProcessor,
+                                                 Monitor monitor) {
         this.inputFactory = inputFactory;
         this.staxProcessor = staxProcessor;
         this.monitor = monitor;
     }
-    
-    public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories, 
-    											 StAXArtifactProcessor staxProcessor,
-    											 Monitor monitor) {
+
+    public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories,
+                                                 StAXArtifactProcessor staxProcessor,
+                                                 Monitor monitor) {
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.staxProcessor = staxProcessor;
         this.monitor = monitor;
