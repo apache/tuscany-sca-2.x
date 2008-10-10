@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.core.databinding.processor;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
@@ -31,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
@@ -38,18 +37,12 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
-public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
-
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-    }
+public class DataBindingJavaInterfaceProcessorTestCase {
 
     /**
      * @throws InvalidServiceContractException
      */
+    @Test
     public final void testVisitInterface() throws InvalidInterfaceException {
         DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint();
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor(registry);
@@ -65,11 +58,6 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         contract.getOperations().add(operation1);
         contract.setRemotable(true);
         processor.visitInterface(contract);
-        // Assert.assertEquals("org.w3c.dom.Node", contract.getDataBinding());
-        // Assert.assertEquals("org.w3c.dom.Node",
-        // contract.getOperations().get("call").getDataBinding());
-        // Assert.assertEquals("xml:string",
-        // contract.getOperations().get("call1").getDataBinding());
     }
 
     @DataBinding("org.w3c.dom.Node")
