@@ -113,8 +113,8 @@
                 <module>host-rmi</module>
                 <!--
                 <module>host-tomcat</module>
-                -->
                 <module>host-webapp</module>
+                -->
                 <module>host-webapp-junit</module>
                 <module>interface</module>
                 <module>interface-java</module>
