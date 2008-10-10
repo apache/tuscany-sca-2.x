@@ -134,6 +134,9 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
         	error("LocationAttributeMissing", reader);
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
+        
+        // Read policies
+        policyProcessor.readPolicies(springImplementation, reader);
 
         // Skip to end element
         while (reader.hasNext()) {

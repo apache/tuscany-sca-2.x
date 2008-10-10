@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -26,6 +28,8 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -39,6 +43,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
 
     private ProxyFactory proxyFactory;
     private JavaPropertyValueObjectFactory propertyFactory;
+    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
 
     /**
      * Simple constructor
@@ -55,6 +60,8 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
         TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         propertyFactory = new JavaPropertyValueObjectFactory(mediator);
+        
+        policyHandlerClassNames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
     }
 
     /**
@@ -66,7 +73,11 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
      */
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                SpringImplementation implementation) {
-        return new SpringImplementationProvider(component, implementation, proxyFactory, propertyFactory);
+        return new SpringImplementationProvider(component, 
+                                                implementation, 
+                                                proxyFactory, 
+                                                propertyFactory, 
+                                                policyHandlerClassNames);
     }
 
     /**
