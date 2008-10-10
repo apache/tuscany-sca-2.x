@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import javax.xml.namespace.QName;
+import static junit.framework.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -29,21 +29,24 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test the CompositeBuilder.
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBuilderTestCase extends TestCase {
+public class CompositeBuilderTestCase {
     
-    private AssemblyFactory assemblyFactory;
+    private static AssemblyFactory assemblyFactory;
     
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
     }
     
+    @Test
     public void testFuseIncludes() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));
@@ -76,6 +79,7 @@ public class CompositeBuilderTestCase extends TestCase {
         assertTrue(c.getReferences().get(0).getName().equals("r"));
     }
     
+    @Test
     public void testExpandComposites() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));

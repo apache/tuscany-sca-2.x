@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -28,27 +29,31 @@ import junit.framework.TestCase;
  * 
  * @version $Rev$ $Date$
  */
-public class AssemblyFactoryTestCase extends TestCase {
+public class AssemblyFactoryTestCase {
 
-    private AssemblyFactory assemblyFactory;
+    private static AssemblyFactory assemblyFactory;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
     }
 
+    @Test
     public void testCreateComponent() {
         createComponent("AccountServiceComponent1");
     }
 
+    @Test
     public void testCreateComponentType() {
         createComponentType();
     }
 
+    @Test
     public void testCreateComposite() {
         createComposite();
     }
 
+    @Test
     public void testCreateConstrainingType() {
         createConstrainingType();
     }
