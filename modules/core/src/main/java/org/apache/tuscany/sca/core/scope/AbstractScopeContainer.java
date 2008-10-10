@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
-import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
@@ -86,9 +85,6 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
 
     public void registerWrapper(InstanceWrapper wrapper, KEY contextId) throws TargetResolutionException { 
         // do nothing here. the conversational scope container implements this
-    }
-
-    public void onEvent(Event event) {
     }
 
     protected boolean isEagerInit() {

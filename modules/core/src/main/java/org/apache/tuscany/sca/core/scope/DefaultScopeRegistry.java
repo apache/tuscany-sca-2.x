@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.core.scope;
 /**
  * A default scope registry implementation.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class DefaultScopeRegistry extends ScopeRegistryImpl implements ScopeRegistry {
 
@@ -30,7 +30,7 @@ public class DefaultScopeRegistry extends ScopeRegistryImpl implements ScopeRegi
         ScopeContainerFactory[] factories =
             new ScopeContainerFactory[] {new CompositeScopeContainerFactory(), new StatelessScopeContainerFactory(),
                                          new RequestScopeContainerFactory(),
-                                         new ConversationalScopeContainerFactory(null),
+                                         new ConversationalScopeContainerFactory(),
                                          // new HttpSessionScopeContainer(monitor)
             };
         for (ScopeContainerFactory f : factories) {

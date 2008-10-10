@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.store.Store;
 
 /**
  * A scope context which manages atomic component instances keyed on ConversationID
@@ -44,7 +43,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     private Map<Object, InstanceLifeCycleWrapper> instanceLifecycleCollection =
         new ConcurrentHashMap<Object, InstanceLifeCycleWrapper>();
 
-    public ConversationalScopeContainer(Store aStore, RuntimeComponent component) {
+    public ConversationalScopeContainer(RuntimeComponent component) {
         super(Scope.CONVERSATION, component);
 
         // Note: aStore is here to preserve the original factory interface. It is not currently used in this 

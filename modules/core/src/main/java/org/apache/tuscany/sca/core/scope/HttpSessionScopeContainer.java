@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
-import org.apache.tuscany.sca.core.event.HttpSessionEnd;
-import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -33,16 +31,6 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer<Object> {
 
     public HttpSessionScopeContainer(RuntimeComponent component) {
         super(Scope.SESSION, component);
-    }
-
-    @Override
-    public void onEvent(Event event) {
-        checkInit();
-        if (event instanceof HttpSessionEnd) {
-            //FIXME key is not used
-            //Object key = ((HttpSessionEnd)event).getSessionID();
-            // FIXME: Remove the session id
-        }
     }
 
     @Override

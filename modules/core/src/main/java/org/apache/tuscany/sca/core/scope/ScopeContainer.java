@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
-import org.apache.tuscany.sca.event.RuntimeEventListener;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 
@@ -31,7 +30,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * For example, for COMPOSITE scope this could be the URI of the composite component,
  * or for HTTP Session scope it might be the HTTP session ID.
  */
-public interface ScopeContainer<KEY> extends RuntimeEventListener {
+public interface ScopeContainer<KEY> {
 
     /**
      * Returns the Scope that this container supports.

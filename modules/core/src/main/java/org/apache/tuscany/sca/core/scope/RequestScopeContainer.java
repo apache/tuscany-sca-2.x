@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
-import org.apache.tuscany.sca.core.event.RequestEnd;
-import org.apache.tuscany.sca.event.Event;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -38,14 +36,6 @@ public class RequestScopeContainer extends AbstractScopeContainer<Thread> {
     public RequestScopeContainer(RuntimeComponent component) {
         super(Scope.REQUEST, component);
         contexts = new ConcurrentHashMap<Thread, InstanceWrapper>();
-    }
-
-    @Override
-    public void onEvent(Event event) {
-        checkInit();
-        if (event instanceof RequestEnd) {
-            // shutdownInstances(Thread.currentThread());
-        }
     }
 
     @Override
