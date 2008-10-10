@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -33,26 +34,30 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 
 /**
  * Test resolving SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class ResolveTestCase extends TestCase {
+public class ResolveTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessorExtensionPoint staxProcessors;
-    private ModelResolver resolver; 
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessorExtensionPoint staxProcessors;
+    private static ModelResolver resolver; 
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         resolver = new DefaultModelResolver();
     }
 
+    @Test
     public void testResolveConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         StAXArtifactProcessor<ConstrainingType> constrainingTypeReader = staxProcessors.getProcessor(ConstrainingType.class);
@@ -75,6 +80,7 @@ public class ResolveTestCase extends TestCase {
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
+    @Test
     public void testResolveComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         StAXArtifactProcessor<Composite> compositeReader = staxProcessors.getProcessor(Composite.class);

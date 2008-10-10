@@ -19,14 +19,15 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -50,22 +51,24 @@ import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading SCA XML assembly documents.
  * 
  * @version $Rev: 561254 $ $Date: 2007-07-31 13:16:27 +0530 (Tue, 31 Jul 2007) $
  */
-public class BuildPolicyTestCase extends TestCase { 
-    private URLArtifactProcessor<Object> documentProcessor;
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
-    private ModelResolver resolver; 
-    private CompositeBuilder compositeBuilder;
-    private Composite composite;
-    private Monitor monitor;
+public class BuildPolicyTestCase { 
+    private static URLArtifactProcessor<Object> documentProcessor;
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static ModelResolver resolver; 
+    private static CompositeBuilder compositeBuilder;
+    private static Composite composite;
+    private static Monitor monitor;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
@@ -88,18 +91,18 @@ public class BuildPolicyTestCase extends TestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
         
-        URL url = getClass().getResource("CalculatorComponent.constrainingType");
+        URL url = BuildPolicyTestCase.class.getResource("CalculatorComponent.constrainingType");
         URI uri = URI.create("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
         assertNotNull(constrainingType);
         resolver.addModel(constrainingType);
 
-        url = getClass().getResource("TestAllPolicyCalculator.composite");
+        url = BuildPolicyTestCase.class.getResource("TestAllPolicyCalculator.composite");
         uri = URI.create("TestAllCalculator.constrainingType");
         composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
         
-        url = getClass().getResource("another_test_definitions.xml");
+        url = BuildPolicyTestCase.class.getResource("another_test_definitions.xml");
         uri = URI.create("another_test_definitions.xml");
         SCADefinitions definitions = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(definitions);
@@ -111,6 +114,7 @@ public class BuildPolicyTestCase extends TestCase {
         compositeBuilder.build(composite, null, monitor);
     }
 
+    @Test
     public void testPolicyIntentInheritance() throws Exception {
         String namespaceUri = "http://test";
         

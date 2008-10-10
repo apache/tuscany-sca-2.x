@@ -19,10 +19,14 @@
 
 package org.apache.tuscany.sca.assembly.xml; 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -35,20 +39,22 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading SCA XML assembly documents.
  * 
  * @version $Rev: 561254 $ $Date: 2007-07-31 13:16:27 +0530 (Tue, 31 Jul 2007) $
  */
-public class ResolvePolicyTestCase extends TestCase {
+public class ResolvePolicyTestCase {
 
-    private URLArtifactProcessor<Object> documentProcessor;
-    private ModelResolver resolver;  
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static URLArtifactProcessor<Object> documentProcessor;
+    private static ModelResolver resolver;  
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         resolver = new DefaultModelResolver();
         
@@ -61,6 +67,7 @@ public class ResolvePolicyTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
     }
 
+    @Test
     public void testResolveConstrainingType() throws Exception {
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
@@ -142,6 +149,7 @@ public class ResolvePolicyTestCase extends TestCase {
         
     }
 
+    @Test
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");

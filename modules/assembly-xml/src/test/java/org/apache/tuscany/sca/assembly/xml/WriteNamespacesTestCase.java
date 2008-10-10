@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -29,8 +31,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -38,19 +38,21 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test writing SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteNamespacesTestCase extends TestCase {
-    private StAXArtifactProcessor<Composite> compositeProcessor;
-    private XMLOutputFactory outputFactory;
-    private XMLInputFactory inputFactory;
+public class WriteNamespacesTestCase {
+    private static StAXArtifactProcessor<Composite> compositeProcessor;
+    private static XMLOutputFactory outputFactory;
+    private static XMLInputFactory inputFactory;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
@@ -61,6 +63,7 @@ public class WriteNamespacesTestCase extends TestCase {
         compositeProcessor = artifactProcessors.getProcessor(Composite.class);
     }
 
+    @Test
     public void testReadWriteComposite() throws Exception {
         
         // Read
@@ -85,6 +88,7 @@ public class WriteNamespacesTestCase extends TestCase {
         // Compare
         component = composite.getComponents().get(0);
         implementation = (Composite)component.getImplementation();
+        
         assertEquals(qname, implementation.getName());
     }
 

@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -27,25 +30,24 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class ReadWriteAttributeTestCase extends TestCase {
+public class ReadWriteAttributeTestCase {
 
-    private XMLInputFactory inputFactory;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
+    private static XMLInputFactory inputFactory;
+    private static ExtensibleStAXArtifactProcessor staxProcessor;
 
     private static final QName ATTRIBUTE = new QName("http://test", "customAttribute");
     
@@ -66,8 +68,8 @@ public class ReadWriteAttributeTestCase extends TestCase {
                          "<component name=\"DivideServiceComponent\" />"+
                          "</composite>";
     
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -79,11 +81,8 @@ public class ReadWriteAttributeTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance(), null);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        
-    }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorExtended.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -92,6 +91,7 @@ public class ReadWriteAttributeTestCase extends TestCase {
         is.close();
     }
     
+    @Test
     public void testWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorExtended.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

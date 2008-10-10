@@ -19,14 +19,15 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -48,23 +49,25 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test the wiring of SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class WireTestCase extends TestCase {
+public class WireTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private ModelResolver resolver; 
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
-    private CompositeBuilder compositeBuilder;
-    private Monitor monitor;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static ModelResolver resolver; 
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static CompositeBuilder compositeBuilder;
+    private static Monitor monitor;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -86,6 +89,7 @@ public class WireTestCase extends TestCase {
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
     }
 
+    @Test
     public void testResolveConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -114,6 +118,7 @@ public class WireTestCase extends TestCase {
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
+    @Test
     public void testResolveComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

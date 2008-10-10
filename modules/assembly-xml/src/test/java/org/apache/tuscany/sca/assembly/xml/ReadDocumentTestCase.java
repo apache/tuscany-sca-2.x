@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 import java.net.URI;
 import java.net.URL;
 
@@ -28,8 +31,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
@@ -45,6 +46,8 @@ import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPo
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -53,15 +56,15 @@ import org.xml.sax.XMLReader;
  * 
  * @version $Rev$ $Date$
  */
-public class ReadDocumentTestCase extends TestCase {
+public class ReadDocumentTestCase {
 
-    private URLArtifactProcessor<Object> documentProcessor;
-    private ModelResolver resolver;
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor; 
+    private static URLArtifactProcessor<Object> documentProcessor;
+    private static ModelResolver resolver;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor; 
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null); 
@@ -73,6 +76,7 @@ public class ReadDocumentTestCase extends TestCase {
         resolver = new DefaultModelResolver();
     }
 
+    @Test
     public void testValidateAssembly() throws Exception {
         
         SchemaFactory schemaFactory;
@@ -97,6 +101,7 @@ public class ReadDocumentTestCase extends TestCase {
            
     }
 
+    @Test
     public void testValidateImplementation() throws Exception {
         
         SchemaFactory schemaFactory;
@@ -120,6 +125,7 @@ public class ReadDocumentTestCase extends TestCase {
         reader.parse(new InputSource(url.openStream()));
     }
         
+    @Test
     public void testReadImplementation() throws Exception { 
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
@@ -133,6 +139,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNotNull(composite);
     }
         
+    @Test
     public void testValidateBinding() throws Exception {
         
         SchemaFactory schemaFactory;
@@ -156,6 +163,7 @@ public class ReadDocumentTestCase extends TestCase {
         reader.parse(new InputSource(url.openStream()));
     }
         
+    @Test
     public void testReadBinding() throws Exception {
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
@@ -169,6 +177,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNotNull(composite);
     }
         
+    @Test
     public void testResolveConstrainingType() throws Exception {
         
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
@@ -188,6 +197,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
+    @Test
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");

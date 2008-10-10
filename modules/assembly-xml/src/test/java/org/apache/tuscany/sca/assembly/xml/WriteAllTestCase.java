@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -28,8 +31,6 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -51,23 +52,25 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test writing SCA XML assemblies.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteAllTestCase extends TestCase {
-    private XMLInputFactory inputFactory;
-    private XMLOutputFactory outputFactory;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
-    private ModelResolver resolver; 
-    private CompositeBuilder compositeBuilder;
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
-    private Monitor monitor;
+public class WriteAllTestCase {
+    private static XMLInputFactory inputFactory;
+    private static XMLOutputFactory outputFactory;
+    private static ExtensibleStAXArtifactProcessor staxProcessor;
+    private static ModelResolver resolver; 
+    private static CompositeBuilder compositeBuilder;
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static Monitor monitor;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
@@ -90,10 +93,7 @@ public class WriteAllTestCase extends TestCase {
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    }
-
+    @Test
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessor.read(is, Composite.class);
@@ -111,6 +111,7 @@ public class WriteAllTestCase extends TestCase {
         
     }
 
+    @Test
     public void testReadWireWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessor.read(is, Composite.class);
@@ -127,6 +128,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessor.write(composite, bos);
     }
     
+    @Test
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = staxProcessor.read(is, ComponentType.class);
@@ -135,6 +137,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessor.write(componentType, bos);
     }
 
+    @Test
     public void testReadWriteConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = staxProcessor.read(is, ConstrainingType.class);
