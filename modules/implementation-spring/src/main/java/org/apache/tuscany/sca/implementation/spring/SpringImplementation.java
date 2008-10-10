@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.springframework.core.io.Resource;
 
 /**
@@ -46,7 +47,8 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     // Mapping of Services to Beans
     private Hashtable<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
-    private Hashtable<String, Class> propertyMap;
+    private Hashtable<String, Class> propertyMap;    
+    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
 
     protected SpringImplementation() {
         this.location = null;
@@ -146,4 +148,12 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     public Class getPropertyClass(String propertyName) {
         return propertyMap.get(propertyName);
     } // end method getPropertyClass
+    
+    public List<PolicyHandlerTuple> getPolicyHandlerClassNames() {
+        return policyHandlerClassNames;
+    }
+
+    public void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames) {
+        this.policyHandlerClassNames = policyHandlerClassNames;
+    }
 }

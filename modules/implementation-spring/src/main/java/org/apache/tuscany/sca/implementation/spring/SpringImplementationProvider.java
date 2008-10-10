@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.implementation.spring;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -38,6 +41,8 @@ public class SpringImplementationProvider implements ImplementationProvider {
     
     // A Spring application context object
     private AbstractApplicationContext springContext;
+    
+    private SpringImplementation implementation;
 
     /**
      * Constructor for the provider - takes a component definition and a Spring implementation
@@ -48,9 +53,13 @@ public class SpringImplementationProvider implements ImplementationProvider {
     public SpringImplementationProvider(RuntimeComponent component,
                                         SpringImplementation implementation,
                                         ProxyFactory proxyService,
-                                        JavaPropertyValueObjectFactory propertyValueObjectFactory) {
+                                        JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                                        List<PolicyHandlerTuple> policyHandlerClassNames) {
         super();
+        this.implementation = implementation;
         this.component = component;
+        this.implementation.setPolicyHandlerClassNames(policyHandlerClassNames);
+        
         SCAParentApplicationContext scaParentContext =
             new SCAParentApplicationContext(component, implementation, proxyService, propertyValueObjectFactory);
         springContext = new SCAApplicationContext(scaParentContext, implementation.getResource());
