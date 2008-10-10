@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -45,11 +45,11 @@ import org.junit.Test;
  */
 public class ContributionClassLoaderTestCase  {
     
-    private ContributionFactory contributionFactory;
-    private JavaImportExportFactory javaImportExportFactory;
+    private static ContributionFactory contributionFactory;
+    private static JavaImportExportFactory javaImportExportFactory;
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);

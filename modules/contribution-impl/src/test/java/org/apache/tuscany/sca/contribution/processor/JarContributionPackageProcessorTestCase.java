@@ -18,15 +18,16 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.contribution.processor.impl.JarContributionProcessor;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
+import org.junit.Test;
 
 /**
  * JAR Package Processor test case
@@ -35,9 +36,10 @@ import org.apache.tuscany.sca.contribution.service.util.IOHelper;
  * @version $Rev$ $Date$
  */
 
-public class JarContributionPackageProcessorTestCase extends TestCase {
+public class JarContributionPackageProcessorTestCase {
     private static final String JAR_CONTRIBUTION = "/repository/sample-calculator.jar";
-    
+
+    @Test
     public final void testProcessPackageArtifacts() throws Exception {
         JarContributionProcessor jarProcessor = new JarContributionProcessor();
 
@@ -49,7 +51,7 @@ public class JarContributionPackageProcessorTestCase extends TestCase {
         } finally {
             IOHelper.closeQuietly(jarStream);
         }
-        
+
         assertNotNull(artifacts);
     }
 }

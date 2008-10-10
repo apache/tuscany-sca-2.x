@@ -18,14 +18,15 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProcessor;
+import org.junit.Test;
 
 /**
  * Folder Package Processor test case
@@ -33,9 +34,10 @@ import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProc
  * 
  * @version $Rev$ $Date$
  */
-public class FolderContributionPackageProcessorTestCase extends TestCase {
+public class FolderContributionPackageProcessorTestCase {
     private static final String FOLDER_CONTRIBUTION = ".";
-    
+
+    @Test
     public final void testProcessPackageArtifacts() throws Exception {
         FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
         URL contributionURL = new File(FOLDER_CONTRIBUTION).toURL().toURI().toURL();

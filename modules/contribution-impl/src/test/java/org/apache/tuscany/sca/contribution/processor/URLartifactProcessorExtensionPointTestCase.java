@@ -19,17 +19,18 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
+import static junit.framework.Assert.assertNotNull;
+
 import java.net.URI;
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * URL Artifact Processor Extension Point test case
@@ -37,78 +38,78 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class URLartifactProcessorExtensionPointTestCase extends TestCase {
-    
-    private URLArtifactProcessorExtensionPoint artifactProcessors;
-    
-    @Override
-    protected void setUp() throws Exception {
+public class URLartifactProcessorExtensionPointTestCase {
+
+    private static URLArtifactProcessorExtensionPoint artifactProcessors;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         artifactProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         artifactProcessors.addArtifactProcessor(new FileTypeArtifactProcessor());
         artifactProcessors.addArtifactProcessor(new FileNameArtifactProcessor());
     }
-    
-    
+
+    @Test
     public final void testFileTypeProcessor() {
         assertNotNull(artifactProcessors.getProcessor(".m1"));
     }
-    
-    
+
+    @Test
     public final void testFileNameProcessor() {
         assertNotNull(artifactProcessors.getProcessor("file.m2"));
-        
+
     }
-    
+
     /**
      * Internal mock classes
      *
      */
-    
+
     private class M1 {
     }
-    
+
     private class M2 {
     }
-    
-    private class FileTypeArtifactProcessor implements URLArtifactProcessor<M1> {
+
+    private static class FileTypeArtifactProcessor implements URLArtifactProcessor<M1> {
         public FileTypeArtifactProcessor() {
         }
 
         public M1 read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
             return null;
         }
-        
+
         public void resolve(M1 m1, ModelResolver resolver) throws ContributionResolveException {
         }
 
         public String getArtifactType() {
             return ".m1";
         }
-        
+
         public Class<M1> getModelType() {
             return M1.class;
-        }        
+        }
     }
-    
-    private class FileNameArtifactProcessor implements URLArtifactProcessor<M2> {
+
+    private static class FileNameArtifactProcessor implements URLArtifactProcessor<M2> {
         public FileNameArtifactProcessor() {
         }
 
         public M2 read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
             return null;
         }
-        
+
         public void resolve(M2 m2, ModelResolver resolver) throws ContributionResolveException {
         }
 
         public String getArtifactType() {
             return "file.m2";
         }
-        
+
         public Class<M2> getModelType() {
             return M2.class;
-        }        
+        }
     }
 
 }

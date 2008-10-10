@@ -19,7 +19,8 @@
 
 package org.apache.tuscany.sca.contribution.java.impl;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -27,17 +28,19 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test ClassReferenceArtifactResolver.
  *
  * @version $Rev: 560435 $ $Date: 2007-07-27 18:26:55 -0700 (Fri, 27 Jul 2007) $
  */
-public class ClassReferenceArtifactResolverTestCase extends TestCase {
-    private ExtensibleModelResolver resolver;
+public class ClassReferenceArtifactResolverTestCase {
+    private static ExtensibleModelResolver resolver;
     
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
         ModelResolverExtensionPoint resolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -50,6 +53,7 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
      * Test ClassReference resolution
      * 
      */
+    @Test
     public void testResolveClass() {
         ClassReference ref = new ClassReference(getClass().getName());
         ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
@@ -61,6 +65,7 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
      * Test ClassReference resolution of inexistent class
      *
      */
+    @Test
     public void testUnresolvedClass() {
         ClassReference ref = new ClassReference("NonExistentClass");
         ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);

@@ -18,45 +18,52 @@
  */
 package org.apache.tuscany.sca.contribution.services;
 
-import java.net.URL;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.net.URL;
 
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class PackageTypeDescriberImplTestCase extends TestCase {
-    private PackageTypeDescriberImpl packageTypeDescriber;
+public class PackageTypeDescriberImplTestCase {
+    private static PackageTypeDescriberImpl packageTypeDescriber;
 
+    @Test
     public void testResolveArchivePackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/sample-calculator.jar");
         assertEquals(PackageType.JAR, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
+    @Test
     public void testResolveFolderPackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/");
         assertEquals(PackageType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
+    @Test
     public void testResolveFolder2PackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables");
         assertEquals(PackageType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
-    
+    @Test
     public void testResolveUnknownPackageType() throws Exception {
         URL artifactURL = getClass().getResource("/test.ext");
         assertNull(this.packageTypeDescriber.getType(artifactURL, null));
     }
-    
+
+    @Test
     public void testDefaultPackageType() throws Exception {
         URL artifactURL = getClass().getResource("/test.ext");
-        assertEquals("application/vnd.tuscany.ext", 
-                packageTypeDescriber.getType(artifactURL, "application/vnd.tuscany.ext"));        
+        assertEquals("application/vnd.tuscany.ext", packageTypeDescriber.getType(artifactURL,
+                                                                                 "application/vnd.tuscany.ext"));
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         packageTypeDescriber = new PackageTypeDescriberImpl();
     }
 

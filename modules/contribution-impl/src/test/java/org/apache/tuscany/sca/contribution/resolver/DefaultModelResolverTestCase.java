@@ -19,28 +19,31 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertTrue;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test the default model resolver implementation.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultModelResolverTestCase extends TestCase {
-    
+public class DefaultModelResolverTestCase {
+
     private ModelResolver resolver;
     private ContributionFactory factory;
-    
-    @Override
-    protected void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         resolver = new DefaultModelResolver();
         factory = new DefaultContributionFactory();
     }
-    
+
+    @Test
     public void testResolved() {
         Model a = new Model("a");
         resolver.addModel(a);
@@ -48,13 +51,15 @@ public class DefaultModelResolverTestCase extends TestCase {
         x = resolver.resolveModel(Model.class, x);
         assertTrue(x == a);
     }
-    
+
+    @Test
     public void testUnresolved() {
         Model x = new Model("a");
         Model y = resolver.resolveModel(Model.class, x);
         assertTrue(x == y);
     }
-        
+
+    @Test
     public void testResolvedArtifact() {
         Artifact artifact = factory.createArtifact();
         artifact.setURI("foo/bar");
@@ -64,19 +69,19 @@ public class DefaultModelResolverTestCase extends TestCase {
         x = resolver.resolveModel(Artifact.class, x);
         assertTrue(x == artifact);
     }
-    
+
     class Model {
         private String name;
-        
+
         Model(String name) {
             this.name = name;
         }
-        
+
         @Override
         public int hashCode() {
             return name.hashCode();
         }
-        
+
         @Override
         public boolean equals(Object obj) {
             return name.equals(((Model)obj).name);

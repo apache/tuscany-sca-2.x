@@ -31,28 +31,28 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class TestModelResolver implements ModelResolver {
-    
+
     private Map<Object, Object> map = new HashMap<Object, Object>();
-    
+
     public TestModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     }
-    
+
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             // Return the resolved object
             return modelClass.cast(resolved);
-        } 
+        }
         // Return the unresolved object
         return unresolved;
     }
-    
+
     public void addModel(Object resolved) {
         map.put(resolved, resolved);
     }
-    
+
     public Object removeModel(Object resolved) {
         return map.remove(resolved);
     }
-    
+
 }

@@ -59,7 +59,13 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.contribution</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.contribution*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.contribution,
+                            org.apache.tuscany.sca.contribution.processor,
+                            org.apache.tuscany.sca.contribution.resolver,
+                            org.apache.tuscany.sca.contribution.scanner,
+                            org.apache.tuscany.sca.contribution.service
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

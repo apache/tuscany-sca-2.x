@@ -19,27 +19,33 @@
 
 package org.apache.tuscany.sca.contribution.services;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class ContributionRepositoryTestCase extends TestCase {
-    private ContributionRepositoryImpl repository;
+public class ContributionRepositoryTestCase {
+    private static ContributionRepositoryImpl repository;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         // create repository (this should re-create the root directory)
-        this.repository = new ContributionRepositoryImpl("target/repository/", XMLInputFactory.newInstance(), null);
+        repository = new ContributionRepositoryImpl("target/repository/", XMLInputFactory.newInstance(), null);
         repository.init();
     }
 
+    @Test
     public void testStore() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         String contribution = "sample-calculator.jar";
@@ -51,6 +57,7 @@ public class ContributionRepositoryTestCase extends TestCase {
         assertNotNull(contributionURL);
     }
 
+    @Test
     public void testRemove() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         String contribution = "sample-calculator.jar";
@@ -63,6 +70,7 @@ public class ContributionRepositoryTestCase extends TestCase {
         assertNull(contributionURL);
     }
 
+    @Test
     public void testList() throws Exception {
         String resourceLocation = "/repository/sample-calculator.jar";
         String contribution = "sample-calculator.jar";
@@ -73,9 +81,8 @@ public class ContributionRepositoryTestCase extends TestCase {
         assertEquals(1, repository.list().size());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @AfterClass
+    public static void tearDown() throws Exception {
         FileHelper.deleteDirectory(new File("target/repository"));
     }
 }

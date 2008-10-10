@@ -66,7 +66,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.contribution.java</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.contribution.java*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.contribution.java</Export-Package>
                         <DynamicImport-Package>org.apache.tuscany.sca.contribution.osgi.impl</DynamicImport-Package>
                     </instructions>
                 </configuration>
