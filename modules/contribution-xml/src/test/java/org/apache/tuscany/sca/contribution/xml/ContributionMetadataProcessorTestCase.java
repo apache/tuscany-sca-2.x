@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.contribution.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -27,8 +30,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -41,6 +42,8 @@ import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test the contribution metadata processor.
@@ -48,52 +51,53 @@ import org.apache.tuscany.sca.monitor.Problem;
  * @version $Rev$ $Date$
  */
 
-public class ContributionMetadataProcessorTestCase extends TestCase {
+public class ContributionMetadataProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable composite=\"ns:Composite2\"/>"
             + "</contribution>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable/>"
             + "</contribution>";
-    
-    private XMLInputFactory inputFactory;
-    private XMLOutputFactory outputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
 
-    @Override
-    protected void setUp() throws Exception {
+    private static XMLInputFactory inputFactory;
+    private static XMLOutputFactory outputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static Monitor monitor;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        
+
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
-        
+
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();  
+        MonitorFactory monitorFactory = new DefaultMonitorFactory();
         if (monitorFactory != null) {
-        	monitor = monitorFactory.createMonitor();
-        	utilities.addUtility(monitorFactory);
-        }        
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            monitor = monitorFactory.createMonitor();
+            utilities.addUtility(monitorFactory);
+        }
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
 
+    @Test
     public void testRead() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
         ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
-  }
+    }
 
+    @Test
     public void testReadInvalid() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         /*try {
@@ -103,17 +107,18 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
             assertTrue(true);
         }*/
         staxProcessor.read(reader);
-        Problem problem = monitor.getLastProblem();           
+        Problem problem = monitor.getLastProblem();
         assertNotNull(problem);
         assertEquals("AttributeCompositeMissing", problem.getMessageId());
-    }    
+    }
 
+    @Test
     public void testWrite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
         ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
 
         validateContribution(contribution);
-        
+
         //write the contribution metadata contents
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stringWriter);
@@ -122,19 +127,19 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
 
         reader = inputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
         contribution = (ContributionMetadata)staxProcessor.read(reader);
-        
+
         validateContribution(contribution);
-  }
-    
-  private void validateContribution(ContributionMetadata contribution) {
-	  QName deployable;
-	  
-	  assertNotNull(contribution);
-	  assertEquals(2, contribution.getDeployables().size());
-	  deployable = new QName("http://ns", "Composite1");
-	  assertEquals(deployable, contribution.getDeployables().get(0).getName());
-	  deployable = new QName("http://ns", "Composite2");
-	  assertEquals(deployable, contribution.getDeployables().get(1).getName());	  
-  }
-    
+    }
+
+    private void validateContribution(ContributionMetadata contribution) {
+        QName deployable;
+
+        assertNotNull(contribution);
+        assertEquals(2, contribution.getDeployables().size());
+        deployable = new QName("http://ns", "Composite1");
+        assertEquals(deployable, contribution.getDeployables().get(0).getName());
+        deployable = new QName("http://ns", "Composite2");
+        assertEquals(deployable, contribution.getDeployables().get(1).getName());
+    }
+
 }
