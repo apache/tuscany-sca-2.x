@@ -66,7 +66,11 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.assembly</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.assembly*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.assembly,
+                            org.apache.tuscany.sca.assembly.builder,
+                            org.apache.tuscany.sca.assembly.impl,
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
