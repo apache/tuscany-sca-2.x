@@ -8,7 +8,6 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -25,20 +24,22 @@ public class AtomDeleteTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        try{
-        System.out.println(">>>AtomDeleteTestCase.init entry");
-        String contribution = ContributionLocationHelper.getContributionLocation(AtomDeleteTestCase.class);
-        providerNode = NodeFactory.newInstance().createNode(
-                                                               "org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
-        consumerNode = NodeFactory.newInstance().createNode(
-                                                               "org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
-        providerNode.start();
-        consumerNode.start();
-        testService = consumerNode.getService(CustomerClient.class, "CustomerClient");
-        abdera = new Abdera();
+        try {
+            System.out.println(">>>AtomDeleteTestCase.init entry");
+            String contribution = ContributionLocationHelper.getContributionLocation(AtomDeleteTestCase.class);
+            providerNode =
+                NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite",
+                                                     new Contribution("provider", contribution));
+            consumerNode =
+                NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Consumer.composite",
+                                                     new Contribution("consumer", contribution));
+            providerNode.start();
+            consumerNode.start();
+            testService = consumerNode.getService(CustomerClient.class, "CustomerClient");
+            abdera = new Abdera();
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
     }
 
