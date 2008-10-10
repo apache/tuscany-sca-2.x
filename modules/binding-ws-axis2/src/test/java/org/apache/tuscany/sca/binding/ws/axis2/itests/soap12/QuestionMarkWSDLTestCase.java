@@ -33,7 +33,10 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * Test ?wsdl works and that the returned WSDL has the correct endpoint
@@ -43,7 +46,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class QuestionMarkWSDLTestCase extends TestCase {
 
     private static boolean newGenerator = true;
-    private SCADomain domain;
+    private Node node;
 
     /**
      * Tests ?wsdl returns a soap 1.1 port by default
@@ -127,12 +130,15 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/soap12/questionmark-wsdl.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/soap12/questionmark-wsdl.composite", new Contribution("test", contribution));
+        node.start();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }

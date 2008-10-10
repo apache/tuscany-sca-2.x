@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.node.impl;
 
 import static java.lang.System.currentTimeMillis;
+import static org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil.aggregateSCADefinitions;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.contribution;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
 
@@ -53,9 +54,11 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -69,6 +72,7 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -77,6 +81,12 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
+import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
+import org.apache.tuscany.sca.provider.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -120,6 +130,7 @@ public class NodeImpl implements Node, Client {
     private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
     private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
+    private SCADefinitions systemDefinitions;
 
     /** 
      * Constructs a new SCA node.
@@ -308,9 +319,47 @@ public class NodeImpl implements Node, Client {
         compositeActivator = utilities.getUtility(CompositeActivator.class);
 
         workScheduler = utilities.getUtility(WorkScheduler.class);
+
+        // This is not right, the aggregate algorithm is not right, adding policies to
+        // a resolver like that is not correct as these policies won't be seen by the resolvers
+        // used by the contributions, and we shouldn't have to use the doc processor to do
+        // the resolution, so commenting out for now as it's not critical to get working in
+        // the Equinox environment initially
         
-        // Load the definitions.xml
-        //loadSCADefinitions();
+//        // Load the system definitions.xml
+//        SCADefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
+//        systemDefinitions = new SCADefinitionsImpl();
+//        try {
+//            for (SCADefinitionsProvider definitionsProvider : definitionsProviders.getSCADefinitionsProviders()) {
+//                aggregateSCADefinitions(definitionsProvider.getSCADefinition(), systemDefinitions);
+//            }
+//        } catch (SCADefinitionsProviderException e) {
+//            throw new IllegalStateException(e);
+//        }
+//
+//        // Configure a resolver for the system definitions
+//        ModelResolver definitionsResolver = new DefaultModelResolver();
+//        for (Intent intent : systemDefinitions.getPolicyIntents()) {
+//            definitionsResolver.addModel(intent);
+//        }
+//        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
+//            definitionsResolver.addModel(policySet);
+//        }
+//        for (IntentAttachPointType bindingType : systemDefinitions.getBindingTypes()) {
+//            definitionsResolver.addModel(bindingType);
+//        }
+//        for (IntentAttachPointType implementationType : systemDefinitions.getImplementationTypes()) {
+//            definitionsResolver.addModel(implementationType);
+//        }
+//
+//        // Now that all system sca definitions have been read, let's resolve them
+//        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+//        URLArtifactProcessor<SCADefinitions> definitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+//        try {
+//            definitionsProcessor.resolve(systemDefinitions, definitionsResolver);
+//        } catch (ContributionResolveException e) {
+//            throw new IllegalStateException(e);
+//        }
 
         if (logger.isLoggable(Level.FINE)) {
             long end = currentTimeMillis();
@@ -388,10 +437,10 @@ public class NodeImpl implements Node, Client {
         }
 
         // Build an aggregated SCA definitions model
-        SCADefinitions definitions = null;
+        SCADefinitions definitions = systemDefinitions;
         //definitions = new SCADefinitionsImpl();
         //for (SCADefinitions definition : ((List<SCADefinitions>)policyDefinitions)) {
-        //    SCADefinitionsUtil.aggregateSCADefinitions(definition, aggregatedDefinitions);
+        //    SCADefinitionsUtil.aggregateSCADefinitions(definition, definitions);
         //}
         
         // Build the composite and wire the components included in it
@@ -407,7 +456,7 @@ public class NodeImpl implements Node, Client {
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
 
-        // set the top level composite on the composite activator as 
+        // Set the top level composite on the composite activator as 
         // logic in callable reference resolution relies on this being 
         // available
         compositeActivator.setDomainComposite(tempComposite);

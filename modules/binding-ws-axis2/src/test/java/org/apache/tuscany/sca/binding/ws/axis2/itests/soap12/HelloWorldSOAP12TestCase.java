@@ -22,37 +22,42 @@ package org.apache.tuscany.sca.binding.ws.axis2.itests.soap12 ;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class HelloWorldSOAP12TestCase extends TestCase {
 
-    private SCADomain domain;
+    private Node node;
 
     public void testHelloWorld() throws Exception {
-        HelloWorld helloWorld = domain.getService(HelloWorld.class, "HelloWorldClient");
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClient");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
     public void testHelloWorldSOAP() throws Exception {
-        HelloWorld helloWorld = domain.getService(HelloWorld.class, "HelloWorldClientSOAP");
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSOAP");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
     public void testHelloWorldSOAP11() throws Exception {
-        HelloWorld helloWorld = domain.getService(HelloWorld.class, "HelloWorldClientSOAP11");
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSOAP11");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
     public void testHelloWorldSOAP12() throws Exception {
-        HelloWorld helloWorld = domain.getService(HelloWorld.class, "HelloWorldClientSOAP12");
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSOAP12");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/soap12/HelloWorldSOAP12.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/soap12/HelloWorldSOAP12.composite", new Contribution("test", contribution));
     }
    
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }

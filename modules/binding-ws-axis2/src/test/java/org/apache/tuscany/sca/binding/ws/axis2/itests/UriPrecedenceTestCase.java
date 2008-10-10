@@ -26,7 +26,10 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -37,7 +40,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class UriPrecedenceTestCase extends TestCase {
 
-    private SCADomain domain;
+    private Node node;
     private HelloWorldOM helloWorld;
 
     public void testUriPrecedence() throws Exception {
@@ -57,12 +60,15 @@ public class UriPrecedenceTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/helloworld-prec.composite");
-        helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/helloworld-prec.composite", new Contribution("test", contribution));
+        node.start();
+        helloWorld = node.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 }

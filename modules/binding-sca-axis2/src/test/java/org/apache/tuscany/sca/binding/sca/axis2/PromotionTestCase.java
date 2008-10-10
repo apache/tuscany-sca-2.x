@@ -21,14 +21,17 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PromotionTestCase {
     
-    public static TestNode nodeA;
-    public static TestNode nodeB;
+    public static Node nodeC;
+    public static Node nodeD;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -36,11 +39,13 @@ public class PromotionTestCase {
 
         try {
             // create and start domains
-            nodeA = new TestNode("nodeC");
-            nodeB = new TestNode("nodeD");
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            ClassLoader cl = AsynchTestCase.class.getClassLoader();
+            nodeC = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeC").toString()));
+            nodeD = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeD").toString()));
 
-            nodeA.start();
-            nodeB.start();
+            nodeC.start();
+            nodeD.start();
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -51,14 +56,16 @@ public class PromotionTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.stop();
-        nodeB.stop();
+        nodeC.stop();
+        nodeC.destroy();
+        nodeD.stop();
+        nodeD.destroy();
     }     
     
     @Test
     public void testHelloWorldPromotion() throws Exception {  
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
+        helloWorldClientA = nodeC.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
 
     }      

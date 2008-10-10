@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,8 +31,8 @@ import org.osoa.sca.ServiceUnavailableException;
 
 public class SimpleTestCase {
     
-    public static TestNode nodeA;
-    public static TestNode nodeB;
+    public static Node nodeA;
+    public static Node nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -37,8 +40,10 @@ public class SimpleTestCase {
 
         try {
             // create and start domains
-            nodeA = new TestNode("nodeA");
-            nodeB = new TestNode("nodeB");
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            ClassLoader cl = AsynchTestCase.class.getClassLoader();
+            nodeA = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeA").toString()));
+            nodeB = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeB").toString()));
 
             nodeA.start();
             nodeB.start();
@@ -53,7 +58,9 @@ public class SimpleTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         nodeA.stop();
+        nodeA.destroy();
         nodeB.stop();
+        nodeB.destroy();
     }    
     
     @Test

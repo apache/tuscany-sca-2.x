@@ -23,14 +23,17 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackOnewayRemoteImpl;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AsynchTestCase {
     
-    public static TestNode nodeA;
-    public static TestNode nodeB;
+    public static Node nodeG;
+    public static Node nodeH;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -38,11 +41,13 @@ public class AsynchTestCase {
 
         try {
             // create and start domains
-            nodeA = new TestNode("nodeG");
-            nodeB = new TestNode("nodeH");
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            ClassLoader cl = AsynchTestCase.class.getClassLoader();
+            nodeG = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeG").toString()));
+            nodeH = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeH").toString()));
 
-            nodeA.start();
-            nodeB.start();
+            nodeG.start();
+            nodeH.start();
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -53,14 +58,16 @@ public class AsynchTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.stop();
-        nodeB.stop();
+        nodeG.stop();
+        nodeG.destroy();
+        nodeH.stop();
+        nodeG.destroy();
     }    
     
     @Test
     public void testHelloWorldAsynch() throws Exception {        
         HelloWorldClient helloWorldClientB;
-        helloWorldClientB = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        helloWorldClientB = nodeG.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
         helloWorldClientB.getGreetings("fred");
         System.out.println("Sleeping ...");
         Thread.sleep(2000);

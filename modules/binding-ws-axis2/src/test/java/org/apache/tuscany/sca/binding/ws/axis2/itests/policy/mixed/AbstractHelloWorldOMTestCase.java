@@ -26,14 +26,17 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOM;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public abstract class AbstractHelloWorldOMTestCase {
 
-    private SCADomain domain;
+    private Node node;
     private HelloWorldOM helloWorld;
 
     @Test
@@ -50,13 +53,16 @@ public abstract class AbstractHelloWorldOMTestCase {
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance(getCompositeName());
-        helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldComponent");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode(getCompositeName(), new Contribution("test", contribution));
+        node.start();
+        helloWorld = node.getService(HelloWorldOM.class, "HelloWorldComponent");
     }
     
     @After
     public void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
     
     protected String getCompositeName() {

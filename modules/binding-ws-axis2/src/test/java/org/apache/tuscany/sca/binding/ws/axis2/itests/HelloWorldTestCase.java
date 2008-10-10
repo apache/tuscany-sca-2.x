@@ -21,11 +21,14 @@ package org.apache.tuscany.sca.binding.ws.axis2.itests;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class HelloWorldTestCase extends TestCase {
 
-    private SCADomain domain;
+    private Node node;
     private HelloWorld helloWorld;
 
     public void testCalculator() throws Exception {
@@ -34,13 +37,15 @@ public class HelloWorldTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/HelloWorld.composite");
-        helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/HelloWorld.composite", new Contribution("test", contribution));
+        helloWorld = node.getService(HelloWorld.class, "HelloWorldComponent");
     }
     
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }

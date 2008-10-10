@@ -21,14 +21,17 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CallbackTestCase {
     
-    public static TestNode nodeA;
-    public static TestNode nodeB;
+    public static Node nodeE;
+    public static Node nodeF;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -36,11 +39,13 @@ public class CallbackTestCase {
 
         try {
             // create and start domains
-            nodeA = new TestNode("nodeE");
-            nodeB = new TestNode("nodeF");
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            ClassLoader cl = AsynchTestCase.class.getClassLoader();
+            nodeE = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeE").toString()));
+            nodeF = nodeFactory.createNode("HelloWorld.composite", new Contribution("http://calculator", cl.getResource("nodeF").toString()));
 
-            nodeA.start();
-            nodeB.start();
+            nodeE.start();
+            nodeF.start();
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -51,8 +56,10 @@ public class CallbackTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.stop();
-        nodeB.stop();
+        nodeE.stop();
+        nodeE.destroy();
+        nodeF.stop();
+        nodeF.destroy();
     } 
     
     //@Test
@@ -64,14 +71,14 @@ public class CallbackTestCase {
     @Test
     public void testHelloWorldCallbackLocal() throws Exception {  
         HelloWorldClient helloWorldClientB;
-        helloWorldClientB = nodeB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
+        helloWorldClientB = nodeF.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
         Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
     }     
     
     @Test
     public void testHelloWorldCallbackRemote() throws Exception {  
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        helloWorldClientA = nodeE.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
         Assert.assertEquals("Hello callback fred", helloWorldClientA.getGreetings("fred"));
     }    
 }

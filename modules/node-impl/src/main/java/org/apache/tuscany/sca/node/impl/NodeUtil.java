@@ -19,22 +19,11 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * NodeUtil
@@ -63,49 +52,5 @@ public class NodeUtil {
         }
         return URI.create(uri);
     }
-
-//    private void loadSCADefinitions() throws ActivationException {
-//        try {
-//            URLArtifactProcessorExtensionPoint documentProcessors =
-//                registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-//            URLArtifactProcessor<SCADefinitions> definitionsProcessor =
-//                documentProcessors.getProcessor(SCADefinitions.class);
-//            SCADefinitionsProviderExtensionPoint scaDefnProviders =
-//                registry.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
-//
-//            SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
-//            SCADefinitions aSCADefn = null;
-//            for (SCADefinitionsProvider aProvider : scaDefnProviders.getSCADefinitionsProviders()) {
-//                aSCADefn = aProvider.getSCADefinition();
-//                SCADefinitionsUtil.aggregateSCADefinitions(aSCADefn, systemSCADefinitions);
-//            }
-//
-//            policyDefinitions.add(systemSCADefinitions);
-//
-//            //we cannot expect that providers will add the intents and policysets into the resolver
-//            //so we do this here explicitly
-//            for (Intent intent : systemSCADefinitions.getPolicyIntents()) {
-//                policyDefinitionsResolver.addModel(intent);
-//            }
-//
-//            for (PolicySet policySet : systemSCADefinitions.getPolicySets()) {
-//                policyDefinitionsResolver.addModel(policySet);
-//            }
-//
-//            for (IntentAttachPointType attachPoinType : systemSCADefinitions.getBindingTypes()) {
-//                policyDefinitionsResolver.addModel(attachPoinType);
-//            }
-//
-//            for (IntentAttachPointType attachPoinType : systemSCADefinitions.getImplementationTypes()) {
-//                policyDefinitionsResolver.addModel(attachPoinType);
-//            }
-//
-//            //now that all system sca definitions have been read, lets resolve them right away
-//            definitionsProcessor.resolve(systemSCADefinitions, policyDefinitionsResolver);
-//            
-//        } catch (Exception e) {
-//            throw new ActivationException(e);
-//        }
-//    }
 
 }

@@ -26,11 +26,14 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class HelloWorldWSDLMergedTestCase extends TestCase {
 
-    private SCADomain domain;
+    private Node node;
     private HelloWorldOM helloWorld;
 
     public void testHelloWorld() throws Exception {
@@ -46,13 +49,15 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/helloworld-om-merged.composite");
-        helloWorld = domain.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/helloworld-om-merged.composite", new Contribution("test", contribution));
+        helloWorld = node.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
     }
     
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }

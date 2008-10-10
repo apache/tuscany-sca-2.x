@@ -21,14 +21,17 @@ package org.apache.tuscany.sca.binding.ws.axis2.itests ;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class HelloWorldNoWSDLTestCase extends TestCase {
 
-    private SCADomain domain;
+    private Node node;
 
     public void testHelloWorld() throws Exception {
-        HelloWorld helloWorld = domain.getService(HelloWorld.class, "HelloWorldComponent");
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldComponent");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }
 
@@ -36,7 +39,7 @@ public class HelloWorldNoWSDLTestCase extends TestCase {
      * Test a a WS call with a complex type
      */
     public void testEchoFoo() throws Exception {
-        Echo echo = domain.getService(Echo.class, "EchoComponent");
+        Echo echo = node.getService(Echo.class, "EchoComponent");
        
         Foo f = new Foo();
         Bar b1 = new Bar();
@@ -66,12 +69,15 @@ public class HelloWorldNoWSDLTestCase extends TestCase {
    
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/HelloWorldNoWSDL.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/HelloWorldNoWSDL.composite", new Contribution("test", contribution));
+        node.start();
     }
    
     @Override
     protected void tearDown() throws Exception {
-        domain.close();
+        node.stop();
+        node.destroy();
     }
 
 }
