@@ -357,7 +357,15 @@ Include the ipo.xsd and address.xsd information from the XML Schema Primer
 (http://www.w3.org/TR/2004/PER-xmlschema-0-20040318/) combined into the 
 file ipo.xsd and extended with UK postcode structures.
 
-The ipo.xsd file is include under the following license:
+The module 
+
+tuscany-assembly-xsd 
+
+Includes file wsdli.xsd
+
+From http://www.w3.org/2004/08/wsdl-instance
+
+The ipo.xsd and wsdli.xsd files are included under the following license:
 
 W3C(c) SOFTWARE NOTICE AND LICENSE
 http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231

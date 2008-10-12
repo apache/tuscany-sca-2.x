@@ -113,3 +113,15 @@ This product also includes software under the Service Component Architecture spe
 (C) Copyright BEA Systems, Inc., Cape Clear Software, International Business Machines Corp, Interface21, IONA
 Technologies, Oracle, Primeton Technologies, Progress Software, Red Hat, Rogue Wave Software, SAP AG., Siemens
 AG., Software AG., Sun Microsystems, Inc., Sybase Inc., TIBCO Software Inc., 2005, 2008. All rights reserved.
+
+This product also includes software under the W3C(r) Software License
+(see the LICENSE file contained in this distribution), with the following
+copyright:
+
+Copyright (c) 2004 World Wide Web Consortium (Massachusetts Institute of Technology, 
+European Research Consortium for Informatics and Mathematics, Keio University). 
+All Rights Reserved. This work is distributed under the W3C(r) Software License [1] 
+in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+    [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
