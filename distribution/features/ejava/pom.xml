@@ -175,7 +175,6 @@
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-rmi</module>
                 <module>../../../modules/implementation-ejb</module>
@@ -204,6 +203,9 @@
                 <module>../../../modules/policy-transaction</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/sca-api</module>
+                <module>../../../modules/workspace</module>
+                <module>../../../modules/workspace-impl</module>
+                <module>../../../modules/workspace-xml</module>
                 <module>../../../modules/xsd</module>
                 <module>../../../modules/xsd-xml</module>
             </modules>

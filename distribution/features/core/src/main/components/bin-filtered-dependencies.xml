@@ -75,6 +75,9 @@
                 <exclude>org.apache.tuscany.sca:tuscany-policy-security-jsr250</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-policy-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-sca-api</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-workspace</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-workspace-impl</exclude>
+                <exclude>org.apache.tuscany.sca:tuscany-workspace-xml</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-xsd</exclude>
                 <exclude>org.apache.tuscany.sca:tuscany-xsd-xml</exclude>
             </excludes>

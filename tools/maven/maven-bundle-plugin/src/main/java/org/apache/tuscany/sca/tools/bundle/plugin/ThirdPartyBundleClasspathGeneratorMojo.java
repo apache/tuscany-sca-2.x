@@ -47,12 +47,12 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
 /**
  * @version $Rev$ $Date$
- * @goal fixup-pde-classpath
+ * @goal generate-pde-classpath
  * @phase process-resources
  * @requiresDependencyResolution test
  * @description Adjust third party bundle classpath
  */
-public class ThirdPartyBundleFixupClasspathMojo extends AbstractMojo {
+public class ThirdPartyBundleClasspathGeneratorMojo extends AbstractMojo {
     /**
      * The project to create a build for.
      *
@@ -82,26 +82,19 @@ public class ThirdPartyBundleFixupClasspathMojo extends AbstractMojo {
             File classpath = new File(basedir, ".classpath");
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(classpath)));
             StringWriter buffer = new StringWriter();
-            PrintWriter printer = new PrintWriter(buffer); 
+            PrintWriter printer = new PrintWriter(buffer);
+            boolean generatedLib = false;
             for (;;) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;
                 }
-                int i = line.indexOf("kind=\"var\"");
-                if (i != -1) {
-                    line = line.substring(0, i) + "kind=\"lib\" exported=\"true\"" + line.substring(i+10);
-                    
-                    i = line.indexOf("path=\"");
-                    if (i != -1) {
-                        int e = line.indexOf("\"", i+6);
-                        String path = line.substring(i + 6, e);
-                        int s = path.lastIndexOf("/");
-                        if (s != -1) {
-                            path = "lib" + path.substring(s);
-                            line = line.substring(0, i) + "path=\"" + path + line.substring(e);
-                        }
+                if (line.contains("kind=\"var\"")) {
+                    if (!generatedLib) {
+                        generateLibClasspathEntries(printer);
+                        generatedLib = true;
                     }
+                    continue;
                 }
                 printer.println(line);
             }
@@ -116,4 +109,14 @@ public class ThirdPartyBundleFixupClasspathMojo extends AbstractMojo {
 
     }
 
+    private void generateLibClasspathEntries(PrintWriter printer) {
+        File lib = new File(basedir, "lib");
+        for (File jar: lib.listFiles()) {
+            if (!jar.getPath().endsWith(".jar")) {
+                continue;
+            }
+            printer.println("  <classpathentry exported=\"true\" kind=\"lib\" path=\"lib/" + jar.getName() + "\"/>");
+        }
+    }
+    
 }

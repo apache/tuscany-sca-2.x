@@ -79,11 +79,23 @@
                 <include>definitions-xml/**/*</include>
                 <include>distribution-all/**/*</include>
                 <include>distribution-core/**/*</include>
+                <include>distribution-core/**/*</include>
+                <include>distribution-core:zip/**/*</include>
                 <include>distribution-ejava/**/*</include>
+                <include>distribution-ejava/**/*</include>
+                <include>distribution-ejava:zip/**/*</include>
                 <include>distribution-manager/**/*</include>
+                <include>distribution-manager/**/*</include>
+                <include>distribution-manager:zip/**/*</include>
                 <include>distribution-process/**/*</include>
+                <include>distribution-process/**/*</include>
+                <include>distribution-process:zip/**/*</include>
                 <include>distribution-web20/**/*</include>
+                <include>distribution-web20/**/*</include>
+                <include>distribution-web20:zip/**/*</include>
                 <include>distribution-webservice/**/*</include>
+                <include>distribution-webservice/**/*</include>
+                <include>distribution-webservice:zip/**/*</include>
                 <include>domain-manager/**/*</include>
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
@@ -91,7 +103,6 @@
                 <include>host-corba/**/*</include>
                 <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
-                <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
                 <include>host-rmi/**/*</include>
@@ -117,6 +128,12 @@
                 <include>interface-java-xml/**/*</include>
                 <include>interface-wsdl/**/*</include>
                 <include>interface-wsdl-xml/**/*</include>
+                <include>java2wsdl/**/*</include>
+                <include>maven-ant-generator/**/*</include>
+                <include>maven-bundle-plugin/**/*</include>
+                <include>maven-incremental-build/**/*</include>
+                <include>maven-java2wsdl/**/*</include>
+                <include>maven-wsdl2java/**/*</include>
                 <include>monitor/**/*</include>
                 <include>node-api/**/*</include>
                 <include>node-impl/**/*</include>
@@ -136,6 +153,7 @@
                 <include>workspace/**/*</include>
                 <include>workspace-impl/**/*</include>
                 <include>workspace-xml/**/*</include>
+                <include>wsdl2java/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>

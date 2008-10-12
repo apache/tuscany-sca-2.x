@@ -60,7 +60,6 @@
                 <include>host-corba/**/*</include>
                 <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
-                <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-rmi/**/*</include>
                 <include>implementation-ejb/**/*</include>
@@ -89,6 +88,9 @@
                 <include>policy-transaction/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
+                <include>workspace/**/*</include>
+                <include>workspace-impl/**/*</include>
+                <include>workspace-xml/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>

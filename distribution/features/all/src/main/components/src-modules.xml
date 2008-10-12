@@ -90,7 +90,6 @@
                 <include>host-corba/**/*</include>
                 <include>host-corba-jee/**/*</include>
                 <include>host-corba-jse/**/*</include>
-                <include>host-embedded/**/*</include>
                 <include>host-http/**/*</include>
                 <include>host-jetty/**/*</include>
                 <include>host-rmi/**/*</include>

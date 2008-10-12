@@ -330,6 +330,9 @@
                 <module>../../../modules/policy-security-jsr250</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/sca-api</module>
+                <module>../../../modules/workspace</module>
+                <module>../../../modules/workspace-impl</module>
+                <module>../../../modules/workspace-xml</module>
                 <module>../../../modules/xsd</module>
                 <module>../../../modules/xsd-xml</module>
             </modules>

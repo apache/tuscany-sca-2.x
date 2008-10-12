@@ -119,7 +119,6 @@
                 <module>../../../modules/extensibility-equinox</module>
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/implementation-bpel</module>
                 <module>../../../modules/implementation-bpel-ode</module>
@@ -146,6 +145,9 @@
                 <module>../../../modules/policy-security-jsr250</module>
                 <module>../../../modules/policy-xml</module>
                 <module>../../../modules/sca-api</module>
+                <module>../../../modules/workspace</module>
+                <module>../../../modules/workspace-impl</module>
+                <module>../../../modules/workspace-xml</module>
                 <module>../../../modules/xsd</module>
                 <module>../../../modules/xsd-xml</module>
             </modules>

@@ -90,6 +90,9 @@
                 <include>policy-security-jsr250/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
+                <include>workspace/**/*</include>
+                <include>workspace-impl/**/*</include>
+                <include>workspace-xml/**/*</include>
                 <include>xsd/**/*</include>
                 <include>xsd-xml/**/*</include>
             </includes>

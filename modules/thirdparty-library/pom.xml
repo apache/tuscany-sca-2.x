@@ -72,9 +72,9 @@
                 <artifactId>tuscany-maven-bundle-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>fixup-pde-classpath</id>
+                        <id>generate-pde-classpath</id>
                         <goals>
-                            <goal>fixup-pde-classpath</goal>
+                            <goal>generate-pde-classpath</goal>
                         </goals>
                     </execution>
                 </executions>

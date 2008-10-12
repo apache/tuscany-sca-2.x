@@ -205,7 +205,6 @@
                 <module>../../../modules/host-corba</module>
                 <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-embedded</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
                 <module>../../../modules/host-rmi</module>
