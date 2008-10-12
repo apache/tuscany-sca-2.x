@@ -57,16 +57,25 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                <configuration>
-                    <copyJars>true</copyJars>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>build-manifest</id>
+                        <id>assemble-thirdparty-bundle</id>
                         <goals>
-                            <goal>build</goal>
+                            <goal>assemble-thirdparty-bundle</goal>
                         </goals>
-                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>fixup-pde-classpath</id>
+                        <goals>
+                            <goal>fixup-pde-classpath</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
