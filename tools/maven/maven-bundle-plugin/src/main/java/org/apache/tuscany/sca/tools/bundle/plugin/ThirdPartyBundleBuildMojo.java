@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.tools.sca.tuscany.bundle.plugin;
+package org.apache.tuscany.sca.tools.bundle.plugin;
 
-import static org.apache.tuscany.tools.sca.tuscany.bundle.plugin.LibraryBundleUtil.write;
+import static org.apache.tuscany.sca.tools.bundle.plugin.BundleUtil.write;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,12 +48,12 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
 /**
  * @version $Rev$ $Date$
- * @goal build
- * @phase process-sources
+ * @goal assemble-thirdparty-bundle
+ * @phase process-classes
  * @requiresDependencyResolution test
- * @description Build a virtual bundle for 3rd party dependencies
+ * @description Build an OSGi bundle for third party dependencies
  */
-public class LibraryBundleMojo extends AbstractMojo {
+public class ThirdPartyBundleBuildMojo extends AbstractMojo {
     /**
      * The project to create a build for.
      *
@@ -106,11 +106,6 @@ public class LibraryBundleMojo extends AbstractMojo {
      * @required
      */
     private java.util.List remoteRepos;
-
-    /**
-     * @parameter
-     */
-    private boolean copyJars = false;
 
     /**
      * Dependency tree builder
@@ -216,7 +211,7 @@ public class LibraryBundleMojo extends AbstractMojo {
             }
             String bundleName = null;
             try {
-                bundleName = LibraryBundleUtil.getBundleName(artifact.getFile());
+                bundleName = BundleUtil.getBundleName(artifact.getFile());
             } catch (IOException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -236,7 +231,7 @@ public class LibraryBundleMojo extends AbstractMojo {
                 version = version.substring(0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1);
             }
 
-            Manifest mf = LibraryBundleUtil.libraryManifest(jarFiles, project.getName(), version, copyJars);
+            Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), version);
             File file = new File(project.getBasedir(), "META-INF");
             file.mkdir();
             file= new File(file, "MANIFEST.MF");
@@ -248,33 +243,31 @@ public class LibraryBundleMojo extends AbstractMojo {
             write(mf, fos);
             fos.close();
 
-            if (copyJars) {
-                File lib = new File(project.getBasedir(), "lib");
-                if (lib.isDirectory()) {
-                    for (File c : lib.listFiles()) {
-                        c.delete();
+            File lib = new File(project.getBasedir(), "lib");
+            if (lib.isDirectory()) {
+                for (File c : lib.listFiles()) {
+                    c.delete();
+                }
+            }
+            lib.mkdir();
+            byte[] buf = new byte[4096];
+            for (File jar : jarFiles) {
+                File jarFile = new File(lib, jar.getName());
+                if (log.isDebugEnabled()) {
+                    log.debug("Copying " + jar + " to " + jarFile);
+                }
+                FileInputStream in = new FileInputStream(jar);
+                FileOutputStream out = new FileOutputStream(jarFile);
+                for (;;) {
+                    int len = in.read(buf);
+                    if (len > 0) {
+                        out.write(buf, 0, len);
+                    } else {
+                        break;
                     }
                 }
-                lib.mkdir();
-                byte[] buf = new byte[4096];
-                for (File jar : jarFiles) {
-                    File jarFile = new File(lib, jar.getName());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Copying " + jar + " to " + jarFile);
-                    }
-                    FileInputStream in = new FileInputStream(jar);
-                    FileOutputStream out = new FileOutputStream(jarFile);
-                    for (;;) {
-                        int len = in.read(buf);
-                        if (len > 0) {
-                            out.write(buf, 0, len);
-                        } else {
-                            break;
-                        }
-                    }
-                    in.close();
-                    out.close();
-                }
+                in.close();
+                out.close();
             }
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);

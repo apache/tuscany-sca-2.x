@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.tools.sca.tuscany.bundle.plugin;
+package org.apache.tuscany.sca.tools.bundle.plugin;
 
 import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
 import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
@@ -49,11 +49,11 @@ import java.util.zip.ZipInputStream;
 import org.osgi.framework.Bundle;
 
 /**
- * Common functions and constants used by the admin components.
+ * Common functions used by the plugin.
  *
  * @version $Rev$ $Date$
  */
-public final class LibraryBundleUtil {
+final class BundleUtil {
 
     private static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
 
@@ -126,7 +126,7 @@ public final class LibraryBundleUtil {
         }
     }
 
-    static Manifest libraryManifest(Set<File> jarFiles, String name, String version, boolean copyJars)
+    static Manifest libraryManifest(Set<File> jarFiles, String name, String version)
         throws IllegalStateException {
         try {
 
@@ -137,15 +137,9 @@ public final class LibraryBundleUtil {
             Set<String> packages = new HashSet<String>();
             for (File jarFile : jarFiles) {
                 addPackages(jarFile, packages);
-                if (copyJars) {
-                    classpath.append("lib/");
-                    classpath.append(jarFile.getName());
-                    classpath.append(",");
-                } else {
-                    classpath.append("\"external:");
-                    classpath.append(jarFile.getPath().replace(File.separatorChar, '/'));
-                    classpath.append("\",");
-                }
+                classpath.append("lib/");
+                classpath.append(jarFile.getName());
+                classpath.append(",");
             }
 
             Set<String> importPackages = new HashSet<String>();
