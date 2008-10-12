@@ -38,10 +38,6 @@ public class OMElement2Job extends BaseTransformer<OMElement, Job> implements
     public Job transform(OMElement source, TransformationContext context) {
         try {
 
-            // OMText binaryNode = (OMText) source.getFirstOMChild();
-            // DataHandler actualDH = (DataHandler) binaryNode.getDataHandler();
-            // ByteArrayDataSource ds =
-            // (ByteArrayDataSource)actualDH.getDataSource();
             String value = (String) source.getText();
             ByteArrayInputStream bis = new ByteArrayInputStream(Base64Binary
                     .decode(value));
