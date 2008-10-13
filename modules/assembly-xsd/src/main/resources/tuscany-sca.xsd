@@ -20,6 +20,8 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0">
     
+    <import namespace="http://www.w3.org/2004/08/wsdl-instance" schemaLocation="wsdli.xsd"/>
+    
     <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-all.xsd"/>
     <import namespace="http://data.tuscany.apache.org/xmlns/sca/1.0" schemaLocation="tuscany-sca-data-helper.xsd"/>
     
