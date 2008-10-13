@@ -53,13 +53,6 @@
             <artifactId>geronimo-connector</artifactId>
             <version>2.1.1</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-impl</artifactId>
-            <version>1.4-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

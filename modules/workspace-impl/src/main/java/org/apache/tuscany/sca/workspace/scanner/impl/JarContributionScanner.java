@@ -30,8 +30,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * JAR Contribution processor.

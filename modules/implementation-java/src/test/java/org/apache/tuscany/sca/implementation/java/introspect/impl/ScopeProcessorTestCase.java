@@ -20,21 +20,18 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ScopeProcessorTestCase extends TestCase {
 
-    Component parent;
     private JavaImplementationFactory javaImplementationFactory;
 
     public void testCompositeScope() throws IntrospectionException {
@@ -84,7 +81,6 @@ public class ScopeProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         javaImplementationFactory = new DefaultJavaImplementationFactory();
-        parent = EasyMock.createNiceMock(Component.class);
     }
 
     @org.osoa.sca.annotations.Scope("COMPOSITE")

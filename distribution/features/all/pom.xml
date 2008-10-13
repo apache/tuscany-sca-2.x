@@ -177,7 +177,6 @@
                 <module>../../../modules/binding-ws-wsdlgen</module>
                 <module>../../../modules/binding-ws-xml</module>
                 <module>../../../modules/contribution</module>
-                <module>../../../modules/contribution-impl</module>
                 <module>../../../modules/contribution-java</module>
                 <module>../../../modules/contribution-namespace</module>
                 <module>../../../modules/contribution-resource</module>

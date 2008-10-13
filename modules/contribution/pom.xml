@@ -63,8 +63,7 @@
                             org.apache.tuscany.sca.contribution,
                             org.apache.tuscany.sca.contribution.processor,
                             org.apache.tuscany.sca.contribution.resolver,
-                            org.apache.tuscany.sca.contribution.scanner,
-                            org.apache.tuscany.sca.contribution.service
+                            org.apache.tuscany.sca.contribution.scanner
                         </Export-Package>
                     </instructions>
                 </configuration>

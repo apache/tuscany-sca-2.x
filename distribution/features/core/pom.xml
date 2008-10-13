@@ -54,7 +54,7 @@
         <!-- Contribution model -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-impl</artifactId>
+            <artifactId>tuscany-contribution</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -290,7 +290,6 @@
                 <module>../../../modules/binding-sca</module>
                 <module>../../../modules/binding-sca-xml</module>
                 <module>../../../modules/contribution</module>
-                <module>../../../modules/contribution-impl</module>
                 <module>../../../modules/contribution-java</module>
                 <module>../../../modules/contribution-namespace</module>
                 <module>../../../modules/contribution-xml</module>

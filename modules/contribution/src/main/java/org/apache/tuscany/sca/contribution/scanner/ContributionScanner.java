@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.contribution.scanner;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 
 /**
  * Interface for contribution package scanners

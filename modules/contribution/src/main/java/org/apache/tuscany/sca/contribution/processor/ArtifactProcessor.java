@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 /**
  * Base interface for artifact processors.

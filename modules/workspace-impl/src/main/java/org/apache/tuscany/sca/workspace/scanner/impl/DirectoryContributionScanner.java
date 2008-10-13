@@ -27,8 +27,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * Folder contribution processor.

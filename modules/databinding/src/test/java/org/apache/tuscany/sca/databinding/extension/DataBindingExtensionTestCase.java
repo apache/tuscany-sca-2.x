@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.databinding.extension;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.easymock.EasyMock;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -53,10 +53,8 @@ public class DataBindingExtensionTestCase extends TestCase {
         assertFalse(binding1.introspect(dt2, null));
         assertNull(binding1.getWrapperHandler());
         
-        DataBindingExtensionPoint registry = EasyMock.createMock(DataBindingExtensionPoint.class);
+        DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint();
         registry.addDataBinding(binding1);
-        EasyMock.expect(registry.getDataBinding(Node.class.getName())).andReturn(binding1);
-        EasyMock.replay(registry);
         
         assertNotNull(registry.getDataBinding(Node.class.getName()));
 

@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * An artifact processor that can read models from a URL.
