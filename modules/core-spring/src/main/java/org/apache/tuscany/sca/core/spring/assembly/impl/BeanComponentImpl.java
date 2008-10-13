@@ -31,7 +31,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.ChildBeanDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 
 /**
  * An implementation of the SCA assembly Component interface backed by a Spring
@@ -39,7 +40,7 @@ import org.springframework.beans.factory.support.ChildBeanDefinition;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanComponentImpl extends ChildBeanDefinition implements Component, Cloneable {
+public class BeanComponentImpl extends GenericBeanDefinition implements Component, Cloneable {
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     
     public IntentAttachPointType getType() {
@@ -66,25 +67,29 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
     private BeanDefinitionRegistry beanRegistry;
 
     protected BeanComponentImpl(BeanDefinitionRegistry beanRegistry) {
-        super((String)"");
+        //super((String)"");
         this.beanRegistry = beanRegistry;
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        BeanComponentImpl clone = (BeanComponentImpl)super.clone();
-
+    public AbstractBeanDefinition cloneBeanDefinition() {
+        BeanComponentImpl clone = (BeanComponentImpl)super.cloneBeanDefinition();
         clone.getProperties().clear();
-        for (ComponentProperty property : getProperties()) {
-            clone.getProperties().add((ComponentProperty)property.clone());
-        }
-        clone.getReferences().clear();
-        for (ComponentReference reference : getReferences()) {
-            clone.getReferences().add((ComponentReference)reference.clone());
-        }
-        clone.getServices().clear();
-        for (ComponentService service : getServices()) {
-            clone.getServices().add((ComponentService)service.clone());
+        try {
+            for (ComponentProperty property : getProperties()) {
+                clone.getProperties().add((ComponentProperty)property.clone());
+            }
+            clone.getReferences().clear();
+            for (ComponentReference reference : getReferences()) {
+                clone.getReferences().add((ComponentReference)reference.clone());
+            }
+            clone.getServices().clear();
+            for (ComponentService service : getServices()) {
+                clone.getServices().add((ComponentService)service.clone());
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            //throw new CloneNotSupportedException(e.getMessage());
         }
         return clone;
     }

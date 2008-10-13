@@ -31,7 +31,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 
 /**
  * An implementation of the SCA assembly JavaImplementation interface backed by a Spring
@@ -39,7 +40,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
  *
  *  @version $Rev$ $Date$
  */
-public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implements BaseJavaImplementation, Cloneable {
+public class BeanBaseJavaImplementationImpl extends GenericBeanDefinition implements BaseJavaImplementation, Cloneable {
     private static final long serialVersionUID = 1L;
 
     private List<Service> services = new ArrayList<Service>();
@@ -65,20 +66,24 @@ public class BeanBaseJavaImplementationImpl extends RootBeanDefinition implement
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        BeanBaseJavaImplementationImpl clone = (BeanBaseJavaImplementationImpl)super.clone();
-
+    public AbstractBeanDefinition cloneBeanDefinition() {
+        BeanBaseJavaImplementationImpl clone = (BeanBaseJavaImplementationImpl)super.cloneBeanDefinition();        
         clone.getServices().clear();
-        for (Service service : getServices()) {
-            clone.getServices().add((Service)service.clone());
-        }
-        clone.getReferences().clear();
-        for (Reference reference : getReferences()) {
-            clone.getReferences().add((Reference)reference.clone());
-        }
-        clone.getProperties().clear();
-        for (Property property : getProperties()) {
-            clone.getProperties().add((Property)property.clone());
+        try {
+            for (Service service : getServices()) {
+                clone.getServices().add((Service)service.clone());
+            }
+            clone.getReferences().clear();
+            for (Reference reference : getReferences()) {
+                clone.getReferences().add((Reference)reference.clone());
+            }
+            clone.getProperties().clear();
+            for (Property property : getProperties()) {
+                clone.getProperties().add((Property)property.clone());
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            //throw new CloneNotSupportedException(e.getMessage());
         }
         return clone;
     }
