@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -46,6 +46,6 @@ public interface CompositeBuilder {
      * @param monitor
      * @throws CompositeBuilderException
      */
-    void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException;
+    void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException;
     
 }

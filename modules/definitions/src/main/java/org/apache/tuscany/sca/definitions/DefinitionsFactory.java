@@ -27,5 +27,5 @@ public interface DefinitionsFactory {
      * Create an instance of SCA definitions
      * @return a new instance of SCA definitions
      */
-    SCADefinitions createDefinitions();
+    Definitions createDefinitions();
 }

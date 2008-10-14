@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -61,7 +61,7 @@ public class ComponentConfigurationBuilderImpl extends BaseConfigurationBuilderI
         return "org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder";
     }
 
-    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureComponents(composite, definitions, monitor);
     }
     

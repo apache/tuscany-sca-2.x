@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -77,7 +77,7 @@ public class CustomCompositeBuilder {
     private NodeImplementationFactory nodeFactory;
     //private AtomBindingFactory atomBindingFactory;
     private static Workspace workspace;
-    private List<SCADefinitions> policyDefinitions;
+    private List<Definitions> policyDefinitions;
     private Monitor monitor;
         
     private CustomCompositeBuilder() {

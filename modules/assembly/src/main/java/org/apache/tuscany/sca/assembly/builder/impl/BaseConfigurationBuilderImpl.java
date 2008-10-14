@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -90,7 +90,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param composite
      * @param monitor
      */
-    protected void configureComponents(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    protected void configureComponents(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureComponents(composite, null, definitions, monitor);
         configureSourcedProperties(composite, null);
     }
@@ -102,7 +102,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param uri
      * @param problems
      */
-    private void configureComponents(Composite composite, String uri, SCADefinitions definitions, Monitor monitor) {
+    private void configureComponents(Composite composite, String uri, Definitions definitions, Monitor monitor) {
         String parentURI = uri;
 
         // Process nested composites recursively
@@ -778,7 +778,7 @@ public abstract class BaseConfigurationBuilderImpl {
         return null;
     }
     
-    private SCABinding createSCABinding(SCADefinitions definitions) {
+    private SCABinding createSCABinding(Definitions definitions) {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
         
         // mark the bindings that are added automatically so that they can 
@@ -803,7 +803,7 @@ public abstract class BaseConfigurationBuilderImpl {
      *  
      * @param composite the composite to be configured
      */
-    protected void configureBindingURIsAndNames(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    protected void configureBindingURIsAndNames(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, null, monitor);
         configureBindingNames(composite, monitor);
     }
@@ -817,7 +817,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param defaultBindings list of default binding configurations
      */
     protected void configureBindingURIs(Composite composite,
-                                        SCADefinitions definitions, List<Binding> defaultBindings,
+                                        Definitions definitions, List<Binding> defaultBindings,
                                         Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
     }
@@ -843,7 +843,7 @@ public abstract class BaseConfigurationBuilderImpl {
       * @param defaultBindings list of default binding configurations
       */
     private void configureBindingURIs(Composite composite, String uri,
-                                      SCADefinitions definitions, List<Binding> defaultBindings,
+                                      Definitions definitions, List<Binding> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
         
         String parentComponentURI = uri;

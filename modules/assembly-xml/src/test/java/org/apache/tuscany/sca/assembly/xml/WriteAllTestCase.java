@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -66,7 +66,7 @@ public class WriteAllTestCase {
     private static ExtensibleStAXArtifactProcessor staxProcessor;
     private static ModelResolver resolver; 
     private static CompositeBuilder compositeBuilder;
-    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
     private static Monitor monitor;
 
     @BeforeClass
@@ -90,7 +90,7 @@ public class WriteAllTestCase {
         monitor = monitorFactory.createMonitor();
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class WriteAllTestCase {
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        SCADefinitions scaDefns = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         policyDefinitionsProcessor.resolve(scaDefns, resolver);
         

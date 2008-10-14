@@ -16,19 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.definitions;
 
+package org.apache.tuscany.sca.definitions.util;
+
+import org.apache.tuscany.sca.definitions.Definitions;
 
 /**
- * Interface to abstract building of SCA Definitions for a Domain
+ * Some utility functions to deal with SCADefinitions
  *
  * @version $Rev$ $Date$
  */
-public interface SCADefinitionsBuilder {
-    /**
-     * Builds the SCA definitions 
-     * 
-     * @param scaDefns
-     */
-    void build(SCADefinitions scaDefns) throws SCADefinitionsBuilderException;
+public class DefinitionsUtil {
+    
+
+    
+    public static void aggregate(Definitions source, Definitions target) {
+        target.getIntents().addAll(source.getIntents());
+        target.getPolicySets().addAll(source.getPolicySets());
+        target.getBindingTypes().addAll(source.getBindingTypes());
+        target.getImplementationTypes().addAll(source.getImplementationTypes());
+        target.getBindings().addAll(source.getBindings());
+    }
+    
 }

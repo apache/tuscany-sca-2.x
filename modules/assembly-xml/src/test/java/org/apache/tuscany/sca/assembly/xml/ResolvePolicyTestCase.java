@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class ResolvePolicyTestCase {
 
     private static URLArtifactProcessor<Object> documentProcessor;
     private static ModelResolver resolver;  
-    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -60,7 +60,7 @@ public class ResolvePolicyTestCase {
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
-        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
         
         // Create StAX processors
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -83,7 +83,7 @@ public class ResolvePolicyTestCase {
         
         url = getClass().getResource("test_definitions.xml");
         uri = URI.create("test_definitions.xml");
-        SCADefinitions scaDefns = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         
         preResolvePolicyTests(composite);

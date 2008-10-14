@@ -19,17 +19,12 @@
 
 package org.apache.tuscany.sca.provider;
 
-import java.util.List;
-
 /**
- * An extension point for SCA Definitions Providers.  SCA Definition providers, load SCA Definitions
- * items that are being specifically contributed by the module that hosts the provider in question.
- *
  * @version $Rev$ $Date$
  */
-public interface SCADefinitionsProviderExtensionPoint {
-    
-    void addSCADefinitionsProvider(SCADefinitionsProvider provider);
-    void removeSCADefinitionsProvider(SCADefinitionsProvider provider);
-    List<SCADefinitionsProvider> getSCADefinitionsProviders();
+public class DefinitionsProviderException extends Exception {
+   
+    public DefinitionsProviderException(Throwable e) {
+        super(e);
+    }
 }

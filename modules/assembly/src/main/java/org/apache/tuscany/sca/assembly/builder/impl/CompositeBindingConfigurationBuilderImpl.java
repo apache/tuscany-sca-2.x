@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -60,7 +60,7 @@ public class CompositeBindingConfigurationBuilderImpl extends BaseConfigurationB
         return "org.apache.tuscany.sca.assembly.builder.CompositeServiceBindingBuilder";
     }
 
-    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         List<Binding> defaultBindings = null;
         for (Object x: composite.getExtensions()) {
             if (x instanceof List) {

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 
 /**
  * Models a provider of SCA Definitions.  Typically SCA Definitions providers 
@@ -28,6 +28,6 @@ import org.apache.tuscany.sca.definitions.SCADefinitions;
  *
  * @version $Rev$ $Date$
  */
-public interface SCADefinitionsProvider {
-    SCADefinitions getSCADefinition() throws SCADefinitionsProviderException ;
+public interface DefinitionsProvider {
+    Definitions getDefinitions() throws DefinitionsProviderException ;
 }

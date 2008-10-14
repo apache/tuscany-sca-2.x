@@ -27,29 +27,29 @@ import java.security.PrivilegedAction;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
-import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
-import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
+import org.apache.tuscany.sca.provider.DefinitionsProvider;
+import org.apache.tuscany.sca.provider.DefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to security
  *
  * @version $Rev$ $Date$
  */
-public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider {
+public class SecurityPolicyDefinitionsProvider implements DefinitionsProvider {
     private static final String tuscanyDefinitionsFile = "org/apache/tuscany/sca/policy/security/tuscany_definitions.xml";
     private String definitionsFile = "org/apache/tuscany/sca/policy/security/definitions.xml";
     URLArtifactProcessor urlArtifactProcessor = null;
 
     public SecurityPolicyDefinitionsProvider(ExtensionPointRegistry registry) {
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+        urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(Definitions.class);
     }
 
-    public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
-        SCADefinitions scaDefns = null;
-        SCADefinitions tuscanyDefns = null;
+    public Definitions getDefinitions() throws DefinitionsProviderException {
+        Definitions scaDefns = null;
+        Definitions tuscanyDefns = null;
         try {
             // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
             URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
@@ -60,7 +60,7 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
 
             URI uri = new URI(definitionsFile);
 
-            scaDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
+            scaDefns = (Definitions)urlArtifactProcessor.read(null, 
                                                                  uri, 
                                                                  definitionsFileUrl);
 
@@ -71,15 +71,15 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
             }); 
 
             uri = new URI(definitionsFile);
-            tuscanyDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
+            tuscanyDefns = (Definitions)urlArtifactProcessor.read(null, 
                                                                      uri, 
                                                                      definitionsFileUrl);
 
-            SCADefinitionsUtil.aggregateSCADefinitions(tuscanyDefns, scaDefns);
+            DefinitionsUtil.aggregate(tuscanyDefns, scaDefns);
             return scaDefns;
 
         } catch ( Exception e ) {
-            throw new SCADefinitionsProviderException(e);
+            throw new DefinitionsProviderException(e);
         }
     }
 

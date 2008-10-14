@@ -53,8 +53,8 @@ import org.junit.Test;
  */
 public class ReadDocumentTestCase {
 
-    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor = null;
-    private static SCADefinitions definitions;
+    private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor = null;
+    private static Definitions definitions;
     private static Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     private static Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     private static Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
@@ -85,13 +85,13 @@ public class ReadDocumentTestCase {
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class); 
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class); 
         
         URL url = ReadDocumentTestCase.class.getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
         definitions = policyDefinitionsProcessor.read(null, uri, url);
         
-        for ( Intent intent : definitions.getPolicyIntents() ) {
+        for ( Intent intent : definitions.getIntents() ) {
             intentTable.put(intent.getName(), intent);
         }
         

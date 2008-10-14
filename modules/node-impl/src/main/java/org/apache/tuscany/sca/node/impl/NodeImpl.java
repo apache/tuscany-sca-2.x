@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.node.impl;
 
 import static java.lang.System.currentTimeMillis;
-import static org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil.aggregateSCADefinitions;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.contribution;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
 
@@ -50,12 +49,10 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -71,8 +68,7 @@ import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -81,12 +77,6 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
-import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
-import org.apache.tuscany.sca.provider.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -130,7 +120,7 @@ public class NodeImpl implements Node, Client {
     private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
     private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
-    private SCADefinitions systemDefinitions;
+    private Definitions systemDefinitions;
 
     /** 
      * Constructs a new SCA node.
@@ -327,13 +317,13 @@ public class NodeImpl implements Node, Client {
         // the Equinox environment initially
         
 //        // Load the system definitions.xml
-//        SCADefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
-//        systemDefinitions = new SCADefinitionsImpl();
+//        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
+//        systemDefinitions = new DefinitionsImpl();
 //        try {
-//            for (SCADefinitionsProvider definitionsProvider : definitionsProviders.getSCADefinitionsProviders()) {
-//                aggregateSCADefinitions(definitionsProvider.getSCADefinition(), systemDefinitions);
+//            for (DefinitionsProvider definitionsProvider : definitionsProviders.getDefinitionsProviders()) {
+//                aggregateDefinitions(definitionsProvider.getSCADefinition(), systemDefinitions);
 //            }
-//        } catch (SCADefinitionsProviderException e) {
+//        } catch (DefinitionsProviderException e) {
 //            throw new IllegalStateException(e);
 //        }
 //
@@ -354,7 +344,7 @@ public class NodeImpl implements Node, Client {
 //
 //        // Now that all system sca definitions have been read, let's resolve them
 //        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-//        URLArtifactProcessor<SCADefinitions> definitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+//        URLArtifactProcessor<Definitions> definitionsProcessor = documentProcessors.getProcessor(Definitions.class);
 //        try {
 //            definitionsProcessor.resolve(systemDefinitions, definitionsResolver);
 //        } catch (ContributionResolveException e) {
@@ -437,10 +427,10 @@ public class NodeImpl implements Node, Client {
         }
 
         // Build an aggregated SCA definitions model
-        SCADefinitions definitions = systemDefinitions;
-        //definitions = new SCADefinitionsImpl();
-        //for (SCADefinitions definition : ((List<SCADefinitions>)policyDefinitions)) {
-        //    SCADefinitionsUtil.aggregateSCADefinitions(definition, definitions);
+        Definitions definitions = systemDefinitions;
+        //definitions = new DefinitionsImpl();
+        //for (Definitions definition : ((List<Definitions>)policyDefinitions)) {
+        //    DefinitionsUtil.aggregateDefinitions(definition, definitions);
         //}
         
         // Build the composite and wire the components included in it

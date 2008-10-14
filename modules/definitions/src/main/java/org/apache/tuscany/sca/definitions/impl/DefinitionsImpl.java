@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.definitions.impl;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -32,9 +32,9 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public class SCADefinitionsImpl implements SCADefinitions {
+public class DefinitionsImpl implements Definitions {
     private String targetNamespace = null;
-    private List<Intent> policyIntents = new CopyOnWriteArrayList<Intent>();
+    private List<Intent> intents = new CopyOnWriteArrayList<Intent>();
     private List<PolicySet> policySets = new CopyOnWriteArrayList<PolicySet>();
     private List<IntentAttachPointType> bindingTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
     private List<IntentAttachPointType> implementationTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
@@ -49,8 +49,8 @@ public class SCADefinitionsImpl implements SCADefinitions {
         return implementationTypes;
     }
 
-    public List<Intent> getPolicyIntents() {
-        return policyIntents;
+    public List<Intent> getIntents() {
+        return intents;
     }
 
     public List<PolicySet> getPolicySets() {

@@ -37,11 +37,11 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  *
  * @version $Rev$ $Date$
  */
-public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
+public class DefinitionsBuilderImpl implements DefinitionsBuilder {
 
-    public void build(SCADefinitions scaDefns) throws SCADefinitionsBuilderException {
+    public void build(Definitions scaDefns) throws DefinitionsBuilderException {
         Map<QName, Intent> definedIntents = new HashMap<QName, Intent>();
-        for (Intent intent : scaDefns.getPolicyIntents()) {
+        for (Intent intent : scaDefns.getIntents()) {
             definedIntents.put(intent.getName(), intent);
         }
 
@@ -62,12 +62,12 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
         
         //filling up the maps removes all duplicate entries... so fill this unique lists
         //into the scaDefns.
-        scaDefns.getPolicyIntents().clear();
+        scaDefns.getIntents().clear();
         scaDefns.getPolicySets().clear();
         scaDefns.getBindingTypes().clear();
         scaDefns.getImplementationTypes().clear();
         
-        scaDefns.getPolicyIntents().addAll(definedIntents.values());
+        scaDefns.getIntents().addAll(definedIntents.values());
         scaDefns.getPolicySets().addAll(definedPolicySets.values());
         scaDefns.getBindingTypes().addAll(definedBindingTypes.values());
         scaDefns.getImplementationTypes().addAll(definedImplTypes.values());
@@ -78,9 +78,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
         buildImplementationTypes(scaDefns, definedImplTypes, definedIntents);
     }
     
-    private void buildBindingTypes(SCADefinitions scaDefns, 
+    private void buildBindingTypes(Definitions scaDefns, 
                                    Map<QName, IntentAttachPointType> definedBindingTypes, 
-                                   Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+                                   Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
         for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
             buildAlwaysProvidedIntents(bindingType, definedIntents);
             buildMayProvideIntents(bindingType, definedIntents);
@@ -88,9 +88,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
 
     }
     
-    private void buildImplementationTypes(SCADefinitions scaDefns, 
+    private void buildImplementationTypes(Definitions scaDefns, 
                                    Map<QName, IntentAttachPointType> definedImplTypes, 
-                                   Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+                                   Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
         for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
             buildAlwaysProvidedIntents(implType, definedIntents);
             buildMayProvideIntents(implType, definedIntents);
@@ -98,9 +98,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
 
-    private void buildPolicyIntents(SCADefinitions scaDefns, Map<QName, Intent> definedIntents)
-        throws SCADefinitionsBuilderException {
-        for (Intent policyIntent : scaDefns.getPolicyIntents()) {
+    private void buildPolicyIntents(Definitions scaDefns, Map<QName, Intent> definedIntents)
+        throws DefinitionsBuilderException {
+        for (Intent policyIntent : scaDefns.getIntents()) {
             if (policyIntent instanceof ProfileIntent) {
                 buildProfileIntent((ProfileIntent)policyIntent, definedIntents);
             }
@@ -111,9 +111,9 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
         }
     }
 
-    private void buildPolicySets(SCADefinitions scaDefns,
+    private void buildPolicySets(Definitions scaDefns,
                                  Map<QName, PolicySet> definedPolicySets,
-                                 Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+                                 Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
 
         for (PolicySet policySet : scaDefns.getPolicySets()) {
             buildProvidedIntents(policySet, definedIntents);
@@ -129,7 +129,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
     private void buildProfileIntent(ProfileIntent policyIntent, Map<QName, Intent> definedIntents)
-        throws SCADefinitionsBuilderException {
+        throws DefinitionsBuilderException {
         //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
         if (policyIntent != null) {
             //resolve all required intents
@@ -140,7 +140,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                     if (resolvedRequiredIntent != null) {
                         requiredIntents.add(resolvedRequiredIntent);
                     } else {
-                        throw new SCADefinitionsBuilderException("Required Intent - " + requiredIntent
+                        throw new DefinitionsBuilderException("Required Intent - " + requiredIntent
                             + " not found for ProfileIntent "
                             + policyIntent);
 
@@ -155,7 +155,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
 
     private void buildQualifiedIntent(QualifiedIntent policyIntent, Map<QName, Intent> definedIntents)
-        throws SCADefinitionsBuilderException {
+        throws DefinitionsBuilderException {
         if (policyIntent != null) {
             //resolve the qualifiable intent
             Intent qualifiableIntent = policyIntent.getQualifiableIntent();
@@ -165,7 +165,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                 if (resolvedQualifiableIntent != null) {
                     policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
                 } else {
-                    throw new SCADefinitionsBuilderException("Qualifiable Intent - " + qualifiableIntent
+                    throw new DefinitionsBuilderException("Qualifiable Intent - " + qualifiableIntent
                         + " not found for QualifiedIntent "
                         + policyIntent);
                 }
@@ -176,7 +176,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     
     
     private void buildAlwaysProvidedIntents(IntentAttachPointType extensionType,
-                                            Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+                                            Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> alwaysProvided = new ArrayList<Intent>();
@@ -186,7 +186,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                     if (resolvedProvidedIntent != null) {
                         alwaysProvided.add(resolvedProvidedIntent);
                     } else {
-                        throw new SCADefinitionsBuilderException(
+                        throw new DefinitionsBuilderException(
                                                                  "Always Provided Intent - " + providedIntent
                                                                      + " not found for ExtensionType "
                                                                      + extensionType);
@@ -202,7 +202,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
     
     private void buildMayProvideIntents(IntentAttachPointType extensionType,
-                                            Map<QName, Intent> definedIntents) throws SCADefinitionsBuilderException {
+                                            Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> mayProvide = new ArrayList<Intent>();
@@ -212,7 +212,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                     if (resolvedProvidedIntent != null) {
                         mayProvide.add(resolvedProvidedIntent);
                     } else {
-                        throw new SCADefinitionsBuilderException(
+                        throw new DefinitionsBuilderException(
                                                                  "May Provide Intent - " + providedIntent
                                                                      + " not found for ExtensionType "
                                                                      + extensionType);
@@ -228,7 +228,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
 
     private void buildProvidedIntents(PolicySet policySet, Map<QName, Intent> definedIntents)
-        throws SCADefinitionsBuilderException {
+        throws DefinitionsBuilderException {
         if (policySet != null) {
             //resolve all provided intents
             List<Intent> providedIntents = new ArrayList<Intent>();
@@ -238,7 +238,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                     if (resolvedProvidedIntent != null) {
                         providedIntents.add(resolvedProvidedIntent);
                     } else {
-                        throw new SCADefinitionsBuilderException("Provided Intent - " + providedIntent
+                        throw new DefinitionsBuilderException("Provided Intent - " + providedIntent
                             + " not found for PolicySet "
                             + policySet);
 
@@ -253,7 +253,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
 
     private void buildIntentsInMappedPolicies(PolicySet policySet, Map<QName, Intent> definedIntents)
-        throws SCADefinitionsBuilderException {
+        throws DefinitionsBuilderException {
         Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
         for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
             Intent mappedIntent = entry.getKey();
@@ -263,7 +263,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                 if (resolvedMappedIntent != null) {
                     mappedPolicies.put(resolvedMappedIntent, entry.getValue());
                 } else {
-                    throw new SCADefinitionsBuilderException("Mapped Intent - " + mappedIntent
+                    throw new DefinitionsBuilderException("Mapped Intent - " + mappedIntent
                         + " not found for PolicySet "
                         + policySet);
 
@@ -278,7 +278,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
     }
 
     private void buildReferredPolicySets(PolicySet policySet, Map<QName, PolicySet> definedPolicySets)
-        throws SCADefinitionsBuilderException {
+        throws DefinitionsBuilderException {
 
         List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
         for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
@@ -287,7 +287,7 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
                 if (resolvedReferredPolicySet != null) {
                     referredPolicySets.add(resolvedReferredPolicySet);
                 } else {
-                    throw new SCADefinitionsBuilderException("Referred PolicySet - " + referredPolicySet
+                    throw new DefinitionsBuilderException("Referred PolicySet - " + referredPolicySet
                         + "not found for PolicySet - "
                         + policySet);
                 }

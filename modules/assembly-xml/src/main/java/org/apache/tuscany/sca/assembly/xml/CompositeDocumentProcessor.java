@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
@@ -215,8 +215,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             }
             
             for ( Object object : scaDefnsSink ) {
-                if ( object instanceof SCADefinitions ) {
-                    for ( PolicySet policySet : ((SCADefinitions)object).getPolicySets() ) {
+                if ( object instanceof Definitions ) {
+                    for ( PolicySet policySet : ((Definitions)object).getPolicySets() ) {
                         domainPolicySetMap.put( policySet.getName(), policySet);
                     }
                 }

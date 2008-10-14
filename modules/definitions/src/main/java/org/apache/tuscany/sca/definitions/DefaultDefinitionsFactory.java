@@ -18,15 +18,15 @@
  */
 package org.apache.tuscany.sca.definitions;
 
-import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
+import org.apache.tuscany.sca.definitions.impl.DefinitionsImpl;
 
 /**
  * Default Implementation of DefinitionsFactory
  */
 public class DefaultDefinitionsFactory implements DefinitionsFactory {
 
-    public SCADefinitions createDefinitions() {
-        return new SCADefinitionsImpl();
+    public Definitions createDefinitions() {
+        return new DefinitionsImpl();
     }
 
 }

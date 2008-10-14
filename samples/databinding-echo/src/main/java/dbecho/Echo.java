@@ -18,15 +18,15 @@
  */
 package dbecho;
 
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
+import org.apache.tuscany.sca.databinding.annotation.DataType;
 import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$
  */
 
-@DataBinding("org.w3c.dom.Node")
 @Remotable
 public interface Echo {
-    Object echo(Object msg);
+    @DataType("org.w3c.dom.Node")
+    Object echo(@DataType("org.w3c.dom.Node") Object msg);
 }

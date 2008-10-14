@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -46,7 +46,7 @@ public class CompositePolicyBuilderImpl extends BaseWireBuilderImpl implements C
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }
 
-    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         computePolicies(composite, monitor);
     }
 }

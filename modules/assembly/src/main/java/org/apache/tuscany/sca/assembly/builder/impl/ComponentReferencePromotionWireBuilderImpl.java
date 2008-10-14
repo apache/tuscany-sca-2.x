@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -52,7 +52,7 @@ public class ComponentReferencePromotionWireBuilderImpl implements CompositeBuil
         this.endpointFactory = endpointFactory;
     }
 
-    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         wireCompositeReferences(composite, monitor);
     }
 

@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -51,7 +51,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
 
-    public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         fuseIncludes(composite, monitor);
     }
 

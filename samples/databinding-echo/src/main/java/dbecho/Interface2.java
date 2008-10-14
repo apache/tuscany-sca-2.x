@@ -20,17 +20,14 @@ package dbecho;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
 /**
  * @version $Rev$ $Date$
  */
-@DataBinding("org.w3c.dom.Node")
 @Remotable
 public interface Interface2 {
     Node call(Node msg);
-    @DataBinding("javax.xml.stream.XMLStreamReader")
     XMLStreamReader call1(XMLStreamReader msg);
 }

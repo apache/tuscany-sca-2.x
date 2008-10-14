@@ -18,15 +18,17 @@
  */
 package dbecho;
 
-import org.apache.tuscany.sca.databinding.annotation.DataBinding;
+import org.apache.tuscany.sca.databinding.annotation.DataType;
 import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$
  */
-@DataBinding("java.lang.String")
 @Remotable
 public interface Interface1 {
-    String call(String msg);
-    String call1(String msg);
+    @DataType("java.lang.String")
+    String call(@DataType("java.lang.String") String msg);
+
+    @DataType("java.lang.String")
+    String call1(@DataType("java.lang.String") String msg);
 }

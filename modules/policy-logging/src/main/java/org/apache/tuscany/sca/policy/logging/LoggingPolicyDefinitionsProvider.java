@@ -27,25 +27,25 @@ import java.security.PrivilegedAction;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
-import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.provider.DefinitionsProvider;
+import org.apache.tuscany.sca.provider.DefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to security
  *
  * @version $Rev$ $Date$
  */
-public class LoggingPolicyDefinitionsProvider implements SCADefinitionsProvider {
+public class LoggingPolicyDefinitionsProvider implements DefinitionsProvider {
     private String definitionsFile = "org/apache/tuscany/sca/policy/logging/definitions.xml";
     URLArtifactProcessor urlArtifactProcessor = null;
     
     public LoggingPolicyDefinitionsProvider(ExtensionPointRegistry registry) {
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+        urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(Definitions.class);
     }
 
-    public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
+    public Definitions getDefinitions() throws DefinitionsProviderException {
         // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
         URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
             public URL run() {
@@ -56,11 +56,11 @@ public class LoggingPolicyDefinitionsProvider implements SCADefinitionsProvider 
         Object scaDefn = null;
         try {
             URI uri = new URI(definitionsFile);
-            return (SCADefinitions)urlArtifactProcessor.read(null, 
+            return (Definitions)urlArtifactProcessor.read(null, 
                                                              uri, 
                                                              definitionsFileUrl);
         } catch ( Exception e ) {
-            throw new SCADefinitionsProviderException(e);
+            throw new DefinitionsProviderException(e);
         }
     }
 

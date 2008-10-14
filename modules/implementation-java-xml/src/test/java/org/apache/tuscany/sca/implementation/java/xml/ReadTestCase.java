@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -59,7 +59,7 @@ public class ReadTestCase {
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
-    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
     private static CompositeBuilder compositeBuilder;
     
     @BeforeClass
@@ -72,7 +72,7 @@ public class ReadTestCase {
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class); 
-        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ReadTestCase {
         
         URL url = getClass().getResource("definitions.xml");
         URI uri = URI.create("definitions.xml");
-        SCADefinitions scaDefns = policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = policyDefinitionsProcessor.read(null, uri, url);
                 
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -158,7 +158,7 @@ public class ReadTestCase {
         
         URL url = getClass().getResource("definitions_with_policysets.xml");
         URI uri = URI.create("definitions_with_policysets.xml");
-        SCADefinitions policyDefinitions = policyDefinitionsProcessor.read(null, uri, url);
+        Definitions policyDefinitions = policyDefinitionsProcessor.read(null, uri, url);
                 
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

@@ -33,26 +33,26 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultSCADefinitionsProviderExtensionPoint implements
-    SCADefinitionsProviderExtensionPoint {
+public class DefaultDefinitionsProviderExtensionPoint implements
+    DefinitionsProviderExtensionPoint {
 
     private ExtensionPointRegistry extensionPointRegistry = null;
     
-    private List<SCADefinitionsProvider> scaDefnsProviders = new ArrayList<SCADefinitionsProvider>();
+    private List<DefinitionsProvider> scaDefnsProviders = new ArrayList<DefinitionsProvider>();
     
-    public DefaultSCADefinitionsProviderExtensionPoint(ExtensionPointRegistry extnPtReg) {
+    public DefaultDefinitionsProviderExtensionPoint(ExtensionPointRegistry extnPtReg) {
         this.extensionPointRegistry = extnPtReg;
     }
 
-    public void addSCADefinitionsProvider(SCADefinitionsProvider provider) {
+    public void addDefinitionsProvider(DefinitionsProvider provider) {
         scaDefnsProviders.add(provider);
     }
 
-    public void removeSCADefinitionsProvider(SCADefinitionsProvider provider) {
+    public void removeDefinitionsProvider(DefinitionsProvider provider) {
         scaDefnsProviders.remove(provider);
     }
 
-    public List<SCADefinitionsProvider> getSCADefinitionsProviders() {
+    public List<DefinitionsProvider> getDefinitionsProviders() {
         if (scaDefnsProviders.isEmpty()) {
             loadProviders();
         }
@@ -62,23 +62,23 @@ public class DefaultSCADefinitionsProviderExtensionPoint implements
     private void loadProviders() {
         // Get the provider service declarations
         Set<ServiceDeclaration> defnProviderDecls;
-        SCADefinitionsProvider aProvider = null;
+        DefinitionsProvider aProvider = null;
         Class providerClass = null;
         Constructor constructor = null;
 
         try {
             defnProviderDecls =
-                ServiceDiscovery.getInstance().getServiceDeclarations(SCADefinitionsProvider.class.getName());
+                ServiceDiscovery.getInstance().getServiceDeclarations(DefinitionsProvider.class.getName());
     
             for (ServiceDeclaration aDefnProviderDecl : defnProviderDecls) {
                 providerClass = aDefnProviderDecl.loadClass();
             
                 try {
                     constructor = providerClass.getConstructor();
-                    aProvider = (SCADefinitionsProvider)constructor.newInstance();
+                    aProvider = (DefinitionsProvider)constructor.newInstance();
                 } catch (NoSuchMethodException e1) {
                         constructor = providerClass.getConstructor(ExtensionPointRegistry.class);
-                        aProvider = (SCADefinitionsProvider)constructor.newInstance(extensionPointRegistry);
+                        aProvider = (DefinitionsProvider)constructor.newInstance(extensionPointRegistry);
                 } 
                 
                 scaDefnsProviders.add(aProvider);

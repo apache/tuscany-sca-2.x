@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public interface SCADefinitions {
+public interface Definitions {
     /**
      * Returns the target namespace for this SCA Definition
      * @return the target namespace
@@ -49,7 +49,7 @@ public interface SCADefinitions {
      * 
      * @return a list of domain wide Policy Intents 
      */
-    List<Intent> getPolicyIntents();
+    List<Intent> getIntents();
     
     /**
      * Returns a list of domain wide PolicySets

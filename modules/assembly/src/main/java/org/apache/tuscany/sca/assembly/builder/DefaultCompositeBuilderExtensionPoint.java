@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -118,7 +118,7 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
             return id;
         }
         
-        public void build(Composite composite, SCADefinitions definitions, Monitor monitor) throws CompositeBuilderException {
+        public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
             getBuilder().build(composite, definitions, monitor);
         }
 

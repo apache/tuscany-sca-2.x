@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -73,7 +73,7 @@ public class CustomCompositeBuilder {
     private ContributionBuilder contributionDependencyBuilder;
     private CompositeBuilder domainCompositeBuilder;
     private static Workspace workspace;
-    private List<SCADefinitions> policyDefinitions;
+    private List<Definitions> policyDefinitions;
     private Monitor monitor;
     private Composite domainComposite;
     private boolean nonWiring;

@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -61,7 +61,7 @@ import org.junit.Test;
  */
 public class BuildPolicyTestCase { 
     private static URLArtifactProcessor<Object> documentProcessor;
-    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
     private static ModelResolver resolver; 
     private static CompositeBuilder compositeBuilder;
     private static Composite composite;
@@ -75,7 +75,7 @@ public class BuildPolicyTestCase {
         modelFactories.addFactory(scaBindingFactory);
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
-        List<SCADefinitions> policyDefinitions = new ArrayList<SCADefinitions>();
+        List<Definitions> policyDefinitions = new ArrayList<Definitions>();
         resolver = new DefaultModelResolver();
         
         MonitorFactory monitorFactory = new DefaultMonitorFactory();
@@ -86,7 +86,7 @@ public class BuildPolicyTestCase {
         
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
-        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
         
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
@@ -104,7 +104,7 @@ public class BuildPolicyTestCase {
         
         url = BuildPolicyTestCase.class.getResource("another_test_definitions.xml");
         uri = URI.create("another_test_definitions.xml");
-        SCADefinitions definitions = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions definitions = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(definitions);
         policyDefinitions.add(definitions);
         

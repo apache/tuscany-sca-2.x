@@ -18,26 +18,17 @@
  */
 package org.apache.tuscany.sca.definitions;
 
+
 /**
- * Builder Exception
+ * Interface to abstract building of SCA Definitions for a Domain
  *
  * @version $Rev$ $Date$
  */
-public class SCADefinitionsBuilderException extends Exception {
-    private static final long serialVersionUID = 2513219325230252783L;
-
-    public SCADefinitionsBuilderException() {
-    }
-
-    public SCADefinitionsBuilderException(String message) {
-        super(message);
-    }
-
-    public SCADefinitionsBuilderException(Throwable cause) {
-        super(cause);
-    }
-
-    public SCADefinitionsBuilderException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface DefinitionsBuilder {
+    /**
+     * Builds the SCA definitions 
+     * 
+     * @param scaDefns
+     */
+    void build(Definitions scaDefns) throws DefinitionsBuilderException;
 }

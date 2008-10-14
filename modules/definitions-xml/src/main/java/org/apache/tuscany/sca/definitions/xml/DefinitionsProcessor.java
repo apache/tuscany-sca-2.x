@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -53,7 +53,7 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  *
  * @version $Rev$ $Date$
  */
-public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCADefinitions> {
+public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Definitions> {
 
     private StAXArtifactProcessor<Object> extensionProcessor;
     private DefinitionsFactory definitionsFactory;
@@ -67,7 +67,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     public static final String TARGET_NAMESPACE = "targetNamespace";
     public static final String NAME = "name";
 
-    public SCADefinitionsProcessor(FactoryExtensionPoint factoryExtensionPoint,
+    public DefinitionsProcessor(FactoryExtensionPoint factoryExtensionPoint,
                                    StAXArtifactProcessor<Object> extensionProcessor,
                                    Monitor monitor) {
         this.extensionProcessor = extensionProcessor;
@@ -75,9 +75,9 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         this.definitionsFactory = factoryExtensionPoint.getFactory(DefinitionsFactory.class);
     }
 
-    public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Definitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName name = null;
-        SCADefinitions definitions = null;
+        Definitions definitions = null;
         String targetNamespace = null;
 
         while (reader.hasNext()) {
@@ -105,7 +105,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                                 // FIXME: Workaround for TUSCANY-2499
                                 intent.setUnresolved(false);
 
-                                definitions.getPolicyIntents().add(intent);
+                                definitions.getIntents().add(intent);
                             } else if (extension instanceof PolicySet) {
                                 PolicySet policySet = (PolicySet)extension;
                                 policySet.setName(new QName(targetNamespace, policySet.getName().getLocalPart()));
@@ -145,13 +145,13 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         return definitions;
     }
 
-    public void write(SCADefinitions definitions, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(Definitions definitions, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
 
         writeStartDocument(writer, SCA10_NS, SCA_DEFINITIONS, new XAttr(TARGET_NAMESPACE, definitions
             .getTargetNamespace()));
 
-        for (Intent policyIntent : definitions.getPolicyIntents()) {
+        for (Intent policyIntent : definitions.getIntents()) {
             extensionProcessor.write(policyIntent, writer);
         }
 
@@ -170,7 +170,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         writeEndDocument(writer);
     }
 
-    public void resolve(SCADefinitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Definitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
         // start by adding all of the top level artifacts into the resolver as there
         // are many cross artifact references in a definitions file and we don't want
         // to be dependent on the order things appear
@@ -181,7 +181,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         List<PolicySet> simplePolicySets = new ArrayList<PolicySet>();
         List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
 
-        for (Intent policyIntent : scaDefns.getPolicyIntents()) {
+        for (Intent policyIntent : scaDefns.getIntents()) {
             if (policyIntent instanceof ProfileIntent)
                 profileIntents.add((ProfileIntent)policyIntent);
             else if (policyIntent instanceof QualifiedIntent)
@@ -242,8 +242,8 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         return SCA_DEFINITIONS_QNAME;
     }
 
-    public Class<SCADefinitions> getModelType() {
-        return SCADefinitions.class;
+    public Class<Definitions> getModelType() {
+        return Definitions.class;
     }
 
 }

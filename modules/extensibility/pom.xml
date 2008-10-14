@@ -40,7 +40,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.extensibility</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.core,
+                            org.apache.tuscany.sca.extensibility
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
