@@ -54,7 +54,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.workspace</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.workspace*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.workspace,
+                            org.apache.tuscany.sca.workspace.builder
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
