@@ -19,14 +19,18 @@
 
 package org.apache.tuscany.sca.definitions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -39,20 +43,22 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading SCA XML assembly documents.
  * 
  * @version $Rev: 551296 $ $Date: 2007-06-28 01:18:35 +0530 (Thu, 28 Jun 2007) $
  */
-public class ReadDocumentTestCase extends TestCase {
+public class ReadDocumentTestCase {
 
-    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor = null;
-    private SCADefinitions definitions;
-    Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
-    Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
-    Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
+    private static URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor = null;
+    private static SCADefinitions definitions;
+    private static Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
+    private static Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
+    private static Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
+    private static Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
     public static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
     public static final String namespace = "http://test";
     
@@ -70,8 +76,8 @@ public class ReadDocumentTestCase extends TestCase {
     private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
     
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
         // Create StAX processors
@@ -81,7 +87,7 @@ public class ReadDocumentTestCase extends TestCase {
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class); 
         
-        URL url = getClass().getResource("test_definitions.xml");
+        URL url = ReadDocumentTestCase.class.getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
         definitions = policyDefinitionsProcessor.read(null, uri, url);
         
@@ -102,6 +108,7 @@ public class ReadDocumentTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testReadSCADefinitions() throws Exception {
         assertNotNull(definitions);
         
@@ -124,6 +131,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNotNull(implTypesTable.get(javaImpl));
     }
     
+    @Test
     public void testResolveSCADefinitions() throws Exception {
         assertTrue(intentTable.get(messageProtection) instanceof ProfileIntent);
         ProfileIntent profileIntent = (ProfileIntent)intentTable.get(new QName(namespace, "messageProtection"));
