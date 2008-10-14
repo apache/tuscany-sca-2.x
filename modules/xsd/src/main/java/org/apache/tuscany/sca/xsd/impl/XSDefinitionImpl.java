@@ -165,7 +165,7 @@ public class XSDefinitionImpl implements XSDefinition {
         return true;
     }
 
-    public static <T extends XmlSchemaObject> T getXmlSchemaObject(XmlSchema schema, QName name, Class<T> type) {
+    private static <T extends XmlSchemaObject> T getXmlSchemaObject(XmlSchema schema, QName name, Class<T> type) {
         if (schema != null) {
             XmlSchemaObject object = null;
             if (type == XmlSchemaElement.class) {
