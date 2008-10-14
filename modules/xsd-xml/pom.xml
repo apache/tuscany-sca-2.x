@@ -65,7 +65,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.xsd.xml</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.xsd.xml*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.xsd.xml</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
