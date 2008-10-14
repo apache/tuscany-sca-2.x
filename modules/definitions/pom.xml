@@ -60,7 +60,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.definitions</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.definitions*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.definitions,
+                            org.apache.tuscany.sca.definitions.util
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
