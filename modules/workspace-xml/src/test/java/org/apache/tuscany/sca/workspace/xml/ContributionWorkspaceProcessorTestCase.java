@@ -19,13 +19,16 @@
 
 package org.apache.tuscany.sca.workspace.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -33,6 +36,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.workspace.Workspace;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test the workspace processor.
@@ -40,34 +45,34 @@ import org.apache.tuscany.sca.workspace.Workspace;
  * @version $Rev$ $Date$
  */
 
-public class ContributionWorkspaceProcessorTestCase extends TestCase {
+public class ContributionWorkspaceProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
             + "<contribution uri=\"uri1\" location=\"location1\"/>"
             + "<contribution uri=\"uri2\" location=\"location2\"/>"
             + "</workspace>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
             + "<contribution uri=\"uri1\" location=\"location1\"/>"
             + "<contribution uri=\"uri2\" location=\"location2\"/>"
             + "</contribution>"
             + "</workspace>";
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
     }
 
+    @Test
     public void testRead() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
         Workspace workspace = (Workspace)staxProcessor.read(reader);
@@ -75,8 +80,9 @@ public class ContributionWorkspaceProcessorTestCase extends TestCase {
         assertEquals(2, workspace.getContributions().size());
         assertEquals("uri2", workspace.getContributions().get(1).getURI());
         assertEquals("location2", workspace.getContributions().get(1).getLocation());
-  }
+    }
 
+    @Test
     public void testReadInvalid() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         try {
