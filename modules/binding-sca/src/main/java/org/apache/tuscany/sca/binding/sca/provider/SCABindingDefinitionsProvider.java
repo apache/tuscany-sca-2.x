@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca;
+package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.net.URI;
 import java.net.URL;

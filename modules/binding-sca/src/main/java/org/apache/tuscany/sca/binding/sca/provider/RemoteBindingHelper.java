@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.impl;
+package org.apache.tuscany.sca.binding.sca.provider;
 
 /**
  * TODO: TUSCANY-2578, implement a pluggable mechanism so sca binding impls can 

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.impl;
+package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;

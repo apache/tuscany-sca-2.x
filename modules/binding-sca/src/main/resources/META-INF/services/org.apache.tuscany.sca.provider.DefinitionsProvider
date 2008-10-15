@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for SCA Definitions Providers
-org.apache.tuscany.sca.binding.sca.SCABindingDefinitionsProvider
+org.apache.tuscany.sca.binding.sca.provider.SCABindingDefinitionsProvider

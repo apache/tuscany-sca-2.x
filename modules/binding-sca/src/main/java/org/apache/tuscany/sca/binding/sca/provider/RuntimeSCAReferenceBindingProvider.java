@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.impl;
+package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.net.URI;
 import java.util.logging.Logger;
@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.binding.sca.impl.DistributedSCABindingImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;

@@ -75,7 +75,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.sca</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.sca*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.sca</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

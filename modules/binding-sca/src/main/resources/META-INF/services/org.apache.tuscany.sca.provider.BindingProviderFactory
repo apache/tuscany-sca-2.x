@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.sca.impl.RuntimeSCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.SCABinding
+org.apache.tuscany.sca.binding.sca.provider.RuntimeSCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.SCABinding

@@ -17,12 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.sca.impl;
+package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
+import org.apache.tuscany.sca.binding.sca.impl.DistributedSCABindingImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
