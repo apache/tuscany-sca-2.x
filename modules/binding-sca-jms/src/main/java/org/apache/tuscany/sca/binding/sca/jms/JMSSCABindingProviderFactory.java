@@ -21,8 +21,11 @@ package org.apache.tuscany.sca.binding.sca.jms;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.DefaultJMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -41,12 +44,17 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
     
     private WorkScheduler workScheduler;
     private ExtensionPointRegistry extensionPoints;
+    private JMSResourceFactoryExtensionPoint jmsRFEP;
 
     public JMSSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         workScheduler = utilities.getUtility(WorkScheduler.class);
         assert workScheduler != null;
+        jmsRFEP = (JMSResourceFactoryExtensionPoint)extensionPoints.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
+        if (jmsRFEP == null) {
+            jmsRFEP = new DefaultJMSResourceFactoryExtensionPoint();
+        }
     }    
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
@@ -60,7 +68,8 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
         // instead of JNDI
         // jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_NEVER);
 
-        return new JMSBindingReferenceBindingProvider(component, reference, jmsBinding, extensionPoints);
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(jmsBinding);
+        return new JMSBindingReferenceBindingProvider(component, reference, jmsBinding, extensionPoints, jmsRF);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
@@ -68,13 +77,17 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
                                                                DistributedSCABinding binding) {
         JMSBinding jmsBinding = createBinding(binding);
         jmsBinding.setDestinationCreate(JMSBindingConstants.CREATE_ALWAYS);
-        return new JMSBindingServiceBindingProvider(component, service, binding.getSCABinding(), jmsBinding, workScheduler, extensionPoints);
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(jmsBinding);
+        return new JMSBindingServiceBindingProvider(component, service, binding.getSCABinding(), jmsBinding, workScheduler, extensionPoints, jmsRF);
     }
 
     private JMSBinding createBinding(DistributedSCABinding binding) {
         JMSBinding b = new JMSBinding();
         b.setInitialContextFactoryName("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         b.setJndiURL("vm://localhost"); // TODO: plug in jndi url from definitions.xml
+        
+        b.setJMSTimeToLive(9);
+        
         b.setRequestMessageProcessorName(JMSBindingConstants.OBJECT_MP_CLASSNAME);
         b.setResponseMessageProcessorName(JMSBindingConstants.OBJECT_MP_CLASSNAME);
         if (binding.getSCABinding().getURI().startsWith("/")) {
