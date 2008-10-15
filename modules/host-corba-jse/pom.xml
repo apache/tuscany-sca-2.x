@@ -47,7 +47,11 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.host.corba.jse</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.host.corba*</Export-Package>
+                        <!--  FIXME: These packages are used by tuscany-host-corba-jse-tns. We need to find a better way. -->
+                        <Export-Package>
+                            org.apache.tuscany.sca.host.corba.jse,
+                            org.apache.tuscany.sca.host.corba.naming
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
