@@ -48,7 +48,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.data.api</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.data*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.data.collection</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
