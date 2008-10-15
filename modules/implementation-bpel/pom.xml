@@ -89,7 +89,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.bpel</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.implementation.bpel*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.implementation.bpel</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

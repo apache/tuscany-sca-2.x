@@ -28,6 +28,7 @@ import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.extensions.ExtensionSerializer;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.interfacedef.wsdl.BPELPartnerLinkTypeExt;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
