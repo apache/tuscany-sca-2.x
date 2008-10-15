@@ -80,6 +80,9 @@ public class ThirdPartyBundleClasspathGeneratorMojo extends AbstractMojo {
         try {
             // Adjust .classpath, make all classpath entries point to the lib directory
             File classpath = new File(basedir, ".classpath");
+            if (!classpath.exists()) {
+                return;
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(classpath)));
             StringWriter buffer = new StringWriter();
             PrintWriter printer = new PrintWriter(buffer);

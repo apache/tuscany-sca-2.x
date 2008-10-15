@@ -153,6 +153,13 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
      */
     private ArtifactResolver artifactResolver;
 
+    /**
+     * The bundle symbolic name
+     *
+     * @parameter
+     */
+    private String symbolicName;
+    
     public void execute() throws MojoExecutionException {
         Log log = getLog();
 
@@ -232,7 +239,7 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
                 version = version.substring(0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1);
             }
 
-            Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), version);
+            Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), symbolicName, version);
             File file = new File(project.getBasedir(), "META-INF");
             file.mkdir();
             file= new File(file, "MANIFEST.MF");

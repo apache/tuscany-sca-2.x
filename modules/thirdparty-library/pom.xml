@@ -63,6 +63,9 @@
                         <goals>
                             <goal>assemble-thirdparty-bundle</goal>
                         </goals>
+                        <configuration>
+                            <symbolicName>org.apache.tuscany.sca.thirdparty.library</symbolicName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

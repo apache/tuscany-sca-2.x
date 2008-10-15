@@ -124,7 +124,7 @@ final class BundleUtil {
         }
     }
 
-    static Manifest libraryManifest(Set<File> jarFiles, String name, String version)
+    static Manifest libraryManifest(Set<File> jarFiles, String name, String symbolicName, String version)
         throws IllegalStateException {
         try {
 
@@ -162,7 +162,7 @@ final class BundleUtil {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(BUNDLE_SYMBOLICNAME, name);
+            attributes.putValue(BUNDLE_SYMBOLICNAME, symbolicName);
             attributes.putValue(BUNDLE_NAME, name);
             attributes.putValue(BUNDLE_VERSION, version);
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
