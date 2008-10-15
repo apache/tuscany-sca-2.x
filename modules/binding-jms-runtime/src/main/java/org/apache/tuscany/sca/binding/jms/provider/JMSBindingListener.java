@@ -62,7 +62,7 @@ public class JMSBindingListener implements MessageListener {
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
     private Binding targetBinding;
-    private JMSResourceFactoryImpl jmsResourceFactory;
+    private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponentService service;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
@@ -70,7 +70,7 @@ public class JMSBindingListener implements MessageListener {
     private List<Operation> serviceOperations;
     protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
 
-    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactoryImpl jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
+    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;

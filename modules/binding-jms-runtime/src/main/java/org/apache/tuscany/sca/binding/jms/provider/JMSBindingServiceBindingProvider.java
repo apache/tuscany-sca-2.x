@@ -57,7 +57,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private RuntimeComponentService service;
     private Binding targetBinding;
     private JMSBinding jmsBinding;
-    private JMSResourceFactoryImpl jmsResourceFactory;
+    private JMSResourceFactory jmsResourceFactory;
     private MessageConsumer consumer;
     private WorkScheduler workScheduler;
     private boolean running;

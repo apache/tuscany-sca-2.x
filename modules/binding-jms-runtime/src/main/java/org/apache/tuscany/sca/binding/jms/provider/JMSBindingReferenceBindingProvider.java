@@ -49,7 +49,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponentReference reference;
     private JMSBinding jmsBinding;
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
-    private JMSResourceFactoryImpl jmsResourceFactory;
+    private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract; 
     private ExtensionPointRegistry extensions;

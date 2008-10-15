@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSResourceFactoryImpl {
+public class JMSResourceFactoryImpl implements JMSResourceFactory {
 
     private String initialContextFactoryName;
     private String connectionFactoryName = "ConnectionFactory";
@@ -64,7 +64,7 @@ public class JMSResourceFactoryImpl {
      * able to leverage the host environment to provide connection pooling if it can. E.g. if Tuscany is running inside 
      * an AppServer Then we could leverage the JMS resources it provides
      * 
-     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#getConnection()
      */
     public Connection getConnection() throws NamingException, JMSException {
         if (connection == null) {
@@ -76,7 +76,7 @@ public class JMSResourceFactoryImpl {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createSession()
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#createSession()
      */
     public Session createSession() throws JMSException, NamingException {
         return getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -85,7 +85,7 @@ public class JMSResourceFactoryImpl {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#startConnection()
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#startConnection()
      */
     public void startConnection() throws JMSException, NamingException {
         if (!isConnectionStarted) {
@@ -97,7 +97,7 @@ public class JMSResourceFactoryImpl {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#closeConnection()
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#closeConnection()
      */
     public void closeConnection() throws JMSException {
         if (connection != null) {
@@ -154,6 +154,9 @@ public class JMSResourceFactoryImpl {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#lookupDestination(java.lang.String)
+     */
     public Destination lookupDestination(String destName) throws NamingException {
         if (JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(destName)) {
             return null;
@@ -194,8 +197,8 @@ public class JMSResourceFactoryImpl {
         return null;
     }
 
-    /**
-     * You can create a destination in ActiveMQ (and have it appear in JNDI) by putting "dynamicQueues/" in front of the queue name being looked up
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory#createDestination(java.lang.String)
      */
     public Destination createDestination(String jndiName) throws NamingException {
         return lookupDestination("dynamicQueues/" + jndiName);
