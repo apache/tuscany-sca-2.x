@@ -39,19 +39,27 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
 
     private WorkScheduler workScheduler;
     private ExtensionPointRegistry extensionPoints;
+    private JMSResourceFactoryExtensionPoint jmsRFEP;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         workScheduler = utilities.getUtility(WorkScheduler.class);
+
+        jmsRFEP = (JMSResourceFactoryExtensionPoint)extensionPoints.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
+        if (jmsRFEP == null) {
+            jmsRFEP = new DefaultJMSResourceFactoryExtensionPoint();
+        }
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
-        return new JMSBindingReferenceBindingProvider(component, reference, binding, extensionPoints);
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(binding);
+        return new JMSBindingReferenceBindingProvider(component, reference, binding, extensionPoints, jmsRF);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
-        return new JMSBindingServiceBindingProvider(component, service, binding, binding, workScheduler, extensionPoints);
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(binding);
+        return new JMSBindingServiceBindingProvider(component, service, binding, binding, workScheduler, extensionPoints, jmsRF);
     }
 
     public Class<JMSBinding> getModelType() {
