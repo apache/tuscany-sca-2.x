@@ -25,8 +25,8 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 
 /**
  * MessageProcessor for sending/receiving Serializable objects with the JMSBinding.

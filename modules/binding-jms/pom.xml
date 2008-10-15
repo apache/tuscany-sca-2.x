@@ -56,7 +56,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.jms</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.jms*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.jms</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

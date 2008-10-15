@@ -148,7 +148,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
         Composite composite = (Composite)staxProcessor.read(reader);
-        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        JMSBindingImpl binding = (JMSBindingImpl)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
         assertEquals("testQueue", binding.getDestinationName());
@@ -158,7 +158,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(HEADERS1));
         
         Composite composite = (Composite)staxProcessor.read(reader);
-        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        JMSBindingImpl binding = (JMSBindingImpl)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
         assertEquals("myType", binding.getJMSType());
@@ -172,7 +172,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(PROPERTIES1));
         
         Composite composite = (Composite)staxProcessor.read(reader);
-        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        JMSBindingImpl binding = (JMSBindingImpl)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
         assertEquals("bla", binding.getProperty("p1"));
@@ -183,7 +183,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_PROPERTIES1));
         
         Composite composite = (Composite)staxProcessor.read(reader);
-        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        JMSBindingImpl binding = (JMSBindingImpl)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
 
@@ -202,7 +202,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(SELECTOR));
         
         Composite composite = (Composite)staxProcessor.read(reader);
-        JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
+        JMSBindingImpl binding = (JMSBindingImpl)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
 

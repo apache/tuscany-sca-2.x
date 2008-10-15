@@ -34,9 +34,9 @@ import javax.jms.Topic;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;

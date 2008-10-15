@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.impl;
+package org.apache.tuscany.sca.binding.jms.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -32,6 +32,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -118,10 +121,12 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private Monitor monitor;
+    private JMSBindingFactory jmsBindingFactory;
 
     public JMSBindingProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.jmsBindingFactory = modelFactories.getFactory(JMSBindingFactory.class);
         this.monitor = monitor;
     }
     
@@ -162,7 +167,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     }
 
     public JMSBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        JMSBinding jmsBinding = new JMSBinding();
+        JMSBinding jmsBinding = jmsBindingFactory.createJMSBinding();
 
         // Read policies
         policyProcessor.readPolicies(jmsBinding, reader);

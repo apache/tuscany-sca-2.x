@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 
 /**
  * MessageProcessor for sending/receiving XML javax.jms.TextMessage with the JMSBinding.

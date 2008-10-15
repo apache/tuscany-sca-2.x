@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 
 /**
  * Utility methods to load JMS message processors.

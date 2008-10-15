@@ -29,8 +29,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding

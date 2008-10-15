@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
 
 /**
  * Models a binding to a JMS resource.
@@ -32,7 +33,7 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 
-public class JMSBinding implements Binding {
+public class JMSBindingImpl implements JMSBinding {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -105,7 +106,7 @@ public class JMSBinding implements Binding {
     private JMSBinding requestConnectionBinding;
     private JMSBinding responseConnectionBinding;
     
-    public JMSBinding() {
+    public JMSBindingImpl() {
         super();
     }
 
