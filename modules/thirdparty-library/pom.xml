@@ -35,6 +35,13 @@
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <!-- host-tomcat is not the all-in-one distro -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-tomcat</artifactId>
+            <type>jar</type>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>        
     </dependencies>
 
     <build>
@@ -67,19 +74,12 @@
                             <symbolicName>org.apache.tuscany.sca.thirdparty.library</symbolicName>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
-                <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
+                   <execution>
                         <id>generate-pde-classpath</id>
                         <goals>
                             <goal>generate-pde-classpath</goal>
                         </goals>
-                    </execution>
+                    </execution>                    
                 </executions>
             </plugin>
 
