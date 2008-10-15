@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
  */
 public class HTTPBindingFactoryImpl implements HTTPBindingFactory {
 
-    public HTTPBinding createHTTPResourceBinding() {
+    public HTTPBinding createHTTPBinding() {
         return new HTTPBindingImpl();
     }
 

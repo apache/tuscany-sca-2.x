@@ -30,6 +30,6 @@ public interface HTTPBindingFactory {
      * Creates a new HTTP binding.
      * @return a new HTTP binding
      */
-    HTTPBinding createHTTPResourceBinding();
+    HTTPBinding createHTTPBinding();
 
 }
