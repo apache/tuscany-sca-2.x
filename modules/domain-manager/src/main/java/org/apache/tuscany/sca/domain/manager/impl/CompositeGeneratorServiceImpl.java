@@ -67,7 +67,6 @@ import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.apache.tuscany.sca.domain.manager.impl.CompositeGeneratorServiceImpl.Cache.ContributionCache;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -139,7 +138,9 @@ public class CompositeGeneratorServiceImpl extends HttpServlet implements Servle
         
         // Create contribution processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        // contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        contributionProcessor = urlProcessors.getProcessor(Contribution.class);
+
     }
     
     @Override

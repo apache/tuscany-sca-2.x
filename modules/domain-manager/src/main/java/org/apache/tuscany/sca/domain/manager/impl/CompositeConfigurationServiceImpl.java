@@ -79,7 +79,6 @@ import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderException;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -154,7 +153,8 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
         
         // Create contribution processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        // contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        contributionProcessor = urlProcessors.getProcessor(Contribution.class);
         
         // Get a contribution dependency builder
         ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);

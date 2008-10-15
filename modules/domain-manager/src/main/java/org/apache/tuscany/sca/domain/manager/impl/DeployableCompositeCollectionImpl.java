@@ -71,8 +71,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -143,7 +141,8 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
         
         // Create contribution processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        // contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor, monitor);
+        contributionProcessor = urlProcessors.getProcessor(Contribution.class);
         
         // Get a contribution dependency builder
         ContributionBuilderExtensionPoint contributionBuilders = extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
