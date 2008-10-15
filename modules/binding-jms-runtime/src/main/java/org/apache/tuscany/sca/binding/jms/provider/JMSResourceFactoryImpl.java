@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSResourceFactory {
+public class JMSResourceFactoryImpl {
 
     private String initialContextFactoryName;
     private String connectionFactoryName = "ConnectionFactory";
@@ -47,7 +47,7 @@ public class JMSResourceFactory {
     private Context context;
     private boolean isConnectionStarted;
 
-    public JMSResourceFactory(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
+    public JMSResourceFactoryImpl(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
         if (connectionFactoryName != null && connectionFactoryName.trim().length() > 0) {
             this.connectionFactoryName = connectionFactoryName.trim();
         }

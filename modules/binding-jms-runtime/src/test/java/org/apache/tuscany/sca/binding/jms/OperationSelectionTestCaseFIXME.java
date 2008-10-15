@@ -25,7 +25,7 @@ import javax.jms.TextMessage;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingListener;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -181,7 +181,7 @@ public class OperationSelectionTestCaseFIXME {
         throws Exception {
         // Create the test JMS Binding
         final JMSBinding jmsBinding = new JMSBinding();
-        JMSResourceFactory jmsResourceFactory = null;
+        JMSResourceFactoryImpl jmsResourceFactory = null;
 
         // Extra information for the method we are invoking
         final String operationParams = "Hello";
