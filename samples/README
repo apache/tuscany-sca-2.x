@@ -31,6 +31,10 @@ calculator-distributed             - A calculator built using SCA nodes running
                                      on multiple JVMs
 calculator-implementation-policies - Shows logging policites associated with 
                                      SCA implementations
+calculator-corba-reference         - The calculator configured to use existing
+                                     CORBA service
+calculator-corba-service           - The calculator configured to be accessible
+                                     as CORBA service
 calculator-rmi-reference           - The calculator configured to talk RMI to
                                      the calculator-rmi-service sample
 calculator-rmi-service             - The calculator configured to accept RMI

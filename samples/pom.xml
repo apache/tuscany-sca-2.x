@@ -49,6 +49,8 @@
                 <module>binding-notification-consumer</module>
                 <module>binding-notification-producer</module>
                 <module>calculator</module>
+                <module>calculator-corba-reference</module>
+                <module>calculator-corba-service</module>
                 <module>calculator-lean</module>
                 <module>calculator-distributed</module>
 		<module>calculator-implementation-policies</module>
