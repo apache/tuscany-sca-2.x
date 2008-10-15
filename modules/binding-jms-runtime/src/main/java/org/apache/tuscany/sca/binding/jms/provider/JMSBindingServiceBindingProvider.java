@@ -57,7 +57,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private RuntimeComponentService service;
     private Binding targetBinding;
     private JMSBinding jmsBinding;
-    private JMSResourceFactory jmsResourceFactory;
+    private JMSResourceFactoryImpl jmsResourceFactory;
     private MessageConsumer consumer;
     private WorkScheduler workScheduler;
     private boolean running;
@@ -77,7 +77,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         this.targetBinding = targetBinding;
         this.extensionPoints = extensionPoints;
 
-        jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        jmsResourceFactory = new JMSResourceFactoryImpl(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
             if (!service.isCallback()) {

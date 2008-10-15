@@ -49,7 +49,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponentReference reference;
     private JMSBinding jmsBinding;
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
-    private JMSResourceFactory jmsResourceFactory;
+    private JMSResourceFactoryImpl jmsResourceFactory;
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract; 
     private ExtensionPointRegistry extensions;
@@ -59,7 +59,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         this.jmsBinding = binding;
         this.extensions = extensions;
         this.component = component;
-        jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        jmsResourceFactory = new JMSResourceFactoryImpl(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
             setXMLDataBinding(reference);
