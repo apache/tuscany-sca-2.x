@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.binding.ws.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -34,27 +34,30 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading/write WSDL interfaces.
  * 
  * @version $Rev$ $Date$
  */
-public class WriteTestCase extends TestCase {
+public class WriteTestCase {
 
-    private XMLInputFactory inputFactory;
-    private XMLOutputFactory outputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
+    private static XMLInputFactory inputFactory;
+    private static XMLOutputFactory outputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
-/*
+
+    @Test
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = (ComponentType)staxProcessor.read(inputFactory.createXMLStreamReader(is));
@@ -62,8 +65,8 @@ public class WriteTestCase extends TestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos));
     }
-*/    
 
+    @Test
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
