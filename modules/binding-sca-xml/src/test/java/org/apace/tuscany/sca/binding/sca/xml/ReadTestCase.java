@@ -19,13 +19,14 @@
 
 package org.apace.tuscany.sca.binding.sca.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -37,20 +38,22 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading WSDL interfaces.
  * 
  * @version $Rev$ $Date$
  */
-public class ReadTestCase extends TestCase {
+public class ReadTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private CompositeBuilder compositeBuilder;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static CompositeBuilder compositeBuilder;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
 
         inputFactory = XMLInputFactory.newInstance();
@@ -60,6 +63,7 @@ public class ReadTestCase extends TestCase {
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
     }
 
+    @Test
     public void testReadComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("/CalculatorServiceImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -75,6 +79,7 @@ public class ReadTestCase extends TestCase {
         //new PrintUtil(System.out).print(componentType);
     }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("/Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
