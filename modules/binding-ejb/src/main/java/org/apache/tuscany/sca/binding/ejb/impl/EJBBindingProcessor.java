@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
+import org.apache.tuscany.sca.binding.ejb.EJBBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -57,13 +58,15 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *
  * @version $Rev$ $Date$
  */
-public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl> {
+public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private Monitor monitor;
+    private EJBBindingFactory ejbBindingFactory;
 
     public EJBBindingProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.ejbBindingFactory = modelFactories.getFactory(EJBBindingFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.monitor = monitor;
     }
@@ -92,8 +95,8 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
     /**
      * {@inheritDoc}
      */
-    public EJBBindingImpl read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        EJBBindingImpl ejbBinding = new EJBBindingImpl();
+    public EJBBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        EJBBinding ejbBinding = ejbBindingFactory.createEJBBinding();
 
         // Read the policies 
         policyProcessor.readPolicies(ejbBinding, reader);
@@ -153,7 +156,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
         return ejbBinding;
     }
 
-    public void write(EJBBindingImpl ejbBinding, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(EJBBinding ejbBinding, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
         // Write a <binding.ejb>
         writer.writeStartElement(Constants.SCA10_NS, EJBBinding.BINDING_EJB);
@@ -172,10 +175,10 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
         writer.writeEndElement();
     }
 
-    public Class<EJBBindingImpl> getModelType() {
-        return EJBBindingImpl.class;
+    public Class<EJBBinding> getModelType() {
+        return EJBBinding.class;
     }
 
-    public void resolve(EJBBindingImpl ejbBinding, ModelResolver modelResolver) throws ContributionResolveException {
+    public void resolve(EJBBinding ejbBinding, ModelResolver modelResolver) throws ContributionResolveException {
     }
 }
