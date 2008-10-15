@@ -28,25 +28,20 @@ import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
 import static org.osgi.framework.Constants.IMPORT_PACKAGE;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.osgi.framework.Bundle;
 
 /**
  * Common functions used by the plugin.
@@ -54,23 +49,6 @@ import org.osgi.framework.Bundle;
  * @version $Rev$ $Date$
  */
 final class BundleUtil {
-
-    static File file(URL url) {
-        if (url == null || !url.getProtocol().equals("file")) {
-            return null;
-        } else {
-            String filename = url.getFile().replace('/', File.separatorChar);
-            int pos = 0;
-            while ((pos = filename.indexOf('%', pos)) >= 0) {
-                if (pos + 2 < filename.length()) {
-                    String hexStr = filename.substring(pos + 1, pos + 3);
-                    char ch = (char)Integer.parseInt(hexStr, 16);
-                    filename = filename.substring(0, pos) + ch + filename.substring(pos + 3);
-                }
-            }
-            return new File(filename);
-        }
-    }
 
     static private Pattern pattern = Pattern.compile("-([0-9.]+)");
     static private Pattern pattern2 = Pattern.compile("_([0-9.]+)");
@@ -95,32 +73,13 @@ final class BundleUtil {
         }
         return version;
     }
-
+    
     private static void addPackages(File jarFile, Set<String> packages) throws IOException {
         if (getBundleName(jarFile) == null) {
             String version = ";version=" + version(jarFile.getPath());
-            ZipInputStream is = new ZipInputStream(new FileInputStream(jarFile));
-            ZipEntry entry;
-            while ((entry = is.getNextEntry()) != null) {
-                String entryName = entry.getName();
-                if (!entry.isDirectory() && entryName != null
-                    && entryName.length() > 0
-                    && !entryName.startsWith(".")
-                    && entryName.endsWith(".class") // Exclude resources from Export-Package
-                    && entryName.lastIndexOf("/") > 0
-                    && Character.isJavaIdentifierStart(entryName.charAt(0))) {
-                    String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.');
-                    if (!("org.apache.commons.lang.enum".equals(pkg))) {
-                        packages.add(pkg + version);
-                    }
-                }
-            }
-            is.close();
+            addAllPackages(jarFile, packages, version);
         } else {
-            Set<String> exportedPackages = getExportedPackages(jarFile);
-            if (exportedPackages != null) {
-                packages.addAll(exportedPackages);
-            }
+            addExportedPackages(jarFile, packages);
         }
     }
 
@@ -174,19 +133,6 @@ final class BundleUtil {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    static String dump(Manifest mf) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        mf.write(bos);
-        return new String(bos.toByteArray());
-    }
-
-    static byte[] generateBundle(Manifest mf) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        JarOutputStream jos = new JarOutputStream(bos, mf);
-        jos.close();
-        return bos.toByteArray();
     }
 
     static void write(Manifest manifest, OutputStream out) throws IOException {
@@ -255,18 +201,84 @@ final class BundleUtil {
         }
         return bundleName;
     }
+    
+    /**
+     * Strip the uses:= statement out of an OSGi export.
+     * 
+     * @param export
+     * @return
+     */
+    private static String stripExport(String export) {
+        int sc = export.indexOf(';');
+        if (sc == -1) {
+            return export;
+        }
+        String base = export.substring(0, sc);
+        int v = export.indexOf("version=");
+        if (v != -1) {
+            sc = export.indexOf(';', v+1);
+            if (sc != -1) {
+                return base + ";" + export.substring(v, sc);
+            } else {
+                return base + ";" + export.substring(v);
+            }
+        } else {
+            return base;
+        }
+    }
 
     /**
-     * Returns the packages exported by a bundle.
+     * Add all the packages out of a JAR.
+     * 
+     * @param jarFile
+     * @param packages
+     * @param version
+     * @throws IOException
+     */
+    private static void addAllPackages(File jarFile, Set<String> packages, String version) throws IOException {
+        ZipInputStream is = new ZipInputStream(new FileInputStream(jarFile));
+        ZipEntry entry;
+        while ((entry = is.getNextEntry()) != null) {
+            String entryName = entry.getName();
+            if (!entry.isDirectory() && entryName != null
+                && entryName.length() > 0
+                && !entryName.startsWith(".")
+                && entryName.endsWith(".class") // Exclude resources from Export-Package
+                && entryName.lastIndexOf("/") > 0
+                && Character.isJavaIdentifierStart(entryName.charAt(0))) {
+                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.');
+                if (!pkg.endsWith(".enum")) {
+                    packages.add(pkg + version);
+                }
+            }
+        }
+        is.close();
+    }
+    
+    private static boolean isPresent(String export, Set<String> present) {
+        if (present == null) {
+            return true;
+        }
+        int sc = export.indexOf(';');
+        if (sc != -1) {
+            export = export.substring(0, sc);
+        }
+        return present.contains(export);
+    }
+
+    /**
+     * Add the packages exported by a bundle.
      *  
      * @param file
+     * @param packages
      * @return
      * @throws IOException
      */
-    static Set<String> getExportedPackages(File file) throws IOException {
+    private static void addExportedPackages(File file, Set<String> packages) throws IOException {
         if (!file.exists()) {
-            return null;
+            return;
         }
+        Set<String> present = null;
         String exports = null;
         if (file.isDirectory()) {
             File mf = new File(file, "META-INF/MANIFEST.MF");
@@ -279,11 +291,12 @@ final class BundleUtil {
             Manifest manifest = jar.getManifest();
             exports = manifest.getMainAttributes().getValue(EXPORT_PACKAGE);
             jar.close();
+            present = new HashSet<String>();
+            addAllPackages(file, present, "");
         }
         if (exports == null) {
-            return null;
+            return;
         }
-        Set<String> exportedPackages = new HashSet<String>();
         StringBuffer export = new StringBuffer();
         boolean q = false;
         for (int i =0, n = exports.length(); i <n; i++) {
@@ -293,7 +306,9 @@ final class BundleUtil {
             }
             if (!q) {
                 if (c == ',') {
-                    exportedPackages.add(export.toString());
+                    if (isPresent(export.toString(), present)) {
+                        packages.add(stripExport(export.toString()));
+                    }
                     export = new StringBuffer();
                     continue;
                 }
@@ -301,38 +316,10 @@ final class BundleUtil {
             export.append(c);
         }
         if (export.length() != 0) {
-            exportedPackages.add(export.toString());
+            if (isPresent(export.toString(), present)) {
+                packages.add(stripExport(export.toString()));
+            }
         }
-        return exportedPackages;
     }
 
-    public static String string(Bundle b, boolean verbose) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(b.getBundleId()).append(" ").append(b.getSymbolicName());
-        int s = b.getState();
-        if ((s & Bundle.UNINSTALLED) != 0) {
-            sb.append(" UNINSTALLED");
-        }
-        if ((s & Bundle.INSTALLED) != 0) {
-            sb.append(" INSTALLED");
-        }
-        if ((s & Bundle.RESOLVED) != 0) {
-            sb.append(" RESOLVED");
-        }
-        if ((s & Bundle.STARTING) != 0) {
-            sb.append(" STARTING");
-        }
-        if ((s & Bundle.STOPPING) != 0) {
-            sb.append(" STOPPING");
-        }
-        if ((s & Bundle.ACTIVE) != 0) {
-            sb.append(" ACTIVE");
-        }
-
-        if (verbose) {
-            sb.append(" ").append(b.getLocation());
-            sb.append(" ").append(b.getHeaders());
-        }
-        return sb.toString();
-    }
 }
