@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -46,8 +47,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException;
-import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLInterfaceIntrospectorImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -329,12 +328,8 @@ public class BindingWSDLGenerator {
         wsdlInterface.setPortType(portType);
 
         try {
-            for (Operation op : iface.getOperations()) {
-                javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
-                wsdlInterface.getOperations().add(WSDLInterfaceIntrospectorImpl.getOperation(
-                                                      wsdlOp, wsdlDefinition, resolver, xsdFactory));
-            }
-        } catch (InvalidWSDLException e) {
+            wsdlFactory.createWSDLInterface(wsdlInterface, portType, wsdlDefinition, resolver);
+        } catch (InvalidInterfaceException e) {
             throw new WSDLGenerationException(e);
         }
 
