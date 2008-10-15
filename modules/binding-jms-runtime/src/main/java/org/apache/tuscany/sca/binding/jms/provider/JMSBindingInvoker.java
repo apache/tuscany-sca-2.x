@@ -61,7 +61,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected String operationName;
 
     protected JMSBinding jmsBinding;
-    protected JMSResourceFactoryImpl jmsResourceFactory;
+    protected JMSResourceFactory jmsResourceFactory;
     protected JMSMessageProcessor requestMessageProcessor;
     protected JMSMessageProcessor responseMessageProcessor;
     protected Destination bindingRequestDest;
@@ -70,7 +70,7 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
     protected JMSHeaderPolicy jmsHeaderPolicy = null;
 
-    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactoryImpl jmsResourceFactory, RuntimeComponentReference reference) {
+    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
 
         this.operation = operation;
         operationName = operation.getName();
