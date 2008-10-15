@@ -53,7 +53,7 @@ import org.apache.abdera.parser.Parser;
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
  */
-public class ProviderEntryEntityTagsTest {
+public class ProviderEntryEntityTagsTestCase {
 	public final static String providerURI = "http://localhost:8084/customer";
 	protected static SCADomain scaConsumerDomain;
 	protected static SCADomain scaProviderDomain;
@@ -67,7 +67,7 @@ public class ProviderEntryEntityTagsTest {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		System.out.println(">>>ProviderEntryEntityTagsTest.init");
+		System.out.println(">>>ProviderEntryEntityTagsTestCase.init");
 		scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
 		abdera = new Abdera();
 		client = new AbderaClient(abdera);
@@ -76,7 +76,7 @@ public class ProviderEntryEntityTagsTest {
 
 	@AfterClass
 	public static void destroy() throws Exception {
-		System.out.println(">>>ProviderEntryEntityTagsTest.destroy");
+		System.out.println(">>>ProviderEntryEntityTagsTestCase.destroy");
 		scaProviderDomain.close();
 	}
 
@@ -200,7 +200,7 @@ public class ProviderEntryEntityTagsTest {
 		opts.setContentType(contentType);
 		opts.setHeader( "If-None-Match", eTag);
 		
-		AtomTestCaseUtils.printRequestHeaders( "Put request headers", "   ", opts );
+		// AtomTestCaseUtils.printRequestHeaders( "Put request headers", "   ", opts );
 		IRI colUri = new IRI(providerURI).resolve("customer");
 		// res = client.post(colUri.toString() + "?test=foo", entry, opts);
 	    id = eTag.substring( 1, eTag.length()-1);
@@ -364,7 +364,7 @@ public class ProviderEntryEntityTagsTest {
 	
 	@Test
 	public void testUpToDateUnModGet() throws Exception {
-		// 3) Conditional GET example (get with If-Unmod. entry is up to date)
+		// 3) Conditional GET example (get with If-Unmod. entry is not modified (< predicate date).
 		// User client GET request
 		//       GET /edit/first-post.atom HTTP/1.1
 		// >      If-Unmodified-Since: Sat, 29 Oct 2025 19:43:31 GMT
@@ -372,37 +372,6 @@ public class ProviderEntryEntityTagsTest {
 		final String contentType = "application/atom+xml; type=entry"; 
 		opts.setContentType(contentType);
 		opts.setHeader( "If-Unmodified-Since", "Sat, 29 Oct 2050 19:43:31 GMT" );
-		opts.setHeader( "Pragma", "no-cache"); // turn off client caching
-		
-		IRI colUri = new IRI(providerURI).resolve("customer");
-		// res = client.post(colUri.toString() + "?test=foo", entry, opts);
-		String id = eTag.substring( 1, eTag.length()-1);
-		// Warning. AbderaClient.put(String uri,Base base,RequestOptions options) caches on the client side.
-		// ClientResponse res = client.put(colUri.toString() + id, entry, opts);
-		ClientResponse res = client.get(colUri.toString() + "/" + id, opts);
-
-		// Atom server response (item was up to date)
-		// >      HTTP/1.1 304 Not Modified
-		//       Date: Sat, 24 Feb 2007 13:17:11 GMT
-
-	    // Assert response status code is 304 Not Modified.
-    	// Assert.assertEquals(304, res.getStatus());
-		// TODO Update when If-Unmodified-Since enabled.
-    	Assert.assertEquals(200, res.getStatus());
-		res.release();	        
-	}
-
-	@Test
-	public void testOutOfDateUnModGet() throws Exception {
-		// 4) Conditional GET example (get with If-Unmod. entry is not to date)
-		// User client GET request
-		//       GET /edit/first-post.atom HTTP/1.1
-		//        Host: example.org
-		// >      If-Unmodified-Since: Sat, 29 Oct 1844 19:43:31 GMT
-		RequestOptions opts = new RequestOptions();
-		final String contentType = "application/atom+xml; type=entry"; 
-		opts.setContentType(contentType);
-		opts.setHeader( "If-Unmodified-Since", "Sat, 29 Oct 1844 19:43:31 GMT" );
 		opts.setHeader( "Pragma", "no-cache"); // turn off client caching
 		
 		IRI colUri = new IRI(providerURI).resolve("customer");
@@ -425,12 +394,35 @@ public class ProviderEntryEntityTagsTest {
 		// Assert header ETag: "e180ee84f0671b1"
 		// Assert header Last-Modified: Less than If-Unmod	    
     	Assert.assertEquals(200, res.getStatus());
-    	Assert.assertEquals(contentType, res.getContentType().toString().trim());
-    	// Assert.assertNotNull( res.getLocation().toString() );
-    	// Assert.assertEquals( "", res.getContentLocation().toString() );
-    	Assert.assertNotNull( res.getHeader( "ETag" ) );     	
-    	lastModified = res.getLastModified();
-    	Assert.assertNotNull(lastModified);
-		res.release();
+		res.release();	        
+	}
+
+	@Test
+	public void testOutOfDateUnModGet() throws Exception {
+		// 4) Conditional GET example (get with If-Unmod. entry is modified (> predicate date)
+		// User client GET request
+		//       GET /edit/first-post.atom HTTP/1.1
+		//        Host: example.org
+		// >      If-Unmodified-Since: Sat, 29 Oct 1844 19:43:31 GMT
+		RequestOptions opts = new RequestOptions();
+		final String contentType = "application/atom+xml; type=entry"; 
+		opts.setContentType(contentType);
+		opts.setHeader( "If-Unmodified-Since", "Sat, 29 Oct 1844 19:43:31 GMT" );
+		opts.setHeader( "Pragma", "no-cache"); // turn off client caching
+		
+		IRI colUri = new IRI(providerURI).resolve("customer");
+		// res = client.post(colUri.toString() + "?test=foo", entry, opts);
+		String id = eTag.substring( 1, eTag.length()-1);
+		// Warning. AbderaClient.put(String uri,Base base,RequestOptions options) caches on the client side.
+		// ClientResponse res = client.put(colUri.toString() + id, entry, opts);
+		ClientResponse res = client.get(colUri.toString() + "/" + id, opts);
+
+		// Atom server response (item was up to date)
+		// >      HTTP/1.1 304 Not Modified
+		//       Date: Sat, 24 Feb 2007 13:17:11 GMT
+
+	    // Assert response status code is 304 Not Modified.
+    	Assert.assertEquals(304, res.getStatus());
+		res.release();	    
 	}
 }

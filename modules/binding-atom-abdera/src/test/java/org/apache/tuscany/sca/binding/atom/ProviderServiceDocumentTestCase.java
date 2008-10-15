@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.atom;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +53,7 @@ import org.apache.abdera.parser.Parser;
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
  */
-public class ProviderServiceDocumentTest {
+public class ProviderServiceDocumentTestCase {
 	public final static String providerURI = "http://localhost:8084/customer";
 	protected static SCADomain scaProviderDomain;
     protected static SCADomain scaConsumerDomain;
@@ -93,15 +97,13 @@ public class ProviderServiceDocumentTest {
 	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
 
 	    	// Perform other tests on feed.
-			Document<Feed> doc = res.getDocument();
-			Assert.assertNotNull( doc );
-			Feed feed = doc.getRoot();
-			Assert.assertNotNull( feed );
-			// printFeed( "Feed values", "   ", feed );
+	    	// Warning. AbderaClient.getEntityTag is very particular on tag pattern.
+			// Document<Feed> doc = res.getDocument();
+	    	String body = read( res.getInputStream() );
 			// RFC 4287 requires non-null id, title, updated elements
-			Assert.assertNotNull( feed.getId() );
-			Assert.assertNotNull( feed.getTitle() );
-			Assert.assertNotNull( feed.getUpdated() );
+			Assert.assertTrue( -1 != body.indexOf( "</id>" ));
+			Assert.assertTrue( -1 != body.indexOf( "</title>" ));
+			Assert.assertTrue( -1 != body.indexOf( "</updated>" ));
 		} finally {
 			res.release();
 		}
@@ -181,4 +183,27 @@ public class ProviderServiceDocumentTest {
 
         return entry;
     }
+
+    /**
+	 * Read response ream from the given socket.
+	 * @param socket
+	 * @return
+	 * @throws IOException
+	 */
+	private static String read(InputStream inputStream) throws IOException {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader( inputStream ));
+			StringBuffer sb = new StringBuffer();
+			String str;
+			while ((str = reader.readLine()) != null) {
+				sb.append(str);
+			}
+			return sb.toString();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
 }

@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.sca.binding.atom;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,7 +59,7 @@ import org.apache.abdera.parser.Parser;
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
  */
-public class ProviderFeedEntityTagsTest {
+public class ProviderFeedEntityTagsTestCase {
 	public final static String providerURI = "http://localhost:8084/customer";
 	protected static SCADomain scaConsumerDomain;
 	protected static SCADomain scaProviderDomain;
@@ -67,7 +73,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		System.out.println(">>>ProviderFeedEntityTagsTest.init");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.init");
 		scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
 		abdera = new Abdera();
 		client = new AbderaClient(abdera);
@@ -76,7 +82,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@AfterClass
 	public static void destroy() throws Exception {
-		System.out.println(">>>ProviderFeedEntityTagsTest.destroy");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.destroy");
 		scaProviderDomain.close();
 	}
 
@@ -88,12 +94,12 @@ public class ProviderFeedEntityTagsTest {
 			
 	@Test
     public void testFeedBasics() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedBasics");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedBasics");
 		// Normal feed request
 		ClientResponse res = client.get(providerURI);
 		Assert.assertNotNull(res);
 		try {
-			// Asser feed provided since no predicates
+			// Assert feed provided since no predicates
 			Assert.assertEquals(200, res.getStatus());
 			Assert.assertEquals(ResponseType.SUCCESS, res.getType());
 	    	// AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
@@ -101,15 +107,13 @@ public class ProviderFeedEntityTagsTest {
 	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
 
 	    	// Perform other tests on feed.
-			Document<Feed> doc = res.getDocument();
-			Assert.assertNotNull( doc );
-			Feed feed = doc.getRoot();
-			Assert.assertNotNull( feed );
-			printFeed( "Feed values", "   ", feed );
+	    	// Warning. AbderaClient.getEntityTag is very particular on tag pattern.
+			// Document<Feed> doc = res.getDocument();
+	    	String body = read( res.getInputStream() );
 			// RFC 4287 requires non-null id, title, updated elements
-			Assert.assertNotNull( feed.getId() );
-			Assert.assertNotNull( feed.getTitle() );
-			Assert.assertNotNull( feed.getUpdated() );
+			Assert.assertTrue( -1 != body.indexOf( "</id>" ));
+			Assert.assertTrue( -1 != body.indexOf( "</title>" ));
+			Assert.assertTrue( -1 != body.indexOf( "</updated>" ));
 			
 			eTag = res.getHeader("ETag");
 			Assert.assertNotNull( eTag );
@@ -122,7 +126,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testUnmodifiedGetIfMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfMatch");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfMatch");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -150,7 +154,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testUnmodifiedGetIfNoneMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfNoneMatch");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfNoneMatch");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -169,7 +173,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testUnmodifiedGetIfUnModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfUnModified");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -188,7 +192,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testUnmodifiedGetIfModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfModified");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -213,7 +217,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testModifiedGetIfNoneMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedModifiedGetIfNoneMatch");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfNoneMatch");
 		// Post some new content to the feed.
 		Factory factory = abdera.getFactory();
 		String customerName = "Fred Farkle";
@@ -241,6 +245,28 @@ public class ProviderFeedEntityTagsTest {
 		res = client.get(providerURI, opts);
 		Assert.assertNotNull(res);
 		try {
+			// Should return 304 - Feed not provided since it matches ETag.
+			Assert.assertEquals(304, res.getStatus());
+	    	// AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
+	    	// System.out.println("Feed response content:");
+	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
+		} finally {
+			res.release();
+		}
+	}		
+
+	@Test
+    public void testModifiedGetIfMatch() throws Exception {		
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfMatch");
+		// Feed request with predicates
+		RequestOptions opts = new RequestOptions();
+		final String contentType = "application/atom+xml"; 
+		opts.setContentType(contentType);
+		opts.setHeader( "If-Match", eTag);
+		
+		ClientResponse res = client.get(providerURI, opts);
+		Assert.assertNotNull(res);
+		try {
 	    	String thisETag = res.getHeader("ETag");
 			Assert.assertNotNull( thisETag );
 			Date thisLastModified = res.getLastModified();
@@ -259,30 +285,8 @@ public class ProviderFeedEntityTagsTest {
 	}		
 
 	@Test
-    public void testModifiedGetIfMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedModifiedGetIfMatch");
-		// Feed request with predicates
-		RequestOptions opts = new RequestOptions();
-		final String contentType = "application/atom+xml"; 
-		opts.setContentType(contentType);
-		opts.setHeader( "If-Match", eTag);
-		
-		ClientResponse res = client.get(providerURI, opts);
-		Assert.assertNotNull(res);
-		try {
-			// Should return 412 - Precondition failed since feed changed.
-			Assert.assertEquals(412, res.getStatus());
-	    	// AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
-	    	// System.out.println("Feed response content:");
-	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
-		} finally {
-			res.release();
-		}
-	}		
-
-	@Test
     public void testModifiedGetIfUnModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfUnModified");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -301,7 +305,7 @@ public class ProviderFeedEntityTagsTest {
 
 	@Test
     public void testModifiedGetIfModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTest.testFeedUnmodifiedGetIfModified");
+		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -353,4 +357,26 @@ public class ProviderFeedEntityTagsTest {
 
 	}
 
+	/**
+	 * Read response ream from the given socket.
+	 * @param socket
+	 * @return
+	 * @throws IOException
+	 */
+	private static String read(InputStream inputStream) throws IOException {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader( inputStream ));
+			StringBuffer sb = new StringBuffer();
+			String str;
+			while ((str = reader.readLine()) != null) {
+				sb.append(str);
+			}
+			return sb.toString();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
 }
