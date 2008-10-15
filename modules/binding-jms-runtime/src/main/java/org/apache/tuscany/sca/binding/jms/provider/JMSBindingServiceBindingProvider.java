@@ -69,15 +69,14 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract;
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints) {
+    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
         this.component = component;
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
         this.targetBinding = targetBinding;
         this.extensionPoints = extensionPoints;
-
-        jmsResourceFactory = new JMSResourceFactoryImpl(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        this.jmsResourceFactory = jmsResourceFactory;
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
             if (!service.isCallback()) {
