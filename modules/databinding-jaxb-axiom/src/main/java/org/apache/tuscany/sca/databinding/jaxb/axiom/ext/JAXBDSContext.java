@@ -117,9 +117,9 @@ public class JAXBDSContext {
      * @param writer XMLStreamWriter
      */
     private static void marshalElement(final Object b,
-                                         final Marshaller m,
-                                         final XMLStreamWriter writer,
-                                         final boolean optimize) {
+                                       final Marshaller m,
+                                       final XMLStreamWriter writer,
+                                       final boolean optimize) {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 // Marshalling directly to the output stream is faster than marshalling through the
