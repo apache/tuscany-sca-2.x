@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.gdata;
+package org.apache.tuscany.sca.binding.gdata.xml;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -24,6 +24,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.gdata.GDataBinding;
+import org.apache.tuscany.sca.binding.gdata.GDataBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
