@@ -55,8 +55,6 @@ import org.osgi.framework.Bundle;
  */
 final class BundleUtil {
 
-    private static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
-
     static File file(URL url) {
         if (url == null || !url.getProtocol().equals("file")) {
             return null;
@@ -74,8 +72,8 @@ final class BundleUtil {
         }
     }
 
-    static Pattern pattern = Pattern.compile("-([0-9.]+)");
-    static Pattern pattern2 = Pattern.compile("_([0-9.]+)");
+    static private Pattern pattern = Pattern.compile("-([0-9.]+)");
+    static private Pattern pattern2 = Pattern.compile("_([0-9.]+)");
 
     private static String version(String jarFile) {
         String version = "1.0.0";
@@ -164,7 +162,7 @@ final class BundleUtil {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(BUNDLE_SYMBOLICNAME, LAUNCHER_EQUINOX_LIBRARIES);
+            attributes.putValue(BUNDLE_SYMBOLICNAME, name);
             attributes.putValue(BUNDLE_NAME, name);
             attributes.putValue(BUNDLE_VERSION, version);
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
@@ -285,7 +283,6 @@ final class BundleUtil {
         if (exports == null) {
             return null;
         }
-        System.out.println("##### Exports: " + exports);
         Set<String> exportedPackages = new HashSet<String>();
         StringBuffer export = new StringBuffer();
         boolean q = false;
@@ -297,7 +294,6 @@ final class BundleUtil {
             if (!q) {
                 if (c == ',') {
                     exportedPackages.add(export.toString());
-                    System.out.println("##### Package: " + export);
                     export = new StringBuffer();
                     continue;
                 }
@@ -306,7 +302,6 @@ final class BundleUtil {
         }
         if (export.length() != 0) {
             exportedPackages.add(export.toString());
-            System.out.println("##### Package: " + export);
         }
         return exportedPackages;
     }

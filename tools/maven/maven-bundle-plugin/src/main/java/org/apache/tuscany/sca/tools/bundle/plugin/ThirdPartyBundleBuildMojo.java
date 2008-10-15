@@ -169,7 +169,8 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
         } catch (DependencyTreeBuilderException e) {
             throw new MojoExecutionException("Could not build dependency tree", e);
         }
-        
+
+        String projectGroupId = project.getGroupId();
         Set<File> jarFiles = new HashSet<File>();
         for (Object o : dependencyTree.getArtifacts()) {
             Artifact artifact = (Artifact)o;
@@ -183,7 +184,7 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
             if (!"jar".equals(artifact.getType())) {
                 continue;
             }
-            if ("org.apache.tuscany.sca".equals(artifact.getGroupId())) {
+            if (projectGroupId.equals(artifact.getGroupId())) {
                 continue;
             }
             
