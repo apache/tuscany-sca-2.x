@@ -74,7 +74,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.binding.ejb</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.binding.ejb*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.binding.ejb</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
