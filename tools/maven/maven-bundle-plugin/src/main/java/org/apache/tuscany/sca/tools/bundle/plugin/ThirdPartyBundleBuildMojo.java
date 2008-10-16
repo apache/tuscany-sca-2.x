@@ -49,7 +49,7 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 /**
  * @version $Rev$ $Date$
  * @goal assemble-thirdparty-bundle
- * @phase process-classes
+ * @phase process-resources
  * @requiresDependencyResolution test
  * @description Build an OSGi bundle for third party dependencies
  */

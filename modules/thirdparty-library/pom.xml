@@ -44,45 +44,57 @@
         </dependency>        
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-              <artifactId>maven-clean-plugin</artifactId>
-              <configuration>
-                <filesets>
-                  <fileset>
-                    <directory>${basedir}/lib</directory>
-                    <includes>
-                      <include>*</include>
-                    </includes>
-                    <followSymlinks>false</followSymlinks>
-                   </fileset>
-                 </filesets>
-               </configuration>
-             </plugin>
-            
-            <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
-                <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>assemble-thirdparty-bundle</id>
-                        <goals>
-                            <goal>assemble-thirdparty-bundle</goal>
-                        </goals>
-                        <configuration>
-                            <symbolicName>org.apache.tuscany.sca.thirdparty.library</symbolicName>
-                        </configuration>
-                    </execution>
-                   <execution>
-                        <id>generate-pde-classpath</id>
-                        <goals>
-                            <goal>generate-pde-classpath</goal>
-                        </goals>
-                    </execution>                    
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
+    <profiles>
+        <profile>
+            <id>eclipse</id>
+            <build>
+                <plugins>
+                    <plugin>
+                      <artifactId>maven-clean-plugin</artifactId>
+                      <configuration>
+                        <filesets>
+                          <fileset>
+                            <directory>${basedir}/lib</directory>
+                            <includes>
+                              <include>*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                           </fileset>
+                         </filesets>
+                       </configuration>
+                     </plugin>
+                    
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>assemble-thirdparty-bundle</id>
+                                <goals>
+                                    <goal>assemble-thirdparty-bundle</goal>
+                                </goals>
+                                <configuration>
+                                    <symbolicName>org.apache.tuscany.sca.thirdparty.library</symbolicName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+        
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-pde-classpath</id>
+                                <goals>
+                                    <goal>generate-pde-classpath</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    
 </project>

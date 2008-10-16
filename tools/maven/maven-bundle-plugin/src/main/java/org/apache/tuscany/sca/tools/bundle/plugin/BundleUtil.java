@@ -49,125 +49,7 @@ import java.util.zip.ZipInputStream;
  * @version $Rev$ $Date$
  */
 final class BundleUtil {
-
-    static private Pattern pattern = Pattern.compile("-([0-9.]+)");
-    static private Pattern pattern2 = Pattern.compile("_([0-9.]+)");
-
-    private static String version(String jarFile) {
-        String version = "1.0.0";
-        boolean found = false;
-        Matcher matcher = pattern2.matcher(jarFile);
-        if (matcher.find()) {
-            found = true;
-        } else {
-            matcher = pattern.matcher(jarFile);
-            found = matcher.find();
-        }            
-        if (found) {
-            version = matcher.group();
-            if (version.endsWith(".")) {
-                version = version.substring(1, version.length() - 1);
-            } else {
-                version = version.substring(1);
-            }
-        }
-        return version;
-    }
     
-    private static void addPackages(File jarFile, Set<String> packages) throws IOException {
-        if (getBundleName(jarFile) == null) {
-            String version = ";version=" + version(jarFile.getPath());
-            addAllPackages(jarFile, packages, version);
-        } else {
-            addExportedPackages(jarFile, packages);
-        }
-    }
-
-    static Manifest libraryManifest(Set<File> jarFiles, String name, String symbolicName, String version)
-        throws IllegalStateException {
-        try {
-
-            // List exported packages and bundle classpath entries
-            StringBuffer classpath = new StringBuffer();
-            StringBuffer exports = new StringBuffer();
-            StringBuffer imports = new StringBuffer();
-            Set<String> packages = new HashSet<String>();
-            for (File jarFile : jarFiles) {
-                addPackages(jarFile, packages);
-                classpath.append("lib/");
-                classpath.append(jarFile.getName());
-                classpath.append(",");
-            }
-
-            Set<String> importPackages = new HashSet<String>();
-            for (String pkg : packages) {
-                exports.append(pkg);
-                exports.append(',');
-
-                String importPackage = pkg;
-                int index = pkg.indexOf(';');
-                if (index != -1) {
-                    importPackage = pkg.substring(0, index);
-                }
-                if (!importPackages.contains(importPackage)) {
-                    imports.append(importPackage);
-                    imports.append(',');
-                    importPackages.add(importPackage);
-                }
-            }
-
-            // Create a manifest
-            Manifest manifest = new Manifest();
-            Attributes attributes = manifest.getMainAttributes();
-            attributes.putValue("Manifest-Version", "1.0");
-            attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(BUNDLE_SYMBOLICNAME, symbolicName);
-            attributes.putValue(BUNDLE_NAME, name);
-            attributes.putValue(BUNDLE_VERSION, version);
-            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
-            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
-            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
-            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
-
-            return manifest;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    static void write(Manifest manifest, OutputStream out) throws IOException {
-        DataOutputStream dos = new DataOutputStream(out);
-        Attributes attributes = manifest.getMainAttributes();
-        write(attributes, "Manifest-Version", dos);
-        write(attributes, BUNDLE_MANIFESTVERSION, dos);
-        write(attributes, BUNDLE_SYMBOLICNAME, dos);
-        write(attributes, BUNDLE_NAME, dos);
-        write(attributes, BUNDLE_VERSION, dos);
-        write(attributes, DYNAMICIMPORT_PACKAGE, dos);
-        write(attributes, BUNDLE_CLASSPATH, dos);
-        write(attributes, IMPORT_PACKAGE, dos);
-        write(attributes, EXPORT_PACKAGE, dos);
-        dos.flush();
-    }
-    
-    private static void write(Attributes attributes, String key, DataOutputStream dos) throws IOException {
-        StringBuffer line = new StringBuffer();
-        line.append(key);
-        line.append(": ");
-        String value = attributes.getValue(key); 
-        line.append(new String(value.getBytes("UTF8")));
-        line.append("\r\n");
-        int l = line.length();
-        if (l > 72) {
-            for (int i = 70; i < l - 2;) {
-                line.insert(i, "\r\n ");
-                i += 72;
-                l += 3;
-            }
-        }
-        dos.writeBytes(line.toString());
-    }
-
     /**
      * Returns the name of a bundle, or null if the given file is not a bundle.
      *  
@@ -203,7 +85,133 @@ final class BundleUtil {
     }
     
     /**
-     * Strip the uses:= statement out of an OSGi export.
+     * Generate a Bundle manifest for a set of JAR files.
+     * 
+     * @param jarFiles
+     * @param name
+     * @param symbolicName
+     * @param version
+     * @return
+     * @throws IllegalStateException
+     */
+    static Manifest libraryManifest(Set<File> jarFiles, String name, String symbolicName, String version)
+        throws IllegalStateException {
+        try {
+
+            // List exported packages and bundle classpath entries
+            StringBuffer classpath = new StringBuffer();
+            Set<String> exportedPackages = new HashSet<String>();
+            for (File jarFile : jarFiles) {
+                addPackages(jarFile, exportedPackages);
+                classpath.append("lib/");
+                classpath.append(jarFile.getName());
+                classpath.append(",");
+            }
+
+            // Generate export-package and import-package declarations
+            StringBuffer exports = new StringBuffer();
+            StringBuffer imports = new StringBuffer();
+            Set<String> importedPackages = new HashSet<String>();
+            for (String export : exportedPackages) {
+                
+                // Add export declaration
+                exports.append(export);
+                exports.append(',');
+
+                // Add corresponding import declaration
+                String packageName = packageName(export);
+                if (!importedPackages.contains(packageName)) {
+                    importedPackages.add(packageName);
+                    imports.append(packageName);
+                    imports.append(',');
+                }
+            }
+
+            // Create a manifest
+            Manifest manifest = new Manifest();
+            Attributes attributes = manifest.getMainAttributes();
+            attributes.putValue("Manifest-Version", "1.0");
+            attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
+            attributes.putValue(BUNDLE_SYMBOLICNAME, symbolicName);
+            attributes.putValue(BUNDLE_NAME, name);
+            attributes.putValue(BUNDLE_VERSION, version);
+            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
+            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
+            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
+            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+
+            return manifest;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Write a bundle manifest.
+     * 
+     * @param manifest
+     * @param out
+     * @throws IOException
+     */
+    static void write(Manifest manifest, OutputStream out) throws IOException {
+        DataOutputStream dos = new DataOutputStream(out);
+        Attributes attributes = manifest.getMainAttributes();
+        write(attributes, "Manifest-Version", dos);
+        write(attributes, BUNDLE_MANIFESTVERSION, dos);
+        write(attributes, BUNDLE_SYMBOLICNAME, dos);
+        write(attributes, BUNDLE_NAME, dos);
+        write(attributes, BUNDLE_VERSION, dos);
+        write(attributes, DYNAMICIMPORT_PACKAGE, dos);
+        write(attributes, BUNDLE_CLASSPATH, dos);
+        write(attributes, IMPORT_PACKAGE, dos);
+        write(attributes, EXPORT_PACKAGE, dos);
+        dos.flush();
+    }
+
+    /**
+     * Add packages to be exported out of a JAR file.
+     * 
+     * @param jarFile
+     * @param packages
+     * @throws IOException
+     */
+    private static void addPackages(File jarFile, Set<String> packages) throws IOException {
+        if (getBundleName(jarFile) == null) {
+            String version = ";version=" + version(jarFile.getPath());
+            addAllPackages(jarFile, packages, version);
+        } else {
+            addExportedPackages(jarFile, packages);
+        }
+    }
+
+    /**
+     * Write manifest attributes.
+     * 
+     * @param attributes
+     * @param key
+     * @param dos
+     * @throws IOException
+     */
+    private static void write(Attributes attributes, String key, DataOutputStream dos) throws IOException {
+        StringBuffer line = new StringBuffer();
+        line.append(key);
+        line.append(": ");
+        String value = attributes.getValue(key); 
+        line.append(new String(value.getBytes("UTF8")));
+        line.append("\r\n");
+        int l = line.length();
+        if (l > 72) {
+            for (int i = 70; i < l - 2;) {
+                line.insert(i, "\r\n ");
+                i += 72;
+                l += 3;
+            }
+        }
+        dos.writeBytes(line.toString());
+    }
+
+    /**
+     * Strip an OSGi export, only retain the package name and version.
      * 
      * @param export
      * @return
@@ -254,18 +262,20 @@ final class BundleUtil {
         }
         is.close();
     }
-    
-    private static boolean isPresent(String export, Set<String> present) {
-        if (present == null) {
-            return true;
-        }
+
+    /**
+     * Returns the name of the exported package in the given export.
+     * @param export
+     * @return
+     */
+    private static String packageName(String export) {
         int sc = export.indexOf(';');
         if (sc != -1) {
             export = export.substring(0, sc);
         }
-        return present.contains(export);
+        return export;
     }
-
+    
     /**
      * Add the packages exported by a bundle.
      *  
@@ -278,7 +288,9 @@ final class BundleUtil {
         if (!file.exists()) {
             return;
         }
-        Set<String> present = null;
+        
+        // Read the export-package declaration and get a list of the packages available in a JAR
+        Set<String> existingPackages = null;
         String exports = null;
         if (file.isDirectory()) {
             File mf = new File(file, "META-INF/MANIFEST.MF");
@@ -291,13 +303,15 @@ final class BundleUtil {
             Manifest manifest = jar.getManifest();
             exports = manifest.getMainAttributes().getValue(EXPORT_PACKAGE);
             jar.close();
-            present = new HashSet<String>();
-            addAllPackages(file, present, "");
+            existingPackages = new HashSet<String>();
+            addAllPackages(file, existingPackages, "");
         }
         if (exports == null) {
             return;
         }
-        StringBuffer export = new StringBuffer();
+        
+        // Parse the export-package declaration, and extract the individual packages
+        StringBuffer buffer = new StringBuffer();
         boolean q = false;
         for (int i =0, n = exports.length(); i <n; i++) {
             char c = exports.charAt(i);
@@ -306,20 +320,58 @@ final class BundleUtil {
             }
             if (!q) {
                 if (c == ',') {
-                    if (isPresent(export.toString(), present)) {
-                        packages.add(stripExport(export.toString()));
+                    
+                    // Add the exported package to the set, after making sure it really exists in
+                    // the JAR
+                    String export = buffer.toString();
+                    if (existingPackages == null || existingPackages.contains(packageName(export))) {
+                        packages.add(stripExport(export));
                     }
-                    export = new StringBuffer();
+                    buffer = new StringBuffer();
                     continue;
                 }
             }
-            export.append(c);
+            buffer.append(c);
         }
-        if (export.length() != 0) {
-            if (isPresent(export.toString(), present)) {
-                packages.add(stripExport(export.toString()));
+        if (buffer.length() != 0) {
+            
+            // Add the exported package to the set, after making sure it really exists in
+            // the JAR
+            String export = buffer.toString();
+            if (existingPackages == null || existingPackages.contains(packageName(export))) {
+                packages.add(stripExport(export));
             }
         }
+    }
+
+    static private Pattern pattern = Pattern.compile("-([0-9.]+)");
+    static private Pattern pattern2 = Pattern.compile("_([0-9.]+)");
+
+    /**
+     * Derive a bundle version from the given JAR file name.
+     * 
+     * @param jarFile
+     * @return
+     */
+    private static String version(String jarFile) {
+        String version = "1.0.0";
+        boolean found = false;
+        Matcher matcher = pattern2.matcher(jarFile);
+        if (matcher.find()) {
+            found = true;
+        } else {
+            matcher = pattern.matcher(jarFile);
+            found = matcher.find();
+        }            
+        if (found) {
+            version = matcher.group();
+            if (version.endsWith(".")) {
+                version = version.substring(1, version.length() - 1);
+            } else {
+                version = version.substring(1);
+            }
+        }
+        return version;
     }
 
 }
