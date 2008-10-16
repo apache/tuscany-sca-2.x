@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.jms;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
@@ -40,7 +38,6 @@ public class JMSBroker implements ModuleActivator {
 
     public void start(ExtensionPointRegistry arg0) {
         if (broker == null) {
-            ps();
             broker = new BrokerService();
             broker.setPersistent(false);
             broker.setUseJmx(false);
@@ -71,11 +68,8 @@ public class JMSBroker implements ModuleActivator {
         }
     }
 
-    protected void ps() {
-        URL ps = Thread.currentThread().getContextClassLoader().getResource("domain.properties");
-        System.out.println("url " + ps);
-        File f = new File("/domain.properties");
-        System.out.println("f " + f.toURI());
-        System.out.println("f " + f.exists());
+    public static BrokerService getBroker() {
+        return broker;
     }
+
 }

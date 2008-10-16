@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.sca.jms;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.provider.DefaultJMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -53,7 +52,7 @@ public class JMSSCABindingProviderFactory implements BindingProviderFactory<Dist
         assert workScheduler != null;
         jmsRFEP = (JMSResourceFactoryExtensionPoint)extensionPoints.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
         if (jmsRFEP == null) {
-            jmsRFEP = new DefaultJMSResourceFactoryExtensionPoint();
+            jmsRFEP = new AMQResourceFactoryExtensionPoint();
         }
     }    
 
