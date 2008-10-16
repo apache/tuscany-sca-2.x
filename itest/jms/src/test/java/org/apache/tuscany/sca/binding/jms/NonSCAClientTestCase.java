@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryImpl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
@@ -120,7 +121,7 @@ public class NonSCAClientTestCase {
     }
 
     protected static void sendTextMessage(String destName, String payload) throws JMSException, NamingException {
-        JMSResourceFactory rf = new JMSResourceFactory(null, null, "tcp://localhost:61618");
+        JMSResourceFactory rf = new JMSResourceFactoryImpl(null, null, "tcp://localhost:61618");
         Session session = rf.getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         MessageProducer p = session.createProducer(rf.lookupDestination(destName));
         rf.getConnection().start();
@@ -130,7 +131,7 @@ public class NonSCAClientTestCase {
     }
 
     protected static void sendObjectMessage(String destName, Object payload) throws JMSException, NamingException {
-        JMSResourceFactory rf = new JMSResourceFactory(null, null, "tcp://localhost:61618");
+        JMSResourceFactory rf = new JMSResourceFactoryImpl(null, null, "tcp://localhost:61618");
         Session session = rf.getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         MessageProducer p = session.createProducer(rf.lookupDestination(destName));
         rf.getConnection().start();
