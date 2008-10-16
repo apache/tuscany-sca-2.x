@@ -39,13 +39,13 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
  */
 public class JMSResourceFactoryImpl implements JMSResourceFactory {
 
-    private String initialContextFactoryName;
-    private String connectionFactoryName = "ConnectionFactory";
-    private String jndiURL;
+    protected String initialContextFactoryName;
+    protected String connectionFactoryName = "ConnectionFactory";
+    protected String jndiURL;
 
-    private Connection connection;
-    private Context context;
-    private boolean isConnectionStarted;
+    protected Connection connection;
+    protected Context context;
+    protected boolean isConnectionStarted;
 
     public JMSResourceFactoryImpl(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
         if (connectionFactoryName != null && connectionFactoryName.trim().length() > 0) {
@@ -114,7 +114,7 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         }
     }
 
-    private void createConnection() throws NamingException, JMSException {
+    protected void createConnection() throws NamingException, JMSException {
         ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
         if (connectionFactory == null) {
             throw new JMSBindingException("connection factory not found: " + connectionFactoryName);
@@ -122,7 +122,7 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         connection = connectionFactory.createConnection();
     }
 
-    private synchronized Context getInitialContext() throws NamingException {
+    protected synchronized Context getInitialContext() throws NamingException {
         if (context == null) {
             Properties props = new Properties();
 
@@ -145,7 +145,7 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
      * environment property needs to be set to initialize the ORB correctly. 
      * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804
      */
-    private void initJREEnvironment(Properties props) {
+    protected void initJREEnvironment(Properties props) {
         if ("com.ibm.websphere.naming.WsnInitialContextFactory".equals(props.get(Context.INITIAL_CONTEXT_FACTORY))) {
             String vendor = System.getProperty("java.vendor");
             if (vendor == null || !vendor.contains("IBM")) {
@@ -208,7 +208,7 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         Object o = null;
         try {
             o = getInitialContext().lookup("java:comp/env/" + name);
-        } catch (NamingException ex) {
+        } catch (Exception ex) {
             // ignore
         }
         if (o == null) {
