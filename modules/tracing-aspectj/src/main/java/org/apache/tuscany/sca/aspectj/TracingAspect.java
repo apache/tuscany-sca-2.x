@@ -37,7 +37,6 @@ public abstract class TracingAspect {
     @Pointcut("")
     protected abstract void entry();
 
-    /** ignore join points outside this scope - use within(..) */
     @Pointcut("")
     protected abstract void withinScope();
 
@@ -49,8 +48,9 @@ public abstract class TracingAspect {
     void start() {
     }
 
-    // @Pointcut("withinScope() && cflow(entry()) && !cflow(exit()) && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
-    @Pointcut("withinScope() && entry() && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
+    // @Pointcut("withinScope() && cflow(entry()) && !cflow(exit()) && !within(org.apache.tuscany.sca.aspectj.*Aspect) && !within(*.toString)")
+    @Pointcut("withinScope() && entry()")
+    // @Pointcut("withinScope() && entry()&& !cflow(execution(String toString())")
     void trace() {
     }
 
@@ -67,12 +67,7 @@ public abstract class TracingAspect {
     public void beforeTrace(JoinPoint jp) {
         logEnter(jp);
     }
-
-    @After("trace() && supportsAfterAdvice()")
-    public void afterTrace(JoinPoint jp) {
-        logExit(jp);
-    }
-    
+   
     @AfterReturning(pointcut = "trace() && supportsAfterAdvice()", returning = "result")
     public void afterReturning(JoinPoint jp, Object result) {
         logExit(jp, result);
@@ -80,7 +75,7 @@ public abstract class TracingAspect {
 
     @AfterThrowing(pointcut = "trace() && supportsAfterAdvice()", throwing = "e")
     public void afterThrowing(JoinPoint jp, Throwable e) {
-        logException(jp, e);
+        logThrowable(jp, e);
     }
 
     @After("start()")
@@ -89,13 +84,9 @@ public abstract class TracingAspect {
     }
 
     protected abstract void logEnter(JoinPoint jp);
-
-    protected abstract void logExit(JoinPoint jp);
     protected abstract void logExit(JoinPoint jp, Object result);
-    protected abstract void logException(JoinPoint jp, Throwable throwable);
+    protected abstract void logThrowable(JoinPoint jp, Throwable throwable);
 
     protected abstract void startLog();
-
     protected abstract void completeLog();
-
 }

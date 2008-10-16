@@ -1,16 +1,24 @@
 <aspectj>
 
     <aspects>
-        <!-- declare two existing aspects to the weaver -->
-        <aspect name="org.apache.tuscany.sca.aspectj.SimpleTracingAspect" />
-        <!-- 
-        <aspect name="org.apache.tuscany.sca.aspectj.LoggingAspect" />
-         -->
-
+        <!-- Uncomment either of these two aspects to perform standard logging -->
+        <!-- or standard tracing on the Tuscany runtime.                       -->
+        <!-- <aspect name="org.apache.tuscany.sca.aspectj.SimpleTracingAspect" /> -->   
+        <!-- <aspect name="org.apache.tuscany.sca.aspectj.LoggingAspect" /> --> 
+        
+        <!-- Following is a concrete-aspect that defines the point cut for   -->
+        <!-- the TimingAspect. Which ever calls you define in this pointcut  -->
+        <!-- will be timed and displayed in the logs.                        -->
+        <concrete-aspect name="org.apache.tuscany.sca.aspectj.UserTimingAspect"
+           extends="org.apache.tuscany.sca.aspectj.TimingAspect"
+           precedence="org.apache.tuscany.sca.aspectj.UserTimingAspect, *">
+           <pointcut name="timedCall" 
+              expression="call(* java.util.logging.Logger.info(..))"/>
+        </concrete-aspect>
     </aspects>
-
+  
     <!--weaver options="-verbose -debug -showWeaveInfo"-->
-    <weaver options="">
+    <weaver options="-verbose">
         <include within="org.apache.tuscany.sca..*" />
     </weaver>
 

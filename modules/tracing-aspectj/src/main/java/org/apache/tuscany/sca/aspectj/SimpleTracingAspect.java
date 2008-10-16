@@ -26,13 +26,26 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
 /**
+ * SimpleTraceAspect performs tracing of method signatures, arguments, and
+ * return values. All Tuscany methods, constructors, and statics are traced.
+ * 
  * @version $Rev$ $Date$
  */
 @Aspect
 public class SimpleTracingAspect extends TracingAspect {
 
-    public SimpleTracingAspect() {
-        super();
+    @Pointcut("execution(public * org.apache.tuscany.sca..*.*(..))")
+    // @Pointcut("call(* org.apache.tuscany.sca..*(..))")
+    protected void entry() {
+    }
+
+    @Pointcut("within(org.apache.tuscany.sca..*) && !within(org.apache.tuscany.sca.aspectj..*Aspect)")
+    protected void withinScope() {
+    }
+
+    @Override
+    protected void startLog() {
+        System.out.println(">>> ----------------------------------------------------");
     }
 
     @Override
@@ -40,43 +53,35 @@ public class SimpleTracingAspect extends TracingAspect {
         System.out.println("<<< ----------------------------------------------------");
     }
 
-    @Pointcut("execution(public * org.apache.tuscany.sca..*.*(..))")
-    protected void entry() {
-    }
-
-    @Pointcut("within(org.apache.tuscany.sca..*) && !within(org.apache.tuscany.sca.aspectj.*Aspect)")
-    protected void withinScope() {
-    }
-
     @Override
     protected void logEnter(JoinPoint jp) {
-        System.out.println("> " + jp.getSignature());
-        if (jp.getArgs().length != 0) {
-            System.out.println("Input: " + Arrays.asList(jp.getArgs()));
+        System.out.println("> logEnter jp.getSignature=" + jp.getSignature());
+        java.lang.Object[] args = jp.getArgs();
+        if (( args != null ) && ( args.length > 0 )) {
+       	// See http://www.eclipse.org/aspectj/doc/released/progguide/pitfalls-infiniteLoops.html
+           // System.out.println("Logging anyMethodCall before jp.getArgs=" + Arrays.asList(args));
+           System.out.print("  logEnter jp.getArgs(" + args.length + ")=[" );
+           for ( int i = 0; i < args.length; i++ ){
+        	  if ( i > 0 ) System.out.print( ",");
+        	  System.out.print( args[ i ]);
+           }
+           System.out.println("]" );
         }
-    }
-
-    @Override
-    protected void logExit(JoinPoint jp) {
-        // System.out.println("> " + jp.getSignature());
-    }
-
-    @Override
-    protected void logException(JoinPoint jp, Throwable throwable) {
-        System.out.println("! " + jp.getSignature() + " " + throwable.getMessage());
     }
 
     @Override
     protected void logExit(JoinPoint jp, Object result) {
-        System.out.println("< " + jp.getSignature());
-        if (!jp.getSignature().toString().startsWith("void ")) {
-            System.out.println("Output: " + result);
-        }
+        // Note that result is null for methods with void return.
+        System.out.println("< logExit jp.getSignature=" + jp.getSignature() +", result=" + result );        
     }
 
     @Override
-    protected void startLog() {
-        System.out.println(">>> ----------------------------------------------------");
+    protected void logThrowable(JoinPoint jp, Throwable throwable) {
+    	while ( throwable.getCause() != null )
+    		throwable = throwable.getCause();
+        System.out.println("! logThrowable jp.getSignature=" + jp.getSignature() + ", throwable=" + throwable);
+        // System.out.println("! logThowable stackTrace=" ); 
+        // throwable.printStackTrace( System.out );
     }
 
 }
