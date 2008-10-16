@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +15,21 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ */
+package calculator;
 
-	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" constrains="sca:implementation.java sca:implementation.spring">
-		<description>
-			All messages to and from this implementation must be logged
-		</description>
-	</intent>
-</definitions>
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * An implementation of the Multiply service.
+ */
+public class MultiplyServiceImpl implements MultiplyService {
+
+    public double multiply(double n1, double n2) {
+        Logger logger = Logger.getLogger("calculator");
+        logger.log(Level.FINEST, "Multiplying " + n1 + " with " + n2);
+        return n1 * n2;
+    }
+
+}
