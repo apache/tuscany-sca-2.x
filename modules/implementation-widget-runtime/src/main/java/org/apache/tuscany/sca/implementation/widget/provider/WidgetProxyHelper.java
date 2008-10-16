@@ -27,21 +27,21 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 class WidgetProxyHelper {
-    private static Map<String, String> proxyFileRegistry = new HashMap<String, String>();
+    private static Map<String, String[]> proxyFileRegistry = new HashMap<String, String[]>();
     private static Map<String, String> proxyClient = new HashMap<String, String>();
 
     static {
-        proxyFileRegistry.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", "binding-atom.js");
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", new String[]{ "binding-atom.js", "atomModel.js"});
         proxyClient.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", "AtomClient");
         
-        proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "binding-jsonrpc.js");
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", new String[]{"binding-jsonrpc.js"});
         proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
 
-        proxyFileRegistry.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", "binding-http.js");
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", new String[]{"binding-http.js"});
         proxyClient.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", "HTTPClient");
     }
     
-    static String getJavaScriptProxyFile(String bindingClass) {
+    static String [] getJavaScriptProxyFile(String bindingClass) {
         return proxyFileRegistry.get(bindingClass);
     }
     

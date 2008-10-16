@@ -120,14 +120,19 @@ class WidgetImplementationInvoker implements Invoker {
         
         for(ComponentReference reference : component.getReferences()) {
             for(Binding binding : reference.getBindings()) {
-                String bindingProxyName = WidgetProxyHelper.getJavaScriptProxyFile(binding.getClass().getName());
+                String [] bindingProxyNames = WidgetProxyHelper.getJavaScriptProxyFile(binding.getClass().getName());
                 //check if binding client code was already processed and inject to the generated script
-                Boolean processedFlag = bindingClientProcessed.get(bindingProxyName);
-                if( processedFlag == null || processedFlag.booleanValue() == false) {
-                    if(bindingProxyName != null) {
-                        generateJavaScriptBindingProxy(pw,bindingProxyName);
-                        bindingClientProcessed.put(bindingProxyName, Boolean.TRUE);
-                    }
+                if ( bindingProxyNames != null ) {
+                	for ( int i = 0; i < bindingProxyNames.length; i++ ) {
+                		String bindingProxyName = bindingProxyNames[ i ];
+                		if(bindingProxyName != null) {
+                			Boolean processedFlag = bindingClientProcessed.get(bindingProxyName);
+                			if( processedFlag == null || processedFlag.booleanValue() == false) {
+                				generateJavaScriptBindingProxy(pw,bindingProxyName);
+                				bindingClientProcessed.put(bindingProxyName, Boolean.TRUE);
+                			}
+                		}
+                }
                 }
             }
         }
