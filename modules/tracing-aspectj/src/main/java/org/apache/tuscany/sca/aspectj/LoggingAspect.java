@@ -32,6 +32,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
 /**
+ * LoggingAspect performs standard logging of method signatures, arguments, and
+ * return values. All Tuscany methods, constructors, and statics are logged.
  * @version $Rev$ $Date$
  */
 @Aspect
@@ -50,44 +52,54 @@ public class LoggingAspect {
     
     @Pointcut("cflow(anyMethodExecution()) && anyLogCall()")
     public void anyLog() {
-        
     }
-    
-    // @Around("anyMethodCall() || anyLog()")
-    @Around("anyLog()")
-    public Object around(ProceedingJoinPoint jp) throws Throwable {
-        System.out.println("Around: " + jp);
-        long start = System.currentTimeMillis();
-        try {
-            return jp.proceed();
-        } finally {
-            long end = System.currentTimeMillis();
-            System.out.println("Roundtrip is " + (end - start) + "ms for " + jp.getSignature());
-        }
 
+    @Pointcut("call(org.apache.tuscany.sca..*.new(..))")
+    public void anyConstructor() {
+    }
+
+    // e.g. org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper
+    @Pointcut("staticinitialization(org.apache.tuscany.sca.implementation..*)")
+    public void anyStatic() {
     }
 
     @Before("anyMethodCall()")
     public void before(JoinPoint jp) {
-        System.out.println("Before: " + jp);
-        System.out.println("Location: " + jp.getSourceLocation());
-        System.out.println("This: " + jp.getThis());
-        System.out.println("Target: " + jp.getTarget());
-        System.out.println("Input: " + Arrays.asList(jp.getArgs()));
-    }
-
-    @After("anyMethodCall()")
-    public void after(JoinPoint jp) {
-        System.out.println("After: " + jp);
+        // System.out.println("Logging anyMethodCall before jp=" + jp);
+        // System.out.println("Logging anyMethodCall before jp.getSourceLocation=" + jp.getSourceLocation());
+        // System.out.println("Logging anyMethodCall before jp.getThis=" + jp.getThis());
+        // System.out.println("Logging anyMethodCall before jp.getTarget=" + jp.getTarget());
+        System.out.println("Logging Before anyMethodCall jp.getSignature=" + jp.getSignature());
+        java.lang.Object[] args = jp.getArgs();
+        if (( args != null ) && ( args.length > 0 )) {
+           System.out.println("Logging Before anyMethodCall jp.getArgs=" + Arrays.asList(args));
+        }
     }
 
     @AfterReturning(pointcut = "anyMethodCall()", returning = "result")
     public void afterReturning(JoinPoint jp, Object result) {
-        System.out.println("After returning: " + jp + " " + result);
+        // Note that result is null for methods with void return.
+        System.out.println("Logging AfterReturning anyMethodCall jp=" + jp + ", result=" + result);
     }
 
-    @AfterThrowing(pointcut = "anyMethodCall()", throwing = "e")
-    public void afterThrowing(Exception e) {
+    @AfterThrowing(pointcut = "anyMethodCall()", throwing = "t")
+    public void afterThrowing(JoinPoint jp, Throwable t) {
+        System.out.println("Logging AfterThrowing anyMethodCall jp=" + jp + ", t=" + t);
+    }
+
+    @Before("anyConstructor()")
+    public void beforeConstructor(JoinPoint jp) {
+        System.out.println("Logging Before anyConstructor jp.getSignature=" + jp.getSignature());
+        java.lang.Object[] args = jp.getArgs();
+        if (( args != null ) && ( args.length > 0 )) {
+           System.out.println("Logging Before anyConstructor jp.getArgs=" + Arrays.asList(args));
+        }
+    }
+
+    @Before("anyStatic()")
+    public void beforeStatic(JoinPoint jp) {
+        System.out.println("Logging Before anyStatic before jp=" + jp);
+        System.out.println("Logging anyMethodCall before jp.getSourceLocation=" + jp.getSourceLocation());
     }
 
 }
