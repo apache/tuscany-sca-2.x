@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +15,14 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ */
+package calculator;
 
-	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" constrains="sca:implementation.java sca:implementation.spring">
-		<description>
-			All messages to and from this implementation must be logged
-		</description>
-	</intent>
-</definitions>
+/**
+ * The interface for the multiply service
+ */
+public interface SubtractService {
+
+    double subtract(double n1, double n2);
+
+}

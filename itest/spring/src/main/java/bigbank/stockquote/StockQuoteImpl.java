@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +15,24 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ */
+package bigbank.stockquote;
 
-	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" constrains="sca:implementation.java sca:implementation.spring">
-		<description>
-			All messages to and from this implementation must be logged
-		</description>
-	</intent>
-</definitions>
+import org.osoa.sca.annotations.Service;
+
+/**
+ * This class implements the StockQuote service.
+ */
+@Service(StockQuoteService.class)
+public class StockQuoteImpl implements StockQuoteService {
+
+    public double getQuote(String symbol) {
+        double price = 104.0 + Math.random();
+        price = ((int)(price * 100)) / 100.0;
+
+        System.out.println("Getting stock quote for: " + symbol + ", value: "+ price);
+
+        return price;
+    }
+
+}
