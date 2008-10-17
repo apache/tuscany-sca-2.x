@@ -66,6 +66,7 @@
                 <module>binding-jsonrpc-runtime</module>
                 <module>binding-notification</module>
                 <module>binding-rmi</module>
+                <module>binding-rmi-runtime</module>
                 <module>binding-rss</module>
                 <module>binding-rss-rome</module>
                 <module>binding-sca</module>
