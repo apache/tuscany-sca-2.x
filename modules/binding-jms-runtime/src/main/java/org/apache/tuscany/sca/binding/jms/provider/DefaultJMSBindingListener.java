@@ -55,9 +55,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingListener implements MessageListener {
+public class DefaultJMSBindingListener implements MessageListener {
 
-    private static final Logger logger = Logger.getLogger(JMSBindingListener.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultJMSBindingListener.class.getName());
 
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
@@ -70,7 +70,7 @@ public class JMSBindingListener implements MessageListener {
     private List<Operation> serviceOperations;
     protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
 
-    public JMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
+    public DefaultJMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;

@@ -179,7 +179,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             consumer = session.createConsumer(destination);
         }
 
-        final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        final DefaultJMSBindingListener listener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
         try {
 
             consumer.setMessageListener(listener);
