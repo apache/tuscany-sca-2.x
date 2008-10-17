@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-rmi</artifactId>
+            <artifactId>tuscany-binding-rmi-runtime</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
