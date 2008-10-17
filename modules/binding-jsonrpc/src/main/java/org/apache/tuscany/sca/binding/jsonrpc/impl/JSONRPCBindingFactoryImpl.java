@@ -17,16 +17,22 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc;
+package org.apache.tuscany.sca.binding.jsonrpc.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBindingFactory;
+
 
 /**
- * A model for the JSONRPC binding.
+ * Factory for the JSON RPC binding model.
  * 
  * @version $Rev$ $Date$
- */
-public interface JSONRPCBinding extends Binding, PolicySetAttachPoint {
+*/
+public class JSONRPCBindingFactoryImpl implements JSONRPCBindingFactory {
 
+    public JSONRPCBinding createJSONRPCBinding() {
+        return new JSONRPCBindingImpl();
+    }
+
+    
 }
