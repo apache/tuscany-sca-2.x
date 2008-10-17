@@ -83,7 +83,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.node</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.implementation.node*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.implementation.node</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
