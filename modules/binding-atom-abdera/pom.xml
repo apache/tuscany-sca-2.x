@@ -102,8 +102,8 @@
             <version>0.4.0-incubating</version>
             <exclusions>
                 <exclusion>
-                    <groupId>stax</groupId>
-                    <artifactId>stax-api</artifactId>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>xom</groupId>
