@@ -19,45 +19,15 @@
 
 package org.apache.tuscany.sca.binding.rmi;
 
-import org.apache.tuscany.sca.assembly.Binding;
-
 /**
- * RMI Binding model
+ * Factory to create RMIBinding instances
  * 
  * @version $Rev$ $Date$
  */
-public interface RMIBinding extends Binding {
-
+public interface RMIBindingFactory {
     /**
-     * @return the host name of the RMI Service
+     * Create RMIBinding model
+     * @return
      */
-    String getHost();
-
-    /**
-     * @return the port number for the RMI Service
-     */
-    String getPort();
-
-    /**
-     * @return returns the RMI Service Name
-     */
-    String getServiceName();
-
-    /**
-     * @param rmiHostName the hostname of the RMI Service
-     */
-    void setHost(String rmiHostName);
-
-    /**
-     * @param rmiPort the port number for the RMI Service
-     */
-    void setPort(String rmiPort);
-
-    /**
-     * Sets the service name for the RMI Server
-     * 
-     * @param rmiServiceName the name of the RMI service
-     */
-    void setServiceName(String rmiServiceName);
-
+    RMIBinding createRMIBinding();
 }
