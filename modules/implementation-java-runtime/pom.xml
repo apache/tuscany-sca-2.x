@@ -71,7 +71,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.implementation.java.runtime</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.implementation.java*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.implementation.java.context,
+                            org.apache.tuscany.sca.implementation.java.injection,
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
