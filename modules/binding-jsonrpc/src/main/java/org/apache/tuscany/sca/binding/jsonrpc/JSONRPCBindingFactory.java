@@ -19,14 +19,17 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
- * A model for the JSONRPC binding.
+ * Factory for the JSON RPC binding model.
  * 
  * @version $Rev$ $Date$
- */
-public interface JSONRPCBinding extends Binding, PolicySetAttachPoint {
+*/
+public interface JSONRPCBindingFactory {
 
+    /**
+     * Creates a new JSON RPC Binding
+     * @return a new JSON RPC Binding
+     */
+    JSONRPCBinding createJSONRPCBinding();
 }
