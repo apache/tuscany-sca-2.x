@@ -39,7 +39,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-binding-gdata-gsoc</artifactId>
+			<artifactId>tuscany-binding-gdata</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 
