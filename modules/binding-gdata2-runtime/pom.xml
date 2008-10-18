@@ -25,7 +25,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-binding-gdata-runtime</artifactId>
+    <artifactId>tuscany-binding-gdata2-runtime</artifactId>
     <name>Apache Tuscany SCA GData Binding Extension Runtime</name>
 
     <repositories>
