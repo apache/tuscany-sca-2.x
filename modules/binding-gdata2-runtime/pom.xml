@@ -170,7 +170,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.gdata.runtime</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.gdata2.runtime</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.binding.gdata.collection</Export-Package>
                     </instructions>
