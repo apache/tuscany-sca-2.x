@@ -46,40 +46,39 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-
 
 /**
  * Processor for handling XML models of PolicySet definitions
  *
  * @version $Rev$ $Date$
  */
-public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<PolicySet>, PolicyConstants {
+public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<PolicySet>,
+    PolicyConstants {
 
     private PolicyFactory policyFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private XPathFactory xpathFactory = XPathFactory.newInstance();
     private Monitor monitor;
-    
-    public PolicySetProcessor(FactoryExtensionPoint modelFactories, 
-    						  StAXArtifactProcessor<Object> extensionProcessor,
-    						  Monitor monitor) {
+
+    public PolicySetProcessor(FactoryExtensionPoint modelFactories,
+                              StAXArtifactProcessor<Object> extensionProcessor,
+                              Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.extensionProcessor = extensionProcessor;
         this.monitor = monitor;
     }
-    
-    public PolicySetProcessor(PolicyFactory policyFactory, 
-    						  StAXArtifactProcessor<Object> extensionProcessor,
-    						  Monitor monitor) {
+
+    public PolicySetProcessor(PolicyFactory policyFactory,
+                              StAXArtifactProcessor<Object> extensionProcessor,
+                              Monitor monitor) {
         this.policyFactory = policyFactory;
         this.extensionProcessor = extensionProcessor;
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a exception.
      * 
@@ -87,13 +86,19 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "policy-xml-validation-messages", Severity.ERROR, model, message, ex);
-    	     monitor.problem(problem);
-    	 }        
-     }
-    
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "policy-xml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
+    }
+
     /**
      * Report a error.
      * 
@@ -101,16 +106,22 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Object... messageParameters) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "policy-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-    	     monitor.problem(problem);
-    	 }        
-     }
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "policy-xml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
 
     public PolicySet read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         PolicySet policySet = null;
-        
+
         String policySetName = reader.getAttributeValue(null, NAME);
         String appliesTo = reader.getAttributeValue(null, APPLIES_TO);
         if (policySetName == null || appliesTo == null) {
@@ -120,27 +131,27 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                 error("PolicySetAppliesToMissing", reader);
             return policySet;
         }
-        
+
         policySet = policyFactory.createPolicySet();
         policySet.setName(new QName(policySetName));
         String alwaysAppliesTo = reader.getAttributeValue(TUSCANY_NS, ALWAYS_APPLIES_TO);
-        
+
         //TODO: with 1.0 version of specs the applies to xpath is given related to the immediate
         //parent whereas the runtime evaluates the xpath aginst the composite element.  What the runtime
         //is doing is what the future version of the specs could be tending towards.  When that happens
         //this 'if' must be deleted
-        if ( appliesTo != null && !appliesTo.startsWith("/") ) {
+        if (appliesTo != null && !appliesTo.startsWith("/")) {
             appliesTo = "//" + appliesTo;
         }
-        
-        if ( alwaysAppliesTo != null && !alwaysAppliesTo.startsWith("/") ) {
+
+        if (alwaysAppliesTo != null && !alwaysAppliesTo.startsWith("/")) {
             alwaysAppliesTo = "//" + alwaysAppliesTo;
         }
-        
+
         policySet.setAppliesTo(appliesTo);
         policySet.setAlwaysAppliesTo(alwaysAppliesTo);
 
-        XPath path = xpathFactory.newXPath(); 
+        XPath path = xpathFactory.newXPath();
         path.setNamespaceContext(reader.getNamespaceContext());
         try {
             if (appliesTo != null) {
@@ -150,27 +161,27 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                 policySet.setAlwaysAppliesToXPathExpression(path.compile(alwaysAppliesTo));
             }
         } catch (XPathExpressionException e) {
-        	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", policySet, ce);
+            ContributionReadException ce = new ContributionReadException(e);
+            error("ContributionReadException", policySet, ce);
             //throw ce;
-        }  
-        
+        }
+
         readProvidedIntents(policySet, reader);
-        
+
         int event = reader.getEventType();
         QName name = null;
         reader.next();
         while (reader.hasNext()) {
             event = reader.getEventType();
             switch (event) {
-                case START_ELEMENT : {
+                case START_ELEMENT: {
                     name = reader.getName();
-                    if ( POLICY_INTENT_MAP_QNAME.equals(name) ) {
+                    if (POLICY_INTENT_MAP_QNAME.equals(name)) {
                         Intent mappedIntent = policyFactory.createIntent();
                         String provides = reader.getAttributeValue(null, PROVIDES);
                         if (provides != null) {
                             mappedIntent.setName(getQName(reader, PROVIDES));
-                            if ( policySet.getProvidedIntents().contains(mappedIntent) ) {
+                            if (policySet.getProvidedIntents().contains(mappedIntent)) {
                                 readIntentMap(reader, policySet, mappedIntent);
                             } else {
                                 error("IntentNotSpecified", policySet, policySetName);
@@ -179,7 +190,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         } else {
                             error("IntentMapProvidesMissing", reader, policySetName);
                         }
-                    } else if ( POLICY_SET_REFERENCE_QNAME.equals(name) )  {
+                    } else if (POLICY_SET_REFERENCE_QNAME.equals(name)) {
                         PolicySet referredPolicySet = policyFactory.createPolicySet();
                         String referencename = reader.getAttributeValue(null, NAME);
                         if (referencename != null) {
@@ -189,24 +200,24 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             error("PolicySetReferenceNameMissing", reader, policySetName);
                         }
                     } /*else if ( WS_POLICY_QNAME.equals(name) )  {
-                        OMElement policyElement = loadElement(reader);
-                        org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
-                        policySet.getPolicies().add(wsPolicy);
-                    } */ else {
+                                           OMElement policyElement = loadElement(reader);
+                                           org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
+                                           policySet.getPolicies().add(wsPolicy);
+                                       } */else {
                         Object extension = extensionProcessor.read(reader);
-                        if ( extension != null ) {
+                        if (extension != null) {
                             policySet.getPolicies().add(extension);
                         }
                     }
                     break;
                 }
             }
-            if ( event == END_ELEMENT ) {
-                if ( POLICY_SET_QNAME.equals(reader.getName()) ) {
+            if (event == END_ELEMENT) {
+                if (POLICY_SET_QNAME.equals(reader.getName())) {
                     break;
-                } 
+                }
             }
-            
+
             //Read the next element
             if (reader.hasNext()) {
                 reader.next();
@@ -214,72 +225,76 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         }
         return policySet;
     }
-    
-    
-    public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent) throws ContributionReadException {
+
+    public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent)
+        throws ContributionReadException {
         QName name = reader.getName();
         Map<Intent, List<Object>> mappedPolicies = policySet.getMappedPolicies();
-        if ( POLICY_INTENT_MAP_QNAME.equals(name) ) {
+        if (POLICY_INTENT_MAP_QNAME.equals(name)) {
             //Intent mappedIntent = policyFactory.createIntent();
             //mappedIntent.setName(getQName(reader, PROVIDES));
             String defaultQualifier = getString(reader, DEFAULT);
-            
+
             String qualifierName = null;
             String qualfiedIntentName = null;
             Intent qualifiedIntent = null;
-        
+
             int event = reader.getEventType();
             try {
                 reader.next();
                 while (reader.hasNext()) {
                     event = reader.getEventType();
                     switch (event) {
-                        case START_ELEMENT : {
+                        case START_ELEMENT: {
                             name = reader.getName();
-                            if ( POLICY_INTENT_MAP_QUALIFIER_QNAME.equals(name)) {
-                                qualifierName = getString(reader, NAME);                                
+                            if (POLICY_INTENT_MAP_QUALIFIER_QNAME.equals(name)) {
+                                qualifierName = getString(reader, NAME);
                                 if (qualifierName != null) {
-                                    qualfiedIntentName = mappedIntent.getName().getLocalPart() + 
-                                                                    QUALIFIER + qualifierName;
+                                    qualfiedIntentName =
+                                        mappedIntent.getName().getLocalPart() + QUALIFIER + qualifierName;
                                     qualifiedIntent = policyFactory.createIntent();
                                     qualifiedIntent.setName(new QName(mappedIntent.getName().getNamespaceURI(),
-                                                                        qualfiedIntentName));
+                                                                      qualfiedIntentName));
                                 } else {
                                     error("QualifierNameMissing", reader, policySet.getName());
                                 }
-                            } else if ( POLICY_INTENT_MAP_QNAME.equals(name) ) {
+                            } else if (POLICY_INTENT_MAP_QNAME.equals(name)) {
                                 QName providedIntent = getQName(reader, PROVIDES);
-                                if ( qualifierName.equals(providedIntent.getLocalPart()) ) {
+                                if (qualifierName.equals(providedIntent.getLocalPart())) {
                                     readIntentMap(reader, policySet, qualifiedIntent);
                                 } else {
-                                	error("IntentMapDoesNotMatch", providedIntent, providedIntent, qualifierName, policySet);
+                                    error("IntentMapDoesNotMatch",
+                                          providedIntent,
+                                          providedIntent,
+                                          qualifierName,
+                                          policySet);
                                     //throw new ContributionReadException("Intent provided by IntentMap " + 
-                                                                    //providedIntent + " does not match parent qualifier " + qualifierName +
-                                                                    //" in policyset - " + policySet);
+                                    //providedIntent + " does not match parent qualifier " + qualifierName +
+                                    //" in policyset - " + policySet);
                                 }
                             }/* else if ( WS_POLICY_QNAME.equals(name) )  {
-                                OMElement policyElement = loadElement(reader);
-                                Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
-                                policySet.getPolicies().add(wsPolicy);
-                                
-                                List<Object> policyList = mappedPolicies.get(qualifiedIntent);
-                                if ( policyList == null ) {
-                                    policyList = new ArrayList<Object>();
-                                    mappedPolicies.put(qualifiedIntent, policyList);
-                                    
-                                    if (qualifierName.equals(defaultQualifier)) {
-                                        mappedPolicies.put(mappedIntent, policyList);
-                                    }
-                                }
-                                policyList.add((Policy)wsPolicy);
-                            }*/ else {
+                                                            OMElement policyElement = loadElement(reader);
+                                                            Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
+                                                            policySet.getPolicies().add(wsPolicy);
+                                                            
+                                                            List<Object> policyList = mappedPolicies.get(qualifiedIntent);
+                                                            if ( policyList == null ) {
+                                                                policyList = new ArrayList<Object>();
+                                                                mappedPolicies.put(qualifiedIntent, policyList);
+                                                                
+                                                                if (qualifierName.equals(defaultQualifier)) {
+                                                                    mappedPolicies.put(mappedIntent, policyList);
+                                                                }
+                                                            }
+                                                            policyList.add((Policy)wsPolicy);
+                                                        }*/else {
                                 Object extension = extensionProcessor.read(reader);
-                                if ( extension != null && qualifiedIntent != null) {
+                                if (extension != null && qualifiedIntent != null) {
                                     List<Object> policyList = mappedPolicies.get(qualifiedIntent);
-                                    if ( policyList == null ) {
+                                    if (policyList == null) {
                                         policyList = new ArrayList<Object>();
                                         mappedPolicies.put(qualifiedIntent, policyList);
-                                        
+
                                         if (qualifierName.equals(defaultQualifier)) {
                                             mappedPolicies.put(mappedIntent, policyList);
                                         }
@@ -289,28 +304,29 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             }
                             break;
                         }
-                        case END_ELEMENT : {
-                            if ( POLICY_INTENT_MAP_QNAME.equals(reader.getName()) ) {
-                                if ( defaultQualifier != null ) {
-                                    String qualifiedIntentName = mappedIntent.getName().getLocalPart() + QUALIFIER + defaultQualifier;
+                        case END_ELEMENT: {
+                            if (POLICY_INTENT_MAP_QNAME.equals(reader.getName())) {
+                                if (defaultQualifier != null) {
+                                    String qualifiedIntentName =
+                                        mappedIntent.getName().getLocalPart() + QUALIFIER + defaultQualifier;
                                     Intent defaultQualifiedIntent = policyFactory.createIntent();
                                     defaultQualifiedIntent.setName(new QName(mappedIntent.getName().getNamespaceURI(),
                                                                              qualifiedIntentName));
                                     List<Object> policyList = mappedPolicies.get(defaultQualifiedIntent);
-                                    if ( policyList != null ) {
+                                    if (policyList != null) {
                                         mappedPolicies.put(mappedIntent, policyList);
                                     } else {
-                                    	error("UnableToMapPolicies", mappedPolicies, mappedIntent, policySet);
+                                        error("UnableToMapPolicies", mappedPolicies, mappedIntent, policySet);
                                         //throw new ContributionReadException("Unable to map policies for default qualifier in IntentMap for - " +
-                                                                            //mappedIntent + " in policy set - " + policySet);
+                                        //mappedIntent + " in policy set - " + policySet);
                                     }
                                     defaultQualifier = null;
                                 }
-                            } 
+                            }
                             break;
                         }
                     }
-                    if ( event == END_ELEMENT && POLICY_INTENT_MAP_QNAME.equals(reader.getName()) ) {
+                    if (event == END_ELEMENT && POLICY_INTENT_MAP_QNAME.equals(reader.getName())) {
                         break;
                     }
                     //Read the next element
@@ -318,29 +334,29 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         reader.next();
                     }
                 }
-            }  catch (XMLStreamException e) {
-            	ContributionReadException ce = new ContributionReadException(e);
-            	error("ContributionReadException", reader, ce);
+            } catch (XMLStreamException e) {
+                ContributionReadException ce = new ContributionReadException(e);
+                error("ContributionReadException", reader, ce);
                 throw ce;
             }
         }
     }
-    
-    public void write(PolicySet policySet, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+    public void write(PolicySet policySet, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
 
         // Write an <sca:policySet>
         writer.writeStartElement(SCA10_NS, POLICY_SET);
         writer.writeNamespace(policySet.getName().getPrefix(), policySet.getName().getNamespaceURI());
-        writer.writeAttribute(NAME, 
-                              policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
+        writer.writeAttribute(NAME, policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
         writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
         writer.writeAttribute(TUSCANY_NS, ALWAYS_APPLIES_TO, policySet.getAlwaysAppliesTo());
-        
+
         writeProvidedIntents(policySet, writer);
-        
+
         writer.writeEndElement();
     }
-    
+
     private void readProvidedIntents(PolicySet policySet, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, PROVIDES);
         if (value != null) {
@@ -353,10 +369,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             }
         }
     }
-    
+
     private void writeProvidedIntents(PolicySet policySet, XMLStreamWriter writer) throws XMLStreamException {
-        if (policySet.getProvidedIntents() != null && 
-            policySet.getProvidedIntents().size() > 0) {
+        if (policySet.getProvidedIntents() != null && policySet.getProvidedIntents().size() > 0) {
             StringBuffer sb = new StringBuffer();
             for (Intent providedIntents : policySet.getProvidedIntents()) {
                 sb.append(providedIntents.getName());
@@ -366,30 +381,29 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         }
     }
 
-   private void resolvePolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
-       boolean unresolved = false;
-       if (policySet != null) {
-           for ( Object o : policySet.getPolicies() ) {
-               extensionProcessor.resolve(o, resolver);
-               /*if ( o instanceof Policy && ((Policy)o).isUnresolved() ) {
-                  unresolved = true;
-               }*/
-           }
-           policySet.setUnresolved(unresolved);
-       }
-   }
-   
-   
-    
+    private void resolvePolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+        boolean unresolved = false;
+        if (policySet != null) {
+            for (Object o : policySet.getPolicies()) {
+                extensionProcessor.resolve(o, resolver);
+                /*if ( o instanceof Policy && ((Policy)o).isUnresolved() ) {
+                   unresolved = true;
+                }*/
+            }
+            policySet.setUnresolved(unresolved);
+        }
+    }
+
     public QName getArtifactType() {
         return POLICY_SET_QNAME;
     }
-    
+
     public Class<PolicySet> getModelType() {
         return PolicySet.class;
     }
-    
-    private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+
+    private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver)
+        throws ContributionResolveException {
         if (policySet != null) {
             //resolve all provided intents
             List<Intent> providedIntents = new ArrayList<Intent>();
@@ -399,10 +413,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                     if (!resolvedProvidedIntent.isUnresolved()) {
                         providedIntents.add(resolvedProvidedIntent);
                     } else {
-                    	error("ProvidedIntentNotFound", policySet, providedIntent, policySet);
-                    	return;
+                        error("ProvidedIntentNotFound", policySet, providedIntent, policySet);
+                        return;
                         //throw new ContributionResolveException("Provided Intent - " + providedIntent
-                                                           //+ " not found for PolicySet " + policySet);
+                        //+ " not found for PolicySet " + policySet);
                     }
                 } else {
                     providedIntents.add(providedIntent);
@@ -411,9 +425,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             policySet.getProvidedIntents().clear();
             policySet.getProvidedIntents().addAll(providedIntents);
         }
-     }
-    
-    private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
+    }
+
+    private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver)
+        throws ContributionResolveException {
         Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
         for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
             Intent mappedIntent = entry.getKey();
@@ -422,10 +437,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                 if (!resolvedMappedIntent.isUnresolved()) {
                     mappedPolicies.put(resolvedMappedIntent, entry.getValue());
                 } else {
-                	error("MappedIntentNotFound", policySet, mappedIntent, policySet);
-                	return;
+                    error("MappedIntentNotFound", policySet, mappedIntent, policySet);
+                    return;
                     //throw new ContributionResolveException("Mapped Intent - " + mappedIntent
-                                                   //+ " not found for PolicySet " + policySet);    
+                    //+ " not found for PolicySet " + policySet);    
                 }
             } else {
                 mappedPolicies.put(mappedIntent, entry.getValue());
@@ -435,9 +450,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         policySet.getMappedPolicies().clear();
         policySet.getMappedPolicies().putAll(mappedPolicies);
     }
-    
-    private void resolveReferredPolicySets(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
-    
+
+    private void resolveReferredPolicySets(PolicySet policySet, ModelResolver resolver)
+        throws ContributionResolveException {
+
         List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
         for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
             if (referredPolicySet.isUnresolved()) {
@@ -445,10 +461,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                 if (!resolvedReferredPolicySet.isUnresolved()) {
                     referredPolicySets.add(resolvedReferredPolicySet);
                 } else {
-                	error("ReferredPolicySetNotFound", policySet, referredPolicySet, policySet);
-                	return;
+                    error("ReferredPolicySetNotFound", policySet, referredPolicySet, policySet);
+                    return;
                     //throw new ContributionResolveException("Referred PolicySet - " + referredPolicySet
-                                                             //+ "not found for PolicySet - " + policySet);
+                    //+ "not found for PolicySet - " + policySet);
                 }
             } else {
                 referredPolicySets.add(referredPolicySet);
@@ -457,7 +473,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         policySet.getReferencedPolicySets().clear();
         policySet.getReferencedPolicySets().addAll(referredPolicySets);
     }
-    
+
     private void includeReferredPolicySets(PolicySet policySet, PolicySet referredPolicySet) {
         for (PolicySet furtherReferredPolicySet : referredPolicySet.getReferencedPolicySets()) {
             includeReferredPolicySets(referredPolicySet, furtherReferredPolicySet);
@@ -465,23 +481,23 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         policySet.getPolicies().addAll(referredPolicySet.getPolicies());
         policySet.getMappedPolicies().putAll(referredPolicySet.getMappedPolicies());
     }
-    
+
     public void resolve(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
         resolveProvidedIntents(policySet, resolver);
         resolveIntentsInMappedPolicies(policySet, resolver);
         resolveReferredPolicySets(policySet, resolver);
-        
+
         for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
             includeReferredPolicySets(policySet, referredPolicySet);
         }
-        
-        if ( policySet.isUnresolved() ) {
+
+        if (policySet.isUnresolved()) {
             //resolve the policy attachments
             resolvePolicies(policySet, resolver);
-             
+
             /*if ( !policySet.isUnresolved() ) {
                  resolver.addModel(policySet);
             }*/
         }
-     }   
- }
+    }
+}

@@ -34,7 +34,7 @@ public class ProfileIntentProcessor extends PolicyIntentProcessor<ProfileIntent>
     public ProfileIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
         super(policyFactory, monitor);
     }
-    
+
     public ProfileIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         super(modelFactories, monitor);
     }

@@ -30,11 +30,11 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  * @version $Rev$ $Date$
  */
 public class QualifiedIntentProcessor extends PolicyIntentProcessor<QualifiedIntent> {
-	
+
     public QualifiedIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         super(modelFactories, monitor);
     }
-    
+
     public QualifiedIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
         super(policyFactory, monitor);
     }

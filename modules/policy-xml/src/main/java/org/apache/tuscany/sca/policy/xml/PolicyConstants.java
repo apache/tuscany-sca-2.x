@@ -47,7 +47,7 @@ public interface PolicyConstants {
     String REQUIRES = "requires";
     String EXCLUDES = "excludes";
     String DEFAULT = "default";
-       
+
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";
     String TYPE = "type";
@@ -57,19 +57,15 @@ public interface PolicyConstants {
     QName BINDING_TYPE_QNAME = new QName(SCA10_NS, BINDING_TYPE);
     String BINDING = "binding";
     String IMPLEMENTATION = "implementation";
-    
+
     QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
     QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);
-    QName POLICY_INTENT_MAP_QNAME = new QName(SCA10_NS, INTENT_MAP); 
+    QName POLICY_INTENT_MAP_QNAME = new QName(SCA10_NS, INTENT_MAP);
     QName SCA_DEFINITIONS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
     QName DESCRIPTION_QNAME = new QName(SCA10_NS, DESCRIPTION);
     QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, INTENT_MAP_QUALIFIER);
     QName POLICY_SET_REFERENCE_QNAME = new QName(SCA10_NS, POLICY_SET_REFERENCE);
-    
+
     String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
-    
-    
-    
-    
-    
+
 }

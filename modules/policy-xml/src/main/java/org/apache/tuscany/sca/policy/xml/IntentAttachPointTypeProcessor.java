@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -45,29 +44,30 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
 import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
-
 /**
  * Processor for handling XML models of ExtensionType meta data definitions
  *
  * @version $Rev$ $Date$
  */
-abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
+abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor implements
+    StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
 
     private IntentAttachPointTypeFactory attachPointTypeFactory;
     private PolicyFactory policyFactory;
     private Monitor monitor;
-    
-    protected abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException;
 
-    public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, 
-    		                              IntentAttachPointTypeFactory attachPointTypeFactory, 
-    		                              StAXArtifactProcessor<Object> extensionProcessor,
-    		                              Monitor monitor) {
+    protected abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver)
+        throws ContributionResolveException;
+
+    public IntentAttachPointTypeProcessor(PolicyFactory policyFactory,
+                                          IntentAttachPointTypeFactory attachPointTypeFactory,
+                                          StAXArtifactProcessor<Object> extensionProcessor,
+                                          Monitor monitor) {
         this.policyFactory = policyFactory;
         this.attachPointTypeFactory = attachPointTypeFactory;
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a error.
      * 
@@ -76,41 +76,47 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
      * @param model
      */
     private void error(String message, Object model, Object... messageParameters) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "policy-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-    	     monitor.problem(problem);
-    	 }        
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "policy-xml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
-    
+
     public IntentAttachPointType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName type = getQName(reader, TYPE);
-        
-        if ( type != null ) {
-            if ( type.getLocalPart().startsWith(BINDING) ) {
+
+        if (type != null) {
+            if (type.getLocalPart().startsWith(BINDING)) {
                 IntentAttachPointType bindingType = attachPointTypeFactory.createBindingType();
                 bindingType.setName(type);
                 bindingType.setUnresolved(true);
-                
+
                 readAlwaysProvidedIntents(bindingType, reader);
                 readMayProvideIntents(bindingType, reader);
-                return bindingType; 
-            } else if ( type.getLocalPart().startsWith(IMPLEMENTATION) ) {
+                return bindingType;
+            } else if (type.getLocalPart().startsWith(IMPLEMENTATION)) {
                 IntentAttachPointType implType = attachPointTypeFactory.createImplementationType();
                 implType.setName(type);
                 implType.setUnresolved(true);
-                
+
                 readAlwaysProvidedIntents(implType, reader);
                 readMayProvideIntents(implType, reader);
                 return implType;
             } else {
-            	error("UnrecognizedIntentAttachPointType", reader, type);
+                error("UnrecognizedIntentAttachPointType", reader, type);
                 //throw new ContributionReadException("Unrecognized IntentAttachPointType - " + type);
             }
         } else {
-        	error("RequiredAttributeMissing", reader, TYPE);
+            error("RequiredAttributeMissing", reader, TYPE);
             //throw new ContributionReadException("Required attribute '" + TYPE + 
-                                                //"' missing from BindingType Definition");
-        }        
+            //"' missing from BindingType Definition");
+        }
         return null;
     }
 
@@ -126,7 +132,7 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
             }
         }
     }
-    
+
     private void readMayProvideIntents(IntentAttachPointType extnType, XMLStreamReader reader) {
         String value = reader.getAttributeValue(null, MAY_PROVIDE);
         if (value != null) {
@@ -139,61 +145,64 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
             }
         }
     }
-  
-    public void write(IntentAttachPointType extnType, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+
+    public void write(IntentAttachPointType extnType, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
 
         // Write an <sca:bindingType or sca:implementationType>
-        if ( extnType instanceof BindingTypeImpl ) {
+        if (extnType instanceof BindingTypeImpl) {
             writer.writeStartElement(SCA10_NS, BINDING_TYPE);
-        } else if ( extnType instanceof ImplementationTypeImpl ) {
+        } else if (extnType instanceof ImplementationTypeImpl) {
             writer.writeStartElement(SCA10_NS, IMPLEMENTATION_TYPE);
         }
-        
+
         writeAlwaysProvidesIntentsAttribute(extnType, writer);
         writeMayProvideIntentsAttribute(extnType, writer);
-        
+
         writer.writeEndElement();
     }
-    
-    private void writeMayProvideIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
-        StringBuffer sb  = new StringBuffer();
-        for ( Intent intent : extnType.getMayProvideIntents() ) {
+
+    private void writeMayProvideIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer)
+        throws XMLStreamException {
+        StringBuffer sb = new StringBuffer();
+        for (Intent intent : extnType.getMayProvideIntents()) {
             writer.writeNamespace(intent.getName().getPrefix(), intent.getName().getNamespaceURI());
             sb.append(intent.getName().getPrefix() + COLON + intent.getName().getLocalPart());
             sb.append(WHITE_SPACE);
         }
-        
-        if ( sb.length() > 0 ) {
+
+        if (sb.length() > 0) {
             writer.writeAttribute(MAY_PROVIDE, sb.toString());
         }
     }
-    
-    private void writeAlwaysProvidesIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer) throws XMLStreamException {
-        StringBuffer sb  = new StringBuffer();
-        for ( Intent intent : extnType.getAlwaysProvidedIntents() ) {
+
+    private void writeAlwaysProvidesIntentsAttribute(IntentAttachPointType extnType, XMLStreamWriter writer)
+        throws XMLStreamException {
+        StringBuffer sb = new StringBuffer();
+        for (Intent intent : extnType.getAlwaysProvidedIntents()) {
             writer.writeNamespace(intent.getName().getPrefix(), intent.getName().getNamespaceURI());
             sb.append(intent.getName().getPrefix() + COLON + intent.getName().getLocalPart());
             sb.append(WHITE_SPACE);
         }
-        
-        if ( sb.length() > 0 ) {
+
+        if (sb.length() > 0) {
             writer.writeAttribute(ALWAYS_PROVIDES, sb.toString());
-            
+
         }
     }
-    
+
     public void resolve(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-        
-    	if (extnType != null && extnType.isUnresolved()) {
-    	    resolveAlwaysProvidedIntents(extnType, resolver);
+
+        if (extnType != null && extnType.isUnresolved()) {
+            resolveAlwaysProvidedIntents(extnType, resolver);
             resolveMayProvideIntents(extnType, resolver);
             extnType.setUnresolved(false);
             //resolveExtensionType(extnType, resolver);
         }
     }
 
-    private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType,
-                                              ModelResolver resolver) throws ContributionResolveException {
+    private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType, ModelResolver resolver)
+        throws ContributionResolveException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> alwaysProvided = new ArrayList<Intent>();
@@ -203,10 +212,10 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                     if (!providedIntent.isUnresolved()) {
                         alwaysProvided.add(providedIntent);
                     } else {
-                    	error("AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
+                        error("AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
                         //throw new ContributionResolveException("Always Provided Intent - " + providedIntent
-                                                                     //+ " not found for ExtensionType "
-                                                                     //+ extensionType);
+                        //+ " not found for ExtensionType "
+                        //+ extensionType);
                     }
                 } else {
                     alwaysProvided.add(providedIntent);
@@ -216,9 +225,9 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
             extensionType.getAlwaysProvidedIntents().addAll(alwaysProvided);
         }
     }
-    
-    private void resolveMayProvideIntents(IntentAttachPointType extensionType,
-                                            ModelResolver resolver) throws ContributionResolveException {
+
+    private void resolveMayProvideIntents(IntentAttachPointType extensionType, ModelResolver resolver)
+        throws ContributionResolveException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> mayProvide = new ArrayList<Intent>();
@@ -228,10 +237,10 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                     if (!providedIntent.isUnresolved()) {
                         mayProvide.add(providedIntent);
                     } else {
-                    	error("MayProvideIntentNotFound", resolver, providedIntent, extensionType);
+                        error("MayProvideIntentNotFound", resolver, providedIntent, extensionType);
                         //throw new ContributionResolveException("May Provide Intent - " + providedIntent
-                                                                     //+ " not found for ExtensionType "
-                                                                     //+ extensionType);
+                        //+ " not found for ExtensionType "
+                        //+ extensionType);
                     }
                 } else {
                     mayProvide.add(providedIntent);
@@ -241,7 +250,7 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
             extensionType.getMayProvideIntents().addAll(mayProvide);
         }
     }
-    
+
     public Class<IntentAttachPointType> getModelType() {
         return IntentAttachPointType.class;
     }

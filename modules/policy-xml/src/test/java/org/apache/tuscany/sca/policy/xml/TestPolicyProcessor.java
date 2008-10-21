@@ -44,8 +44,7 @@ public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
         return new MockPolicyImplOne();
     }
 
-    public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
-                                                        XMLStreamException {
+    public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
     }
 
     public Class<Policy> getModelType() {
@@ -57,7 +56,6 @@ public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     }
 
-    
     public class MockPolicyImplOne implements Policy {
         public QName getSchemaName() {
             return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
@@ -69,6 +67,6 @@ public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
         public void setUnresolved(boolean unresolved) {
         }
-        
+
     }
 }

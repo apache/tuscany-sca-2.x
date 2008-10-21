@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
 
-
 /**
  * Processor for handling XML models of BindingType meta data definitions
  *
@@ -39,30 +38,33 @@ import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
  */
 public class BindingTypeProcessor extends IntentAttachPointTypeProcessor {
 
-    public BindingTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, 
-    		                    StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+    public BindingTypeProcessor(PolicyFactory policyFactory,
+                                IntentAttachPointTypeFactory intentAttachPointTypeFactory,
+                                StAXArtifactProcessor<Object> extensionProcessor,
+                                Monitor monitor) {
         super(policyFactory, intentAttachPointTypeFactory, extensionProcessor, monitor);
     }
 
-    public BindingTypeProcessor(FactoryExtensionPoint modelFactories, 
-    		                    StAXArtifactProcessor<Object> extensionProcessor,
-    		                    Monitor monitor) {
-        super(modelFactories.getFactory(PolicyFactory.class),
-              modelFactories.getFactory(IntentAttachPointTypeFactory.class), extensionProcessor, monitor);
+    public BindingTypeProcessor(FactoryExtensionPoint modelFactories,
+                                StAXArtifactProcessor<Object> extensionProcessor,
+                                Monitor monitor) {
+        super(modelFactories.getFactory(PolicyFactory.class), modelFactories
+            .getFactory(IntentAttachPointTypeFactory.class), extensionProcessor, monitor);
     }
 
     public QName getArtifactType() {
         return BINDING_TYPE_QNAME;
     }
-    
+
     @Override
-    protected IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-        if ( extnType instanceof BindingTypeImpl ) {
+    protected IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver)
+        throws ContributionResolveException {
+        if (extnType instanceof BindingTypeImpl) {
             BindingTypeImpl bindingType = (BindingTypeImpl)extnType;
             return resolver.resolveModel(BindingTypeImpl.class, bindingType);
         } else {
             return extnType;
         }
-        
+
     }
 }
