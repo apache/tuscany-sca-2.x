@@ -48,8 +48,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.policy</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
+                        <!-- FIXME: o.a.t.s.p.impl should be removed -->
                         <Export-Package>
                             org.apache.tuscany.sca.policy,
+                            org.apache.tuscany.sca.policy.impl,
                             org.apache.tuscany.sca.policy.util
                         </Export-Package>
                     </instructions>
