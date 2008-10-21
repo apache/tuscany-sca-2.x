@@ -70,11 +70,9 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
 import org.apache.tuscany.sca.policy.util.PolicyValidationException;
 import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
@@ -90,13 +88,11 @@ import org.w3c.dom.NodeList;
  */
 abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implements Constants {
 
-    protected ContributionFactory contributionFactory;
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicyAttachPointProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
-    protected IntentAttachPointTypeFactory intentAttachPointTypeFactory;
     private Monitor monitor;
 
     /**
@@ -114,9 +110,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.contributionFactory = contribFactory;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
-        this.intentAttachPointTypeFactory = new IntentAttachPointTypeFactoryImpl();
         this.monitor = monitor;
     }
 

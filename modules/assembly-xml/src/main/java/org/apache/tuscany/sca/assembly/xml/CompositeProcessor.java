@@ -72,6 +72,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -86,10 +87,11 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
-    // FIXME: to be refactored
-    private XPathFactory xPathFactory = XPathFactory.newInstance();
-    
-    protected StAXAttributeProcessor<Object> extensionAttributeProcessor;
+    private XPathFactory xPathFactory;
+    private IntentAttachPointTypeFactory intentAttachPointTypeFactory;
+    private StAXAttributeProcessor<Object> extensionAttributeProcessor;
+    private ContributionFactory contributionFactory;
+
     
     /**
      * Construct a new composite processor
@@ -127,28 +129,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             modelFactories.getFactory(PolicyFactory.class),
             extensionProcessor, 
             monitor);
-        
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.xPathFactory = modelFactories.getFactory(XPathFactory.class);
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionAttributeProcessor = extensionAttributeProcessor;
         
     }
     
-    /**
-     * Construct a new composite processor
-     * 
-     * @param contributionFactory
-     * @param assemblyFactory
-     * @param policyFactory
-     * @param extensionProcessor
-     */
-    public CompositeProcessor(ContributionFactory contributionFactory,
-            AssemblyFactory assemblyFactory,
-            PolicyFactory policyFactory,
-            StAXArtifactProcessor extensionProcessor,
-            StAXAttributeProcessor extensionAttributeProcessor,
-            Monitor monitor) {
-        super(contributionFactory, assemblyFactory, policyFactory, extensionProcessor, monitor);
-    }    
-
     public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Composite composite = null;
         Composite include = null;

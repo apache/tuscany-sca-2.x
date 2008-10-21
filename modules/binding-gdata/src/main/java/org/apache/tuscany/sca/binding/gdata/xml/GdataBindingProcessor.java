@@ -26,7 +26,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-//import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.binding.gdata.GdataBinding;
+import org.apache.tuscany.sca.binding.gdata.GdataBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -34,13 +35,10 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
-
-import org.apache.tuscany.sca.binding.gdata.GdataBinding;
-import org.apache.tuscany.sca.binding.gdata.GdataBindingFactory;
 
 /**
  * A processor for <binding.gdata> elements.
@@ -50,13 +48,13 @@ public class GdataBindingProcessor implements StAXArtifactProcessor<GdataBinding
     private QName BINDING_GDATA = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "binding.gdata");
     
     private final GdataBindingFactory factory;
+    private IntentAttachPointTypeFactory intentAttachPointTypeFactory;
     
     //private PolicyAttachPointProcessor policyProcessor;
 
     public GdataBindingProcessor(FactoryExtensionPoint modelFactories) {
         this.factory = modelFactories.getFactory(GdataBindingFactory.class);
-        System.out.println("[Debug Info]GdataBindingProcessor reached");
-        //this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
     }
 
     public QName getArtifactType() {
@@ -69,7 +67,7 @@ public class GdataBindingProcessor implements StAXArtifactProcessor<GdataBinding
 
     public GdataBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         GdataBinding gdataBinding = factory.createGdataBinding();
-                IntentAttachPointType bindingType = new IntentAttachPointTypeFactoryImpl().createBindingType();
+        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
         bindingType.setName(getArtifactType());
         bindingType.setUnresolved(true);
         ((PolicySetAttachPoint)gdataBinding).setType(bindingType);
