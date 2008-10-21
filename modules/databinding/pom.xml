@@ -98,7 +98,14 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.databinding</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.databinding*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.databinding,
+                            org.apache.tuscany.sca.databinding.annotation,
+                            org.apache.tuscany.sca.databinding.impl,
+                            org.apache.tuscany.sca.databinding.javabeans,
+                            org.apache.tuscany.sca.databinding.util,
+                            org.apache.tuscany.sca.databinding.xml
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

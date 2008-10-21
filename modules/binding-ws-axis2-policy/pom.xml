@@ -132,7 +132,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.policy.security.ws</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.policy.security.ws*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic,
+                            org.apache.tuscany.sca.binding.ws.axis2.policy.configuration
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

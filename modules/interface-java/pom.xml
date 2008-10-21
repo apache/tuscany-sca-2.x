@@ -72,7 +72,11 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.interface.java</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.interfacedef.java*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.interfacedef.java,
+                            org.apache.tuscany.sca.interfacedef.java.impl,
+                            org.apache.tuscany.sca.interfacedef.java.introspect
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

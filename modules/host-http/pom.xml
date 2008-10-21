@@ -54,7 +54,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.host.http</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.host.http*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.host.http</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

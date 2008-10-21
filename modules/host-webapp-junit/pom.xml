@@ -56,7 +56,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.host.webapp.junit</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.host.webapp.junit*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.host.webapp.junit</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -53,7 +53,13 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.policy.security</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.policy*</Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.policy.authentication.basic,
+                            org.apache.tuscany.sca.policy.authorization,
+                            org.apache.tuscany.sca.policy.identity,
+                            org.apache.tuscany.sca.policy.security,
+                            org.apache.tuscany.sca.policy.security.jaas
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

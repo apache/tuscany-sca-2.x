@@ -157,7 +157,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.node.impl</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.node.impl*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.node.impl</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -124,7 +124,7 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.assembly.xml</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.assembly.xml*</Export-Package>
+                        <Export-Package>org.apache.tuscany.sca.assembly.xml</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
