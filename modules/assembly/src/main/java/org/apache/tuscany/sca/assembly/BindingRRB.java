@@ -16,36 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
+package org.apache.tuscany.sca.assembly;
 
-import javax.jms.TextMessage;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+/**
+ * TODO RRB experiment. 
+ * Represents a binding implemented using Requst/Response binding chains
+ * Used to test the RRB idea hence no integrated into the Binding interface, yet
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface BindingRRB extends Binding {
+
+    public WireFormat getWireFormat();
     
-    private static String greetings = "not set";
+    public void setWireFormat(WireFormat wireFormat);
     
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
-    }
+    public OperationSelector getOperationSelector();
     
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
+    public void setOperationSelector(OperationSelector operationSelector);
 
 }
-

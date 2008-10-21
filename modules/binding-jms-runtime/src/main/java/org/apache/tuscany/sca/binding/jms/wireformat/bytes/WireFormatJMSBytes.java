@@ -16,36 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
+package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
 
-import javax.jms.TextMessage;
+import javax.xml.namespace.QName;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.WireFormat;
+
+/**
+ * Implementation for policies that could be injected as parameter
+ * into the axis2config.
+ *
+ * @version $Rev$ $Date$
+ */
+public class WireFormatJMSBytes implements WireFormat {
+    public static final QName WIRE_FORMAT_JMS_BYTE_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.JMSBytes");
     
-    private static String greetings = "not set";
-    
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
+    public QName getSchemaName() {
+        return WIRE_FORMAT_JMS_BYTE_QNAME;
     }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
 
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+    }
 }
-

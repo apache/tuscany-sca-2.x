@@ -16,36 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
+package org.apache.tuscany.sca.assembly;
 
-import javax.jms.TextMessage;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
-    
-    private static String greetings = "not set";
-    
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
-    }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
-
+/**
+ * Represents an operationSelector
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface OperationSelector extends Base, Cloneable {
+  
 }
-

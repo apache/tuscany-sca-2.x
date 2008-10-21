@@ -16,36 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
 
-import javax.jms.TextMessage;
+package org.apache.tuscany.sca.provider;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
-    
-    private static String greetings = "not set";
-    
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
-    }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
+import org.apache.tuscany.sca.invocation.Interceptor;
 
+/**
+ * @version $Rev$ $Date$
+ */
+public interface OperationSelectorProvider {
+    /**
+     * Create an interceptor for the operation selector
+     * @return An interceptor that realize the policySet
+     */
+    Interceptor createInterceptor();
+
+    /**
+     * Get the phase that the interceptor should be added
+     * @return The phase that this interceptor belongs to
+     */
+    String getPhase();
 }
-

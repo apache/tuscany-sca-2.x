@@ -16,36 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
+package org.apache.tuscany.sca.binding.jms.format.jmsbytes.helloworld;
 
-import javax.jms.TextMessage;
+import org.osoa.sca.annotations.Reference;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+
+public class HelloWorldReferenceImpl implements HelloWorldReference {
     
-    private static String greetings = "not set";
+    @Reference
+    protected HelloWorldService helloWorldService;
     
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
+    public String getGreetings(String name){
+        helloWorldService.setGreetings(name.getBytes());
         
         try {
-            name = ((TextMessage)message).getText();
+            Thread.sleep(2000);
         } catch (Exception ex) {
-            name = "EXCEPTION";
+            // do nothing
         }
-        greetings =  "Hello " + name;
-    }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
-
+        
+        return HelloWorldServiceImpl.getGreetings(); 
+    }    
 }
 

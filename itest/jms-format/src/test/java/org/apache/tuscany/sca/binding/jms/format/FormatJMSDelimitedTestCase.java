@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.binding.jms.format;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld.HelloWorldReference;
+import org.apache.tuscany.sca.binding.jms.format.jmsdelimited.helloworld.HelloWorldReference;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
@@ -33,14 +33,14 @@ import org.junit.Test;
 /**
  * This shows how to test the JMS binding using a simple HelloWorld application.
  */
-public class FormatJMSMessageTestCase {
+public class FormatJMSDelimitedTestCase {
 
     private static SCANode node;
 
     @Before
     public void init() {
         SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANode("jmsmessage/helloworld.composite", 
+        node = factory.createSCANode("jmsdelimited/helloworld.composite", 
                                      new SCAContribution("test", "./target/classes"));
 
         node.start();
@@ -50,7 +50,7 @@ public class FormatJMSMessageTestCase {
     public void testHelloWorldCreate() throws Exception {
         HelloWorldReference helloWorldService = ((SCAClient)node).getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
         
-        System.out.println(helloWorldService.getGreetings("Fred Bloggs"));
+        System.out.println(helloWorldService.getGreetings("Fred", "Bloggs"));
         //assertEquals("Hello Fred Bloggs", helloWorldService.getGreetings("Fred Bloggs"));
         
     }
