@@ -48,7 +48,6 @@
         <profile>
             <id>eclipse</id>
             <build>
-                <defaultGoal>process-resources</defaultGoal>
                 <plugins>
                     <plugin>
                         <artifactId>maven-clean-plugin</artifactId>
@@ -71,7 +70,7 @@
                         <executions>
                             <execution>
                                 <id>assemble-thirdparty-bundle</id>
-                                <phase>generate-resources</phase>
+                                <phase>process-resources</phase>
                                 <goals>
                                     <goal>assemble-thirdparty-bundle</goal>
                                 </goals>
@@ -88,18 +87,6 @@
                                 </goals>
                             </execution>
 
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-eclipse-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>generate-eclipse-metadata</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>eclipse</goal>
-                                </goals>
-                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
