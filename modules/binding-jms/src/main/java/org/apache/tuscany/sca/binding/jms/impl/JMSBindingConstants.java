@@ -68,5 +68,8 @@ public interface JMSBindingConstants {
     String CALLBACK_ID_PROPERTY = "CallbackID";
     String CALLBACK_Q_PROPERTY = "scaCallbackQueue ";
     String CONVERSATION_ID_PROPERTY = "scaConversationId";
+    
+    int MSG_CTXT_JMSREQUESTMSG_POSITION = 0;
+    int MSG_CTXT_JMSSESSION_POSITION=1;
 
 }

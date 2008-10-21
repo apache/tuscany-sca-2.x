@@ -26,6 +26,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
             <binding.jms>
+                <wireFormat.jmsDefault/>
                 <destination name="HelloWorldService1"/>
             </binding.jms>
         </reference>  
@@ -45,6 +46,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
+                <wireFormat.jmsDefault/>
                 <destination name="HelloWorldService1"/>
             </binding.jms>
         </service>
@@ -63,7 +65,7 @@
     <component name="HelloWorldServiceComponent3">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldServiceImpl" />
 	    <service name="HelloWorldService">
-	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+	        <interface.wsdl interface="http://helloworld/textxml#wsdl.interface(HelloWorld)" />
             <binding.jms>
                 <destination name="HelloWorldService3"/>
             </binding.jms>

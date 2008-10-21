@@ -16,36 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
+package org.apache.tuscany.sca.invocation;
 
-import javax.jms.TextMessage;
+/**
+ * TODO RRB experiment to allow the request and respose side of the 
+ *      invoke to be called independently
+ * Synchronous mediation associated with a client- or target- side wire.
+ *
+ * @version $Rev$ $Date$
+ */
+public interface BindingInterceptor extends Invoker {
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+    /**
+     * Process a synchronous request
+     *
+     * @param msg The request Message for the wire
+     * @return The response Message from the wire
+     */
+    Message invokeRequest(Message msg);
     
-    private static String greetings = "not set";
-    
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
-    }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
+    /**
+     * Process a synchronous response
+     *
+     * @param msg The request Message for the wire
+     * @return The response Message from the wire
+     */
+    Message invokeResponse(Message msg);    
 
 }
-

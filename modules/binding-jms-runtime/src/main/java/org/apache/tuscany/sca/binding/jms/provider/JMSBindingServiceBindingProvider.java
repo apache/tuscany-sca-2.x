@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jms.provider;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +27,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -36,14 +38,21 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultReferenceInterceptor;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultReferenceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultServiceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
@@ -51,7 +60,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingServiceBindingProvider implements ServiceBindingProvider {
+public class JMSBindingServiceBindingProvider implements ServiceBindingProviderRRB {
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private RuntimeComponentService service;
@@ -179,7 +188,20 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             consumer = session.createConsumer(destination);
         }
 
-        final DefaultJMSBindingListener listener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        MessageListener tmpListener = null;
+        
+        /*
+         * TODO a test to allow RRB experiments to take place without breaking everything else
+         *      RRB stuff only happens if you add a wireFormat to a composite file
+         */
+        if (jmsBinding.getWireFormat() != null ){
+            tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        } else {
+            tmpListener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        }
+        
+        final MessageListener listener = tmpListener;
+        
         try {
 
             consumer.setMessageListener(listener);
@@ -302,5 +324,22 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         } catch (JMSException e) {
             throw new JMSBindingException(e);
         }
+    }
+    
+    /*
+     * RRB test methods
+     * Interceptor selection is hard coded to the default here but of course should
+     * pick up the appropriate interceptor based on wireFormat and operationSelector 
+     * elements in the SCDL
+     */
+    public void configureServiceBindingRequestChain(List<Invoker> bindingRequestChain, RuntimeWire runtimeWire) {
+
+        bindingRequestChain.add(new OperationSelectorJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
+        bindingRequestChain.add(new WireFormatJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
+    }
+    
+    public void configureServiceBindingResponseChain(List<Invoker> bindingResponseChain, RuntimeWire runtimeWire) {
+        bindingResponseChain.add(new WireFormatJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
+        bindingResponseChain.add(new OperationSelectorJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));  
     }
 }

@@ -22,11 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldService;
 import org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.Person;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.Before;

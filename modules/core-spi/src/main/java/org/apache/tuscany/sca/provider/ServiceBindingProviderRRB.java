@@ -16,36 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
 
-import javax.jms.TextMessage;
+package org.apache.tuscany.sca.provider;
 
-public class HelloWorldServiceImpl implements HelloWorldService {
+import java.util.List;
+
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+
+/**
+ * TODO RRB experiment
+ * This is an experiment extension to try out the request response
+ * binding function
+ * 
+ * @version $Rev$ $Date$
+ */
+public interface ServiceBindingProviderRRB extends ServiceBindingProvider {
     
-    private static String greetings = "not set";
-    
-    public void onMessage(javax.jms.Message message){
-         
-        String name = null;
-        
-        try {
-            name = ((TextMessage)message).getText();
-        } catch (Exception ex) {
-            name = "EXCEPTION";
-        }
-        greetings =  "Hello " + name;
-    }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
-    
-    // javax.jms.BytesMessage
-    // javax.jms.MapMessage
-    // javax.jms.ObjectMessage
-    // javax.jms.StreamMessage
-    // javax.jms.TextMessage
-    
+    void configureServiceBindingRequestChain(List<Invoker> bindingRequestChain, RuntimeWire runtimeWire);
+    void configureServiceBindingResponseChain(List<Invoker> bindingResponseChain, RuntimeWire runtimeWire);
 
 }
-

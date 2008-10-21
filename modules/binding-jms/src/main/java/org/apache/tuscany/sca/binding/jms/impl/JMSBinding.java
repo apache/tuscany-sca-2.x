@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.BindingRRB;
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -36,7 +38,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * @version $Rev$ $Date$
  */
 
-public class JMSBinding implements Binding, PolicySetAttachPoint {
+public class JMSBinding implements BindingRRB, PolicySetAttachPoint {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -117,42 +119,26 @@ public class JMSBinding implements Binding, PolicySetAttachPoint {
     private JMSBinding requestConnectionBinding;
     private JMSBinding responseConnectionBinding;
     
+    private WireFormat wireFormat;
+    private OperationSelector operationSelector;
+    
     public JMSBinding() {
         super();
     }
 
-    /**
-     * Returns the binding URI.
-     * 
-     * @return the binding URI
-     */
+    // operations required by Binding 
     public String getURI() {
         return this.uri;
     }
 
-    /**
-     * Sets the binding URI.
-     * 
-     * @param uri the binding URI
-     */
     public void setURI(String uri) {
         this.uri = uri;
     }
 
-    /**
-     * Returns the binding name.
-     * 
-     * @return the binding name
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * Sets the binding name.
-     * 
-     * @param name the binding name
-     */
     public void setName(String name) {
         this.name = name;
     }
@@ -167,6 +153,22 @@ public class JMSBinding implements Binding, PolicySetAttachPoint {
 
     public List<Object> getExtensions() {
         return extensions;
+    }
+    
+    public WireFormat getWireFormat() {
+        return wireFormat;
+    }
+    
+    public void setWireFormat(WireFormat wireFormat) {
+        this.wireFormat = wireFormat;
+    }
+    
+    public OperationSelector getOperationSelector() {
+        return operationSelector;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
+        this.operationSelector = operationSelector;
     }
 
     // Methods for getting/setting JMS binding model information

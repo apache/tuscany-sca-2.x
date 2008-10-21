@@ -150,6 +150,8 @@
     <element name="binding" type="sca:Binding" abstract="true"/>
     <complexType name="Binding" abstract="true">
     	<sequence>
+            <element ref="sca:wireFormat" minOccurs="0" maxOccurs="1" />
+            <element ref="sca:operationSelector" minOccurs="0" maxOccurs="1" />         
     		<element name="operation" type="sca:Operation" minOccurs="0" 
     			maxOccurs="unbounded" />
     	</sequence>
@@ -158,6 +160,22 @@
         <attribute name="requires" type="sca:listOfQNames" use="optional"/>
         <attribute name="policySets" type="sca:listOfQNames" use="optional"/>
     </complexType>
+    
+    <element name="wireFormat" type="sca:WireFormatType"/>
+    <complexType name="WireFormatType" abstract="true">
+      <sequence>
+         <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <anyAttribute namespace="##other" processContents="lax"/>
+    </complexType>
+
+    <element name="operationSelector" type="sca:OperationSelectorType"/>
+    <complexType name="OperationSelectorType" abstract="true">
+      <sequence>
+         <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <anyAttribute namespace="##other" processContents="lax"/>
+    </complexType>     
     
     <element name="bindingType" type="sca:BindingType"/>
     <complexType name="BindingType">
