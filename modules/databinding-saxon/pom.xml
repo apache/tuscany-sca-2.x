@@ -115,7 +115,10 @@
                         <Bundle-Version>${tuscany.version}</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.databinding.saxon</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package></Export-Package>
+                        <Export-Package>
+                            org.apache.tuscany.sca.databinding.saxon,
+                            org.apache.tuscany.sca.databinding.saxon.collection
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
