@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.xml;
+package org.apache.tuscany.sca.policy.xml.ws;
 
 import java.util.HashMap;
 import java.util.Map;

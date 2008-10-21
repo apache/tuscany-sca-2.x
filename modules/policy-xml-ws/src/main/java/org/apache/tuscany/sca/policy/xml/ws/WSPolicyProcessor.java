@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.policy.xml.ws;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
@@ -41,7 +40,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.xml.PolicyConstants;
 
 
 /**
@@ -49,9 +47,9 @@ import org.apache.tuscany.sca.policy.xml.PolicyConstants;
  *
  * @version $Rev$ $Date$
  */
-public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<org.apache.neethi.Policy>, PolicyConstants {
-	public final static String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
-	public final static String WS_POLICY = "Policy";
+public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<org.apache.neethi.Policy> {
+    public final static String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
+    public final static String WS_POLICY = "Policy";
 	
     public final static QName WS_POLICY_QNAME =new QName(WS_POLICY_NS, WS_POLICY);
 

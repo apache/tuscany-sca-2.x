@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.xml;
+package org.apache.tuscany.sca.policy.xml.ws;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
