@@ -41,53 +41,63 @@
             <artifactId>tuscany-host-tomcat</artifactId>
             <type>jar</type>
             <version>1.4-SNAPSHOT</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
             <id>eclipse</id>
             <build>
+                <defaultGoal>process-resources</defaultGoal>
                 <plugins>
                     <plugin>
-                      <artifactId>maven-clean-plugin</artifactId>
-                      <configuration>
-                        <filesets>
-                          <fileset>
-                            <directory>${basedir}/lib</directory>
-                            <includes>
-                              <include>*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                           </fileset>
-                         </filesets>
-                       </configuration>
-                     </plugin>
-                    
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${basedir}/lib</directory>
+                                    <includes>
+                                        <include>*</include>
+                                    </includes>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.apache.tuscany.sca</groupId>
                         <artifactId>tuscany-maven-bundle-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>assemble-thirdparty-bundle</id>
+                                <phase>generate-resources</phase>
                                 <goals>
                                     <goal>assemble-thirdparty-bundle</goal>
                                 </goals>
                                 <configuration>
-                                    <symbolicName>org.apache.tuscany.sca.thirdparty.library</symbolicName>
+                                    <symbolicName>org.apache.tuscany.sca.thirdparty.library
+                                    </symbolicName>
                                 </configuration>
                             </execution>
-                        </executions>
-                    </plugin>
-        
-                    <plugin>
-                        <groupId>org.apache.tuscany.sca</groupId>
-                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                        <executions>
                             <execution>
                                 <id>generate-pde-classpath</id>
+                                <phase>process-resources</phase>
                                 <goals>
                                     <goal>generate-pde-classpath</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-eclipse-metadata</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>eclipse</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -96,5 +106,5 @@
             </build>
         </profile>
     </profiles>
-    
+
 </project>

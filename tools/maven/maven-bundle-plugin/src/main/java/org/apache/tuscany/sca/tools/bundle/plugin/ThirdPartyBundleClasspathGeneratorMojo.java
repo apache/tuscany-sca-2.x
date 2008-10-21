@@ -36,7 +36,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * @version $Rev$ $Date$
  * @goal generate-pde-classpath
- * @phase process-classes
+ * @phase process-resources
  * @requiresDependencyResolution test
  * @description Adjust third party bundle classpath
  */

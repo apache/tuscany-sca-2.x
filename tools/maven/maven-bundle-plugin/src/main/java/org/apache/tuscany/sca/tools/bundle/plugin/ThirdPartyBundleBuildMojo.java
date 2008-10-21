@@ -25,31 +25,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactCollector;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.dependency.tree.DependencyTree;
-import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
-import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 
 /**
  * @version $Rev$ $Date$
  * @goal assemble-thirdparty-bundle
- * @phase process-resources
+ * @phase generate-resources
  * @requiresDependencyResolution test
  * @description Build an OSGi bundle for third party dependencies
  */
@@ -62,96 +50,6 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
-
-    /**
-     * The basedir of the project.
-     * 
-     * @parameter expression="${basedir}"
-     * @required @readonly
-     */
-    private File basedir;
-
-    /**
-     * Used to look up Artifacts in the remote repository.
-     * 
-     * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
-     * @required
-     * @readonly
-     */
-    private org.apache.maven.artifact.factory.ArtifactFactory factory;
-
-    /**
-     * Used to look up Artifacts in the remote repository.
-     * 
-     * @parameter expression="${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
-     * @required
-     * @readonly
-     */
-    private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
-
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
-     */
-    private org.apache.maven.artifact.repository.ArtifactRepository local;
-
-    /**
-     * List of Remote Repositories used by the resolver
-     * 
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
-     */
-    private java.util.List remoteRepos;
-
-    /**
-     * Dependency tree builder
-     * 
-     * @component
-     */
-    private DependencyTreeBuilder dependencyTreeBuilder;
-
-    /**
-     * Artifact factory
-     * 
-     * @component
-     */
-    private ArtifactFactory artifactFactory;
-    
-    /**
-     * @component
-     */
-    private ArtifactMetadataSource artifactMetadataSource;    
-    
-    /**
-     * @component
-     */
-    private ArtifactCollector collector;
-
-    /**
-     * The local repository
-     *
-     * @parameter expression="${localRepository}"
-     * @required
-     */
-    private ArtifactRepository localRepository;
-
-    /**
-     * The remote repositories
-     *
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     */
-    private List remoteRepositories;
-    
-    /**
-     * Artifact resolver
-     * 
-     * @component
-     */
-    private ArtifactResolver artifactResolver;
 
     /**
      * The bundle symbolic name
@@ -167,19 +65,9 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
             return;
         }
 
-        DependencyTree dependencyTree;
-        try {
-            dependencyTree = dependencyTreeBuilder.buildDependencyTree(project, 
-                                                                                  localRepository, artifactFactory,
-                                                                                  artifactMetadataSource, collector );
-                                                                          
-        } catch (DependencyTreeBuilderException e) {
-            throw new MojoExecutionException("Could not build dependency tree", e);
-        }
-
         String projectGroupId = project.getGroupId();
         Set<File> jarFiles = new HashSet<File>();
-        for (Object o : dependencyTree.getArtifacts()) {
+        for (Object o : project.getArtifacts()) {
             Artifact artifact = (Artifact)o;
 
             if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope()))) {
@@ -194,25 +82,6 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
             if (projectGroupId.equals(artifact.getGroupId())) {
                 continue;
             }
-            
-            VersionRange versionRange = artifact.getVersionRange();
-            if (versionRange == null)
-                versionRange = VersionRange.createFromVersion(artifact.getVersion());
-            Artifact dependencyArtifact = artifactFactory.createDependencyArtifact(artifact.getGroupId(), 
-                                                                                   artifact.getArtifactId(), 
-                                                                                   versionRange, 
-                                                                                   artifact.getType(), 
-                                                                                   artifact.getClassifier(), 
-                                                                                   artifact.getScope());
-                                                                           
-           try {
-               artifactResolver.resolve(dependencyArtifact, remoteRepositories, localRepository);
-           } catch (ArtifactResolutionException e) {
-               log.warn("Artifact " + artifact + " could not be resolved.");
-           } catch (ArtifactNotFoundException e) {
-               log.warn("Artifact " + artifact + " could not be found.");
-           }
-           artifact = dependencyArtifact;
 
             if (log.isDebugEnabled()) {
                 log.debug("Artifact: " + artifact);
