@@ -88,7 +88,7 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
             }
             String bundleName = null;
             try {
-                bundleName = BundleUtil.getBundleName(artifact.getFile());
+                bundleName = BundleUtil.getBundleSymbolicName(artifact.getFile());
             } catch (IOException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
@@ -108,7 +108,7 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
                 version = version.substring(0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1);
             }
 
-            Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), symbolicName, version);
+            Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), symbolicName, version, "lib");
             File file = new File(project.getBasedir(), "META-INF");
             file.mkdir();
             file= new File(file, "MANIFEST.MF");

@@ -49,7 +49,7 @@ import java.util.zip.ZipInputStream;
  * @version $Rev$ $Date$
  */
 final class BundleUtil {
-    
+
     /**
      * Returns the name of a bundle, or null if the given file is not a bundle.
      *  
@@ -57,7 +57,7 @@ final class BundleUtil {
      * @return
      * @throws IOException
      */
-    static String getBundleName(File file) throws IOException {
+    static String getBundleSymbolicName(File file) throws IOException {
         if (!file.exists()) {
             return null;
         }
@@ -83,7 +83,7 @@ final class BundleUtil {
         }
         return bundleName;
     }
-    
+
     /**
      * Generate a Bundle manifest for a set of JAR files.
      * 
@@ -91,10 +91,11 @@ final class BundleUtil {
      * @param name
      * @param symbolicName
      * @param version
+     * @param dir 
      * @return
      * @throws IllegalStateException
      */
-    static Manifest libraryManifest(Set<File> jarFiles, String name, String symbolicName, String version)
+    static Manifest libraryManifest(Set<File> jarFiles, String name, String symbolicName, String version, String dir)
         throws IllegalStateException {
         try {
 
@@ -103,7 +104,9 @@ final class BundleUtil {
             Set<String> exportedPackages = new HashSet<String>();
             for (File jarFile : jarFiles) {
                 addPackages(jarFile, exportedPackages);
-                classpath.append("lib/");
+                if (dir != null) {
+                    classpath.append(dir).append("/");
+                } 
                 classpath.append(jarFile.getName());
                 classpath.append(",");
             }
@@ -113,7 +116,7 @@ final class BundleUtil {
             StringBuffer imports = new StringBuffer();
             Set<String> importedPackages = new HashSet<String>();
             for (String export : exportedPackages) {
-                
+
                 // Add export declaration
                 exports.append(export);
                 exports.append(',');
@@ -136,9 +139,15 @@ final class BundleUtil {
             attributes.putValue(BUNDLE_NAME, name);
             attributes.putValue(BUNDLE_VERSION, version);
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
-            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
-            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
-            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+            if (exports.length() > 1) {
+                attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
+            }
+            if (imports.length() > 1) {
+                attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
+            }
+            if (classpath.length() > 1) {
+                attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+            }
 
             return manifest;
         } catch (IOException e) {
@@ -176,7 +185,7 @@ final class BundleUtil {
      * @throws IOException
      */
     private static void addPackages(File jarFile, Set<String> packages) throws IOException {
-        if (getBundleName(jarFile) == null) {
+        if (getBundleSymbolicName(jarFile) == null) {
             String version = ";version=" + version(jarFile.getPath());
             addAllPackages(jarFile, packages, version);
         } else {
@@ -193,10 +202,13 @@ final class BundleUtil {
      * @throws IOException
      */
     private static void write(Attributes attributes, String key, DataOutputStream dos) throws IOException {
+        String value = attributes.getValue(key);
+        if (value == null) {
+            return;
+        }
         StringBuffer line = new StringBuffer();
         line.append(key);
         line.append(": ");
-        String value = attributes.getValue(key); 
         line.append(new String(value.getBytes("UTF8")));
         line.append("\r\n");
         int l = line.length();
@@ -224,7 +236,7 @@ final class BundleUtil {
         String base = export.substring(0, sc);
         int v = export.indexOf("version=");
         if (v != -1) {
-            sc = export.indexOf(';', v+1);
+            sc = export.indexOf(';', v + 1);
             if (sc != -1) {
                 return base + ";" + export.substring(v, sc);
             } else {
@@ -275,7 +287,7 @@ final class BundleUtil {
         }
         return export;
     }
-    
+
     /**
      * Add the packages exported by a bundle.
      *  
@@ -288,7 +300,7 @@ final class BundleUtil {
         if (!file.exists()) {
             return;
         }
-        
+
         // Read the export-package declaration and get a list of the packages available in a JAR
         Set<String> existingPackages = null;
         String exports = null;
@@ -309,18 +321,18 @@ final class BundleUtil {
         if (exports == null) {
             return;
         }
-        
+
         // Parse the export-package declaration, and extract the individual packages
         StringBuffer buffer = new StringBuffer();
         boolean q = false;
-        for (int i =0, n = exports.length(); i <n; i++) {
+        for (int i = 0, n = exports.length(); i < n; i++) {
             char c = exports.charAt(i);
             if (c == '\"') {
                 q = !q;
             }
             if (!q) {
                 if (c == ',') {
-                    
+
                     // Add the exported package to the set, after making sure it really exists in
                     // the JAR
                     String export = buffer.toString();
@@ -334,7 +346,7 @@ final class BundleUtil {
             buffer.append(c);
         }
         if (buffer.length() != 0) {
-            
+
             // Add the exported package to the set, after making sure it really exists in
             // the JAR
             String export = buffer.toString();
@@ -362,7 +374,7 @@ final class BundleUtil {
         } else {
             matcher = pattern.matcher(jarFile);
             found = matcher.find();
-        }            
+        }
         if (found) {
             version = matcher.group();
             if (version.endsWith(".")) {
