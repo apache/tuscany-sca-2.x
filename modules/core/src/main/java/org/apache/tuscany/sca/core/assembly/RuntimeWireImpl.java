@@ -76,6 +76,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private RuntimeWireImpl clonedFrom;
 
     private List<InvocationChain> chains;
+    private InvocationChain binidngInvocationChain;
 
     /**
      * @param source
@@ -109,6 +110,18 @@ public class RuntimeWireImpl implements RuntimeWire {
             initInvocationChains();
         }
         return chains;
+    }
+    
+    public synchronized InvocationChain getBindingInvocationChain() {
+        if (binidngInvocationChain == null) {
+            Contract source = wireSource.getContract();
+            if (source instanceof RuntimeComponentReference) {
+                binidngInvocationChain = new InvocationChainImpl(null, null, true);
+            } else {
+                binidngInvocationChain = new InvocationChainImpl(null, null, false);
+            }
+        }
+        return binidngInvocationChain;
     }
 
     public InvocationChain getInvocationChain(Operation operation) {

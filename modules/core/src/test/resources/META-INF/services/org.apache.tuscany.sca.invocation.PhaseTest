@@ -18,5 +18,7 @@
 name=implementation.last, stage=implementation, after=*
 name=reference.first, stage=reference, before=*
 name=reference.transaction, stage=reference, after=reference.interface
+name=reference.binding.header, stage=reference.binding, after=reference.binding.transport
+name=service.binding.header, stage=service.binding, after=service.binding.transport
 name=service.transaction, stage=service, after=service.binding, before=component.service
 name=implementation.transaction, stage=implementation, before=implementation.policy

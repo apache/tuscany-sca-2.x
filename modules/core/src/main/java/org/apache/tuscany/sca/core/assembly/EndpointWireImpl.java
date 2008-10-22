@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -47,6 +48,7 @@ public class EndpointWireImpl implements RuntimeWire {
     private EndpointResolver endpointResolver;
     private EndpointReference source;
     private RuntimeWire wire;
+    private InvocationChain binidngInvocationChain;
 
     /**
      * @param endpoint
@@ -149,6 +151,17 @@ public class EndpointWireImpl implements RuntimeWire {
     }
 
     public void rebuild() {
+    }
+    
+    public synchronized InvocationChain getBindingInvocationChain() {
+        if (binidngInvocationChain == null) {
+            if (source instanceof RuntimeComponentReference) {
+                binidngInvocationChain = new InvocationChainImpl(null, null, true);
+            } else {
+                binidngInvocationChain = new InvocationChainImpl(null, null, false);
+            }
+        }
+        return binidngInvocationChain;
     }
 
     // TODO: TUSCANY-2580: give RuntimeComponentReferenceImpl a way to get at the endpoint

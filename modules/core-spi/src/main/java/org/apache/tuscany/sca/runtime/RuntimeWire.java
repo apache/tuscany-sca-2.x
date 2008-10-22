@@ -76,6 +76,12 @@ public interface RuntimeWire extends Cloneable {
     InvocationChain getInvocationChain(Operation operation);
     
     /**
+     * Get the invocation chain for the binding-specific handling
+     * @return
+     */
+    InvocationChain getBindingInvocationChain();
+    
+    /**
      * Invoke an operation with given arguments
      * @param operation The operation
      * @param args The arguments

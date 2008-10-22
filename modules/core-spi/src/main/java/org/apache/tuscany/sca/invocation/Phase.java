@@ -37,6 +37,16 @@ public interface Phase {
     // reference binding invoker
     String REFERENCE_BINDING = "reference.binding";
 
+    String REFERENCE_BINDING_DISPATCHER = "reference.binding.dispatcher";
+    String REFERENCE_BINDING_WIREFORMAT = "reference.binding.wireformat";
+    String REFERENCE_BINDING_POLICY = "reference.binding.policy";
+    String REFERENCE_BINDING_TRANSPORT = "reference.binding.transport";
+
+    String SERVICE_BINDING_TRANSPORT = "service.binding.transport";
+    String SERVICE_BINDING_WIREFORMAT = "service.binding.wireformat";
+    String SERVICE_BINDING_POLICY = "service.binding.policy";
+    String SERVICE_BINDING_OPERATION_SELECTOR = "service.binding.operationselector";
+    
     // The first phase for incoming invocations via a service
     String SERVICE_BINDING = "service.binding";
 
