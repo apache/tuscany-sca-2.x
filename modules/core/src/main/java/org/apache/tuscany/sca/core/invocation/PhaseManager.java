@@ -19,6 +19,25 @@
 
 package org.apache.tuscany.sca.core.invocation;
 
+import static org.apache.tuscany.sca.invocation.Phase.IMPLEMENTATION;
+import static org.apache.tuscany.sca.invocation.Phase.IMPLEMENTATION_POLICY;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_DISPATCHER;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_POLICY;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_TRANSPORT;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_WIREFORMAT;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_INTERFACE;
+import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_POLICY;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_BINDING;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_BINDING_OPERATION_SELECTOR;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_BINDING_POLICY;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_BINDING_TRANSPORT;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_BINDING_WIREFORMAT;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_INTERFACE;
+import static org.apache.tuscany.sca.invocation.Phase.SERVICE_POLICY;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,15 +61,24 @@ public class PhaseManager {
     private static final Logger log = Logger.getLogger(PhaseManager.class.getName());
 
     public static final String STAGE_REFERENCE = "reference";
+    public static final String STAGE_REFERENCE_BINDING = "reference.binding";
+    public static final String STAGE_SERVICE_BINDING = "service.binding";
     public static final String STAGE_SERVICE = "service";
     public static final String STAGE_IMPLEMENTATION = "implementation";
+
     private static final String[] SYSTEM_REFERENCE_PHASES =
-        {Phase.REFERENCE, Phase.REFERENCE_INTERFACE, Phase.REFERENCE_POLICY, Phase.REFERENCE_BINDING};
+        {REFERENCE, REFERENCE_INTERFACE, REFERENCE_POLICY, REFERENCE_BINDING};
 
+    private static final String[] SYSTEM_REFERENCE_BINDING_PHASES =
+    {REFERENCE_BINDING_DISPATCHER, REFERENCE_BINDING_WIREFORMAT, REFERENCE_BINDING_POLICY, REFERENCE_BINDING_TRANSPORT};
+
+    private static final String[] SYSTEM_SERVICE_BINDING_PHASES =
+    {SERVICE_BINDING_TRANSPORT, SERVICE_BINDING_WIREFORMAT, SERVICE_BINDING_POLICY, SERVICE_BINDING_OPERATION_SELECTOR};
+    
     private static final String[] SYSTEM_SERVICE_PHASES =
-        {Phase.SERVICE_BINDING, Phase.SERVICE_POLICY, Phase.SERVICE_INTERFACE, Phase.SERVICE};
+        {SERVICE_BINDING, SERVICE_POLICY, SERVICE_INTERFACE, SERVICE};
 
-    private static final String[] SYSTEM_IMPLEMENTATION_PHASES = {Phase.IMPLEMENTATION_POLICY, Phase.IMPLEMENTATION};
+    private static final String[] SYSTEM_IMPLEMENTATION_PHASES = {IMPLEMENTATION_POLICY, IMPLEMENTATION};
 
     private String pattern = Phase.class.getName();
     private Map<String, Stage> stages;
@@ -116,6 +144,14 @@ public class PhaseManager {
         return getPhases(STAGE_SERVICE);
     }
 
+    public List<String> getReferenceBindingPhases() {
+        return getPhases(STAGE_REFERENCE_BINDING);
+    }
+
+    public List<String> getServiceBindingPhases() {
+        return getPhases(STAGE_SERVICE_BINDING);
+    }
+    
     public List<String> getImplementationPhases() {
         return getPhases(STAGE_IMPLEMENTATION);
     }
@@ -124,6 +160,8 @@ public class PhaseManager {
         if (phases == null) {
             phases = new ArrayList<String>();
             phases.addAll(getReferencePhases());
+            phases.addAll(getReferenceBindingPhases());
+            phases.addAll(getServiceBindingPhases());
             phases.addAll(getServicePhases());
             phases.addAll(getImplementationPhases());
         }
@@ -228,9 +266,22 @@ public class PhaseManager {
         for (int i = 1; i < SYSTEM_REFERENCE_PHASES.length; i++) {
             referenceStage.getSorter().addEdge(SYSTEM_REFERENCE_PHASES[i - 1], SYSTEM_REFERENCE_PHASES[i]);
         }
-        referenceStage.getLastSet().add(Phase.REFERENCE_BINDING);
+        referenceStage.getLastSet().add(REFERENCE_BINDING);
         stages.put(referenceStage.getName(), referenceStage);
 
+        Stage referenceBindingStage = new Stage(STAGE_REFERENCE_BINDING);
+        for (int i = 1; i < SYSTEM_REFERENCE_BINDING_PHASES.length; i++) {
+            referenceBindingStage.getSorter().addEdge(SYSTEM_REFERENCE_BINDING_PHASES[i - 1], SYSTEM_REFERENCE_BINDING_PHASES[i]);
+        }
+        stages.put(referenceBindingStage.getName(), referenceBindingStage);
+        
+        Stage serviceBindingStage = new Stage(STAGE_SERVICE_BINDING);
+        for (int i = 1; i < SYSTEM_SERVICE_BINDING_PHASES.length; i++) {
+            serviceBindingStage.getSorter().addEdge(SYSTEM_SERVICE_BINDING_PHASES[i - 1], SYSTEM_SERVICE_BINDING_PHASES[i]);
+        }
+        stages.put(serviceBindingStage.getName(), serviceBindingStage);
+        
+        
         Stage serviceStage = new Stage(STAGE_SERVICE);
         for (int i = 1; i < SYSTEM_SERVICE_PHASES.length; i++) {
             serviceStage.getSorter().addEdge(SYSTEM_SERVICE_PHASES[i - 1], SYSTEM_SERVICE_PHASES[i]);
@@ -242,7 +293,7 @@ public class PhaseManager {
             implementationStage.getSorter().addEdge(SYSTEM_IMPLEMENTATION_PHASES[i - 1],
                                                     SYSTEM_IMPLEMENTATION_PHASES[i]);
         }
-        implementationStage.getLastSet().add(Phase.IMPLEMENTATION);
+        implementationStage.getLastSet().add(IMPLEMENTATION);
         stages.put(implementationStage.getName(), implementationStage);
     }
 }
