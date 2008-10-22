@@ -44,54 +44,65 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>eclipse</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>${basedir}/lib</directory>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                    <followSymlinks>false</followSymlinks>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
 
-                    <plugin>
-                        <groupId>org.apache.tuscany.sca</groupId>
-                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>assemble-thirdparty-bundle</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>assemble-thirdparty-bundle</goal>
-                                </goals>
-                                <configuration>
-                                    <symbolicName>org.apache.tuscany.sca.thirdparty.library
-                                    </symbolicName>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>generate-pde-classpath</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>generate-pde-classpath</goal>
-                                </goals>
-                            </execution>
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>1.4</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.thirdparty.library;singleton:=true</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.description}</Bundle-Description>
+                    </instructions>
+                </configuration>
+            </plugin>        
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}/eclipse</directory>
+                            <includes>
+                                <include>*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
 
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                <executions>
+                    <!--
+                        <execution> <id>assemble-thirdparty-bundle</id> <phase>process-resources</phase> <goals>
+                        <goal>assemble-thirdparty-bundle</goal> </goals> <configuration>
+                        <symbolicName>org.apache.tuscany.sca.thirdparty.library </symbolicName> </configuration>
+                        </execution>
+                    -->
+                    <execution>
+                        <id>build-thirdparty-distro</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>build-thirdparty-distro</goal>
+                        </goals>
+                    </execution>
+
+<!--  
+                    <execution>
+                        <id>generate-pde-classpath</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate-pde-classpath</goal>
+                        </goals>
+                    </execution>
+-->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
