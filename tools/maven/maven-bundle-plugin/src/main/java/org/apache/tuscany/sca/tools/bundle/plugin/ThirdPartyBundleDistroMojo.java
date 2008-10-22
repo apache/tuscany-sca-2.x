@@ -174,7 +174,8 @@ public class ThirdPartyBundleDistroMojo extends AbstractMojo {
         ps.println("<features>");
         ps.println("</features>");
         ps.println("<extraLocations>");
-        ps.println("<location path=\"${eclipse_home}\"/>");
+        // Not sure why the extra path needs to the plugins folder
+        ps.println("<location path=\"${eclipse_home}/plugins\"/>"); 
         ps.println("</extraLocations>");
         ps.println("</content>");
 
