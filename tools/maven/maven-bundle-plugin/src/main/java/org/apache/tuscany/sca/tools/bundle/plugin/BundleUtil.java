@@ -365,7 +365,7 @@ final class BundleUtil {
      * @param jarFile
      * @return
      */
-    private static String version(String jarFile) {
+    static String version(String jarFile) {
         String version = "1.0.0";
         boolean found = false;
         Matcher matcher = pattern2.matcher(jarFile);

@@ -104,10 +104,7 @@ public class ThirdPartyBundleDistroMojo extends AbstractMojo {
                     ids.add(bundleName);
                 } else {
                     log.info("Adding third party jar: " + artifact);
-                    String version = artifact.getVersion();
-                    if (version.endsWith(Artifact.SNAPSHOT_VERSION)) {
-                        version = version.substring(0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1);
-                    }
+                    String version = BundleUtil.version(artifactFile.getPath());
 
                     Set<File> jarFiles = new HashSet<File>();
                     jarFiles.add(artifactFile);
