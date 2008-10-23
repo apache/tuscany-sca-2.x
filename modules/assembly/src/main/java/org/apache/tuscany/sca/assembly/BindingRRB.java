@@ -28,9 +28,13 @@ package org.apache.tuscany.sca.assembly;
  */
 public interface BindingRRB extends Binding {
 
-    public WireFormat getWireFormat();
+    public WireFormat getRequestWireFormat();
     
-    public void setWireFormat(WireFormat wireFormat);
+    public void setRequestWireFormat(WireFormat wireFormat);
+    
+    public WireFormat getResponseWireFormat();
+    
+    public void setResponseWireFormat(WireFormat wireFormat);    
     
     public OperationSelector getOperationSelector();
     

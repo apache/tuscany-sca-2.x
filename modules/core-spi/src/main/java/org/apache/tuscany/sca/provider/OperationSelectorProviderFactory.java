@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public interface OperationSelectortProviderFactory<M extends OperationSelector> extends ProviderFactory<M> {
+public interface OperationSelectorProviderFactory<M extends OperationSelector> extends ProviderFactory<M> {
     /**
      * Create wire format provider for a given reference binding
      * @param component
@@ -36,9 +36,9 @@ public interface OperationSelectortProviderFactory<M extends OperationSelector> 
      * @param binding
      * @return
      */
-    PolicyProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
-                                                            RuntimeComponentReference reference,
-                                                            Binding binding);
+    OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
+                                                                       RuntimeComponentReference reference,
+                                                                       Binding binding);
 
     /**
      * Create policy provider for a given service binding
@@ -47,7 +47,7 @@ public interface OperationSelectortProviderFactory<M extends OperationSelector> 
      * @param binding
      * @return
      */
-    PolicyProvider createServiceOperationSelectorProvider(RuntimeComponent component,
-                                                          RuntimeComponentService service,
-                                                          Binding binding);
+    OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
+                                                                     RuntimeComponentService service,
+                                                                     Binding binding);
 }

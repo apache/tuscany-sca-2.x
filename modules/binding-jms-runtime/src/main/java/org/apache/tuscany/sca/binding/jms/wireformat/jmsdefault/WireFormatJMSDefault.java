@@ -40,4 +40,9 @@ public class WireFormatJMSDefault implements WireFormat {
 
     public void setUnresolved(boolean unresolved) {
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return this.getClass() == obj.getClass();
+    }
 }

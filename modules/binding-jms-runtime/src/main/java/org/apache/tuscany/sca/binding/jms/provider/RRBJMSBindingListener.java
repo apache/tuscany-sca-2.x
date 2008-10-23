@@ -43,8 +43,9 @@ import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAu
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.BindingInterceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.SecurityUtil;
@@ -73,6 +74,7 @@ public class RRBJMSBindingListener implements MessageListener {
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
     private List<Operation> serviceOperations;
+    private MessageFactory messageFactory;
     protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
     
     /*
@@ -82,11 +84,13 @@ public class RRBJMSBindingListener implements MessageListener {
     private List<Invoker> bindingRequestChain;
     private List<Invoker> bindingResponseChain;
 
-    public RRBJMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding) throws NamingException {
+    public RRBJMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding, MessageFactory messageFactory) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.service = service;
         this.targetBinding = targetBinding;
+        this.messageFactory = messageFactory;
+        
         requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         correlationScheme = jmsBinding.getCorrelationScheme();
@@ -105,15 +109,6 @@ public class RRBJMSBindingListener implements MessageListener {
                 }
             }
         } 
-        
-        // Set up request/response chains for RRB
-        bindingRequestChain = new ArrayList<Invoker>();
-        bindingResponseChain = new ArrayList<Invoker>();
-        
-        ServiceBindingProviderRRB provider = (ServiceBindingProviderRRB)service.getBindingProvider(jmsBinding);
-        provider.configureServiceBindingRequestChain(bindingRequestChain, service.getRuntimeWire(targetBinding));
-        provider.configureServiceBindingResponseChain(bindingResponseChain, service.getRuntimeWire(targetBinding));
-
     }
 
     public void onMessage(Message requestJMSMsg) {
@@ -143,40 +138,23 @@ public class RRBJMSBindingListener implements MessageListener {
     protected void invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
         // create the tuscany message
-        MessageImpl tuscanyMsg = new MessageImpl();
+        org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
         
         // populate the message context with JMS binding information
         tuscanyMsg.getHeaders().add(requestJMSMsg);
-        
-        // call the request wire
-        for (Invoker invoker : bindingRequestChain){
-           ((BindingInterceptor)invoker).invokeRequest(tuscanyMsg);
-        }
+        tuscanyMsg.setBody(requestJMSMsg);
         
         // call the runtime wire
         setHeaderProperties(requestJMSMsg, tuscanyMsg, tuscanyMsg.getOperation());
-        Object response = service.getRuntimeWire(targetBinding).invoke(tuscanyMsg.getOperation(), tuscanyMsg);
+        InvocationChain chain = service.getRuntimeWire(targetBinding).getBindingInvocationChain();
+        chain.getHeadInvoker().invoke(tuscanyMsg);
         
-        tuscanyMsg.setBody(response);
-        
-        if (requestJMSMsg.getJMSReplyTo() == null) {
-            // assume no reply is expected
-            if (response != null) {
-                logger.log(Level.FINE, "JMS service '" + service.getName() + "' dropped response as request has no replyTo");
-            }
-            return;
-        }
-        
-        // call the response wire
-        for (Invoker invoker : bindingResponseChain){
-            ((BindingInterceptor)invoker).invokeResponse(tuscanyMsg);
-        }
     }
 
     /**
      * TODO - RRB experiment. Needs refactoring
      */
-    protected void setHeaderProperties(javax.jms.Message requestJMSMsg, MessageImpl tuscanyMsg, Operation operation) throws JMSException {
+    protected void setHeaderProperties(javax.jms.Message requestJMSMsg, org.apache.tuscany.sca.invocation.Message tuscanyMsg, Operation operation) throws JMSException {
 
         EndpointReference from = new EndpointReferenceImpl(null);
         tuscanyMsg.setFrom(from);

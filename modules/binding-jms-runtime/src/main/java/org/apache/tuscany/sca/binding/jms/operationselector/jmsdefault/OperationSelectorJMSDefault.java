@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 
 /**
  * Implementation for policies that could be injected as parameter
@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.assembly.WireFormat;
  *
  * @version $Rev$ $Date$
  */
-public class OperationSelectorJMSDefault implements WireFormat {
+public class OperationSelectorJMSDefault implements OperationSelector {
     public static final QName OPERATION_SELECTOR_JMS_DEFAULT_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "operationSelector.JMSDefault");
     
     public QName getSchemaName() {
