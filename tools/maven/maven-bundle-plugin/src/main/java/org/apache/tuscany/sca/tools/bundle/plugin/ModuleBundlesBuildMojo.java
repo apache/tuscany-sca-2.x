@@ -37,15 +37,18 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 /**
+ * A maven plugin that generates a modules directory containing OSGi bundles for all the project's module dependencies.
+ * 
  * @version $Rev$ $Date$
- * @goal build-thirdparty-distro
+ * @goal generate-modules
  * @phase generate-resources
  * @requiresDependencyResolution test
- * @description Build an OSGi bundle for third party dependencies
+ * @description Generate a modules directory containing OSGi bundles for all the project's module dependencies.
  */
-public class ThirdPartyBundleDistroMojo extends AbstractMojo {
+public class ModuleBundlesBuildMojo extends AbstractMojo {
+    
     /**
-     * The project to create a build for.
+     * The project to create a distribution for.
      *
      * @parameter expression="${project}"
      * @required
@@ -53,64 +56,143 @@ public class ThirdPartyBundleDistroMojo extends AbstractMojo {
      */
     private MavenProject project;
 
+    /**
+     * Target directory.
+     * 
+     *  @parameter
+     */
+    private File targetDirectory;
+    
+    /**
+     * Directories containing artifacts to exclude.
+     * 
+     * @parameter
+     */
+    private File[] excludeDirectories;
+
+    /**
+     * Directories containing groupids to exclude.
+     * 
+     * @parameter
+     */
+    private String[] excludeGroupIds;
+
+    /**
+     * Set to true to generate a PDE target platform configuration.
+     * 
+     *  @parameter
+     */
+    private boolean generateTargetPlatform;
+    
+    /**
+     * Set to true to generate a plugin.xml.
+     * 
+     *  @parameter
+     */
+    private boolean generatePlugin;
+
     public void execute() throws MojoExecutionException {
         Log log = getLog();
 
-        if (project.getPackaging().equals("pom")) {
-            return;
-        }
         try {
-
-            File root = new File(project.getBasedir(), "eclipse/plugins/");
+            
+            // Create the target directory
+            File root;
+            if (targetDirectory == null) {
+                root = new File(project.getBuild().getDirectory(), "plugins/");
+            } else {
+                root = targetDirectory;
+            }
             root.mkdirs();
+            
+            // Build sets of exclude directories and groupids
+            Set<String> excludedFileNames = new HashSet<String>(); 
+            if (excludeDirectories != null) {
+                for (File f: excludeDirectories) {
+                    for (String n: f.list()) {
+                        excludedFileNames.add(n);
+                    }
+                }
+            }
+            Set<String> excludedGroupIds = new HashSet<String>();
+            if (excludeGroupIds != null) {
+                for (String g: excludeGroupIds) {
+                    excludedGroupIds.add(g);
+                }
+            }
 
-            Set<String> ids = new HashSet<String>();
-            String projectGroupId = project.getGroupId();
+            // Process all the dependency artifacts
+            Set<String> bundleSymbolicNames = new HashSet<String>();
             for (Object o : project.getArtifacts()) {
                 Artifact artifact = (Artifact)o;
 
-                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact
-                    .getScope()))) {
+                // Only consider Compile and Runtime dependencies
+                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope()))) {
                     if (log.isDebugEnabled()) {
                         log.debug("Skipping artifact: " + artifact);
                     }
                     continue;
                 }
-                if (!"jar".equals(artifact.getType())) {
+                
+                // Only consider JAR and WAR files
+                if (!"jar".equals(artifact.getType()) && !"war".equals(artifact.getType())) {
                     continue;
                 }
-                if (projectGroupId.equals(artifact.getGroupId())) {
+                
+                // Exclude artifact if its groupId is excluded
+                if (excludedGroupIds.contains(artifact.getGroupId())) {
+                    log.debug("Artifact groupId is excluded: " + artifact);
+                    continue;
+                }
+                
+                File artifactFile = artifact.getFile();
+                if (!artifactFile.exists()) {
+                    log.warn("Artifact doesn't exist: " + artifact);
+                    continue;
+                }
+                
+                // Exclude artifact if its file name is excluded
+                if (excludedFileNames.contains(artifactFile.getName())) {
+                    log.debug("Artifact file is excluded: " + artifact);
                     continue;
                 }
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Artifact: " + artifact);
+                    log.debug("Processing artifact: " + artifact);
                 }
+                
+                // Get the bundle name if the artifact is an OSGi bundle
                 String bundleName = null;
                 try {
                     bundleName = BundleUtil.getBundleSymbolicName(artifact.getFile());
                 } catch (IOException e) {
                     throw new MojoExecutionException(e.getMessage(), e);
                 }
-                File artifactFile = artifact.getFile();
-                if (!artifactFile.exists()) {
-                    log.warn("Artifact doesn't exist: " + artifact);
-                    continue;
-                }
-
+                
                 if (bundleName != null) {
-                    log.info("Adding third party bundle: " + artifact);
+                    
+                    // Copy an OSGi bundle as is 
+                    log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
-                    ids.add(bundleName);
+                    bundleSymbolicNames.add(bundleName);
+                    
+                } else if ("war".equals(artifact.getType())) {
+                    
+                    // Copy a WAR as is 
+                    log.info("Adding WAR artifact: " + artifact);
+                    copyFile(artifactFile, root);
+                    bundleSymbolicNames.add(bundleName);
+                    
                 } else {
-                    log.info("Adding third party jar: " + artifact);
+                    
+                    // Create a bundle directory for a non-OSGi JAR
+                    log.info("Adding JAR artifact: " + artifact);
                     String version = BundleUtil.version(artifactFile.getPath());
 
                     Set<File> jarFiles = new HashSet<File>();
                     jarFiles.add(artifactFile);
                     String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId()).replace('-', '.');
-                    Manifest mf =
-                        BundleUtil.libraryManifest(jarFiles, symbolicName + "_" + version, symbolicName, version, null);
+                    Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName + "_" + version, symbolicName, version, null);
                     File dir = new File(root, artifactFile.getName().substring(0, artifactFile.getName().length() - 4));
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
@@ -120,20 +202,25 @@ public class ThirdPartyBundleDistroMojo extends AbstractMojo {
                     write(mf, fos);
                     fos.close();
                     copyFile(artifactFile, dir);
-                    ids.add(symbolicName);
+                    bundleSymbolicNames.add(symbolicName);
                 }
             }
             
-            File target = new File(project.getBasedir(), "tuscany.target");
-            FileOutputStream targetFile = new FileOutputStream(target);
-            writeTarget(new PrintStream(targetFile), ids);
-            targetFile.close();
+            // Generate a PDE target
+            if (generateTargetPlatform) {
+                File target = new File(project.getBasedir(), "tuscany.target");
+                FileOutputStream targetFile = new FileOutputStream(target);
+                writeTarget(new PrintStream(targetFile), bundleSymbolicNames);
+                targetFile.close();
+            }
             
-            File pluginxml = new File(project.getBasedir(), "plugin.xml");
-            FileOutputStream pluginXMLFile = new FileOutputStream(pluginxml);
-            writePluginXML(new PrintStream(pluginXMLFile));
-            pluginXMLFile.close();
-            
+            // Generate a plugin.xml referencing the PDE target
+            if (generatePlugin) {
+                File pluginxml = new File(project.getBasedir(), "plugin.xml");
+                FileOutputStream pluginXMLFile = new FileOutputStream(pluginxml);
+                writePluginXML(new PrintStream(pluginXMLFile));
+                pluginXMLFile.close();
+            }
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
