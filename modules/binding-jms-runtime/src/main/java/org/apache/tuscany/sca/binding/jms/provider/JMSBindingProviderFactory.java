@@ -49,6 +49,7 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
         jmsRFEP = (JMSResourceFactoryExtensionPoint)extensionPoints.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
         if (jmsRFEP == null) {
             jmsRFEP = new DefaultJMSResourceFactoryExtensionPoint();
+            extensionPoints.addExtensionPoint(jmsRFEP);
         }
     }
 

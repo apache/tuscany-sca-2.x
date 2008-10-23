@@ -119,7 +119,8 @@ public class JMSBinding implements BindingRRB, PolicySetAttachPoint {
     private JMSBinding requestConnectionBinding;
     private JMSBinding responseConnectionBinding;
     
-    private WireFormat wireFormat;
+    private WireFormat requestWireFormat;
+    private WireFormat responseWireFormat;
     private OperationSelector operationSelector;
     
     public JMSBinding() {
@@ -155,13 +156,21 @@ public class JMSBinding implements BindingRRB, PolicySetAttachPoint {
         return extensions;
     }
     
-    public WireFormat getWireFormat() {
-        return wireFormat;
+    public WireFormat getRequestWireFormat() {
+        return requestWireFormat;
     }
     
-    public void setWireFormat(WireFormat wireFormat) {
-        this.wireFormat = wireFormat;
+    public void setRequestWireFormat(WireFormat wireFormat) {
+        this.requestWireFormat = wireFormat;
     }
+    
+    public WireFormat getResponseWireFormat() {
+        return responseWireFormat;
+    }
+    
+    public void setResponseWireFormat(WireFormat wireFormat) {
+        this.responseWireFormat = wireFormat;
+    }    
     
     public OperationSelector getOperationSelector() {
         return operationSelector;

@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public interface ServiceBindingProviderRRB extends ServiceBindingProvider {
     
-    void configureServiceBindingRequestChain(List<Invoker> bindingRequestChain, RuntimeWire runtimeWire);
-    void configureServiceBindingResponseChain(List<Invoker> bindingResponseChain, RuntimeWire runtimeWire);
+    void configureBindingChain(RuntimeWire runtimeWire);
 
 }

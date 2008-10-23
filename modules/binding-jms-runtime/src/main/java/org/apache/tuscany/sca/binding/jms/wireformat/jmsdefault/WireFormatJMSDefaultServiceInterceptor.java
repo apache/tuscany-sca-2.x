@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.invocation.BindingInterceptor;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -41,7 +40,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefaultServiceInterceptor implements BindingInterceptor {
+public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     private Invoker next;
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
@@ -49,6 +48,8 @@ public class WireFormatJMSDefaultServiceInterceptor implements BindingIntercepto
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
+    private WireFormat requestWireFormat;
+    private WireFormat responseWireFormat;
 
     public WireFormatJMSDefaultServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
@@ -58,11 +59,29 @@ public class WireFormatJMSDefaultServiceInterceptor implements BindingIntercepto
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         this.correlationScheme = jmsBinding.getCorrelationScheme();
+        
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault){
+            this.requestWireFormat = jmsBinding.getRequestWireFormat();
+        }
+        
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault){
+            this.responseWireFormat = jmsBinding.getResponseWireFormat();
+        }
     }
     
     public Message invoke(Message msg) {
-        // TODO binding interceptor iface TBD
-        return null;
+
+        if (requestWireFormat != null){
+            msg = invokeRequest(msg);
+        }
+        
+        msg = getNext().invoke(msg);
+        
+        if (responseWireFormat != null){
+            msg = invokeResponse(msg);
+        }
+        
+        return msg;
     }
 
     public Message invokeRequest(Message msg) {
@@ -76,11 +95,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements BindingIntercepto
             msg.setBody(requestPayload);
         }
                 
-        if (next != null){
-            return getNext().invoke(msg);
-        } else {
-            return msg;
-        }
+        return msg;
     }
     
     public Message invokeResponse(Message msg) {
@@ -109,11 +124,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements BindingIntercepto
             
             msg.setBody(responseJMSMsg);
             
-            if (next != null){
-                return getNext().invoke(msg);
-            } else {
-                return msg;
-            }
+            return msg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
         } catch (NamingException e) {

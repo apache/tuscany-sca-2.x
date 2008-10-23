@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
@@ -44,7 +43,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -259,7 +257,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                         Object extension = extensionProcessor.read(reader);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
-                                jmsBinding.setWireFormat((WireFormat)extension);
+                                jmsBinding.setRequestWireFormat((WireFormat)extension);
                             } else if (extension instanceof OperationSelector) {
                                 jmsBinding.setOperationSelector((OperationSelector)extension);
                             } else {

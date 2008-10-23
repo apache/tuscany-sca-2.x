@@ -47,7 +47,7 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeWireInvoker {
+public class RuntimeWireInvoker implements Invoker{
     protected ConversationManager conversationManager;
     protected boolean conversational;
     protected ExtendedConversation conversation;
@@ -73,6 +73,25 @@ public class RuntimeWireInvoker {
             InterfaceContract contract = wire.getSource().getInterfaceContract();
             this.conversational = contract.getInterface().isConversational();
         }
+    }
+    
+    /*
+     * TODO - Introduced to allow the RuntimeWireInvoker to sit on the end of the 
+     *        service binding chain. Runtime wire invoke needs splitting up into 
+     *        separate conversation, callback interceptors etc.
+     */
+    public Message invoke(Message msg) {
+                
+        try {
+            Object response = invoke(msg.getOperation(),msg);
+            // Hack to put the response back in a message. 
+            // shouldn't take it out of the response message in the first place
+            msg.setBody(response);
+        } catch (InvocationTargetException e) {
+            throw new ServiceRuntimeException(e);
+        }
+        
+        return msg;
     }
 
     public Object invoke(Operation operation, Message msg) throws InvocationTargetException {

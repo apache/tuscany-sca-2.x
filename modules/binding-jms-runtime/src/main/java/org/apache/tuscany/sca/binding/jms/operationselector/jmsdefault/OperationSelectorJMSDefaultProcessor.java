@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -27,7 +25,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;

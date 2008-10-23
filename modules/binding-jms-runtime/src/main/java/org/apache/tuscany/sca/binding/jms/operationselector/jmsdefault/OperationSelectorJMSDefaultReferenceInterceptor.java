@@ -20,21 +20,12 @@ package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault;
 
 import java.util.List;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.BindingInterceptor;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -47,10 +38,11 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  *
  * @version $Rev$ $Date$
  */
-public class OperationSelectorJMSDefaultReferenceInterceptor implements BindingInterceptor {
+public class OperationSelectorJMSDefaultReferenceInterceptor implements Interceptor {
     
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     
+    private Invoker next;
     private OperationSelectorJMSDefault operationSelector;
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
@@ -85,5 +77,13 @@ public class OperationSelectorJMSDefaultReferenceInterceptor implements BindingI
     public Message invokeResponse(Message msg) {
         // TODO binding interceptor iface TBD
         return null;
-    }         
+    } 
+    
+    public Invoker getNext() {
+        return next;
+    }
+
+    public void setNext(Invoker next) {
+        this.next = next;
+    }
 }

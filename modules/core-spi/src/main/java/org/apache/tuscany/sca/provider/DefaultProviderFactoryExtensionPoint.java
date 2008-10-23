@@ -113,6 +113,8 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         loadProviderFactories(BindingProviderFactory.class);
         loadProviderFactories(ImplementationProviderFactory.class);
         loadProviderFactories(PolicyProviderFactory.class);
+        loadProviderFactories(WireFormatProviderFactory.class);
+        loadProviderFactories(OperationSelectorProviderFactory.class);
 
         loaded = true;
     }
@@ -169,6 +171,26 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 // Create a provider factory wrapper and register it
                 PolicyProviderFactory factory =
                     new LazyPolicyProviderFactory(registry, modelTypeName, factoryDeclaration);
+                factoryExtensionPoint.addProviderFactory(factory);
+                factories.add(factory);
+            } else if (factoryClass == WireFormatProviderFactory.class) {
+
+                // Load a wire format provider factory
+                String modelTypeName = attributes.get("model");
+
+                // Create a provider factory wrapper and register it
+                WireFormatProviderFactory factory =
+                    new LazyWireFormatProviderFactory(registry, modelTypeName, factoryDeclaration);
+                factoryExtensionPoint.addProviderFactory(factory);
+                factories.add(factory);
+            } else if (factoryClass == OperationSelectorProviderFactory.class) {
+
+                // Load a wire format provider factory
+                String modelTypeName = attributes.get("model");
+
+                // Create a provider factory wrapper and register it
+                OperationSelectorProviderFactory factory =
+                    new LazyOperationSelectorProviderFactory(registry, modelTypeName, factoryDeclaration);
                 factoryExtensionPoint.addProviderFactory(factory);
                 factories.add(factory);
             }
@@ -356,7 +378,132 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             }
             return modelType;
         }
-
     }
 
+    /**
+     * A wrapper around a wire format provider factory allowing lazy
+     * loading and initialization of wire format providers.
+     */
+    private class LazyWireFormatProviderFactory implements WireFormatProviderFactory {
+
+        private ExtensionPointRegistry registry;
+        private String modelTypeName;
+        private ServiceDeclaration providerClass;
+        private WireFormatProviderFactory factory;
+        private Class modelType;
+
+        private LazyWireFormatProviderFactory(ExtensionPointRegistry registry,
+                                              String modelTypeName,
+                                              ServiceDeclaration providerClass) {
+            this.registry = registry;
+            this.modelTypeName = modelTypeName;
+            this.providerClass = providerClass;
+        }
+
+        @SuppressWarnings("unchecked")
+        private WireFormatProviderFactory getFactory() {
+            if (factory == null) {
+                try {
+                    Class<WireFormatProviderFactory> factoryClass =
+                        (Class<WireFormatProviderFactory>)providerClass.loadClass();
+                    Constructor<WireFormatProviderFactory> constructor =
+                        factoryClass.getConstructor(ExtensionPointRegistry.class);
+                    factory = constructor.newInstance(registry);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return factory;
+        }
+
+        @SuppressWarnings("unchecked")
+        public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
+                                                                    RuntimeComponentReference reference,
+                                                                    Binding binding){
+            return getFactory().createReferenceWireFormatProvider(component, reference, binding);
+        }
+
+        @SuppressWarnings("unchecked")
+        public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
+                                                                  RuntimeComponentService service,
+                                                                  Binding binding){
+            return getFactory().createServiceWireFormatProvider(component, service, binding);
+        }
+
+        public Class getModelType() {
+            if (modelType == null) {
+                try {
+
+                    modelType = providerClass.loadClass(modelTypeName);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return modelType;
+        }
+    }
+
+    /**
+     * A wrapper around a operation selector provider factory allowing lazy
+     * loading and initialization of operation selector providers.
+     */
+    private class LazyOperationSelectorProviderFactory implements OperationSelectorProviderFactory {
+
+        private ExtensionPointRegistry registry;
+        private String modelTypeName;
+        private ServiceDeclaration providerClass;
+        private OperationSelectorProviderFactory factory;
+        private Class modelType;
+
+        private LazyOperationSelectorProviderFactory(ExtensionPointRegistry registry,
+                                                     String modelTypeName,
+                                                     ServiceDeclaration providerClass) {
+            this.registry = registry;
+            this.modelTypeName = modelTypeName;
+            this.providerClass = providerClass;
+        }
+
+        @SuppressWarnings("unchecked")
+        private OperationSelectorProviderFactory getFactory() {
+            if (factory == null) {
+                try {
+                    Class<OperationSelectorProviderFactory> factoryClass =
+                        (Class<OperationSelectorProviderFactory>)providerClass.loadClass();
+                    Constructor<OperationSelectorProviderFactory> constructor =
+                        factoryClass.getConstructor(ExtensionPointRegistry.class);
+                    factory = constructor.newInstance(registry);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return factory;
+        }
+
+        @SuppressWarnings("unchecked")
+        public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
+                                                                    RuntimeComponentReference reference,
+                                                                    Binding binding){
+            return getFactory().createReferenceOperationSelectorProvider(component, reference, binding);
+        }
+
+        @SuppressWarnings("unchecked")
+        public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
+                                                                  RuntimeComponentService service,
+                                                                  Binding binding){
+            return getFactory().createServiceOperationSelectorProvider(component, service, binding);
+        }
+
+        public Class getModelType() {
+            if (modelType == null) {
+                try {
+
+                    modelType = providerClass.loadClass(modelTypeName);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return modelType;
+        }
+    }
+    
 }

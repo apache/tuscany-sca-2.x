@@ -35,21 +35,35 @@ import javax.naming.NamingException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultReferenceInterceptor;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultReferenceInterceptor;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultServiceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
+import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
+import org.apache.tuscany.sca.provider.WireFormatProvider;
+import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -77,6 +91,21 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
 
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract;
+    
+
+    private ProviderFactoryExtensionPoint providerFactories;
+    private ModelFactoryExtensionPoint modelFactories;
+    
+    private MessageFactory messageFactory;
+    
+    private OperationSelectorProviderFactory operationSelectorProviderFactory;
+    private OperationSelectorProvider operationSelectorProvider;
+    
+    private WireFormatProviderFactory requestWireFormatProviderFactory;
+    private WireFormatProvider requestWireFormatProvider;
+    
+    private WireFormatProviderFactory responseWireFormatProviderFactory;
+    private WireFormatProvider responseWireFormatProvider;
 
     public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
         this.component = component;
@@ -99,7 +128,42 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
                 setXMLDataBinding(service);
             }
         }
+        
+        // Get Message factory
+        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        messageFactory = modelFactories.getFactory(MessageFactory.class);
 
+        // Get the factories/providers for operation selection
+        
+        // if no operation selector is specified then assume the default
+        if (jmsBinding.getOperationSelector() == null){
+            jmsBinding.setOperationSelector(new OperationSelectorJMSDefault());
+        }
+        
+        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        this.operationSelectorProviderFactory =
+            (OperationSelectorProviderFactory)providerFactories.getProviderFactory(jmsBinding.getOperationSelector().getClass());
+        this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(component, service, jmsBinding);
+        
+        // Get the factories/providers for wire format
+        
+        // if no request wire format specified then assume the default
+        if (jmsBinding.getRequestWireFormat() == null){
+            jmsBinding.setRequestWireFormat(new WireFormatJMSDefault());
+        }
+        
+        // if no response wire format specific then assume the default
+        if (jmsBinding.getResponseWireFormat() == null){
+            jmsBinding.setResponseWireFormat(new WireFormatJMSDefault());
+         }
+        
+        this.requestWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
+        this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+        
+        this.responseWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
+        this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
     }
     
     protected boolean isOnMessage() {
@@ -194,8 +258,8 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
          * TODO a test to allow RRB experiments to take place without breaking everything else
          *      RRB stuff only happens if you add a wireFormat to a composite file
          */
-        if (jmsBinding.getWireFormat() != null ){
-            tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        if (jmsBinding.getRequestWireFormat() != null ){
+            tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding, messageFactory);
         } else {
             tmpListener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
         }
@@ -332,14 +396,19 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
      * pick up the appropriate interceptor based on wireFormat and operationSelector 
      * elements in the SCDL
      */
-    public void configureServiceBindingRequestChain(List<Invoker> bindingRequestChain, RuntimeWire runtimeWire) {
-
-        bindingRequestChain.add(new OperationSelectorJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
-        bindingRequestChain.add(new WireFormatJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
-    }
-    
-    public void configureServiceBindingResponseChain(List<Invoker> bindingResponseChain, RuntimeWire runtimeWire) {
-        bindingResponseChain.add(new WireFormatJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));
-        bindingResponseChain.add(new OperationSelectorJMSDefaultServiceInterceptor(jmsBinding, jmsResourceFactory, runtimeWire));  
+    public void configureBindingChain(RuntimeWire runtimeWire) {
+        
+        InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
+        
+        // add operation selector interceptor
+        bindingChain.addInterceptor(operationSelectorProvider.getPhase(), operationSelectorProvider.createInterceptor());
+        
+        // add request wire format
+        bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), requestWireFormatProvider.createInterceptor());
+        
+        // add response wire format, but only add it if it's different from the request
+        if (!jmsBinding.getRequestWireFormat().equals(jmsBinding.getResponseWireFormat())){
+            bindingChain.addInterceptor(responseWireFormatProvider.getPhase(), responseWireFormatProvider.createInterceptor());
+        }
     }
 }

@@ -18,16 +18,18 @@
  */
 package org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld;
 
-import org.osoa.sca.annotations.Remotable;
-
 public class HelloWorldServiceImpl implements HelloWorldService {
 
     public String getGreetings(String name){
-        return "Hello " + name;
+        String response =  "Hello " + name;
+        System.out.println("getGreetings: " + response);
+        return response;
     }
     
     public String getPersonGreetings(Person person){
-        return "Hello " + person.getFirstName() + " " + person.getLastName();
+        String response =  "Hello " + person.getFirstName() + " " + person.getLastName();
+        System.out.println("getPersonGreetings: " + response);
+        return response;
     }
 }
 

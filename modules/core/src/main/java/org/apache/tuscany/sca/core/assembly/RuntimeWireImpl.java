@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -76,7 +77,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private RuntimeWireImpl clonedFrom;
 
     private List<InvocationChain> chains;
-    private InvocationChain binidngInvocationChain;
+    private InvocationChain bindingInvocationChain;
 
     /**
      * @param source
@@ -113,15 +114,16 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
     
     public synchronized InvocationChain getBindingInvocationChain() {
-        if (binidngInvocationChain == null) {
+        if (bindingInvocationChain == null) {
             Contract source = wireSource.getContract();
             if (source instanceof RuntimeComponentReference) {
-                binidngInvocationChain = new InvocationChainImpl(null, null, true);
+                bindingInvocationChain = new InvocationChainImpl(null, null, true);
             } else {
-                binidngInvocationChain = new InvocationChainImpl(null, null, false);
+                bindingInvocationChain = new InvocationChainImpl(null, null, false);
+                initServiceBindingInvocationChains();
             }
         }
-        return binidngInvocationChain;
+        return bindingInvocationChain;
     }
 
     public InvocationChain getInvocationChain(Operation operation) {
@@ -180,6 +182,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 addReferenceBindingInterceptor(reference, refBinding, chain, operation);
                 chains.add(chain);
             }
+            
         } else {
             // It's the service wire
             RuntimeComponentService service = (RuntimeComponentService)wireTarget.getContract();
@@ -202,8 +205,30 @@ public class RuntimeWireImpl implements RuntimeWire {
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
             }
+            
         }
         wireProcessor.process(this);
+    }
+    
+    private void initServiceBindingInvocationChains() {
+        RuntimeComponentService service = (RuntimeComponentService)wireTarget.getContract();
+        Binding serviceBinding = wireTarget.getBinding();
+        
+        // add the binding interceptors to the service binding wire
+        ServiceBindingProvider provider = service.getBindingProvider(serviceBinding);
+        if ((provider != null) &&
+            (provider instanceof ServiceBindingProviderRRB)){
+            ((ServiceBindingProviderRRB)provider).configureBindingChain(this);
+        }
+        
+        // add the policy interceptors to the service binding wire
+        
+        
+        // TODO - add something on the end of the wire to invoke the 
+        //        invocation chain. Need to split out the runtime
+        //        wire invoker into conversation, callback interceptors etc
+        bindingInvocationChain.addInvoker(invoker);
+        
     }
 
     public EndpointReference getSource() {

@@ -23,29 +23,18 @@ import java.util.List;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
-import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.Topic;
-import javax.security.auth.Subject;
 
-import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.BindingInterceptor;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.SecurityUtil;
-import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
-import org.apache.tuscany.sca.runtime.EndpointReference;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
@@ -55,10 +44,11 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  *
  * @version $Rev$ $Date$
  */
-public class OperationSelectorJMSDefaultServiceInterceptor implements BindingInterceptor {
+public class OperationSelectorJMSDefaultServiceInterceptor implements Interceptor {
     
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     
+    private Invoker next;
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
@@ -80,8 +70,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements BindingInt
     }
     
     public Message invoke(Message msg) {
-        // TODO binding interceptor iface TBD
-        return null;
+        return invokeResponse(next.invoke(invokeRequest(msg)));
     }    
     
     public Message invokeRequest(Message msg) { 
@@ -153,5 +142,13 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements BindingInt
 
         return operation;
     }
+    
+    public Invoker getNext() {
+        return next;
+    }
+
+    public void setNext(Invoker next) {
+        this.next = next;
+    }    
    
 }
