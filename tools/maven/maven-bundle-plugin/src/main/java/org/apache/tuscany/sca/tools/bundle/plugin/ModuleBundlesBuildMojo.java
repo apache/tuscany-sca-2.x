@@ -78,6 +78,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     private String[] excludeGroupIds;
 
     /**
+     * Directories containing groupids to include.
+     * 
+     * @parameter
+     */
+    private String[] includeGroupIds;
+
+    /**
      * Set to true to generate a PDE target platform configuration.
      * 
      *  @parameter
@@ -105,13 +112,21 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             root.mkdirs();
             
-            // Build sets of exclude directories and groupids
+            // Build sets of exclude directories and included/excluded/groupids
             Set<String> excludedFileNames = new HashSet<String>(); 
             if (excludeDirectories != null) {
                 for (File f: excludeDirectories) {
-                    for (String n: f.list()) {
-                        excludedFileNames.add(n);
+                    if (f.isDirectory()) {
+                        for (String n: f.list()) {
+                            excludedFileNames.add(n);
+                        }
                     }
+                }
+            }
+            Set<String> includedGroupIds = new HashSet<String>();
+            if (includeGroupIds != null) {
+                for (String g: includeGroupIds) {
+                    includedGroupIds.add(g);
                 }
             }
             Set<String> excludedGroupIds = new HashSet<String>();
@@ -139,10 +154,16 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     continue;
                 }
                 
-                // Exclude artifact if its groupId is excluded
+                // Exclude artifact if its groupId is excluded or if it's not included
                 if (excludedGroupIds.contains(artifact.getGroupId())) {
                     log.debug("Artifact groupId is excluded: " + artifact);
                     continue;
+                }
+                if (!includedGroupIds.isEmpty()) {
+                    if (!includedGroupIds.contains(artifact.getGroupId())) {
+                        log.debug("Artifact groupId is not included: " + artifact);
+                        continue;
+                    }
                 }
                 
                 File artifactFile = artifact.getFile();
@@ -151,12 +172,6 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     continue;
                 }
                 
-                // Exclude artifact if its file name is excluded
-                if (excludedFileNames.contains(artifactFile.getName())) {
-                    log.debug("Artifact file is excluded: " + artifact);
-                    continue;
-                }
-
                 if (log.isDebugEnabled()) {
                     log.debug("Processing artifact: " + artifact);
                 }
@@ -171,6 +186,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 
                 if (bundleName != null) {
                     
+                    // Exclude artifact if its file name is excluded
+                    if (excludedFileNames.contains(artifactFile.getName())) {
+                        log.debug("Artifact file is excluded: " + artifact);
+                        continue;
+                    }
+
                     // Copy an OSGi bundle as is 
                     log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
@@ -178,12 +199,26 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     
                 } else if ("war".equals(artifact.getType())) {
                     
+                    // Exclude artifact if its file name is excluded
+                    if (excludedFileNames.contains(artifactFile.getName())) {
+                        log.debug("Artifact file is excluded: " + artifact);
+                        continue;
+                    }
+
                     // Copy a WAR as is 
                     log.info("Adding WAR artifact: " + artifact);
                     copyFile(artifactFile, root);
                     bundleSymbolicNames.add(bundleName);
                     
                 } else {
+                    
+                    File dir = new File(root, artifactFile.getName().substring(0, artifactFile.getName().length() - 4));
+
+                    // Exclude artifact if its file name is excluded
+                    if (excludedFileNames.contains(dir.getName())) {
+                        log.debug("Artifact file is excluded: " + artifact);
+                        continue;
+                    }
                     
                     // Create a bundle directory for a non-OSGi JAR
                     log.info("Adding JAR artifact: " + artifact);
@@ -193,7 +228,6 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     jarFiles.add(artifactFile);
                     String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId()).replace('-', '.');
                     Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName + "_" + version, symbolicName, version, null);
-                    File dir = new File(root, artifactFile.getName().substring(0, artifactFile.getName().length() - 4));
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
                     file = new File(file, "MANIFEST.MF");
