@@ -17,25 +17,16 @@
     * under the License.
 -->
 <component>
-    <dependencySets>
+    <fileSets>
 
-        <!-- Add all the Tuscany modules to the modules directory -->
-        <dependencySet>
+        <!-- Add modules to the modules directory -->
+        <fileSet>
+            <directory>target/modules</directory>
             <outputDirectory>modules</outputDirectory>
-            <unpack>false</unpack>
             <includes>
-                <include>org.apache.tuscany.sca:*</include>
+                <include>**/*</include>
             </includes>
-        </dependencySet>
-
-        <!-- Add all the dependent jars to the lib directory -->
-        <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <unpack>false</unpack>
-            <excludes>
-                <exclude>org.apache.tuscany.sca:*</exclude>
-            </excludes>
-        </dependencySet>
-    </dependencySets>
+        </fileSet>
+    </fileSets>
 
 </component>

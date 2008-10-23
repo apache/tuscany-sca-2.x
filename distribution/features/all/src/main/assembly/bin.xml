@@ -32,7 +32,7 @@
 
     <componentDescriptors>
         <componentDescriptor>../core/src/main/components/bin-common.xml</componentDescriptor>
-        <componentDescriptor>../core/src/main/components/bin-dependencies.xml</componentDescriptor>
+        <componentDescriptor>../core/src/main/components/bin-modules.xml</componentDescriptor>
         <componentDescriptor>../core/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../ejava/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../manager/src/main/components/bin-samples.xml</componentDescriptor>

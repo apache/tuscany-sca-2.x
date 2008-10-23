@@ -80,10 +80,7 @@
     
         <!-- Default build profile that can be used to build the distro packages -->
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>distribution</id>
             <build>
                 <plugins>
                     <plugin>
