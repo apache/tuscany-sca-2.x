@@ -35,15 +35,18 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 /**
+ * A Maven plugin that builds an OSGi bundle for the project's third-party dependencies.
+ * 
  * @version $Rev$ $Date$
  * @goal assemble-thirdparty-bundle
  * @phase generate-resources
  * @requiresDependencyResolution test
- * @description Build an OSGi bundle for third party dependencies
+ * @description Build an OSGi bundle for the project's third party dependencies
  */
 public class ThirdPartyBundleBuildMojo extends AbstractMojo {
+    
     /**
-     * The project to create a build for.
+     * The project to build the bundle for.
      *
      * @parameter expression="${project}"
      * @required
@@ -60,10 +63,6 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
     
     public void execute() throws MojoExecutionException {
         Log log = getLog();
-
-        if (project.getPackaging().equals("pom")) {
-            return;
-        }
 
         String projectGroupId = project.getGroupId();
         Set<File> jarFiles = new HashSet<File>();
