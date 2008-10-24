@@ -33,9 +33,9 @@ class WidgetProxyHelper {
     static {
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", new String[]{ "binding-atom.js", "atomModel.js"});
         proxyClient.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", "AtomClient");
-        
-        proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", new String[]{"binding-jsonrpc.js"});
-        proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
+
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.impl.JSONRPCBindingImpl", new String[]{"binding-jsonrpc.js"});
+        proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.impl.JSONRPCBindingImpl", "JSONRpcClient");
 
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", new String[]{"binding-http.js"});
         proxyClient.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", "HTTPClient");
