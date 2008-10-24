@@ -46,7 +46,7 @@ import org.apache.maven.project.MavenProject;
  * @description Generate a modules directory containing OSGi bundles for all the project's module dependencies.
  */
 public class ModuleBundlesBuildMojo extends AbstractMojo {
-    
+
     /**
      * The project to create a distribution for.
      *
@@ -62,7 +62,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      *  @parameter
      */
     private File targetDirectory;
-    
+
     /**
      * Directories containing artifacts to exclude.
      * 
@@ -92,6 +92,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     private boolean generateTargetPlatform;
     
     /**
+     * A list of Eclipse features to be added to the target definition
+     * @parameter
+     */
+    private String[] eclipseFeatures;
+
+    /**
      * Set to true to generate a plugin.xml.
      * 
      *  @parameter
@@ -102,7 +108,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         Log log = getLog();
 
         try {
-            
+
             // Create the target directory
             File root;
             if (targetDirectory == null) {
@@ -111,9 +117,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 root = targetDirectory;
             }
             root.mkdirs();
-            
+
             // Build sets of exclude directories and included/excluded/groupids
-            Set<String> excludedFileNames = new HashSet<String>(); 
+            Set<String> excludedFileNames = new HashSet<String>();
             if (excludeDirectories != null) {
                 for (File f: excludeDirectories) {
                     if (f.isDirectory()) {
@@ -131,7 +137,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             Set<String> excludedGroupIds = new HashSet<String>();
             if (excludeGroupIds != null) {
-                for (String g: excludeGroupIds) {
+                for (String g : excludeGroupIds) {
                     excludedGroupIds.add(g);
                 }
             }
@@ -142,18 +148,19 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 Artifact artifact = (Artifact)o;
 
                 // Only consider Compile and Runtime dependencies
-                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope()))) {
+                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact
+                    .getScope()))) {
                     if (log.isDebugEnabled()) {
                         log.debug("Skipping artifact: " + artifact);
                     }
                     continue;
                 }
-                
+
                 // Only consider JAR and WAR files
                 if (!"jar".equals(artifact.getType()) && !"war".equals(artifact.getType())) {
                     continue;
                 }
-                
+
                 // Exclude artifact if its groupId is excluded or if it's not included
                 if (excludedGroupIds.contains(artifact.getGroupId())) {
                     log.debug("Artifact groupId is excluded: " + artifact);
@@ -171,11 +178,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     log.warn("Artifact doesn't exist: " + artifact);
                     continue;
                 }
-                
+
                 if (log.isDebugEnabled()) {
                     log.debug("Processing artifact: " + artifact);
                 }
-                
+
                 // Get the bundle name if the artifact is an OSGi bundle
                 String bundleName = null;
                 try {
@@ -183,9 +190,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 } catch (IOException e) {
                     throw new MojoExecutionException(e.getMessage(), e);
                 }
-                
+
                 if (bundleName != null) {
-                    
+
                     // Exclude artifact if its file name is excluded
                     if (excludedFileNames.contains(artifactFile.getName())) {
                         log.debug("Artifact file is excluded: " + artifact);
@@ -196,9 +203,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
                     bundleSymbolicNames.add(bundleName);
-                    
+
                 } else if ("war".equals(artifact.getType())) {
-                    
+
                     // Exclude artifact if its file name is excluded
                     if (excludedFileNames.contains(artifactFile.getName())) {
                         log.debug("Artifact file is excluded: " + artifact);
@@ -209,9 +216,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     log.info("Adding WAR artifact: " + artifact);
                     copyFile(artifactFile, root);
                     bundleSymbolicNames.add(bundleName);
-                    
+
                 } else {
-                    
+
                     File dir = new File(root, artifactFile.getName().substring(0, artifactFile.getName().length() - 4));
 
                     // Exclude artifact if its file name is excluded
@@ -222,12 +229,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     
                     // Create a bundle directory for a non-OSGi JAR
                     log.info("Adding JAR artifact: " + artifact);
-                    String version = BundleUtil.version(artifactFile.getPath());
+                    String version = BundleUtil.osgiVersion(artifact.getVersion());
 
                     Set<File> jarFiles = new HashSet<File>();
                     jarFiles.add(artifactFile);
-                    String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId()).replace('-', '.');
-                    Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName + "_" + version, symbolicName, version, null);
+                    String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId());
+                    Manifest mf =
+                        BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
                     file = new File(file, "MANIFEST.MF");
@@ -239,15 +247,15 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     bundleSymbolicNames.add(symbolicName);
                 }
             }
-            
+
             // Generate a PDE target
             if (generateTargetPlatform) {
                 File target = new File(project.getBasedir(), "tuscany.target");
                 FileOutputStream targetFile = new FileOutputStream(target);
-                writeTarget(new PrintStream(targetFile), bundleSymbolicNames);
+                writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
                 targetFile.close();
             }
-            
+
             // Generate a plugin.xml referencing the PDE target
             if (generatePlugin) {
                 File pluginxml = new File(project.getBasedir(), "plugin.xml");
@@ -279,13 +287,14 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         out.close();
     }
 
-    private static void writeTarget(PrintStream ps, Set<String> ids) {
+    private static void writeTarget(PrintStream ps, Set<String> ids, String[] features) {
         ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         ps.println("<?pde version=\"3.2\"?>");
 
         ps.println("<target name=\"Apache Tuscany Eclipse Target\">");
-        ps.println("<location path=\"${project_loc}/eclipse\"/>");
+        ps.println("<location useDefault=\"true\"/>");
 
+        // ps.println("<content useAllPlugins=\"true\">");
         ps.println("<content>");
         ps.println("<plugins>");
         for (String id : ids) {
@@ -293,10 +302,15 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         }
         ps.println("</plugins>");
         ps.println("<features>");
+        if (features != null) {
+            for (String f : features) {
+                ps.println("<feature id=\"" + f + "\"/>");
+            }
+        }
         ps.println("</features>");
         ps.println("<extraLocations>");
         // Not sure why the extra path needs to the plugins folder
-        ps.println("<location path=\"${eclipse_home}/plugins\"/>"); 
+        ps.println("<location path=\"${project_loc}/target/plugins\"/>");
         ps.println("</extraLocations>");
         ps.println("</content>");
 

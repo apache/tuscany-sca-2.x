@@ -44,7 +44,7 @@ import org.apache.maven.project.MavenProject;
  * @description Build an OSGi bundle for the project's third party dependencies
  */
 public class ThirdPartyBundleBuildMojo extends AbstractMojo {
-    
+
     /**
      * The project to build the bundle for.
      *
@@ -60,7 +60,7 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
      * @parameter
      */
     private String symbolicName;
-    
+
     public void execute() throws MojoExecutionException {
         Log log = getLog();
 
@@ -69,7 +69,8 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
         for (Object o : project.getArtifacts()) {
             Artifact artifact = (Artifact)o;
 
-            if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope()))) {
+            if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact
+                .getScope()))) {
                 if (log.isDebugEnabled()) {
                     log.debug("Skipping artifact: " + artifact);
                 }
@@ -102,15 +103,12 @@ public class ThirdPartyBundleBuildMojo extends AbstractMojo {
         }
 
         try {
-            String version = project.getVersion();
-            if (version.endsWith(Artifact.SNAPSHOT_VERSION)) {
-                version = version.substring(0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1);
-            }
+            String version = BundleUtil.osgiVersion(project.getVersion());
 
             Manifest mf = BundleUtil.libraryManifest(jarFiles, project.getName(), symbolicName, version, "lib");
             File file = new File(project.getBasedir(), "META-INF");
             file.mkdir();
-            file= new File(file, "MANIFEST.MF");
+            file = new File(file, "MANIFEST.MF");
             if (log.isDebugEnabled()) {
                 log.debug("Generating " + file);
             }

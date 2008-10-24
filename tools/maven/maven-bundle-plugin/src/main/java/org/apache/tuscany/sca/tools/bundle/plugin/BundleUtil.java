@@ -38,10 +38,12 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.osgi.framework.Version;
 
 /**
  * Common functions used by the plugin.
@@ -103,7 +105,7 @@ final class BundleUtil {
             StringBuffer classpath = new StringBuffer();
             Set<String> exportedPackages = new HashSet<String>();
             for (File jarFile : jarFiles) {
-                addPackages(jarFile, exportedPackages);
+                addPackages(jarFile, exportedPackages, version);
                 if (dir != null) {
                     classpath.append(dir).append("/");
                 } 
@@ -184,10 +186,10 @@ final class BundleUtil {
      * @param packages
      * @throws IOException
      */
-    private static void addPackages(File jarFile, Set<String> packages) throws IOException {
+    private static void addPackages(File jarFile, Set<String> packages, String version) throws IOException {
         if (getBundleSymbolicName(jarFile) == null) {
-            String version = ";version=" + version(jarFile.getPath());
-            addAllPackages(jarFile, packages, version);
+            String ver = ";version=" + version;
+            addAllPackages(jarFile, packages, ver);
         } else {
             addExportedPackages(jarFile, packages);
         }
@@ -356,33 +358,29 @@ final class BundleUtil {
         }
     }
 
-    static private Pattern pattern = Pattern.compile("-([0-9.]+)");
-    static private Pattern pattern2 = Pattern.compile("_([0-9.]+)");
-
     /**
-     * Derive a bundle version from the given JAR file name.
-     * 
-     * @param jarFile
+     * Convert the maven version into OSGi version 
+     * @param mavenVersion
      * @return
      */
-    static String version(String jarFile) {
-        String version = "1.0.0";
-        boolean found = false;
-        Matcher matcher = pattern2.matcher(jarFile);
-        if (matcher.find()) {
-            found = true;
-        } else {
-            matcher = pattern.matcher(jarFile);
-            found = matcher.find();
-        }
-        if (found) {
-            version = matcher.group();
-            if (version.endsWith(".")) {
-                version = version.substring(1, version.length() - 1);
-            } else {
-                version = version.substring(1);
+    static String osgiVersion(String mavenVersion) {
+        ArtifactVersion ver = new DefaultArtifactVersion(mavenVersion);
+        String qualifer = ver.getQualifier();
+        if (qualifer != null) {
+            StringBuffer buf = new StringBuffer(qualifer);
+            for (int i = 0; i < buf.length(); i++) {
+                char c = buf.charAt(i);
+                if (Character.isLetterOrDigit(c) || c == '-' || c == '_') {
+                    // Keep as-is
+                } else {
+                    buf.setCharAt(i, '_');
+                }
             }
+            qualifer = buf.toString();
         }
+        Version osgiVersion =
+            new Version(ver.getMajorVersion(), ver.getMinorVersion(), ver.getIncrementalVersion(), qualifer);
+        String version = osgiVersion.toString();
         return version;
     }
 
