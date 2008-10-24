@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.gdata;
 /**
  * Factory for the GData binding
  *
+ * @version $Rev$ $Date$
  */
 public interface GdataBindingFactory {
 

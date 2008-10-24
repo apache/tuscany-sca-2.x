@@ -33,6 +33,7 @@ import com.google.gdata.data.TextContent;
 /**
  * Utility methods used in this package.
  * 
+ * @version $Rev$ $Date$
  */
 class GdataBindingUtil {
 

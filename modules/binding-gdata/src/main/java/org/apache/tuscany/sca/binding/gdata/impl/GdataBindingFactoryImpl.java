@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.binding.gdata.GdataBindingFactory;
 /**
  * Factory for the GData binding model.
  *
+ * @version $Rev$ $Date$
  */
 public class GdataBindingFactoryImpl implements GdataBindingFactory {
 

@@ -22,10 +22,6 @@ package org.apache.tuscany.sca.binding.gdata.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.gdata.GdataBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -35,6 +31,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * Implementation of the GData binding model.
  *
+ * @version $Rev$ $Date$
  */
 class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
 
@@ -44,14 +41,11 @@ class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
     private String username;
     private String password;
     private String serviceType;
+    
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
 
     public String getName() {
         return name;
@@ -59,6 +53,10 @@ class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
 
     public String getURI() {
         return uri;
+    }
+    
+    public String getTitle() {
+        return title;
     }
     
     public String getUsername(){
@@ -80,6 +78,10 @@ class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
     public void setURI(String uri) {
         this.uri = uri;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     
     public void setUsername(String username) {
         this.username = username;
@@ -93,15 +95,6 @@ class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
         this.serviceType = serviceType;
     }
 
-
-    public String getTitle() {
-        return title;
-    }
-    
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public boolean isUnresolved() {
         // The binding is always resolved
         return false;
@@ -111,6 +104,12 @@ class GdataBindingImpl implements GdataBinding, PolicySetAttachPoint {
         // The binding is always resolved
     }
 
+    //Policy related getters/setters
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+    
     public List<PolicySet> getPolicySets() {
         return policySets;
     }

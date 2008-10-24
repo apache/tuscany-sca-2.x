@@ -61,6 +61,8 @@ import com.google.gdata.util.ServiceException;
 /**
  * A resource collection binding listener, implemented as a Servlet and
  * registered in a Servlet host provided by the SCA hosting runtime.
+ * 
+ * @version $Rev$ $Date$
  */
 class GdataBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(GdataBindingListenerServlet.class.getName());
