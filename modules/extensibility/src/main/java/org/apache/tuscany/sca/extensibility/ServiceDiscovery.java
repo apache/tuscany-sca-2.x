@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -70,16 +68,7 @@ public class ServiceDiscovery implements ServiceDiscoverer {
     }
 
     public ServiceDeclaration getFirstServiceDeclaration(final String name) throws IOException {
-        // Try System property first
-        String className = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            public String run() {
-                return System.getProperty(name);
-            }
-        });
-        if (className == null) {
-            className = name;
-        }
-        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(className);
+        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(name);
         return service;
     }
     

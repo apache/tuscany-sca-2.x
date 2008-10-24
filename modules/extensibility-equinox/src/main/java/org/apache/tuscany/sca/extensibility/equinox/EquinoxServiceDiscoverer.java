@@ -298,11 +298,4 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return descriptors;
     }
 
-    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
-        Class<?> factoryClass = Class.forName(name, false, getClass().getClassLoader());
-        Method newInstanceMethod = factoryClass.getMethod("newInstance");
-        Object factory = newInstanceMethod.invoke(null);
-        return factory;
-    }
-
 }
