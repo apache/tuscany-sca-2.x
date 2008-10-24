@@ -286,7 +286,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         out.close();
     }
 
-    private static void writeTarget(PrintStream ps, Set<String> ids, String[] features) {
+    private void writeTarget(PrintStream ps, Set<String> ids, String[] features) {
         ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         ps.println("<?pde version=\"3.2\"?>");
 
@@ -309,7 +309,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         ps.println("</features>");
         ps.println("<extraLocations>");
         // Not sure why the extra path needs to the plugins folder
-        ps.println("<location path=\"${project_loc}/target/plugins\"/>");
+        ps.println("<location path=\"" + targetDirectory + "\"/>");
         ps.println("</extraLocations>");
         ps.println("</content>");
 
