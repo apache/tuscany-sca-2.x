@@ -249,7 +249,14 @@ class EquinoxHost {
                 Bundle bundle = allBundles.get(bundleName);
                 if (bundle == null) {
                     long installStart = currentTimeMillis();
-                    bundle = bundleContext.installBundle(bundleFile);
+                    String location = bundleFile;
+                    if (bundleFile.startsWith("file:")) {
+                        File target = file(new URL(bundleFile));
+                        // Use a special "reference" scheme to install the bundle as a reference
+                        // instead of copying the bundle 
+                        location = "reference:file:/" + target.getPath();
+                    }
+                    bundle = bundleContext.installBundle(location);
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                     }
