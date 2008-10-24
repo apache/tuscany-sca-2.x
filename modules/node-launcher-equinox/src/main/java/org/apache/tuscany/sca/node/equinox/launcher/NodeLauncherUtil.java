@@ -74,7 +74,7 @@ final class NodeLauncherUtil {
 
     private static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
 
-    private static final String SCANODE_FACTORY = "org.apache.tuscany.sca.node.SCANodeFactory";
+    private static final String NODE_FACTORY = "org.apache.tuscany.sca.node.NodeFactory";
 
     private static final String DOMAIN_MANAGER_LAUNCHER_BOOTSTRAP =
         "org.apache.tuscany.sca.domain.manager.launcher.DomainManagerLauncherBootstrap";
@@ -161,7 +161,7 @@ final class NodeLauncherUtil {
             // If the SCANodeFactory interface is available in the current classloader, create
             // an SCANode proxy around the node we've just create
             try {
-                Class<?> type = Class.forName(SCANODE_FACTORY);
+                Class<?> type = Class.forName(NODE_FACTORY);
                 type = type.getDeclaredClasses()[0];
                 return type.getMethod("createProxy", Class.class, Object.class).invoke(null, type, node);
             } catch (ClassNotFoundException e) {
