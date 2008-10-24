@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Set;
@@ -84,9 +83,17 @@ public class ServiceDiscovery implements ServiceDiscoverer {
         return service;
     }
     
-    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
-        Object factory = getServiceDiscoverer().newFactoryClassInstance(name);
-        return factory;
+    public Object newFactoryClassInstance(String name) {
+        try {
+            ServiceDeclaration declaration = getFirstServiceDeclaration(name);
+            if (declaration == null) {
+                return null;
+            }
+            Class<?> factoryClass = declaration.loadClass();
+            return factoryClass.newInstance();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
 }

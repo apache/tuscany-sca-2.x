@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertTrue;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class ExtensibleModelResolverTestCase {
         ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
         resolvers.addResolver(Model.class, TestModelResolver.class);
 
-        FactoryExtensionPoint factories = new DefaultFactoryExtensionPoint();
+        FactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
 
         resolver = new ExtensibleModelResolver(null, resolvers, factories, null);
 

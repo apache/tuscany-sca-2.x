@@ -198,7 +198,7 @@
                               <Bundle-Description>${pom.name}</Bundle-Description>
                               <Bundle-Activator>calculator.rcp.Activator</Bundle-Activator>
                               <Eclipse-LazyStart>true</Eclipse-LazyStart>
-                              <Export-Package>calculator.rcp*</Export-Package>
+                              <Export-Package></Export-Package>
                           </instructions>
                           <manifestLocation>${basedir}/META-INF</manifestLocation>
                        </configuration>

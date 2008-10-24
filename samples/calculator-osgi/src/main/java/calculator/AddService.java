@@ -16,15 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.contribution.processor;
-
-import javax.xml.stream.XMLInputFactory;
+package calculator;
 
 /**
- * Base marker class for validating XML input factories.
- *
- * @version $Rev$ $Date$
+ * The Add service interface
  */
-public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
+public interface AddService {
+
+    double add(double n1, double n2);
+
 }

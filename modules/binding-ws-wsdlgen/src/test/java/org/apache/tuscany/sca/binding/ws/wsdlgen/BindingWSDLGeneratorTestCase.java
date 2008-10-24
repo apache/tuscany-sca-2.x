@@ -18,15 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.wsdl.Definition;
-import javax.wsdl.Operation;
-import javax.wsdl.PortType;
-
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
@@ -50,7 +44,7 @@ import org.osoa.sca.annotations.Remotable;
 public class BindingWSDLGeneratorTestCase extends TestCase {
 
     public void testCreateWSDLInterfaceContract() throws InvalidInterfaceException {
-        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint();
+        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         DefaultJavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();

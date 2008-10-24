@@ -44,10 +44,13 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -66,6 +69,15 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private boolean hasSchemas;
     private Schema aggregatedSchema;
 
+    public DefaultValidatingXMLInputFactory(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        XMLInputFactory factory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
+        this.inputFactory = factory;
+        this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+        this.monitor =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class).createMonitor();
+    }
+    
     /**
      * Constructs a new XMLInputFactory.
      * 

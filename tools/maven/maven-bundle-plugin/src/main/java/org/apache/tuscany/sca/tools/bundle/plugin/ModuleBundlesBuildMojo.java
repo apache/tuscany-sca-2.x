@@ -215,7 +215,6 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     // Copy a WAR as is 
                     log.info("Adding WAR artifact: " + artifact);
                     copyFile(artifactFile, root);
-                    bundleSymbolicNames.add(bundleName);
 
                 } else {
 

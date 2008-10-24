@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import javax.wsdl.Definition;
 import javax.wsdl.xml.WSDLWriter;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
@@ -50,7 +51,7 @@ public class Interface2WSDLGeneratorTestCase {
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
-        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint();
+        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         WSDLDefinition wsdlDefinition = new DefaultWSDLFactory(modelFactories).createWSDLDefinition();
         DefaultXSDFactory factory = new DefaultXSDFactory();
         Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null), dataBindings, factory, null);

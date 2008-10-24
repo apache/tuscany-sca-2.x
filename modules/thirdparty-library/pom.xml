@@ -87,8 +87,12 @@
                         <id>build-thirdparty-distro</id>
                         <phase>generate-resources</phase>
                         <goals>
-                            <goal>build-thirdparty-distro</goal>
+                            <goal>generate-modules</goal>
                         </goals>
+                        <configuration>
+                            <generateTargetPlatform>true</generateTargetPlatform>
+                            <generatePlugin>true</generatePlugin>
+                        </configuration>
                     </execution>
 
 <!--  

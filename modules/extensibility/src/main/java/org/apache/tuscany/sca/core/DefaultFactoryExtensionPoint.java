@@ -33,13 +33,14 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
-    
+    private ExtensionPointRegistry extensionPointRegistry;
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
     
     /**
      * Constructs a new DefaultModelFactoryExtensionPoint.
      */
-    public DefaultFactoryExtensionPoint() {
+    public DefaultFactoryExtensionPoint(ExtensionPointRegistry extensionPointRegistry) {
+        this.extensionPointRegistry = extensionPointRegistry;
     }
 
     /**
@@ -88,43 +89,35 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
     public <T> T getFactory(Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
         if (factory == null) {
-            
-            if (factoryInterface.isInterface()) {
-                
-                // Dynamically load a factory class declared under META-INF/services 
-                try {
-                    ServiceDeclaration factoryDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
-                    if (factoryDeclaration != null) {
-                        Class<?> factoryClass = factoryDeclaration.loadClass(); 
-                    	
+
+            // Dynamically load a factory class declared under META-INF/services 
+            try {
+                ServiceDeclaration factoryDeclaration =
+                    ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
+                if (factoryDeclaration != null) {
+                    Class<?> factoryClass = factoryDeclaration.loadClass();
+
+                    try {
+                        // Default empty constructor
+                        Constructor<?> constructor = factoryClass.getConstructor();
+                        factory = constructor.newInstance();
+                    } catch (NoSuchMethodException e) {
                         try {
-                            // Default empty constructor
-                            Constructor<?> constructor = factoryClass.getConstructor();
-                            factory = constructor.newInstance();
-                        } catch (NoSuchMethodException e) {
-                            
                             // Constructor taking the model factory extension point
                             Constructor<?> constructor = factoryClass.getConstructor(FactoryExtensionPoint.class);
                             factory = constructor.newInstance(this);
+                        } catch (NoSuchMethodException e1) {
+                            // Constructor taking the extension point registry
+                            Constructor<?> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
+                            factory = constructor.newInstance(extensionPointRegistry);
                         }
-                        
-                        // Cache the loaded factory
-                        addFactory(factory);
                     }
-                } catch (Exception e) {
-                    throw new IllegalArgumentException(e);
-                }
-            } else {
 
-                // Call the newInstance static method on the factory abstract class
-                try {
-                    factory = ServiceDiscovery.getInstance().newFactoryClassInstance(factoryInterface.getName());
-                } catch (Exception e) {
-                    throw new IllegalArgumentException(e);
+                    // Cache the loaded factory
+                    addFactory(factory);
                 }
-                
-                // Cache the factory
-                addFactory(factory);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
             }
         }
         return factoryInterface.cast(factory);

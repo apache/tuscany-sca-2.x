@@ -16,15 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package calculator;
 
-package org.apache.tuscany.sca.contribution.processor;
-
-import javax.xml.stream.XMLInputFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Base marker class for validating XML input factories.
- *
- * @version $Rev$ $Date$
+ * An implementation of the Multiply service.
  */
-public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
+public class MultiplyServiceImpl implements MultiplyService {
+
+    public double multiply(double n1, double n2) {
+        Logger logger = Logger.getLogger("calculator");
+        logger.log(Level.FINEST, "Multiplying " + n1 + " with " + n2);
+        return n1 * n2;
+    }
+
 }

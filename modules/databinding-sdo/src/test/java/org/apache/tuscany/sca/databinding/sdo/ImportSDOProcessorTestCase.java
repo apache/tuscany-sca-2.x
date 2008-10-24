@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 
 import com.example.ipo.sdo.SdoFactory;
@@ -69,7 +70,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        loader = new ImportSDOProcessor(new DefaultFactoryExtensionPoint(), null);
+        loader = new ImportSDOProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()), null);
         xmlFactory = XMLInputFactory.newInstance();
     }
 

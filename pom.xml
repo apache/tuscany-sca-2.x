@@ -244,6 +244,9 @@
                 <module>demos</module>
                 <module>distribution</module>
             </modules>
+            <build>
+                <defaultGoal>eclipse:eclipse</defaultGoal>
+            </build>
         </profile>
 
         <profile>

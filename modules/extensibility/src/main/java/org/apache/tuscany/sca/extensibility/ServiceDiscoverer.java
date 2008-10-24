@@ -47,16 +47,4 @@ public interface ServiceDiscoverer {
      */
     public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException;
     
-    /**
-     * Create a new instance of a factory service class.
-     * 
-     * @param name
-     * @return service implementation class
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
-    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException;
-    
 }

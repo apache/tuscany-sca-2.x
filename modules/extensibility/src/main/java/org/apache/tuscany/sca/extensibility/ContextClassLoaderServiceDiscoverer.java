@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
@@ -45,7 +43,7 @@ import java.util.logging.Logger;
 /**
  * A ServiceDiscoverer that find META-INF/services/... using the Context ClassLoader.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(ContextClassLoaderServiceDiscoverer.class.getName());
@@ -241,13 +239,6 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         }
         return descriptors;
 
-    }
-
-    public Object newFactoryClassInstance(String name) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
-        Class<?> factoryClass = Class.forName(name, false, classLoaderReference.get());
-        Method newInstanceMethod = factoryClass.getMethod("newInstance");
-        Object factory = newInstanceMethod.invoke(null);
-        return factory;
     }
 
 }
