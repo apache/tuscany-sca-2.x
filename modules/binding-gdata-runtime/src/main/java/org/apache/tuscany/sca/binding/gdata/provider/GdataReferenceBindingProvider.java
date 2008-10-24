@@ -83,7 +83,6 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
         String authorization = "admin" + ":" + "admin";
         authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
         
-        
         // Prepare gdata header
         String serviceType = binding.getServiceType();
         String usernane = binding.getUsername();
@@ -97,8 +96,6 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
         if(binding.getUsername().equals("admin") == false && binding.getPassword().equals("admin")==false){
             googleService.setUserCredentials(binding.getUsername(),binding.getPassword());     
         }
-         
-
 
         // Create an HTTP client
         HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -110,9 +107,6 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
     public Invoker createInvoker(Operation operation) {
 
         String operationName = operation.getName();
-
-        // //System.out.println("GdataReferenceBindingProvider.createInvoker---operationName:"
-        // + operationName);
 
         if (operationName.equals("get")) {
 
@@ -131,9 +125,9 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
             String entryURI = this.binding.getURI();
             if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
             	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
-            	binding.setURI(entryURI);
             }
-            return new GdataBindingInvoker.GetInvoker(operation, binding.getURI(), googleService, httpClient, authorizationHeader, this);
+
+            return new GdataBindingInvoker.GetInvoker(operation, entryURI, googleService, httpClient, authorizationHeader, this);
 
         } else if (operationName.equals("post")) {
 
@@ -144,62 +138,48 @@ class GdataReferenceBindingProvider implements ReferenceBindingProvider {
             String entryURI = this.binding.getURI();
             if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
             	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
-            	binding.setURI(entryURI);
             }
-            return new GdataBindingInvoker.PutInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
-                                                      this);
+
+            return new GdataBindingInvoker.PutInvoker(operation, entryURI,  googleService, httpClient, authorizationHeader, this);
+            
         } else if (operationName.equals("delete")) {
-        	
-        	
-            String entryURI = this.binding.getURI();
+
+        	String entryURI = this.binding.getURI();
             if(entryURI.contains("picasaweb.google.com/data/feed/api/")){
             	entryURI = entryURI.replace("picasaweb.google.com/data/feed/api/", "picasaweb.google.com/data/entry/api/");
-            	binding.setURI(entryURI);
             }
-            return new GdataBindingInvoker.DeleteInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
-                                                         this);
+            return new GdataBindingInvoker.DeleteInvoker(operation, entryURI,  googleService, httpClient, authorizationHeader, this);
+            
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
 
-            // //System.out.println("GdataReferenceBindingProvider
-            // CreateInvoker: getFeed or getAll");
-
-            return new GdataBindingInvoker.GetAllInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
-                                                         this);
+            return new GdataBindingInvoker.GetAllInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
 
         } else if (operationName.equals("postMedia")) {
-            return new GdataBindingInvoker.PostMediaInvoker(operation, binding.getURI(),  googleService, httpClient,
-                                                            authorizationHeader, this);
+            
+        	return new GdataBindingInvoker.PostMediaInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
+        	
         } else if (operationName.equals("putMedia")) {
-            return new GdataBindingInvoker.PutMediaInvoker(operation, binding.getURI(),  googleService, httpClient,
-                                                           authorizationHeader, this);
+        	
+            return new GdataBindingInvoker.PutMediaInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
+            
         } else if (operationName.equals("query")) {
-            return new GdataBindingInvoker.QueryInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader,
-                                                        this);
+        	
+            return new GdataBindingInvoker.QueryInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
         }
 
         return new GdataBindingInvoker(operation, binding.getURI(),  googleService, httpClient, authorizationHeader, this);
     }
-
-    
     
     public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
 
-    
-    
     public void start() {
-
         // Configure the HTTP client credentials
         Credentials credentials = new UsernamePasswordCredentials("admin", "admin");
         httpClient.getParams().setAuthenticationPreemptive(true);
         URI uri = URI.create(binding.getURI());
         httpClient.getState().setCredentials(new AuthScope(uri.getHost(), uri.getPort()), credentials);
-
-        // Find the get operation on the reference interface
-        if (true) {
-            return;
-        }
     }
 
     public void stop() {

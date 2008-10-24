@@ -40,10 +40,39 @@ public interface GdataBinding extends Binding {
      */
     void setTitle(String title);
     
+    /**
+     * Returns the username to be used when authenticating with GData Services
+     * @return
+     */
     String getUsername();    
+    
+    /**
+     * Sets the username to be used when authenticating with GData Services
+     * @param username
+     */
+    void setUsername(String username);
+    
+    /**
+     * Returns the password to be used when authenticating with GData Services
+     * @return
+     */
     String getPassword();  
-    String getServiceType();
-    void setUsername(String username);    
+    
+    /**
+     * Sets the password to be used when authenticating with GData Services
+     * @param password
+     */
     void setPassword(String password);   
+    
+    /**
+     * Returns the type os service being used
+     * @return
+     */
+    String getServiceType();
+    
+    /**
+     * Sets the type of service being used
+     * @param serviceType
+     */
     void setServiceType(String serviceType);  
 }

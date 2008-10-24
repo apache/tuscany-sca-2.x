@@ -18,19 +18,15 @@
  */
 package org.apache.tuscany.sca.binding.gdata.provider;
 
-import static org.apache.tuscany.sca.binding.gdata.provider.GdataBindingUtil.entry;
 import static org.apache.tuscany.sca.binding.gdata.provider.GdataBindingUtil.feedEntry;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.tuscany.sca.binding.gdata.collection.NotFoundException;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
@@ -46,6 +42,8 @@ import com.google.gdata.util.ServiceException;
 
 /**
  * Invoker for the GData binding.
+ * 
+ * @version $Rev$ $Date$
  */
 class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
 
@@ -71,6 +69,11 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
 
     }
 
+
+    public boolean allowsPassByReference() {
+        return true;
+    }
+
     public Message invoke(Message msg) {
         // Shouldn't get here, as the only supported methods are
         // defined in the ResourceCollection interface, and implemented
@@ -83,6 +86,7 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
      * Get operation invoker
      */
     public static class GetInvoker extends GdataBindingInvoker {
+    	
         public GetInvoker(Operation operation,
                           String uri,
                           GoogleService googleService,
@@ -145,22 +149,18 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
 
                 // Expect an GData entry
 
-                System.out.println("[Debug Info]GdataBindingInvoker.PostInvoker --- supportsFeedEntries: " + provider
-                    .supportsFeedEntries());
+                System.out.println("[Debug Info]GdataBindingInvoker.PostInvoker --- supportsFeedEntries: " + provider.supportsFeedEntries());
                 feedEntry = (com.google.gdata.data.Entry)args[0];
 
-                System.out.println("[Debug Info]GdataBindingInvoker.PostInvoker --- feedEntry title: " + feedEntry
-                    .getTitle().getPlainText());
+                System.out.println("[Debug Info]GdataBindingInvoker.PostInvoker --- feedEntry title: " + feedEntry.getTitle().getPlainText());
 
             } else {
                 // Expect a key and data item
                 Entry<Object, Object> entry = new Entry<Object, Object>(args[0], args[1]);
 
                 // FIXME: this needs to be examinated more....
-                feedEntry =
-                    feedEntry(entry, provider.getItemClassType(), provider.getItemXMLType(), provider.getMediator());
+                feedEntry = feedEntry(entry, provider.getItemClassType(), provider.getItemXMLType(), provider.getMediator());
             }
-
 
             try {
                
@@ -212,13 +212,6 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
                 id = (String)args[0];
                 Entry<Object, Object> entry = new Entry<Object, Object>(id, args[1]);
 
-                // FIXME: The following statement needs to be modified
-                // accordingly
-                /*
-                 * feedEntry = feedEntry(entry, provider.getItemClassType(),
-                 * provider.getItemXMLType(), provider.getMediator(),
-                 * abderaFactory);
-                 */
             }
 
             // Send an HTTP PUT <Localhost>
@@ -425,10 +418,4 @@ class GdataBindingInvoker implements Invoker, DataExchangeSemantics {
             return super.invoke(msg);
         }
     }
-
-    public boolean allowsPassByReference() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
 }

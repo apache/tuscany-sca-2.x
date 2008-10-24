@@ -40,6 +40,8 @@ import com.google.gdata.util.AuthenticationException;
 
 /**
  * Implementation of a Binding provider factory for the Atom binding.
+ * 
+ * @version $Rev$ $Date$
  */
 public class GdataBindingProviderFactory implements BindingProviderFactory<GdataBinding> {
 
@@ -63,7 +65,6 @@ public class GdataBindingProviderFactory implements BindingProviderFactory<Gdata
         try {
             return new GdataReferenceBindingProvider(component, reference, binding, mediator);
         } catch (AuthenticationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null; //Google authentication error! : This exception needs to be handled into a better way
         }

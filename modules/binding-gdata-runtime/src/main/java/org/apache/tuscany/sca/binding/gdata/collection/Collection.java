@@ -25,6 +25,8 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * Provides access to a collection of resources using Gdata.
+ * 
+ * @version $Rev$ $Date$
  */
 @Remotable
 public interface Collection {
