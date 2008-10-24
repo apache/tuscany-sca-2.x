@@ -26,84 +26,17 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-distribution-all</artifactId>
-    <name>Apache Tuscany SCA All-in-one Distribution</name>
+    <artifactId>tuscany-distribution-pdetarget</artifactId>
+    <name>Apache Tuscany SCA PDE Target Platform Distribution</name>
     <packaging>pom</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-core</artifactId>
+            <artifactId>tuscany-distribution-all</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-ejava</artifactId>
-            <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-manager</artifactId>
-            <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-process</artifactId>
-            <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-web20</artifactId>
-            <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-webservice</artifactId>
-            <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-gdata-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-gdata-runtime-gsoc</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-fastinfoset</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-xmlbeans</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-tracing-aspectj</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
 
     <profiles>
@@ -111,6 +44,13 @@
         <!-- Build profile that can be used to build the distro packages -->
         <profile>
             <id>distribution</id>
+            <build>
+            </build>
+        </profile>    
+
+        <!-- Build profile that can be used to configure your Eclipse environment -->
+        <profile>
+            <id>eclipse</id>
             <build>
                 <plugins>
                     <plugin>
@@ -124,36 +64,17 @@
                                     <goal>generate-modules</goal>
                                 </goals>
                                 <configuration>
-                                    <targetDirectory>target/modules</targetDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>distribution-package</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                                        <descriptor>src/main/assembly/src.xml</descriptor>
-                                    </descriptors>
-                                    <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-all-1.4-SNAPSHOT</finalName>
+                                    <targetDirectory>target/dependencies</targetDirectory>
+                                    <excludeGroupIds>
+                                        <excludeGroupId>org.apache.tuscany.sca</excludeGroupId>
+                                    </excludeGroupIds>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
-        </profile>    
+        </profile>
 
         <!-- Profile that can be used to build the modules included in the distro -->
         <profile>

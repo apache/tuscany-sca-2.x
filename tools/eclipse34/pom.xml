@@ -32,10 +32,7 @@
 
     <profiles>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>distribution</id>
             <modules>
                 <module>features/core</module>
                 <module>features/ejava</module>
