@@ -22,15 +22,24 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
+        <version>1.4-SNAPSHOT</version>
     </parent>
-
+    <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-distribution</artifactId>
-    <name>Apache Tuscany SCA Distribution</name>
     <packaging>pom</packaging>
+    <name>Apache Tuscany SCA Distributions</name>
 
     <modules>
-        <module>features</module>
+        <module>all</module>
+        <module>core</module>
+        <module>ejava</module>
+        <module>manager</module>
+        <module>pdetarget</module>
+        <module>process</module>
+        <module>repository</module>
+        <module>web20</module>
+        <module>webservice</module>
     </modules>
+
 </project>

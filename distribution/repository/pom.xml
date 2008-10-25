@@ -21,113 +21,68 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-distribution-features</artifactId>
+        <artifactId>tuscany-distribution</artifactId>
         <version>1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-distribution-web20</artifactId>
-    <name>Apache Tuscany SCA Web 2.0 Distribution</name>
+    <artifactId>tuscany-distribution-repository</artifactId>
+    <name>Apache Tuscany SCA Maven Repository Distribution</name>
     <packaging>pom</packaging>
 
     <dependencies>
 
-        <!-- Core distribution -->
+        <!-- All distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-core</artifactId>
+            <artifactId>tuscany-distribution-all</artifactId>
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-        <!-- Bindings -->
+        <!-- Eclipse update site -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-atom-abdera</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rss-rome</artifactId>
+            <artifactId>org.apache.tuscany.sca.updatesite</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-        <!-- Contribution model -->
+        <!-- Maven plugins -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-resource</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Databindings -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-json</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Hosts -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Implementation types -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-resource-runtime</artifactId>
+            <artifactId>tuscany-maven-ant-generator</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-script-runtime</artifactId>
+            <artifactId>tuscany-maven-bundle-plugin</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-widget-runtime</artifactId>
+            <artifactId>tuscany-maven-incremental-build</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-maven-wsdl2java</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-maven-java2wsdl</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        
     </dependencies>
 
     <profiles>
-
-        <!-- Build profile that can be used to build the distro packages -->
+    
+        <!-- Default build profile that can be used to build the distro packages -->
         <profile>
             <id>distribution</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.tuscany.sca</groupId>
-                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>distribution-modules</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>generate-modules</goal>
-                                </goals>
-                                <configuration>
-                                    <targetDirectory>target/modules</targetDirectory>
-                                    <excludeDirectories>
-                                        <excludeDirectory>../core/target/modules</excludeDirectory>
-                                    </excludeDirectories>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
@@ -140,19 +95,18 @@
                                 </goals>
                                 <configuration>
                                     <descriptors>
-                                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                                        <descriptor>src/main/assembly/src.xml</descriptor>
+                                        <descriptor>src/main/assembly/repository.xml</descriptor>
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-web20-1.4-SNAPSHOT</finalName>
+                                    <finalName>apache-tuscany-sca-repository-1.4-SNAPSHOT</finalName>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        
+        </profile>    
+
         <!-- Profile that can be used to build the modules included in the distro -->
         <profile>
             <id>modules</id>
@@ -164,14 +118,30 @@
                 <module>../../../modules/binding-atom-abdera</module>
                 <module>../../../modules/binding-corba</module>
                 <module>../../../modules/binding-corba-runtime</module>
+                <module>../../../modules/binding-ejb</module>
+                <module>../../../modules/binding-ejb-runtime</module>
+                <module>../../../modules/binding-gdata</module>
+                <module>../../../modules/binding-gdata-gsoc</module>
+                <module>../../../modules/binding-gdata-runtime</module>
+                <module>../../../modules/binding-gdata-runtime-gsoc</module>
                 <module>../../../modules/binding-http</module>
                 <module>../../../modules/binding-http-runtime</module>
+                <module>../../../modules/binding-jms</module>
+                <module>../../../modules/binding-jms-runtime</module>
                 <module>../../../modules/binding-jsonrpc</module>
                 <module>../../../modules/binding-jsonrpc-runtime</module>
+                <module>../../../modules/binding-rmi</module>
+                <module>../../../modules/binding-rmi-runtime</module>
                 <module>../../../modules/binding-rss</module>
                 <module>../../../modules/binding-rss-rome</module>
                 <module>../../../modules/binding-sca</module>
+                <module>../../../modules/binding-sca-axis2</module>
                 <module>../../../modules/binding-sca-xml</module>
+                <module>../../../modules/binding-ws</module>
+                <module>../../../modules/binding-ws-axis2</module>
+                <module>../../../modules/binding-ws-axis2-policy</module>
+                <module>../../../modules/binding-ws-wsdlgen</module>
+                <module>../../../modules/binding-ws-xml</module>
                 <module>../../../modules/contribution</module>
                 <module>../../../modules/contribution-java</module>
                 <module>../../../modules/contribution-namespace</module>
@@ -182,17 +152,30 @@
                 <module>../../../modules/core-spi</module>
                 <module>../../../modules/data-api</module>
                 <module>../../../modules/databinding</module>
+                <module>../../../modules/databinding-axiom</module>
+                <module>../../../modules/databinding-fastinfoset</module>
                 <module>../../../modules/databinding-jaxb</module>
+                <module>../../../modules/databinding-jaxb-axiom</module>
                 <module>../../../modules/databinding-json</module>
+                <module>../../../modules/databinding-saxon</module>
+                <module>../../../modules/databinding-sdo</module>
+                <module>../../../modules/databinding-sdo-axiom</module>
+                <module>../../../modules/databinding-xmlbeans</module>
                 <module>../../../modules/definitions</module>
                 <module>../../../modules/definitions-xml</module>
+                <module>../../../modules/domain-manager</module>
                 <module>../../../modules/endpoint</module>
                 <module>../../../modules/extensibility</module>
                 <module>../../../modules/extensibility-equinox</module>
                 <module>../../../modules/host-corba</module>
+                <module>../../../modules/host-corba-jee</module>
                 <module>../../../modules/host-corba-jse</module>
                 <module>../../../modules/host-http</module>
                 <module>../../../modules/host-jetty</module>
+                <module>../../../modules/host-rmi</module>
+                <module>../../../modules/implementation-bpel</module>
+                <module>../../../modules/implementation-bpel-ode</module>
+                <module>../../../modules/implementation-ejb</module>
                 <module>../../../modules/implementation-java</module>
                 <module>../../../modules/implementation-java-runtime</module>
                 <module>../../../modules/implementation-java-xml</module>
@@ -202,8 +185,10 @@
                 <module>../../../modules/implementation-resource-runtime</module>
                 <module>../../../modules/implementation-script</module>
                 <module>../../../modules/implementation-script-runtime</module>
+                <module>../../../modules/implementation-spring</module>
                 <module>../../../modules/implementation-widget</module>
                 <module>../../../modules/implementation-widget-runtime</module>
+                <module>../../../modules/implementation-xquery</module>
                 <module>../../../modules/interface</module>
                 <module>../../../modules/interface-java</module>
                 <module>../../../modules/interface-java-jaxws</module>
@@ -216,11 +201,16 @@
                 <module>../../../modules/node-launcher</module>
                 <module>../../../modules/node-launcher-equinox</module>
                 <module>../../../modules/node-launcher-webapp</module>
+                <module>../../../modules/node-manager</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
                 <module>../../../modules/policy-security-jsr250</module>
+                <module>../../../modules/policy-security-ws</module>
+                <module>../../../modules/policy-transaction</module>
                 <module>../../../modules/policy-xml</module>
+                <module>../../../modules/policy-xml-ws</module>
                 <module>../../../modules/sca-api</module>
+                <module>../../../modules/tracing-aspectj</module>
                 <module>../../../modules/workspace</module>
                 <module>../../../modules/workspace-impl</module>
                 <module>../../../modules/workspace-xml</module>
