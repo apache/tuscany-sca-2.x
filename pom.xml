@@ -192,6 +192,7 @@
             <id>distribution</id>
             <modules>
                 <module>distribution</module>
+                <module>tools/eclipse</module>
             </modules>
         </profile>
 
