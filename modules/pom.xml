@@ -101,14 +101,8 @@
                 <module>host-corba-jee</module>
                 <module>host-corba-jse</module>
                 <module>host-corba-jse-tns</module>
-                <!--
-                <module>host-ejb</module>
-                -->
                 <module>host-http</module>
                 <module>host-jetty</module>
-                <!--
-                <module>host-openejb</module>
-                -->
                 <module>host-rmi</module>
                 <!--
                 <module>host-tomcat</module>
