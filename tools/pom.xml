@@ -36,10 +36,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>eclipse34</module>
-                <module>java2wsdl</module>
+                <module>eclipse</module>
                 <module>maven</module>
-                <module>wsdl2java</module>
+                <module>sdo</module>
             </modules>
         </profile>
     </profiles>
