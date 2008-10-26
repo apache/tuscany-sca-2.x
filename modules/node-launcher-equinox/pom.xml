@@ -49,6 +49,19 @@
             <artifactId>runtime</artifactId>
             <version>3.3.100-v20070530</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>app</artifactId>
+            <version>1.0.0-v20070606</version>
+            <scope>runtime</scope>
         </dependency>        
 
         <dependency>

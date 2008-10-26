@@ -33,7 +33,29 @@
             <groupId>org.eclipse.jdt.debug</groupId>
             <artifactId>ui</artifactId>
             <version>3.2.100-v20070531-1800</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>app</artifactId>
+            <version>1.0.0-v20070606</version>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>common</artifactId>
+            <version>3.3.0-v20070426</version>
+        </dependency>        
 
         <dependency>
             <groupId>org.eclipse.swt.win32.win32</groupId>
