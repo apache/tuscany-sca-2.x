@@ -49,6 +49,25 @@
                 <module>site/updatesite</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>eclipse</id>
+            <modules>
+                <module>features/core</module>
+                <module>features/ejava</module>
+                <module>features/manager</module>
+                <module>features/process</module>
+                <module>features/web20</module>
+                <module>features/webservice</module>
+                <module>plugins/core</module>
+                <module>plugins/ejava</module>
+                <module>plugins/manager</module>
+                <module>plugins/process</module>
+                <module>plugins/web20</module>
+                <module>plugins/webservice</module>
+                <module>site/updatesite</module>
+            </modules>
+        </profile>
     </profiles>
 
 </project>
