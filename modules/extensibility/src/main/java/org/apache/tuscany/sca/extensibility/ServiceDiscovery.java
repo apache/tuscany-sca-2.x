@@ -37,7 +37,10 @@ public class ServiceDiscovery implements ServiceDiscoverer {
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
     private ServiceDiscoverer discoverer;
-
+    
+    private ServiceDiscovery() {
+        super();
+    }
     /**
      * Get an instance of Service discovery, one instance is created per
      * ClassLoader that this class is loaded from
@@ -49,9 +52,19 @@ public class ServiceDiscovery implements ServiceDiscoverer {
     }
 
     public ServiceDiscoverer getServiceDiscoverer() {
-        if (discoverer == null) {
-            discoverer = new ContextClassLoaderServiceDiscoverer();
+        if (discoverer != null) {
+            return discoverer;
         }
+        try {
+            Class<?> cls = Class.forName("org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer");
+            System.out.println(cls);
+            if (discoverer != null) {
+                return discoverer;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        discoverer = new ContextClassLoaderServiceDiscoverer();
         return discoverer;
     }
 

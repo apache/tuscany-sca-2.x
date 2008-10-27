@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,12 +123,19 @@ class EquinoxHost {
         try {
             if (!EclipseStarter.isRunning()) {
 
+                String version = System.getProperty("java.specification.version");
+                String profile = "J2SE-1.5.profile";
+                if (version.startsWith("1.6")) {
+                    profile = "JavaSE-1.6.profile";
+                }
+                Properties props = new Properties();
+                InputStream is = getClass().getResourceAsStream(profile);
+                if (is != null) {
+                    props.load(is);
+                    is.close();
+                }
                 // Configure Eclipse properties
-                Map<Object, Object> props = new HashMap<Object, Object>();
                 
-                // Set system packages
-                props.put("org.osgi.framework.system.packages", systemPackages);
-    
                 // Use the boot classloader as the parent classloader
                 props.put("osgi.contextClassLoaderParent", "boot");
                 

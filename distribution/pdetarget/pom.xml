@@ -28,7 +28,7 @@
 
     <artifactId>tuscany-distribution-pdetarget</artifactId>
     <name>Apache Tuscany SCA PDE Target Platform Distribution</name>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -58,6 +58,7 @@
                                 </goals>
                                 <configuration>
                                     <targetDirectory>target/modules</targetDirectory>
+                                    <generateTargetPlatform>true</generateTargetPlatform>
                                     <excludeGroupIds>
                                         <excludeGroupId>org.apache.tuscany.sca</excludeGroupId>
                                     </excludeGroupIds>

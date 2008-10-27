@@ -33,11 +33,15 @@ public class CalculatorActivator implements BundleActivator {
     private Node node;
 
     public void start(BundleContext context) throws Exception {
-        NodeFactory factory = NodeFactory.newInstance();
-        String url = ContributionLocationHelper.getContributionLocation(getClass());
-        Contribution contrib = new Contribution("c1", url);
-        node = factory.createNode("Calculator.composite", contrib);
-        node.start();
+        try {
+            NodeFactory factory = NodeFactory.newInstance();
+            String url = ContributionLocationHelper.getContributionLocation(getClass());
+            Contribution contrib = new Contribution("c1", url);
+            node = factory.createNode("Calculator.composite", contrib);
+            node.start();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop(BundleContext context) throws Exception {

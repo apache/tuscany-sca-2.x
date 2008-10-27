@@ -20,6 +20,10 @@
 package org.apache.tuscany.sca.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -81,6 +85,24 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
         }
     }
     
+    private ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private ClassLoader setContextClassLoader(final ClassLoader classLoader) {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(classLoader);
+                return tccl;
+            }
+        });
+    }
+
     /**
      * Get a factory implementing the given interface.
      * @param factoryInterface The lookup key (factory interface)
@@ -96,8 +118,22 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
                     ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
                 if (factoryDeclaration != null) {
                     Class<?> factoryClass = factoryDeclaration.loadClass();
-
                     try {
+                        if (!factoryInterface.isInterface() && Modifier.isAbstract(factoryInterface.getModifiers())) {
+                            try {
+                                Method newInstanceMethod = factoryInterface.getDeclaredMethod("newInstance");
+                                ClassLoader tccl = setContextClassLoader(factoryClass.getClassLoader());
+                                try {
+                                    factory = newInstanceMethod.invoke(null);
+                                    factories.put(factoryInterface, factory);
+                                    return  factoryInterface.cast(factory);
+                                } finally {
+                                    setContextClassLoader(tccl);
+                                }
+                            } catch (NoSuchMethodException e) {
+                                // Ignore
+                            }
+                        }
                         // Default empty constructor
                         Constructor<?> constructor = factoryClass.getConstructor();
                         factory = constructor.newInstance();
@@ -114,7 +150,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
                     }
 
                     // Cache the loaded factory
-                    addFactory(factory);
+                    factories.put(factoryInterface, factory);
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);

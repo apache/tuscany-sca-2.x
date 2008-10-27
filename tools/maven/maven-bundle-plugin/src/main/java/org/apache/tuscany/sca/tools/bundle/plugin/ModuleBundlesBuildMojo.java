@@ -249,7 +249,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Generate a PDE target
             if (generateTargetPlatform) {
-                File target = new File(project.getBasedir(), "tuscany.target");
+                File target = new File(project.getBuild().getDirectory(), "tuscany.target");
                 FileOutputStream targetFile = new FileOutputStream(target);
                 writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
                 targetFile.close();

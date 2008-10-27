@@ -263,8 +263,13 @@ public class NodeImpl implements Node, Client {
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint activators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
         for (ModuleActivator moduleActivator: activators.getModuleActivators()) {
-            moduleActivator.start(extensionPoints);
-            moduleActivators.add(moduleActivator);
+            try {
+                moduleActivator.start(extensionPoints);
+                moduleActivators.add(moduleActivator);
+            } catch (Throwable e) {
+                // Ignore the failing module for now
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         // Get XML input/output factories

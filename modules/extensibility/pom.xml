@@ -44,6 +44,7 @@
                             org.apache.tuscany.sca.core,
                             org.apache.tuscany.sca.extensibility
                         </Export-Package>
+                        <DynamicImport-Package>org.apache.tuscany.sca.extensibility.equinox</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
