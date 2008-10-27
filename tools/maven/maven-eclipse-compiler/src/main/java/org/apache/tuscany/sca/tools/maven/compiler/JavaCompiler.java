@@ -98,7 +98,7 @@ public class JavaCompiler extends AbstractCompiler {
         if (configuration.isDebug()) {
             settings.put(OPTION_LocalVariableAttribute, GENERATE);
         }
-        if (configuration.getSourceEncoding() != null && !configuration.getSourceEncoding().isEmpty()) {
+        if (configuration.getSourceEncoding() != null && !(configuration.getSourceEncoding().length() == 0)) {
             settings.put(OPTION_Encoding, configuration.getSourceEncoding());
         }
         if (!configuration.isShowWarnings()) {
