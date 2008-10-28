@@ -170,26 +170,6 @@
 
     <build>
         <plugins>
-            <!-- compiler plugin configuration -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <compilerId>tuscany-eclipse</compilerId>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.tuscany.sca</groupId>
-                        <artifactId>tuscany-maven-eclipse-compiler</artifactId>
-                        <version>1.4-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        
             <plugin>
                <artifactId>maven-eclipse-plugin</artifactId>
                <version>2.5.1</version>
