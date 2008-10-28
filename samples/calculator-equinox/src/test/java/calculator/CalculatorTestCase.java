@@ -24,14 +24,10 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * This shows how to test the Calculator composition.
  */
-@Scope("COMPOSITE")
-@EagerInit
 public class CalculatorTestCase extends TestCase {
 
     private NodeLauncher launcher;
