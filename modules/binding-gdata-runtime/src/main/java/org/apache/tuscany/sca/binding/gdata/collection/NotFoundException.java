@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.binding.gdata.collection;
  * 
  * @version $Rev$ $Date$
  */
+
 public class NotFoundException extends Exception {
     private static final long serialVersionUID = -5046027674128627383L;
 
@@ -41,5 +42,4 @@ public class NotFoundException extends Exception {
     public NotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }
