@@ -582,7 +582,6 @@ class AtomBindingListenerServlet extends HttpServlet {
                 }
 
             } else if (contentType != null) {
-
                 // Create a new media entry
 
                 // Get incoming headers
@@ -597,13 +596,18 @@ class AtomBindingListenerServlet extends HttpServlet {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
                 createdFeedEntry = responseMessage.getBody();
+                
+                // Transfer media info to response header.
+                // Summary is a comma separated list of header properties.
+                String summary = createdFeedEntry.getSummary();
+               	addPropertiesToHeader( response, summary );
+                
             } else {
                 response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             }
 
-            // A new entry was created successfully
+            // A new entry for non-media was created successfully.
             if (createdFeedEntry != null) {
-
                 // Set location of the created entry in the Location header
                 IRI feedId = createdFeedEntry.getId();
                 if ( feedId != null )
@@ -614,11 +618,14 @@ class AtomBindingListenerServlet extends HttpServlet {
                 Link link = createdFeedEntry.getSelfLink();
                 if (link != null) {
                     response.addHeader(LOCATION, link.getHref().toString());
-                } else {
-                   link = createdFeedEntry.getLink( "Edit" );
-                   if (link != null) {
-                      response.addHeader(LOCATION, link.getHref().toString());
-                   }
+                } 
+                Link editLink = createdFeedEntry.getEditLink();
+                if (editLink != null) {
+                    response.addHeader(LOCATION, editLink.getHref().toString());
+                }
+                Link editMediaLink = createdFeedEntry.getEditMediaLink();
+                if (editMediaLink != null) {
+                    response.addHeader(CONTENTLOCATION, editMediaLink.getHref().toString());
                 }
 
                 // Write the created Atom entry
@@ -704,12 +711,13 @@ class AtomBindingListenerServlet extends HttpServlet {
 
             } else if (contentType != null) {
 
-                // Updated a media entry
+                // Update a media entry
 
                 // Let the component implementation create the media entry
                 Message requestMessage = messageFactory.createMessage();
                 requestMessage.setBody(new Object[] {id, contentType, request.getInputStream()});
                 Message responseMessage = putMediaInvoker.invoke(requestMessage);
+                
                 Object body = responseMessage.getBody();
                 if (responseMessage.isFault()) {
                     if (body.getClass().getName().endsWith(".NotFoundException")) {
@@ -718,6 +726,9 @@ class AtomBindingListenerServlet extends HttpServlet {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
                 }
+                
+                // Transfer content to response header.
+                
             } else {
                 response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             }
@@ -833,5 +844,28 @@ class AtomBindingListenerServlet extends HttpServlet {
     		return st.nextToken();    		
         return "application/atom+xml";
     }
+
+    /** Take a list of key values and add them to the header.
+     * For instance "Content-Type=image/gif,Content-Length=14201"
+     * @param response
+     * @param properties
+     */
+	public static void addPropertiesToHeader( HttpServletResponse response, String properties  ) {
+		if ( properties == null ) return; 
+    	StringTokenizer props = new StringTokenizer( properties, ",");
+    	while( props.hasMoreTokens()) {
+    		String prop = props.nextToken();
+    		StringTokenizer keyVal = new StringTokenizer( prop, "=");
+    		String key = null;
+    		String val = null;
+    		if ( keyVal.hasMoreTokens() )
+    			key = keyVal.nextToken();
+    		if ( keyVal.hasMoreTokens() )
+    			val = keyVal.nextToken();
+    		if (( key != null ) && ( val != null )) {
+                response.addHeader(key, val);                			
+    		}
+    	}
+	}
 
 }
