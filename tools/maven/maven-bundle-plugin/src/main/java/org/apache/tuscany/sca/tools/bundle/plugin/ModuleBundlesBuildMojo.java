@@ -90,7 +90,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      *  @parameter
      */
     private boolean generateTargetPlatform;
-    
+
     /**
      * A list of Eclipse features to be added to the target definition
      * @parameter
@@ -121,9 +121,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             // Build sets of exclude directories and included/excluded/groupids
             Set<String> excludedFileNames = new HashSet<String>();
             if (excludeDirectories != null) {
-                for (File f: excludeDirectories) {
+                for (File f : excludeDirectories) {
                     if (f.isDirectory()) {
-                        for (String n: f.list()) {
+                        for (String n : f.list()) {
                             excludedFileNames.add(n);
                         }
                     }
@@ -131,7 +131,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             Set<String> includedGroupIds = new HashSet<String>();
             if (includeGroupIds != null) {
-                for (String g: includeGroupIds) {
+                for (String g : includeGroupIds) {
                     includedGroupIds.add(g);
                 }
             }
@@ -148,11 +148,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 Artifact artifact = (Artifact)o;
 
                 // Only consider Compile and Runtime dependencies
-                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact
-                    .getScope()))) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Skipping artifact: " + artifact);
-                    }
+                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) 
+                    || Artifact.SCOPE_RUNTIME.equals(artifact.getScope())
+                    || Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) 
+                    || (generateTargetPlatform && Artifact.SCOPE_TEST.equals(artifact.getScope())))) {
+                    log.info("Skipping artifact: " + artifact);
                     continue;
                 }
 
@@ -172,7 +172,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                         continue;
                     }
                 }
-                
+
                 File artifactFile = artifact.getFile();
                 if (!artifactFile.exists()) {
                     log.warn("Artifact doesn't exist: " + artifact);
@@ -225,7 +225,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                         log.debug("Artifact file is excluded: " + artifact);
                         continue;
                     }
-                    
+
                     // Create a bundle directory for a non-OSGi JAR
                     log.info("Adding JAR artifact: " + artifact);
                     String version = BundleUtil.osgiVersion(artifact.getVersion());
@@ -233,8 +233,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     Set<File> jarFiles = new HashSet<File>();
                     jarFiles.add(artifactFile);
                     String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId());
-                    Manifest mf =
-                        BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
+                    Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
                     file = new File(file, "MANIFEST.MF");
@@ -249,7 +248,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Generate a PDE target
             if (generateTargetPlatform) {
-                File target = new File(project.getBuild().getDirectory(), "tuscany.target");
+                File target = new File(project.getBuild().getDirectory(), project.getArtifactId()+".target");
                 FileOutputStream targetFile = new FileOutputStream(target);
                 writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
                 targetFile.close();
@@ -290,7 +289,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         ps.println("<?pde version=\"3.2\"?>");
 
-        ps.println("<target name=\"Apache Tuscany Eclipse Target\">");
+        ps.println("<target name=\"Eclipse Target - " + project.getArtifactId() + "\">");
         ps.println("<location useDefault=\"true\"/>");
 
         // ps.println("<content useAllPlugins=\"true\">");
