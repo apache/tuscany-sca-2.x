@@ -85,14 +85,6 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
         }
     }
     
-    private ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-    }
-
     private ClassLoader setContextClassLoader(final ClassLoader classLoader) {
         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
@@ -119,30 +111,18 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
                 if (factoryDeclaration != null) {
                     Class<?> factoryClass = factoryDeclaration.loadClass();
                     try {
-                        if (!factoryInterface.isInterface() && Modifier.isAbstract(factoryInterface.getModifiers())) {
-                            try {
-                                Method newInstanceMethod = factoryInterface.getDeclaredMethod("newInstance");
-                                ClassLoader tccl = setContextClassLoader(factoryClass.getClassLoader());
-                                try {
-                                    factory = newInstanceMethod.invoke(null);
-                                    factories.put(factoryInterface, factory);
-                                    return  factoryInterface.cast(factory);
-                                } finally {
-                                    setContextClassLoader(tccl);
-                                }
-                            } catch (NoSuchMethodException e) {
-                                // Ignore
-                            }
-                        }
+                        
                         // Default empty constructor
                         Constructor<?> constructor = factoryClass.getConstructor();
                         factory = constructor.newInstance();
                     } catch (NoSuchMethodException e) {
                         try {
+
                             // Constructor taking the model factory extension point
                             Constructor<?> constructor = factoryClass.getConstructor(FactoryExtensionPoint.class);
                             factory = constructor.newInstance(this);
                         } catch (NoSuchMethodException e1) {
+
                             // Constructor taking the extension point registry
                             Constructor<?> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
                             factory = constructor.newInstance(extensionPointRegistry);
@@ -151,12 +131,39 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
 
                     // Cache the loaded factory
                     factories.put(factoryInterface, factory);
+                    
+                    return  factoryInterface.cast(factory);
+                    
+                } else {
+                    
+                    // If the input interface is an abstract class
+                    if (!factoryInterface.isInterface() && Modifier.isAbstract(factoryInterface.getModifiers())) {
+                        Method newInstanceMethod = factoryInterface.getDeclaredMethod("newInstance");
+                        ClassLoader tccl = setContextClassLoader(factoryInterface.getClassLoader());
+                        try {
+                            
+                            // Create a new instance
+                            factory = newInstanceMethod.invoke(null);
+                            
+                            // Cache the factory
+                            factories.put(factoryInterface, factory);
+                            
+                            return  factoryInterface.cast(factory);
+                        } finally {
+                            setContextClassLoader(tccl);
+                        }
+                    } else {
+                        
+                        // Sorry no factory found
+                        return null;
+                    }
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);
             }
+        } else {
+            return factoryInterface.cast(factory);
         }
-        return factoryInterface.cast(factory);
     }
 
 }

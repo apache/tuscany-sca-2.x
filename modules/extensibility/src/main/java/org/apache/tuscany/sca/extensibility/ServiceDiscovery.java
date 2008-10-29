@@ -85,17 +85,4 @@ public class ServiceDiscovery implements ServiceDiscoverer {
         return service;
     }
     
-    public Object newFactoryClassInstance(String name) {
-        try {
-            ServiceDeclaration declaration = getFirstServiceDeclaration(name);
-            if (declaration == null) {
-                return null;
-            }
-            Class<?> factoryClass = declaration.loadClass();
-            return factoryClass.newInstance();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
 }
