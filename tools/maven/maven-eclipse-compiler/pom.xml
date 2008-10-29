@@ -89,17 +89,10 @@
                     <groupId>org.eclipse</groupId>
                     <artifactId>text</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.equinox</groupId>
-                    <artifactId>common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.equinox</groupId>
-                    <artifactId>app</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.eclipse.core</groupId>
             <artifactId>resources</artifactId>
@@ -107,12 +100,16 @@
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.eclipse.equinox</groupId>
-                    <artifactId>common</artifactId>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>expressions</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.eclipse.equinox</groupId>
-                    <artifactId>app</artifactId>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>filesystem</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>runtime</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>        
@@ -130,6 +127,19 @@
                 <exclusion>
                     <groupId>org.eclipse.equinox</groupId>
                     <artifactId>app</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>expressions</artifactId>
+            <version>3.3.0-v20070606-0010</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>runtime</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>        
@@ -164,6 +174,23 @@
                 <exclusion>
                     <groupId>org.eclipse.equinox</groupId>
                     <artifactId>app</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.core</groupId>
+                    <artifactId>commands</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>commands</artifactId>
+            <version>3.3.0-I20070605-0010</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.equinox</groupId>
+                    <artifactId>common</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>        
@@ -201,6 +228,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
     </dependencies>
 
     <build>
