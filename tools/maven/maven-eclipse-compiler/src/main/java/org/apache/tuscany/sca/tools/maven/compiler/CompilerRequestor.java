@@ -33,10 +33,12 @@ import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
 
 class CompilerRequestor implements ICompilerRequestor {
     private String outputDirectory;
+    private boolean showWarnings;
     private List<CompilerError> compilerErrors;
 
-    public CompilerRequestor(String outputDirectory, List<CompilerError> compilerErrors) {
+    public CompilerRequestor(String outputDirectory, boolean showWarnings, List<CompilerError> compilerErrors) {
         this.outputDirectory = outputDirectory;
+        this.showWarnings = showWarnings;
         this.compilerErrors = compilerErrors;
     }
 
@@ -47,13 +49,15 @@ class CompilerRequestor implements ICompilerRequestor {
             // Convert JDT IProblems into plexus CompilerErrors
             for (IProblem problem: result.getProblems()) {
                 if (problem.isWarning()) {
-                    compilerErrors.add(new CompilerError(new String(problem.getOriginatingFileName()),
-                                                         false,
-                                                         problem.getSourceLineNumber(),
-                                                         problem.getSourceStart(),
-                                                         problem.getSourceLineNumber(),
-                                                         problem.getSourceEnd(),
-                                                         problem.getMessage()));
+                    if (showWarnings) {
+                        compilerErrors.add(new CompilerError(new String(problem.getOriginatingFileName()),
+                                                             false,
+                                                             problem.getSourceLineNumber(),
+                                                             problem.getSourceStart(),
+                                                             problem.getSourceLineNumber(),
+                                                             problem.getSourceEnd(),
+                                                             problem.getMessage()));
+                    }
                     
                 } else if (problem.isError()) {
                     hasErrors = true;

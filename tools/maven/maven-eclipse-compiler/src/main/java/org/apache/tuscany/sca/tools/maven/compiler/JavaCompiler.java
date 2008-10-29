@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.tools.maven.compiler;
 import static org.codehaus.plexus.compiler.CompilerOutputStyle.ONE_OUTPUT_FILE_PER_INPUT_FILE;
 import static org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies.proceedWithAllProblems;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.DISABLED;
+import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.ENABLED;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.GENERATE;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.IGNORE;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_Encoding;
@@ -53,6 +54,7 @@ import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 
 /**
@@ -101,9 +103,6 @@ public class JavaCompiler extends AbstractCompiler {
         if (configuration.getSourceEncoding() != null && !(configuration.getSourceEncoding().length() == 0)) {
             settings.put(OPTION_Encoding, configuration.getSourceEncoding());
         }
-        if (!configuration.isShowWarnings()) {
-            settings.put(OPTION_SuppressWarnings, DISABLED);
-        }
         if (configuration.isShowDeprecation()) {
             settings.put(OPTION_ReportDeprecation, WARNING);
         } else {
@@ -113,7 +112,7 @@ public class JavaCompiler extends AbstractCompiler {
         // Create a compiler
         List<CompilerError> compilerErrors = new ArrayList<CompilerError>();
         INameEnvironment nameEnvironment = new ClassLoaderNameEnvironment(classLoader, configuration.getSourceLocations());
-        ICompilerRequestor requestor = new CompilerRequestor(configuration.getOutputLocation(), compilerErrors);
+        ICompilerRequestor requestor = new CompilerRequestor(configuration.getOutputLocation(), configuration.isShowWarnings(), compilerErrors);
         Compiler compiler = new Compiler(nameEnvironment,
                                          proceedWithAllProblems(),
                                          settings,

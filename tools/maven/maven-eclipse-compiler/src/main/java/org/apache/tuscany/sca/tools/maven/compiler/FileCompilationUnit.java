@@ -34,6 +34,7 @@ import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
  * @version $Rev: $ $Date: $
  */
 class FileCompilationUnit implements ICompilationUnit {
+    private final static char fileSeparator = System.getProperty("file.separator").charAt(0);
     private String className;
     private String sourceFile;
 
@@ -64,7 +65,7 @@ class FileCompilationUnit implements ICompilationUnit {
     }
 
     public char[] getFileName() {
-        return sourceFile.toCharArray();
+        return (className.replace('.', fileSeparator) + ".java").toCharArray();
     }
 
     public char[] getMainTypeName() {
