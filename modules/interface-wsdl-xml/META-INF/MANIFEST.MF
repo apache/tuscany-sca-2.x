@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.wsdl,javax.wsdl.extensions,javax.wsdl.extensions
+ .schema,javax.wsdl.factory,javax.wsdl.xml,javax.xml.namespace,javax.x
+ ml.stream,org.apache.tuscany.sca.contribution;version="1.4",org.apach
+ e.tuscany.sca.contribution.namespace;version="1.4",org.apache.tuscany
+ .sca.contribution.processor;version="1.4",org.apache.tuscany.sca.cont
+ ribution.resolver;version="1.4",org.apache.tuscany.sca.core;version="
+ 1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.tus
+ cany.sca.interfacedef.wsdl;version="1.4",org.apache.tuscany.sca.monit
+ or;version="1.4",org.apache.tuscany.sca.xsd;version="1.4",org.apache.
+ tuscany.sca.xsd.xml;version="1.4",org.apache.ws.commons.schema,org.w3
+ c.dom,org.xml.sax
+Bnd-LastModified: 1225317150432
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA WSDL Interface XML Model
+Bundle-Name: Apache Tuscany SCA WSDL Interface XML Model
+Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.xml;version=
+ "1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl.xml
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.servlet,javax.servlet.http,javax.xml.parsers,org
+ .apache.tuscany.sca.data.collection;version="1.4",org.apache.tuscany.
+ sca.implementation.node.manager;version="1.4",org.apache.tuscany.sca.
+ node.launcher;version="1.4",org.osoa.sca;version="1.4",org.osoa.sca.a
+ nnotations;version="1.4"
+Bnd-LastModified: 1225317241102
+Export-Package: org.apache.tuscany.sca.implementation.node.manager;use
+ s:="javax.servlet.http,javax.servlet,org.osoa.sca.annotations,javax.x
+ ml.parsers,org.osoa.sca,org.apache.tuscany.sca.node.launcher,org.apac
+ he.tuscany.sca.data.collection";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Node Manager Application
+Bundle-Name: Apache Tuscany SCA Node Manager Application
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.node.manager
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Eclipse-AutoStart: true
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.tuscany.sca.node.equinox.launcher;version="
+ 1.4",org.eclipse.core.runtime.adaptor,org.osgi.framework;version="1.4
+ "
+Bnd-LastModified: 1225317286398
+Export-Package: org.apache.tuscany.sca.node.equinox.launcher;uses:="or
+ g.osgi.framework,org.eclipse.core.runtime.adaptor";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Node Equinox OSGi Launcher
+Bundle-Description: Apache Tuscany SCA Node Equinox OSGi Launcher
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.node.launcher.equinox
+Tool: Bnd-0.0.255
+

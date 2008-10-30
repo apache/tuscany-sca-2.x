@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.tuscany.sca.contribution;version="1.4",org.
+ apache.tuscany.sca.contribution.resolver;version="1.4",org.apache.tus
+ cany.sca.core;version="1.4",org.apache.tuscany.sca.extensibility;vers
+ ion="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apache.tus
+ cany.sca.workspace;version="1.4",org.apache.tuscany.sca.workspace.bui
+ lder;version="1.4"
+Bnd-LastModified: 1225317073465
+Export-Package: org.apache.tuscany.sca.workspace;uses:="org.apache.tus
+ cany.sca.contribution";version="1.4",org.apache.tuscany.sca.workspace
+ .builder;uses:="org.apache.tuscany.sca.workspace,org.apache.tuscany.s
+ ca.extensibility,org.apache.tuscany.sca.monitor,org.apache.tuscany.sc
+ a.core,org.apache.tuscany.sca.contribution";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Domain Workspace Model
+Bundle-Description: Apache Tuscany SCA Domain Workspace Model
+Private-Package: org.apache.tuscany.sca.workspace.impl;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.workspace
+Tool: Bnd-0.0.255
+

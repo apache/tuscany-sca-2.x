@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
+ sion="1.0",org.apache.axiom.om,org.apache.axiom.om.impl.builder,org.a
+ pache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.bindi
+ ng.corba.provider.exceptions;version="1.4",org.apache.tuscany.sca.bin
+ ding.corba.provider.reference;version="1.4",org.apache.tuscany.sca.bi
+ nding.corba.provider.service;version="1.4",org.apache.tuscany.sca.bin
+ ding.corba.provider.types;version="1.4",org.apache.tuscany.sca.bindin
+ g.sca;version="1.4",org.apache.tuscany.sca.binding.ws;version="1.4",o
+ rg.apache.tuscany.sca.binding.ws.wsdlgen;version="1.4",org.apache.tus
+ cany.sca.core;version="1.4",org.apache.tuscany.sca.host.corba;version
+ ="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.t
+ uscany.sca.interfacedef.util;version="1.4",org.apache.tuscany.sca.inv
+ ocation;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",or
+ g.apache.tuscany.sca.provider;version="1.4",org.apache.tuscany.sca.ru
+ ntime;version="1.4",org.omg.CORBA,org.osoa.sca;version="1.4"
+Bnd-LastModified: 1225317203634
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA CORBA-based Default Binding Ext
+ ension
+Bundle-Name: Apache Tuscany SCA CORBA-based Default Binding Extension
+Private-Package: org.apache.tuscany.sca.binding.sca.corba.impl;version
+ ="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca.corba
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.security.auth,org.osoa.sca;version="1.4",org.oso
+ a.sca.annotations;version="1.4"
+Bnd-LastModified: 1225317012606
+Export-Package: org.osoa.sca.annotations;version="1.4",org.osoa.sca;us
+ es:="javax.security.auth";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: API classes for the Service Component Architecture
+Bundle-Name: Apache Tuscany SCA API
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.api
+Tool: Bnd-0.0.255
+

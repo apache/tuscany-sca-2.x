@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-Name: Apache Tuscany SCA Assembly Model XML Schemas
+Bundle-Description: Apache Tuscany SCA Assembly Model XML Schemas
+Bundle-DocURL: http://www.apache.org/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xsd
+Tool: Bnd-0.0.255
+Bnd-LastModified: 1225316999810
+Bundle-Version: 1.4
+

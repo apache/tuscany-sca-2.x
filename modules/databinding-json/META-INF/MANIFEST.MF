@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: com.metaparadigm.jsonrpc,javax.xml.namespace,javax.xml
+ .stream;version="1.0",org.apache.axiom.om,org.apache.tuscany.sca.data
+ binding;version="1.4",org.apache.tuscany.sca.databinding.impl;version
+ ="1.4",org.apache.tuscany.sca.databinding.xml;version="1.4",org.apach
+ e.tuscany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.inter
+ facedef.util;version="1.4",org.codehaus.jettison.badgerfish,org.codeh
+ aus.jettison.json,org.codehaus.jettison.mapped,org.json,org.osoa.sca.
+ annotations;version="1.4"
+Bnd-LastModified: 1225317165244
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Data Binding for JSON
+Bundle-Name: Apache Tuscany SCA Data Binding for JSON
+Private-Package: org.apache.tuscany.sca.databinding.json;version="1.4"
+ ,org.apache.tuscany.sca.databinding.json.axiom;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
+Tool: Bnd-0.0.255
+

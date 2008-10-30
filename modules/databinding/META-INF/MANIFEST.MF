@@ -1,0 +1,55 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.datatype,javax.xml.namespace,javax.xml.parse
+ rs,javax.xml.stream,javax.xml.stream.util,javax.xml.transform,javax.x
+ ml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,o
+ rg.apache.tuscany.sca.contribution.resolver;version="1.4",org.apache.
+ tuscany.sca.databinding;version="1.4",org.apache.tuscany.sca.databind
+ ing.annotation;version="1.4",org.apache.tuscany.sca.databinding.impl;
+ version="1.4",org.apache.tuscany.sca.databinding.javabeans;version="1
+ .4",org.apache.tuscany.sca.databinding.util;version="1.4",org.apache.
+ tuscany.sca.databinding.xml;version="1.4",org.apache.tuscany.sca.exte
+ nsibility;version="1.4",org.apache.tuscany.sca.interfacedef;version="
+ 1.4",org.apache.tuscany.sca.interfacedef.impl;version="1.4",org.apach
+ e.tuscany.sca.interfacedef.util;version="1.4",org.apache.tuscany.sca.
+ xsd;version="1.4",org.w3c.dom,org.xml.sax,org.xml.sax.ext,org.xml.sax
+ .helpers
+Bnd-LastModified: 1225317064980
+Export-Package: org.apache.tuscany.sca.databinding.util;uses:="org.apa
+ che.tuscany.sca.interfacedef,org.apache.tuscany.sca.interfacedef.util
+ ";version="1.4",org.apache.tuscany.sca.databinding.xml;uses:="org.apa
+ che.tuscany.sca.databinding.impl,org.xml.sax,org.apache.tuscany.sca.i
+ nterfacedef.impl,javax.xml.namespace,org.apache.tuscany.sca.interface
+ def.util,org.w3c.dom,javax.xml.transform,javax.xml.transform.dom,java
+ x.xml.transform.sax,org.apache.tuscany.sca.databinding,org.xml.sax.ex
+ t,org.xml.sax.helpers,javax.xml.parsers,org.apache.tuscany.sca.databi
+ nding.javabeans,org.apache.tuscany.sca.interfacedef,javax.xml.transfo
+ rm.stream,javax.xml.stream.util,javax.xml.stream";version="1.4",org.a
+ pache.tuscany.sca.databinding.annotation;version="1.4",org.apache.tus
+ cany.sca.databinding;uses:="org.apache.tuscany.sca.databinding.impl,o
+ rg.apache.tuscany.sca.extensibility,org.apache.tuscany.sca.interfaced
+ ef.impl,javax.xml.namespace,org.apache.tuscany.sca.interfacedef.util,
+ org.apache.tuscany.sca.xsd,org.apache.tuscany.sca.contribution.resolv
+ er,org.apache.tuscany.sca.interfacedef";version="1.4",org.apache.tusc
+ any.sca.databinding.impl;uses:="org.apache.tuscany.sca.interfacedef.i
+ mpl,javax.xml.namespace,org.apache.tuscany.sca.interfacedef.util,org.
+ w3c.dom,javax.xml.datatype,javax.xml.transform,org.apache.tuscany.sca
+ .databinding,javax.xml.parsers,org.apache.tuscany.sca.interfacedef";v
+ ersion="1.4",org.apache.tuscany.sca.databinding.javabeans;uses:="org.
+ apache.tuscany.sca.databinding.impl,javax.xml.namespace,org.w3c.dom,o
+ rg.apache.tuscany.sca.interfacedef.util,javax.xml.datatype,org.apache
+ .tuscany.sca.databinding.xml,org.apache.tuscany.sca.databinding,javax
+ .xml.parsers,org.apache.tuscany.sca.interfacedef,javax.xml.stream";ve
+ rsion="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA DataBinding Framework
+Bundle-Description: Apache Tuscany SCA DataBinding Framework
+Private-Package: org.apache.tuscany.sca.databinding.externalizable;ver
+ sion="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding
+Tool: Bnd-0.0.255
+

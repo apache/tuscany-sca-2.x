@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.naming,javax.rmi,org.apache.tuscany.sca.core;ver
+ sion="1.4",org.apache.tuscany.sca.host.corba;version="1.4",org.omg.CO
+ RBA,org.omg.CosNaming,org.omg.CosNaming.NamingContextPackage
+Bnd-LastModified: 1225317250946
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA JEE environment CORBA Host
+Bundle-Name: Apache Tuscany SCA JEE environment CORBA Host
+Private-Package: org.apache.tuscany.sca.host.corba.jee;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jee
+Tool: Bnd-0.0.255
+

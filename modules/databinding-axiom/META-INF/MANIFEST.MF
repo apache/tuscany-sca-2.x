@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace,javax.xml.stream;version="1.0",org
+ .apache.axiom.om,org.apache.axiom.om.impl.builder,org.apache.tuscany.
+ sca.databinding;version="1.4",org.apache.tuscany.sca.databinding.axio
+ m;version="1.4",org.apache.tuscany.sca.databinding.impl;version="1.4"
+ ,org.apache.tuscany.sca.databinding.javabeans;version="1.4",org.apach
+ e.tuscany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.inter
+ facedef.impl;version="1.4",org.apache.tuscany.sca.interfacedef.util;v
+ ersion="1.4"
+Bnd-LastModified: 1225317146323
+Export-Package: org.apache.tuscany.sca.databinding.axiom;uses:="org.ap
+ ache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.interfacedef
+ .impl,javax.xml.namespace,org.apache.tuscany.sca.interfacedef.util,or
+ g.apache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacedef,
+ org.apache.tuscany.sca.databinding.javabeans,org.apache.axiom.om,org.
+ apache.axiom.om.impl.builder,javax.xml.stream";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Data Binding for Axiom
+Bundle-Name: Apache Tuscany SCA Data Binding for Axiom
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.axiom
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.servlet,javax.servlet.http,javax.xml.namespace,o
+ rg.apache.abdera,org.apache.abdera.factory,org.apache.abdera.i18n.iri
+ ,org.apache.abdera.model,org.apache.abdera.parser,org.apache.abdera.w
+ riter,org.apache.commons.codec.binary,org.apache.commons.httpclient,o
+ rg.apache.commons.httpclient.auth,org.apache.commons.httpclient.metho
+ ds,org.apache.commons.httpclient.params,org.apache.tuscany.sca.assemb
+ ly;version="1.4",org.apache.tuscany.sca.binding.atom;version="1.4",or
+ g.apache.tuscany.sca.binding.atom.collection;version="1.4",org.apache
+ .tuscany.sca.binding.http;version="1.4",org.apache.tuscany.sca.core;v
+ ersion="1.4",org.apache.tuscany.sca.data.collection;version="1.4",org
+ .apache.tuscany.sca.databinding;version="1.4",org.apache.tuscany.sca.
+ databinding.impl;version="1.4",org.apache.tuscany.sca.host.http;versi
+ on="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache
+ .tuscany.sca.interfacedef.impl;version="1.4",org.apache.tuscany.sca.i
+ nterfacedef.util;version="1.4",org.apache.tuscany.sca.invocation;vers
+ ion="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apache.tu
+ scany.sca.runtime;version="1.4",org.osoa.sca;version="1.4",org.osoa.s
+ ca.annotations;version="1.4"
+Bnd-LastModified: 1225317130729
+Export-Package: org.apache.tuscany.sca.binding.atom.collection;uses:="
+ org.apache.abdera.model,org.osoa.sca.annotations";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
+Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
+Private-Package: org.apache.tuscany.sca.binding.atom.provider;version=
+ "1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom.abdera
+Tool: Bnd-0.0.255
+

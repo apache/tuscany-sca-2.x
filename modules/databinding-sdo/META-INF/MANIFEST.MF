@@ -1,0 +1,46 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: commonj.sdo;version="2.1",commonj.sdo.helper;version="
+ 2.1",commonj.sdo.impl,javax.xml.namespace,javax.xml.stream,javax.xml.
+ transform,javax.xml.transform.dom,org.apache.tuscany.sca.assembly.imp
+ l;version="1.4",org.apache.tuscany.sca.contribution;version="1.4",org
+ .apache.tuscany.sca.contribution.processor;version="1.4",org.apache.t
+ uscany.sca.contribution.resolver;version="1.4",org.apache.tuscany.sca
+ .core;version="1.4",org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.impl;version="1.4",org.apache.tusc
+ any.sca.databinding.sdo;version="1.4",org.apache.tuscany.sca.databind
+ ing.util;version="1.4",org.apache.tuscany.sca.interfacedef;version="1
+ .4",org.apache.tuscany.sca.interfacedef.impl;version="1.4",org.apache
+ .tuscany.sca.interfacedef.util;version="1.4",org.apache.tuscany.sca.m
+ onitor;version="1.4",org.apache.tuscany.sca.xsd;version="1.4",org.apa
+ che.tuscany.sdo.api,org.apache.tuscany.sdo.helper,org.apache.tuscany.
+ sdo.impl,org.apache.tuscany.sdo.model,org.apache.tuscany.sdo.model.im
+ pl,org.apache.ws.commons.schema,org.eclipse.emf.ecore,org.eclipse.emf
+ .ecore.util,org.osoa.sca;version="1.4",org.w3c.dom,org.w3c.dom.bootst
+ rap,org.w3c.dom.ls
+Bnd-LastModified: 1225317216946
+Export-Package: org.apache.tuscany.sca.databinding.sdo;uses:="org.w3c.
+ dom.ls,javax.xml.namespace,org.apache.tuscany.sca.monitor,commonj.sdo
+ .impl,org.apache.tuscany.sca.xsd,org.apache.tuscany.sca.contribution.
+ resolver,commonj.sdo.helper,org.apache.tuscany.sca.contribution,javax
+ .xml.transform,org.apache.tuscany.sca.databinding.util,org.apache.tus
+ cany.sca.databinding,javax.xml.stream,org.apache.tuscany.sdo.api,org.
+ apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.interfaced
+ ef.impl,org.apache.ws.commons.schema,org.w3c.dom,org.apache.tuscany.s
+ ca.interfacedef.util,org.apache.tuscany.sca.contribution.processor,ja
+ vax.xml.transform.dom,org.w3c.dom.bootstrap,commonj.sdo,org.osoa.sca,
+ org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.core,org.a
+ pache.tuscany.sca.assembly.impl";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Data Binding for SDO
+Bundle-Description: Apache Tuscany SCA Data Binding for SDO
+Private-Package: com.example.ipo.sdo;version="1.4",com.example.ipo.sdo
+ .impl;version="1.4",com.example.stock.sdo;version="1.4",com.example.s
+ tock.sdo.impl;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.sdo
+Tool: Bnd-0.0.255
+

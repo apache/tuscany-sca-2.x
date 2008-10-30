@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.wsdl,javax.xml.namespace;version="1.0",javax.xml
+ .parsers,javax.xml.stream;version="1.0",javax.xml.transform,javax.xml
+ .transform.dom,org.apache.tuscany.sca.assembly;version="1.4",org.apac
+ he.tuscany.sca.assembly.builder;version="1.4",org.apache.tuscany.sca.
+ assembly.xml;version="1.4",org.apache.tuscany.sca.binding.ws;version=
+ "1.4",org.apache.tuscany.sca.binding.ws.wsdlgen;version="1.4",org.apa
+ che.tuscany.sca.contribution.processor;version="1.4",org.apache.tusca
+ ny.sca.contribution.resolver;version="1.4",org.apache.tuscany.sca.cor
+ e;version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org
+ .apache.tuscany.sca.interfacedef.wsdl;version="1.4",org.apache.tuscan
+ y.sca.monitor;version="1.4",org.apache.tuscany.sca.policy;version="1.
+ 4",org.w3c.dom
+Bnd-LastModified: 1225317176619
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA WS Binding XML Model
+Bundle-Name: Apache Tuscany SCA WS Binding XML Model
+Private-Package: org.apache.tuscany.sca.binding.ws.xml;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.xml
+Tool: Bnd-0.0.255
+

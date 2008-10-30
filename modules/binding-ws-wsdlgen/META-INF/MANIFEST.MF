@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.wsdl,javax.wsdl.extensions,javax.wsdl.extensions
+ .schema,javax.wsdl.extensions.soap,javax.wsdl.extensions.soap12,javax
+ .wsdl.factory,javax.wsdl.xml,javax.xml.namespace;version="1.0",javax.
+ xml.parsers,org.apache.tuscany.sca.assembly;version="1.4",org.apache.
+ tuscany.sca.binding.ws;version="1.4",org.apache.tuscany.sca.binding.w
+ s.wsdlgen;version="1.4",org.apache.tuscany.sca.contribution.resolver;
+ version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tu
+ scany.sca.databinding;version="1.4",org.apache.tuscany.sca.databindin
+ g.jaxb;version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4
+ ",org.apache.tuscany.sca.interfacedef.java;version="1.4",org.apache.t
+ uscany.sca.interfacedef.util;version="1.4",org.apache.tuscany.sca.int
+ erfacedef.wsdl;version="1.4",org.apache.tuscany.sca.monitor;version="
+ 1.4",org.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany.s
+ ca.xsd;version="1.4",org.apache.ws.commons.schema,org.apache.ws.commo
+ ns.schema.utils,org.osoa.sca;version="1.4",org.w3c.dom
+Bnd-LastModified: 1225317159385
+Export-Package: org.apache.tuscany.sca.binding.ws.wsdlgen;uses:="javax
+ .wsdl.extensions.soap,javax.xml.namespace,org.apache.tuscany.sca.moni
+ tor,org.apache.tuscany.sca.xsd,org.apache.tuscany.sca.contribution.re
+ solver,javax.wsdl.extensions.soap12,org.apache.tuscany.sca.binding.ws
+ ,org.apache.tuscany.sca.databinding,javax.wsdl.factory,javax.xml.pars
+ ers,javax.wsdl.extensions.schema,org.apache.tuscany.sca.assembly,org.
+ apache.tuscany.sca.databinding.jaxb,org.apache.tuscany.sca.interfaced
+ ef.java,javax.wsdl,javax.wsdl.xml,org.apache.ws.commons.schema,org.ap
+ ache.tuscany.sca.interfacedef.util,org.w3c.dom,org.apache.tuscany.sca
+ .policy,org.apache.tuscany.sca.interfacedef.wsdl,javax.wsdl.extension
+ s,org.apache.ws.commons.schema.utils,org.osoa.sca,org.apache.tuscany.
+ sca.interfacedef,org.apache.tuscany.sca.core";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Web Service binding WSDL Genera
+ tor
+Bundle-Name: Apache Tuscany SCA Web Service binding WSDL Generator
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.wsdlgen
+Tool: Bnd-0.0.255
+

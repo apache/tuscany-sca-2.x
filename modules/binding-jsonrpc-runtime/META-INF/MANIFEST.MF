@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: com.metaparadigm.jsonrpc,javax.servlet,javax.servlet.h
+ ttp,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.
+ sca.assembly.xml,org.apache.tuscany.sca.binding.jsonrpc;version="1.4"
+ ,org.apache.tuscany.sca.binding.jsonrpc.provider;version="1.4",org.ap
+ ache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.host.http;
+ version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.a
+ pache.tuscany.sca.interfacedef.java;version="1.4",org.apache.tuscany.
+ sca.invocation;version="1.4",org.apache.tuscany.sca.provider;version=
+ "1.4",org.apache.tuscany.sca.runtime;version="1.4",org.json,org.osoa.
+ sca;version="1.4"
+Bnd-LastModified: 1225317167119
+Export-Package: org.apache.tuscany.sca.binding.jsonrpc.provider;uses:=
+ "javax.servlet.http,org.apache.tuscany.sca.invocation,org.json,org.ap
+ ache.tuscany.sca.host.http,org.apache.tuscany.sca.runtime,org.apache.
+ tuscany.sca.binding.jsonrpc,org.apache.tuscany.sca.provider,javax.ser
+ vlet,com.metaparadigm.jsonrpc,org.osoa.sca,org.apache.tuscany.sca.int
+ erfacedef,org.apache.tuscany.sca.core,org.apache.tuscany.sca.assembly
+ ,org.apache.tuscany.sca.interfacedef.java";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
+Bundle-Name: Apache Tuscany SCA JSON-RPC Binding Runtime
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime
+Tool: Bnd-0.0.255
+

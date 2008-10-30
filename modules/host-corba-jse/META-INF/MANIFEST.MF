@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.tuscany.sca.core;version="1.4",org.apache.t
+ uscany.sca.host.corba;version="1.4",org.apache.tuscany.sca.host.corba
+ .jse;version="1.4",org.apache.tuscany.sca.host.corba.naming;version="
+ 1.4",org.omg.CORBA,org.omg.CosNaming,org.omg.CosNaming.NamingContextE
+ xtPackage,org.omg.CosNaming.NamingContextPackage,org.omg.PortableServ
+ er
+Bnd-LastModified: 1225317034278
+Export-Package: org.apache.tuscany.sca.host.corba.naming;uses:="org.om
+ g.CosNaming.NamingContextPackage,org.omg.CosNaming.NamingContextExtPa
+ ckage,org.omg.CosNaming,org.omg.PortableServer,org.omg.CORBA";version
+ ="1.4",org.apache.tuscany.sca.host.corba.jse;uses:="org.apache.tuscan
+ y.sca.host.corba,org.omg.CosNaming.NamingContextPackage,org.omg.CosNa
+ ming,org.apache.tuscany.sca.core,org.omg.CORBA";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA JSE built-in CORBA Host
+Bundle-Name: Apache Tuscany SCA JSE built-in CORBA Host
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jse
+Tool: Bnd-0.0.255
+

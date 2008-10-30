@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: commonj.sdo;version="2.1",commonj.sdo.helper;version="
+ 2.1",javax.xml.namespace,javax.xml.stream;version="1.0",org.apache.ax
+ iom.om,org.apache.axiom.om.impl.builder,org.apache.axiom.om.impl.seri
+ alize,org.apache.tuscany.sca.databinding;version="1.4",org.apache.tus
+ cany.sca.databinding.impl;version="1.4",org.apache.tuscany.sca.databi
+ nding.sdo;version="1.4",org.apache.tuscany.sca.interfacedef;version="
+ 1.4",org.apache.tuscany.sca.interfacedef.util;version="1.4",org.apach
+ e.tuscany.sdo.api,org.apache.tuscany.sdo.helper,org.apache.tuscany.sd
+ o.impl,org.apache.tuscany.sdo.model,org.apache.tuscany.sdo.model.impl
+ ,org.eclipse.emf.ecore,org.eclipse.emf.ecore.util
+Bnd-LastModified: 1225317220555
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Data Binding for SDO/AXIOM
+Bundle-Name: Apache Tuscany SCA Data Binding for SDO/AXIOM
+Private-Package: com.example.ipo.sdo;version="1.4",com.example.ipo.sdo
+ .impl;version="1.4",com.example.stock.sdo;version="1.4",com.example.s
+ tock.sdo.impl;version="1.4",org.apache.tuscany.sca.databinding.sdo2om
+ ;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.sdo.axiom
+Tool: Bnd-0.0.255
+

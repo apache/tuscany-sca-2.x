@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.annotation.security,javax.xml.namespace,org.apac
+ he.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.core;ver
+ sion="1.4",org.apache.tuscany.sca.implementation.java;version="1.4",o
+ rg.apache.tuscany.sca.implementation.java.introspect;version="1.4",or
+ g.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.poli
+ cy.authorization;version="1.4",org.apache.tuscany.sca.policy.identity
+ ;version="1.4"
+Bnd-LastModified: 1225317292335
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA Java JSR250 Implementation
+Bundle-Name: Apache Tuscany SCA Java JSR250 Implementation
+Private-Package: org.apache.tuscany.sca.policy.jsr250;version="1.4",or
+ g.apache.tuscany.sca.policy.jsr250.introspect.impl;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.jsr250
+Tool: Bnd-0.0.255
+

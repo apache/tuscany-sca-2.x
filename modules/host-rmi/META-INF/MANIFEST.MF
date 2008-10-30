@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.tuscany.sca.host.rmi;version="1.4"
+Bnd-LastModified: 1225317169353
+Export-Package: org.apache.tuscany.sca.host.rmi;version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA RMI Host Extension Point
+Bundle-Name: Apache Tuscany SCA RMI Host Extension Point
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.host.rmi
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.wsdl,javax.wsdl.extensions,javax.xml.namespace,j
+ avax.xml.stream,org.apache.tuscany.sca.assembly;version="1.4",org.apa
+ che.tuscany.sca.assembly.impl;version="1.4",org.apache.tuscany.sca.co
+ ntribution.processor;version="1.4",org.apache.tuscany.sca.contributio
+ n.resolver;version="1.4",org.apache.tuscany.sca.core;version="1.4",or
+ g.apache.tuscany.sca.implementation.bpel;version="1.4",org.apache.tus
+ cany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.interfaced
+ ef.wsdl;version="1.4",org.apache.tuscany.sca.monitor;version="1.4"
+Bnd-LastModified: 1225317255570
+Export-Package: org.apache.tuscany.sca.implementation.bpel;uses:="java
+ x.xml.namespace,org.apache.tuscany.sca.contribution.resolver,org.apac
+ he.tuscany.sca.assembly";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA BPEL Implementation Extension
+Bundle-Description: Apache Tuscany SCA BPEL Implementation Extension
+Private-Package: org.apache.tuscany.sca.implementation.bpel.impl;versi
+ on="1.4",org.apache.tuscany.sca.implementation.bpel.xml;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel
+Tool: Bnd-0.0.255
+

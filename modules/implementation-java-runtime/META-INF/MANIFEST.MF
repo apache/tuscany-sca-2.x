@@ -1,0 +1,52 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace,org.apache.tuscany.sca.assembly;ve
+ rsion="1.4",org.apache.tuscany.sca.context;version="1.4",org.apache.t
+ uscany.sca.core;version="1.4",org.apache.tuscany.sca.core.context;ver
+ sion="1.4",org.apache.tuscany.sca.core.factory;version="1.4",org.apac
+ he.tuscany.sca.core.invocation;version="1.4",org.apache.tuscany.sca.c
+ ore.scope;version="1.4",org.apache.tuscany.sca.databinding;version="1
+ .4",org.apache.tuscany.sca.databinding.impl;version="1.4",org.apache.
+ tuscany.sca.databinding.xml;version="1.4",org.apache.tuscany.sca.impl
+ ementation.java;version="1.4",org.apache.tuscany.sca.implementation.j
+ ava.context;version="1.4",org.apache.tuscany.sca.implementation.java.
+ injection;version="1.4",org.apache.tuscany.sca.implementation.java.in
+ trospect;version="1.4",org.apache.tuscany.sca.interfacedef;version="1
+ .4",org.apache.tuscany.sca.interfacedef.impl;version="1.4",org.apache
+ .tuscany.sca.interfacedef.java;version="1.4",org.apache.tuscany.sca.i
+ nterfacedef.java.impl;version="1.4",org.apache.tuscany.sca.interfaced
+ ef.util;version="1.4",org.apache.tuscany.sca.invocation;version="1.4"
+ ,org.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.p
+ olicy.util;version="1.4",org.apache.tuscany.sca.provider;version="1.4
+ ",org.apache.tuscany.sca.runtime;version="1.4",org.osoa.sca;version="
+ 1.4",org.osoa.sca.annotations;version="1.4",org.w3c.dom
+Bnd-LastModified: 1225317067777
+Export-Package: org.apache.tuscany.sca.implementation.java.context;use
+ s:="org.apache.tuscany.sca.core.factory,org.apache.tuscany.sca.core.s
+ cope,org.apache.tuscany.sca.core.context,org.apache.tuscany.sca.imple
+ mentation.java,org.apache.tuscany.sca.implementation.java.injection";
+ version="1.4",org.apache.tuscany.sca.implementation.java.injection;us
+ es:="org.apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.c
+ ontext,org.apache.tuscany.sca.interfacedef.impl,org.apache.tuscany.sc
+ a.invocation,javax.xml.namespace,org.apache.tuscany.sca.interfacedef.
+ util,org.w3c.dom,org.apache.tuscany.sca.implementation.java.introspec
+ t,org.apache.tuscany.sca.core.invocation,org.apache.tuscany.sca.core.
+ factory,org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.databin
+ ding.xml,org.apache.tuscany.sca.databinding,org.apache.tuscany.sca.co
+ re.context,org.osoa.sca,org.apache.tuscany.sca.implementation.java,or
+ g.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.assembly";ve
+ rsion="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Java Implementation Model
+Bundle-Description: Apache Tuscany SCA Java Implementation Model
+Private-Package: org.apache.tuscany.sca.implementation.java.invocation
+ ;version="1.4",org.apache.tuscany.sca.implementation.java.module;vers
+ ion="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.java.runtim
+ e
+Tool: Bnd-0.0.255
+

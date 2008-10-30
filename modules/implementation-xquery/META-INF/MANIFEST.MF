@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.transfo
+ rm,javax.xml.transform.dom,javax.xml.transform.stream,net.sf.saxon,ne
+ t.sf.saxon.event,net.sf.saxon.om,net.sf.saxon.query,net.sf.saxon.tran
+ s,net.sf.saxon.value,org.apache.tuscany.sca.assembly;version="1.4",or
+ g.apache.tuscany.sca.assembly.impl;version="1.4",org.apache.tuscany.s
+ ca.contribution;version="1.4",org.apache.tuscany.sca.contribution.pro
+ cessor;version="1.4",org.apache.tuscany.sca.contribution.resolver;ver
+ sion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tusca
+ ny.sca.core.factory;version="1.4",org.apache.tuscany.sca.databinding;
+ version="1.4",org.apache.tuscany.sca.databinding.impl;version="1.4",o
+ rg.apache.tuscany.sca.databinding.saxon;version="1.4",org.apache.tusc
+ any.sca.databinding.saxon.collection;version="1.4",org.apache.tuscany
+ .sca.implementation.java.injection;version="1.4",org.apache.tuscany.s
+ ca.implementation.xquery;version="1.4",org.apache.tuscany.sca.interfa
+ cedef;version="1.4",org.apache.tuscany.sca.interfacedef.java;version=
+ "1.4",org.apache.tuscany.sca.interfacedef.util;version="1.4",org.apac
+ he.tuscany.sca.invocation;version="1.4",org.apache.tuscany.sca.monito
+ r;version="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apa
+ che.tuscany.sca.runtime;version="1.4",org.w3c.dom
+Bnd-LastModified: 1225317284085
+Export-Package: org.apache.tuscany.sca.implementation.xquery;uses:="or
+ g.apache.tuscany.sca.databinding.saxon.collection,javax.xml.namespace
+ ,net.sf.saxon.query,net.sf.saxon.om,net.sf.saxon.event,javax.xml.tran
+ sform,org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.databindi
+ ng,net.sf.saxon.trans,javax.xml.transform.stream,net.sf.saxon.value,o
+ rg.apache.tuscany.sca.assembly,org.apache.tuscany.sca.interfacedef.ja
+ va,org.apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.dat
+ abinding.saxon,org.apache.tuscany.sca.invocation,org.apache.tuscany.s
+ ca.interfacedef.util,org.w3c.dom,org.apache.tuscany.sca.implementatio
+ n.java.injection,org.apache.tuscany.sca.core.factory,javax.xml.transf
+ orm.dom,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.interf
+ acedef,net.sf.saxon,org.apache.tuscany.sca.core";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA XQuery Implementation Extension
+Bundle-Description: Apache Tuscany SCA XQuery Implementation Extension
+Private-Package: org.apache.tuscany.sca.implementation.xquery.impl;ver
+ sion="1.4",org.apache.tuscany.sca.implementation.xquery.xml;version="
+ 1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.xquery
+Tool: Bnd-0.0.255
+

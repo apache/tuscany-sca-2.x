@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
+ y.sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.
+ namespace;version="1.4",org.apache.tuscany.sca.contribution.processor
+ ;version="1.4",org.apache.tuscany.sca.contribution.resolver;version="
+ 1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca
+ .monitor;version="1.4",org.apache.tuscany.sca.xsd;version="1.4",org.a
+ pache.tuscany.sca.xsd.xml;version="1.4",org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.resolver,org.w3c.dom,org.xml.sax
+Bnd-LastModified: 1225317148619
+Export-Package: org.apache.tuscany.sca.xsd.xml;uses:="org.xml.sax,org.
+ apache.ws.commons.schema,javax.xml.namespace,org.apache.tuscany.sca.m
+ onitor,org.w3c.dom,org.apache.tuscany.sca.xsd,org.apache.tuscany.sca.
+ contribution.resolver,org.apache.tuscany.sca.contribution,org.apache.
+ tuscany.sca.contribution.processor,org.apache.ws.commons.schema.resol
+ ver,org.apache.tuscany.sca.core,org.apache.tuscany.sca.contribution.n
+ amespace,javax.xml.stream";version="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA XSD XML Processor
+Bundle-Name: Apache Tuscany SCA XSD XML Processor
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.xsd.xml
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.stream.
+ util,javax.xml.transform,javax.xml.transform.stream,javax.xml.validat
+ ion,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.
+ sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.pr
+ ocessor;version="1.4",org.apache.tuscany.sca.contribution.resolver;ve
+ rsion="1.4",org.apache.tuscany.sca.contribution.scanner;version="1.4"
+ ,org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.ext
+ ensibility;version="1.4",org.apache.tuscany.sca.monitor;version="1.4"
+ ,org.apache.tuscany.sca.policy;version="1.4",org.xml.sax,org.xml.sax.
+ helpers
+Bnd-LastModified: 1225317010559
+Export-Package: org.apache.tuscany.sca.contribution.scanner;uses:="org
+ .apache.tuscany.sca.extensibility,org.apache.tuscany.sca.contribution
+ .processor";version="1.4",org.apache.tuscany.sca.contribution.resolve
+ r;uses:="org.apache.tuscany.sca.extensibility,org.apache.tuscany.sca.
+ core,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contribut
+ ion";version="1.4",org.apache.tuscany.sca.contribution;uses:="org.apa
+ che.tuscany.sca.contribution.resolver,org.apache.tuscany.sca.assembly
+ ";version="1.4",org.apache.tuscany.sca.contribution.processor;uses:="
+ org.xml.sax,org.apache.tuscany.sca.extensibility,javax.xml.namespace,
+ org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.contribution.re
+ solver,org.apache.tuscany.sca.policy,javax.xml.transform,javax.xml.va
+ lidation,org.xml.sax.helpers,org.apache.tuscany.sca.core,javax.xml.tr
+ ansform.stream,org.apache.tuscany.sca.assembly,javax.xml.stream.util,
+ javax.xml.stream";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA Contribution Model
+Bundle-Description: Apache Tuscany SCA Contribution Model
+Private-Package: org.apache.tuscany.sca.contribution.impl;version="1.4
+ "
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.contribution
+Tool: Bnd-0.0.255
+

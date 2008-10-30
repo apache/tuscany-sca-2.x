@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.wsdl,javax.wsdl.extensions,javax.xml.namespace,o
+ rg.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.c
+ ontribution.resolver;version="1.4",org.apache.tuscany.sca.core;versio
+ n="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.
+ tuscany.sca.interfacedef.impl;version="1.4",org.apache.tuscany.sca.in
+ terfacedef.util;version="1.4",org.apache.tuscany.sca.interfacedef.wsd
+ l;version="1.4",org.apache.tuscany.sca.policy;version="1.4",org.apach
+ e.tuscany.sca.xsd;version="1.4",org.apache.ws.commons.schema
+Bnd-LastModified: 1225317144682
+Export-Package: org.apache.tuscany.sca.interfacedef.wsdl;uses:="javax.
+ wsdl,javax.wsdl.extensions,org.apache.ws.commons.schema,javax.xml.nam
+ espace,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.cor
+ e,org.apache.tuscany.sca.contribution.resolver,org.apache.tuscany.sca
+ .assembly";version="1.4"
+Bundle-Version: 1.4
+Bundle-Name: Apache Tuscany SCA WSDL Interface Model
+Bundle-Description: Apache Tuscany SCA WSDL Interface Model
+Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.impl;version
+ ="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl
+Tool: Bnd-0.0.255
+

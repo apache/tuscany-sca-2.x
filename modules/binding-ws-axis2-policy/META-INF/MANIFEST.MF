@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
+ sion="1.0",org.apache.axiom.om,org.apache.axis2,org.apache.axis2.cont
+ ext,org.apache.axis2.description,org.apache.axis2.engine,org.apache.t
+ uscany.sca.assembly;version="1.4",org.apache.tuscany.sca.binding.ws.a
+ xis2.policy.authentication.basic;version="1.4",org.apache.tuscany.sca
+ .binding.ws.axis2.policy.configuration;version="1.4",org.apache.tusca
+ ny.sca.contribution.processor;version="1.4",org.apache.tuscany.sca.co
+ ntribution.resolver;version="1.4",org.apache.tuscany.sca.core;version
+ ="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.t
+ uscany.sca.invocation;version="1.4",org.apache.tuscany.sca.monitor;ve
+ rsion="1.4",org.apache.tuscany.sca.policy;version="1.4",org.apache.tu
+ scany.sca.policy.util;version="1.4",org.apache.tuscany.sca.provider;v
+ ersion="1.4",org.apache.tuscany.sca.runtime;version="1.4",org.osoa.sc
+ a;version="1.4"
+Bnd-LastModified: 1225317181916
+Export-Package: org.apache.tuscany.sca.binding.ws.axis2.policy.authent
+ ication.basic;uses:="org.apache.tuscany.sca.invocation,javax.xml.name
+ space,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.contribut
+ ion.resolver,org.apache.tuscany.sca.policy,org.apache.tuscany.sca.con
+ tribution.processor,org.apache.tuscany.sca.runtime,org.apache.tuscany
+ .sca.provider,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.
+ sca.core,org.apache.tuscany.sca.assembly,javax.xml.stream";version="1
+ .4",org.apache.tuscany.sca.binding.ws.axis2.policy.configuration;uses
+ :="org.apache.axis2.description,org.apache.axis2.engine,org.apache.ax
+ is2.context,javax.xml.namespace,org.apache.tuscany.sca.monitor,org.ap
+ ache.tuscany.sca.contribution.resolver,org.apache.tuscany.sca.policy,
+ org.apache.tuscany.sca.contribution.processor,org.apache.axis2,org.ap
+ ache.tuscany.sca.runtime,org.apache.tuscany.sca.provider,org.osoa.sca
+ ,org.apache.tuscany.sca.core,org.apache.tuscany.sca.policy.util,org.a
+ pache.axiom.om,org.apache.tuscany.sca.assembly,javax.xml.stream";vers
+ ion="1.4"
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany Policy Model for Axis2 WS binding
+Bundle-Name: Apache Tuscany Policy Model for Axis2 WS binding
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.ws
+Tool: Bnd-0.0.255
+

@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.ejb,javax.ejb.spi,javax.naming,javax.rmi,javax.r
+ mi.CORBA,net.sf.cglib.core,net.sf.cglib.proxy,org.apache.tuscany.sca.
+ assembly;version="1.4",org.apache.tuscany.sca.binding.ejb;version="1.
+ 4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.i
+ nterfacedef;version="1.4",org.apache.tuscany.sca.interfacedef.java;ve
+ rsion="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apach
+ e.tuscany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime;v
+ ersion="1.4",org.omg.CORBA,org.omg.CORBA.portable,org.omg.CORBA_2_3.p
+ ortable,org.omg.CosNaming,org.omg.IOP,org.omg.PortableInterceptor,org
+ .omg.stub.java.rmi,org.osoa.sca;version="1.4"
+Bnd-LastModified: 1225317122432
+Bundle-Version: 1.4
+Bundle-Description: Apache Tuscany SCA EJB Binding Runtime
+Bundle-Name: Apache Tuscany SCA EJB Binding Runtime
+Private-Package: org.apache.tuscany.sca.binding.ejb.corba;version="1.4
+ ",org.apache.tuscany.sca.binding.ejb.provider;version="1.4",org.apach
+ e.tuscany.sca.binding.ejb.util;version="1.4"
+Bundle-DocURL: http://www.apache.org/
+Bundle-ManifestVersion: 2
+Bundle-Vendor: The Apache Software Foundation
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.ejb.runtime
+Tool: Bnd-0.0.255
+
