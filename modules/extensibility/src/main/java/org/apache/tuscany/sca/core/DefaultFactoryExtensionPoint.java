@@ -149,6 +149,9 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
                             factories.put(factoryInterface, factory);
                             
                             return  factoryInterface.cast(factory);
+                        } catch (Exception e) {
+                            // Sorry no factory found
+                            return null;
                         } finally {
                             setContextClassLoader(tccl);
                         }
