@@ -32,10 +32,6 @@
     <url>http://tuscany.apache.org</url>
     <version>1.4-SNAPSHOT</version>
 
-    <properties>
-        <tuscany.version>1.4</tuscany.version>
-    </properties>
-
     <scm>
         <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
@@ -47,6 +43,7 @@
     </prerequisites>
 
     <properties>
+        <tuscany.version>1.4</tuscany.version>
         <notice.dir>.</notice.dir>
     </properties>
 
