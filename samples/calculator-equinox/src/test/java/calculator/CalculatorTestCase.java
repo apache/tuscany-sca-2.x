@@ -18,23 +18,30 @@
  */
 package calculator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * This shows how to test the Calculator composition.
  */
-public class CalculatorTestCase extends TestCase {
+@Scope("COMPOSITE") @EagerInit
+public class CalculatorTestCase {
 
-    private NodeLauncher launcher;
-    private Node node;
-
-    @Override
-    protected void setUp() throws Exception {
+    private static NodeLauncher launcher;
+    private static Node node;   
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
         launcher = NodeLauncher.newInstance();
         String location = ContributionLocationHelper.getContributionLocation(CalculatorClient.class);
         node = launcher.createNode("Calculator.composite", new Contribution("test", location));
@@ -42,8 +49,8 @@ public class CalculatorTestCase extends TestCase {
         node.start();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
         if (node != null) {
             node.stop();
             node.destroy();
@@ -53,7 +60,7 @@ public class CalculatorTestCase extends TestCase {
         }
     }
 
-    public void testDummy() {
+    @Test
+    public void testDummy() throws Exception {
     }
-
 }
