@@ -1,6 +1,22 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.policy.security.ws;uses:="org.a
+ pache.axis2,org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.ass
+ embly,org.apache.neethi,org.apache.tuscany.sca.provider,org.apache.tu
+ scany.sca.core,org.apache.axis2.context,org.apache.tuscany.sca.monito
+ r,org.apache.tuscany.sca.policy,javax.xml.namespace,org.apache.axiom.
+ om,org.apache.axis2.description,javax.xml.stream,org.apache.axis2.eng
+ ine,org.apache.tuscany.sca.contribution.resolver,org.apache.tuscany.s
+ ca.policy.util,org.apache.tuscany.sca.contribution.processor,org.osoa
+ .sca";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany Security Policy WS Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397300062
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany Security Policy WS Model
 Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
  sion="1.0",org.apache.axiom.om,org.apache.axis2,org.apache.axis2.cont
  ext,org.apache.axis2.description,org.apache.axis2.engine,org.apache.n
@@ -11,23 +27,8 @@ Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
  .sca.policy;version="1.4",org.apache.tuscany.sca.policy.security.ws;v
  ersion="1.4",org.apache.tuscany.sca.policy.util;version="1.4",org.apa
  che.tuscany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime
- ;version="1.4",org.osoa.sca;version="1.4"
-Bnd-LastModified: 1225317157229
-Export-Package: org.apache.tuscany.sca.policy.security.ws;uses:="org.a
- pache.axis2.description,org.apache.axis2.engine,org.apache.axis2.cont
- ext,javax.xml.namespace,org.apache.tuscany.sca.monitor,org.apache.tus
- cany.sca.contribution.resolver,org.apache.tuscany.sca.policy,org.apac
- he.tuscany.sca.contribution.processor,org.apache.axis2,org.apache.tus
- cany.sca.runtime,org.apache.neethi,org.apache.tuscany.sca.provider,or
- g.osoa.sca,org.apache.tuscany.sca.core,org.apache.tuscany.sca.policy.
- util,org.apache.axiom.om,org.apache.tuscany.sca.assembly,javax.xml.st
- ream";version="1.4"
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany Security Policy WS Model
-Bundle-Name: Apache Tuscany Security Policy WS Model
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ;version="1.4",org.osoa.sca;version="1.4",junit.framework;resolution:
+ =optional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.ws
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

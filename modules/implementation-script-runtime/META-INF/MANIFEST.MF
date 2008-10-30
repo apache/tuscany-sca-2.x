@@ -1,6 +1,24 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.implementation.script.provider;
+ uses:="org.apache.tuscany.sca.databinding,org.apache.tuscany.sca.runt
+ ime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.databindin
+ g.impl,org.apache.tuscany.sca.provider,org.apache.bsf.xml,org.apache.
+ tuscany.sca.core,org.apache.tuscany.sca.interfacedef.java,org.w3c.dom
+ ,javax.script,org.apache.tuscany.sca.interfacedef,javax.xml.namespace
+ ,org.apache.axiom.om,org.apache.tuscany.sca.implementation.script,org
+ .apache.tuscany.sca.invocation,org.apache.tuscany.sca.core.factory,or
+ g.apache.tuscany.sca.interfacedef.wsdl";version="1.4"
+Private-Package: org.apache.tuscany.sca.implementation.script.engines;
+ version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Script Implementation Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397459984
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Script Implementation Extension
 Import-Package: com.sun.script.jruby,javax.script,javax.xml.namespace,
  org.apache.axiom.om,org.apache.bsf.xml,org.apache.tuscany.sca.assembl
  y;version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.
@@ -15,26 +33,10 @@ Import-Package: com.sun.script.jruby,javax.script,javax.xml.namespace,
  e;version="1.4",org.jruby,org.jruby.ast,org.jruby.exceptions,org.jrub
  y.internal.runtime,org.jruby.javasupport,org.jruby.runtime,org.jruby.
  runtime.builtin,org.jruby.runtime.load,org.jruby.util,org.jruby.util.
- io,org.w3c.dom
-Bnd-LastModified: 1225317276961
-Export-Package: org.apache.tuscany.sca.implementation.script.provider;
- uses:="org.apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca
- .invocation,javax.xml.namespace,org.w3c.dom,org.apache.tuscany.sca.in
- terfacedef.wsdl,javax.script,org.apache.tuscany.sca.core.factory,org.
- apache.tuscany.sca.runtime,org.apache.tuscany.sca.databinding,org.apa
- che.tuscany.sca.provider,org.apache.tuscany.sca.interfacedef,org.apac
- he.tuscany.sca.core,org.apache.axiom.om,org.apache.tuscany.sca.assemb
- ly,org.apache.bsf.xml,org.apache.tuscany.sca.implementation.script,or
- g.apache.tuscany.sca.interfacedef.java";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Script Implementation Extension
-Bundle-Description: Apache Tuscany SCA Script Implementation Extension
-Private-Package: org.apache.tuscany.sca.implementation.script.engines;
- version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ io,org.w3c.dom,org.osoa.sca.annotations;version="1.4";resolution:=opt
+ ional,junit.framework;resolution:=optional,org.apache.tuscany.sca.nod
+ e;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.script.runt
  ime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

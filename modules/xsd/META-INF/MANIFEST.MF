@@ -1,20 +1,20 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.xsd;uses:="org.apache.ws.common
+ s.schema,org.apache.tuscany.sca.assembly,org.w3c.dom,javax.xml.namesp
+ ace";version="1.4"
+Private-Package: org.apache.tuscany.sca.xsd.impl;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA XSD Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397174343
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA XSD Model
 Import-Package: javax.xml.namespace,org.apache.tuscany.sca.assembly;ve
  rsion="1.4",org.apache.tuscany.sca.xsd;version="1.4",org.apache.ws.co
  mmons.schema,org.w3c.dom
-Bnd-LastModified: 1225317059652
-Export-Package: org.apache.tuscany.sca.xsd;uses:="org.apache.ws.common
- s.schema,javax.xml.namespace,org.w3c.dom,org.apache.tuscany.sca.assem
- bly";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA XSD Model
-Bundle-Description: Apache Tuscany SCA XSD Model
-Private-Package: org.apache.tuscany.sca.xsd.impl;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
 Bundle-SymbolicName: org.apache.tuscany.sca.xsd
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,48 +1,37 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.assembly;uses:="javax.xml.xpath
+ ,org.apache.tuscany.sca.assembly.impl,org.apache.tuscany.sca.policy,o
+ rg.apache.tuscany.sca.interfacedef,javax.xml.namespace";version="1.4"
+ ,org.apache.tuscany.sca.assembly.impl;uses:="javax.xml.xpath,org.apac
+ he.tuscany.sca.assembly,org.apache.tuscany.sca.policy,org.apache.tusc
+ any.sca.interfacedef,javax.xml.namespace";version="1.4",org.apache.tu
+ scany.sca.assembly.builder;uses:="org.apache.tuscany.sca.assembly,org
+ .apache.tuscany.sca.definitions,org.apache.tuscany.sca.core,org.apach
+ e.tuscany.sca.monitor,org.apache.tuscany.sca.interfacedef,org.apache.
+ tuscany.sca.extensibility";version="1.4"
+Private-Package: org.apache.tuscany.sca.assembly.builder.impl;version=
+ "1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Assembly Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397097203
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Assembly Model
 Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.transf
  orm,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.xpath,o
- rg.apache.tuscany.sca.assembly;version="1.4.0.SNAPSHOT",org.apache.tu
- scany.sca.assembly.builder;version="1.4.0.SNAPSHOT",org.apache.tuscan
- y.sca.assembly.builder.impl;version="1.4.0.SNAPSHOT",org.apache.tusca
- ny.sca.assembly.impl;version="1.4.0.SNAPSHOT",org.apache.tuscany.sca.
- core;version="1.4",org.apache.tuscany.sca.definitions;version="1.4",o
- rg.apache.tuscany.sca.extensibility;version="1.4",org.apache.tuscany.
- sca.interfacedef;version="1.4",org.apache.tuscany.sca.monitor;version
- ="1.4",org.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany
- .sca.policy.util;version="1.4",org.w3c.dom,org.xml.sax
-Bnd-LastModified: 1225350093047
-Export-Package: org.apache.tuscany.sca.assembly.builder;uses:="org.apa
- che.tuscany.sca.extensibility,org.apache.tuscany.sca.monitor,org.apac
- he.tuscany.sca.interfacedef,org.apache.tuscany.sca.assembly.builder.i
- mpl,org.apache.tuscany.sca.core,org.apache.tuscany.sca.definitions,or
- g.apache.tuscany.sca.assembly";version="1.4.0.SNAPSHOT",org.apache.tu
- scany.sca.assembly.builder.impl;uses:="org.apache.tuscany.sca.monitor
- ,javax.xml.namespace,javax.xml.transform,javax.xml.parsers,org.apache
- .tuscany.sca.definitions,org.apache.tuscany.sca.assembly,org.xml.sax,
- org.w3c.dom,org.apache.tuscany.sca.policy,javax.xml.xpath,javax.xml.t
- ransform.dom,org.apache.tuscany.sca.assembly.builder,javax.xml.transf
- orm.sax,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.co
- re,org.apache.tuscany.sca.policy.util";version="1.4.0.SNAPSHOT",org.a
- pache.tuscany.sca.assembly;uses:="javax.xml.namespace,org.apache.tusc
- any.sca.interfacedef,org.apache.tuscany.sca.assembly.impl,javax.xml.x
- path,org.apache.tuscany.sca.policy";version="1.4.0.SNAPSHOT",org.apac
- he.tuscany.sca.assembly.impl;uses:="javax.xml.namespace,org.apache.tu
- scany.sca.interfacedef,org.apache.tuscany.sca.assembly,javax.xml.xpat
- h,org.apache.tuscany.sca.policy";version="1.4.0.SNAPSHOT"
-Bundle-Version: 1.4.0.SNAPSHOT
-Bundle-Description: The Apache Software Foundation provides support fo
- r the Apache community of open-source software projects.    The Apach
- e projects are characterized by a collaborative, consensus based deve
- lopment process, an open and    pragmatic software license, and a des
- ire to create high quality software that leads the way in its field. 
-    We consider ourselves not simply a group of projects sharing a ser
- ver, but rather a community of developers    and users.
-Bundle-Name: Apache Tuscany SCA Assembly Model
+ rg.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.a
+ ssembly.builder;version="1.4",org.apache.tuscany.sca.assembly.impl;ve
+ rsion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tusc
+ any.sca.definitions;version="1.4",org.apache.tuscany.sca.extensibilit
+ y;version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org
+ .apache.tuscany.sca.monitor;version="1.4",org.apache.tuscany.sca.poli
+ cy;version="1.4",org.apache.tuscany.sca.policy.util;version="1.4",org
+ .w3c.dom,org.xml.sax,junit.framework;resolution:=optional,org.apache.
+ tuscany.sca.interfacedef.impl;version="1.4";resolution:=optional,org.
+ junit;resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.assembly
 Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
-Bundle-SymbolicName: org.apache.tuscany.sca.tuscany-assembly
-Tool: Bnd-0.0.255
 

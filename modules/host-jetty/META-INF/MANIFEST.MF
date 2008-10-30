@@ -1,21 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.http.jetty;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Jetty Servlet Host Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397258562
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
 Import-Package: javax.servlet,org.apache.tuscany.sca.core;version="1.4
  ",org.apache.tuscany.sca.host.http;version="1.4",org.apache.tuscany.s
  ca.work;version="1.4",org.mortbay.jetty;version="6.1.7",org.mortbay.j
  etty.handler;version="6.1.7",org.mortbay.jetty.nio;version="6.1.7",or
  g.mortbay.jetty.security;version="6.1.7",org.mortbay.jetty.servlet;ve
  rsion="6.1.7",org.mortbay.log;version="6.1.7",org.mortbay.resource;ve
- rsion="6.1.7",org.mortbay.thread;version="6.1.7"
-Bnd-LastModified: 1225317127792
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
-Bundle-Name: Apache Tuscany SCA Jetty Servlet Host Extension
-Private-Package: org.apache.tuscany.sca.http.jetty;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ rsion="6.1.7",org.mortbay.thread;version="6.1.7",junit.framework;reso
+ lution:=optional,javax.net.ssl;resolution:=optional,javax.servlet.htt
+ p;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.host.jetty
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,20 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.host.corba.jse.tns;version="1.
+ 4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Transient Name Server CORBA Host
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397430015
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Transient Name Server CORBA Hos
+ t
 Import-Package: org.apache.tuscany.sca.core;version="1.4",org.apache.t
  uscany.sca.host.corba;version="1.4",org.apache.tuscany.sca.host.corba
  .jse;version="1.4",org.apache.tuscany.sca.host.corba.naming;version="
- 1.4",org.omg.CORBA
-Bnd-LastModified: 1225317252430
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Transient Name Server CORBA Hos
- t
-Bundle-Name: Apache Tuscany SCA Transient Name Server CORBA Host
-Private-Package: org.apache.tuscany.sca.host.corba.jse.tns;version="1.
- 4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ 1.4",org.omg.CORBA,org.apache.tuscany.sca.binding.corba.provider.serv
+ ice;resolution:=optional,org.apache.tuscany.sca.host.corba.jse.tns;re
+ solution:=optional,junit.framework;resolution:=optional,org.junit;res
+ olution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jse.tns
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,27 +1,28 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.contribution.xml;uses:="org.apa
+ che.tuscany.sca.assembly,org.apache.tuscany.sca.core,org.apache.tusca
+ ny.sca.contribution,org.apache.tuscany.sca.monitor,javax.xml.namespac
+ e,javax.xml.stream,org.apache.tuscany.sca.contribution.resolver,org.a
+ pache.tuscany.sca.contribution.processor";version="1.4"
+Private-Package: org.apache.tuscany.sca.contribution.processor.xml;ver
+ sion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA XML Contribution Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397199187
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA XML Contribution Model
 Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.stream
  ,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca
  .contribution;version="1.4",org.apache.tuscany.sca.contribution.proce
  ssor;version="1.4",org.apache.tuscany.sca.contribution.resolver;versi
  on="1.4",org.apache.tuscany.sca.contribution.xml;version="1.4",org.ap
  ache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.monitor;ve
- rsion="1.4",org.w3c.dom,org.w3c.dom.traversal
-Bnd-LastModified: 1225317076214
-Export-Package: org.apache.tuscany.sca.contribution.xml;uses:="org.apa
- che.tuscany.sca.monitor,javax.xml.namespace,org.apache.tuscany.sca.co
- ntribution.resolver,org.apache.tuscany.sca.contribution,org.apache.tu
- scany.sca.contribution.processor,org.apache.tuscany.sca.core,org.apac
- he.tuscany.sca.assembly,javax.xml.stream";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA XML Contribution Model
-Bundle-Description: Apache Tuscany SCA XML Contribution Model
-Private-Package: org.apache.tuscany.sca.contribution.processor.xml;ver
- sion="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ rsion="1.4",org.w3c.dom,org.w3c.dom.traversal,org.junit;resolution:=o
+ ptional
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution.xml
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

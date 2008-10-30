@@ -1,22 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.implementation.resource.provid
+ er;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Resource Implementation Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397274609
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Resource Implementation Runtime
 Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
  he.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.implementati
  on.resource;version="1.4",org.apache.tuscany.sca.interfacedef;version
  ="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tus
  cany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime;versio
- n="1.4"
-Bnd-LastModified: 1225317139541
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Resource Implementation Runtime
-Bundle-Name: Apache Tuscany SCA Resource Implementation Runtime
-Private-Package: org.apache.tuscany.sca.implementation.resource.provid
- er;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ n="1.4",junit.framework;resolution:=optional,org.apache.tuscany.sca.n
+ ode;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.resource.ru
  ntime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,6 +1,17 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.binding.atom.collection;uses:="
+ org.osoa.sca.annotations,org.apache.abdera.model";version="1.4"
+Private-Package: org.apache.tuscany.sca.binding.atom.provider;version=
+ "1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397264250
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
 Import-Package: javax.servlet,javax.servlet.http,javax.xml.namespace,o
  rg.apache.abdera,org.apache.abdera.factory,org.apache.abdera.i18n.iri
  ,org.apache.abdera.model,org.apache.abdera.parser,org.apache.abdera.w
@@ -18,18 +29,12 @@ Import-Package: javax.servlet,javax.servlet.http,javax.xml.namespace,o
  nterfacedef.util;version="1.4",org.apache.tuscany.sca.invocation;vers
  ion="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apache.tu
  scany.sca.runtime;version="1.4",org.osoa.sca;version="1.4",org.osoa.s
- ca.annotations;version="1.4"
-Bnd-LastModified: 1225317130729
-Export-Package: org.apache.tuscany.sca.binding.atom.collection;uses:="
- org.apache.abdera.model,org.osoa.sca.annotations";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
-Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
-Private-Package: org.apache.tuscany.sca.binding.atom.provider;version=
- "1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ca.annotations;version="1.4",org.apache.abdera.protocol.client.util;r
+ esolution:=optional,org.apache.abdera.protocol.client;resolution:=opt
+ ional,org.apache.abdera.protocol;resolution:=optional,org.apache.tusc
+ any.sca.node;resolution:=optional,org.junit;resolution:=optional,java
+ x.activation;version="1.1";resolution:=optional,junit.framework;resol
+ ution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom.abdera
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

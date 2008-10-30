@@ -1,22 +1,27 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.implementation.widget.provider
+ ;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397415984
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Widget Implementation Runtime
 Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
  he.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.implementati
  on.widget;version="1.4",org.apache.tuscany.sca.interfacedef;version="
  1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tusca
  ny.sca.provider;version="1.4",org.apache.tuscany.sca.runtime;version=
- "1.4",org.w3c.dom
-Bnd-LastModified: 1225317244274
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Widget Implementation Runtime
-Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime
-Private-Package: org.apache.tuscany.sca.implementation.widget.provider
- ;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ "1.4",org.w3c.dom,org.apache.abdera.factory;resolution:=optional,org.
+ apache.tuscany.sca.binding.atom.collection;resolution:=optional,org.o
+ soa.sca.annotations;version="1.4";resolution:=optional,junit.framewor
+ k;resolution:=optional,org.apache.abdera.model;resolution:=optional,o
+ rg.apache.tuscany.sca.node;resolution:=optional,org.apache.abdera;res
+ olution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.widget.runt
  ime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

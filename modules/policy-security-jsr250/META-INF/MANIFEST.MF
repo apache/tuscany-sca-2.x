@@ -1,22 +1,28 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.policy.jsr250;version="1.4",or
+ g.apache.tuscany.sca.policy.jsr250.introspect.impl;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Java JSR250 Implementation
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397483046
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Java JSR250 Implementation
 Import-Package: javax.annotation.security,javax.xml.namespace,org.apac
  he.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.core;ver
  sion="1.4",org.apache.tuscany.sca.implementation.java;version="1.4",o
  rg.apache.tuscany.sca.implementation.java.introspect;version="1.4",or
  g.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.poli
  cy.authorization;version="1.4",org.apache.tuscany.sca.policy.identity
- ;version="1.4"
-Bnd-LastModified: 1225317292335
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Java JSR250 Implementation
-Bundle-Name: Apache Tuscany SCA Java JSR250 Implementation
-Private-Package: org.apache.tuscany.sca.policy.jsr250;version="1.4",or
- g.apache.tuscany.sca.policy.jsr250.introspect.impl;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ;version="1.4",org.apache.tuscany.sca.implementation.java.introspect.
+ impl;resolution:=optional,org.osoa.sca.annotations;version="1.4";reso
+ lution:=optional,org.apache.tuscany.sca.interfacedef.java;version="1.
+ 4";resolution:=optional,org.apache.tuscany.sca.interfacedef;version="
+ 1.4";resolution:=optional,junit.framework;resolution:=optional,org.ap
+ ache.tuscany.sca.interfacedef.java.impl;version="1.4";resolution:=opt
+ ional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.jsr250
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

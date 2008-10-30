@@ -1,6 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.policy.transaction;uses:="org.a
+ pache.tuscany.sca.runtime,org.apache.geronimo.transaction.log,org.apa
+ che.tuscany.sca.assembly,org.apache.tuscany.sca.provider,org.apache.t
+ uscany.sca.definitions,org.apache.tuscany.sca.core,org.apache.tuscany
+ .sca.monitor,org.apache.tuscany.sca.policy,org.apache.tuscany.sca.int
+ erfacedef,javax.xml.namespace,org.apache.tuscany.sca.definitions.util
+ ,org.apache.tuscany.sca.invocation,javax.xml.stream,org.apache.tuscan
+ y.sca.contribution.resolver,javax.transaction,org.apache.tuscany.sca.
+ contribution.processor,org.apache.geronimo.transaction.manager";versi
+ on="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Transaction Policy Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397486843
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Transaction Policy Model
 Import-Package: javax.transaction;version="1.0.1",javax.xml.namespace,
  javax.xml.stream,org.apache.geronimo.transaction.log,org.apache.geron
  imo.transaction.manager,org.apache.tuscany.sca.assembly;version="1.4"
@@ -12,24 +29,9 @@ Import-Package: javax.transaction;version="1.0.1",javax.xml.namespace,
  ion;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.ap
  ache.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.policy.t
  ransaction;version="1.4",org.apache.tuscany.sca.provider;version="1.4
- ",org.apache.tuscany.sca.runtime;version="1.4"
-Bnd-LastModified: 1225317295320
-Export-Package: org.apache.tuscany.sca.policy.transaction;uses:="org.a
- pache.geronimo.transaction.manager,org.apache.tuscany.sca.invocation,
- org.apache.tuscany.sca.monitor,javax.xml.namespace,org.apache.tuscany
- .sca.contribution.resolver,org.apache.geronimo.transaction.log,org.ap
- ache.tuscany.sca.policy,org.apache.tuscany.sca.definitions.util,org.a
- pache.tuscany.sca.contribution.processor,org.apache.tuscany.sca.runti
- me,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.interfacede
- f,org.apache.tuscany.sca.core,org.apache.tuscany.sca.assembly,org.apa
- che.tuscany.sca.definitions,javax.transaction,javax.xml.stream";versi
- on="1.4"
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Transaction Policy Model
-Bundle-Name: Apache Tuscany SCA Transaction Policy Model
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ",org.apache.tuscany.sca.runtime;version="1.4",junit.framework;resolu
+ tion:=optional,javax.transaction.xa;version="1.1";resolution:=optiona
+ l
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.transaction
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

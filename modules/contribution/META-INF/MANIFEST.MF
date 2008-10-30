@@ -1,6 +1,29 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.contribution.scanner;uses:="org
+ .apache.tuscany.sca.contribution.processor,org.apache.tuscany.sca.ext
+ ensibility";version="1.4",org.apache.tuscany.sca.contribution.resolve
+ r;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core,
+ org.apache.tuscany.sca.contribution,org.apache.tuscany.sca.extensibil
+ ity";version="1.4",org.apache.tuscany.sca.contribution.processor;uses
+ :="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core,org.ap
+ ache.tuscany.sca.policy,org.apache.tuscany.sca.monitor,org.apache.tus
+ cany.sca.extensibility,org.xml.sax,javax.xml.namespace,javax.xml.stre
+ am,javax.xml.stream.util,javax.xml.transform,org.apache.tuscany.sca.c
+ ontribution.resolver,javax.xml.transform.stream,javax.xml.validation,
+ org.xml.sax.helpers";version="1.4",org.apache.tuscany.sca.contributio
+ n;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contr
+ ibution.resolver";version="1.4"
+Private-Package: org.apache.tuscany.sca.contribution.impl;version="1.4
+ "
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Contribution Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397102546
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Contribution Model
 Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.stream.
  util,javax.xml.transform,javax.xml.transform.stream,javax.xml.validat
  ion,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.
@@ -10,30 +33,8 @@ Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.stream.
  ,org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.ext
  ensibility;version="1.4",org.apache.tuscany.sca.monitor;version="1.4"
  ,org.apache.tuscany.sca.policy;version="1.4",org.xml.sax,org.xml.sax.
- helpers
-Bnd-LastModified: 1225317010559
-Export-Package: org.apache.tuscany.sca.contribution.scanner;uses:="org
- .apache.tuscany.sca.extensibility,org.apache.tuscany.sca.contribution
- .processor";version="1.4",org.apache.tuscany.sca.contribution.resolve
- r;uses:="org.apache.tuscany.sca.extensibility,org.apache.tuscany.sca.
- core,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contribut
- ion";version="1.4",org.apache.tuscany.sca.contribution;uses:="org.apa
- che.tuscany.sca.contribution.resolver,org.apache.tuscany.sca.assembly
- ";version="1.4",org.apache.tuscany.sca.contribution.processor;uses:="
- org.xml.sax,org.apache.tuscany.sca.extensibility,javax.xml.namespace,
- org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.contribution.re
- solver,org.apache.tuscany.sca.policy,javax.xml.transform,javax.xml.va
- lidation,org.xml.sax.helpers,org.apache.tuscany.sca.core,javax.xml.tr
- ansform.stream,org.apache.tuscany.sca.assembly,javax.xml.stream.util,
- javax.xml.stream";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Contribution Model
-Bundle-Description: Apache Tuscany SCA Contribution Model
-Private-Package: org.apache.tuscany.sca.contribution.impl;version="1.4
- "
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ helpers,junit.framework;resolution:=optional,org.junit;resolution:=op
+ tional
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,6 +1,15 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.binding.rss.collection;version
+ ="1.4",org.apache.tuscany.sca.binding.rss.provider;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA RSS Feed Binding Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397329562
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA RSS Feed Binding Extension
 Import-Package: com.sun.syndication.feed.atom,com.sun.syndication.feed
  .synd,com.sun.syndication.io,javax.servlet,javax.servlet.http,javax.x
  ml.namespace,org.apache.commons.codec.binary,org.apache.tuscany.sca.a
@@ -13,16 +22,9 @@ Import-Package: com.sun.syndication.feed.atom,com.sun.syndication.feed
  ="1.4",org.apache.tuscany.sca.interfacedef.util;version="1.4",org.apa
  che.tuscany.sca.invocation;version="1.4",org.apache.tuscany.sca.provi
  der;version="1.4",org.apache.tuscany.sca.runtime;version="1.4",org.os
- oa.sca.annotations;version="1.4"
-Bnd-LastModified: 1225317174463
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA RSS Feed Binding Extension
-Bundle-Name: Apache Tuscany SCA RSS Feed Binding Extension
-Private-Package: org.apache.tuscany.sca.binding.rss.collection;version
- ="1.4",org.apache.tuscany.sca.binding.rss.provider;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ oa.sca.annotations;version="1.4",org.apache.tuscany.sca.binding.rss.c
+ ollection;resolution:=optional,org.apache.tuscany.sca.node;resolution
+ :=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rss.rome
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

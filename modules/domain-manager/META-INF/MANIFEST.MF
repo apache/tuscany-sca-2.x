@@ -1,6 +1,32 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.domain.manager.impl;uses:="org.
+ apache.commons.fileupload.disk,org.apache.tuscany.sca.runtime,org.apa
+ che.tuscany.sca.data.collection,org.apache.tuscany.sca.core.context,o
+ rg.apache.tuscany.sca.definitions,org.apache.tuscany.sca.binding.atom
+ ,org.apache.tuscany.sca.core,javax.xml.namespace,javax.servlet,javax.
+ xml.stream,org.apache.tuscany.sca.core.assembly,org.apache.tuscany.sc
+ a.contribution.resolver,org.apache.tuscany.sca.workspace,org.apache.t
+ uscany.sca.core.invocation,org.osoa.sca,org.apache.tuscany.sca.assemb
+ ly.builder,org.apache.tuscany.sca.implementation.node,org.osoa.sca.an
+ notations,org.apache.tuscany.sca.assembly,org.apache.commons.fileuplo
+ ad,org.apache.commons.fileupload.servlet,org.apache.tuscany.sca.works
+ pace.builder,javax.xml.parsers,org.apache.tuscany.sca.contribution,or
+ g.apache.tuscany.sca.interfacedef.java,org.apache.tuscany.sca.monitor
+ ,org.apache.tuscany.sca.interfacedef,org.w3c.dom,org.apache.xml.seria
+ lize,org.apache.tuscany.sca.contribution.processor,javax.servlet.http
+ ";version="1.4",org.apache.tuscany.sca.domain.manager.launcher;uses:=
+ "org.apache.tuscany.sca.domain.manager.impl,org.apache.tuscany.sca.no
+ de,org.osoa.sca";version="1.4"
+Private-Package: icons;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Domain Manager Application
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397422109
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Domain Manager Application
 Import-Package: javax.servlet,javax.servlet.http,javax.xml.namespace,j
  avax.xml.parsers,javax.xml.stream,org.apache.commons.fileupload,org.a
  pache.commons.fileupload.disk,org.apache.commons.fileupload.servlet,o
@@ -21,33 +47,8 @@ Import-Package: javax.servlet,javax.servlet.http,javax.xml.namespace,j
  de;version="1.4",org.apache.tuscany.sca.runtime;version="1.4",org.apa
  che.tuscany.sca.workspace;version="1.4",org.apache.tuscany.sca.worksp
  ace.builder;version="1.4",org.apache.xml.serialize,org.osoa.sca;versi
- on="1.4",org.osoa.sca.annotations;version="1.4",org.w3c.dom
-Bnd-LastModified: 1225317247430
-Export-Package: org.apache.tuscany.sca.domain.manager.launcher;uses:="
- org.apache.tuscany.sca.node,org.osoa.sca,org.apache.tuscany.sca.domai
- n.manager.impl";version="1.4",org.apache.tuscany.sca.domain.manager.i
- mpl;uses:="javax.servlet.http,org.osoa.sca.annotations,org.apache.tus
- cany.sca.monitor,javax.xml.namespace,org.apache.tuscany.sca.contribut
- ion.resolver,org.apache.tuscany.sca.binding.atom,org.apache.tuscany.s
- ca.contribution,org.apache.tuscany.sca.core.invocation,org.apache.com
- mons.fileupload,org.apache.tuscany.sca.runtime,javax.servlet,javax.xm
- l.parsers,org.apache.tuscany.sca.definitions,org.apache.tuscany.sca.a
- ssembly,org.apache.tuscany.sca.interfacedef.java,javax.xml.stream,org
- .apache.tuscany.sca.workspace,org.apache.tuscany.sca.core.assembly,or
- g.apache.xml.serialize,org.w3c.dom,org.apache.tuscany.sca.workspace.b
- uilder,org.apache.tuscany.sca.contribution.processor,org.apache.tusca
- ny.sca.assembly.builder,org.apache.tuscany.sca.core.context,org.osoa.
- sca,org.apache.commons.fileupload.servlet,org.apache.tuscany.sca.inte
- rfacedef,org.apache.tuscany.sca.core,org.apache.tuscany.sca.implement
- ation.node,org.apache.tuscany.sca.data.collection,org.apache.commons.
- fileupload.disk";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Domain Manager Application
-Bundle-Description: Apache Tuscany SCA Domain Manager Application
-Private-Package: icons;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ on="1.4",org.osoa.sca.annotations;version="1.4",org.w3c.dom,junit.fra
+ mework;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.manager
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

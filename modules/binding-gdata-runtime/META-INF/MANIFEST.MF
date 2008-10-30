@@ -1,6 +1,19 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.binding.gdata.collection;uses:=
+ "org.osoa.sca.annotations,com.google.gdata.client,com.google.gdata.da
+ ta";version="1.4"
+Private-Package: org.apache.tuscany.sca.binding.gdata.provider;version
+ ="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Gdata Binding Extension Runtime GSOC
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397270375
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Gdata Binding Extension Runtime
+  GSOC
 Import-Package: com.google.gdata.client,com.google.gdata.data,com.goog
  le.gdata.util,com.google.gdata.util.common.xml,javax.servlet,javax.se
  rvlet.http,javax.xml.namespace,org.apache.abdera.parser,org.apache.co
@@ -17,20 +30,9 @@ Import-Package: com.google.gdata.client,com.google.gdata.data,com.goog
  .interfacedef.util;version="1.4",org.apache.tuscany.sca.invocation;ve
  rsion="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apache.
  tuscany.sca.runtime;version="1.4",org.osoa.sca;version="1.4",org.osoa
- .sca.annotations;version="1.4"
-Bnd-LastModified: 1225317136370
-Export-Package: org.apache.tuscany.sca.binding.gdata.collection;uses:=
- "com.google.gdata.client,org.osoa.sca.annotations,com.google.gdata.da
- ta";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Gdata Binding Extension Runtime GSOC
-Bundle-Description: Apache Tuscany SCA Gdata Binding Extension Runtime
-  GSOC
-Private-Package: org.apache.tuscany.sca.binding.gdata.provider;version
- ="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ .sca.annotations;version="1.4",junit.framework;resolution:=optional,o
+ rg.apache.tuscany.sca.node;resolution:=optional,org.junit;resolution:
+ =optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.gdata.runtime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

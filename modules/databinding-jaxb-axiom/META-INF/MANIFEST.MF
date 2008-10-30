@@ -1,6 +1,16 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.databinding.jaxb.axiom;version
+ ="1.4",org.apache.tuscany.sca.databinding.jaxb.axiom.ext;version="1.4
+ "
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Data Binding for JAXB-AXIOM
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397336953
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for JAXB-AXIOM
 Import-Package: javax.xml.bind,javax.xml.bind.attachment,javax.xml.nam
  espace,javax.xml.stream;version="1.0",javax.xml.transform,javax.xml.t
  ransform.stream,org.apache.axiom.om,org.apache.axiom.om.ds,org.apache
@@ -8,17 +18,13 @@ Import-Package: javax.xml.bind,javax.xml.bind.attachment,javax.xml.nam
  til,org.apache.tuscany.sca.databinding;version="1.4",org.apache.tusca
  ny.sca.databinding.impl;version="1.4",org.apache.tuscany.sca.databind
  ing.jaxb;version="1.4",org.apache.tuscany.sca.interfacedef;version="1
- .4",org.apache.tuscany.sca.interfacedef.util;version="1.4"
-Bnd-LastModified: 1225317179025
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Data Binding for JAXB-AXIOM
-Bundle-Name: Apache Tuscany SCA Data Binding for JAXB-AXIOM
-Private-Package: org.apache.tuscany.sca.databinding.jaxb.axiom;version
- ="1.4",org.apache.tuscany.sca.databinding.jaxb.axiom.ext;version="1.4
- "
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ .4",org.apache.tuscany.sca.interfacedef.util;version="1.4",org.apache
+ .tuscany.sca.databinding.xml;version="1.4";resolution:=optional,org.j
+ unit;resolution:=optional,org.w3c.dom;resolution:=optional,javax.xml.
+ datatype;resolution:=optional,org.apache.tuscany.sca.databinding.jaxb
+ .axiom;resolution:=optional,junit.framework;resolution:=optional,java
+ x.xml.bind.annotation;resolution:=optional,org.apache.tuscany.sca.int
+ erfacedef.impl;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb.axiom
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

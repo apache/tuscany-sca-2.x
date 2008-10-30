@@ -1,23 +1,25 @@
 Manifest-Version: 1.0
-Bundle-Activator: org.apache.tuscany.sca.extensibility.equinox.Equinox
- ServiceDiscoveryActivator
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.apache.tuscany.sca.extensibility;version="1.4",org
- .osgi.framework;version="1.4"
-Bundle-ActivationPolicy: lazy
-Bnd-LastModified: 1225317249258
-Bundle-Version: 1.4
-Eclipse-LazyStart: true
-Bundle-Name: Apache Tuscany SCA Extensibility for Eclipse Equinox
-Bundle-Description: Apache Tuscany SCA Extensibility for Eclipse Equin
- ox
 Private-Package: org.apache.tuscany.sca.extensibility.equinox;version=
  "1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-Vendor: The Apache Software Foundation
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.apache.tuscany.sca.extensibility.equinox
+Bundle-ActivationPolicy: lazy
 Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Extensibility for Eclipse Equinox
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
 DynamicImport-Package: *
+Eclipse-LazyStart: true
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397425625
+Bundle-Activator: org.apache.tuscany.sca.extensibility.equinox.Equinox
+ ServiceDiscoveryActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: Apache Tuscany SCA Extensibility for Eclipse Equin
+ ox
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.tuscany.sca.extensibility;version="1.4",org
+ .osgi.framework;version="1.4",junit.framework;resolution:=optional,or
+ g.junit;resolution:=optional,org.eclipse.core.runtime.adaptor;resolut
+ ion:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.extensibility.equinox
+Bundle-DocURL: http://www.apache.org/
 

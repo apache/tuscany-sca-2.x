@@ -1,23 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.contribution.resource;uses:="or
+ g.apache.tuscany.sca.contribution";version="1.4"
+Private-Package: org.apache.tuscany.sca.contribution.resource.impl;ver
+ sion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Resource Import/Export Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397365937
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Resource Import/Export Model
 Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  y.sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.
  processor;version="1.4",org.apache.tuscany.sca.contribution.resolver;
  version="1.4",org.apache.tuscany.sca.contribution.resource;version="1
  .4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.
- monitor;version="1.4"
-Bnd-LastModified: 1225317204900
-Export-Package: org.apache.tuscany.sca.contribution.resource;uses:="or
- g.apache.tuscany.sca.contribution";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Resource Import/Export Model
-Bundle-Description: Apache Tuscany SCA Resource Import/Export Model
-Private-Package: org.apache.tuscany.sca.contribution.resource.impl;ver
- sion="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ monitor;version="1.4",org.junit;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution.resource
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

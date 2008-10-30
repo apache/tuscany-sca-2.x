@@ -1,6 +1,21 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.implementation.node.launcher;us
+ es:="org.apache.tuscany.sca.node,org.osoa.sca";version="1.4",org.apac
+ he.tuscany.sca.implementation.node.webapp;uses:="org.apache.tuscany.s
+ ca.implementation.node.launcher,org.apache.tuscany.sca.node,org.apach
+ e.tuscany.sca.core,javax.servlet,org.apache.tuscany.sca.host.http,jav
+ ax.servlet.http";version="1.4"
+Private-Package: org.apache.tuscany.sca.implementation.node.provider;v
+ ersion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Node Implementation Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397409312
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Node Implementation Extension
 Import-Package: javax.servlet,javax.servlet.http,org.apache.tuscany.sc
  a.assembly;version="1.4",org.apache.tuscany.sca.core;version="1.4",or
  g.apache.tuscany.sca.host.http;version="1.4",org.apache.tuscany.sca.i
@@ -10,23 +25,8 @@ Import-Package: javax.servlet,javax.servlet.http,org.apache.tuscany.sc
  "1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tusc
  any.sca.node;version="1.4",org.apache.tuscany.sca.provider;version="1
  .4",org.apache.tuscany.sca.runtime;version="1.4",org.osoa.sca;version
- ="1.4"
-Bnd-LastModified: 1225317239149
-Export-Package: org.apache.tuscany.sca.implementation.node.webapp;uses
- :="javax.servlet.http,org.apache.tuscany.sca.host.http,org.apache.tus
- cany.sca.implementation.node.launcher,javax.servlet,org.apache.tuscan
- y.sca.node,org.apache.tuscany.sca.core";version="1.4",org.apache.tusc
- any.sca.implementation.node.launcher;uses:="org.apache.tuscany.sca.no
- de,org.osoa.sca";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Node Implementation Extension
-Bundle-Description: Apache Tuscany SCA Node Implementation Extension
-Private-Package: org.apache.tuscany.sca.implementation.node.provider;v
- ersion="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ="1.4",junit.framework;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.node.runtim
  e
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

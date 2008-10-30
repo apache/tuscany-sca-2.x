@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.aspectj.lang,org.aspectj.lang.annotation,org.aspec
- tj.lang.reflect
-Bnd-LastModified: 1225317297007
+Private-Package: org.apache.tuscany.sca.aspectj;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany AOP-based Logging and Tracing
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 1.4
+Bnd-LastModified: 1225397489546
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: The Apache Software Foundation provides support fo
  r the Apache community of open-source software projects.    The Apach
  e projects are characterized by a collaborative, consensus based deve
@@ -12,11 +15,8 @@ Bundle-Description: The Apache Software Foundation provides support fo
  ire to create high quality software that leads the way in its field. 
     We consider ourselves not simply a group of projects sharing a ser
  ver, but rather a community of developers    and users.
-Bundle-Name: Apache Tuscany AOP-based Logging and Tracing
-Private-Package: org.apache.tuscany.sca.aspectj;version="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+Import-Package: org.aspectj.lang,org.aspectj.lang.annotation,org.aspec
+ tj.lang.reflect,org.junit;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.tracing.aspect
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,22 +1,24 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.binding.http.provider;version=
+ "1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA HTTP Binding Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397277718
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA HTTP Binding Runtime
 Import-Package: javax.servlet,javax.servlet.http,org.apache.tuscany.sc
  a.assembly;version="1.4",org.apache.tuscany.sca.binding.http;version=
  "1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sc
  a.host.http;version="1.4",org.apache.tuscany.sca.interfacedef;version
  ="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tus
  cany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime;versio
- n="1.4"
-Bnd-LastModified: 1225317141104
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA HTTP Binding Runtime
-Bundle-Name: Apache Tuscany SCA HTTP Binding Runtime
-Private-Package: org.apache.tuscany.sca.binding.http.provider;version=
- "1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ n="1.4",org.osoa.sca.annotations;version="1.4";resolution:=optional,j
+ unit.framework;resolution:=optional,org.apache.tuscany.sca.node;resol
+ ution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.http.runtime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

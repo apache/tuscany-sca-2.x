@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.apache.tuscany.sca.data.collection;version="1.4",o
- rg.osoa.sca.annotations;version="1.4"
-Bnd-LastModified: 1225317124354
 Export-Package: org.apache.tuscany.sca.data.collection;uses:="org.osoa
  .sca.annotations";version="1.4"
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Data API
-Bundle-Name: Apache Tuscany SCA Data API
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
-Bundle-SymbolicName: org.apache.tuscany.sca.data.api
 Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Data API
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397254562
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data API
+Import-Package: org.apache.tuscany.sca.data.collection;version="1.4",o
+ rg.osoa.sca.annotations;version="1.4"
+Bundle-SymbolicName: org.apache.tuscany.sca.data.api
+Bundle-DocURL: http://www.apache.org/
 

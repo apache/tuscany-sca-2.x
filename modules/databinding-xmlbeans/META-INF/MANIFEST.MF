@@ -1,21 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.databinding.xmlbeans;version="
+ 1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Data Binding for XmlBeans
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397402000
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for XmlBeans
 Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  y.sca.databinding;version="1.4",org.apache.tuscany.sca.databinding.im
  pl;version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",or
  g.apache.tuscany.sca.interfacedef.util;version="1.4",org.apache.xmlbe
  ans,org.osoa.sca;version="1.4",org.osoa.sca.annotations;version="1.4"
- ,org.w3c.dom
-Bnd-LastModified: 1225317234993
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Data Binding for XmlBeans
-Bundle-Name: Apache Tuscany SCA Data Binding for XmlBeans
-Private-Package: org.apache.tuscany.sca.databinding.xmlbeans;version="
- 1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ ,org.w3c.dom,org.apache.xmlbeans.impl.values;resolution:=optional,jun
+ it.framework;resolution:=optional,org.apache.xmlbeans.xml.stream;reso
+ lution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.xmlbeans
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

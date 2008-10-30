@@ -1,6 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.implementation.java.introspect;
+ uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.impleme
+ ntation.java,org.osoa.sca";version="1.4",org.apache.tuscany.sca.imple
+ mentation.java;uses:="org.apache.tuscany.sca.assembly,org.apache.tusc
+ any.sca.implementation.java.introspect,org.apache.tuscany.sca.core,or
+ g.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef.java"
+ ;version="1.4"
+Private-Package: org.apache.tuscany.sca.implementation.java.impl;versi
+ on="1.4",org.apache.tuscany.sca.implementation.java.introspect.impl;v
+ ersion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Java Implementation Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397153500
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Java Implementation Model
 Import-Package: javax.jws,javax.xml.namespace,org.apache.tuscany.sca.a
  ssembly;version="1.4",org.apache.tuscany.sca.assembly.impl;version="1
  .4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.
@@ -9,24 +26,9 @@ Import-Package: javax.jws,javax.xml.namespace,org.apache.tuscany.sca.a
  version="1.4",org.apache.tuscany.sca.interfacedef.java;version="1.4",
  org.apache.tuscany.sca.interfacedef.util;version="1.4",org.apache.tus
  cany.sca.policy;version="1.4",org.osoa.sca;version="1.4",org.osoa.sca
- .annotations;version="1.4"
-Bnd-LastModified: 1225317044168
-Export-Package: org.apache.tuscany.sca.implementation.java;uses:="org.
- apache.tuscany.sca.core,org.apache.tuscany.sca.implementation.java.in
- trospect,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.polic
- y,org.apache.tuscany.sca.interfacedef.java";version="1.4",org.apache.
- tuscany.sca.implementation.java.introspect;uses:="org.osoa.sca,org.ap
- ache.tuscany.sca.implementation.java,org.apache.tuscany.sca.assembly"
- ;version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Java Implementation Model
-Bundle-Description: Apache Tuscany SCA Java Implementation Model
-Private-Package: org.apache.tuscany.sca.implementation.java.impl;versi
- on="1.4",org.apache.tuscany.sca.implementation.java.introspect.impl;v
- ersion="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ .annotations;version="1.4",junit.framework;resolution:=optional,org.a
+ pache.tuscany.sca.interfacedef.java.impl;version="1.4";resolution:=op
+ tional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.java
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,21 +1,24 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Private-Package: org.apache.tuscany.sca.interfacedef.java.xml;version=
+ "1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Java Interface XML Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397167906
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Java Interface XML Model
 Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  y.sca.contribution.processor;version="1.4",org.apache.tuscany.sca.con
  tribution.resolver;version="1.4",org.apache.tuscany.sca.core;version=
  "1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.tu
  scany.sca.interfacedef.java;version="1.4",org.apache.tuscany.sca.moni
- tor;version="1.4"
-Bnd-LastModified: 1225317055996
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Java Interface XML Model
-Bundle-Name: Apache Tuscany SCA Java Interface XML Model
-Private-Package: org.apache.tuscany.sca.interfacedef.java.xml;version=
- "1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ tor;version="1.4",org.apache.tuscany.sca.assembly;version="1.4";resol
+ ution:=optional,org.apache.tuscany.sca.definitions;version="1.4";reso
+ lution:=optional,org.junit;resolution:=optional,org.apache.tuscany.sc
+ a.assembly.builder;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.xml
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

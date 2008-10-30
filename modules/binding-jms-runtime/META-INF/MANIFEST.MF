@@ -1,6 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.binding.jms.provider;uses:="org
+ .apache.tuscany.sca.runtime,javax.jms,org.apache.tuscany.sca.provider
+ ,org.apache.tuscany.sca.core,org.apache.axiom.om,javax.xml.stream,org
+ .apache.tuscany.sca.binding.jms,org.apache.tuscany.sca.core.assembly,
+ org.osoa.sca,org.apache.tuscany.sca.core.invocation,javax.naming,org.
+ apache.tuscany.sca.assembly,org.apache.tuscany.sca.binding.ws.wsdlgen
+ ,org.apache.axiom.om.impl.builder,org.apache.tuscany.sca.interfacedef
+ .java,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.interface
+ def,org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.binding.
+ ws,org.apache.tuscany.sca.work";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA JMS Binding Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397307750
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA JMS Binding Runtime
 Import-Package: javax.jms,javax.naming,javax.xml.stream;version="1.0",
  org.apache.axiom.om,org.apache.axiom.om.impl.builder,org.apache.tusca
  ny.sca.assembly;version="1.4",org.apache.tuscany.sca.binding.jms;vers
@@ -13,24 +30,8 @@ Import-Package: javax.jms,javax.naming,javax.xml.stream;version="1.0",
  on="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.t
  uscany.sca.monitor;version="1.4",org.apache.tuscany.sca.provider;vers
  ion="1.4",org.apache.tuscany.sca.runtime;version="1.4",org.apache.tus
- cany.sca.work;version="1.4",org.osoa.sca;version="1.4"
-Bnd-LastModified: 1225317162463
-Export-Package: org.apache.tuscany.sca.binding.jms.provider;uses:="org
- .apache.tuscany.sca.monitor,org.apache.tuscany.sca.binding.jms,org.ap
- ache.tuscany.sca.binding.ws.wsdlgen,org.apache.tuscany.sca.core.invoc
- ation,org.apache.tuscany.sca.binding.ws,org.apache.tuscany.sca.runtim
- e,javax.naming,org.apache.axiom.om,org.apache.tuscany.sca.assembly,ja
- vax.xml.stream,org.apache.tuscany.sca.interfacedef.java,org.apache.tu
- scany.sca.work,org.apache.tuscany.sca.core.assembly,org.apache.tuscan
- y.sca.invocation,org.apache.tuscany.sca.provider,org.osoa.sca,org.apa
- che.tuscany.sca.interfacedef,org.apache.tuscany.sca.core,javax.jms,or
- g.apache.axiom.om.impl.builder";version="1.4"
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA JMS Binding Runtime
-Bundle-Name: Apache Tuscany SCA JMS Binding Runtime
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ cany.sca.work;version="1.4",org.osoa.sca;version="1.4",org.osoa.sca.a
+ nnotations;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jms.runtime
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

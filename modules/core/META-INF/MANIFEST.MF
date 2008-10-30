@@ -1,6 +1,52 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.core.assembly;uses:="org.apache
+ .tuscany.sca.runtime,org.apache.tuscany.sca.context,org.apache.tuscan
+ y.sca.provider,org.apache.tuscany.sca.core.context,org.apache.tuscany
+ .sca.assembly.impl,org.apache.tuscany.sca.core,org.apache.tuscany.sca
+ .core.conversation,javax.xml.namespace,javax.xml.stream,org.apache.tu
+ scany.sca.endpointresolver,org.apache.tuscany.sca.contribution.resolv
+ er,org.apache.tuscany.sca.core.invocation,org.osoa.sca,org.apache.tus
+ cany.sca.core.scope,org.apache.tuscany.sca.assembly,org.apache.tuscan
+ y.sca.monitor,org.apache.tuscany.sca.interfacedef.java,org.apache.tus
+ cany.sca.interfacedef,org.apache.tuscany.sca.invocation,org.apache.tu
+ scany.sca.work,org.apache.tuscany.sca.contribution.processor";version
+ ="1.4",org.apache.tuscany.sca.core.work;uses:="javax.naming,org.osoa.
+ sca.annotations,commonj.work,org.apache.tuscany.sca.work";version="1.
+ 4",org.apache.tuscany.sca.core.context;uses:="org.apache.tuscany.sca.
+ runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contex
+ t,javax.security.auth,org.apache.tuscany.sca.monitor,org.apache.tusca
+ ny.sca.interfacedef.java,org.apache.tuscany.sca.core.conversation,org
+ .apache.tuscany.sca.interfacedef,javax.xml.namespace,org.apache.tusca
+ ny.sca.invocation,javax.xml.stream,org.apache.tuscany.sca.core.assemb
+ ly,org.apache.tuscany.sca.core.factory,org.apache.tuscany.sca.contrib
+ ution.processor,org.osoa.sca,org.apache.tuscany.sca.core.invocation,o
+ rg.apache.tuscany.sca.core.scope,org.apache.tuscany.sca.assembly.buil
+ der";version="1.4",org.apache.tuscany.sca.core.factory;version="1.4",
+ org.apache.tuscany.sca.core.invocation;uses:="org.apache.tuscany.sca.
+ runtime,org.apache.tuscany.sca.interfacedef.util,org.apache.tuscany.s
+ ca.assembly,net.sf.cglib.proxy,org.apache.tuscany.sca.provider,org.ap
+ ache.tuscany.sca.core.context,org.apache.tuscany.sca.core,org.apache.
+ tuscany.sca.core.conversation,org.apache.tuscany.sca.interfacedef.jav
+ a,org.apache.tuscany.sca.extensibility,org.apache.tuscany.sca.interfa
+ cedef,org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.core.a
+ ssembly,org.apache.tuscany.sca.work,org.apache.tuscany.sca.core.facto
+ ry,org.osoa.sca,org.apache.tuscany.sca.core.scope";version="1.4",org.
+ apache.tuscany.sca.core.conversation;uses:="org.apache.tuscany.sca.ru
+ ntime,org.apache.tuscany.sca.provider,org.osoa.sca,org.apache.tuscany
+ .sca.core.scope";version="1.4",org.apache.tuscany.sca.core.scope;uses
+ :="org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.runtime,o
+ rg.apache.tuscany.sca.provider,org.apache.tuscany.sca.core.context,or
+ g.apache.tuscany.sca.core.invocation,org.apache.tuscany.sca.core.conv
+ ersation";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Core Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397162265
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Core Runtime
 Import-Package: commonj.work,javax.naming,javax.security.auth,javax.xm
  l.namespace,javax.xml.stream,net.sf.cglib.proxy,org.apache.tuscany.sc
  a.assembly;version="1.4",org.apache.tuscany.sca.assembly.builder;vers
@@ -21,53 +67,10 @@ Import-Package: commonj.work,javax.naming,javax.security.auth,javax.xm
  ersion="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apache
  .tuscany.sca.runtime;version="1.4",org.apache.tuscany.sca.work;versio
  n="1.4",org.osoa.sca;version="1.4",org.osoa.sca.annotations;version="
- 1.4"
-Bnd-LastModified: 1225317051699
-Export-Package: org.apache.tuscany.sca.core.factory;version="1.4",org.
- apache.tuscany.sca.core.scope;uses:="org.apache.tuscany.sca.runtime,o
- rg.apache.tuscany.sca.provider,org.apache.tuscany.sca.core.context,or
- g.apache.tuscany.sca.invocation,org.apache.tuscany.sca.core.conversat
- ion,org.apache.tuscany.sca.core.invocation";version="1.4",org.apache.
- tuscany.sca.core.assembly;uses:="org.apache.tuscany.sca.core.scope,ja
- vax.xml.namespace,org.apache.tuscany.sca.monitor,org.apache.tuscany.s
- ca.contribution.resolver,org.apache.tuscany.sca.core.invocation,org.a
- pache.tuscany.sca.runtime,org.apache.tuscany.sca.core.conversation,or
- g.apache.tuscany.sca.assembly,javax.xml.stream,org.apache.tuscany.sca
- .interfacedef.java,org.apache.tuscany.sca.work,org.apache.tuscany.sca
- .context,org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.end
- pointresolver,org.apache.tuscany.sca.contribution.processor,org.apach
- e.tuscany.sca.provider,org.apache.tuscany.sca.core.context,org.osoa.s
- ca,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.core,or
- g.apache.tuscany.sca.assembly.impl";version="1.4",org.apache.tuscany.
- sca.core.context;uses:="org.apache.tuscany.sca.core.scope,org.apache.
- tuscany.sca.core.assembly,org.apache.tuscany.sca.context,org.apache.t
- uscany.sca.invocation,javax.xml.namespace,org.apache.tuscany.sca.moni
- tor,org.apache.tuscany.sca.core.invocation,org.apache.tuscany.sca.con
- tribution.processor,org.apache.tuscany.sca.runtime,org.apache.tuscany
- .sca.core.factory,org.apache.tuscany.sca.assembly.builder,org.osoa.sc
- a,org.apache.tuscany.sca.core.conversation,org.apache.tuscany.sca.int
- erfacedef,org.apache.tuscany.sca.assembly,javax.security.auth,org.apa
- che.tuscany.sca.interfacedef.java,javax.xml.stream";version="1.4",org
- .apache.tuscany.sca.core.work;uses:="org.osoa.sca.annotations,javax.n
- aming,org.apache.tuscany.sca.work,commonj.work";version="1.4",org.apa
- che.tuscany.sca.core.conversation;uses:="org.apache.tuscany.sca.runti
- me,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.core.scope,
- org.osoa.sca";version="1.4",org.apache.tuscany.sca.core.invocation;us
- es:="org.apache.tuscany.sca.work,org.apache.tuscany.sca.core.scope,or
- g.apache.tuscany.sca.core.assembly,org.apache.tuscany.sca.extensibili
- ty,org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.interface
- def.util,org.apache.tuscany.sca.core.factory,org.apache.tuscany.sca.r
- untime,org.apache.tuscany.sca.provider,net.sf.cglib.proxy,org.apache.
- tuscany.sca.core.context,org.osoa.sca,org.apache.tuscany.sca.core.con
- versation,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.
- core,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.interface
- def.java";version="1.4"
-Bundle-Version: 1.4
-Bundle-Description: Apache Tuscany SCA Core Runtime
-Bundle-Name: Apache Tuscany SCA Core Runtime
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
+ 1.4",org.junit;resolution:=optional,junit.framework;resolution:=optio
+ nal,org.apache.tuscany.sca.interfacedef.impl;version="1.4";resolution
+ :=optional,org.apache.tuscany.sca.core.wire;version="1.4";resolution:
+ =optional
 Bundle-SymbolicName: org.apache.tuscany.sca.core
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

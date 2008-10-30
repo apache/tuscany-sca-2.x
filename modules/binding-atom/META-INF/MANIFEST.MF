@@ -1,20 +1,24 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
- he.tuscany.sca.binding.atom;version="1.4",org.apache.tuscany.sca.poli
- cy;version="1.4"
-Bnd-LastModified: 1225317123510
 Export-Package: org.apache.tuscany.sca.binding.atom;uses:="org.apache.
  tuscany.sca.assembly";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
-Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
 Private-Package: org.apache.tuscany.sca.binding.atom.impl;version="1.4
  "
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
-Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom
 Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397253156
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
+Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
+ he.tuscany.sca.binding.atom;version="1.4",org.apache.tuscany.sca.poli
+ cy;version="1.4",javax.xml.stream;resolution:=optional,org.apache.tus
+ cany.sca.contribution.processor;resolution:=optional,org.apache.tusca
+ ny.sca.core;version="1.4";resolution:=optional,org.apache.tuscany.sca
+ .monitor;version="1.4";resolution:=optional,org.junit;resolution:=opt
+ ional
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom
+Bundle-DocURL: http://www.apache.org/
 

@@ -1,6 +1,28 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.implementation.xquery;uses:="or
+ g.apache.tuscany.sca.databinding,org.apache.tuscany.sca.runtime,net.s
+ f.saxon.value,org.apache.tuscany.sca.interfacedef.util,org.apache.tus
+ cany.sca.provider,org.apache.tuscany.sca.databinding.saxon,net.sf.sax
+ on.trans,org.apache.tuscany.sca.core,javax.xml.transform.dom,net.sf.s
+ axon,org.apache.tuscany.sca.databinding.saxon.collection,javax.xml.na
+ mespace,net.sf.saxon.query,org.apache.tuscany.sca.core.factory,net.sf
+ .saxon.om,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.data
+ binding.impl,org.apache.tuscany.sca.interfacedef.java,org.apache.tusc
+ any.sca.interfacedef,org.w3c.dom,org.apache.tuscany.sca.implementatio
+ n.java.injection,org.apache.tuscany.sca.invocation,javax.xml.transfor
+ m,net.sf.saxon.event,javax.xml.transform.stream";version="1.4"
+Private-Package: org.apache.tuscany.sca.implementation.xquery.impl;ver
+ sion="1.4",org.apache.tuscany.sca.implementation.xquery.xml;version="
+ 1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA XQuery Implementation Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397469781
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA XQuery Implementation Extension
 Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.transfo
  rm,javax.xml.transform.dom,javax.xml.transform.stream,net.sf.saxon,ne
  t.sf.saxon.event,net.sf.saxon.om,net.sf.saxon.query,net.sf.saxon.tran
@@ -20,28 +42,6 @@ Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.transfo
  he.tuscany.sca.invocation;version="1.4",org.apache.tuscany.sca.monito
  r;version="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apa
  che.tuscany.sca.runtime;version="1.4",org.w3c.dom
-Bnd-LastModified: 1225317284085
-Export-Package: org.apache.tuscany.sca.implementation.xquery;uses:="or
- g.apache.tuscany.sca.databinding.saxon.collection,javax.xml.namespace
- ,net.sf.saxon.query,net.sf.saxon.om,net.sf.saxon.event,javax.xml.tran
- sform,org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.databindi
- ng,net.sf.saxon.trans,javax.xml.transform.stream,net.sf.saxon.value,o
- rg.apache.tuscany.sca.assembly,org.apache.tuscany.sca.interfacedef.ja
- va,org.apache.tuscany.sca.databinding.impl,org.apache.tuscany.sca.dat
- abinding.saxon,org.apache.tuscany.sca.invocation,org.apache.tuscany.s
- ca.interfacedef.util,org.w3c.dom,org.apache.tuscany.sca.implementatio
- n.java.injection,org.apache.tuscany.sca.core.factory,javax.xml.transf
- orm.dom,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.interf
- acedef,net.sf.saxon,org.apache.tuscany.sca.core";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA XQuery Implementation Extension
-Bundle-Description: Apache Tuscany SCA XQuery Implementation Extension
-Private-Package: org.apache.tuscany.sca.implementation.xquery.impl;ver
- sion="1.4",org.apache.tuscany.sca.implementation.xquery.xml;version="
- 1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.xquery
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 

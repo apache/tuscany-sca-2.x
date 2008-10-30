@@ -1,6 +1,18 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_11 (Sun Microsystems Inc.)
+Export-Package: org.apache.tuscany.sca.implementation.resource;uses:="
+ org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.data.collectio
+ n";version="1.4"
+Private-Package: org.apache.tuscany.sca.implementation.resource.impl;v
+ ersion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Resource Implementation Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397272734
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Resource Implementation Model
 Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  y.sca.assembly;version="1.4",org.apache.tuscany.sca.contribution;vers
  ion="1.4",org.apache.tuscany.sca.contribution.processor;version="1.4"
@@ -10,18 +22,6 @@ Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  on="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache
  .tuscany.sca.interfacedef.java;version="1.4",org.apache.tuscany.sca.m
  onitor;version="1.4"
-Bnd-LastModified: 1225317138526
-Export-Package: org.apache.tuscany.sca.implementation.resource;uses:="
- org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.data.collectio
- n";version="1.4"
-Bundle-Version: 1.4
-Bundle-Name: Apache Tuscany SCA Resource Implementation Model
-Bundle-Description: Apache Tuscany SCA Resource Implementation Model
-Private-Package: org.apache.tuscany.sca.implementation.resource.impl;v
- ersion="1.4"
-Bundle-DocURL: http://www.apache.org/
-Bundle-ManifestVersion: 2
-Bundle-Vendor: The Apache Software Foundation
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.resource
-Tool: Bnd-0.0.255
+Bundle-DocURL: http://www.apache.org/
 
