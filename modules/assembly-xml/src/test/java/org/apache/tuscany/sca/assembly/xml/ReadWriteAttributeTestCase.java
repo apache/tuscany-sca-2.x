@@ -53,9 +53,7 @@ public class ReadWriteAttributeTestCase {
     
     private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
                          "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\">"+
-                         "<service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\">"+
-                                "<interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" interface=\"calculator.CalculatorService\" />"+
-                         "</service>"+
+                         "<service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\" />"+
                          "<component name=\"CalculatorServiceComponent\" customAttribute=\"customValue\">"+
                                 "<reference name=\"addService\" target=\"AddServiceComponent\" />"+
                                 "<reference name=\"subtractService\" target=\"SubtractServiceComponent\" />"+
