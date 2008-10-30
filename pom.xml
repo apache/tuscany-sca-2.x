@@ -173,6 +173,13 @@
 
     <profiles>
         <profile>
+            <id>setup</id>
+            <modules>
+                <module>tools/maven/maven-eclipse-compiler</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
