@@ -113,21 +113,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.node.launcher.equinox</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>org.apache.tuscany.sca.node.equinox.launcher</Export-Package>
-                        <Eclipse-AutoStart>true</Eclipse-AutoStart> 
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

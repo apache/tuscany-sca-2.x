@@ -64,25 +64,4 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.host.webapp</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package>
-                            org.apache.tuscany.sca.host.webapp,
-                            org.apache.tuscany.sca.host.webapp.jsp
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

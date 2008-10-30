@@ -29,10 +29,6 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Implementation Modules</name>
 
-    <properties>
-        <tuscany.version>1.4</tuscany.version>
-    </properties>
-
     <profiles>
         <profile>
             <id>default</id>
@@ -185,25 +181,6 @@
                    </classpathContainers>
                </configuration>
            </plugin>
-
-           <plugin>
-               <groupId>org.apache.felix</groupId>
-               <artifactId>maven-bundle-plugin</artifactId>
-               <version>1.4.3</version>
-               <extensions>true</extensions>
-               <executions>
-                   <execution>
-                       <id>bundle-manifest</id>
-                       <phase>process-classes</phase>
-                       <goals>
-                           <goal>manifest</goal>
-                       </goals>
-                       <configuration>
-                           <manifestLocation>${basedir}/META-INF</manifestLocation>
-                       </configuration>
-                   </execution>
-               </executions>
-           </plugin> 
 
            <plugin>
                <artifactId>maven-jar-plugin</artifactId>

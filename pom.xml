@@ -32,6 +32,10 @@
     <url>http://tuscany.apache.org</url>
     <version>1.4-SNAPSHOT</version>
 
+    <properties>
+        <tuscany.version>1.4</tuscany.version>
+    </properties>
+
     <scm>
         <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
         <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
@@ -421,6 +425,8 @@
                                 <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                                 <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
                                 <Implementation-Version>${version}</Implementation-Version>
+                                <Bundle-Version>${tuscany.version}</Bundle-Version>
+                                <Bundle-Description>${pom.name}</Bundle-Description>
                             </manifestEntries>
                          </archive>
                     </configuration>

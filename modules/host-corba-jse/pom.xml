@@ -35,27 +35,4 @@
         </dependency>
     </dependencies>
 
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.host.corba.jse</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.name}</Bundle-Description>
-                        <!--  FIXME: These packages are used by tuscany-host-corba-jse-tns. We need to find a better way. -->
-                        <Export-Package>
-                            org.apache.tuscany.sca.host.corba.jse,
-                            org.apache.tuscany.sca.host.corba.naming
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

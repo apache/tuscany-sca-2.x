@@ -54,34 +54,4 @@
         </dependency>
     </dependencies>
 
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.host.jetty</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Export-Package></Export-Package>
-                        <Import-Package>
-                            org.mortbay.jetty;version="6.1.7",
-                            org.mortbay.jetty.handler;version="6.1.7",
-                            org.mortbay.jetty.nio;version="6.1.7",
-                            org.mortbay.jetty.security;version="6.1.7",
-                            org.mortbay.jetty.servlet;version="6.1.7",
-                            org.mortbay.log;version="6.1.7",
-                            org.mortbay.resource;version="6.1.7",
-                            org.mortbay.thread;version="6.1.7",
-                            *
-                         </Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

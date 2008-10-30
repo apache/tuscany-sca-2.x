@@ -91,22 +91,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>${tuscany.version}</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.extensibility.equinox</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.name}</Bundle-Description>
-                        <Bundle-Activator>org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator</Bundle-Activator>
-                        <Export-Package></Export-Package>
-                        <Eclipse-LazyStart>true</Eclipse-LazyStart>
-                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-                        <DynamicImport-Package>*</DynamicImport-Package> 
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

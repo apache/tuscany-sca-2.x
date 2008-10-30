@@ -32,23 +32,4 @@
     <description>API classes for the Service Component Architecture</description>
     <packaging>jar</packaging>
  
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-
-                <configuration>
-                    <instructions>
-                        <Bundle-Version>1.4</Bundle-Version>
-                        <Bundle-SymbolicName>org.apache.tuscany.sca.api</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Export-Package>org.osoa.sca,org.osoa.sca.annotations</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-
 </project>
