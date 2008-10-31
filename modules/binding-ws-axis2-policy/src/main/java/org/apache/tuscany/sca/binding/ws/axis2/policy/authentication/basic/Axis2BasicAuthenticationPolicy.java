@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -30,7 +29,8 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class Axis2BasicAuthenticationPolicy implements Policy {
-    public static final QName AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "axis2BasicAuthentication");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "axis2BasicAuthentication");
     public static final String AXIS2_BASIC_AUTHENTICATION_USERNAME = "username";
     public static final String AXIS2_BASIC_AUTHENTICATION_PASSWORD = "password";
     public static final String AXIS2_BASIC_AUTHENTICATION_HTTP_HEADER = "httpheader";

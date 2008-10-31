@@ -20,13 +20,15 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_PASSWORD;
+import static org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME;
+import static org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_USERNAME;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -61,9 +63,9 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
                     name = reader.getName();
                     if ( name.equals(getArtifactType()) ) {
                         // no attributes at the moment
-                    } else if ( Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_USERNAME.equals(name.getLocalPart()) ) {
+                    } else if ( AXIS2_BASIC_AUTHENTICATION_USERNAME.equals(name.getLocalPart()) ) {
                         policy.setUserName(reader.getElementText());
-                    } else if ( Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_PASSWORD.equals(name.getLocalPart()) ) {
+                    } else if ( AXIS2_BASIC_AUTHENTICATION_PASSWORD.equals(name.getLocalPart()) ) {
                         policy.setPassword(reader.getElementText());
                     }
                     break;
@@ -91,11 +93,11 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
         writer.writeStartElement(prefix, 
                                  getArtifactType().getLocalPart(),
                                  getArtifactType().getNamespaceURI());
-        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", AXIS2_BASIC_AUTHENTICATION_POLICY_QNAME.getNamespaceURI());
 
         if ( policy.getUserName() != null ) {
             writer.writeStartElement(prefix, 
-                                     Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_USERNAME,
+                                     AXIS2_BASIC_AUTHENTICATION_USERNAME,
                                      getArtifactType().getNamespaceURI());
             writer.writeCharacters(policy.getUserName());
             writer.writeEndElement();
@@ -103,7 +105,7 @@ public class Axis2BasicAuthenticationPolicyProcessor implements StAXArtifactProc
         
         if ( policy.getPassword() != null ) {
             writer.writeStartElement(prefix, 
-                                     Axis2BasicAuthenticationPolicy.AXIS2_BASIC_AUTHENTICATION_PASSWORD,
+                                     AXIS2_BASIC_AUTHENTICATION_PASSWORD,
                                      getArtifactType().getNamespaceURI());
             writer.writeCharacters(policy.getPassword());
             writer.writeEndElement();
