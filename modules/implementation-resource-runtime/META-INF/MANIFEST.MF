@@ -10,13 +10,16 @@ Bnd-LastModified: 1225397274609
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Resource Implementation Runtime
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
- he.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.implementati
- on.resource;version="1.4",org.apache.tuscany.sca.interfacedef;version
- ="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tus
- cany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime;versio
- n="1.4",junit.framework;resolution:=optional,org.apache.tuscany.sca.n
- ode;resolution:=optional
+Import-Package: junit.framework;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.data.collection;version="1.4.0",
+ org.apache.tuscany.sca.implementation.resource;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.node;resolution:=optional,
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.resource.ru
  ntime
 Bundle-DocURL: http://www.apache.org/
