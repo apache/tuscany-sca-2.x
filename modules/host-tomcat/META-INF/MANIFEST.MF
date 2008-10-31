@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.http.tomcat;version="1.4",org.
+ apache.tuscany.sca.http.tomcat.module;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Tomcat Servlet Host Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1222833663765
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Tomcat Servlet Host Extension
+Import-Package: javax.naming,javax.naming.directory,javax.servlet,java
+ x.servlet.http,org.apache.catalina,org.apache.catalina.connector,org.
+ apache.catalina.core,org.apache.catalina.servlets,org.apache.catalina
+ .startup,org.apache.coyote,org.apache.coyote.http11,org.apache.naming
+ .resources,org.apache.tomcat.util.buf,org.apache.tomcat.util.http.map
+ per,org.apache.tomcat.util.net,org.apache.tuscany.sca.core;version="1
+ .4",org.apache.tuscany.sca.host.http;version="1.4",org.apache.tuscany
+ .sca.work;version="1.4"
+Bundle-SymbolicName: org.apache.tuscany.sca.host.tomcat
+Bundle-DocURL: http://www.apache.org/
+
