@@ -38,11 +38,14 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
+import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -111,7 +114,13 @@ public class CustomCompositeBuilder {
         // Get XML input/output factories
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);       
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        
+        // create the validating input factory out here just so that the 
+        // monitor can be passed in
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, monitor);
+        modelFactories.addFactory(validatingInputFactory);
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 

@@ -74,6 +74,20 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
 	        monitor.problem(problem);
     	 }
      }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-java-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
 
     public QName getArtifactType() {
         return EXPORT_JAVA;
@@ -86,37 +100,43 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     /**
      * Process <export package=""/>
      */
-    public JavaExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JavaExport read(XMLStreamReader reader) throws ContributionReadException {
         JavaExport javaExport = this.factory.createJavaExport();
         QName element = null;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-                    
-                    // Read <export.java>
-                    if (EXPORT_JAVA.equals(element)) {
-                        String packageName = reader.getAttributeValue(null, PACKAGE);
-                        if (packageName == null) {
-                        	error("AttributePackageMissing", reader);
-                            //throw new ContributionReadException("Attribute 'package' is missing");
-                        } else                        
-                            javaExport.setPackage(packageName);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (EXPORT_JAVA.equals(reader.getName())) {
-                        return javaExport;
-                    }
-                    break;        
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+                        
+                        // Read <export.java>
+                        if (EXPORT_JAVA.equals(element)) {
+                            String packageName = reader.getAttributeValue(null, PACKAGE);
+                            if (packageName == null) {
+                            	error("AttributePackageMissing", reader);
+                                //throw new ContributionReadException("Attribute 'package' is missing");
+                            } else                        
+                                javaExport.setPackage(packageName);
+                        }
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (EXPORT_JAVA.equals(reader.getName())) {
+                            return javaExport;
+                        }
+                        break;        
+                }
+                
+                //Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            //Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return javaExport;

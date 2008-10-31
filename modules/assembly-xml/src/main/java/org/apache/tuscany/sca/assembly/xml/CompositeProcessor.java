@@ -149,7 +149,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         super(contributionFactory, assemblyFactory, policyFactory, extensionProcessor, monitor);
     }    
 
-    public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Composite read(XMLStreamReader reader) throws ContributionReadException {
         Composite composite = null;
         Composite include = null;
         Component component = null;
@@ -164,411 +164,418 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         Callback callback = null;
         QName name = null;
 
-        // Read the composite document
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    name = reader.getName();
-
-                    if (COMPOSITE_QNAME.equals(name)) {
-
-                        // Read a <composite>
-                        composite = assemblyFactory.createComposite();
-                        
-                        composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
-
-                        if(!isSet(reader, TARGET_NAMESPACE)){
-                            // spec says that a composite must have a namespace
-                            warning("NoCompositeNamespace", composite, composite.getName().toString());   
-                        }
-                        
-                        if(isSet(reader, AUTOWIRE)) {
-                            composite.setAutowire(getBoolean(reader, AUTOWIRE));
-                        }
-                        
-                        //handle extension attributes
-                        this.readExtendedAttributes(reader, name, composite, extensionAttributeProcessor);
-
-                        composite.setLocal(getBoolean(reader, LOCAL));
-                        composite.setConstrainingType(readConstrainingType(reader));
-                        policyProcessor.readPolicies(composite, reader);
-
-                    } else if (INCLUDE_QNAME.equals(name)) {
-
-                        // Read an <include>
-                        include = assemblyFactory.createComposite();
-                        include.setName(getQName(reader, NAME));
-                        include.setURI(getString(reader, URI));
-                        include.setUnresolved(true);
-                        composite.getIncludes().add(include);
-
-                    } else if (SERVICE_QNAME.equals(name)) {
-                        if (component != null) {
-
-                            // Read a <component><service>
-                            componentService = assemblyFactory.createComponentService();
-                            contract = componentService;
-                            componentService.setName(getString(reader, NAME));
-                            
-                            //handle extension attributes
-                            this.readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor);
-
-                            component.getServices().add(componentService);
-                            policyProcessor.readPolicies(contract, reader);
-                        } else {
-
-                            // Read a <composite><service>
-                            compositeService = assemblyFactory.createCompositeService();
-                            contract = compositeService;
-                            compositeService.setName(getString(reader, NAME));
-
-                            String promoted = getString(reader, PROMOTE);
-                            if (promoted != null) {
-                                String promotedComponentName;
-                                String promotedServiceName;
-                                int s = promoted.indexOf('/');
-                                if (s == -1) {
-                                    promotedComponentName = promoted;
-                                    promotedServiceName = null;
-                                } else {
-                                    promotedComponentName = promoted.substring(0, s);
-                                    promotedServiceName = promoted.substring(s + 1);
-                                }
+        try {
+            // Read the composite document
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        name = reader.getName();
     
-                                Component promotedComponent = assemblyFactory.createComponent();
-                                promotedComponent.setUnresolved(true);
-                                promotedComponent.setName(promotedComponentName);
-                                compositeService.setPromotedComponent(promotedComponent);
+                        if (COMPOSITE_QNAME.equals(name)) {
     
-                                ComponentService promotedService = assemblyFactory.createComponentService();
-                                promotedService.setUnresolved(true);
-                                promotedService.setName(promotedServiceName);
-                                compositeService.setPromotedService(promotedService);
+                            // Read a <composite>
+                            composite = assemblyFactory.createComposite();
+                            
+                            composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
+    
+                            if(!isSet(reader, TARGET_NAMESPACE)){
+                                // spec says that a composite must have a namespace
+                                warning("NoCompositeNamespace", composite, composite.getName().toString());   
                             }
-
-                            //handle extension attributes
-                            this.readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor);
-
-                            composite.getServices().add(compositeService);
-                            policyProcessor.readPolicies(contract, reader);
-                        }
-
-                    } else if (REFERENCE_QNAME.equals(name)) {
-                        if (component != null) {
-                            // Read a <component><reference>
-                            componentReference = assemblyFactory.createComponentReference();
-                            contract = componentReference;
-                            componentReference.setName(getString(reader, NAME));
-                            readMultiplicity(componentReference, reader);
-                            if (isSet(reader, AUTOWIRE)) {
-                                componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                            
+                            if(isSet(reader, AUTOWIRE)) {
+                                composite.setAutowire(getBoolean(reader, AUTOWIRE));
                             }
-                            readTargets(componentReference, reader);
-                            componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                             
                             //handle extension attributes
-                            this.readExtendedAttributes(reader, name, componentReference, extensionAttributeProcessor);
-
-                            component.getReferences().add(componentReference);
-                            policyProcessor.readPolicies(contract, reader);
-                        } else {
-                            // Read a <composite><reference>
-                            compositeReference = assemblyFactory.createCompositeReference();
-                            contract = compositeReference;
-                            compositeReference.setName(getString(reader, NAME));
-                            readMultiplicity(compositeReference, reader);
-                            readTargets(compositeReference, reader);
-                            String promote = reader.getAttributeValue(null, Constants.PROMOTE);
-                            if (promote != null) {
-                                for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
-                                    ComponentReference promotedReference =
-                                        assemblyFactory.createComponentReference();
-                                    promotedReference.setUnresolved(true);
-                                    promotedReference.setName(tokens.nextToken());
-                                    compositeReference.getPromotedReferences().add(promotedReference);
-                                }
-                            }
-                            compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
-                            
-                            //handle extension attributes
-                            this.readExtendedAttributes(reader, name, compositeReference, extensionAttributeProcessor);
-
-                            composite.getReferences().add(compositeReference);                            
-                            policyProcessor.readPolicies(contract, reader);
-                        }
-
-                    } else if (PROPERTY_QNAME.equals(name)) {
-                        if (component != null) {
-
-                            // Read a <component><property>
-                            componentProperty = assemblyFactory.createComponentProperty();
-                            property = componentProperty;
-                            String source = getString(reader, SOURCE);
-                            if(source!=null) {
-                                source = source.trim();
-                            }
-                            componentProperty.setSource(source);
-                            if (source != null) {
-                                // $<name>/...
-                                if (source.charAt(0) == '$') {
-                                    int index = source.indexOf('/');
-                                    if (index == -1) {
-                                        // Tolerating $prop
-                                        source = source + "/";
-                                        index = source.length() - 1;
-                                    }
-                                    source = source.substring(index + 1);
-                                    if ("".equals(source)) {
-                                        source = ".";
-                                    }
-                                }
-                                XPath xpath = xPathFactory.newXPath();
-                                xpath.setNamespaceContext(reader.getNamespaceContext());
-                                try {
-                                    componentProperty.setSourceXPathExpression(xpath.compile(source));
-                                } catch (XPathExpressionException e) {
-                                	ContributionReadException ce = new ContributionReadException(e);
-                                	error("ContributionReadException", xpath, ce);
-                                    //throw ce;
-                                }
-                            }
-                            componentProperty.setFile(getString(reader, FILE));
-                            
-                            //handle extension attributes
-                            this.readExtendedAttributes(reader, name, componentProperty, extensionAttributeProcessor);
-
-                            policyProcessor.readPolicies(property, reader);
-                            readAbstractProperty(componentProperty, reader);
-                            
-                            // Read the property value
-                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
-                            property.setValue(value);
-                            
-                            component.getProperties().add(componentProperty);
-                        } else {
-
-                            // Read a <composite><property>
-                            property = assemblyFactory.createProperty();
-                            policyProcessor.readPolicies(property, reader);
-                            readAbstractProperty(property, reader);
-                            
-                            // Read the property value
-                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
-                            property.setValue(value);
-                            
-                            composite.getProperties().add(property);
-                        }
-                        
-                        // TUSCANY-1949
-                        // If the property doesn't have a value, the END_ELEMENT event is read by the readPropertyValue
-                        if (reader.getEventType() == END_ELEMENT && PROPERTY_QNAME.equals(reader.getName())) {
-                            property = null;
-                            componentProperty = null;
-                        }
-
-                    } else if (COMPONENT_QNAME.equals(name)) {
-
-                        // Read a <component>
-                        component = assemblyFactory.createComponent();
-                        component.setName(getString(reader, NAME));
-                        if (isSet(reader, AUTOWIRE)) {
-                            component.setAutowire(getBoolean(reader, AUTOWIRE));
-                        }
-                        if (isSet(reader, URI)) {
-                            component.setURI(getString(reader, URI));
-                        }
-                        
-                        //handle extension attributes
-                       this.readExtendedAttributes(reader, name, component, extensionAttributeProcessor);
-                        
-                        component.setConstrainingType(readConstrainingType(reader));
-                        composite.getComponents().add(component);
-                        policyProcessor.readPolicies(component, reader);
-
-                    } else if (WIRE_QNAME.equals(name)) {
-
-                        // Read a <wire>
-                        wire = assemblyFactory.createWire();
-                        ComponentReference source = assemblyFactory.createComponentReference();
-                        source.setUnresolved(true);
-                        source.setName(getString(reader, SOURCE));
-                        wire.setSource(source);
-
-                        ComponentService target = assemblyFactory.createComponentService();
-                        target.setUnresolved(true);
-                        target.setName(getString(reader, TARGET));
-                        wire.setTarget(target);
-
-                        //handle extension attributes
-                        this.readExtendedAttributes(reader, name, wire, extensionAttributeProcessor);
-
-                        composite.getWires().add(wire);
-                        policyProcessor.readPolicies(wire, reader);
-
-                    } else if (CALLBACK_QNAME.equals(name)) {
-
-                        // Read a <callback>
-                        callback = assemblyFactory.createCallback();
-                        contract.setCallback(callback);
-                        
-                        //handle extension attributes
-                        this.readExtendedAttributes(reader, name, callback, extensionAttributeProcessor);
-                        
-                        policyProcessor.readPolicies(callback, reader);
-
-                    } else if (OPERATION_QNAME.equals(name)) {
-
-                        // Read an <operation>
-                        ConfiguredOperation operation = assemblyFactory.createConfiguredOperation();
-                        operation.setName(getString(reader, NAME));
-                        operation.setUnresolved(true);
-                        if (callback != null) {
-                            policyProcessor.readPolicies(operation, reader);
-                        } else {
-                            policyProcessor.readPolicies(operation, reader);
-                        }
-                        
-                        OperationsConfigurator opConfigurator = null;
-                        if ( compositeService != null ) {
-                            opConfigurator = compositeService;
-                        } else if ( componentService != null ) {
-                            opConfigurator = componentService;
-                        } else if ( compositeReference != null ) {
-                            opConfigurator = compositeReference;
-                        } else if ( componentReference != null ) {
-                            opConfigurator = componentReference;
-                        }
-                        
-                        opConfigurator.getConfiguredOperations().add(operation);
-                    } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
-
-                        // Read an implementation.composite
-                        Composite implementation = assemblyFactory.createComposite();
-                        implementation.setName(getQName(reader, NAME));
-                        implementation.setUnresolved(true);
-                        
-                        //handle extension attributes
-                        this.readExtendedAttributes(reader, name, implementation, extensionAttributeProcessor);
-
-                        component.setImplementation(implementation);
-                        policyProcessor.readPolicies(implementation, reader);
-                    } else {
-
-                        // Read an extension element
-                        Object extension = extensionProcessor.read(reader);
-                        if (extension != null) {
-                            if (extension instanceof InterfaceContract) {
-
-                                // <service><interface> and
-                                // <reference><interface>
-                                if (contract != null) {
-                                    contract.setInterfaceContract((InterfaceContract)extension);
-                                } else {
-                                    if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                    	error("UnexpectedInterfaceElement", extension);
-                                        //throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
+                            this.readExtendedAttributes(reader, name, composite, extensionAttributeProcessor);
+    
+                            composite.setLocal(getBoolean(reader, LOCAL));
+                            composite.setConstrainingType(readConstrainingType(reader));
+                            policyProcessor.readPolicies(composite, reader);
+    
+                        } else if (INCLUDE_QNAME.equals(name)) {
+    
+                            // Read an <include>
+                            include = assemblyFactory.createComposite();
+                            include.setName(getQName(reader, NAME));
+                            include.setURI(getString(reader, URI));
+                            include.setUnresolved(true);
+                            composite.getIncludes().add(include);
+    
+                        } else if (SERVICE_QNAME.equals(name)) {
+                            if (component != null) {
+    
+                                // Read a <component><service>
+                                componentService = assemblyFactory.createComponentService();
+                                contract = componentService;
+                                componentService.setName(getString(reader, NAME));
+                                
+                                //handle extension attributes
+                                this.readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor);
+    
+                                component.getServices().add(componentService);
+                                policyProcessor.readPolicies(contract, reader);
+                            } else {
+    
+                                // Read a <composite><service>
+                                compositeService = assemblyFactory.createCompositeService();
+                                contract = compositeService;
+                                compositeService.setName(getString(reader, NAME));
+    
+                                String promoted = getString(reader, PROMOTE);
+                                if (promoted != null) {
+                                    String promotedComponentName;
+                                    String promotedServiceName;
+                                    int s = promoted.indexOf('/');
+                                    if (s == -1) {
+                                        promotedComponentName = promoted;
+                                        promotedServiceName = null;
                                     } else {
-                                        composite.getExtensions().add(extension);
+                                        promotedComponentName = promoted.substring(0, s);
+                                        promotedServiceName = promoted.substring(s + 1);
+                                    }
+        
+                                    Component promotedComponent = assemblyFactory.createComponent();
+                                    promotedComponent.setUnresolved(true);
+                                    promotedComponent.setName(promotedComponentName);
+                                    compositeService.setPromotedComponent(promotedComponent);
+        
+                                    ComponentService promotedService = assemblyFactory.createComponentService();
+                                    promotedService.setUnresolved(true);
+                                    promotedService.setName(promotedServiceName);
+                                    compositeService.setPromotedService(promotedService);
+                                }
+    
+                                //handle extension attributes
+                                this.readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor);
+    
+                                composite.getServices().add(compositeService);
+                                policyProcessor.readPolicies(contract, reader);
+                            }
+    
+                        } else if (REFERENCE_QNAME.equals(name)) {
+                            if (component != null) {
+                                // Read a <component><reference>
+                                componentReference = assemblyFactory.createComponentReference();
+                                contract = componentReference;
+                                componentReference.setName(getString(reader, NAME));
+                                readMultiplicity(componentReference, reader);
+                                if (isSet(reader, AUTOWIRE)) {
+                                    componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
+                                }
+                                readTargets(componentReference, reader);
+                                componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                                
+                                //handle extension attributes
+                                this.readExtendedAttributes(reader, name, componentReference, extensionAttributeProcessor);
+    
+                                component.getReferences().add(componentReference);
+                                policyProcessor.readPolicies(contract, reader);
+                            } else {
+                                // Read a <composite><reference>
+                                compositeReference = assemblyFactory.createCompositeReference();
+                                contract = compositeReference;
+                                compositeReference.setName(getString(reader, NAME));
+                                readMultiplicity(compositeReference, reader);
+                                readTargets(compositeReference, reader);
+                                String promote = reader.getAttributeValue(null, Constants.PROMOTE);
+                                if (promote != null) {
+                                    for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
+                                        ComponentReference promotedReference =
+                                            assemblyFactory.createComponentReference();
+                                        promotedReference.setUnresolved(true);
+                                        promotedReference.setName(tokens.nextToken());
+                                        compositeReference.getPromotedReferences().add(promotedReference);
                                     }
                                 }
-                            } else if (extension instanceof Binding) {
-                                if ( extension instanceof PolicySetAttachPoint ) {
-                                    IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
-                                    bindingType.setName(name);
-                                    bindingType.setUnresolved(true);
-                                    ((PolicySetAttachPoint)extension).setType(bindingType);
+                                compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
+                                
+                                //handle extension attributes
+                                this.readExtendedAttributes(reader, name, compositeReference, extensionAttributeProcessor);
+    
+                                composite.getReferences().add(compositeReference);                            
+                                policyProcessor.readPolicies(contract, reader);
+                            }
+    
+                        } else if (PROPERTY_QNAME.equals(name)) {
+                            if (component != null) {
+    
+                                // Read a <component><property>
+                                componentProperty = assemblyFactory.createComponentProperty();
+                                property = componentProperty;
+                                String source = getString(reader, SOURCE);
+                                if(source!=null) {
+                                    source = source.trim();
                                 }
-                                // <service><binding> and
-                                // <reference><binding>
-                                if (callback != null) {
-                                    callback.getBindings().add((Binding)extension);
-                                } else {
+                                componentProperty.setSource(source);
+                                if (source != null) {
+                                    // $<name>/...
+                                    if (source.charAt(0) == '$') {
+                                        int index = source.indexOf('/');
+                                        if (index == -1) {
+                                            // Tolerating $prop
+                                            source = source + "/";
+                                            index = source.length() - 1;
+                                        }
+                                        source = source.substring(index + 1);
+                                        if ("".equals(source)) {
+                                            source = ".";
+                                        }
+                                    }
+                                    XPath xpath = xPathFactory.newXPath();
+                                    xpath.setNamespaceContext(reader.getNamespaceContext());
+                                    try {
+                                        componentProperty.setSourceXPathExpression(xpath.compile(source));
+                                    } catch (XPathExpressionException e) {
+                                    	ContributionReadException ce = new ContributionReadException(e);
+                                    	error("ContributionReadException", xpath, ce);
+                                        //throw ce;
+                                    }
+                                }
+                                componentProperty.setFile(getString(reader, FILE));
+                                
+                                //handle extension attributes
+                                this.readExtendedAttributes(reader, name, componentProperty, extensionAttributeProcessor);
+    
+                                policyProcessor.readPolicies(property, reader);
+                                readAbstractProperty(componentProperty, reader);
+                                
+                                // Read the property value
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                property.setValue(value);
+                                
+                                component.getProperties().add(componentProperty);
+                            } else {
+    
+                                // Read a <composite><property>
+                                property = assemblyFactory.createProperty();
+                                policyProcessor.readPolicies(property, reader);
+                                readAbstractProperty(property, reader);
+                                
+                                // Read the property value
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                property.setValue(value);
+                                
+                                composite.getProperties().add(property);
+                            }
+                            
+                            // TUSCANY-1949
+                            // If the property doesn't have a value, the END_ELEMENT event is read by the readPropertyValue
+                            if (reader.getEventType() == END_ELEMENT && PROPERTY_QNAME.equals(reader.getName())) {
+                                property = null;
+                                componentProperty = null;
+                            }
+    
+                        } else if (COMPONENT_QNAME.equals(name)) {
+    
+                            // Read a <component>
+                            component = assemblyFactory.createComponent();
+                            component.setName(getString(reader, NAME));
+                            if (isSet(reader, AUTOWIRE)) {
+                                component.setAutowire(getBoolean(reader, AUTOWIRE));
+                            }
+                            if (isSet(reader, URI)) {
+                                component.setURI(getString(reader, URI));
+                            }
+                            
+                            //handle extension attributes
+                           this.readExtendedAttributes(reader, name, component, extensionAttributeProcessor);
+                            
+                            component.setConstrainingType(readConstrainingType(reader));
+                            composite.getComponents().add(component);
+                            policyProcessor.readPolicies(component, reader);
+    
+                        } else if (WIRE_QNAME.equals(name)) {
+    
+                            // Read a <wire>
+                            wire = assemblyFactory.createWire();
+                            ComponentReference source = assemblyFactory.createComponentReference();
+                            source.setUnresolved(true);
+                            source.setName(getString(reader, SOURCE));
+                            wire.setSource(source);
+    
+                            ComponentService target = assemblyFactory.createComponentService();
+                            target.setUnresolved(true);
+                            target.setName(getString(reader, TARGET));
+                            wire.setTarget(target);
+    
+                            //handle extension attributes
+                            this.readExtendedAttributes(reader, name, wire, extensionAttributeProcessor);
+    
+                            composite.getWires().add(wire);
+                            policyProcessor.readPolicies(wire, reader);
+    
+                        } else if (CALLBACK_QNAME.equals(name)) {
+    
+                            // Read a <callback>
+                            callback = assemblyFactory.createCallback();
+                            contract.setCallback(callback);
+                            
+                            //handle extension attributes
+                            this.readExtendedAttributes(reader, name, callback, extensionAttributeProcessor);
+                            
+                            policyProcessor.readPolicies(callback, reader);
+    
+                        } else if (OPERATION_QNAME.equals(name)) {
+    
+                            // Read an <operation>
+                            ConfiguredOperation operation = assemblyFactory.createConfiguredOperation();
+                            operation.setName(getString(reader, NAME));
+                            operation.setUnresolved(true);
+                            if (callback != null) {
+                                policyProcessor.readPolicies(operation, reader);
+                            } else {
+                                policyProcessor.readPolicies(operation, reader);
+                            }
+                            
+                            OperationsConfigurator opConfigurator = null;
+                            if ( compositeService != null ) {
+                                opConfigurator = compositeService;
+                            } else if ( componentService != null ) {
+                                opConfigurator = componentService;
+                            } else if ( compositeReference != null ) {
+                                opConfigurator = compositeReference;
+                            } else if ( componentReference != null ) {
+                                opConfigurator = componentReference;
+                            }
+                            
+                            opConfigurator.getConfiguredOperations().add(operation);
+                        } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
+    
+                            // Read an implementation.composite
+                            Composite implementation = assemblyFactory.createComposite();
+                            implementation.setName(getQName(reader, NAME));
+                            implementation.setUnresolved(true);
+                            
+                            //handle extension attributes
+                            this.readExtendedAttributes(reader, name, implementation, extensionAttributeProcessor);
+    
+                            component.setImplementation(implementation);
+                            policyProcessor.readPolicies(implementation, reader);
+                        } else {
+    
+                            // Read an extension element
+                            Object extension = extensionProcessor.read(reader);
+                            if (extension != null) {
+                                if (extension instanceof InterfaceContract) {
+    
+                                    // <service><interface> and
+                                    // <reference><interface>
                                     if (contract != null) {
-                                        contract.getBindings().add((Binding)extension);
+                                        contract.setInterfaceContract((InterfaceContract)extension);
                                     } else {
                                         if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                        	error("UnexpectedBindingElement", extension);
-                                            //throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                        	error("UnexpectedInterfaceElement", extension);
+                                            //throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
                                         } else {
                                             composite.getExtensions().add(extension);
                                         }
                                     }
-                                }
-
-                            } else if (extension instanceof Implementation) {
-                                if ( extension instanceof PolicySetAttachPoint ) {
-                                    IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
-                                    implType.setName(name);
-                                    implType.setUnresolved(true);
-                                    ((PolicySetAttachPoint)extension).setType(implType);
-                                }
-                                // <component><implementation>
-                                if (component != null) {
-                                    component.setImplementation((Implementation)extension);
+                                } else if (extension instanceof Binding) {
+                                    if ( extension instanceof PolicySetAttachPoint ) {
+                                        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+                                        bindingType.setName(name);
+                                        bindingType.setUnresolved(true);
+                                        ((PolicySetAttachPoint)extension).setType(bindingType);
+                                    }
+                                    // <service><binding> and
+                                    // <reference><binding>
+                                    if (callback != null) {
+                                        callback.getBindings().add((Binding)extension);
+                                    } else {
+                                        if (contract != null) {
+                                            contract.getBindings().add((Binding)extension);
+                                        } else {
+                                            if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                            	error("UnexpectedBindingElement", extension);
+                                                //throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                            } else {
+                                                composite.getExtensions().add(extension);
+                                            }
+                                        }
+                                    }
+    
+                                } else if (extension instanceof Implementation) {
+                                    if ( extension instanceof PolicySetAttachPoint ) {
+                                        IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
+                                        implType.setName(name);
+                                        implType.setUnresolved(true);
+                                        ((PolicySetAttachPoint)extension).setType(implType);
+                                    }
+                                    // <component><implementation>
+                                    if (component != null) {
+                                        component.setImplementation((Implementation)extension);
+                                    } else {
+                                        if (name.getNamespaceURI().equals(SCA10_NS)) {
+                                        	error("UnexpectedImplementationElement", extension);
+                                            //throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
+                                        } else {
+                                            composite.getExtensions().add(extension);
+                                        }
+                                    }
                                 } else {
-                                    if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                    	error("UnexpectedImplementationElement", extension);
-                                        //throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
+    
+                                    // Add the extension element to the current
+                                    // element
+                                    if (callback != null) {
+                                        callback.getExtensions().add(extension);
+                                    } else if (contract != null) {
+                                        contract.getExtensions().add(extension);
+                                    } else if (property != null) {
+                                        property.getExtensions().add(extension);
+                                    } else if (component != null) {
+                                        component.getExtensions().add(extension);
                                     } else {
                                         composite.getExtensions().add(extension);
                                     }
                                 }
-                            } else {
-
-                                // Add the extension element to the current
-                                // element
-                                if (callback != null) {
-                                    callback.getExtensions().add(extension);
-                                } else if (contract != null) {
-                                    contract.getExtensions().add(extension);
-                                } else if (property != null) {
-                                    property.getExtensions().add(extension);
-                                } else if (component != null) {
-                                    component.getExtensions().add(extension);
-                                } else {
-                                    composite.getExtensions().add(extension);
-                                }
                             }
                         }
-                    }
-                    break;
-
-                case XMLStreamConstants.CHARACTERS:
-                    break;
-
-                case END_ELEMENT:
-                    name = reader.getName();
-
-                    // Clear current state when reading reaching end element
-                    if (SERVICE_QNAME.equals(name)) {
-                        componentService = null;
-                        compositeService = null;
-                        contract = null;
-                    } else if (INCLUDE_QNAME.equals(name)) {
-                        include = null;
-                    } else if (REFERENCE_QNAME.equals(name)) {
-                        componentReference = null;
-                        compositeReference = null;
-                        contract = null;
-                    } else if (PROPERTY_QNAME.equals(name)) {
-                        componentProperty = null;
-                        property = null;
-                    } else if (COMPONENT_QNAME.equals(name)) {
-                        component = null;
-                    } else if (WIRE_QNAME.equals(name)) {
-                        wire = null;
-                    } else if (CALLBACK_QNAME.equals(name)) {
-                        callback = null;
-                    }
-                    break;
-            }
-
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
+                        break;
+    
+                    case XMLStreamConstants.CHARACTERS:
+                        break;
+    
+                    case END_ELEMENT:
+                        name = reader.getName();
+    
+                        // Clear current state when reading reaching end element
+                        if (SERVICE_QNAME.equals(name)) {
+                            componentService = null;
+                            compositeService = null;
+                            contract = null;
+                        } else if (INCLUDE_QNAME.equals(name)) {
+                            include = null;
+                        } else if (REFERENCE_QNAME.equals(name)) {
+                            componentReference = null;
+                            compositeReference = null;
+                            contract = null;
+                        } else if (PROPERTY_QNAME.equals(name)) {
+                            componentProperty = null;
+                            property = null;
+                        } else if (COMPONENT_QNAME.equals(name)) {
+                            component = null;
+                        } else if (WIRE_QNAME.equals(name)) {
+                            wire = null;
+                        } else if (CALLBACK_QNAME.equals(name)) {
+                            callback = null;
+                        }
+                        break;
+                }
+    
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
         }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
+        }
+        
         return composite;
     }
 

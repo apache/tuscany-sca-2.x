@@ -72,6 +72,20 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
 	        monitor.problem(problem);
     	 }
      }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-namespace-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
 
     public QName getArtifactType() {
         return EXPORT;
@@ -84,38 +98,44 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
     /**
      * Process <export namespace=""/>
      */
-    public NamespaceExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public NamespaceExport read(XMLStreamReader reader) throws ContributionReadException {
         NamespaceExport namespaceExport = this.factory.createNamespaceExport();
         QName element = null;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-                    
-                    // Read <export>
-                    if (EXPORT.equals(element)) {
-                        String ns = reader.getAttributeValue(null, NAMESPACE);
-                        if (ns == null) {
-                        	error("AttributeNameSpaceMissing", reader);
-                            //throw new ContributionReadException("Attribute 'namespace' is missing");
-                        } else
-                            namespaceExport.setNamespace(ns);
-                    } 
-                    
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (EXPORT.equals(reader.getName())) {
-                        return namespaceExport;
-                    }
-                    break;        
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+                        
+                        // Read <export>
+                        if (EXPORT.equals(element)) {
+                            String ns = reader.getAttributeValue(null, NAMESPACE);
+                            if (ns == null) {
+                            	error("AttributeNameSpaceMissing", reader);
+                                //throw new ContributionReadException("Attribute 'namespace' is missing");
+                            } else
+                                namespaceExport.setNamespace(ns);
+                        } 
+                        
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (EXPORT.equals(reader.getName())) {
+                            return namespaceExport;
+                        }
+                        break;        
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return namespaceExport;

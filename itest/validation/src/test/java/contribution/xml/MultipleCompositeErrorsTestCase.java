@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package binding.jms;
+package contribution.xml;
 
 import junit.framework.TestCase;
 
@@ -29,19 +29,21 @@ import domain.CustomCompositeBuilder;
 /**
  * This shows how to test the Calculator service component.
  */
-public class MissingConnectionFactoryNameTestCase extends TestCase {
-
+public class MultipleCompositeErrorsTestCase extends TestCase {
+	
 	private CustomCompositeBuilder customDomain;
-
+    
     @Override
     protected void setUp() throws Exception 
     {
     	customDomain = CustomCompositeBuilder.getInstance();
         try {
-        	customDomain.loadContribution("src/main/resources/bindingjms/MissingConnectionFactoryName/service.composite", 
-        			"TestContribution", "src/main/resources/bindingjms/MissingConnectionFactoryName/");
+        	customDomain.loadContribution("src/main/resources/contribution/xml/MultipleCompositeErrors/Calculator.composite", 
+        			                      "TestContribution", 
+        			                      "src/main/resources/contribution/xml/MultipleCompositeErrors/");
         } catch (Exception ex){
             //throw ex;
+        	System.out.println("Got Exception");
         }
     }
 
@@ -52,9 +54,11 @@ public class MissingConnectionFactoryNameTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getProblems().get(1);
+    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         
     	assertNotNull(problem);
-        assertEquals("MissingConnectionFactoryName", problem.getMessageId()); 
+    	assertEquals(5, monitor.getProblems().size());
+        assertEquals("AttributeCompositeMissing", problem.getMessageId());
+ 
     }
 }

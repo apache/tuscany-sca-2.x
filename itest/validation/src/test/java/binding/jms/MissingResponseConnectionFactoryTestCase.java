@@ -52,7 +52,7 @@ public class MissingResponseConnectionFactoryTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getProblems().get(1);
         
     	assertNotNull(problem);
         assertEquals("MissingResponseConnectionFactory", problem.getMessageId()); 

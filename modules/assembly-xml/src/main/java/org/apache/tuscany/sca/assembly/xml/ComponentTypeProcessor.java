@@ -84,7 +84,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
               modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
     }
     
-    public ComponentType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ComponentType read(XMLStreamReader reader) throws ContributionReadException {
         ComponentType componentType = null;
         Service service = null;
         Reference reference = null;
@@ -93,136 +93,143 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         Callback callback = null;
         QName name = null;
         
-        // Read the componentType document
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    name = reader.getName();
-
-                    if (Constants.COMPONENT_TYPE_QNAME.equals(name)) {
-
-                        // Read a <componentType>
-                        componentType = assemblyFactory.createComponentType();
-                        componentType.setConstrainingType(readConstrainingType(reader));
-
-                    } else if (Constants.SERVICE_QNAME.equals(name)) {
-
-                        // Read a <service>
-                        service = assemblyFactory.createService();
-                        contract = service;
-                        service.setName(getString(reader, Constants.NAME));
-                        componentType.getServices().add(service);
-                        policyProcessor.readPolicies(service, reader);
-
-                    } else if (Constants.REFERENCE_QNAME.equals(name)) {
-
-                        // Read a <reference>
-                        reference = assemblyFactory.createReference();
-                        contract = reference;
-                        reference.setName(getString(reader, Constants.NAME));
-                        reference.setWiredByImpl(getBoolean(reader, Constants.WIRED_BY_IMPL));
-                        readMultiplicity(reference, reader);
-                        readTargets(reference, reader);
-                        componentType.getReferences().add(reference);
-                        policyProcessor.readPolicies(reference, reader);
-
-                    } else if (Constants.PROPERTY_QNAME.equals(name)) {
-
-                        // Read a <property>
-                        property = assemblyFactory.createProperty();
-                        readAbstractProperty(property, reader);
-                        policyProcessor.readPolicies(property, reader);
-                        
-                        // Read the property value
-                        Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
-                        property.setValue(value);
-                        
-                        componentType.getProperties().add(property);
-                        
-                    } else if (Constants.IMPLEMENTATION_QNAME.equals(name)) {
-                        
-                        // Read an <implementation> element
-                        policyProcessor.readPolicies(componentType, reader);
-                        
-                    } else if (Constants.CALLBACK_QNAME.equals(name)) {
-
-                        // Read a <callback>
-                        callback = assemblyFactory.createCallback();
-                        contract.setCallback(callback);
-                        policyProcessor.readPolicies(callback, reader);
-
-                    } else if (OPERATION_QNAME.equals(name)) {
-
-                        // Read an <operation>
-                        Operation operation = new OperationImpl();
-                        operation.setName(getString(reader, NAME));
-                        operation.setUnresolved(true);
-                        if (callback != null) {
-                            policyProcessor.readPolicies(callback, operation, reader);
-                        } else {
-                            policyProcessor.readPolicies(contract, operation, reader);
-                        }
-                    } else {
-
-                        // Read an extension element
-                        Object extension = extensionProcessor.read(reader);
-                        if (extension != null) {
-                            if (extension instanceof InterfaceContract) {
-
-                                // <service><interface> and <reference><interface>
-                                contract.setInterfaceContract((InterfaceContract)extension);
-
-                            } else if (extension instanceof Binding) {
-
-                                // <service><binding> and <reference><binding>
-                                if (callback != null) {
-                                    callback.getBindings().add((Binding)extension);
-                                } else {
-                                    contract.getBindings().add((Binding)extension);
-                                }
+        try {
+            // Read the componentType document
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        name = reader.getName();
+    
+                        if (Constants.COMPONENT_TYPE_QNAME.equals(name)) {
+    
+                            // Read a <componentType>
+                            componentType = assemblyFactory.createComponentType();
+                            componentType.setConstrainingType(readConstrainingType(reader));
+    
+                        } else if (Constants.SERVICE_QNAME.equals(name)) {
+    
+                            // Read a <service>
+                            service = assemblyFactory.createService();
+                            contract = service;
+                            service.setName(getString(reader, Constants.NAME));
+                            componentType.getServices().add(service);
+                            policyProcessor.readPolicies(service, reader);
+    
+                        } else if (Constants.REFERENCE_QNAME.equals(name)) {
+    
+                            // Read a <reference>
+                            reference = assemblyFactory.createReference();
+                            contract = reference;
+                            reference.setName(getString(reader, Constants.NAME));
+                            reference.setWiredByImpl(getBoolean(reader, Constants.WIRED_BY_IMPL));
+                            readMultiplicity(reference, reader);
+                            readTargets(reference, reader);
+                            componentType.getReferences().add(reference);
+                            policyProcessor.readPolicies(reference, reader);
+    
+                        } else if (Constants.PROPERTY_QNAME.equals(name)) {
+    
+                            // Read a <property>
+                            property = assemblyFactory.createProperty();
+                            readAbstractProperty(property, reader);
+                            policyProcessor.readPolicies(property, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                            property.setValue(value);
+                            
+                            componentType.getProperties().add(property);
+                            
+                        } else if (Constants.IMPLEMENTATION_QNAME.equals(name)) {
+                            
+                            // Read an <implementation> element
+                            policyProcessor.readPolicies(componentType, reader);
+                            
+                        } else if (Constants.CALLBACK_QNAME.equals(name)) {
+    
+                            // Read a <callback>
+                            callback = assemblyFactory.createCallback();
+                            contract.setCallback(callback);
+                            policyProcessor.readPolicies(callback, reader);
+    
+                        } else if (OPERATION_QNAME.equals(name)) {
+    
+                            // Read an <operation>
+                            Operation operation = new OperationImpl();
+                            operation.setName(getString(reader, NAME));
+                            operation.setUnresolved(true);
+                            if (callback != null) {
+                                policyProcessor.readPolicies(callback, operation, reader);
                             } else {
-                                
-                                // Add the extension element to the current element
-                                if (callback != null) {
-                                    callback.getExtensions().add(extension);
-                                } else if (contract != null) {
-                                    contract.getExtensions().add(extension);
-                                } else if (property != null) {
-                                    property.getExtensions().add(extension);
+                                policyProcessor.readPolicies(contract, operation, reader);
+                            }
+                        } else {
+    
+                            // Read an extension element
+                            Object extension = extensionProcessor.read(reader);
+                            if (extension != null) {
+                                if (extension instanceof InterfaceContract) {
+    
+                                    // <service><interface> and <reference><interface>
+                                    contract.setInterfaceContract((InterfaceContract)extension);
+    
+                                } else if (extension instanceof Binding) {
+    
+                                    // <service><binding> and <reference><binding>
+                                    if (callback != null) {
+                                        callback.getBindings().add((Binding)extension);
+                                    } else {
+                                        contract.getBindings().add((Binding)extension);
+                                    }
                                 } else {
-                                    if (componentType instanceof Extensible) {
-                                        ((Extensible)componentType).getExtensions().add(extension);
+                                    
+                                    // Add the extension element to the current element
+                                    if (callback != null) {
+                                        callback.getExtensions().add(extension);
+                                    } else if (contract != null) {
+                                        contract.getExtensions().add(extension);
+                                    } else if (property != null) {
+                                        property.getExtensions().add(extension);
+                                    } else {
+                                        if (componentType instanceof Extensible) {
+                                            ((Extensible)componentType).getExtensions().add(extension);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    break;
-
-                case END_ELEMENT:
-                    name = reader.getName();
-
-                    // Clear current state when reading reaching end element
-                    if (SERVICE_QNAME.equals(name)) {
-                        service = null;
-                        contract = null;
-                    } else if (REFERENCE_QNAME.equals(name)) {
-                        reference = null;
-                        contract = null;
-                    } else if (PROPERTY_QNAME.equals(name)) {
-                        property = null;
-                    } else if (CALLBACK_QNAME.equals(name)) {
-                        callback = null;
-                    }
-                    break;
-            }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
+                        break;
+    
+                    case END_ELEMENT:
+                        name = reader.getName();
+    
+                        // Clear current state when reading reaching end element
+                        if (SERVICE_QNAME.equals(name)) {
+                            service = null;
+                            contract = null;
+                        } else if (REFERENCE_QNAME.equals(name)) {
+                            reference = null;
+                            contract = null;
+                        } else if (PROPERTY_QNAME.equals(name)) {
+                            property = null;
+                        } else if (CALLBACK_QNAME.equals(name)) {
+                            callback = null;
+                        }
+                        break;
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
         }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
+        }
+        
         return componentType;
     }
     
