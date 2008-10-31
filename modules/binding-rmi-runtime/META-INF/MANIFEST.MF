@@ -12,6 +12,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA RMI Binding Extension
 Import-Package: junit.framework;resolution:=optional,
  net.sf.cglib.asm,
+ net.sf.cglib.core,
  net.sf.cglib.proxy,
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.binding.rmi;version="1.4",
