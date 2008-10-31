@@ -16,14 +16,23 @@ Bnd-LastModified: 1225397384281
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for Saxon
-Import-Package: commonj.sdo;version="2.1",commonj.sdo.helper;version="
- 2.1",javax.xml.transform,javax.xml.transform.dom,net.sf.saxon,net.sf.
- saxon.event,net.sf.saxon.om,net.sf.saxon.query,net.sf.saxon.trans,net
- .sf.saxon.value,org.apache.tuscany.sca.databinding;version="1.4",org.
- apache.tuscany.sca.databinding.impl;version="1.4",org.apache.tuscany.
- sca.databinding.saxon;version="1.4",org.apache.tuscany.sca.databindin
- g.saxon.collection;version="1.4",org.apache.tuscany.sca.interfacedef;
- version="1.4",org.w3c.dom
+Import-Package: commonj.sdo;version="2.1",
+ commonj.sdo.helper;version="2.1",
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ net.sf.saxon,
+ net.sf.saxon.event,
+ net.sf.saxon.om,
+ net.sf.saxon.query,
+ net.sf.saxon.trans,
+ net.sf.saxon.value,
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.impl;version="1.4",
+ org.apache.tuscany.sca.databinding.javabeans;version="1.4.0",
+ org.apache.tuscany.sca.databinding.saxon;version="1.4",
+ org.apache.tuscany.sca.databinding.saxon.collection;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.saxon
 Bundle-DocURL: http://www.apache.org/
 
