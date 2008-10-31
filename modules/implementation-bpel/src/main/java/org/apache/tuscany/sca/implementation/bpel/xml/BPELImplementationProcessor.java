@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -45,7 +44,6 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
@@ -55,7 +53,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Implements a StAX artifact processor for BPEL implementations.
@@ -68,9 +65,10 @@ import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
  *  @version $Rev$ $Date$
  */
 public class BPELImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-	private static final String PROCESS = "process";
-	private static final String IMPLEMENTATION_BPEL = "implementation.bpel";
-	private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_BPEL);
+    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String PROCESS = "process";
+    private static final String IMPLEMENTATION_BPEL = "implementation.bpel";
+    private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(SCA10_NS, IMPLEMENTATION_BPEL);
     
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
@@ -151,7 +149,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         //FIXME Deal with policy processing...
         // Write <implementation.bpel process="..."/>
         // policyProcessor.writePolicyPrefixes(bpelImplementation, writer);
-        writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_BPEL);
+        writer.writeStartElement(SCA10_NS, IMPLEMENTATION_BPEL);
         // policyProcessor.writePolicyAttributes(bpelImplementation, writer);
         
         if (bpelImplementation.getProcess() != null) {

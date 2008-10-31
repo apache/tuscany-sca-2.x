@@ -10,17 +10,26 @@ Bnd-LastModified: 1225397312078
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for JSON
-Import-Package: com.metaparadigm.jsonrpc,javax.xml.namespace,javax.xml
- .stream;version="1.0",org.apache.axiom.om,org.apache.tuscany.sca.data
- binding;version="1.4",org.apache.tuscany.sca.databinding.impl;version
- ="1.4",org.apache.tuscany.sca.databinding.xml;version="1.4",org.apach
- e.tuscany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.inter
- facedef.util;version="1.4",org.codehaus.jettison.badgerfish,org.codeh
- aus.jettison.json,org.codehaus.jettison.mapped,org.json,org.osoa.sca.
- annotations;version="1.4",org.apache.tuscany.sca.databinding.json.axi
- om;resolution:=optional,org.junit;resolution:=optional,junit.framewor
- k;resolution:=optional,org.apache.tuscany.sca.interfacedef.impl;versi
- on="1.4";resolution:=optional
+Import-Package: com.metaparadigm.jsonrpc,
+ javax.xml.namespace,
+ javax.xml.stream;version="1.0",
+ junit.framework;resolution:=optional,
+ org.apache.axiom.om,
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.impl;version="1.4",
+ org.apache.tuscany.sca.databinding.json;version="1.4.0",
+ org.apache.tuscany.sca.databinding.json.axiom;resolution:=optional,
+ org.apache.tuscany.sca.databinding.xml;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.impl;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.codehaus.jettison.badgerfish,
+ org.codehaus.jettison.json,
+ org.codehaus.jettison.mapped,
+ org.json,
+ org.junit;resolution:=optional,
+ org.osoa.sca.annotations;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
 Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.databinding.json;version="1.4.0"
 

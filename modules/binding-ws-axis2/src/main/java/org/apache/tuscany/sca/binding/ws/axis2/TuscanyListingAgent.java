@@ -20,15 +20,12 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,29 +33,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
-import javax.wsdl.extensions.soap.SOAPAddress;
-import javax.wsdl.extensions.soap12.SOAP12Address;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.axiom.attachments.utils.IOUtils;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.Constants;
 import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.deployment.DeploymentConstants;
-import org.apache.axis2.description.AxisDescription;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
-import org.apache.axis2.description.PolicyInclude;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.axis2.util.ExternalPolicySerializer;
 import org.apache.axis2.util.JavaUtils;
-import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.neethi.Policy;
-import org.apache.neethi.PolicyRegistry;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 
@@ -110,7 +91,7 @@ public class TuscanyListingAgent extends ListingAgent {
             HashMap services = configContext.getAxisConfiguration().getServices();
             if ((services != null) && !services.isEmpty()) {
                 AxisService axisService = (AxisService)services.get(serviceName);
-                Parameter wsld4jdefinition = axisService.getParameter(WSDLConstants.WSDL_4_J_DEFINITION);
+                Parameter wsld4jdefinition = axisService.getParameter("wsdl4jDefinition");
                 Definition definition = (Definition)wsld4jdefinition.getValue();
                 for (Object s : definition.getServices().values()) {
                     for (Object p : ((Service)s).getPorts().values()) {

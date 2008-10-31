@@ -23,7 +23,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
@@ -34,7 +33,8 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  */
 public class JaasAuthenticationPolicyHandler implements PolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, jaasPolicy);
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, jaasPolicy);
     private PolicySet applicablePolicySet = null;
 
     public void setUp(Object... context) {

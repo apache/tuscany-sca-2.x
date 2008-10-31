@@ -20,17 +20,15 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-
 /**
  * Constants for WSDL.
  *
  * @version $Rev$ $Date$
  */
 public interface WSDLConstants {
-
+    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String INTERFACE_WSDL = "interface.wsdl";
-    QName INTERFACE_WSDL_QNAME = new QName(Constants.SCA10_NS, "interface.wsdl");
+    QName INTERFACE_WSDL_QNAME = new QName(SCA10_NS, "interface.wsdl");
     String INTERFACE = "interface";
     String CALLBACK_INTERFACE = "callbackInterface";
     String WSDL_LOCATION = "wsdlLocation";

@@ -83,7 +83,6 @@ import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderException;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;

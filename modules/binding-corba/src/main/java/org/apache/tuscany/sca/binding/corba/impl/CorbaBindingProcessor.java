@@ -24,7 +24,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.corba.CorbaBinding;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -94,7 +93,7 @@ public class CorbaBindingProcessor implements StAXArtifactProcessor<CorbaBinding
      */
     public void write(CorbaBinding model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         // Write a <binding.corba>
-        writer.writeStartElement(Constants.SCA10_TUSCANY_NS, "binding.corba");
+        writer.writeStartElement(CorbaBinding.SCA10_TUSCANY_NS, CorbaBinding.BINDING_CORBA);
 
         if (model.getName() != null) {
             writer.writeAttribute("name", model.getName());

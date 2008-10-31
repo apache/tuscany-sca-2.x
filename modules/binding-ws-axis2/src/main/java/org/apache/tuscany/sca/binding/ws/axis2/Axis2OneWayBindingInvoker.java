@@ -28,7 +28,6 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
@@ -55,7 +54,7 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
         OperationClient operationClient = createOperationClient(msg);
 
         // ensure connections are tracked so that they can be closed by the reference binding
-        MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+        MessageContext requestMC = operationClient.getMessageContext("Out");
         //requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
         Options opt = requestMC.getOptions();
         opt.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);

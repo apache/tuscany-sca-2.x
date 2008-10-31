@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -44,8 +43,6 @@ import org.apache.tuscany.sca.monitor.Problem;
  * @version $Rev$ $Date$
  */
 public class BPELImplementationProcessorTestCase extends TestCase {
-    
-    protected static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_NS, "implementation.bpel");
 
     private static final String COMPOSITE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 

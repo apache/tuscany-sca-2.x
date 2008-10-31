@@ -13,15 +13,21 @@ Bnd-LastModified: 1225397433843
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA BPEL Implementation Extension
-Import-Package: javax.wsdl,javax.wsdl.extensions,javax.xml.namespace,j
- avax.xml.stream,org.apache.tuscany.sca.assembly;version="1.4",org.apa
- che.tuscany.sca.assembly.impl;version="1.4",org.apache.tuscany.sca.co
- ntribution.processor;version="1.4",org.apache.tuscany.sca.contributio
- n.resolver;version="1.4",org.apache.tuscany.sca.core;version="1.4",or
- g.apache.tuscany.sca.implementation.bpel;version="1.4",org.apache.tus
- cany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.interfaced
- ef.wsdl;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",ju
- nit.framework;resolution:=optional
+Import-Package: javax.wsdl,
+ javax.wsdl.extensions,
+ javax.xml.namespace,
+ javax.xml.stream,
+ junit.framework;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.assembly.impl;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.implementation.bpel;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel
 Bundle-DocURL: http://www.apache.org/
 

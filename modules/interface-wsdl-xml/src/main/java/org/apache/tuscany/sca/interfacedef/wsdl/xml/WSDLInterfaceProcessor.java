@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -43,7 +42,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  *
@@ -162,7 +160,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     
     public void write(WSDLInterfaceContract wsdlInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         // Write an <interface.wsdl>
-        writer.writeStartElement(Constants.SCA10_NS, INTERFACE_WSDL);
+        writer.writeStartElement(WSDLConstants.SCA10_NS, INTERFACE_WSDL);
 
         // Write interface name
         WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();

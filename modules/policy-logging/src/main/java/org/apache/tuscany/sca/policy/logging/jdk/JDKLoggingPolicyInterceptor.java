@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -40,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class JDKLoggingPolicyInterceptor implements Interceptor {
     public static final String loggingPolicy = "JDKLoggingPolicy";
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, loggingPolicy);
+    public static final QName policySetQName = new QName(JDKLoggingPolicy.SCA10_TUSCANY_NS, loggingPolicy);
     private Logger logger = null;
 
     private Invoker next;

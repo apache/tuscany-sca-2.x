@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.jms;uses:="org.apache.t
- uscany.sca.assembly";version="1.4"
+Export-Package: org.apache.tuscany.sca.binding.jms;version="1.4";uses:="org.apache.tuscany.sca.assembly",
+ org.apache.tuscany.sca.binding.jms.xml;version="1.4"
 Private-Package: org.apache.tuscany.sca.binding.jms.impl;version="1.4"
  ,org.apache.tuscany.sca.binding.jms.xml;version="1.4"
 Tool: Bnd-0.0.255
@@ -12,13 +12,19 @@ Bnd-LastModified: 1225397280359
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JMS Binding Model
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.assembly;version="1.4",org.apache.tuscany.sca.assembly.xml;vers
- ion="1.4",org.apache.tuscany.sca.binding.jms;version="1.4",org.apache
- .tuscany.sca.contribution.processor;version="1.4",org.apache.tuscany.
- sca.contribution.resolver;version="1.4",org.apache.tuscany.sca.core;v
- ersion="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apache.
- tuscany.sca.policy;version="1.4",junit.framework;resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ junit.framework;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.assembly.xml;version="1.4",
+ org.apache.tuscany.sca.binding.jms;version="1.4",
+ org.apache.tuscany.sca.binding.jms.xml;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4.0",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jms
 Bundle-DocURL: http://www.apache.org/
 

@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -42,7 +41,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggingPolicy> {
-    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(JDKLoggingPolicy.SCA10_TUSCANY_NS, "jdkLogger");
     private static final String LOG_LEVEL = "logLevel";
     private static final String RESOURCE_BUNDLE = "resourceBundle";
     private static final String USE_PARENT_HANDLERS = "useParentHandlers";
@@ -68,7 +67,7 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
                 case START_ELEMENT : {
                     name = reader.getName();
                     if ( name.equals(JDK_LOGGING_POLICY_QNAME) ) {
-                        String loggerName = reader.getAttributeValue(null, Constants.NAME);
+                        String loggerName = reader.getAttributeValue(null, "name");
                         policy.setLoggerName(loggerName);
                     } else if ( LOG_LEVEL.equals(name.getLocalPart()) ) {
                         policy.setLogLevel(Level.parse(reader.getElementText()));
@@ -102,10 +101,10 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         writer.writeStartElement(prefix, 
                                  JDK_LOGGING_POLICY_QNAME.getLocalPart(),
                                  JDK_LOGGING_POLICY_QNAME.getNamespaceURI());
-        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", JDKLoggingPolicy.SCA10_TUSCANY_NS);
         
         if (policy.getLoggerName() != null) {
-            writer.writeAttribute(Constants.NAME, policy.getLoggerName());
+            writer.writeAttribute("name", policy.getLoggerName());
         }
         if ( policy.getLogLevel() != null ) {
             writer.writeStartElement(prefix, 

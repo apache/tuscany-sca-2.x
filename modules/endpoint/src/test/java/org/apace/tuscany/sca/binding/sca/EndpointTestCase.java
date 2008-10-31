@@ -32,9 +32,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -55,10 +54,8 @@ import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.endpoint.impl.EndpointResolverFactoryImpl;
 import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -122,10 +119,7 @@ public class EndpointTestCase {
         modelResolver = new ExtensibleModelResolver(null, modelResolvers, modelFactories);
                
         // Create a composite builder
-        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper);
+        compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
         // Runtime Init ===================
 /*        

@@ -15,15 +15,23 @@ Bnd-LastModified: 1225397288437
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA XSD XML Processor
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.
- namespace;version="1.4",org.apache.tuscany.sca.contribution.processor
- ;version="1.4",org.apache.tuscany.sca.contribution.resolver;version="
- 1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca
- .monitor;version="1.4",org.apache.tuscany.sca.xsd;version="1.4",org.a
- pache.tuscany.sca.xsd.xml;version="1.4",org.apache.ws.commons.schema,
- org.apache.ws.commons.schema.resolver,org.w3c.dom,org.xml.sax,org.jun
- it;resolution:=optional,junit.framework;resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ junit.framework;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="1.4.0",
+ org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.namespace;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.xsd;version="1.4",
+ org.apache.tuscany.sca.xsd.xml;version="1.4",
+ org.apache.ws.commons.schema,
+ org.apache.ws.commons.schema.resolver,
+ org.junit;resolution:=optional,
+ org.w3c.dom,
+ org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.xsd.xml
 Bundle-DocURL: http://www.apache.org/
 

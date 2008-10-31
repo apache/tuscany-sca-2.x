@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.policy.identity;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -30,7 +29,8 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class SecurityIdentityPolicy implements Policy {
-    public static final QName NAME = new QName(Constants.SCA10_NS, "securityIdentity");
+    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";    
+    public static final QName NAME = new QName(SCA10_NS, "securityIdentity");
 
     private boolean useCallerIdentity;
 

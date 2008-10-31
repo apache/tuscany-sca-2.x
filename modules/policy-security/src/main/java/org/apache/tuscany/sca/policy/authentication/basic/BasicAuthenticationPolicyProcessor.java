@@ -21,14 +21,11 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -42,7 +39,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor<BasicAuthenticationPolicy> {
-    
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+
     private static final String USER_NAME = "userName";
     private static final String PASSWORD = "password";
 
@@ -97,7 +95,7 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
         writer.writeStartElement(prefix, 
                                  getArtifactType().getLocalPart(),
                                  getArtifactType().getNamespaceURI());
-        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", SCA10_TUSCANY_NS);
 
         if ( policy.getUserName() != null ) {
             writer.writeStartElement(prefix, 

@@ -12,13 +12,17 @@ Bnd-LastModified: 1225397128062
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA CORBA Binding Extension
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.assembly;version="1.4",org.apache.tuscany.sca.assembly.xml;vers
- ion="1.4",org.apache.tuscany.sca.binding.corba;version="1.4",org.apac
- he.tuscany.sca.contribution.processor;version="1.4",org.apache.tuscan
- y.sca.contribution.resolver;version="1.4",org.apache.tuscany.sca.core
- ;version="1.4",org.apache.tuscany.sca.host.corba;version="1.4",org.ap
- ache.tuscany.sca.policy;version="1.4"
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.assembly.xml;version="1.4",
+ org.apache.tuscany.sca.binding.corba;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.corba;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4.0",
+ org.apache.tuscany.sca.policy;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.corba
 Bundle-DocURL: http://www.apache.org/
 

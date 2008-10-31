@@ -26,10 +26,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.namespace.DefaultNamespaceImportExportFactory;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
-import org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportExportFactoryImpl;
 import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
@@ -49,7 +49,7 @@ public class ContributionDependencyBuilderTestCase extends TestCase {
     public void setUp() throws Exception {
         contributionFactory = new DefaultContributionFactory();
         workspaceFactory = new DefaultWorkspaceFactory();
-        importExportFactory = new NamespaceImportExportFactoryImpl();
+        importExportFactory = new DefaultNamespaceImportExportFactory();
     }
 
     @Override

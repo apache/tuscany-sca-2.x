@@ -15,14 +15,20 @@ Bnd-LastModified: 1225397199187
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA XML Contribution Model
-Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.stream
- ,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca
- .contribution;version="1.4",org.apache.tuscany.sca.contribution.proce
- ssor;version="1.4",org.apache.tuscany.sca.contribution.resolver;versi
- on="1.4",org.apache.tuscany.sca.contribution.xml;version="1.4",org.ap
- ache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.monitor;ve
- rsion="1.4",org.w3c.dom,org.w3c.dom.traversal,org.junit;resolution:=o
- ptional
+Import-Package: javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.contribution.xml;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ org.junit;resolution:=optional,
+ org.w3c.dom,
+ org.w3c.dom.traversal
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution.xml
 Bundle-DocURL: http://www.apache.org/
 

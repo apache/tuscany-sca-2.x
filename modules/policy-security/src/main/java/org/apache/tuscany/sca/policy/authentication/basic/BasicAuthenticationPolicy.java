@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -30,7 +29,9 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationPolicy implements Policy {
-    public static final QName BASIC_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "basicAuthentication");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+
+    public static final QName BASIC_AUTHENTICATION_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "basicAuthentication");
     public static final String BASIC_AUTHENTICATION_USERNAME = "username";
     public static final String BASIC_AUTHENTICATION_PASSWORD = "password";
 

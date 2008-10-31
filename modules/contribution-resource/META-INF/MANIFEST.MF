@@ -12,12 +12,16 @@ Bnd-LastModified: 1225397365937
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Resource Import/Export Model
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.
- processor;version="1.4",org.apache.tuscany.sca.contribution.resolver;
- version="1.4",org.apache.tuscany.sca.contribution.resource;version="1
- .4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.
- monitor;version="1.4",org.junit;resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4.0",
+ org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.contribution.resource;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.junit;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution.resource
 Bundle-DocURL: http://www.apache.org/
 

@@ -9,12 +9,16 @@ Bnd-LastModified: 1225397197140
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Domain Workspace XML Model
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.contribution;version="1.4",org.apache.tuscany.sca.contribution.
- processor;version="1.4",org.apache.tuscany.sca.contribution.resolver;
- version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tu
- scany.sca.monitor;version="1.4",org.apache.tuscany.sca.workspace;vers
- ion="1.4",org.junit;resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4.0",
+ org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.workspace;version="1.4",
+ org.junit;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.workspace.xml
 Bundle-DocURL: http://www.apache.org/
 

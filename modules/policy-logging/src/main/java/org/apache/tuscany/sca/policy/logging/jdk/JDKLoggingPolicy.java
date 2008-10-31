@@ -22,7 +22,6 @@ import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -32,7 +31,9 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class JDKLoggingPolicy implements Policy {
-    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
+    static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "jdkLogger");
 
     private String loggerName;
     private String resourceBundleName;

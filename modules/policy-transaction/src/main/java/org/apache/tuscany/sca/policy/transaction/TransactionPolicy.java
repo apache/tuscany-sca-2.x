@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.policy.transaction;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -30,7 +29,8 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public interface TransactionPolicy extends Policy {
-    QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "transactionPolicy");
+    String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    QName NAME = new QName(SCA10_TUSCANY_NS, "transactionPolicy");
 
     enum Action {
         PROPAGATE, SUSPEND, REQUIRE_GLOBAL, REQUIRE_LOCAL, REQUIRE_NONE

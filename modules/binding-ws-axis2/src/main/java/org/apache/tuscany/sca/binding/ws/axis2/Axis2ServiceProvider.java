@@ -69,7 +69,6 @@ import org.apache.axis2.transport.jms.JMSConstants;
 import org.apache.axis2.transport.jms.JMSListener;
 import org.apache.axis2.transport.jms.JMSSender;
 import org.apache.axis2.transport.jms.JMSUtils;
-import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -90,7 +89,6 @@ import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
-import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -508,7 +506,7 @@ public class Axis2ServiceProvider {
         addSchemas(wsBinding.getWSDLDefinition(), axisService);
 
         // Use the existing WSDL
-        Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
+        Parameter wsdlParam = new Parameter("wsdl4jDefinition", null);
         wsdlParam.setValue(definition);
         axisService.addParameter(wsdlParam);
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");

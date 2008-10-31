@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.policy.security.jaas;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -29,7 +28,8 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class JaasAuthenticationPolicy implements Policy {
-    public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "jaasAuthentication");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName NAME = new QName(SCA10_TUSCANY_NS, "jaasAuthentication");
 
     private String configurationName = "other";
     private String callbackHandlerClassName;

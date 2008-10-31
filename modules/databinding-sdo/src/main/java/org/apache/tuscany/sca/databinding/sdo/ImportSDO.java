@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.impl.BaseImpl;
+import org.apache.tuscany.sca.assembly.Base;
 
 import commonj.sdo.helper.HelperContext;
 
@@ -30,13 +30,22 @@ import commonj.sdo.helper.HelperContext;
  * 
  * @version $Rev$ $Date$
  */
-public class ImportSDO extends BaseImpl {
+public class ImportSDO implements Base {
     public static final QName IMPORT_SDO =
         new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
 
     private HelperContext helperContext;
     private String factoryClassName;
     private String schemaLocation;
+    private boolean unresolved;
+    
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean undefined) {
+        this.unresolved = undefined;
+    }
 
     public ImportSDO(HelperContext helperContext) {
         super();

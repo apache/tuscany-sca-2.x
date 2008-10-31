@@ -113,31 +113,9 @@ final class NodeLauncherUtil {
             if (file.exists()) {
                 File jarDirectory = file.getParentFile();
                 if (jarDirectory != null && jarDirectory.exists()) {
-
-                    // Collect JAR files from the directory containing the input JAR
-                    // (e.g. the Tuscany modules directory)
-                    URL jarDirectoryURL = jarDirectory.toURI().toURL(); 
-                    jarDirectoryURLs.add(jarDirectoryURL);
-                    collectJARFiles(jarDirectory, jarURLs, filter);
-                    
                     File homeDirectory = jarDirectory.getParentFile();
                     if (homeDirectory != null && homeDirectory.exists()) {
-                        
-                        // Collect JARs from the ../modules directory
-                        File modulesDirectory = new File(homeDirectory, "modules");
-                        URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
-                        if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
-                            jarDirectoryURLs.add(modulesDirectoryURL);
-                            collectJARFiles(modulesDirectory, jarURLs, filter);
-                        }
-
-                        // Collect JARs from the ../lib directory
-                        File libDirectory = new File(homeDirectory, "lib");
-                        URL libDirectoryURL = libDirectory.toURI().toURL(); 
-                        if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
-                            jarDirectoryURLs.add(libDirectoryURL);
-                            collectJARFiles(libDirectory, jarURLs, filter);
-                        }
+                        collectJARFiles(jarDirectory.getPath(), jarDirectoryURLs, jarURLs, filter);
                     }
                 }
             }
@@ -199,14 +177,14 @@ final class NodeLauncherUtil {
             
             // Collect files under $TUSCANY_HOME
             jarDirectoryURLs.add(directoryURL);
-            collectJARFiles(directoryFile, jarURLs, filter);
+            collectJARFiles(directoryFile, jarURLs, filter, false);
             
             // Collect files under $TUSCANY_HOME/modules
             File modulesDirectory = new File(directoryFile, "modules");
             URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
             if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
                 jarDirectoryURLs.add(modulesDirectoryURL);
-                collectJARFiles(modulesDirectory, jarURLs, filter);
+                collectJARFiles(modulesDirectory, jarURLs, filter, true);
             }
 
             // Collect files under $TUSCANY_HOME/lib
@@ -214,7 +192,7 @@ final class NodeLauncherUtil {
             URL libDirectoryURL = libDirectory.toURI().toURL(); 
             if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
                 jarDirectoryURLs.add(libDirectoryURL);
-                collectJARFiles(libDirectory, jarURLs, filter);
+                collectJARFiles(libDirectory, jarURLs, filter, true);
             }
         }
     }
@@ -224,17 +202,20 @@ final class NodeLauncherUtil {
      * @param directory
      * @param urls
      * @param filter
+     * @param recursive 
      * @throws MalformedURLException
      */
-    private static void collectJARFiles(File directory, List<URL> urls, FilenameFilter filter) throws MalformedURLException {
-        String[] files = directory.list(filter);
+    private static void collectJARFiles(File directory, List<URL> urls, FilenameFilter filter, boolean recursive) throws MalformedURLException {
+        File[] files = directory.listFiles(filter);
         if (files != null) {
-            URL directoryURL = new URL(directory.toURI().toString() + "/");
             int count = 0;
-            for (String file: files) {
-                URL url = new URL(directoryURL, file);
-                urls.add(url);
-                count++;
+            for (File file: files) {
+                if (recursive && file.isDirectory()) {
+                    collectJARFiles(file, urls, filter, recursive);
+                } else if (file.isFile()) {
+                    urls.add(file.toURI().toURL());
+                    count++;
+                }
             }
             if (count != 0) {
                 logger.fine("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
@@ -248,6 +229,9 @@ final class NodeLauncherUtil {
     private static class StandAloneJARFileNameFilter implements FilenameFilter {
         
         public boolean accept(File dir, String name) {
+            if(new File(dir, name).isDirectory()) {
+                return true;
+            }
             name = name.toLowerCase(); 
             
             // Exclude tuscany-sca-all and tuscany-sca-manifest as they duplicate

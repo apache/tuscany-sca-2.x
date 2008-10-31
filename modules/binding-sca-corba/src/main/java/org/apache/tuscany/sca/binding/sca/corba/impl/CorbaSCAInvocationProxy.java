@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
 import org.apache.tuscany.sca.binding.corba.provider.exceptions.RequestConfigurationException;
 import org.apache.tuscany.sca.binding.corba.provider.service.InvocationException;
 import org.apache.tuscany.sca.binding.corba.provider.service.InvocationProxy;

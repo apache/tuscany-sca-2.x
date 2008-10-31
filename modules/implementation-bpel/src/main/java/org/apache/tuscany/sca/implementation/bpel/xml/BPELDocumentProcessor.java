@@ -54,7 +54,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
@@ -80,7 +79,8 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     private static final QName IMPORT_ELEMENT = new QName(BPEL_NS, "import");
     private static final String LINKTYPE_NAME = "partnerLinkType";
     private static final QName LINKTYPE_ELEMENT = new QName(BPEL_PLINK_NS, LINKTYPE_NAME);
-    public final static String NAME_ELEMENT = "name";
+    private final static String NAME_ELEMENT = "name";
+    private final static String TARGET_NAMESPACE = "targetNamespace";
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
@@ -359,7 +359,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                     case START_ELEMENT:
                         QName qname = reader.getName();
                         if (BPEL_PROCESS_DEFINITION.equals(qname) || BPEL_EXECUTABLE_DEFINITION.equals(qname)) {
-                            QName processName = new QName(getString(reader, org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
+                            QName processName = new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
                             processDefinition.setName(processName);
                         } else if (PARTNERLINK_ELEMENT.equals(qname)) {
                             processDefinition.getPartnerLinks().add(processPartnerLinkElement(reader));

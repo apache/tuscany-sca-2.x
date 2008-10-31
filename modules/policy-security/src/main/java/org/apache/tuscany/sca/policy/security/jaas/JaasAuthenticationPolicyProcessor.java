@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -37,7 +36,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  *
@@ -46,10 +44,9 @@ import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<JaasAuthenticationPolicy> {
     private static final QName JAAS_AUTHENTICATION_POLICY_QNAME = JaasAuthenticationPolicy.NAME;
     private static final String callbackHandler = "callbackHandler";
-    public static final QName CALLBACK_HANDLER_QNAME = new QName(Constants.SCA10_TUSCANY_NS,
-                                                               callbackHandler);
-    public static final QName CONFIGURATION_QNAME = new QName(Constants.SCA10_TUSCANY_NS,
-                                                                 "configurationName");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName CALLBACK_HANDLER_QNAME = new QName(SCA10_TUSCANY_NS, callbackHandler);
+    public static final QName CONFIGURATION_QNAME = new QName(SCA10_TUSCANY_NS, "configurationName");
     private Monitor monitor;
     
     public QName getArtifactType() {
@@ -122,7 +119,7 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
         writer.writeStartElement(prefix, 
                                  JAAS_AUTHENTICATION_POLICY_QNAME.getLocalPart(),
                                  JAAS_AUTHENTICATION_POLICY_QNAME.getNamespaceURI());
-        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", SCA10_TUSCANY_NS);
         
        
         writer.writeEndElement();

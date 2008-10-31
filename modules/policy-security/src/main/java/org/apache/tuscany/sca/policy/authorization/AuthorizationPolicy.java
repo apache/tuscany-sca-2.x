@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -33,7 +32,9 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class AuthorizationPolicy implements Policy {
-    public static final QName NAME = new QName(Constants.SCA10_NS, "authorization");
+    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    // private final static String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName NAME = new QName(SCA10_NS, "authorization");
 
     public static enum AcessControl {
         permitAll, denyAll, allow

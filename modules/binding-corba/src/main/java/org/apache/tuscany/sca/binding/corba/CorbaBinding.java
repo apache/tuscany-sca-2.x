@@ -22,13 +22,14 @@ package org.apache.tuscany.sca.binding.corba;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface CorbaBinding extends Binding {
-    QName BINDING_CORBA_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "binding.corba");
+    String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    String BINDING_CORBA = "binding.corba";
+    QName BINDING_CORBA_QNAME = new QName(SCA10_TUSCANY_NS, BINDING_CORBA);
 
     String getHost();
 

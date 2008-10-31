@@ -38,8 +38,6 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationReferenceBindingConfigurator;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -58,15 +56,16 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  * @version $Rev$ $Date$
  */
 public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
+    private final static String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
 
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
     public static final String TUSCANY_PREFIX = "tuscany";
     public static final QName CALLBACK_ID_REFPARM_QN =
-        new QName(Constants.SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
+        new QName(SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
-        new QName(Constants.SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
+        new QName(SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
     
     private Axis2ServiceClient serviceClient;
     private QName wsdlOperationName;
@@ -130,7 +129,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         final OperationClient operationClient = createOperationClient(msg);
 
         // ensure connections are tracked so that they can be closed by the reference binding
-        MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
+        MessageContext requestMC = operationClient.getMessageContext("Out");
         requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
         requestMC.getOptions().setTimeOutInMilliSeconds(240000L);
 
@@ -156,7 +155,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             throw (AxisFault)e.getException();
         }
 
-        MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+        MessageContext responseMC = operationClient.getMessageContext("In");
         
         for ( PolicyHandler policyHandler : policyHandlerList ) {
             policyHandler.afterInvoke(msg, responseMC, operationClient);
