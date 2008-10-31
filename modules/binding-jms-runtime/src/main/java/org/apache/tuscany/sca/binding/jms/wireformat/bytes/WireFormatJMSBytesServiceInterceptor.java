@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
 
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
@@ -52,10 +53,10 @@ public class WireFormatJMSBytesServiceInterceptor implements Interceptor {
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
     }
 
-
     public Message invoke(Message msg) {
-        // get the jms message
-        javax.jms.Message jmsMsg = (javax.jms.Message)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_JMSREQUESTMSG_POSITION);
+        // get the jms context
+        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+        javax.jms.Message jmsMsg = context.getJmsMsg();
         
         msg.setBody(requestMessageProcessor.extractPayloadFromJMSMessage(jmsMsg));
                 

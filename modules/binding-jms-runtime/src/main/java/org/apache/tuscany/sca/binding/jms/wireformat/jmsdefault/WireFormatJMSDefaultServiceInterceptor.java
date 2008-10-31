@@ -23,6 +23,7 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
@@ -85,8 +86,9 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     }
 
     public Message invokeRequest(Message msg) {
-        // get the jms message
-        javax.jms.Message jmsMsg = (javax.jms.Message)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_JMSREQUESTMSG_POSITION);
+        // get the jms context
+        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+        javax.jms.Message jmsMsg = context.getJmsMsg();
         
         if ("onMessage".equals(msg.getOperation().getName())) {
             msg.setBody(new Object[]{jmsMsg});
@@ -100,12 +102,11 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     
     public Message invokeResponse(Message msg) {
         try {
-            // get the jms message
-            javax.jms.Message requestJMSMsg = (javax.jms.Message)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_JMSREQUESTMSG_POSITION);
-            
-            Session session = jmsResourceFactory.createSession();
-            msg.getHeaders().add(JMSBindingConstants.MSG_CTXT_JMSSESSION_POSITION, session);
-            
+            // get the jms context
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            javax.jms.Message requestJMSMsg = context.getJmsMsg();
+            Session session = context.getJmsSession();
+
             javax.jms.Message responseJMSMsg;
             if (msg.isFault()) {
                 responseJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)msg.getBody());
@@ -127,9 +128,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
             return msg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        } catch (NamingException e) {
-            throw new JMSBindingException(e);
-        }
+        } 
     }    
 
     public Invoker getNext() {
