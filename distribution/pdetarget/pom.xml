@@ -55,7 +55,13 @@
             <artifactId>xmlunit</artifactId>
             <version>1.2</version>
             <scope>test</scope>
-        </dependency>         
+        </dependency>   
+        <dependency>
+            <groupId>httpunit</groupId>
+            <artifactId>httpunit</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>      
     </dependencies>
 
     <profiles>
