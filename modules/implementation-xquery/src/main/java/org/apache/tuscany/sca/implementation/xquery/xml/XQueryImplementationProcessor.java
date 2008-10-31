@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -41,18 +40,17 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Processor for the XQuery implementation type artifact
  * @version $Rev$ $Date$
  */
 public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQueryImplementation> {
-
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     private static final String LOCATION = "location";
     private static final String IMPLEMENTATION_XQUERY = "implementation.xquery";
     private static final QName IMPLEMENTATION_XQUERY_QNAME =
-        new QName(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
+        new QName(SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
     
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
@@ -117,7 +115,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     public void write(XQueryImplementation xqueryImplementation, XMLStreamWriter writer)
         throws ContributionWriteException, XMLStreamException {
         
-        writer.writeStartElement(Constants.SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
+        writer.writeStartElement(SCA10_TUSCANY_NS, IMPLEMENTATION_XQUERY);
         if (xqueryImplementation.getLocation() != null) {
             writer.writeAttribute(LOCATION, xqueryImplementation.getLocation());
         }
