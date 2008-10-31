@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.implementation.script;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
-import java.io.IOException;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -42,7 +40,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * ScriptImplementationProcessor
