@@ -37,6 +37,25 @@
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <!-- host-tomcat is not in the all-in-one distro -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-tomcat</artifactId>
+            <type>jar</type>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>       
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency> 
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>         
     </dependencies>
 
     <profiles>
