@@ -289,6 +289,14 @@ public class EclipsePluginMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
+    
+    /**
+     * Skip the operation when true.
+     * 
+     * @parameter expression="${eclipse.skip}" default-value="false"
+     */
+    private boolean skip;
+
 
     private EclipseSourceDir[] buildDirectoryList() throws MojoExecutionException {
         File buildOutputDirectory = new File(project.getBuild().getOutputDirectory());
@@ -338,7 +346,7 @@ public class EclipsePluginMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
 
         try {
-            if ("pom".equals(project.getPackaging())) {
+            if (skip || "pom".equals(project.getPackaging())) {
                 return;
             }
 
