@@ -88,6 +88,20 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     	 }
      }
      
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
+     
     public ContributionMetadataProcessor(ModelFactoryExtensionPoint modelFactories, 
     									 StAXArtifactProcessor<Object> extensionProcessor,
     									 Monitor monitor) {
@@ -106,62 +120,68 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         return ContributionMetadata.class;
     }
 
-    public ContributionMetadata read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ContributionMetadata read(XMLStreamReader reader) throws ContributionReadException {
         ContributionMetadata contribution = null;
         QName name = null;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    name = reader.getName();
-                    
-                    if (CONTRIBUTION_QNAME.equals(name)) {
-
-                        // Read <contribution>
-                        contribution = this.contributionFactory.createContributionMetadata();
-                        contribution.setUnresolved(true);
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        name = reader.getName();
                         
-                    } else if (DEPLOYABLE_QNAME.equals(name)) {                        
-                        
-                        // Read <deployable>
-                        QName compositeName = getQName(reader, "composite");
-                        if (compositeName == null) {
-                        	error("AttributeCompositeMissing", reader);
-                            //throw new ContributionReadException("Attribute 'composite' is missing");
+                        if (CONTRIBUTION_QNAME.equals(name)) {
+    
+                            // Read <contribution>
+                            contribution = this.contributionFactory.createContributionMetadata();
+                            contribution.setUnresolved(true);
+                            
+                        } else if (DEPLOYABLE_QNAME.equals(name)) {                        
+                            
+                            // Read <deployable>
+                            QName compositeName = getQName(reader, "composite");
+                            if (compositeName == null) {
+                            	error("AttributeCompositeMissing", reader);
+                                //throw new ContributionReadException("Attribute 'composite' is missing");
+                            } else {
+                                if (contribution != null) {
+                                    Composite composite = assemblyFactory.createComposite();
+                                    composite.setName(compositeName);
+                                    composite.setUnresolved(true);
+                                    contribution.getDeployables().add(composite);                         
+                                }
+                            }
                         } else {
-                            if (contribution != null) {
-                                Composite composite = assemblyFactory.createComposite();
-                                composite.setName(compositeName);
-                                composite.setUnresolved(true);
-                                contribution.getDeployables().add(composite);                         
+    
+                            // Read an extension element
+                            Object extension = extensionProcessor.read(reader);
+                            if (extension != null && contribution != null) {
+                                if (extension instanceof Import) {
+                                    contribution.getImports().add((Import)extension);
+                                } else if (extension instanceof Export) {
+                                    contribution.getExports().add((Export)extension);
+                                }
                             }
                         }
-                    } else {
-
-                        // Read an extension element
-                        Object extension = extensionProcessor.read(reader);
-                        if (extension != null && contribution != null) {
-                            if (extension instanceof Import) {
-                                contribution.getImports().add((Import)extension);
-                            } else if (extension instanceof Export) {
-                                contribution.getExports().add((Export)extension);
-                            }
+                        break;
+                        
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (CONTRIBUTION_QNAME.equals(reader.getName())) {
+                            return contribution;
                         }
-                    }
-                    break;
-                    
-                case XMLStreamConstants.END_ELEMENT:
-                    if (CONTRIBUTION_QNAME.equals(reader.getName())) {
-                        return contribution;
-                    }
-                    break;        
+                        break;        
+                }
+                
+                //Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            //Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return contribution;

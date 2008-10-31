@@ -68,9 +68,23 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
      */
      private void error(String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
-	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-resource-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-	        monitor.problem(problem);
+            Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-resource-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
     	 }
+     }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-resource-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
      }
 
     public QName getArtifactType() {
@@ -84,38 +98,44 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
     /**
      * Process <export.resource uri=""/>
      */
-    public ResourceExport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ResourceExport read(XMLStreamReader reader) throws ContributionReadException {
     	ResourceExport resourceExport = this.factory.createResourceExport();
         QName element = null;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-                    
-                    // Read <export.resource>
-                    if (EXPORT_RESOURCE.equals(element)) {
-                        String uri = reader.getAttributeValue(null, URI);
-                        if (uri == null) {
-                        	error("AttributeURIMissing", reader);
-                            //throw new ContributionReadException("Attribute 'uri' is missing");
-                        } else
-                            resourceExport.setURI(uri);
-                    } 
-                    
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (EXPORT_RESOURCE.equals(reader.getName())) {
-                        return resourceExport;
-                    }
-                    break;        
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+                        
+                        // Read <export.resource>
+                        if (EXPORT_RESOURCE.equals(element)) {
+                            String uri = reader.getAttributeValue(null, URI);
+                            if (uri == null) {
+                            	error("AttributeURIMissing", reader);
+                                //throw new ContributionReadException("Attribute 'uri' is missing");
+                            } else
+                                resourceExport.setURI(uri);
+                        } 
+                        
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (EXPORT_RESOURCE.equals(reader.getName())) {
+                            return resourceExport;
+                        }
+                        break;        
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return resourceExport;

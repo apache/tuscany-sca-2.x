@@ -77,7 +77,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
               modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
     }
     
-    public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {
         ConstrainingType constrainingType = null;
         AbstractService abstractService = null;
         AbstractReference abstractReference = null;
@@ -85,100 +85,107 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
         AbstractContract abstractContract = null;
         QName name = null;
         
-        // Read the constrainingType document
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-
-                case START_ELEMENT:
-                    name = reader.getName();
-                    
-                    // Read a <constrainingType>
-                    if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
-                        constrainingType = assemblyFactory.createConstrainingType();
-                        constrainingType.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
-                        policyProcessor.readPolicies(constrainingType, reader);
-
-                    } else if (Constants.SERVICE_QNAME.equals(name)) {
+        try {
+            // Read the constrainingType document
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+    
+                    case START_ELEMENT:
+                        name = reader.getName();
                         
-                        // Read a <service>
-                        abstractService = assemblyFactory.createAbstractService();
-                        abstractContract = abstractService;
-                        abstractService.setName(getString(reader, Constants.NAME));
-                        constrainingType.getServices().add(abstractService);
-                        policyProcessor.readPolicies(abstractService, reader);
-
-                    } else if (Constants.REFERENCE_QNAME.equals(name)) {
-                        
-                        // Read a <reference>
-                        abstractReference = assemblyFactory.createAbstractReference();
-                        abstractContract = abstractReference;
-                        abstractReference.setName(getString(reader, Constants.NAME));
-                        readMultiplicity(abstractReference, reader);
-                        constrainingType.getReferences().add(abstractReference);
-                        policyProcessor.readPolicies(abstractReference, reader);
-
-                    } else if (Constants.PROPERTY_QNAME.equals(name)) {
-                        
-                        // Read a <property>
-                        abstractProperty = assemblyFactory.createAbstractProperty();
-                        readAbstractProperty(abstractProperty, reader);
-                        
-                        // Read the property value
-                        Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), reader);
-                        abstractProperty.setValue(value);
-                        
-                        constrainingType.getProperties().add(abstractProperty);
-                        policyProcessor.readPolicies(abstractProperty, reader);
-                        
-                    } else if (OPERATION_QNAME.equals(name)) {
-
-                        // Read an <operation>
-                        Operation operation = new OperationImpl();
-                        operation.setName(getString(reader, NAME));
-                        operation.setUnresolved(true);
-                        policyProcessor.readPolicies(abstractContract, operation, reader);
-                        
-                    } else {
-
-                        // Read an extension element
-                        Object extension = extensionProcessor.read(reader);
-                        if (extension instanceof InterfaceContract) {
+                        // Read a <constrainingType>
+                        if (Constants.CONSTRAINING_TYPE_QNAME.equals(name)) {
+                            constrainingType = assemblyFactory.createConstrainingType();
+                            constrainingType.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
+                            policyProcessor.readPolicies(constrainingType, reader);
+    
+                        } else if (Constants.SERVICE_QNAME.equals(name)) {
                             
-                            // <service><interface> and <reference><interface>
-                            abstractContract.setInterfaceContract((InterfaceContract)extension);
+                            // Read a <service>
+                            abstractService = assemblyFactory.createAbstractService();
+                            abstractContract = abstractService;
+                            abstractService.setName(getString(reader, Constants.NAME));
+                            constrainingType.getServices().add(abstractService);
+                            policyProcessor.readPolicies(abstractService, reader);
+    
+                        } else if (Constants.REFERENCE_QNAME.equals(name)) {
+                            
+                            // Read a <reference>
+                            abstractReference = assemblyFactory.createAbstractReference();
+                            abstractContract = abstractReference;
+                            abstractReference.setName(getString(reader, Constants.NAME));
+                            readMultiplicity(abstractReference, reader);
+                            constrainingType.getReferences().add(abstractReference);
+                            policyProcessor.readPolicies(abstractReference, reader);
+    
+                        } else if (Constants.PROPERTY_QNAME.equals(name)) {
+                            
+                            // Read a <property>
+                            abstractProperty = assemblyFactory.createAbstractProperty();
+                            readAbstractProperty(abstractProperty, reader);
+                            
+                            // Read the property value
+                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), reader);
+                            abstractProperty.setValue(value);
+                            
+                            constrainingType.getProperties().add(abstractProperty);
+                            policyProcessor.readPolicies(abstractProperty, reader);
+                            
+                        } else if (OPERATION_QNAME.equals(name)) {
+    
+                            // Read an <operation>
+                            Operation operation = new OperationImpl();
+                            operation.setName(getString(reader, NAME));
+                            operation.setUnresolved(true);
+                            policyProcessor.readPolicies(abstractContract, operation, reader);
+                            
                         } else {
-
-                            // Add the extension element to the current element
-                            if (abstractContract != null) {
-                                abstractContract.getExtensions().add(extension);
+    
+                            // Read an extension element
+                            Object extension = extensionProcessor.read(reader);
+                            if (extension instanceof InterfaceContract) {
+                                
+                                // <service><interface> and <reference><interface>
+                                abstractContract.setInterfaceContract((InterfaceContract)extension);
                             } else {
-                                constrainingType.getExtensions().add(extension);
+    
+                                // Add the extension element to the current element
+                                if (abstractContract != null) {
+                                    abstractContract.getExtensions().add(extension);
+                                } else {
+                                    constrainingType.getExtensions().add(extension);
+                                }
+                                
                             }
-                            
                         }
-                    }
-                    break;
-
-                case END_ELEMENT:
-                    name = reader.getName();
-
-                    // Clear current state when reading reaching end element
-                    if (SERVICE_QNAME.equals(name)) {
-                        abstractService = null;
-                        abstractContract = null;
-                    } else if (REFERENCE_QNAME.equals(name)) {
-                        abstractReference = null;
-                        abstractContract = null;
-                    } else if (PROPERTY_QNAME.equals(name)) {
-                        abstractProperty = null;
-                    }
-                    break;
-            }
-            if (reader.hasNext()) {
-                reader.next();
+                        break;
+    
+                    case END_ELEMENT:
+                        name = reader.getName();
+    
+                        // Clear current state when reading reaching end element
+                        if (SERVICE_QNAME.equals(name)) {
+                            abstractService = null;
+                            abstractContract = null;
+                        } else if (REFERENCE_QNAME.equals(name)) {
+                            abstractReference = null;
+                            abstractContract = null;
+                        } else if (PROPERTY_QNAME.equals(name)) {
+                            abstractProperty = null;
+                        }
+                        break;
+                }
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
         }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
+        }
+        
         return constrainingType;
     }
     

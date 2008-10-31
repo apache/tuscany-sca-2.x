@@ -74,6 +74,20 @@ public class ResourceImportProcessor  implements StAXArtifactProcessor<ResourceI
 	        monitor.problem(problem);
     	 }
      }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-resource-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
     
     public QName getArtifactType() {
         return IMPORT_RESOURCE;
@@ -86,42 +100,48 @@ public class ResourceImportProcessor  implements StAXArtifactProcessor<ResourceI
     /**
      * Process <import.resource uri="" location=""/>
      */
-    public ResourceImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ResourceImport read(XMLStreamReader reader) throws ContributionReadException {
     	ResourceImport resourceImport = this.factory.createResourceImport();
         QName element;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-
-                    // Read <import>
-                    if (IMPORT_RESOURCE.equals(element)) {
-                        String uri = reader.getAttributeValue(null, URI);
-                        if (uri == null) {
-                        	error("AttributeURIMissing", reader);
-                            //throw new ContributionReadException("Attribute 'uri' is missing");
-                        } else
-                            resourceImport.setURI(uri);
-
-                        String location = reader.getAttributeValue(null, LOCATION);
-                        if (location != null) {
-                            resourceImport.setLocation(location);
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+    
+                        // Read <import>
+                        if (IMPORT_RESOURCE.equals(element)) {
+                            String uri = reader.getAttributeValue(null, URI);
+                            if (uri == null) {
+                            	error("AttributeURIMissing", reader);
+                                //throw new ContributionReadException("Attribute 'uri' is missing");
+                            } else
+                                resourceImport.setURI(uri);
+    
+                            String location = reader.getAttributeValue(null, LOCATION);
+                            if (location != null) {
+                                resourceImport.setLocation(location);
+                            }
                         }
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (IMPORT_RESOURCE.equals(reader.getName())) {
-                        return resourceImport;
-                    }
-                    break;        
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (IMPORT_RESOURCE.equals(reader.getName())) {
+                            return resourceImport;
+                        }
+                        break;        
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return resourceImport;

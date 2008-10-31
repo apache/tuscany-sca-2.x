@@ -75,6 +75,20 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
 	        monitor.problem(problem);
     	 }
      }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-java-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
     
     public QName getArtifactType() {
         return IMPORT_JAVA;
@@ -87,40 +101,46 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     /**
      * Process <import.java package="" location=""/>
      */
-    public JavaImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JavaImport read(XMLStreamReader reader) throws ContributionReadException {
         JavaImport javaImport = this.factory.createJavaImport();
         QName element = null;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-
-                    // Read <import.java>
-                    if (IMPORT_JAVA.equals(element)) {
-                        String packageName = reader.getAttributeValue(null, PACKAGE);
-                        if (packageName == null) {
-                        	error("AttributePackageMissing", reader);
-                            //throw new ContributionReadException("Attribute 'package' is missing");
-                        } else
-                        	javaImport.setPackage(packageName);
-                        
-                        String location = reader.getAttributeValue(null, LOCATION);                        
-                        javaImport.setLocation(location);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (IMPORT_JAVA.equals(reader.getName())) {
-                        return javaImport;
-                    }
-                    break;        
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+    
+                        // Read <import.java>
+                        if (IMPORT_JAVA.equals(element)) {
+                            String packageName = reader.getAttributeValue(null, PACKAGE);
+                            if (packageName == null) {
+                            	error("AttributePackageMissing", reader);
+                                //throw new ContributionReadException("Attribute 'package' is missing");
+                            } else
+                            	javaImport.setPackage(packageName);
+                            
+                            String location = reader.getAttributeValue(null, LOCATION);                        
+                            javaImport.setLocation(location);
+                        }
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (IMPORT_JAVA.equals(reader.getName())) {
+                            return javaImport;
+                        }
+                        break;        
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return javaImport;

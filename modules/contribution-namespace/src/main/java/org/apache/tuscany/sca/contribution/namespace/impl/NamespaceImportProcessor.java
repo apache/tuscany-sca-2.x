@@ -75,6 +75,20 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
     	 }
      }
     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-namespace-validation-messages", Severity.ERROR, model, message, ex);
+             monitor.problem(problem);
+         }
+     }
+    
     public QName getArtifactType() {
         return IMPORT;
     }
@@ -86,42 +100,48 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
     /**
      * Process <import namespace="" location=""/>
      */
-    public NamespaceImport read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public NamespaceImport read(XMLStreamReader reader) throws ContributionReadException {
         NamespaceImport namespaceImport = this.factory.createNamespaceImport();
         QName element;
         
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    element = reader.getName();
-
-                    // Read <import>
-                    if (IMPORT.equals(element)) {
-                        String ns = reader.getAttributeValue(null, NAMESPACE);
-                        if (ns == null) {
-                        	error("AttributeNameSpaceMissing", reader);
-                            //throw new ContributionReadException("Attribute 'namespace' is missing");
-                        } else 
-                            namespaceImport.setNamespace(ns);
-
-                        String location = reader.getAttributeValue(null, LOCATION);
-                        if (location != null) {
-                            namespaceImport.setLocation(location);
+        try {
+            while (reader.hasNext()) {
+                int event = reader.getEventType();
+                switch (event) {
+                    case START_ELEMENT:
+                        element = reader.getName();
+    
+                        // Read <import>
+                        if (IMPORT.equals(element)) {
+                            String ns = reader.getAttributeValue(null, NAMESPACE);
+                            if (ns == null) {
+                            	error("AttributeNameSpaceMissing", reader);
+                                //throw new ContributionReadException("Attribute 'namespace' is missing");
+                            } else 
+                                namespaceImport.setNamespace(ns);
+    
+                            String location = reader.getAttributeValue(null, LOCATION);
+                            if (location != null) {
+                                namespaceImport.setLocation(location);
+                            }
                         }
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (IMPORT.equals(reader.getName())) {
-                        return namespaceImport;
-                    }
-                    break;        
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        if (IMPORT.equals(reader.getName())) {
+                            return namespaceImport;
+                        }
+                        break;        
+                }
+                
+                // Read the next element
+                if (reader.hasNext()) {
+                    reader.next();
+                }
             }
-            
-            // Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
+        }
+        catch (XMLStreamException e) {
+            ContributionReadException ex = new ContributionReadException(e);
+            error("XMLStreamException", reader, ex);
         }
         
         return namespaceImport;
