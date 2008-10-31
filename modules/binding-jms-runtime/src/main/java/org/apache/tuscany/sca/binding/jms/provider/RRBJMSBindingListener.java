@@ -36,6 +36,7 @@ import javax.naming.NamingException;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
@@ -137,18 +138,28 @@ public class RRBJMSBindingListener implements MessageListener {
      */
     protected void invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
-        // create the tuscany message
-        org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
-        
-        // populate the message context with JMS binding information
-        tuscanyMsg.getHeaders().add(requestJMSMsg);
-        tuscanyMsg.setBody(requestJMSMsg);
-        
-        // call the runtime wire
-        setHeaderProperties(requestJMSMsg, tuscanyMsg, tuscanyMsg.getOperation());
-        InvocationChain chain = service.getRuntimeWire(targetBinding).getBindingInvocationChain();
-        chain.getHeadInvoker().invoke(tuscanyMsg);
-        
+        try {
+            // create the tuscany message
+            org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
+            
+            // populate the message context with JMS binding information
+            JMSBindingContext context = new JMSBindingContext();
+            tuscanyMsg.getHeaders().add(context);
+            
+            context.setJmsMsg(requestJMSMsg);
+            context.setJmsSession(jmsResourceFactory.createSession());
+            
+            // set the message body
+            tuscanyMsg.setBody(requestJMSMsg);
+            
+            // call the runtime wire
+            setHeaderProperties(requestJMSMsg, tuscanyMsg, tuscanyMsg.getOperation());
+            InvocationChain chain = service.getRuntimeWire(targetBinding).getBindingInvocationChain();
+            chain.getHeadInvoker().invoke(tuscanyMsg);
+        } catch (NamingException e) {
+            throw new JMSBindingException(e);
+        }
+            
     }
 
     /**

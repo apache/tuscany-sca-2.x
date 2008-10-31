@@ -143,7 +143,9 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         this.operationSelectorProviderFactory =
             (OperationSelectorProviderFactory)providerFactories.getProviderFactory(jmsBinding.getOperationSelector().getClass());
-        this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(component, service, jmsBinding);
+        if (this.operationSelectorProviderFactory != null){
+            this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(component, service, jmsBinding);
+        }
         
         // Get the factories/providers for wire format
         
@@ -159,11 +161,15 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         
         this.requestWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
-        this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+        if (this.requestWireFormatProviderFactory != null){
+            this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+        }
         
         this.responseWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
-        this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+        if (this.responseWireFormatProvider != null){
+            this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+        }
     }
     
     protected boolean isOnMessage() {
