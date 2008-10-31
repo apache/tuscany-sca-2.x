@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -42,7 +41,6 @@ import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFact
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 
 /**
@@ -51,7 +49,8 @@ import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
  * @version $Rev$ $Date$
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
-    private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final QName IMPLEMENTATION_RESOURCE = new QName(SCA10_TUSCANY_NS, "implementation.resource");
     
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
