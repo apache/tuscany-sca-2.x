@@ -43,6 +43,12 @@
             <artifactId>tuscany-host-tomcat</artifactId>
             <type>jar</type>
             <version>1.4-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>annotations-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>       
         <dependency>
             <groupId>junit</groupId>
