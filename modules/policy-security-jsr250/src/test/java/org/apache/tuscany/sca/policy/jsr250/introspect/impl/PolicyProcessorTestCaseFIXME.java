@@ -31,14 +31,9 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.jsr250.introspect.impl.JSR250PolicyProcessor;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
@@ -46,52 +41,38 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessorTestCaseFIXME extends TestCase {
-    private ServiceProcessor serviceProcessor;
     private JSR250PolicyProcessor policyProcessor;
-    private PolicyJavaInterfaceVisitor visitor;
     private JavaImplementation type;
 
     // This actually is a test for PolicyJavaInterfaceProcessor. It will get
     // invoked via the call to ImplementationProcessorServiceImpl.createService in
     // ServiceProcessor. Of course ServiceProcessor class has to be working.
     public void stestSingleInterfaceWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
-        serviceProcessor.visitClass(Service1.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service1.class, type);
         verifyIntents(Service1.class, type);
     }
 
     public void stestMultipleInterfacesWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
-        serviceProcessor.visitClass(Service2.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service2.class, type);
         verifyIntents(Service2.class, type);
     }
 
     public void stestSingleInterfaceWithIntentsOnImplAtClassLevel() throws Exception {
-        serviceProcessor.visitClass(Service3.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service3.class, type);
         verifyIntents(Service3.class, type);
     }
 
     public void stestMultipleInterfacesWithIntentsOnImplAtClassLevel() throws Exception {
-        serviceProcessor.visitClass(Service4.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service4.class, type);
         verifyIntents(Service4.class, type);
     }
 
     public void stestSingleInterfaceWithIntentsOnInterfaceAtMethodLevel() throws Exception {
-        serviceProcessor.visitClass(Service5.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service5.class, type);
         verifyIntents(Service5.class, type);
     }
 
     public void testSingleInterfaceWithIntentsOnServiceAndInterfaceAtImplAndInertfaceAndMethodLevel() throws Exception {
-        serviceProcessor.visitClass(Service6.class, type);
-        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service6.class, type);
         for (Method method : Service6.class.getDeclaredMethods()) {
             policyProcessor.visitMethod(method, type);
@@ -236,9 +217,7 @@ public class PolicyProcessorTestCaseFIXME extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         policyProcessor = new JSR250PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
-        visitor = new PolicyJavaInterfaceVisitor(new DefaultPolicyFactory());
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
     }
