@@ -9,15 +9,22 @@ Bnd-LastModified: 1225397258562
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
-Import-Package: javax.servlet,org.apache.tuscany.sca.core;version="1.4
- ",org.apache.tuscany.sca.host.http;version="1.4",org.apache.tuscany.s
- ca.work;version="1.4",org.mortbay.jetty;version="6.1.7",org.mortbay.j
- etty.handler;version="6.1.7",org.mortbay.jetty.nio;version="6.1.7",or
- g.mortbay.jetty.security;version="6.1.7",org.mortbay.jetty.servlet;ve
- rsion="6.1.7",org.mortbay.log;version="6.1.7",org.mortbay.resource;ve
- rsion="6.1.7",org.mortbay.thread;version="6.1.7",junit.framework;reso
- lution:=optional,javax.net.ssl;resolution:=optional,javax.servlet.htt
- p;resolution:=optional
+Import-Package: javax.net.ssl;resolution:=optional,
+ javax.servlet,
+ javax.servlet.http;resolution:=optional,
+ junit.framework;resolution:=optional,
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.http;version="1.4",
+ org.apache.tuscany.sca.work;version="1.4",
+ org.mortbay.component;version="6.1.7",
+ org.mortbay.jetty;version="6.1.7",
+ org.mortbay.jetty.handler;version="6.1.7",
+ org.mortbay.jetty.nio;version="6.1.7",
+ org.mortbay.jetty.security;version="6.1.7",
+ org.mortbay.jetty.servlet;version="6.1.7",
+ org.mortbay.log;version="6.1.7",
+ org.mortbay.resource;version="6.1.7",
+ org.mortbay.thread;version="6.1.7"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.jetty
 Bundle-DocURL: http://www.apache.org/
 
