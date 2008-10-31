@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -41,14 +40,13 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  *
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
-
+    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private JavaInterfaceFactory javaFactory;
     private Monitor monitor;
 
@@ -120,7 +118,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     public void write(JavaInterfaceContract javaInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
         // Write an <interface.java>
-        writer.writeStartElement(Constants.SCA10_NS, INTERFACE_JAVA);
+        writer.writeStartElement(SCA10_NS, INTERFACE_JAVA);
         JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
         
         if (javaInterface != null && javaInterface.getName() != null) {

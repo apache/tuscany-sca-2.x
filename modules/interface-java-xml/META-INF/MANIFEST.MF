@@ -10,15 +10,19 @@ Bnd-LastModified: 1225397167906
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Java Interface XML Model
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.contribution.processor;version="1.4",org.apache.tuscany.sca.con
- tribution.resolver;version="1.4",org.apache.tuscany.sca.core;version=
- "1.4",org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.tu
- scany.sca.interfacedef.java;version="1.4",org.apache.tuscany.sca.moni
- tor;version="1.4",org.apache.tuscany.sca.assembly;version="1.4";resol
- ution:=optional,org.apache.tuscany.sca.definitions;version="1.4";reso
- lution:=optional,org.junit;resolution:=optional,org.apache.tuscany.sc
- a.assembly.builder;version="1.4";resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.assembly.builder;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.definitions;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ org.junit;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.xml
 Bundle-DocURL: http://www.apache.org/
 

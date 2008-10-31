@@ -20,17 +20,15 @@ package org.apache.tuscany.sca.interfacedef.java.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-
 /**
  * Interface Java XML Constants.
  *
  * @version $Rev$ $Date$
  */
 public interface JavaConstants {
-
+    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String INTERFACE_JAVA = "interface.java";
-    QName INTERFACE_JAVA_QNAME = new QName(Constants.SCA10_NS, "interface.java");
+    QName INTERFACE_JAVA_QNAME = new QName(SCA10_NS, "interface.java");
     String INTERFACE = "interface";
     String CALLBACK_INTERFACE = "callbackInterface";
     
