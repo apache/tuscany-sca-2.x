@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -40,7 +39,6 @@ import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 
 /**
@@ -49,7 +47,8 @@ import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
  * @version $Rev$ $Date$
  */
 public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<EJBImplementation> {
-    private static final QName IMPLEMENTATION_EJB = new QName(Constants.SCA10_NS, "implementation.ejb");
+    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final QName IMPLEMENTATION_EJB = new QName(SCA10_NS, "implementation.ejb");
     
     private AssemblyFactory assemblyFactory;
     private EJBImplementationFactory implementationFactory;
