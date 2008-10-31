@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.host.webapp.jsp;uses:="javax.se
+ rvlet,org.apache.tuscany.sca.host.embedded,javax.servlet.jsp.tagext,o
+ rg.apache.tuscany.sca.host.webapp,org.osoa.sca,javax.servlet.jsp";ver
+ sion="1.4",org.apache.tuscany.sca.host.webapp;uses:="javax.naming,org
+ .apache.tuscany.sca.host.embedded.impl,org.apache.tuscany.sca.host.em
+ bedded,org.apache.tuscany.sca.core,javax.servlet,org.apache.tuscany.s
+ ca.host.http,javax.servlet.http";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Webapp Host
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1222833658000
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Webapp Host
+Import-Package: javax.naming,javax.servlet,javax.servlet.http,javax.se
+ rvlet.jsp,javax.servlet.jsp.tagext,org.apache.tuscany.sca.core;versio
+ n="1.4",org.apache.tuscany.sca.host.embedded;version="1.4",org.apache
+ .tuscany.sca.host.embedded.impl;version="1.4",org.apache.tuscany.sca.
+ host.http;version="1.4",org.apache.tuscany.sca.host.webapp;version="1
+ .4",org.apache.tuscany.sca.host.webapp.jsp;version="1.4",org.osoa.sca
+ ;version="1.4"
+Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
+Bundle-DocURL: http://www.apache.org/
+
