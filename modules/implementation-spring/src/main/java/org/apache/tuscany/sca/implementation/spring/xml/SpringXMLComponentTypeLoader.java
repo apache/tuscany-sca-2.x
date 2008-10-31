@@ -336,7 +336,7 @@ public class SpringXMLComponentTypeLoader {
                     Class<?> beanClass = cl.loadClass(beanElement.getClassName());
                     // Introspect the bean 
                     ComponentType beanComponentType = assemblyFactory.createComponentType();
-                    beanIntrospector.introspectBean(beanClass, beanComponentType);
+                    beanIntrospector.introspectBean(beanClass, beanComponentType, implementation);
                     // Get the service interface defined by this Spring Bean and add to
                     // the component type of the Spring Assembly
                     List<Service> beanServices = beanComponentType.getServices();
@@ -368,7 +368,7 @@ public class SpringXMLComponentTypeLoader {
                         // Introspect the bean 
                         ComponentType beanComponentType = assemblyFactory.createComponentType();
                         Map<String, JavaElementImpl> propertyMap =
-                            beanIntrospector.introspectBean(beanClass, beanComponentType);
+                            beanIntrospector.introspectBean(beanClass, beanComponentType, implementation);
                         // Get the references by this Spring Bean and add the unresolved ones to
                         // the component type of the Spring Assembly
                         List<Reference> beanReferences = beanComponentType.getReferences();
