@@ -38,8 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.apache.abdera.parser.ParseException;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -56,6 +54,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import com.google.gdata.data.ExtensionProfile;
 import com.google.gdata.data.ParseSource;
 import com.google.gdata.data.PlainTextConstruct;
+import com.google.gdata.util.ParseException;
 import com.google.gdata.util.ServiceException;
 
 
@@ -414,14 +413,10 @@ class GdataBindingListenerServlet extends HttpServlet {
                 try {
                     ParseSource source = new ParseSource(request.getReader());
                     feedEntry = com.google.gdata.data.Entry.readEntry(source, com.google.gdata.data.Entry.class, null);
-                } catch (ParseException pe) {
+                } catch (com.google.gdata.util.ParseException pe) {
                     throw new ServletException(pe);
-                } catch (com.google.gdata.util.ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (ServiceException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new ServletException(e);
                 }
 
                 // Let the component implementation create it
@@ -486,26 +481,21 @@ class GdataBindingListenerServlet extends HttpServlet {
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setContentType("application/atom+xml; charset=utf-8");
-                try {
 
-                    // Generate the corresponding Atom representation of the
-                    // feed
-                    StringWriter stringWriter = new StringWriter();
-                    com.google.gdata.util.common.xml.XmlWriter w =
-                        new com.google.gdata.util.common.xml.XmlWriter(stringWriter);
-                    createdFeedEntry.generateAtom(w, new ExtensionProfile());
-                    w.flush();
+                // Generate the corresponding Atom representation of the
+                // feed
+                StringWriter stringWriter = new StringWriter();
+                com.google.gdata.util.common.xml.XmlWriter w =
+                    new com.google.gdata.util.common.xml.XmlWriter(stringWriter);
+                createdFeedEntry.generateAtom(w, new ExtensionProfile());
+                w.flush();
 
-                    // Write the Atom representation(XML) into Http response
-                    // content
-                    OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
-                    PrintWriter out = new PrintWriter(response.getOutputStream());
-                    out.println(stringWriter.toString());
-                    out.close();
-
-                } catch (ParseException pe) {
-                    throw new ServletException(pe);
-                }
+                // Write the Atom representation(XML) into Http response
+                // content
+                OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
+                PrintWriter out = new PrintWriter(response.getOutputStream());
+                out.println(stringWriter.toString());
+                out.close();
 
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -551,11 +541,8 @@ class GdataBindingListenerServlet extends HttpServlet {
                     feedEntry = com.google.gdata.data.Entry.readEntry(source, com.google.gdata.data.Entry.class, null);
                 
                     System.out.println("[Debug Info] localServlet doPut --- feedEntry title: " + feedEntry.getTitle().getPlainText());
-                } catch (ParseException pe) {
+                } catch (com.google.gdata.util.ParseException pe) {
                     throw new ServletException(pe);
-                } catch (com.google.gdata.util.ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (ServiceException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
