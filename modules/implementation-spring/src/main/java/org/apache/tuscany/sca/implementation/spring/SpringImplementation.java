@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.springframework.core.io.Resource;
@@ -47,8 +49,15 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     // Mapping of Services to Beans
     private Hashtable<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
-    private Hashtable<String, Class> propertyMap;    
+    private Hashtable<String, Class> propertyMap;
     private List<PolicyHandlerTuple> policyHandlerClassNames = null;
+    
+    // Method marked with @Init annotation
+    private Method initMethod = null;
+    // Method marked with @Destroy annotation
+    private Method destroyMethod = null;
+    // Method marked with @Constructor annotation
+    private JavaConstructorImpl<?> constructorDefinition = null;
 
     protected SpringImplementation() {
         this.location = null;
@@ -78,6 +87,30 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
 
     public Resource getResource() {
         return resource;
+    }
+    
+    public JavaConstructorImpl<?> getConstructor() {
+        return constructorDefinition;
+    }
+
+    public void setConstructor(JavaConstructorImpl<?> definition) {
+        this.constructorDefinition = definition;
+    }
+    
+    public Method getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public Method getDestroyMethod() {
+        return destroyMethod;
+    }
+
+    public void setDestroyMethod(Method destroyMethod) {
+        this.destroyMethod = destroyMethod;
     }
 
     /* 
@@ -155,5 +188,5 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
 
     public void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames) {
         this.policyHandlerClassNames = policyHandlerClassNames;
-    }
+    } // end method setPolicyHandlerClassNames
 }

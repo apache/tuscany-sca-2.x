@@ -46,13 +46,13 @@ public class CalculatorClient {
         if (ctx.containsBean("CalculatorServiceBean"))
             System.out.println("CalculatorServiceBean is now available for use...");
               
-        /*CalculatorService calculatorService = 
+        CalculatorService calculatorService = 
             ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
                 
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
-        System.out.println("3 / 2=" + calculatorService.divide(3, 2));*/
+        System.out.println("3 / 2=" + calculatorService.divide(3, 2));
 
         node.stop();
     }

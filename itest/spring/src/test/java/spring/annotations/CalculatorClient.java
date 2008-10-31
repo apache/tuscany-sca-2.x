@@ -17,12 +17,10 @@
  * under the License.    
  */
 
-package implementation.policies;
+package spring.annotations;
 
 import java.io.File;
 
-import javax.security.auth.login.Configuration;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
@@ -37,39 +35,28 @@ import calculator.CalculatorServiceImpl;
  * and locate and invoke a SCA component
  */
 public class CalculatorClient {
-    public static void main(String[] args) throws Exception {
-        try {
-            Configuration secConf = Configuration.getConfiguration();
-        } catch (java.lang.SecurityException e) {
-            System.setProperty("java.security.auth.login.config", CalculatorClient.class.getClassLoader()
-                .getResource("implementation/policies/CalculatorJass.config").toString());
-        }
+    public static void main(String[] args) throws Exception {        
 
         SCANodeFactory factory = SCANodeFactory.newInstance();
-        SCANode node = factory.createSCANodeFromClassLoader("implementation/policies/Calculator.composite", CalculatorServiceImpl.class.getClassLoader());
+        SCANode node = factory.createSCANode(new File("src/main/resources/spring/annotations/Calculator.composite").toURL().toString(),
+                new SCAContribution("TestContribution", new File("src/main/resources/spring/annotations/").toURL().toString()));
         node.start();        
               
         CalculatorService calculatorService = 
             ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
-
-        // Calculate
-        System.out.println("Calling CalculatorServiceComponent configured with 'logging' " +
-                "policy for subtract and divide operations...");
+        
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
         
-        calculatorService = 
+        /*calculatorService = 
             ((SCAClient)node).getService(CalculatorService.class, "AnotherCalculatorServiceComponent");
 
-        // Calculate
-        System.out.println("Calling CalculatorServiceComponent configured with 'logging' " +
-                "for all operations in the implementation...");
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
-        System.out.println("3 / 2=" + calculatorService.divide(3, 2));
+        System.out.println("3 / 2=" + calculatorService.divide(3, 2));*/
 
         node.stop();
         System.out.println("Bye");

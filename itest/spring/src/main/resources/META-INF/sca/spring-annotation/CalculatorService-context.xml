@@ -23,23 +23,19 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
-  
-    <sca:service name="CalculatorService"
-        type="calculator.CalculatorService" target="CalculatorServiceBean"/>
 
-    <bean id="CalculatorServiceBean" class="calculator.CalculatorServiceImpl">        
+    <bean id="CalculatorServiceBean" class="spring.annotations.CalculatorServiceImpl">        
         <property name="addService" ref="addService"/>
-        <property name="subtractService" ref="subtractService"/>
-        <property name="multiplyService" ref="multiplyService"/>
+        <!-- <property name="subtractService" ref="subtractService"/>
+        <property name="multiplyService" ref="multiplyService"/> -->
         <property name="divideService" ref="divideService"/>
-    </bean>
-    
-    <bean id="contextAccess" class="context.access.SCAApplicationContextProvider">
-    </bean>
+    </bean>   
     
     <sca:reference name="addService" type="calculator.AddService"/>
     <sca:reference name="subtractService" type="calculator.SubtractService"/>   
-    <sca:reference name="multiplyService" type="calculator.MultiplyService"/>    
+    <sca:reference name="multiplyService" type="calculator.MultiplyService"/> 
     <sca:reference name="divideService" type="calculator.DivideService"/>
+    
+    <sca:property id="msg" name="message" type="java.lang.String"/>
 
 </beans>

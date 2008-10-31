@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 
 /**
  * Provides introspection functions for Spring beans
@@ -106,9 +107,9 @@ public class SpringBeanIntrospector {
      * Spring Bean or its componentType
      *
      */
-    public Map<String, JavaElementImpl> introspectBean(Class<?> beanClass, ComponentType componentType)
-        throws ContributionResolveException {
-
+    public Map<String, JavaElementImpl> introspectBean(Class<?> beanClass, ComponentType componentType,
+                                                       SpringImplementation springImplementation) throws ContributionResolveException 
+    {
         if (componentType == null)
             throw new ContributionResolveException("Introspect Spring bean: supplied componentType is null");
 
@@ -124,6 +125,11 @@ public class SpringBeanIntrospector {
             componentType.getServices().addAll(javaImplementation.getServices());
             componentType.getReferences().addAll(javaImplementation.getReferences());
             componentType.getProperties().addAll(javaImplementation.getProperties());
+            
+            springImplementation.setInitMethod(javaImplementation.getInitMethod());
+            springImplementation.setDestroyMethod(javaImplementation.getDestroyMethod());
+            springImplementation.setConstructor(javaImplementation.getConstructor());
+            
         } catch (IntrospectionException e) {
             throw new ContributionResolveException(e);
         } // end try

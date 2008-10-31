@@ -29,7 +29,15 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.apache.tuscany.sca.implementation.spring.processor.InitDestroyAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.PropertyAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.ConstructorAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.ComponentNameAnnotationProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor; 
 
 // TODO - create a working version of this class...
 /**
@@ -62,7 +70,21 @@ public class SpringImplementationProvider implements ImplementationProvider {
         
         SCAParentApplicationContext scaParentContext =
             new SCAParentApplicationContext(component, implementation, proxyService, propertyValueObjectFactory);
-        springContext = new SCAApplicationContext(scaParentContext, implementation.getResource());
+        //springContext = new SCAApplicationContext(scaParentContext, implementation.getResource());
+        
+        XmlBeanFactory beanFactory = new XmlBeanFactory(implementation.getResource());
+        BeanPostProcessor initDestroyProcessor = new InitDestroyAnnotationProcessor();
+        beanFactory.addBeanPostProcessor(initDestroyProcessor);
+        BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
+        beanFactory.addBeanPostProcessor(referenceProcessor);
+        BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(propertyValueObjectFactory, component);
+        beanFactory.addBeanPostProcessor(propertyProcessor);
+        BeanPostProcessor componentNameProcessor = new ComponentNameAnnotationProcessor(component);
+        beanFactory.addBeanPostProcessor(componentNameProcessor);
+        BeanPostProcessor constructorProcessor = new ConstructorAnnotationProcessor();
+        beanFactory.addBeanPostProcessor(constructorProcessor);
+        springContext = new GenericApplicationContext(beanFactory, scaParentContext);
+        
     } // end constructor
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
@@ -89,6 +111,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
      */
     public void stop() {
         // TODO - complete 
+        springContext.close();
         springContext.stop();
         //System.out.println("SpringImplementationProvider: Spring context stopped");
     } // end method stop
