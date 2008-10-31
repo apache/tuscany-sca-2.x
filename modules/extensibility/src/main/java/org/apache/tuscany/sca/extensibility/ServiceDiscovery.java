@@ -57,8 +57,7 @@ public class ServiceDiscovery implements ServiceDiscoverer {
         }
         try {
             //FIXME Remove that upside-down dependency
-            Class<?> cls = Class.forName("org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer");
-            System.out.println(cls);
+            Class.forName("org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer");
             if (discoverer != null) {
                 return discoverer;
             }
