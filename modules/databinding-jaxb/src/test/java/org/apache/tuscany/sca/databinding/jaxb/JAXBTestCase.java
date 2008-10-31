@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-
 import java.io.StringReader;
 
 import javax.xml.namespace.QName;
@@ -30,9 +26,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
-import org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;
-import org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;
+import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -86,21 +80,15 @@ public class JAXBTestCase extends TestCase {
 
         DataType targetDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
 
-        TransformationContext tContext = createMock(TransformationContext.class);
-        expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
-        expect(tContext.getTargetOperation()).andReturn(null).anyTimes();
-        replay(tContext);
+        TransformationContext tContext = new TransformationContextImpl();
+        tContext.setTargetDataType(targetDataType);
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
         DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
 
-        TransformationContext tContext1 = createMock(TransformationContext.class);
-        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
-        expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
-        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
-        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
-        replay(tContext1);
+        TransformationContext tContext1 = new TransformationContextImpl();
+        tContext1.setSourceDataType(sourceDataType);
 
         JAXB2Node t1 = new JAXB2Node();
         Node node = t1.transform(object1, tContext1);
@@ -120,22 +108,15 @@ public class JAXBTestCase extends TestCase {
         DataType targetDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
         // targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
-        TransformationContext tContext = createMock(TransformationContext.class);
-        expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
-        expect(tContext.getTargetOperation()).andReturn(null).anyTimes();
-        replay(tContext);
-
+        TransformationContext tContext = new TransformationContextImpl();
+        tContext.setTargetDataType(targetDataType);
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
         DataType sourceDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
         // sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
-        TransformationContext tContext1 = createMock(TransformationContext.class);
-        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
-        expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
-        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
-        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
-        replay(tContext1);
+        TransformationContext tContext1 = new TransformationContextImpl();
+        tContext1.setSourceDataType(sourceDataType);
 
         JAXB2Node t1 = new JAXB2Node();
         Node node = t1.transform(object1, tContext1);
@@ -152,12 +133,9 @@ public class JAXBTestCase extends TestCase {
 
         DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
 
-        TransformationContext tContext1 = createMock(TransformationContext.class);
-        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
-        expect(tContext1.getTargetDataType()).andReturn(null).anyTimes();
-        expect(tContext1.getSourceOperation()).andReturn(null).anyTimes();
-        expect(tContext1.getTargetOperation()).andReturn(null).anyTimes();
-        replay(tContext1);
+        TransformationContext tContext1 = new TransformationContextImpl();
+        tContext1.setSourceDataType(sourceDataType);
+
 
         JAXB2Node t1 = new JAXB2Node();
         PurchaseOrderType po = new ObjectFactory().createPurchaseOrderType();

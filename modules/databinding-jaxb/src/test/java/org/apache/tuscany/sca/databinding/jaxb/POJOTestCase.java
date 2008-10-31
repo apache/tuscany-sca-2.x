@@ -20,30 +20,14 @@ package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
-import org.apache.tuscany.sca.databinding.jaxb.JAXB2XMLStreamReader;
-
-import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
-import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
  *
@@ -101,6 +85,7 @@ public class POJOTestCase extends TestCase {
         assertFalse(newBean instanceof MySubBean);
     }
 
+    /*
     public void testXMLStreamReader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);
 
@@ -130,6 +115,7 @@ public class POJOTestCase extends TestCase {
         // FIXME :To be implemented
         // assertEquals(bean, newBean);
     }
+    */
 
     public void testString() throws Exception {
         JAXBContext context = JAXBContext.newInstance(String.class);
@@ -216,35 +202,4 @@ public class POJOTestCase extends TestCase {
         assertTrue(e2.getValue() instanceof Exception);
     }
     */
-
-    private static RuntimeTypeInfoSet create(Class... classes) throws Exception {
-        IllegalAnnotationsException.Builder errorListener = new IllegalAnnotationsException.Builder();
-        RuntimeInlineAnnotationReader reader = new RuntimeInlineAnnotationReader();
-        JAXBContextImpl context =
-            new JAXBContextImpl(classes, null, Collections.<Class, Class> emptyMap(), null, false, reader, false, false);
-        RuntimeModelBuilder builder =
-            new RuntimeModelBuilder(context, reader, Collections.<Class, Class> emptyMap(), null);
-        builder.setErrorHandler(errorListener);
-        for (Class c : classes)
-            builder.getTypeInfo(new Ref<Type, Class>(c));
-
-        RuntimeTypeInfoSet r = builder.link();
-        errorListener.check();
-        return r;
-    }
-
-    public void testReflection() throws Exception {
-        MyBean bean = new MyBean();
-        RuntimeTypeInfoSet model = create(MyBean.class);
-        RuntimeClassInfo clsInfo = (RuntimeClassInfo)model.getTypeInfo(MyBean.class);
-        for (RuntimePropertyInfo p : clsInfo.getProperties()) {
-            // System.out.print(p.getName());
-            // System.out.println(" " + p.isCollection());
-            if (p.getName().equals("notes")) {
-                Collection c = (Collection)p.getAccessor().get(bean);
-                c.add("123");
-            }
-        }
-
-    }
 }
