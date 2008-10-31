@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -46,7 +45,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class NodeImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<NodeImplementation> {
-    private static final QName IMPLEMENTATION_NODE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.node");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final QName IMPLEMENTATION_NODE = new QName(SCA10_TUSCANY_NS, "implementation.node");
     
     private AssemblyFactory assemblyFactory;
     private NodeImplementationFactory implementationFactory;

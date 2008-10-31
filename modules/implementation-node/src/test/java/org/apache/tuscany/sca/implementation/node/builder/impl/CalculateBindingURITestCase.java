@@ -37,7 +37,8 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.impl.NodeImplementationFactoryImpl;
@@ -56,19 +57,24 @@ public class CalculateBindingURITestCase extends TestCase {
     private CompositeBuilder bindingConfigurationBuilder;
     private CompositeBuilder nodeConfigurationBuilder;
     private List<Binding> defaultBindings = new ArrayList<Binding>();
-    
+
     @Override
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestBindingFactory();
         nodeImplementationFactory = new NodeImplementationFactoryImpl();
-        bindingConfigurationBuilder = new CompositeBindingConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, null);
-        nodeConfigurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, bindingConfigurationBuilder);
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        bindingConfigurationBuilder =
+            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
+                .getCompositeBuilder("org.apache.tuscany.assembly.builder.CompositeBindingConfigurationBuilder");
+        nodeConfigurationBuilder =
+            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
+                .getCompositeBuilder("org.apache.tuscany.sca.implementation.node.builder.NodeCompositeBuilder");
         Binding defaultBinding = new TestBindingImpl();
         defaultBinding.setURI("http://myhost:8080/root");
         defaultBindings.add(defaultBinding);
     }
-    
+
     /**
      * Create a composite containing a node component pointing to the
      * given application composite.
@@ -88,12 +94,12 @@ public class CalculateBindingURITestCase extends TestCase {
         nodeComposite.getComponents().add(nodeComponent);
         return nodeComposite;
     }
-    
+
     @Override
     protected void tearDown() throws Exception {
         assemblyFactory = null;
     }
-    
+
     /**
      * Test that URI are generated in accordance with the Assembly Specification section 1.7.2.1 as
      * follows. For the 3 parts that make up the URI;
@@ -153,338 +159,349 @@ public class CalculateBindingURITestCase extends TestCase {
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca name="b1"> <binding.xyz name="b1">
      * --> Error
      */
-    
+
     private Composite createComponentServiceBinding() {
         Composite composite1 = assemblyFactory.createComposite();
         composite1.setName(new QName("http://foo", "C1"));
-        
+
         Component c1 = assemblyFactory.createComponent();
         c1.setName("c1");
         composite1.getComponents().add(c1);
-        
+
         ComponentService s1 = assemblyFactory.createComponentService();
         c1.getServices().add(s1);
-        s1.setName("s1");    
-        
+        s1.setName("s1");
+
         ComponentService s2 = assemblyFactory.createComponentService();
         c1.getServices().add(s2);
-        s2.setName("s2");        
-        
+        s2.setName("s2");
+
         Binding b1 = new TestBindingImpl();
         s1.getBindings().add(b1);
-        
+
         Binding b2 = new TestBindingImpl();
-        s2.getBindings().add(b2);        
-        
+        s2.getBindings().add(b2);
+
         return composite1;
     }
-    
-    private Composite createTopLevelCompositeServiceBinding(){
+
+    private Composite createTopLevelCompositeServiceBinding() {
         Composite composite1 = assemblyFactory.createComposite();
         composite1.setName(new QName("http://foo", "C1"));
-        
+
         CompositeService s1 = assemblyFactory.createCompositeService();
         s1.setName("s1");
         composite1.getServices().add(s1);
-        
+
         Binding b1 = new TestBindingImpl();
         s1.getBindings().add(b1);
-        
+
         CompositeService s2 = assemblyFactory.createCompositeService();
         s2.setName("s2");
         composite1.getServices().add(s2);
-        
+
         Binding b2 = new TestBindingImpl();
         s2.getBindings().add(b2);
-        
+
         return composite1;
     }
-    
-    private Composite createNestCompositeServiceBinding(){
+
+    private Composite createNestCompositeServiceBinding() {
         Composite composite1 = assemblyFactory.createComposite();
         composite1.setName(new QName("http://foo", "C1"));
-        
+
         Component c1 = assemblyFactory.createComponent();
         c1.setName("c1");
         composite1.getComponents().add(c1);
-        
+
         Composite composite2 = assemblyFactory.createComposite();
         c1.setImplementation(composite2);
         composite2.setName(new QName("http://foo", "C2"));
-        
+
         Component c2 = assemblyFactory.createComponent();
         composite2.getComponents().add(c2);
         c2.setName("c2");
-        
+
         ComponentService s1 = assemblyFactory.createComponentService();
         c2.getServices().add(s1);
-        s1.setName("s1");    
-        
+        s1.setName("s1");
+
         ComponentService s2 = assemblyFactory.createComponentService();
         c2.getServices().add(s2);
-        s2.setName("s2");        
-        
+        s2.setName("s2");
+
         Binding b1 = new TestBindingImpl();
         s1.getBindings().add(b1);
-        
+
         Binding b2 = new TestBindingImpl();
-        s2.getBindings().add(b2);  
-        
-        return composite1;       
+        s2.getBindings().add(b2);
+
+        return composite1;
     }
-    
+
     // component service binding tests
-   
+
     public void testComponentServiceSingleService() {
         Composite composite = createComponentServiceBinding();
         composite.getComponents().get(0).getServices().remove(1);
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
+        }
     }
-    
+
     public void testComponentServiceBindingDefault() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/s1", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testComponentServiceBindingName() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         b.setName("n");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/n", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }   
-    
+        }
+    }
+
     public void testComponentServiceBindingURIRelative() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testComponentServiceBindingURIAbsolute() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("http://myhost:8080/b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    } 
-    
+        }
+    }
+
     public void testComponentServiceBindingURIRelative2() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("../../b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }     
-    
+        }
+    }
+
     // top level composite service binding tests
-    
+
     public void testCompositeServiceSingleService() {
         Composite composite = createTopLevelCompositeServiceBinding();
         composite.getServices().remove(1);
         Binding b = composite.getServices().get(0).getBindings().get(0);
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
+        }
     }
-   
+
     public void testCompositeServiceBindingDefault() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/s1", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testCompositeServiceBindingName() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
         b.setName("n");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/n", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }   
-    
+        }
+    }
+
     public void testCompositeServiceBindingURIRelative() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testCompositeServiceBindingURIAbsolute() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("http://myhost:8080/b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }        
+        }
+    }
 
     // nested composite service binding tests
-    
+
     public void testNestedCompositeServiceSingleService() {
         Composite composite = createNestCompositeServiceBinding();
-        ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().remove(1);
-        Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
-        
+        ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+            .remove(1);
+        Binding b =
+            ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+                .get(0).getBindings().get(0);
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
+        }
     }
-    
+
     public void testNestedCompositeServiceBindingDefault() {
         Composite composite = createNestCompositeServiceBinding();
-        Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
-        
+        Binding b =
+            ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+                .get(0).getBindings().get(0);
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/s1", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testNestedCompositeServiceBindingName() {
         Composite composite = createNestCompositeServiceBinding();
-        Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
+        Binding b =
+            ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+                .get(0).getBindings().get(0);
         b.setName("n");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/n", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }   
-    
+        }
+    }
+
     public void testNestedCompositeServiceBindingURIRelative() {
         Composite composite = createNestCompositeServiceBinding();
-        Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
+        Binding b =
+            ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+                .get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/root/c1/c2/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }  
-    
+        }
+    }
+
     public void testNestedCompositeServiceBindingURIAbsolute() {
         Composite composite = createNestCompositeServiceBinding();
-        Binding b = ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices().get(0).getBindings().get(0);
+        Binding b =
+            ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
+                .get(0).getBindings().get(0);
         b.setName("n");
         b.setURI("http://myhost:8080/b");
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
 
             assertEquals("http://myhost:8080/b", b.getURI());
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
             fail();
-        }  
-    }   
-    
+        }
+    }
+
     // component service binding name error tests
-    
+
     //FIXME Need to find a better way to test these error cases as
     // the composite builder now (intentionally) logs warnings instead of 
     // throwing exceptions
@@ -493,16 +510,15 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b1 = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         Binding b2 = new TestBindingImpl();
         composite.getComponents().get(0).getServices().get(0).getBindings().add(b2);
-        
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
             fail();
-        } catch(Exception ex){
+        } catch (Exception ex) {
             //System.out.println(ex.toString());
-        }  
+        }
     }
-    
+
     //FIXME Need to find a better way to test these error cases as
     // the composite builder now (intentionally) logs warnings instead of 
     // throwing exceptions
@@ -511,31 +527,29 @@ public class CalculateBindingURITestCase extends TestCase {
         Binding b1 = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         Binding b2 = new TestBindingImpl();
         composite.getComponents().get(0).getServices().get(0).getBindings().add(b2);
-        
+
         b1.setName("b");
         b2.setName("b");
-        
-        
+
         try {
             nodeConfigurationBuilder.build(nodeComposite(composite), null, null);
             fail();
-        } catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.toString());
-        }  
-    }    
+        }
+    }
 
-    
     public class TestBindingFactory implements SCABindingFactory {
         public SCABinding createSCABinding() {
             return new TestBindingImpl();
         }
     }
-    
+
     public class TestBindingImpl implements SCABinding {
         private String name;
         private String uri;
         private boolean unresolved;
-       
+
         public String getName() {
             return name;
         }
@@ -551,15 +565,15 @@ public class CalculateBindingURITestCase extends TestCase {
         public void setURI(String uri) {
             this.uri = uri;
         }
-        
+
         public void setUnresolved(boolean unresolved) {
             this.unresolved = unresolved;
         }
-        
+
         public boolean isUnresolved() {
             return unresolved;
         }
-        
+
         @Override
         public Object clone() throws CloneNotSupportedException {
             return super.clone();
