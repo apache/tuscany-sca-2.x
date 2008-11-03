@@ -57,15 +57,15 @@ mvn
 Sample Usage
 ------------
 
-This sample is run using the tuscany binary distribution. To run it, first set the
-following environment variables:
+This sample is run using the tuscany binary distribution. To run it, navigate to this sample's directory and 
 
-set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca>
-set TUSCANY_SCA_MANIFEST_JAR=%TUSCANY_BIN_DISTRO%\lib\tuscany-sca-manifest.jar
+on Wondows, use following command:
 
-Then navigate to this sample directory and do:
+java -Dnotification.httpPort=8080 -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-binding-notification-broker.jar  notification.broker.TrafficAdvisoryServer
 
-java -Dnotification.httpPort=8080 -cp "target\sample-binding-notification-broker.jar;%TUSCANY_SCA_MANIFEST_JAR%" notification.broker.TrafficAdvisoryServer
+on *nix, use following command:
+
+java -Dnotification.httpPort=8080 -cp ../../lib/tuscany-sca-manifest.jar:target/sample-binding-notification-broker.jar notification.broker.TrafficAdvisoryServer
 
 this should bring up the following prompt:
 
@@ -107,4 +107,6 @@ binding-notification-broker/
                                                      <implementation.notification/>
         TrafficAdvisoryNotification.composite      - the main composite including producer, consumer and
                                                      notification components, and composite service and reference
+  binding-notification-broker.png                  - a pictorial representation of the sample .composite file
+  build.xml                       		   - the Ant build file
   pom.xml                                          - the Maven build file        

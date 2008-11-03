@@ -69,15 +69,15 @@ This shows that the Junit test cases have run successfully.
 Sample Usage
 ------------
 
-This sample is run using the tuscany binary distribution. To run it, first set the
-following environment variables:
+This sample is run using the tuscany binary distribution. To run it, navigate to this sample's directory and 
 
-set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca>
-set TUSCANY_SCA_MANIFEST_JAR=%TUSCANY_BIN_DISTRO%\lib\tuscany-sca-manifest.jar
+on Wondows, use following command:
 
-Then navigate to this sample directory and do:
+java -Dnotification.httpPort=8083 -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-binding-notification-producer.jar notification.producer.TrafficAdvisoryServer
 
-java -Dnotification.httpPort=8083 -cp "target\sample-binding-notification-producer.jar;%TUSCANY_SCA_MANIFEST_JAR%" notification.producer.TrafficAdvisoryServer
+on *nix, use following command:
+
+java -Dnotification.httpPort=8083 -cp ../../lib/tuscany-sca-manifest.jar:target/sample-binding-notification-producer.jar notification.producer.TrafficAdvisoryServer
 
 this should bring up the following prompt:
 
@@ -128,4 +128,6 @@ binding-notification-producer/
                                                      <implementation.notification/>
         TrafficAdvisoryNotification.composite      - the main composite including producer and
                                                      notification components, and composite reference
+  binding-notification-producer.png                - a pictorial representation of the sample .composite file
+  build.xml                       		   - the Ant build file
   pom.xml                                          - the Maven build file        
