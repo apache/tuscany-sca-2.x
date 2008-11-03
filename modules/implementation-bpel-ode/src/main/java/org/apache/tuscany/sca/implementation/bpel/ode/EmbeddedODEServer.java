@@ -35,24 +35,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.dao.BpelDAOConnectionFactoryJDBC;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.engine.CountLRUDehydrationPolicy;
-import org.apache.ode.bpel.iapi.ProcessConf;
-import org.apache.ode.bpel.iapi.ProcessStore;
-import org.apache.ode.bpel.iapi.ProcessStoreEvent;
-import org.apache.ode.bpel.iapi.ProcessStoreListener;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
-import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-
-//-------------- Added by Mike Edwards 16/05/2008
-import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
-//-------------- End of Mike Edwards additions
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Embedded ODE process server

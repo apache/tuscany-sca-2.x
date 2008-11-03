@@ -19,33 +19,9 @@
 
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
-import java.io.File;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.concurrent.Future;
-
 import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-
-import org.apache.ode.bpel.iapi.Message;
-import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
-import org.apache.ode.bpel.iapi.MessageExchange.Status;
-import org.apache.ode.utils.DOMUtils;
-import org.apache.ode.utils.GUID;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
-import org.apache.tuscany.sca.implementation.bpel.ode.GeronimoTxFactory;
-import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
-import org.w3c.dom.Element;
 
 /**
  * Test to Deploy and Invoke a HelloWorld BPEL process using EmbeddedODEServer
