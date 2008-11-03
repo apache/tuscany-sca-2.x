@@ -18,8 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.jms.context;
 
+import javax.jms.Destination;
 import javax.jms.Message;
 import javax.jms.Session;
+
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 
 
 /**
@@ -31,6 +34,9 @@ public class JMSBindingContext {
 
     private Message jmsMsg;
     private Session jmsSession;
+    private Destination requestDestination;
+    private Destination replyToDestination;
+    private JMSResourceFactory jmsResourceFactory;
 
     public Message getJmsMsg() {
         return jmsMsg;
@@ -46,5 +52,31 @@ public class JMSBindingContext {
     
     public void setJmsSession(Session jmsSession) {
         this.jmsSession = jmsSession;
+    }
+    
+    public Destination getRequestDestination() {
+        return requestDestination;
+    }
+    
+    public void setRequestDestination(Destination requestDestination) {
+        this.requestDestination = requestDestination;
+    }
+    
+    public Destination getReplyToDestination() {
+        return replyToDestination;
+    }
+    
+    public void setReplyToDestination(Destination replyToDestination) {
+        this.replyToDestination = replyToDestination;
+    }
+    
+    // TODO - difficult to get the resource factory into all the JMS providers
+    //        so it's here for the moment
+    public JMSResourceFactory getJmsResourceFactory() {
+        return jmsResourceFactory;
+    }
+    
+    public void setJmsResourceFactory(JMSResourceFactory jmsResourceFactory) {
+        this.jmsResourceFactory = jmsResourceFactory;
     }
 }

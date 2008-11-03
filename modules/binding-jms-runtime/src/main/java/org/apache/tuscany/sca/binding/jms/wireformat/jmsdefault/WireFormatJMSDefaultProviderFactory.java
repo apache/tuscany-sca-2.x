@@ -41,7 +41,6 @@ public class WireFormatJMSDefaultProviderFactory implements WireFormatProviderFa
         super();
         this.registry = registry;
         jmsRFEP = (JMSResourceFactoryExtensionPoint)registry.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
-
     }
 
     /**

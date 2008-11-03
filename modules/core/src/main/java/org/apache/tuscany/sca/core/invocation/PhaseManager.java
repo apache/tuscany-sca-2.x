@@ -23,7 +23,6 @@ import static org.apache.tuscany.sca.invocation.Phase.IMPLEMENTATION;
 import static org.apache.tuscany.sca.invocation.Phase.IMPLEMENTATION_POLICY;
 import static org.apache.tuscany.sca.invocation.Phase.REFERENCE;
 import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING;
-import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_DISPATCHER;
 import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_POLICY;
 import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_TRANSPORT;
 import static org.apache.tuscany.sca.invocation.Phase.REFERENCE_BINDING_WIREFORMAT;
@@ -70,10 +69,10 @@ public class PhaseManager {
         {REFERENCE, REFERENCE_INTERFACE, REFERENCE_POLICY, REFERENCE_BINDING};
 
     private static final String[] SYSTEM_REFERENCE_BINDING_PHASES =
-    {REFERENCE_BINDING_DISPATCHER, REFERENCE_BINDING_WIREFORMAT, REFERENCE_BINDING_POLICY, REFERENCE_BINDING_TRANSPORT};
+    {REFERENCE_BINDING_WIREFORMAT, REFERENCE_BINDING_POLICY, REFERENCE_BINDING_TRANSPORT};
 
     private static final String[] SYSTEM_SERVICE_BINDING_PHASES =
-    {SERVICE_BINDING_TRANSPORT, SERVICE_BINDING_WIREFORMAT, SERVICE_BINDING_POLICY, SERVICE_BINDING_OPERATION_SELECTOR};
+    {SERVICE_BINDING_TRANSPORT, SERVICE_BINDING_OPERATION_SELECTOR, SERVICE_BINDING_WIREFORMAT, SERVICE_BINDING_POLICY};
     
     private static final String[] SYSTEM_SERVICE_PHASES =
         {SERVICE_BINDING, SERVICE_POLICY, SERVICE_INTERFACE, SERVICE};

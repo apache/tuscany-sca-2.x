@@ -53,7 +53,7 @@ public class OperationSelectorJMSDefaultServiceProvider implements OperationSele
     /**
      */
     public String getPhase() {
-        return Phase.SERVICE_BINDING_TRANSPORT;
+        return Phase.SERVICE_BINDING_OPERATION_SELECTOR;
     }
 
 }
