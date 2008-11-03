@@ -52,7 +52,7 @@ public class AttributeURIMissingTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getProblems().get(0);
+    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getProblems().get(2);
         
     	assertNotNull(problem);
         assertEquals("AttributeURIMissing", problem.getMessageId());
