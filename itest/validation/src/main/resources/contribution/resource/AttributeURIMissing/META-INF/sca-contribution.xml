@@ -18,7 +18,6 @@
     * under the License.    
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	      targetNamespace="http://calc"
               xmlns:calc="http://calc">
    <deployable composite="calc:Calculator"/>
    <import.resource xmlns="http://www.osoa.org/xmlns/sca/1.0"/>
