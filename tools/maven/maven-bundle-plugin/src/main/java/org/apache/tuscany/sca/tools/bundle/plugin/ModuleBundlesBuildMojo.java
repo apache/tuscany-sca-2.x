@@ -290,27 +290,32 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         ps.println("<?pde version=\"3.2\"?>");
 
         ps.println("<target name=\"Eclipse Target - " + project.getArtifactId() + "\">");
-        ps.println("<location useDefault=\"true\"/>");
+        
+        ps.println("  <targetJRE>");
+        ps.println("    <execEnv>J2SE-1.5</execEnv>");
+        ps.println("  </targetJRE>");
+        
+        ps.println("  <location useDefault=\"true\"/>");
 
         // ps.println("<content useAllPlugins=\"true\">");
-        ps.println("<content>");
-        ps.println("<plugins>");
+        ps.println("  <content>");
+        ps.println("    <plugins>");
         for (String id : ids) {
-            ps.println("<plugin id=\"" + id + "\"/>");
+            ps.println("      <plugin id=\"" + id + "\"/>");
         }
-        ps.println("</plugins>");
-        ps.println("<features>");
+        ps.println("    </plugins>");
+        ps.println("    <features>");
         if (features != null) {
             for (String f : features) {
-                ps.println("<feature id=\"" + f + "\"/>");
+                ps.println("      <feature id=\"" + f + "\"/>");
             }
         }
-        ps.println("</features>");
-        ps.println("<extraLocations>");
+        ps.println("    </features>");
+        ps.println("    <extraLocations>");
         // Not sure why the extra path needs to the plugins folder
-        ps.println("<location path=\"" + targetDirectory + "\"/>");
-        ps.println("</extraLocations>");
-        ps.println("</content>");
+        ps.println("      <location path=\"" + targetDirectory + "\"/>");
+        ps.println("    </extraLocations>");
+        ps.println("  </content>");
 
         ps.println("</target>");
 
