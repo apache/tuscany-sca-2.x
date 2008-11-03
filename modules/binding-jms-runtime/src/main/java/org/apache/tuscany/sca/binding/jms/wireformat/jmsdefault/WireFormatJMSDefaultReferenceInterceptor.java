@@ -21,14 +21,30 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault;
 
 
 
+import java.util.Map;
+
+import javax.jms.DeliveryMode;
+import javax.jms.JMSException;
+import javax.jms.Session;
+
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
@@ -73,20 +89,40 @@ public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
         msg = getNext().invoke(msg);
         
         if (responseWireFormat != null){
-            msg = invokeRequest(msg);
+            msg = invokeResponse(msg);
         }
         
         return msg;
     }
     
     public Message invokeRequest(Message msg) {
-        // TODO binding interceptor iface TBD
-        return null;
+        try {
+            // get the jms context
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            Session session = context.getJmsSession();
+            
+            javax.jms.Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, msg.getBody());
+            msg.setBody(requestMsg);
+            
+            requestMsg.setJMSReplyTo(context.getReplyToDestination());
+            
+            return msg;
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } 
     }
     
     public Message invokeResponse(Message msg) {
-        // TODO binding interceptor iface TBD
-        return null;
+        if (msg.getBody() != null){
+            Object[] response = (Object[])responseMessageProcessor.extractPayloadFromJMSMessage((javax.jms.Message)msg.getBody());
+            if (response != null && response.length > 0){
+                msg.setBody(response[0]);
+            } else {
+                msg.setBody(null);
+            }
+        }
+
+        return msg;
     }    
 
     public Invoker getNext() {
@@ -95,5 +131,5 @@ public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
 
     public void setNext(Invoker next) {
         this.next = next;
-    }
+    }    
 }

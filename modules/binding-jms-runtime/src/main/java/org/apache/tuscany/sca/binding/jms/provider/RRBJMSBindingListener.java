@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +41,6 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.invocation.MessageImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -51,7 +49,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
-import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -66,7 +63,6 @@ public class RRBJMSBindingListener implements MessageListener {
 
     private static final Logger logger = Logger.getLogger(RRBJMSBindingListener.class.getName());
 
-    private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
     private Binding targetBinding;
     private JMSResourceFactory jmsResourceFactory;
@@ -76,14 +72,7 @@ public class RRBJMSBindingListener implements MessageListener {
     private String correlationScheme;
     private List<Operation> serviceOperations;
     private MessageFactory messageFactory;
-    protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
     
-    /*
-     * TODO binding chains could be treated generically (RuntimeWire?) but are
-     *      here just now for experimental convenience
-     */
-    private List<Invoker> bindingRequestChain;
-    private List<Invoker> bindingResponseChain;
 
     public RRBJMSBindingListener(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeComponentService service, Binding targetBinding, MessageFactory messageFactory) throws NamingException {
         this.jmsBinding = jmsBinding;
@@ -97,45 +86,18 @@ public class RRBJMSBindingListener implements MessageListener {
         correlationScheme = jmsBinding.getCorrelationScheme();
         serviceOperations = service.getInterfaceContract().getInterface().getOperations();
         
-        // find out which policies are active
-        if (jmsBinding instanceof PolicySetAttachPoint) {
-            List<PolicySet> policySets = ((PolicySetAttachPoint)jmsBinding).getApplicablePolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
-                        jmsTokenAuthenticationPolicy = (JMSTokenAuthenticationPolicy)p;
-                    }else {
-                        // etc. check for other types of policy being present
-                    }
-                }
-            }
-        } 
     }
 
     public void onMessage(Message requestJMSMsg) {
         logger.log(Level.FINE, "JMS service '" + service.getName() + "' received message " + requestJMSMsg);
         try {
             invokeService(requestJMSMsg);
-            //sendReply(requestJMSMsg, responsePayload, false);
         } catch (Throwable e) {
             logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
-            sendReply(requestJMSMsg, e, true);
+            sendFaultReply(requestJMSMsg, e);
         }
     }
 
-    /**
-     * TODO RRB Experiment. Explicity call all the binding interceptors on the wire. Looking at
-     *      how to handle requests and responses independently. The binding wire should/could
-     *      be handled generically outside of this binding class but it's here for the momement
-     *      while we look at what form it takes
-     *      
-     * Turn the JMS message back into a Tuscany message and invoke the target component
-     * 
-     * @param requestJMSMsg
-     * @return
-     * @throws JMSException
-     * @throws InvocationTargetException
-     */
     protected void invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
         try {
@@ -148,78 +110,24 @@ public class RRBJMSBindingListener implements MessageListener {
             
             context.setJmsMsg(requestJMSMsg);
             context.setJmsSession(jmsResourceFactory.createSession());
+            context.setReplyToDestination(requestJMSMsg.getJMSReplyTo());
             
             // set the message body
             tuscanyMsg.setBody(requestJMSMsg);
             
             // call the runtime wire
-            setHeaderProperties(requestJMSMsg, tuscanyMsg, tuscanyMsg.getOperation());
             InvocationChain chain = service.getRuntimeWire(targetBinding).getBindingInvocationChain();
             chain.getHeadInvoker().invoke(tuscanyMsg);
+            
         } catch (NamingException e) {
             throw new JMSBindingException(e);
-        }
-            
-    }
-
-    /**
-     * TODO - RRB experiment. Needs refactoring
-     */
-    protected void setHeaderProperties(javax.jms.Message requestJMSMsg, org.apache.tuscany.sca.invocation.Message tuscanyMsg, Operation operation) throws JMSException {
-
-        EndpointReference from = new EndpointReferenceImpl(null);
-        tuscanyMsg.setFrom(from);
-        from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
-        ReferenceParameters parameters = from.getReferenceParameters();
-
-        String conversationID = requestJMSMsg.getStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY);
-        if (conversationID != null) {
-            parameters.setConversationID(conversationID);
-        }
-
-        if (service.getInterfaceContract().getCallbackInterface() != null) {
-
-            String callbackdestName = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
-            if (callbackdestName == null && operation.isNonBlocking()) {
-                // if the request has a replyTo but this service operation is oneway but the service uses callbacks
-                // then use the replyTo as the callback destination
-                Destination replyTo = requestJMSMsg.getJMSReplyTo();
-                if (replyTo != null) {
-                    callbackdestName = (replyTo instanceof Queue) ? ((Queue)replyTo).getQueueName() : ((Topic)replyTo).getTopicName();
-                }
-            }
-
-            if (callbackdestName != null) {
-                // append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
-                // as otherwise the invoker should use the uri from the service callback binding
-                parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
-            }
-
-            String callbackID = requestJMSMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
-            if (callbackID != null) {
-                parameters.setCallbackID(callbackID);
-            }
-        }
-        
-       
-        if (jmsTokenAuthenticationPolicy != null) {
-            String token = requestJMSMsg.getStringProperty(jmsTokenAuthenticationPolicy.getTokenName().toString());
-            
-            Subject subject = SecurityUtil.getSubject(tuscanyMsg);
-            TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
-            
-            if (principal == null){
-                principal = new TokenPrincipal(token);
-                subject.getPrincipals().add(principal);
-            }
-
-        }
-    }    
+        }      
+    }   
 
     /*
-     * TODO RRB experiment. Still used to handle errors. Needs refactoring
+     * Send a message back if a fault has occurred
      */
-    protected void sendReply(Message requestJMSMsg, Object responsePayload, boolean isFault) {
+    protected void sendFaultReply(Message requestJMSMsg, Object responsePayload) {
         try {
 
             if (requestJMSMsg.getJMSReplyTo() == null) {
@@ -231,13 +139,7 @@ public class RRBJMSBindingListener implements MessageListener {
             }
 
             Session session = jmsResourceFactory.createSession();
-            Message replyJMSMsg;
-            if (isFault) {
-                replyJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)responsePayload);
-            } else {
-                replyJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, responsePayload);
-            }
-
+            Message replyJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)responsePayload);
             replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
             replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
 

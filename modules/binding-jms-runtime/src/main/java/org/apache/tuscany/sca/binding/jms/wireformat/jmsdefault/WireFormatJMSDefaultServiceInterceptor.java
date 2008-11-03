@@ -122,7 +122,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
             } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
                 responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
             }    
-            
+        
             msg.setBody(responseJMSMsg);
             
             return msg;

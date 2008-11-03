@@ -41,8 +41,9 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
-import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultReferenceInterceptor;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.transport.TransportReferenceInterceptor;
+import org.apache.tuscany.sca.binding.jms.transport.TransportServiceInterceptor;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultReferenceInterceptor;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultServiceInterceptor;
@@ -261,15 +262,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         MessageListener tmpListener = null;
         
         /*
-         * TODO a test to allow RRB experiments to take place without breaking everything else
-         *      RRB stuff only happens if you add a wireFormat to a composite file
+         * TODO turn on RRB version of JMS binding
          */
-        if (jmsBinding.getRequestWireFormat() != null ){
-            tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding, messageFactory);
-        } else {
-            tmpListener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
-        }
-        
+        tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding, messageFactory);
+        //tmpListener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+    
         final MessageListener listener = tmpListener;
         
         try {
@@ -398,14 +395,17 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
     
     /*
      * RRB test methods
-     * Interceptor selection is hard coded to the default here but of course should
-     * pick up the appropriate interceptor based on wireFormat and operationSelector 
-     * elements in the SCDL
      */
     public void configureBindingChain(RuntimeWire runtimeWire) {
         
         InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
         
+        // add transport interceptor
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_TRANSPORT, 
+                                    new TransportServiceInterceptor(jmsBinding,
+                                                                              jmsResourceFactory,
+                                                                              runtimeWire) );
+
         // add operation selector interceptor
         bindingChain.addInterceptor(operationSelectorProvider.getPhase(), operationSelectorProvider.createInterceptor());
         

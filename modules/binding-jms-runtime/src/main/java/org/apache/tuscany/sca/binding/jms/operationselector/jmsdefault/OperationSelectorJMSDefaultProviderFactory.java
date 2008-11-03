@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
@@ -37,13 +40,13 @@ public class OperationSelectorJMSDefaultProviderFactory implements OperationSele
         super();
         this.registry = registry;
     }
-
+    
     /**
      */
     public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
                                                         RuntimeComponentReference reference,
                                                         Binding binding) {
-        return new OperationSelectorJMSDefaultReferenceProvider(component, reference, binding);
+        return null;
     }
 
     /**

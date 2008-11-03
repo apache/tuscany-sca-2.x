@@ -25,26 +25,39 @@ import java.util.List;
 import javax.jms.JMSException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.binding.jms.headers.HeaderReferenceInterceptor;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
+import org.apache.tuscany.sca.binding.jms.transport.TransportReferenceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
+import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProviderRRB;
+import org.apache.tuscany.sca.provider.WireFormatProvider;
+import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Implementation of the JMS reference binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvider {
+public class JMSBindingReferenceBindingProvider implements ReferenceBindingProviderRRB {
 
     private RuntimeComponentReference reference;
     private JMSBinding jmsBinding;
@@ -53,6 +66,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract; 
     private ExtensionPointRegistry extensions;
+    
+    private ProviderFactoryExtensionPoint providerFactories;
+       
+    private WireFormatProviderFactory requestWireFormatProviderFactory;
+    private WireFormatProvider requestWireFormatProvider;
+    
+    private WireFormatProviderFactory responseWireFormatProviderFactory;
+    private WireFormatProvider responseWireFormatProvider;
 
     public JMSBindingReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding,  ExtensionPointRegistry extensions, JMSResourceFactory jmsResourceFactory) {
         this.reference = reference;
@@ -64,6 +85,39 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
             setXMLDataBinding(reference);
         }
+        
+        // Get the factories/providers for operation selection
+        
+        // if no operation selector is specified then assume the default
+        if (jmsBinding.getOperationSelector() == null){
+            jmsBinding.setOperationSelector(new OperationSelectorJMSDefault());
+        }
+        
+        this.providerFactories = extensions.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        
+        // Get the factories/providers for wire format
+        
+        // if no request wire format specified then assume the default
+        if (jmsBinding.getRequestWireFormat() == null){
+            jmsBinding.setRequestWireFormat(new WireFormatJMSDefault());
+        }
+        
+        // if no response wire format specific then assume the default
+        if (jmsBinding.getResponseWireFormat() == null){
+            jmsBinding.setResponseWireFormat(new WireFormatJMSDefault());
+         }
+        
+        this.requestWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
+        if (this.requestWireFormatProviderFactory != null){
+            this.requestWireFormatProvider = requestWireFormatProviderFactory.createReferenceWireFormatProvider(component, reference, jmsBinding);
+        }
+        
+        this.responseWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
+        if (this.responseWireFormatProvider != null){
+            this.responseWireFormatProvider = responseWireFormatProviderFactory.createReferenceWireFormatProvider(component, reference, jmsBinding);
+        }        
 
     }
     
@@ -98,8 +152,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             }
         }
 
-        JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
-        jmsBindingInvokers.add(invoker);
+        /*
+         * TODO turn on RRB version of JMS binding
+         */
+        Invoker invoker = null;
+        invoker = new RRBJMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
+        //invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
+        //jmsBindingInvokers.add((JMSBindingInvoker)invoker);
+       
         return invoker;
     }
 
@@ -130,5 +190,35 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             throw new JMSBindingException(e);
         }
     }
+    
+    /*
+     * RRB test methods
+     */
+    public void configureBindingChain(RuntimeWire runtimeWire) {
+        
+        InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
+        
+        // add transport interceptor
+        bindingChain.addInterceptor(Phase.REFERENCE_BINDING_TRANSPORT, 
+                                    new TransportReferenceInterceptor(jmsBinding,
+                                                                      jmsResourceFactory,
+                                                                      runtimeWire) );
+        
+        // add request wire format 
+        bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
+                                    requestWireFormatProvider.createInterceptor());
+        
+        // add response wire format, but only add it if it's different from the request
+        if (!jmsBinding.getRequestWireFormat().equals(jmsBinding.getResponseWireFormat())){
+            bindingChain.addInterceptor(responseWireFormatProvider.getPhase(), 
+                                        responseWireFormatProvider.createInterceptor());
+        }
+        
+        // add the header processor that comes after the wire formatter
+        bindingChain.addInterceptor(Phase.REFERENCE_BINDING_WIREFORMAT, 
+                                    new HeaderReferenceInterceptor(jmsBinding,
+                                                                   jmsResourceFactory,
+                                                                   runtimeWire) );
+    }    
 
 }

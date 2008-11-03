@@ -23,7 +23,9 @@ import java.util.List;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.Topic;
 
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
@@ -32,10 +34,12 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
@@ -71,41 +75,50 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
     }
     
     public Message invoke(Message msg) {
-        return invokeResponse(next.invoke(invokeRequest(msg)));
+        return next.invoke(invokeRequest(msg));
     }    
     
     public Message invokeRequest(Message msg) { 
-        // get the jms context
-        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
-        javax.jms.Message jmsMsg = context.getJmsMsg();
-        
-        String operationName = requestMessageProcessor.getOperationName(jmsMsg);
-        Operation operation = getTargetOperation(operationName);
-        msg.setOperation(operation);
-        
-        return msg;
-    } 
-    
-    public Message invokeResponse(Message msg) { 
         try {
+            // get the jms context
             JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
-            javax.jms.Message requestJMSMsg = context.getJmsMsg();
-            Session session = context.getJmsSession();
-                       
-            Destination destination = requestJMSMsg.getJMSReplyTo();
-            MessageProducer producer = session.createProducer(destination);
+            javax.jms.Message jmsMsg = context.getJmsMsg();
+            
+            String operationName = requestMessageProcessor.getOperationName(jmsMsg);
+            Operation operation = getTargetOperation(operationName);
+            msg.setOperation(operation);
+            
+            ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
+            
+            if (service.getInterfaceContract().getCallbackInterface() != null) {
+                
+                String callbackdestName = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_Q_PROPERTY);
+                if (callbackdestName == null && msg.getOperation().isNonBlocking()) {
+                    // if the request has a replyTo but this service operation is oneway but the service uses callbacks
+                    // then use the replyTo as the callback destination
+                    Destination replyTo = jmsMsg.getJMSReplyTo();
+                    if (replyTo != null) {
+                        callbackdestName = (replyTo instanceof Queue) ? ((Queue)replyTo).getQueueName() : ((Topic)replyTo).getTopicName();
+                    }
+                }
     
-            producer.send((javax.jms.Message)msg.getBody());
+                if (callbackdestName != null) {
+                    // append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
+                    // as otherwise the invoker should use the uri from the service callback binding
+                    parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
+                }
     
-            producer.close();
-            session.close();
+                String callbackID = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
+                if (callbackID != null) {
+                    parameters.setCallbackID(callbackID);
+                }
+            }        
             
             return msg;
-    
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        } 
-    }    
+        }
+    }  
     
     protected Operation getTargetOperation(String operationName) {
         Operation operation = null;
