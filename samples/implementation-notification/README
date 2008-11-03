@@ -12,9 +12,13 @@ to this sample directory and do:
 
 ant run
 
-OR if you don't have ant, on Windows do
+OR if you don't have ant, on Windows, use following command:
 
 java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-implementation-notification.jar notification.TrafficAdvisoryClient
+
+on *nix, use following command:
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-implementation-notification.jar notification.TrafficAdvisoryClient
 
 OR you can also use Maven to test:
 
