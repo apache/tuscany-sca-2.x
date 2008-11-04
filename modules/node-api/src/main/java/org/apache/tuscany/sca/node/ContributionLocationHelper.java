@@ -26,10 +26,10 @@ import java.security.PrivilegedAction;
 /**
  * ContributionLocationHelper
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ContributionLocationHelper {
-    
+
     /**
      * Returns the location of the SCA contribution containing the given class.
      * 
@@ -44,6 +44,58 @@ public class ContributionLocationHelper {
         });
         String uri = url.toString();
         return uri;
+    }
+
+    /**
+     * Find the contribution location by seraching a resource on the classpath
+     * @param resourceName
+     * @return
+     */
+    public static String getContributionLocation(String resourceName) {
+        return getContributionLocation(null, resourceName);
+
+    }
+
+    /**
+     * Find the contribution location by seraching a resource using the given classloader
+     * @param classLoader
+     * @param resourceName
+     * @return
+     */
+    public static String getContributionLocation(ClassLoader classLoader, String resourceName) {
+        if (classLoader == null) {
+            classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
+        }
+        URL resourceURL = getResource(classLoader, resourceName);
+        if (resourceURL == null) {
+            return null;
+        }
+        String location = null;
+        // "jar:file://....../something.jar!/a/b/c/app.composite"
+        String url = resourceURL.toExternalForm();
+        String protocol = resourceURL.getProtocol();
+        if ("file".equals(protocol)) {
+            // directory contribution
+            if (url.endsWith(resourceName)) {
+                location = url.substring(0, url.lastIndexOf(resourceName));
+            }
+        } else if ("jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol)) {
+            // jar contribution
+            location = url.substring(protocol.length() + 1, url.lastIndexOf("!/"));
+        }
+        return location;
+    }
+
+    private static URL getResource(final ClassLoader classLoader, final String compositeURI) {
+        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return classLoader.getResource(compositeURI);
+            }
+        });
     }
 
 }
