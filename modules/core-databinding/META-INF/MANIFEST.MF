@@ -43,4 +43,6 @@ Import-Package: javax.xml.bind.annotation.adapters,
  org.w3c.dom;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.core.databinding
 Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.core.databinding.processor;
+ version="1.4";uses:="org.w3c.dom"
 

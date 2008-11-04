@@ -30,11 +30,14 @@ import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfac
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.xsd.DefaultXSDFactory;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.xml.XSDModelResolver;
 import org.junit.Test;
 
@@ -45,15 +48,16 @@ public class Interface2WSDLGeneratorTestCase {
 
     @Test
     public void testGenerate() throws Exception {
-        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
         JavaInterface iface = iFactory.createJavaInterface(TestJavaInterface.class);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
-        WSDLDefinition wsdlDefinition = new DefaultWSDLFactory(modelFactories).createWSDLDefinition();
-        DefaultXSDFactory factory = new DefaultXSDFactory();
+        WSDLFactory wFactory = new DefaultWSDLFactory(modelFactories);
+        WSDLDefinition wsdlDefinition = wFactory.createWSDLDefinition();
+        XSDFactory factory = new DefaultXSDFactory();
         Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null), dataBindings, factory, null);
         Definition definition = generator.generate(iface, wsdlDefinition);
 

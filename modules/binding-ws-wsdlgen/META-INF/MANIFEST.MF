@@ -43,7 +43,8 @@ Import-Package: javax.wsdl,javax.wsdl.extensions,javax.wsdl.extensions
  ;resolution:=optional,org.apache.tuscany.sca.core.databinding.process
  or;resolution:=optional,org.apache.tuscany.sca.xsd.xml;version="1.4";
  resolution:=optional,javax.xml.bind.annotation;resolution:=optional,j
- avax.xml.ws;resolution:=optional
+ avax.xml.ws;resolution:=optional;org.apache.tuscany.sca.core.databind
+ ing.processor;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.wsdlgen
 Bundle-DocURL: http://www.apache.org/
 
