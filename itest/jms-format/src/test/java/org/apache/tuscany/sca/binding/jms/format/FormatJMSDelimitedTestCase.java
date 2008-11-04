@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -47,6 +48,7 @@ public class FormatJMSDelimitedTestCase {
     }
 
     @Test
+    @Ignore
     public void testHelloWorldCreate() throws Exception {
         HelloWorldReference helloWorldService = ((SCAClient)node).getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
         

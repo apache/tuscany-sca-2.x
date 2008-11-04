@@ -16,17 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
 
 
+import javax.jms.JMSException;
 import javax.jms.Session;
 
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -44,24 +48,73 @@ public class WireFormatJMSBytesReferenceInterceptor implements Interceptor {
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
+    private WireFormat requestWireFormat;
+    private WireFormat responseWireFormat;
 
     public WireFormatJMSBytesReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
+        
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytes){
+            this.requestWireFormat = jmsBinding.getRequestWireFormat();
+            this.jmsBinding.setRequestMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        }
+        
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSBytes){
+            this.responseWireFormat = jmsBinding.getResponseWireFormat();
+            this.jmsBinding.setResponseMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        }
+        
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+         
     }
 
     public Message invoke(Message msg) {
-        
-        if (next != null){
-            return getNext().invoke(msg);
-        } else {
-            return msg;
+        if (requestWireFormat != null){
+            msg = invokeRequest(msg);
         }
+        
+        msg = getNext().invoke(msg);
+        
+        if (responseWireFormat != null){
+            msg = invokeResponse(msg);
+        }
+        
+        return msg;
     }
+    
+    public Message invokeRequest(Message msg) {
+        try {
+            // get the jms context
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            Session session = context.getJmsSession();
+            
+            javax.jms.Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, msg.getBody());
+            msg.setBody(requestMsg);
+            
+            requestMsg.setJMSReplyTo(context.getReplyToDestination());
+            
+            return msg;
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } 
+    }
+    
+    public Message invokeResponse(Message msg) {
+        if (msg.getBody() != null){
+            Object[] response = (Object[])responseMessageProcessor.extractPayloadFromJMSMessage((javax.jms.Message)msg.getBody());
+            if (response != null && response.length > 0){
+                msg.setBody(response[0]);
+            } else {
+                msg.setBody(null);
+            }
+        }
+
+        return msg;
+    }     
 
     public Invoker getNext() {
         return next;

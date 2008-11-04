@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;

@@ -124,9 +124,14 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
             }
         }
 
-        if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
-            if (!isOnMessage()) {
-                setXMLDataBinding(service);
+        // TODO - need to look at what the impact of the wireformat 
+        //        on the binding interface contract is
+        if ((jmsBinding.getRequestWireFormat() == null) ||
+                (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)) {
+            if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
+                if (!isOnMessage()) {
+                    setXMLDataBinding(service);
+                }
             }
         }
         
@@ -168,7 +173,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         
         this.responseWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
-        if (this.responseWireFormatProvider != null){
+        if (this.responseWireFormatProviderFactory != null){
             this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
         }
     }
