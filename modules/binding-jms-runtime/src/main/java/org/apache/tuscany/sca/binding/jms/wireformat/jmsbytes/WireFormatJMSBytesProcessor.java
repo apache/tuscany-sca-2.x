@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSBytes> {
     
     public QName getArtifactType() {
-        return WireFormatJMSBytes.WIRE_FORMAT_JMS_BYTE_QNAME;
+        return WireFormatJMSBytes.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
     public WireFormatJMSBytesProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {

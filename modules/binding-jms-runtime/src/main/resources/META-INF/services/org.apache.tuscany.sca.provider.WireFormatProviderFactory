@@ -17,4 +17,4 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault
-org.apache.tuscany.sca.binding.jms.wireformat.bytes.WireFormatJMSDBytesProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.bytes.WireFormatJMSBytes
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytesProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes

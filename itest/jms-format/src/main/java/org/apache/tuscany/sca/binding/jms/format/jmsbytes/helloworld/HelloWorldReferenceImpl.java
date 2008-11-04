@@ -24,10 +24,10 @@ import org.osoa.sca.annotations.Reference;
 public class HelloWorldReferenceImpl implements HelloWorldReference {
     
     @Reference
-    protected HelloWorldService helloWorldService;
+    protected HelloWorldService helloWorldService1;
     
     public String getGreetings(String name){
-        helloWorldService.setGreetings(name.getBytes());
+        helloWorldService1.setGreetings(name.getBytes());
         
         try {
             Thread.sleep(2000);

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
 
 import java.util.List;
 
@@ -32,35 +32,39 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
+public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
     private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeComponentReference reference;
     private Binding binding;
 
-    public WireFormatJMSBytesServiceProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    public WireFormatJMSBytesReferenceProvider(RuntimeComponent component,
+                                               RuntimeComponentReference reference,
+                                               Binding binding) {
         super();
         this.component = component;
-        this.service = service;
+        this.reference = reference;
         this.binding = binding;
     }
-
+    
     /**
+     * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesServiceInterceptor((JMSBinding)binding,
-                                                         null,
-                                                        service.getRuntimeWire(binding));
+        return new WireFormatJMSBytesReferenceInterceptor((JMSBinding)binding, 
+                                                           null, 
+                                                           reference.getRuntimeWire(binding));
     }
 
     /**
+     * @see org.apache.tuscany.sca.provider.PolicyProvider#getPhase()
      */
     public String getPhase() {
-        return Phase.SERVICE_POLICY;
+        return Phase.REFERENCE_POLICY;
     }
 
 }

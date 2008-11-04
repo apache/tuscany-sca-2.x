@@ -82,8 +82,13 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         this.component = component;
         this.jmsResourceFactory = jmsResourceFactory;
 
-        if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
-            setXMLDataBinding(reference);
+        // TODO - need to look at what the impact of the wireformat 
+        //        on the binding interface contract is
+        if ((jmsBinding.getRequestWireFormat() == null) ||
+            (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)) {
+            if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
+                setXMLDataBinding(reference);
+            }
         }
         
         // Get the factories/providers for operation selection
@@ -97,6 +102,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         
         // Get the factories/providers for wire format
         
+        // TODO - Move into the binding
         // if no request wire format specified then assume the default
         if (jmsBinding.getRequestWireFormat() == null){
             jmsBinding.setRequestWireFormat(new WireFormatJMSDefault());
@@ -115,7 +121,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         
         this.responseWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
-        if (this.responseWireFormatProvider != null){
+        if (this.responseWireFormatProviderFactory != null){
             this.responseWireFormatProvider = responseWireFormatProviderFactory.createReferenceWireFormatProvider(component, reference, jmsBinding);
         }        
 

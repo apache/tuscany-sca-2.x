@@ -17,4 +17,5 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#wireFormat.jmsDefault,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytesProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsBytes,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes
 org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#operationSelector.jmsDefault,model=org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault

@@ -16,12 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+
+import javax.jms.JMSException;
+import javax.jms.Session;
 
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -43,30 +47,87 @@ public class WireFormatJMSBytesServiceInterceptor implements Interceptor {
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
+    private WireFormat requestWireFormat;
+    private WireFormat responseWireFormat;
+    private String correlationScheme;
 
     public WireFormatJMSBytesServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
+        
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytes){
+            this.requestWireFormat = jmsBinding.getRequestWireFormat();
+            this.jmsBinding.setRequestMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        }
+        
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSBytes){
+            this.responseWireFormat = jmsBinding.getResponseWireFormat();
+            this.jmsBinding.setResponseMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        }
+        
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+        
+        this.correlationScheme = jmsBinding.getCorrelationScheme();
     }
 
     public Message invoke(Message msg) {
+        if (requestWireFormat != null){
+            msg = invokeRequest(msg);
+        }
+        
+        msg = getNext().invoke(msg);
+        
+        if (responseWireFormat != null){
+            msg = invokeResponse(msg);
+        }
+        
+        return msg;
+    }
+    
+    public Message invokeRequest(Message msg) {
         // get the jms context
         JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
         javax.jms.Message jmsMsg = context.getJmsMsg();
-        
-        msg.setBody(requestMessageProcessor.extractPayloadFromJMSMessage(jmsMsg));
-                
-        if (next != null){
-            return getNext().invoke(msg);
-        } else {
-            return msg;
-        }
-       
+
+        Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(jmsMsg);
+        msg.setBody(requestPayload);
+                 
+        return msg;
     }
+    
+    public Message invokeResponse(Message msg) {
+        try {
+            // get the jms context
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            javax.jms.Message requestJMSMsg = context.getJmsMsg();
+            Session session = context.getJmsSession();
+
+            javax.jms.Message responseJMSMsg;
+            if (msg.isFault()) {
+                responseJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)msg.getBody());
+            } else {
+                responseJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, msg.getBody());
+            }
+    
+            responseJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
+            responseJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
+    
+            if (correlationScheme == null || JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
+                responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
+            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
+                responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
+            }    
+        
+            msg.setBody(responseJMSMsg);
+            
+            return msg;
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } 
+    }        
 
     public Invoker getNext() {
         return next;

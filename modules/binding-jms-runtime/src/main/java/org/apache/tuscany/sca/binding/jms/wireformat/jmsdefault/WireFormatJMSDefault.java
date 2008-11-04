@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.WireFormat;
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSDefault implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.JMSDefault");
+    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.jmsDefault");
     
     public QName getSchemaName() {
         return WIRE_FORMAT_JMS_DEFAULT_QNAME;

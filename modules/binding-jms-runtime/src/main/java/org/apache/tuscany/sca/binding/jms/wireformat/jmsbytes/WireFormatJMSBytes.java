@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.bytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
 
 import javax.xml.namespace.QName;
 
@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.assembly.WireFormat;
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSBytes implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_BYTE_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.JMSBytes");
+    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.jmsBytes");
     
     public QName getSchemaName() {
-        return WIRE_FORMAT_JMS_BYTE_QNAME;
+        return WIRE_FORMAT_JMS_BYTES_QNAME;
     }
 
     public boolean isUnresolved() {

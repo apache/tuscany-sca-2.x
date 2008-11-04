@@ -60,6 +60,7 @@ public interface JMSBindingConstants {
     String XML_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor";
     String TEXT_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.TextMessageProcessor";
     String OBJECT_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.ObjectMessageProcessor";
+    String BYTES_MP_CLASSNAME = "org.apache.tuscany.sca.binding.jms.provider.BytesMessageProcessor";
     String DEFAULT_MP_CLASSNAME = XML_MP_CLASSNAME;
     String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
