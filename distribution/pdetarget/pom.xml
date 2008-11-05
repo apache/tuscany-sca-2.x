@@ -93,6 +93,26 @@
                                     <excludeGroupIds>
                                         <excludeGroupId>org.apache.tuscany.sca</excludeGroupId>
                                     </excludeGroupIds>
+                                    <artifactAggregations>
+                                        <artifactAggregation>
+                                            <symbolicName>com.google.gdata</symbolicName>
+                                            <version>1.0</version>
+                                            <artifactMembers>
+                                                <artifactMember>
+                                                    <groupId>com.google.gdata</groupId>
+                                                    <artifactId>*</artifactId>
+                                                    <version>1.0</version>
+                                                </artifactMember>
+                                                <!-- 
+                                                <artifactMember>
+                                                    <groupId>com.google.gdata</groupId>
+                                                    <artifactId>gdata-media</artifactId>
+                                                    <version>1.0</version>
+                                                </artifactMember>
+                                                 -->
+                                            </artifactMembers>
+                                        </artifactAggregation>
+                                    </artifactAggregations>
                                 </configuration>
                             </execution>
                         </executions>

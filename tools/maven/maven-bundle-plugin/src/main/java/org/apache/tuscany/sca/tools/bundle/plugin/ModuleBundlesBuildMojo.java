@@ -104,6 +104,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      */
     private boolean generatePlugin;
 
+    /**
+     * @parameter
+     */
+    private ArtifactAggregation[] artifactAggregations;
+
     public void execute() throws MojoExecutionException {
         Log log = getLog();
 
@@ -148,10 +153,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 Artifact artifact = (Artifact)o;
 
                 // Only consider Compile and Runtime dependencies
-                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) 
-                    || Artifact.SCOPE_RUNTIME.equals(artifact.getScope())
-                    || Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) 
-                    || (generateTargetPlatform && Artifact.SCOPE_TEST.equals(artifact.getScope())))) {
+                if (!(Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact
+                    .getScope())
+                    || Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) || (generateTargetPlatform && Artifact.SCOPE_TEST
+                    .equals(artifact.getScope())))) {
                     log.info("Skipping artifact: " + artifact);
                     continue;
                 }
@@ -226,6 +231,20 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                         continue;
                     }
 
+                    if (artifactAggregations != null) {
+                        boolean aggregated = false;
+                        for (ArtifactAggregation group : artifactAggregations) {
+                            if (group.matches(artifact)) {
+                                group.getArtifacts().add(artifact);
+                                aggregated = true;
+                                break;
+                            }
+                        }
+                        if (aggregated) {
+                            continue;
+                        }
+                    }
+
                     // Create a bundle directory for a non-OSGi JAR
                     log.info("Adding JAR artifact: " + artifact);
                     String version = BundleUtil.osgiVersion(artifact.getVersion());
@@ -246,9 +265,36 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 }
             }
 
+            if (artifactAggregations != null) {
+                for (ArtifactAggregation group : artifactAggregations) {
+                    if (group.getArtifacts().isEmpty()) {
+                        continue;
+                    }
+                    String symbolicName = group.getSymbolicName();
+                    String version = group.getVersion();
+                    File dir = new File(root, symbolicName + "-" + version);
+                    dir.mkdir();
+                    Set<File> jarFiles = new HashSet<File>();
+                    for (Artifact a : group.getArtifacts()) {
+                        log.info("Aggragating JAR artifact: " + a);
+                        jarFiles.add(a.getFile());
+                        copyFile(a.getFile(), dir);
+                    }
+                    Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
+                    File file = new File(dir, "META-INF");
+                    file.mkdirs();
+                    file = new File(file, "MANIFEST.MF");
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    write(mf, fos);
+                    fos.close();
+                    bundleSymbolicNames.add(symbolicName);
+                }
+            }
+
             // Generate a PDE target
             if (generateTargetPlatform) {
-                File target = new File(project.getBuild().getDirectory(), project.getArtifactId()+".target");
+                File target = new File(project.getBuild().getDirectory(), project.getArtifactId() + ".target");
                 FileOutputStream targetFile = new FileOutputStream(target);
                 writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
                 targetFile.close();
@@ -290,11 +336,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         ps.println("<?pde version=\"3.2\"?>");
 
         ps.println("<target name=\"Eclipse Target - " + project.getArtifactId() + "\">");
-        
+
         ps.println("  <targetJRE>");
         ps.println("    <execEnv>J2SE-1.5</execEnv>");
         ps.println("  </targetJRE>");
-        
+
         ps.println("  <location useDefault=\"true\"/>");
 
         // ps.println("<content useAllPlugins=\"true\">");
