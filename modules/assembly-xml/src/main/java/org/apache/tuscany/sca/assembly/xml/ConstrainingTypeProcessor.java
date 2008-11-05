@@ -42,8 +42,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -214,6 +214,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
         // Write <reference> elements
         for (AbstractReference reference : constrainingType.getReferences()) {
             writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+                       writeMultiplicity(reference),
                        policyProcessor.writePolicies(reference));
             
             extensionProcessor.write(reference.getInterfaceContract(), writer);

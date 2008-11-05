@@ -26,7 +26,7 @@
         <interface.java class="calculator.CalculatorService" />
   </service>
 
-  <reference name="divideService">
+  <reference name="divideService" multiplicity="1..1">
         <interface.java class="calculator.DivideService" />
   </reference>  
 
