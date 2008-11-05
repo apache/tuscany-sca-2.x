@@ -278,6 +278,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
             
             writeStart(writer, REFERENCE,
                   new XAttr(NAME, reference.getName()),
+                  writeMultiplicity(reference),
                   writeTargets(reference),
                   policyProcessor.writePolicies(reference));
 

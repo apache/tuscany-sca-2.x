@@ -29,7 +29,7 @@
     
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="addService" target="AddServiceComponent"/>
+        <reference name="addService"  multiplicity="0..1" target="AddServiceComponent"/>
         <reference name="subtractService" target="SubtractServiceComponent"/>
         <reference name="multiplyService" target="MultiplyServiceComponent"/>
         <reference name="divideService" target="DivideServiceComponent"/>

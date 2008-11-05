@@ -249,7 +249,28 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             reference.setMultiplicity(Multiplicity.ONE_N);
         } else if (ZERO_N.equals(value)) {
             reference.setMultiplicity(Multiplicity.ZERO_N);
+        } else if (ONE_ONE.equals(value)) {
+            reference.setMultiplicity(Multiplicity.ONE_ONE);
         }
+    }
+    
+    protected XAttr writeMultiplicity(AbstractReference reference) {
+        Multiplicity multiplicity = reference.getMultiplicity();
+        if (multiplicity != null) {
+            String value = null;
+            if (Multiplicity.ZERO_ONE.equals(multiplicity)) {
+                value = ZERO_ONE;
+            } else if (Multiplicity.ONE_N.equals(multiplicity)) {
+                value = ONE_N;
+            } else if (Multiplicity.ZERO_N.equals(multiplicity)) {
+                value = ZERO_N;
+            } else if (Multiplicity.ONE_ONE.equals(multiplicity)) {
+                value = ONE_ONE;
+                return null;
+            }
+            return new XAttr(MULTIPLICITY, value);
+        }
+        return null;
     }
 
     /**

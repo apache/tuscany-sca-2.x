@@ -743,6 +743,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             for (ComponentReference reference : component.getReferences()) {
                 writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
                            new XAttr(AUTOWIRE, reference.getAutowire()),
+                           writeMultiplicity(reference),
                            writeTargets(reference),
                            policyProcessor.writePolicies(reference));
 
@@ -829,6 +830,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             // Write <reference> element
             writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
                        new XAttr(PROMOTE, promote),
+                       writeMultiplicity(reference),
                        policyProcessor.writePolicies(reference));
 
             //write extended attributes
