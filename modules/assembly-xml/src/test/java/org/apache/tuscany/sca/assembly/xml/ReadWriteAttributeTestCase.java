@@ -49,21 +49,32 @@ public class ReadWriteAttributeTestCase extends TestCase {
 
     private static final QName ATTRIBUTE = new QName("http://test", "customAttribute");
     
+    // implementation.java for CalculatorServiceComponent appears in a strange place as the
+    // java implementation extension is not loaded and hence they are loaded as any elements
     private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
 		 	 "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\">"+
 		 	 "<service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\">"+
-		 	 	"<interface.java xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" interface=\"calculator.CalculatorService\" />"+
+		 	 	"<interface.java interface=\"calculator.CalculatorService\" />"+
 	 	 	 "</service>"+
 	 	 	 "<component name=\"CalculatorServiceComponent\" customAttribute=\"customValue\">"+
+	 	 	    "<implementation.java class=\"calculator.CalculatorServiceImpl\" />"+
 	 	 	 	"<reference name=\"addService\" target=\"AddServiceComponent\" />"+
 	 	 	 	"<reference name=\"subtractService\" target=\"SubtractServiceComponent\" />"+
 	 	 	 	"<reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" />"+
 	 	 	 	"<reference name=\"divideService\" target=\"DivideServiceComponent\" />"+
  	 	 	 "</component>"+
- 	 	 	 "<component name=\"AddServiceComponent\" />"+
- 	 	 	 "<component name=\"SubtractServiceComponent\" />"+
- 	 	 	 "<component name=\"MultiplyServiceComponent\" />"+
- 	 	 	 "<component name=\"DivideServiceComponent\" />"+
+ 	 	 	 "<component name=\"AddServiceComponent\">"+
+ 	 	 	    "<implementation.java class=\"calculator.AddServiceImpl\" />"+
+ 	 	 	 "</component>"+
+ 	 	 	 "<component name=\"SubtractServiceComponent\">"+
+ 	 	 	    "<implementation.java class=\"calculator.SubtractServiceImpl\" />"+
+ 	 	 	 "</component>"+
+ 	 	 	 "<component name=\"MultiplyServiceComponent\">"+
+ 	 	 	    "<implementation.java class=\"calculator.MultiplyServiceImpl\" />"+
+ 	 	 	 "</component>"+
+ 	 	 	 "<component name=\"DivideServiceComponent\">"+
+ 	 	 	    "<implementation.java class=\"calculator.DivideServiceImpl\" />"+
+ 	 	 	 "</component>"+
  	 	 	 "</composite>";
     
     @Override
@@ -74,7 +85,6 @@ public class ReadWriteAttributeTestCase extends TestCase {
 
         StAXAttributeProcessorExtensionPoint staxAttributeProcessors = extensionPoints.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
         staxAttributeProcessors.addArtifactProcessor(new TestAttributeProcessor());
-        
         
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance(), null);
     }

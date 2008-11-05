@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.util.logging.Logger;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
@@ -46,10 +45,9 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * 
  * A validating XMLStreamReader that reports XMLSchema validation errors.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 667376 $ $Date: 2008-06-12 23:29:16 -0700 (Thu, 12 Jun 2008) $
  */
-class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStreamReader {
-
+class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
     private int level;
@@ -260,11 +258,6 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
                     break;
             }
         }
-    }
-    
-    @Override
-    public NamespaceContext getNamespaceContext(){
-    	return super.getNamespaceContext();
     }
     
     /**

@@ -184,7 +184,7 @@ public class ReadDocumentTestCase extends TestCase {
         
         documentProcessor.resolve(composite, resolver);
         
-        assertEquals(composite.getConstrainingType(), constrainingType);
+       assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 

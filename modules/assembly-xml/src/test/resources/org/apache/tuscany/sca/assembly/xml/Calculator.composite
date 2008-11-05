@@ -22,10 +22,11 @@
 	xmlns:calc="http://calc"
 	targetNamespace="http://calc"
 	name="Calculator">
-
-    <service name="CalculatorService" promote="CalculatorServiceComponent">
+	
+	<service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.java interface="calculator.CalculatorService"/>
     </service>
+    
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent"/>
@@ -51,9 +52,8 @@
     </component>
     
     <x:unknownElement uknAttr="attribute1">
-		<x:subUnknownElement1 uknAttr1="attribute1"/>
-		<x:subUnknownElement2/>
+		<y:subUnknownElement1 xmlns:y="http://y" uknAttr1="attribute2"/>
+		<x:subUnknownElement2 />
 	</x:unknownElement>
-
-
+		
 </composite>
