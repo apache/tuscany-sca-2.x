@@ -31,6 +31,11 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class CheckingAccountServer {
 
     public static void main(String[] args) {
+        long timeout = -1L;
+        if (args.length > 0) {
+            timeout = Long.parseLong(args[0]);
+        }
+        
         try {
             BrokerService jmsBroker;
             jmsBroker = new BrokerService(); 
@@ -43,8 +48,12 @@ public class CheckingAccountServer {
             SCANode node = factory.createSCANodeFromClassLoader("CheckingsAccount.composite", CheckingAccountServer.class.getClassLoader());
             node.start();
 
-            System.out.println("CheckingsAccount server started (press enter to shutdown)");
-            System.in.read();
+            if (timeout < 0) {
+                System.out.println("CheckingsAccount server started (press enter to shutdown)");
+                System.in.read();
+            } else {
+                Thread.sleep(timeout);
+            }            
 
             node.stop();
             
