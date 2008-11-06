@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
+
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +52,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
+import org.apache.axis2.Constants.Configuration;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
@@ -195,7 +198,13 @@ public class Axis2ServiceProvider {
         } 
 
         configContext.setContextRoot(servletHost.getContextPath());
-
+        
+        // Enable MTOM if the policy intent is specified.
+        if (AxisPolicyHelper.isIntentRequired(wsBinding, AxisPolicyHelper.MTOM_INTENT)) {
+            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setLocked(false);
+            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setValue("true");            
+        }
+        
         // Update port addresses with runtime information, and create a
         // map from endpoint URIs to WSDL ports that eliminates duplicate
         // ports for the same endpoint.
