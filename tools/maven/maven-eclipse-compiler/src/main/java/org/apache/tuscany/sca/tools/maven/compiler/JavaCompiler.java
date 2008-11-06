@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.tools.maven.compiler;
 
 import static org.codehaus.plexus.compiler.CompilerOutputStyle.ONE_OUTPUT_FILE_PER_INPUT_FILE;
 import static org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies.proceedWithAllProblems;
-import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.DISABLED;
-import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.ENABLED;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.GENERATE;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.IGNORE;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_Encoding;
@@ -31,7 +29,6 @@ import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_Loca
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_ReportDeprecation;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_Source;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_SourceFileAttribute;
-import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_SuppressWarnings;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_TargetPlatform;
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.WARNING;
 
@@ -70,7 +67,7 @@ public class JavaCompiler extends AbstractCompiler {
 
     public List<CompilerError> compile(CompilerConfiguration configuration) throws CompilerException {
         
-        getLogger().info("Tuscany-Eclipse compiler");
+        getLogger().info("Invoking Tuscany Eclipse JDT compiler");
 
         List<URL> urls;
         try {
@@ -115,7 +112,7 @@ public class JavaCompiler extends AbstractCompiler {
         ICompilerRequestor requestor = new CompilerRequestor(configuration.getOutputLocation(), configuration.isShowWarnings(), compilerErrors);
         Compiler compiler = new Compiler(nameEnvironment,
                                          proceedWithAllProblems(),
-                                         settings,
+                                         new CompilerOptions(settings),
                                          requestor,
                                          new DefaultProblemFactory(Locale.getDefault()));
 
