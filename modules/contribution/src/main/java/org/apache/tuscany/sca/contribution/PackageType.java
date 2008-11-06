@@ -38,5 +38,15 @@ public interface PackageType {
     
     
     String BUNDLE = "application/osgi.bundle";
+    
+    /**
+     * Java EE Web Application Archive
+     */
+    String WAR = "application/war";
+    
+    /**
+     * Java EE Enterprise Application Archive
+     */
+    String EAR = "application/ear";
 
 }
