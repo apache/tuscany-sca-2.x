@@ -27,7 +27,7 @@
 
   
 <sca:intent name="authorization" 
- 			 constrains="sca:implementation.java">
+ 			 constrains="sca:implementation.spring">
  			 <description>
  				Authorization Intent
  			 </description>
@@ -36,7 +36,7 @@
  <!-- WS Security POLICY SETS -->
  <sca:policySet name="wsAuthenticationPolicy"
  	provides="authentication"
- 	appliesTo="sca:service/sca:binding.ws">
+ 	appliesTo="sca:service/sca:binding.jms">
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
  			<action>
@@ -49,7 +49,7 @@
  
  <sca:policySet name="chkDeptAuthorizationPolicy"
  	provides="bba:authorization"
- 	appliesTo="sca:implementation.java">
+ 	appliesTo="sca:implementation.spring">
  	<chk:AuthPolicy>
  		<!-- need to evolve what should go in here -->
  	</chk:AuthPolicy>

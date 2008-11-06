@@ -25,6 +25,10 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class CalculatorServer {
 
     public static void main(String[] args) throws Exception {
+        long timeout = -1L;
+        if (args.length > 0) {
+            timeout = Long.parseLong(args[0]);
+        }
 
         System.out.println("Starting the Sample SCA Calculator...");
 
@@ -32,13 +36,15 @@ public class CalculatorServer {
         SCANode node = factory.createSCANodeFromClassLoader("Calculator.composite", CalculatorServer.class.getClassLoader());
         node.start();
 
-        System.out.println("Press Enter to Exit...");
-        System.in.read();
+        if (timeout < 0) {
+            System.out.println("Press Enter to Exit...");
+            System.in.read();
+        } else {
+            Thread.sleep(timeout);
+        }
 
         node.stop();
-
         System.out.println("Bye");
-        System.exit(0);
     }
 
 }

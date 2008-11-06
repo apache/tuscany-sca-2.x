@@ -29,7 +29,11 @@ import org.springframework.context.ApplicationContext;
 public class StockQuoteServer {
 
     public static void main(String[] args) throws Exception {
-
+        long timeout = -1L;
+        if (args.length > 0) {
+            timeout = Long.parseLong(args[0]);
+        }
+        
         System.out.println("Starting the Sample SCA StockQuote Service...");
 
         SCANodeFactory factory = SCANodeFactory.newInstance();
@@ -41,8 +45,12 @@ public class StockQuoteServer {
         if (ctx.containsBean("StockQuoteServiceBean"))
             System.out.println("StockQuoteServiceBean is now available for use...");        
         
-        System.out.println("Press Enter to Exit...");
-        System.in.read();
+        if (timeout < 0) {
+            System.out.println("Press Enter to Exit...");
+            System.in.read();
+        } else {
+            Thread.sleep(timeout);
+        }
 
         node.stop();
         System.out.println("Bye");
