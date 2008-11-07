@@ -378,6 +378,11 @@
                         <compilerId>tuscany-eclipse</compilerId>
                         <source>1.5</source>
                         <target>1.5</target>
+                        <compilerArguments>
+                            <!--  
+                            <osgi>true</osgi>
+                            -->
+                        </compilerArguments>
                     </configuration>
 
                     <dependencies>
