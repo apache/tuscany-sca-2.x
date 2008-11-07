@@ -84,7 +84,10 @@ public class JavaCompiler extends AbstractCompiler {
             for (String entry : (List<String>)configuration.getClasspathEntries()) {
                 if (osgi) {
                     try {
-                        stateController.addBundle(new File(entry));
+                        File cp = new File(entry);
+                        if (cp.exists()) {
+                            stateController.addBundle(cp);
+                        }
                     } catch (BundleException e) {
                         getLogger().error(e.getMessage(), e);
                     }
