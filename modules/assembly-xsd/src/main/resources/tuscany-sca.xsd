@@ -29,6 +29,7 @@
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
     <include schemaLocation="tuscany-sca-binding-jsonrpc.xsd"/>
+    <include schemaLocation="tuscany-sca-binding-jms.xsd"/>
     <include schemaLocation="tuscany-sca-binding-notification.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rmi.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rss.xsd"/>
