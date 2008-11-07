@@ -1306,7 +1306,7 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewSource(StandardTypesServiceClient serviceClient) throws Exception {
-        String xml = new String("<a>A<b>B</b><c>C</c></a>");
+        String xml = "<a>A<b>B</b><c>C</c></a>";
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
         srcs[1] = new SAXSource(new InputSource(new StringReader(xml)));
@@ -1321,7 +1321,7 @@ public class StandardTypesDatabindingTestCase {
     }
 
     private void performTestNewSourceArray(StandardTypesServiceClient serviceClient) throws Exception {
-        String xml = new String("<a>A<b>B</b><c>C</c></a>");
+        String xml = "<a>A<b>B</b><c>C</c></a>";
         Source[] srcs = new Source[3];
         srcs[0] = new DOMSource(new String2Node().transform(xml, null));
         srcs[1] = new SAXSource(new InputSource(new StringReader(xml)));
