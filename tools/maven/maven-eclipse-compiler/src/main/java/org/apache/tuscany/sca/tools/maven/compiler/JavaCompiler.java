@@ -43,6 +43,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.sca.tools.maven.compiler.osgi.BundleResolver;
 import org.codehaus.plexus.compiler.AbstractCompiler;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerError;
@@ -53,6 +54,8 @@ import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.osgi.framework.BundleException;
 
 /**
  * A custom Plexus Java compiler plugin that uses the Eclipse compiler.
@@ -60,24 +63,51 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
  * @version $Rev: $ $Date: $
  */
 public class JavaCompiler extends AbstractCompiler {
-    
+
     public JavaCompiler() {
         super(ONE_OUTPUT_FILE_PER_INPUT_FILE, ".java", ".class", null);
     }
 
     public List<CompilerError> compile(CompilerConfiguration configuration) throws CompilerException {
-        
+        BundleResolver stateController = new BundleResolver(getLogger());
+
         getLogger().info("Invoking Tuscany Eclipse JDT compiler");
 
-        List<URL> urls;
+        // getLogger().info(configuration.getCustomCompilerArguments().toString());
+        boolean osgi = "true".equals(configuration.getCustomCompilerArguments().get("-osgi"));
+        if (osgi) {
+            getLogger().info("Enforcing OSGi bundle resolution");
+        }
+        List<URL> urls = new ArrayList<URL>();
         try {
-            urls = new ArrayList<URL>();
-            urls.add(new File(configuration.getOutputLocation()).toURI().toURL());
-            for (String entry: (List<String>)configuration.getClasspathEntries()) {
+            //            urls.add(new File(configuration.getOutputLocation()).toURI().toURL());
+            for (String entry : (List<String>)configuration.getClasspathEntries()) {
+                if (osgi) {
+                    try {
+                        stateController.addBundle(new File(entry));
+                    } catch (BundleException e) {
+                        getLogger().error(e.getMessage(), e);
+                    }
+                }
                 urls.add(new File(entry).toURI().toURL());
             }
         } catch (MalformedURLException e) {
             throw new CompilerException(e.getMessage(), e);
+        }
+
+        if (osgi) {
+            stateController.resolveState();
+            for (BundleDescription b : stateController.getBundles()) {
+                if (b != null) {
+                    try {
+                        stateController.assertResolved(b);
+                    } catch (BundleException e) {
+                        getLogger().error(stateController.getAllErrors().toString());
+                        // FIXME: For now, only a warning is reported
+                        // throw new CompilerException(e.getMessage(), e);
+                    }
+                }
+            }
         }
 
         ClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
@@ -108,48 +138,49 @@ public class JavaCompiler extends AbstractCompiler {
 
         // Create a compiler
         List<CompilerError> compilerErrors = new ArrayList<CompilerError>();
-        INameEnvironment nameEnvironment = new ClassLoaderNameEnvironment(classLoader, configuration.getSourceLocations());
-        ICompilerRequestor requestor = new CompilerRequestor(configuration.getOutputLocation(), configuration.isShowWarnings(), compilerErrors);
-        Compiler compiler = new Compiler(nameEnvironment,
-                                         proceedWithAllProblems(),
-                                         new CompilerOptions(settings),
-                                         requestor,
-                                         new DefaultProblemFactory(Locale.getDefault()));
+        INameEnvironment nameEnvironment =
+            new ClassLoaderNameEnvironment(classLoader, configuration.getSourceLocations());
+        ICompilerRequestor requestor =
+            new CompilerRequestor(configuration.getOutputLocation(), configuration.isShowWarnings(), compilerErrors);
+        Compiler compiler =
+            new Compiler(nameEnvironment, proceedWithAllProblems(), new CompilerOptions(settings), requestor,
+                         new DefaultProblemFactory(Locale.getDefault()));
 
         // Create compilation units for the source files
         List<FileCompilationUnit> compilationUnits = new ArrayList<FileCompilationUnit>();
-        
+
         // Go over the input source locations
-        List<String> sourceLocations = (List<String>)configuration.getSourceLocations(); 
+        List<String> sourceLocations = (List<String>)configuration.getSourceLocations();
         for (String sourceLocation : sourceLocations) {
-            
+
             // Exclude nested source locations
-            List<String> excludeLocations = new ArrayList<String>(); 
+            List<String> excludeLocations = new ArrayList<String>();
             for (String nestedLocation : sourceLocations) {
                 if (nestedLocation != sourceLocation && nestedLocation.startsWith(sourceLocation)) {
                     excludeLocations.add(nestedLocation);
                 }
             }
-            
+
             // List source files in each source location
-            for (String sourceFile: (Set<String>)getSourceFilesForSourceRoot(configuration, sourceLocation)) {
-                
+            for (String sourceFile : (Set<String>)getSourceFilesForSourceRoot(configuration, sourceLocation)) {
+
                 // Exclude files from excluded nested locations
                 boolean excluded = false;
-                for (String excludeLocation: excludeLocations) {
+                for (String excludeLocation : excludeLocations) {
                     if (sourceFile.startsWith(excludeLocation)) {
                         excluded = true;
                     }
                 }
                 if (!excluded) {
-                  
+
                     // Create a compilation unit for the source file
-                    FileCompilationUnit compilationUnit = new FileCompilationUnit(sourceFile, makeClassName(sourceFile, sourceLocation));
+                    FileCompilationUnit compilationUnit =
+                        new FileCompilationUnit(sourceFile, makeClassName(sourceFile, sourceLocation));
                     compilationUnits.add(compilationUnit);
                 }
             }
         }
-        
+
         // Compile all the compilation units
         getLogger().info("Compiling " + compilationUnits.size() + " to " + configuration.getOutputLocation());
         compiler.compile((ICompilationUnit[])compilationUnits.toArray(new ICompilationUnit[compilationUnits.size()]));
