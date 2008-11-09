@@ -82,6 +82,16 @@ public interface RuntimeWire extends Cloneable {
     InvocationChain getBindingInvocationChain();
     
     /**
+     * This invoke method assumes that the binding invocation chain is in force
+     * and that there will be an operation selector element there to
+     * determine which operation to call     
+     * @param msg The message
+     * @return The result
+     * @throws InvocationTargetException
+     */
+    Object invoke(Message msg) throws InvocationTargetException;    
+    
+    /**
      * Invoke an operation with given arguments
      * @param operation The operation
      * @param args The arguments

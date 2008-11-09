@@ -17,13 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmstext;
 
 import java.util.List;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
+import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -35,57 +42,54 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
+public class WireFormatJMSTextReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
     private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeComponentReference reference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
 
-    public WireFormatJMSBytesServiceProvider(ExtensionPointRegistry registry,
-                                             RuntimeComponent component, 
-                                             RuntimeComponentService service, 
-                                             Binding binding) {
+    public WireFormatJMSTextReferenceProvider(ExtensionPointRegistry registry,
+                                               RuntimeComponent component,
+                                               RuntimeComponentReference reference,
+                                               Binding binding) {
         super();
         this.registry = registry;
         this.component = component;
-        this.service = service;
+        this.reference = reference;
         this.binding = (JMSBinding)binding;
         
-        // configure the service based on this wire format
+        // configure the reference based on this wire format
         
         // currently maintaining the message processor structure which 
         // contains the details of jms message processing however overried 
         // any message processors specied in the SCDL in this case
-        this.binding.setRequestMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
-        this.binding.setResponseMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        this.binding.setRequestMessageProcessorName(JMSBindingConstants.TEXT_MP_CLASSNAME);
+        this.binding.setResponseMessageProcessorName(JMSBindingConstants.TEXT_MP_CLASSNAME);
+
         
         // just point to the reference interface contract so no 
         // databinding transformation takes place
-        interfaceContract = service.getInterfaceContract();
+        interfaceContract = reference.getInterfaceContract();
     }
     
     public InterfaceContract getWireFormatInterfaceContract() {
         return interfaceContract;
     }
 
-    /**
-     */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesServiceInterceptor((JMSBinding)binding,
-                                                         null,
-                                                        service.getRuntimeWire(binding));
+        return new WireFormatJMSTextReferenceInterceptor(binding, 
+                                                          null, 
+                                                          reference.getRuntimeWire(binding));
     }
 
-    /**
-     */
     public String getPhase() {
-        return Phase.SERVICE_BINDING_WIREFORMAT;
+        return Phase.REFERENCE_BINDING_WIREFORMAT;
     }
 
 }

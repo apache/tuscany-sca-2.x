@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml;
 
 import javax.xml.namespace.QName;
 
@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.assembly.WireFormat;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefault implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.jmsDefault");
+public class WireFormatJMSTextXML implements WireFormat {
+    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.jmsTextXML");
     
     public QName getSchemaName() {
         return WIRE_FORMAT_JMS_DEFAULT_QNAME;

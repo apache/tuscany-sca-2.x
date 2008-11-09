@@ -128,6 +128,11 @@ public class EndpointWireImpl implements RuntimeWire {
         }
     }
 
+    public Object invoke(Message msg) throws InvocationTargetException {
+        // not called as the endpoint wire only appears on the reference side
+        return null;
+    }
+    
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
         // not called as the endpoint wire only appears on the reference side
         return null;

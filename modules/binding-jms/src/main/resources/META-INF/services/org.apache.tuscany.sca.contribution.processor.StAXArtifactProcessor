@@ -17,3 +17,9 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.jms.impl.JMSBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.jms,model=org.apache.tuscany.sca.binding.jms.impl.JMSBinding
+org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsTextXML,model=org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytesProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsBytes,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes
+org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSTextProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsText,model=org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSText
+org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObjectProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsObject,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject
+org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#operationSelector.jmsDefault,model=org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault
+

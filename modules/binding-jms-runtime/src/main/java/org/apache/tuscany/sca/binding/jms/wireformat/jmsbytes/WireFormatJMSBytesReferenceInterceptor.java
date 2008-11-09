@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -48,38 +47,24 @@ public class WireFormatJMSBytesReferenceInterceptor implements Interceptor {
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
-    private WireFormat requestWireFormat;
-    private WireFormat responseWireFormat;
 
     public WireFormatJMSBytesReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
-        
-        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytes){
-            this.requestWireFormat = jmsBinding.getRequestWireFormat();
-            this.jmsBinding.setRequestMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
-        }
-        
-        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSBytes){
-            this.responseWireFormat = jmsBinding.getResponseWireFormat();
-            this.jmsBinding.setResponseMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
-        }
-        
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
-         
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding); 
     }
 
     public Message invoke(Message msg) {
-        if (requestWireFormat != null){
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytes){
             msg = invokeRequest(msg);
         }
         
         msg = getNext().invoke(msg);
         
-        if (responseWireFormat != null){
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSBytes){
             msg = invokeResponse(msg);
         }
         

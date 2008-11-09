@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
 import org.apache.tuscany.sca.binding.jms.transport.TransportReferenceInterceptor;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
@@ -64,7 +64,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
     private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponent component;
-    private InterfaceContract wsdlInterfaceContract; 
+    private InterfaceContract interfaceContract; 
     private ExtensionPointRegistry extensions;
     
     private ProviderFactoryExtensionPoint providerFactories;
@@ -81,39 +81,12 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         this.extensions = extensions;
         this.component = component;
         this.jmsResourceFactory = jmsResourceFactory;
-
-        // TODO - need to look at what the impact of the wireformat 
-        //        on the binding interface contract is
-        if ((jmsBinding.getRequestWireFormat() == null) ||
-            (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)) {
-            if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
-                setXMLDataBinding(reference);
-            }
-        }
         
-        // Get the factories/providers for operation selection
-        
-        // if no operation selector is specified then assume the default
-        if (jmsBinding.getOperationSelector() == null){
-            jmsBinding.setOperationSelector(new OperationSelectorJMSDefault());
-        }
-        
+        // Get the factories/providers for operation selection        
         this.providerFactories = extensions.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         
         // Get the factories/providers for wire format
-        
-        // TODO - Move into the binding
-        // if no request wire format specified then assume the default
-        if (jmsBinding.getRequestWireFormat() == null){
-            jmsBinding.setRequestWireFormat(new WireFormatJMSDefault());
-        }
-        
-        // if no response wire format specific then assume the default
-        if (jmsBinding.getResponseWireFormat() == null){
-            jmsBinding.setResponseWireFormat(new WireFormatJMSDefault());
-         }
-        
-        this.requestWireFormatProviderFactory = 
+         this.requestWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
         if (this.requestWireFormatProviderFactory != null){
             this.requestWireFormatProvider = requestWireFormatProviderFactory.createReferenceWireFormatProvider(component, reference, jmsBinding);
@@ -123,31 +96,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
         if (this.responseWireFormatProviderFactory != null){
             this.responseWireFormatProvider = responseWireFormatProviderFactory.createReferenceWireFormatProvider(component, reference, jmsBinding);
-        }        
-
-    }
-    
-    protected void setXMLDataBinding(RuntimeComponentReference reference) {
-        
-        WebServiceBindingFactory wsFactory = extensions.getExtensionPoint(WebServiceBindingFactory.class);
-        WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-        BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, extensions, null);
-        wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
-        wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
-        
-        // TODO: TUSCANY-xxx, section 5.2 "Default Data Binding" in the JMS binding spec  
-        
-//        try {
-//            InterfaceContract ic = (InterfaceContract)reference.getInterfaceContract().clone();
-//
-//            Interface ii = (Interface)ic.getInterface().clone();
-//            ii.resetDataBinding("org.apache.axiom.om.OMElement");
-//            ic.setInterface(ii);
-//            reference.setInterfaceContract(ic);
-//
-//        } catch (CloneNotSupportedException e) {
-//            throw new RuntimeException(e);
-//        }
+        }      
     }
 
     public Invoker createInvoker(Operation operation) {
@@ -158,13 +107,8 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             }
         }
 
-        /*
-         * TODO turn on RRB version of JMS binding
-         */
         Invoker invoker = null;
         invoker = new RRBJMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
-        //invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory, reference);
-        //jmsBindingInvokers.add((JMSBindingInvoker)invoker);
        
         return invoker;
     }
@@ -174,15 +118,10 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (wsdlInterfaceContract != null) {
-            return wsdlInterfaceContract;
-        } else {
-            if (reference.getInterfaceContract() == null) {
-                return reference.getReference().getInterfaceContract();
-            } else {
-                return reference.getInterfaceContract();
-            }
+        if (interfaceContract == null){
+            interfaceContract = this.requestWireFormatProvider.getWireFormatInterfaceContract();
         }
+        return interfaceContract;
     }
 
     public void start() {
@@ -198,7 +137,8 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     }
     
     /*
-     * RRB test methods
+     * set up the reference binding wire with the right set of jms reference
+     * interceptors
      */
     public void configureBindingChain(RuntimeWire runtimeWire) {
         

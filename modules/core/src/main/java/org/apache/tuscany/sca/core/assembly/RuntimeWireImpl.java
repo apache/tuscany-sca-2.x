@@ -147,6 +147,10 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
         return null;
     }
+    
+    public Object invoke(Message msg) throws InvocationTargetException {
+        return getBindingInvocationChain().getHeadInvoker().invoke(msg);
+    }    
 
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
         Message msg = messageFactory.createMessage();
@@ -238,13 +242,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                     }
                 }
             }
-        }        
-        
-        // TODO - add something on the end of the wire to invoke the 
-        //        invocation chain. Need to split out the runtime
-        //        wire invoker into conversation, callback interceptors etc
-       
-        
+        }               
     }    
     
     private void initServiceBindingInvocationChains() {

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml;
 
 import java.util.List;
 
@@ -25,9 +25,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
-import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
-import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
@@ -47,17 +44,17 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
+public class WireFormatJMSTextXMLReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
 
-    public WireFormatJMSBytesReferenceProvider(ExtensionPointRegistry registry,
-                                               RuntimeComponent component,
-                                               RuntimeComponentReference reference,
-                                               Binding binding) {
+    public WireFormatJMSTextXMLReferenceProvider(ExtensionPointRegistry registry,
+                                                 RuntimeComponent component,
+                                                 RuntimeComponentReference reference,
+                                                 Binding binding) {
         super();
         this.registry = registry;
         this.component = component;
@@ -67,24 +64,43 @@ public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
         // configure the reference based on this wire format
         
         // currently maintaining the message processor structure which 
-        // contains the details of jms message processing however overried 
-        // any message processors specied in the SCDL in this case
-        this.binding.setRequestMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
-        this.binding.setResponseMessageProcessorName(JMSBindingConstants.BYTES_MP_CLASSNAME);
+        // contains the details of jms message processing so set the message
+        // type here if not set explicitly in SCDL
+        if (this.binding.getRequestMessageProcessorName().equals(JMSBindingConstants.XML_MP_CLASSNAME) ){
+            this.binding.setRequestMessageProcessorName(JMSBindingConstants.XML_MP_CLASSNAME);
+            this.binding.setResponseMessageProcessorName(JMSBindingConstants.XML_MP_CLASSNAME);
+        }
         
-        // just point to the reference interface contract so no 
-        // databinding transformation takes place
-        interfaceContract = reference.getInterfaceContract();
+        // set the binding interface contract to represent the WSDL for the 
+        // xml messages that will be sent
+        if (reference.getInterfaceContract() != null &&
+            !isOnMessage()) {
+            WebServiceBindingFactory wsFactory = registry.getExtensionPoint(WebServiceBindingFactory.class);
+            WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
+            BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, registry, null);
+            interfaceContract = wsBinding.getBindingInterfaceContract();
+            interfaceContract.getInterface().resetDataBinding(OMElement.class.getName());  
+        } else {
+            interfaceContract = reference.getInterfaceContract();
+        }
+    }
+    
+    protected boolean isOnMessage() {
+        InterfaceContract ic = reference.getInterfaceContract();
+        if (ic.getInterface().getOperations().size() != 1) {
+            return false;
+        }
+        return "onMessage".equals(ic.getInterface().getOperations().get(0).getName());
     }
     
     public InterfaceContract getWireFormatInterfaceContract() {
         return interfaceContract;
     }
-
+    
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesReferenceInterceptor(binding, 
-                                                          null, 
-                                                          reference.getRuntimeWire(binding));
+        return new WireFormatJMSTextXMLReferenceInterceptor((JMSBinding)binding, 
+                                                            null, 
+                                                            reference.getRuntimeWire(binding));
     }
 
     public String getPhase() {

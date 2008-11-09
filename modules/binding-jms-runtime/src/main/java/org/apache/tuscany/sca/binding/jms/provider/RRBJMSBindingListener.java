@@ -93,75 +93,30 @@ public class RRBJMSBindingListener implements MessageListener {
         try {
             invokeService(requestJMSMsg);
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
-            sendFaultReply(requestJMSMsg, e);
+            logger.log(Level.SEVERE, "Exception send fault response '" + service.getName(), e);
         }
     }
 
     protected void invokeService(Message requestJMSMsg) throws JMSException, InvocationTargetException {
 
-        try {
-            // create the tuscany message
-            org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
+        // create the tuscany message
+        org.apache.tuscany.sca.invocation.Message tuscanyMsg = messageFactory.createMessage();
+        
+        // populate the message context with JMS binding information
+        JMSBindingContext context = new JMSBindingContext();
+        tuscanyMsg.getHeaders().add(context);
+        
+        context.setJmsMsg(requestJMSMsg);
+        context.setJmsResourceFactory(jmsResourceFactory);
+        context.setReplyToDestination(requestJMSMsg.getJMSReplyTo());
+        
+        // set the message body
+        tuscanyMsg.setBody(requestJMSMsg);
+        
+        // call the runtime wire - the response is handled by the 
+        // transport interceptor
+        service.getRuntimeWire(targetBinding).invoke(tuscanyMsg);
             
-            // populate the message context with JMS binding information
-            JMSBindingContext context = new JMSBindingContext();
-            tuscanyMsg.getHeaders().add(context);
-            
-            context.setJmsMsg(requestJMSMsg);
-            context.setJmsSession(jmsResourceFactory.createSession());
-            context.setReplyToDestination(requestJMSMsg.getJMSReplyTo());
-            
-            // set the message body
-            tuscanyMsg.setBody(requestJMSMsg);
-            
-            // call the runtime wire
-            InvocationChain chain = service.getRuntimeWire(targetBinding).getBindingInvocationChain();
-            chain.getHeadInvoker().invoke(tuscanyMsg);
-            
-        } catch (NamingException e) {
-            throw new JMSBindingException(e);
-        }      
     }   
-
-    /*
-     * Send a message back if a fault has occurred
-     */
-    protected void sendFaultReply(Message requestJMSMsg, Object responsePayload) {
-        try {
-
-            if (requestJMSMsg.getJMSReplyTo() == null) {
-                // assume no reply is expected
-                if (responsePayload != null) {
-                    logger.log(Level.FINE, "JMS service '" + service.getName() + "' dropped response as request has no replyTo");
-                }
-                return;
-            }
-
-            Session session = jmsResourceFactory.createSession();
-            Message replyJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)responsePayload);
-            replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
-            replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
-
-            if (correlationScheme == null || JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
-                replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
-            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
-                replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
-            }
-
-            Destination destination = requestJMSMsg.getJMSReplyTo();
-            MessageProducer producer = session.createProducer(destination);
-
-            producer.send(replyJMSMsg);
-
-            producer.close();
-            session.close();
-
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        } catch (NamingException e) {
-            throw new JMSBindingException(e);
-        }
-    }
 
 }

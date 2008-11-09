@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFactory<WireFormatJMSBytes> {
+public class WireFormatJMSObjectProviderFactory implements WireFormatProviderFactory<WireFormatJMSObject> {
     private ExtensionPointRegistry registry;
     
-    public WireFormatJMSBytesProviderFactory(ExtensionPointRegistry registry) {
+    public WireFormatJMSObjectProviderFactory(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
     }
@@ -43,7 +43,7 @@ public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFact
     public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
                                                         RuntimeComponentReference reference,
                                                         Binding binding) {
-        return new WireFormatJMSBytesReferenceProvider(registry, component, reference, binding);
+        return new WireFormatJMSObjectReferenceProvider(registry, component, reference, binding);
     }
 
     /**
@@ -51,7 +51,7 @@ public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFact
     public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
                                                               RuntimeComponentService service,
                                                               Binding binding) {
-        return new WireFormatJMSBytesServiceProvider(registry, component, service, binding);
+        return new WireFormatJMSObjectServiceProvider(registry, component, service, binding);
     }
 
     /**

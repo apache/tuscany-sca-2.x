@@ -25,12 +25,16 @@
 
    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-binding-jms.xsd"/>
             
-   <complexType name="WireFormatJMSDefaultType"/>
-
-   <element name="wireFormat.jmsDefault" type="t:WireFormatJMSDefaultType"/>
-            
-   <complexType name="OperationSelectorJMSDefaultType"/>
-               
-   <element name="operationSelector.jmsDefault" type="t:OperationSelectorJMSDefaultType"/> 
-              
+   <complexType name="WireFormatJMSTextXMLType"/>
+   <element name="wireFormat.jmsTextXML" type="t:WireFormatJMSTextXMLType"/>
+   
+   <complexType name="WireFormatJMSTextType"/>
+   <element name="wireFormat.jmsText" type="t:WireFormatJMSTextType"/>
+   
+   <complexType name="WireFormatJMSBytesType"/>
+   <element name="wireFormat.jmsBytes" type="t:WireFormatJMSBytesType"/>
+   
+   <complexType name="WireFormatJMSObjectType"/>
+   <element name="wireFormat.jmsObject" type="t:WireFormatJMSObjectType"/>   
+                          
 </schema>

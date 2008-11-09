@@ -17,12 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmstext;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
@@ -33,14 +30,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefaultProviderFactory implements WireFormatProviderFactory<WireFormatJMSDefault> {
+public class WireFormatJMSTextProviderFactory implements WireFormatProviderFactory<WireFormatJMSText> {
     private ExtensionPointRegistry registry;
-    private JMSResourceFactoryExtensionPoint jmsRFEP;
     
-    public WireFormatJMSDefaultProviderFactory(ExtensionPointRegistry registry) {
+    public WireFormatJMSTextProviderFactory(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;
-        jmsRFEP = (JMSResourceFactoryExtensionPoint)registry.getExtensionPoint(JMSResourceFactoryExtensionPoint.class);
     }
 
     /**
@@ -48,7 +43,7 @@ public class WireFormatJMSDefaultProviderFactory implements WireFormatProviderFa
     public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
                                                         RuntimeComponentReference reference,
                                                         Binding binding) {
-        return new WireFormatJMSDefaultReferenceProvider(component, reference, binding);
+        return new WireFormatJMSTextReferenceProvider(registry, component, reference, binding);
     }
 
     /**
@@ -56,8 +51,7 @@ public class WireFormatJMSDefaultProviderFactory implements WireFormatProviderFa
     public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
                                                               RuntimeComponentService service,
                                                               Binding binding) {
-        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding)binding);
-        return new WireFormatJMSDefaultServiceProvider(component, service, binding, jmsRF);
+        return new WireFormatJMSTextServiceProvider(registry, component, service, binding);
     }
 
     /**
