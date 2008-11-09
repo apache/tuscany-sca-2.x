@@ -17,13 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmstext;
 
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -38,26 +40,46 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
+public class WireFormatJMSTextServiceProvider implements WireFormatProvider {
+    private ExtensionPointRegistry registry;
     private RuntimeComponent component;
     private RuntimeComponentService service;
-    private Binding binding;
-    private JMSResourceFactory jmsResourceFactory;
+    private JMSBinding binding;
+    private InterfaceContract interfaceContract; 
 
-    public WireFormatJMSDefaultServiceProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding, JMSResourceFactory jmsResourceFactory) {
+    public WireFormatJMSTextServiceProvider(ExtensionPointRegistry registry,
+                                             RuntimeComponent component, 
+                                             RuntimeComponentService service, 
+                                             Binding binding) {
         super();
+        this.registry = registry;
         this.component = component;
         this.service = service;
-        this.binding = binding;
-        this.jmsResourceFactory = jmsResourceFactory;
+        this.binding = (JMSBinding)binding;
+        
+        // configure the service based on this wire format
+        
+        // currently maintaining the message processor structure which 
+        // contains the details of jms message processing however overried 
+        // any message processors specied in the SCDL in this case
+        this.binding.setRequestMessageProcessorName(JMSBindingConstants.TEXT_MP_CLASSNAME);
+        this.binding.setResponseMessageProcessorName(JMSBindingConstants.TEXT_MP_CLASSNAME);
+        
+        // just point to the reference interface contract so no 
+        // databinding transformation takes place
+        interfaceContract = service.getInterfaceContract();
+    }
+    
+    public InterfaceContract getWireFormatInterfaceContract() {
+        return interfaceContract;
     }
 
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSDefaultServiceInterceptor((JMSBinding)binding,
-                                                          jmsResourceFactory,
-                                                          service.getRuntimeWire(binding));
+        return new WireFormatJMSTextServiceInterceptor((JMSBinding)binding,
+                                                         null,
+                                                        service.getRuntimeWire(binding));
     }
 
     /**

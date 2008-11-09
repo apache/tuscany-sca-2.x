@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
+
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -35,12 +36,11 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
- * Policy handler to handle PolicySet related to Logging with the QName
- * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesServiceInterceptor implements Interceptor {
+public class WireFormatJMSObjectReferenceInterceptor implements Interceptor {
+
     private Invoker next;
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
@@ -48,23 +48,23 @@ public class WireFormatJMSBytesServiceInterceptor implements Interceptor {
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
 
-    public WireFormatJMSBytesServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public WireFormatJMSObjectReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding); 
     }
 
     public Message invoke(Message msg) {
-        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSBytes){
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSObject){
             msg = invokeRequest(msg);
         }
         
         msg = getNext().invoke(msg);
         
-        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSBytes){
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSObject){
             msg = invokeResponse(msg);
         }
         
@@ -72,34 +72,34 @@ public class WireFormatJMSBytesServiceInterceptor implements Interceptor {
     }
     
     public Message invokeRequest(Message msg) {
-        // get the jms context
-        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
-        javax.jms.Message jmsMsg = context.getJmsMsg();
-
-        Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(jmsMsg);
-        msg.setBody(requestPayload);
-                 
-        return msg;
+        try {
+            // get the jms context
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            Session session = context.getJmsSession();
+            
+            javax.jms.Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, msg.getBody());
+            msg.setBody(requestMsg);
+            
+            requestMsg.setJMSReplyTo(context.getReplyToDestination());
+            
+            return msg;
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } 
     }
     
     public Message invokeResponse(Message msg) {
-        // get the jms context
-        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
-        javax.jms.Message requestJMSMsg = context.getJmsMsg();
-        Session session = context.getJmsSession();
+        if (msg.getBody() != null){
+            Object[] response = (Object[])responseMessageProcessor.extractPayloadFromJMSMessage((javax.jms.Message)msg.getBody());
+            if (response != null && response.length > 0){
+                msg.setBody(response[0]);
+            } else {
+                msg.setBody(null);
+            }
+        }
 
-        javax.jms.Message responseJMSMsg;
-        if (msg.isFault()) {
-            responseJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)msg.getBody());
-        } else {
-            Object[] response = {msg.getBody()};
-            responseJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, response);
-        } 
-    
-        msg.setBody(responseJMSMsg);
-        
         return msg;
-    }        
+    }     
 
     public Invoker getNext() {
         return next;

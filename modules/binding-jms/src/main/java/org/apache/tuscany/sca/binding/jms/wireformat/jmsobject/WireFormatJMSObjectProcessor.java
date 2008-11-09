@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -27,7 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -41,23 +40,23 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSBytes> {
+public class WireFormatJMSObjectProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSObject> {
     
     public QName getArtifactType() {
-        return WireFormatJMSBytes.WIRE_FORMAT_JMS_BYTES_QNAME;
+        return WireFormatJMSObject.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSBytesProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSObjectProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     
-    public WireFormatJMSBytes read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        WireFormatJMSBytes wireFormat = new WireFormatJMSBytes();
+    public WireFormatJMSObject read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        WireFormatJMSObject wireFormat = new WireFormatJMSObject();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSBytes wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSObject wireFormat, XMLStreamWriter writer) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -68,11 +67,11 @@ public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor imple
         writer.writeEndElement();
     }
 
-    public Class<WireFormatJMSBytes> getModelType() {
-        return WireFormatJMSBytes.class;
+    public Class<WireFormatJMSObject> getModelType() {
+        return WireFormatJMSObject.class;
     }
 
-    public void resolve(WireFormatJMSBytes arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSObject arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
     

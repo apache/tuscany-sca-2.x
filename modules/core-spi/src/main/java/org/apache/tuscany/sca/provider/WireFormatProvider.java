@@ -19,12 +19,24 @@
 
 package org.apache.tuscany.sca.provider;
 
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 
 /**
  * @version $Rev$ $Date$
  */
 public interface WireFormatProvider {
+    
+    /*
+     * Return the contract that describes the interface that
+     * is providing data to or accepting data from the 
+     * wire format interceptor. The wire formats job
+     * is to translate between this interface contract and the
+     * format on the wire
+     * @return the wire format interface contract
+     */
+    public InterfaceContract getWireFormatInterfaceContract();
+    
     /**
      * Create an interceptor for the wire format
      * @return An interceptor that realize the policySet

@@ -20,17 +20,14 @@ package org.apache.tuscany.sca.binding.jms.format.jmsbytes.helloworld;
 
 public class HelloWorldServiceImpl implements HelloWorldService {
     
-    private static String greetings = "not set";
-    
-    public void setGreetings(byte[] msg){
+    public byte[] getByteArrayGreetings(byte[] msg){
          
         String name = new String(msg);
-        greetings =  "Hello " + name;
+        name =  "Hello " + name;
+        
+        return name.getBytes();
     }
-    
-    public static String getGreetings(){
-        return greetings;
-    }
+
 
 }
 

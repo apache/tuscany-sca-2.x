@@ -16,79 +16,55 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
 
-
-
-
-import java.util.Map;
-
-import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.Session;
 
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
+ * Policy handler to handle PolicySet related to Logging with the QName
+ * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
-
+public class WireFormatJMSObjectServiceInterceptor implements Interceptor {
     private Invoker next;
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
-    private String correlationScheme;
-    private WireFormat requestWireFormat;
-    private WireFormat responseWireFormat;
 
-    public WireFormatJMSDefaultReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public WireFormatJMSObjectServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
-        this.correlationScheme = jmsBinding.getCorrelationScheme();
-        
-        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault){
-            this.requestWireFormat = jmsBinding.getRequestWireFormat();
-        }
-        
-        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault){
-            this.responseWireFormat = jmsBinding.getResponseWireFormat();
-        }
     }
 
     public Message invoke(Message msg) {
-        if (requestWireFormat != null){
+        if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSObject){
             msg = invokeRequest(msg);
         }
         
         msg = getNext().invoke(msg);
         
-        if (responseWireFormat != null){
+        if (jmsBinding.getResponseWireFormat() instanceof WireFormatJMSObject){
             msg = invokeResponse(msg);
         }
         
@@ -96,34 +72,34 @@ public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
     }
     
     public Message invokeRequest(Message msg) {
-        try {
-            // get the jms context
-            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
-            Session session = context.getJmsSession();
-            
-            javax.jms.Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, msg.getBody());
-            msg.setBody(requestMsg);
-            
-            requestMsg.setJMSReplyTo(context.getReplyToDestination());
-            
-            return msg;
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        } 
+        // get the jms context
+        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+        javax.jms.Message jmsMsg = context.getJmsMsg();
+
+        Object requestPayload = requestMessageProcessor.extractPayloadFromJMSMessage(jmsMsg);
+        msg.setBody(requestPayload);
+                 
+        return msg;
     }
     
     public Message invokeResponse(Message msg) {
-        if (msg.getBody() != null){
-            Object[] response = (Object[])responseMessageProcessor.extractPayloadFromJMSMessage((javax.jms.Message)msg.getBody());
-            if (response != null && response.length > 0){
-                msg.setBody(response[0]);
-            } else {
-                msg.setBody(null);
-            }
-        }
+        // get the jms context
+        JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+        javax.jms.Message requestJMSMsg = context.getJmsMsg();
+        Session session = context.getJmsSession();
 
+        javax.jms.Message responseJMSMsg;
+        if (msg.isFault()) {
+            responseJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)msg.getBody());
+        } else {
+            Object[] response = {msg.getBody()};
+            responseJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, response);
+        } 
+    
+        msg.setBody(responseJMSMsg);
+        
         return msg;
-    }    
+    }        
 
     public Invoker getNext() {
         return next;
@@ -131,5 +107,5 @@ public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
 
     public void setNext(Invoker next) {
         this.next = next;
-    }    
+    }
 }

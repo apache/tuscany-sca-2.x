@@ -26,16 +26,10 @@ public class HelloWorldReferenceImpl implements HelloWorldReference {
     @Reference
     protected HelloWorldService helloWorldService1;
     
-    public String getGreetings(String name){
-        helloWorldService1.setGreetings(name.getBytes());
-        
-        try {
-            Thread.sleep(2000);
-        } catch (Exception ex) {
-            // do nothing
-        }
-        
-        return HelloWorldServiceImpl.getGreetings(); 
+    public String getGreetings(String name){     
+        byte[] bytesValue = helloWorldService1.getByteArrayGreetings(name.getBytes());
+        String stringValue = new String(bytesValue);  
+        return stringValue; 
     }    
 }
 

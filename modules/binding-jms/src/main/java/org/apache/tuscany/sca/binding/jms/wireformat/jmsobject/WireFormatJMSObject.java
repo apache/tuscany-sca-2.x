@@ -16,18 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.format.jmsbytes.helloworld;
+package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
 
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.WireFormat;
 
 /**
- * This is the business interface of the HelloWorld greetings service.
+ * Implementation for policies that could be injected as parameter
+ * into the axis2config.
+ *
+ * @version $Rev$ $Date$
  */
-@Remotable
-public interface HelloWorldService {
-
-    public byte[] getByteArrayGreetings(byte[] msg);
+public class WireFormatJMSObject implements WireFormat {
+    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "wireFormat.jmsObject");
     
-}
+    public QName getSchemaName() {
+        return WIRE_FORMAT_JMS_BYTES_QNAME;
+    }
 
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+    }
+}

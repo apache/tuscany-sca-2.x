@@ -35,6 +35,10 @@ import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSText;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
@@ -207,18 +211,26 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         }
 
         // Read message processor class name
+        // TODO - maintain this for the time being but move over to 
+        //        configuring wire formats instead of message processors
         String messageProcessorName = reader.getAttributeValue(null, "messageProcessor");
         if (messageProcessorName != null && messageProcessorName.length() > 0) {
             if ("XMLTextMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = JMSBindingConstants.XML_MP_CLASSNAME;
+                // may be overwritten be real wire format later
+                jmsBinding.setRequestWireFormat(new WireFormatJMSTextXML());
+                jmsBinding.setResponseWireFormat(new WireFormatJMSTextXML());
             } else if ("TextMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = JMSBindingConstants.TEXT_MP_CLASSNAME;
+                // may be overwritten be real wire format later
+                jmsBinding.setRequestWireFormat(new WireFormatJMSText());
+                jmsBinding.setResponseWireFormat(new WireFormatJMSText());
             } else if ("ObjectMessage".equalsIgnoreCase(messageProcessorName)) {
-                messageProcessorName = JMSBindingConstants.OBJECT_MP_CLASSNAME;
+                // may be overwritten be real wire format later
+                jmsBinding.setRequestWireFormat(new WireFormatJMSObject());
+                jmsBinding.setResponseWireFormat(new WireFormatJMSObject());
+            } else {
+                jmsBinding.setRequestMessageProcessorName(messageProcessorName);
+                jmsBinding.setResponseMessageProcessorName(messageProcessorName);
             }
-            jmsBinding.setRequestMessageProcessorName(messageProcessorName);
-            jmsBinding.setResponseMessageProcessorName(messageProcessorName);
-
         }
 
         String requestConnectionName = reader.getAttributeValue(null, "requestConnection");
@@ -276,6 +288,21 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
                     }
             }
         }
+        
+        // if no operation selector is specified then assume the default
+        if (jmsBinding.getOperationSelector() == null){
+            jmsBinding.setOperationSelector(new OperationSelectorJMSDefault());
+        }
+        
+        // if no request wire format specified then assume the default
+        if (jmsBinding.getRequestWireFormat() == null){
+            jmsBinding.setRequestWireFormat(new WireFormatJMSTextXML());
+        }
+        
+        // if no response wire format specific then assume the default
+        if (jmsBinding.getResponseWireFormat() == null){
+            jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
+         }
 
         validate();
 

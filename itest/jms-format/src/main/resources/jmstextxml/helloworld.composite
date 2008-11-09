@@ -28,7 +28,7 @@
         <reference name="helloWorldService1" >
             <binding.jms>
                 <destination name="HelloWorldService1"/>
-                <tuscany:wireFormat.jmsDefault/>
+                <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </reference>  
         <reference name="helloWorldService2" >
@@ -48,7 +48,7 @@
         <service name="HelloWorldService">
             <binding.jms>
                 <destination name="HelloWorldService1"/>
-                <tuscany:wireFormat.jmsDefault/>
+                <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </service>
     </component> 

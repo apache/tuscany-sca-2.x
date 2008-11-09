@@ -46,10 +46,6 @@ public class BytesMessageProcessor extends AbstractMessageProcessor {
                 throw new IllegalStateException("expecting JMS BytesMessage: " + msg);
             }
             
-            // TODO - Just an experiment
-            //        how should this be wired into databinding?
-            //        how to enforce single byte array parameter
-            //        also casting long -> int!
             long noOfBytes = ((BytesMessage)msg).getBodyLength();
             byte [] bytes = new byte[(int)noOfBytes];
             ((BytesMessage)msg).readBytes(bytes);
@@ -64,7 +60,7 @@ public class BytesMessageProcessor extends AbstractMessageProcessor {
     protected Message createJMSMessage(Session session, Object o) {
         try {
 
-            // TODO - just and experiment. How to enforce a single
+            // TODO - an experiment. How to enforce a single
             //        byte array parameter
             BytesMessage message = session.createBytesMessage();
             byte [] bytes = (byte[])((Object[])o)[0];

@@ -28,6 +28,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
+import javax.naming.NamingException;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
@@ -66,6 +67,7 @@ public class TransportServiceInterceptor implements Interceptor {
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
+    private String correlationScheme;
     
 
     public TransportServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
@@ -76,16 +78,28 @@ public class TransportServiceInterceptor implements Interceptor {
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
         this.service = (RuntimeComponentService)runtimeWire.getTarget().getContract();
+        this.correlationScheme = jmsBinding.getCorrelationScheme();
     }
     
     public Message invoke(Message msg) {
-        return invokeResponse(next.invoke(invokeRequest(msg)));
+        try {
+            return invokeResponse(next.invoke(invokeRequest(msg)));
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
+            JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
+            javax.jms.Message replyJMSMsg = responseMessageProcessor.createFaultMessage(context.getJmsSession(), 
+                                                                                        (Throwable)e);
+            msg.setBody(replyJMSMsg);
+            invokeResponse(msg);
+            return msg;
+        }
     }    
     
     public Message invokeRequest(Message msg) { 
         try {
             JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
             javax.jms.Message requestJMSMsg = context.getJmsMsg();
+            context.setJmsSession(context.getJmsResourceFactory().createSession());
             
             EndpointReference from = new EndpointReferenceImpl(null);
             msg.setFrom(from);
@@ -100,7 +114,9 @@ public class TransportServiceInterceptor implements Interceptor {
             return msg;
         } catch (JMSException e) {
             throw new JMSBindingException(e);
-        }
+        } catch (NamingException e) {
+            throw new JMSBindingException(e);
+        } 
     }
     
     public Message invokeResponse(Message msg) { 
@@ -108,6 +124,8 @@ public class TransportServiceInterceptor implements Interceptor {
             JMSBindingContext context = (JMSBindingContext)msg.getHeaders().get(JMSBindingConstants.MSG_CTXT_POSITION);
             Session session = context.getJmsSession();
             javax.jms.Message requestJMSMsg = context.getJmsMsg();
+            javax.jms.Message responseJMSMsg = msg.getBody();
+            
 
             if (requestJMSMsg.getJMSReplyTo() == null) {
                 // assume no reply is expected
@@ -116,6 +134,16 @@ public class TransportServiceInterceptor implements Interceptor {
                 }
                 return msg;
             }
+            
+            responseJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
+            responseJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
+    
+            if (correlationScheme == null || 
+                JMSBindingConstants.CORRELATE_MSG_ID.equalsIgnoreCase(correlationScheme)) {
+                responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
+            } else if (JMSBindingConstants.CORRELATE_CORRELATION_ID.equalsIgnoreCase(correlationScheme)) {
+                responseJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
+            }                
                        
             MessageProducer producer = session.createProducer(context.getReplyToDestination());
     
