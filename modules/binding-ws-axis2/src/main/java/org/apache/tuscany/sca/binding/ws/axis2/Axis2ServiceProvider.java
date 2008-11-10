@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -316,7 +314,7 @@ public class Axis2ServiceProvider {
           
             Axis2ServiceServlet servlet = null;
             for (String endpointURL : urlMap.keySet()) {
-                if (endpointURL.startsWith("http://") || endpointURL.startsWith("/")) {
+                if (endpointURL.startsWith("http://") || endpointURL.startsWith("https://") || endpointURL.startsWith("/")) {
                     if (servlet == null) {
                         servlet = new Axis2ServiceServlet();
                         servlet.init(configContext);
