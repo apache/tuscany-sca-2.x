@@ -27,6 +27,8 @@ public class ZipCodeClient {
 
     public static void main(String[] args) throws Exception {
 
+	System.out.println("Please wait...");
+
         SCADomain domain = SCADomain.newInstance("ZipCode.composite");
         ZipCodeService zipService = domain.getService(ZipCodeService.class, "ZipCodeService");
 
