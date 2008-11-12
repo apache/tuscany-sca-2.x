@@ -21,12 +21,9 @@ package org.apache.tuscany.sca.host.webapp.jsp;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
+import org.apache.tuscany.sca.node.Node;
 import org.osoa.sca.ComponentContext;
 
 /**
@@ -58,9 +55,9 @@ public class ReferenceTag extends TagSupport {
  
         ServletContext servletContext = pageContext.getServletContext();
         ComponentContext componentContext = (ComponentContext)servletContext.getAttribute("org.osoa.sca.ComponentContext");
-        SCADomain scaDomain = null;
+        Node scaDomain = null;
         if (componentContext == null) {
-            scaDomain = (SCADomain)servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
+            scaDomain = (Node)servletContext.getAttribute(WebAppServletHost.SCA_NODE_ATTRIBUTE);
             if (scaDomain == null) {
                 throw new JspException("SCADomain is null. Check Tuscany configuration in web.xml");
             }

@@ -39,9 +39,11 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * ServletHost implementation for use in a webapp environment.
@@ -54,19 +56,19 @@ import org.apache.tuscany.sca.host.http.ServletMappingException;
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
-    public static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
+    public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
 
     private static final WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
-    private SCADomain scaDomain;
+    private Node node;
     private String contextPath = "/";
     private int defaultPortNumber = 8080;
     private String contributionRoot;
 
     private ServletContext servletContext;
 
-    private WebAppServletHost() {
+    WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
     }
 
@@ -211,14 +213,13 @@ public class WebAppServletHost implements ServletHost {
     public void init(ServletConfig config) throws ServletException {
 
         servletContext = config.getServletContext();
-        if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
+        if (servletContext.getAttribute(SCA_NODE_ATTRIBUTE) == null) {
             initContextPath(config);
-            String domainURI = "http://localhost/" + contextPath;
             contributionRoot = getContributionRoot(servletContext);
-            // logger.info("Contribution: " + contributionRoot);
-            System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
-            this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
-            servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
+            NodeFactory factory = NodeFactory.newInstance();
+            node = factory.createNode(null, new Contribution(contributionRoot, contributionRoot));
+            node.start();
+            servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
         }
 
         // Initialize the registered Servlets
@@ -251,7 +252,7 @@ public class WebAppServletHost implements ServletHost {
                 if (rootURL.getProtocol().equals("jndi")) {
                     //this is Tomcat case, we should use getRealPath
                     File warRootFile = new File(servletContext.getRealPath(root));
-                    contributionRoot = warRootFile.toURL().toString();
+                    contributionRoot = warRootFile.toURI().toString();
                 } else {
                     //this is Jetty case
                     contributionRoot = rootURL.toString();
@@ -299,11 +300,8 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Close the SCA domain
-        if (scaDomain != null) {
-            scaDomain.close();
-            if (scaDomain instanceof WebSCADomain) {
-                ((WebSCADomain)scaDomain).destroy();
-            }
+        if (node != null) {
+            node.stop();
         }
     }
 

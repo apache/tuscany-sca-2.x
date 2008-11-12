@@ -37,30 +37,16 @@ public class WebAppModuleActivator implements ModuleActivator {
 
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        
+
         List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (isRunningInWebapp()) {
-            if (hosts.size() > 0) {
-                hosts.removeAll(hosts);
-            }
-            servletHosts.addServletHost(WebAppServletHost.getInstance());
+        ServletHost host = TuscanyServletFilter.getServletHost();
+        if (host != null) {
+            hosts.clear();
+            hosts.add(host);
         }
     }
 
     public void stop(ExtensionPointRegistry registry) {
-    }
-
-    /**
-     * TODO: this seems a bit of a hacky way to find if its running in a webapp
-     *       is there a better way?
-     */
-    private boolean isRunningInWebapp() {
-        for (StackTraceElement ste : new Exception().getStackTrace()) {
-            if (ste.getClassName().equals(WebSCADomain.class.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

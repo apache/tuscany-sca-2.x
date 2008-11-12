@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
@@ -32,6 +35,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tuscany.sca.host.http.ServletHost;
+
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
  * the Tuscany ServletHost.
@@ -42,11 +47,21 @@ public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
     //private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
-    private WebAppServletHost servletHost;
+    private static Map<ClassLoader, ServletHost> servletHosts =
+        Collections.synchronizedMap(new WeakHashMap<ClassLoader, ServletHost>());
+
+    // [REVIEW] Assume the filter class is per webapp
+    private static WebAppServletHost servletHost;
+
+    // Test if the servletHost == null to know if the filter is called (webapp)
+    static ServletHost getServletHost() {
+        return servletHosts.get(Thread.currentThread().getContextClassLoader());
+    }
 
     public void init(final FilterConfig config) throws ServletException {
         // TODO: must be a better way to get this than using a static
-        servletHost = WebAppServletHost.getInstance();
+        servletHost = new WebAppServletHost();
+        servletHosts.put(Thread.currentThread().getContextClassLoader(), servletHost);
 
         // Initialize the Servlet host
         servletHost.init(new ServletConfig() {
@@ -69,7 +84,11 @@ public class TuscanyServletFilter implements Filter {
     }
 
     public void destroy() {
-        WebAppServletHost.getInstance().destroy();
+        if (servletHost != null) {
+            servletHost.destroy();
+            servletHost = null;
+            servletHosts.remove(Thread.currentThread().getContextClassLoader());
+        }
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
