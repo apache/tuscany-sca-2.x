@@ -32,6 +32,11 @@ public interface PackageType {
     String JAR = "application/x-compressed";
 
     /**
+     * Zip archive contribution package
+     */
+    String ZIP = "application/x-compressed";
+
+    /**
      * Filesystem folder contribution package
      */
     String FOLDER = "application/vnd.tuscany.folder";
