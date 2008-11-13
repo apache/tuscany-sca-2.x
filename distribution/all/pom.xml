@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-distribution</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -36,72 +36,72 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-core</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-ejava</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-manager</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-process</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-web20</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-webservice</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-gdata-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-gdata-runtime-gsoc</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-fastinfoset</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-xmlbeans</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-tracing-aspectj</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -146,7 +146,7 @@
                                         <descriptor>src/main/assembly/src.xml</descriptor>
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-all-1.4-SNAPSHOT</finalName>
+                                    <finalName>apache-tuscany-sca-all-1.4-EQUINOX-SNAPSHOT</finalName>
                                 </configuration>
                             </execution>
                         </executions>

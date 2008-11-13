@@ -29,7 +29,7 @@
     <artifactId>tuscany-maven-eclipse-compiler</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany SCA Eclipse Compiler Plugin</name>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4-EQUINOX-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

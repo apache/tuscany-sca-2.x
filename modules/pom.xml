@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-modules</artifactId>
@@ -151,7 +151,7 @@
                    <plugin> 
                        <groupId>org.apache.tuscany.sca</groupId> 
                        <artifactId>tuscany-maven-bundle-plugin</artifactId> 
-                       <version>1.4-SNAPSHOT</version> 
+                       <version>1.4-EQUINOX-SNAPSHOT</version> 
                        <extensions>true</extensions> 
                        <executions> 
                            <execution> 

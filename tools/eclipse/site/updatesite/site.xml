@@ -22,65 +22,65 @@
       Apache Tuscany SCA Eclipse Update Site.
    </description>
    
-   <feature url="features/org.apache.tuscany.sca.feature.core-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.core-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.core" version="1.4.0">
       <category name="org.apache.tuscany.sca.core.features"/>
    </feature>
    
-   <feature url="features/org.apache.tuscany.sca.feature.ejava-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.ejava-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.ejava" version="1.4.0">
       <category name="org.apache.tuscany.sca.optional.features"/>
    </feature>
    
-   <feature url="features/org.apache.tuscany.sca.feature.manager-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.manager-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.manager" version="1.4.0">
       <category name="org.apache.tuscany.sca.core.features"/>
    </feature>
    
-   <feature url="features/org.apache.tuscany.sca.feature.process-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.process-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.process" version="1.4.0">
       <category name="org.apache.tuscany.sca.optional.features"/>
    </feature>
    
-   <feature url="features/org.apache.tuscany.sca.feature.web20-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.web20-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.web20" version="1.4.0">
       <category name="org.apache.tuscany.sca.optional.features"/>
    </feature>
    
-   <feature url="features/org.apache.tuscany.sca.feature.webservice-1.4-SNAPSHOT.jar"
+   <feature url="features/org.apache.tuscany.sca.feature.webservice-1.4-EQUINOX-SNAPSHOT.jar"
       id="org.apache.tuscany.sca.feature.webservice" version="1.4.0">
       <category name="org.apache.tuscany.sca.optional.features"/>
    </feature>
    
    <archive path="features/org.apache.tuscany.sca.feature.core_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.core-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.core-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.core_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.core-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.core-1.4-EQUINOX-SNAPSHOT.jar"/>
       
    <archive path="features/org.apache.tuscany.sca.feature.ejava_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.ejava-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.ejava-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.ejava_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.ejava-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.ejava-1.4-EQUINOX-SNAPSHOT.jar"/>
       
    <archive path="features/org.apache.tuscany.sca.feature.manager_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.manager-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.manager-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.manager_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.manager-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.manager-1.4-EQUINOX-SNAPSHOT.jar"/>
       
    <archive path="features/org.apache.tuscany.sca.feature.process_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.process-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.process-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.process_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.process-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.process-1.4-EQUINOX-SNAPSHOT.jar"/>
       
    <archive path="features/org.apache.tuscany.sca.feature.web20_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.web20-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.web20-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.web20_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.web20-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.web20-1.4-EQUINOX-SNAPSHOT.jar"/>
 
    <archive path="features/org.apache.tuscany.sca.feature.webservice_1.4.0.jar"
-      url="features/org.apache.tuscany.sca.feature.webservice-1.4-SNAPSHOT.jar"/>
+      url="features/org.apache.tuscany.sca.feature.webservice-1.4-EQUINOX-SNAPSHOT.jar"/>
    <archive path="plugins/org.apache.tuscany.sca.plugin.webservice_1.4.0.jar"
-      url="plugins/org.apache.tuscany.sca.plugin.webservice-1.4-SNAPSHOT.jar"/>
+      url="plugins/org.apache.tuscany.sca.plugin.webservice-1.4-EQUINOX-SNAPSHOT.jar"/>
 
    <category-def name="org.apache.tuscany.sca.core.features"
       label="Core Features"/>

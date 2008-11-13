@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-distribution</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -37,46 +37,46 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-all</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <!-- Eclipse update site -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>org.apache.tuscany.sca.updatesite</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <!-- Maven plugins -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-ant-generator</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-bundle-plugin</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-eclipse-compiler</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-incremental-build</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-wsdl2java</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-maven-java2wsdl</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         
     </dependencies>
@@ -103,7 +103,7 @@
                                         <descriptor>src/main/assembly/repository.xml</descriptor>
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-repository-1.4-SNAPSHOT</finalName>
+                                    <finalName>apache-tuscany-sca-repository-1.4-EQUINOX-SNAPSHOT</finalName>
                                 </configuration>
                             </execution>
                         </executions>

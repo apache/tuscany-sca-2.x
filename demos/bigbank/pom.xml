@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-demos</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>demo-bigbank</artifactId>
@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-data-api</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -58,69 +58,69 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>demo-bigbank-account</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-atom-abdera</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rss-rome</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rmi</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-resource-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-http-runtime</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 

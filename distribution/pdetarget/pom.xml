@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-distribution</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -35,14 +35,14 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-all</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
         <!-- host-tomcat is not in the all-in-one distro -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
             <type>jar</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tomcat</groupId>

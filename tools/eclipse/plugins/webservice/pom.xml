@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca-eclipse-tools</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-EQUINOX-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>org.apache.tuscany.sca.plugin.webservice</artifactId>
@@ -66,20 +66,20 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>org.apache.tuscany.sca.plugin.core</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-webservice</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <type>zip</type>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-distribution-webservice</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-EQUINOX-SNAPSHOT</version>
             <classifier>src</classifier>
             <type>zip</type>
         </dependency>

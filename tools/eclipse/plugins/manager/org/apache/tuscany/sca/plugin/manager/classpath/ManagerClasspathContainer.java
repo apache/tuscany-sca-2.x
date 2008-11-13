@@ -33,7 +33,7 @@ public class ManagerClasspathContainer extends BaseClasspathContainer implements
     public ManagerClasspathContainer() {
         super("org.apache.tuscany.sca.plugin.manager",
               "org.apache.tuscany.sca.plugin.manager.runtime.library", "Tuscany SCA Domain Manager Library", 
-              "tuscany-sca", "tuscany-distribution-manager", "1.4-SNAPSHOT",
+              "tuscany-sca", "tuscany-distribution-manager", "1.4-EQUINOX-SNAPSHOT",
               "TUSCANY_HOME", "TUSCANY_SRC");
     }
 }

@@ -24,7 +24,7 @@
         <d:moduleId>
             <d:groupId>org.apache.tuscany.sca</d:groupId>
             <d:artifactId>sample-calculator-ws-webapp</d:artifactId>
-            <d:version>1.4-SNAPSHOT</d:version>
+            <d:version>1.4-EQUINOX-SNAPSHOT</d:version>
             <d:type>war</d:type>
         </d:moduleId>
         <!-- TUSCANY-1986 -->

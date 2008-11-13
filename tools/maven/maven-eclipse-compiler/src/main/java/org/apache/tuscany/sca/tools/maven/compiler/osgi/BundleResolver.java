@@ -393,7 +393,7 @@ public class BundleResolver {
         String home = System.getProperty("user.home");
         File jar =
             new File(new File(home),
-                     ".m2/repository/org/apache/tuscany/sca/tuscany-sca-api/1.4-SNAPSHOT/tuscany-sca-api-1.4-SNAPSHOT.jar");
+                     ".m2/repository/org/apache/tuscany/sca/tuscany-sca-api/1.4-EQUINOX-SNAPSHOT/tuscany-sca-api-1.4-EQUINOX-SNAPSHOT.jar");
         BundleDescription bundle = resolver.addBundle(jar);
         resolver.resolveState();
         resolver.assertResolved(bundle);

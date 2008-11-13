@@ -23,9 +23,9 @@
     
     <!--path id="test.classpath">
     	<pathelement location="target/classes"/>
-        <pathelement location="../../modules/tuscany-host-jetty-1.4-SNAPSHOT.jar"/>
-        <pathelement location="../../modules/tuscany-binding-jsonrpc-1.4-SNAPSHOT.jar"/>
-        <pathelement location="../../modules/tuscany-binding-rmi-1.4-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-host-jetty-1.4-EQUINOX-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-binding-jsonrpc-1.4-EQUINOX-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-binding-rmi-1.4-EQUINOX-SNAPSHOT.jar"/>
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
     	<pathelement location="target/demo-bigbank-account.jar"/>    
     </path-->

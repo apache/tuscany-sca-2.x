@@ -33,7 +33,7 @@ public class EJavaClasspathContainer extends BaseClasspathContainer implements R
     public EJavaClasspathContainer() {
         super("org.apache.tuscany.sca.plugin.ejava",
               "org.apache.tuscany.sca.plugin.ejava.runtime.library", "Tuscany SCA JEE Library", 
-              "tuscany-sca", "tuscany-distribution-ejava", "1.4-SNAPSHOT",
+              "tuscany-sca", "tuscany-distribution-ejava", "1.4-EQUINOX-SNAPSHOT",
               "TUSCANY_HOME", "TUSCANY_SRC");
     }
 }

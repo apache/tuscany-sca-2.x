@@ -33,7 +33,7 @@ public class Web20ClasspathContainer extends BaseClasspathContainer implements R
     public Web20ClasspathContainer() {
         super("org.apache.tuscany.sca.plugin.web20",
               "org.apache.tuscany.sca.plugin.web20.runtime.library", "Tuscany SCA Web 2.0 Library", 
-              "tuscany-sca", "tuscany-distribution-web20", "1.4-SNAPSHOT",
+              "tuscany-sca", "tuscany-distribution-web20", "1.4-EQUINOX-SNAPSHOT",
               "TUSCANY_HOME", "TUSCANY_SRC");
     }
 }

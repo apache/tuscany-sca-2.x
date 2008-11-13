@@ -33,7 +33,7 @@ public class ProcessClasspathContainer extends BaseClasspathContainer implements
     public ProcessClasspathContainer() {
         super("org.apache.tuscany.sca.plugin.process",
               "org.apache.tuscany.sca.plugin.process.runtime.library", "Tuscany SCA Process Library", 
-              "tuscany-sca", "tuscany-distribution-process", "1.4-SNAPSHOT",
+              "tuscany-sca", "tuscany-distribution-process", "1.4-EQUINOX-SNAPSHOT",
               "TUSCANY_HOME", "TUSCANY_SRC");
     }
 }

@@ -33,7 +33,7 @@ public class CoreClasspathContainer extends BaseClasspathContainer implements Ru
     public CoreClasspathContainer() {
         super("org.apache.tuscany.sca.plugin.core",
               "org.apache.tuscany.sca.plugin.core.runtime.library", "Tuscany SCA Core Library", 
-              "tuscany-sca", "tuscany-distribution-core", "1.4-SNAPSHOT",
+              "tuscany-sca", "tuscany-distribution-core", "1.4-EQUINOX-SNAPSHOT",
               "TUSCANY_HOME", "TUSCANY_SRC");
     }
 }
