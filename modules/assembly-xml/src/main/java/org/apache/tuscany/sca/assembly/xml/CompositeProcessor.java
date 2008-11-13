@@ -587,6 +587,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                            writeConstrainingType(composite),
                            new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
                            new XAttr(NAME, composite.getName().getLocalPart()),
+                           new XAttr(LOCAL, composite.isLocal() ? Boolean.TRUE : null),
                            new XAttr(AUTOWIRE, composite.getAutowire()),
                            policyProcessor.writePolicies(composite));
         
