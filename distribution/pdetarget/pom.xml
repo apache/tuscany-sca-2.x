@@ -138,7 +138,6 @@
                 <module>../../../modules/binding-ejb</module>
                 <module>../../../modules/binding-ejb-runtime</module>
                 <module>../../../modules/binding-gdata</module>
-                <module>../../../modules/binding-gdata-gsoc</module>
                 <module>../../../modules/binding-gdata-runtime</module>
                 <module>../../../modules/binding-gdata-runtime-gsoc</module>
                 <module>../../../modules/binding-http</module>
@@ -217,7 +216,9 @@
                 <module>../../../modules/node-impl</module>
                 <module>../../../modules/node-launcher</module>
                 <module>../../../modules/node-launcher-equinox</module>
+                <!--
                 <module>../../../modules/node-launcher-webapp</module>
+                -->
                 <module>../../../modules/node-manager</module>
                 <module>../../../modules/policy</module>
                 <module>../../../modules/policy-security</module>
