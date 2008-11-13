@@ -59,7 +59,7 @@ import org.osgi.framework.Version;
  *
  * @version $Rev$ $Date$
  */
-final class BundleUtil {
+public final class BundleUtil {
 
     /**
      * Returns the name of a bundle, or null if the given file is not a bundle.
@@ -68,13 +68,16 @@ final class BundleUtil {
      * @return
      * @throws IOException
      */
-    static String getBundleSymbolicName(File file) throws IOException {
+    public static String getBundleSymbolicName(File file) throws IOException {
         if (!file.exists()) {
             return null;
         }
         String bundleName = null;
         if (file.isDirectory()) {
             File mf = new File(file, JarFile.MANIFEST_NAME);
+            if (!mf.isFile()) {
+                mf = new File(file, "../../" + JarFile.MANIFEST_NAME);
+            }
             if (mf.isFile()) {
                 Manifest manifest = new Manifest(new FileInputStream(mf));
                 bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);

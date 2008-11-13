@@ -33,6 +33,7 @@ import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.OPTION_Targ
 import static org.eclipse.jdt.internal.compiler.impl.CompilerOptions.WARNING;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.tools.maven.compiler.osgi.BundleResolver;
+import org.apache.tuscany.sca.tools.maven.compiler.osgi.BundleUtil;
 import org.codehaus.plexus.compiler.AbstractCompiler;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerError;
@@ -73,44 +75,13 @@ public class JavaCompiler extends AbstractCompiler {
 
         getLogger().info("Invoking Tuscany Eclipse JDT compiler");
 
-        // getLogger().info(configuration.getCustomCompilerArguments().toString());
-        boolean osgi = "true".equals(configuration.getCustomCompilerArguments().get("-osgi"));
-        if (osgi) {
-            getLogger().info("Enforcing OSGi bundle resolution");
-        }
         List<URL> urls = new ArrayList<URL>();
         try {
-            //            urls.add(new File(configuration.getOutputLocation()).toURI().toURL());
             for (String entry : (List<String>)configuration.getClasspathEntries()) {
-                if (osgi) {
-                    try {
-                        File cp = new File(entry);
-                        if (cp.exists()) {
-                            stateController.addBundle(cp);
-                        }
-                    } catch (BundleException e) {
-                        getLogger().error(e.getMessage(), e);
-                    }
-                }
                 urls.add(new File(entry).toURI().toURL());
             }
         } catch (MalformedURLException e) {
             throw new CompilerException(e.getMessage(), e);
-        }
-
-        if (osgi) {
-            stateController.resolveState();
-            for (BundleDescription b : stateController.getBundles()) {
-                if (b != null) {
-                    try {
-                        stateController.assertResolved(b);
-                    } catch (BundleException e) {
-                        getLogger().error(stateController.getAllErrors().toString());
-                        // FIXME: For now, only a warning is reported
-                        // throw new CompilerException(e.getMessage(), e);
-                    }
-                }
-            }
         }
 
         ClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
@@ -187,6 +158,43 @@ public class JavaCompiler extends AbstractCompiler {
         // Compile all the compilation units
         getLogger().info("Compiling " + compilationUnits.size() + " to " + configuration.getOutputLocation());
         compiler.compile((ICompilationUnit[])compilationUnits.toArray(new ICompilationUnit[compilationUnits.size()]));
+
+        // getLogger().info(configuration.getCustomCompilerArguments().toString());
+        boolean osgi = "true".equals(configuration.getCustomCompilerArguments().get("-osgi"));
+        File proj = new File(configuration.getOutputLocation());
+        String symbol = null;
+        try {
+            symbol = BundleUtil.getBundleSymbolicName(proj);
+        } catch (IOException e1) {
+            symbol = null;
+        }
+
+        if (osgi && symbol != null) {
+            getLogger().info("Resolving OSGi bundles");
+            for (String entry : (List<String>)configuration.getClasspathEntries()) {
+                try {
+                    File cp = new File(entry);
+                    if (cp.exists()) {
+                        stateController.addBundle(cp);
+                    }
+                } catch (BundleException e) {
+                    getLogger().error(e.getMessage(), e);
+                }
+            }
+
+            stateController.resolveState();
+            BundleDescription b = stateController.getBundleDescription(proj);
+            if (b != null) {
+                try {
+                    stateController.assertResolved(b);
+                    getLogger().info("OSGi bundle is resolved: " + b.getSymbolicName());
+                } catch (BundleException e) {
+                    getLogger().error(stateController.getAllErrors().toString());
+                    // FIXME: For now, only a warning is reported
+                    // throw new CompilerException(e.getMessage(), e);
+                }
+            }
+        }
 
         return compilerErrors;
     }
