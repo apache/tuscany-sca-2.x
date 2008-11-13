@@ -187,13 +187,16 @@
             <artifactId>tuscany-node-launcher-equinox</artifactId>
             <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
+        
+        <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-launcher-webapp</artifactId>
             <version>1.4-EQUINOX-SNAPSHOT</version>
             <type>war</type>
         </dependency>
-
+        -->
+        
         <!-- Monitoring -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

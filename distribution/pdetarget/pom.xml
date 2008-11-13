@@ -37,7 +37,9 @@
             <type>pom</type>
             <version>1.4-EQUINOX-SNAPSHOT</version>
         </dependency>
+        
         <!-- host-tomcat is not in the all-in-one distro -->
+        <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
@@ -50,6 +52,7 @@
                 </exclusion>
             </exclusions>
         </dependency>       
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
