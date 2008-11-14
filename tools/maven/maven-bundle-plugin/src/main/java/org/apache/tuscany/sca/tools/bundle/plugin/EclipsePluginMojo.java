@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -236,10 +238,69 @@ public class EclipsePluginMojo extends AbstractMojo {
     private static final String ATTR_SRC = "src";
 
     /**
+     * Attribute value for kind: var
+     */
+    private static final String ATTR_VAR = "var";
+
+    /**
+     * Attribute value for kind: lib
+     */
+    private static final String ATTR_LIB = "lib";
+
+    /**
+     * Eclipse build path variable M2_REPO
+     */
+    private static final String M2_REPO = "M2_REPO";
+
+    /**
      * Element for classpathentry.
      */
     private static final String ELT_CLASSPATHENTRY = "classpathentry";
     private static final String ELT_CLASSPATH = "classpath";
+
+    /**
+     * @parameter expression="${localRepository}"
+     * @required
+     * @readonly
+     */
+    private ArtifactRepository localRepository;
+
+    /**
+     * If the executed project is a reactor project, this will contains the full list of projects in the reactor.
+     * 
+     * @parameter expression="${reactorProjects}"
+     * @required
+     * @readonly
+     */
+    protected List reactorProjects;
+
+    /**
+     * Utility method that locates a project producing the given artifact.
+     * 
+     * @param artifact the artifact a project should produce.
+     * @return <code>true</code> if the artifact is produced by a reactor project.
+     */
+    private boolean isAvailableAsAReactorProject(Artifact artifact) {
+        if (reactorProjects != null) {
+            for (Iterator iter = reactorProjects.iterator(); iter.hasNext();) {
+                MavenProject reactorProject = (MavenProject)iter.next();
+
+                if (reactorProject.getGroupId().equals(artifact.getGroupId()) && reactorProject.getArtifactId()
+                    .equals(artifact.getArtifactId())) {
+                    if (reactorProject.getVersion().equals(artifact.getVersion())) {
+                        return true;
+                    } else {
+                        getLog().info("Artifact " + artifact.getId()
+                            + " already available as a reactor project, but with different version. Expected: "
+                            + artifact.getVersion()
+                            + ", found: "
+                            + reactorProject.getVersion());
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     private static String getCanonicalPath(File file) throws MojoExecutionException {
         try {
@@ -289,14 +350,13 @@ public class EclipsePluginMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
-    
+
     /**
      * Skip the operation when true.
      * 
      * @parameter expression="${eclipse.skip}" default-value="false"
      */
     private boolean skip;
-
 
     private EclipseSourceDir[] buildDirectoryList() throws MojoExecutionException {
         File buildOutputDirectory = new File(project.getBuild().getOutputDirectory());
@@ -469,7 +529,7 @@ public class EclipsePluginMojo extends AbstractMojo {
         List<EclipseSourceDir> specialSources = new ArrayList<EclipseSourceDir>();
 
         // Map<String,List<EclipseSourceDir>>
-        Map<String,List<EclipseSourceDir>> byOutputDir = new HashMap<String,List<EclipseSourceDir>>();
+        Map<String, List<EclipseSourceDir>> byOutputDir = new HashMap<String, List<EclipseSourceDir>>();
 
         for (int j = 0; j < dirs.length; j++) {
             EclipseSourceDir dir = dirs[j];
@@ -526,7 +586,7 @@ public class EclipsePluginMojo extends AbstractMojo {
 
             writer.print("    <" + ELT_CLASSPATHENTRY);
 
-            writer.print(" " + ATTR_KIND + "=\"src\"");
+            writer.print(" " + ATTR_KIND + "=\"" + ATTR_SRC + "\"");
             writer.print(" " + ATTR_PATH + "=\"" + dir.getPath() + "\"");
 
             if (!isSpecial && dir.getOutput() != null && !defaultOutput.equals(dir.getOutput())) {
@@ -551,7 +611,39 @@ public class EclipsePluginMojo extends AbstractMojo {
 
             writer.println("/>");
         }
-        writer.println("    <classpathentry kind=\"output\" path=\"" + defaultOutput + "\"/>");
+
+        for (Object a : project.getArtifacts()) {
+            Artifact artifact = (Artifact)a;
+            if (Artifact.SCOPE_TEST.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("Adding explict classpath entry: " + artifact.toString());
+                }
+
+                String path = "", kind = "";
+                if (isAvailableAsAReactorProject(artifact)) {
+                    path = "/" + artifact.getArtifactId();
+                    kind = ATTR_SRC;
+                } else {
+                    String fullPath = artifact.getFile().getPath();
+                    String relativePath =
+                        toRelativeAndFixSeparator(new File(localRepository.getBasedir()), new File(fullPath), false);
+
+                    if (!new File(relativePath).isAbsolute()) {
+                        path = M2_REPO + "/" + relativePath;
+                        kind = ATTR_VAR;
+                    } else {
+                        path = relativePath;
+                        kind = ATTR_LIB;
+                    }
+                }
+                writer.print("    <" + ELT_CLASSPATHENTRY);
+
+                writer.print(" " + ATTR_KIND + "=\"" + kind + "\"");
+                writer.print(" " + ATTR_PATH + "=\"" + path + "\"");
+                writer.println("/>");
+            }
+        }
+        writer.println("    <classpathentry kind=\"" + ATTR_OUTPUT + "\" path=\"" + defaultOutput + "\"/>");
         writer.println("</" + ELT_CLASSPATH + ">");
         writer.close();
     }
