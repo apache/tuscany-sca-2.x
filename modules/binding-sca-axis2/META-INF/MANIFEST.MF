@@ -11,22 +11,25 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Axis2-based Default Binding Ext
  ension
-Import-Package: org.apache.axiom.om,org.apache.tuscany.sca.assembly;ve
- rsion="1.4",org.apache.tuscany.sca.binding.sca;version="1.4",org.apac
- he.tuscany.sca.binding.ws;version="1.4",org.apache.tuscany.sca.bindin
- g.ws.axis2;version="1.4",org.apache.tuscany.sca.binding.ws.wsdlgen;ve
- rsion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tusc
- any.sca.core.assembly;version="1.4",org.apache.tuscany.sca.databindin
- g;version="1.4",org.apache.tuscany.sca.host.http;version="1.4",org.ap
- ache.tuscany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.in
- vocation;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",o
- rg.apache.tuscany.sca.policy.util;version="1.4",org.apache.tuscany.sc
- a.provider;version="1.4",org.apache.tuscany.sca.runtime;version="1.4"
- ,org.osoa.sca;version="1.4",org.osoa.sca.annotations;version="1.4";re
- solution:=optional,org.apache.tuscany.sca.node;resolution:=optional,o
- rg.junit;resolution:=optional,junit.framework;resolution:=optional,or
- g.apache.tuscany.sca.endpointresolver;version="1.4";resolution:=optio
- nal
+Import-Package: org.apache.axiom.om,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.binding.sca;version="1.4",
+ org.apache.tuscany.sca.binding.ws;version="1.4",
+ org.apache.tuscany.sca.binding.ws.axis2;version="1.4",
+ org.apache.tuscany.sca.binding.ws.wsdlgen;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.core.assembly;version="1.4",
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.endpointresolver;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.host.http;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy.util;version="1.4",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4",
+ org.osoa.sca;version="1.4",
+ org.osoa.sca.annotations;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca.axis2
 Bundle-DocURL: http://www.apache.org/
 

@@ -29,7 +29,7 @@ Import-Package: javax.wsdl,
  org.apache.tuscany.sca.monitor;version="1.4",
  org.apache.tuscany.sca.policy;version="1.4",
  org.apache.tuscany.sca.xsd;version="1.4.0",
- org.junit;resolution:=optional,
+ 
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.xml
 Bundle-DocURL: http://www.apache.org/

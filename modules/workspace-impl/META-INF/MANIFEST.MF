@@ -11,16 +11,16 @@ Bnd-LastModified: 1225397201562
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Domain Workspace Implementation
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
- he.tuscany.sca.contribution;version="1.4",org.apache.tuscany.sca.cont
- ribution.processor;version="1.4",org.apache.tuscany.sca.contribution.
- resolver;version="1.4",org.apache.tuscany.sca.contribution.scanner;ve
- rsion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tusc
- any.sca.monitor;version="1.4",org.apache.tuscany.sca.workspace;versio
- n="1.4",org.apache.tuscany.sca.workspace.builder;version="1.4",junit.
- framework;resolution:=optional,org.apache.tuscany.sca.contribution.na
- mespace.impl;resolution:=optional,org.apache.tuscany.sca.contribution
- .namespace;resolution:=optional
+Import-Package: 
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.contribution.scanner;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.workspace;version="1.4",
+ org.apache.tuscany.sca.workspace.builder;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.workspace.impl
 Bundle-DocURL: http://www.apache.org/
 

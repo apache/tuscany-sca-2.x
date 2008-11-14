@@ -21,8 +21,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef;version="1.4",
  org.apache.tuscany.sca.interfacedef.java;version="1.4",
  org.apache.tuscany.sca.monitor;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4.0",
- org.junit;resolution:=optional
+ org.apache.tuscany.sca.policy;version="1.4.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.xml
 Bundle-DocURL: http://www.apache.org/
 

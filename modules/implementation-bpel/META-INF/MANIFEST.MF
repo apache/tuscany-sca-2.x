@@ -17,7 +17,7 @@ Import-Package: javax.wsdl,
  javax.wsdl.extensions,
  javax.xml.namespace,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.impl;version="1.4",
  org.apache.tuscany.sca.contribution.processor;version="1.4",

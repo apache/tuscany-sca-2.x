@@ -20,8 +20,8 @@ Import-Package: javax.xml.datatype,javax.xml.namespace,javax.xml.trans
  form,org.apache.tuscany.sca.interfacedef;version="1.4",org.apache.tus
  cany.sca.interfacedef.impl;version="1.4",org.apache.tuscany.sca.inter
  facedef.util;version="1.4",org.apache.tuscany.sca.policy;version="1.4
- ",junit.framework;resolution:=optional,org.apache.tuscany.sca.core;ve
- rsion="1.4";resolution:=optional,org.junit;resolution:=optional
+ ",org.apache.tuscany.sca.core;ve
+ rsion="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.interface
 Bundle-DocURL: http://www.apache.org/
 

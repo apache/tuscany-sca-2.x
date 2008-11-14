@@ -23,7 +23,7 @@ Import-Package: javax.resource.spi,
  javax.transaction.xa;version="1.1";resolution:=optional,
  javax.xml.namespace,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.geronimo.transaction.log,
  org.apache.geronimo.transaction.manager,
  org.apache.tuscany.sca.assembly;version="1.4",

@@ -16,7 +16,7 @@ Import-Package: com.sun.xml.fastinfoset,
  com.sun.xml.fastinfoset.stax,
  javax.xml.parsers,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.databinding;version="1.4",
  org.apache.tuscany.sca.databinding.impl;version="1.4",
  org.apache.tuscany.sca.databinding.xml;version="1.4",

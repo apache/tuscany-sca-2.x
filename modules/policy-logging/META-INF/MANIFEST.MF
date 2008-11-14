@@ -10,16 +10,19 @@ Bnd-LastModified: 1225397480671
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany Logging Policy Model
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.assembly;version="1.4",org.apache.tuscany.sca.contribution.proc
- essor;version="1.4",org.apache.tuscany.sca.contribution.resolver;vers
- ion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscan
- y.sca.definitions;version="1.4",org.apache.tuscany.sca.interfacedef;v
- ersion="1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apac
- he.tuscany.sca.monitor;version="1.4",org.apache.tuscany.sca.policy;ve
- rsion="1.4",org.apache.tuscany.sca.provider;version="1.4",org.apache.
- tuscany.sca.runtime;version="1.4",junit.framework;resolution:=optiona
- l
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.definitions;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.logging
 Bundle-DocURL: http://www.apache.org/
 

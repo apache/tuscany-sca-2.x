@@ -10,14 +10,18 @@ Bnd-LastModified: 1225397402000
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for XmlBeans
-Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
- y.sca.databinding;version="1.4",org.apache.tuscany.sca.databinding.im
- pl;version="1.4",org.apache.tuscany.sca.interfacedef;version="1.4",or
- g.apache.tuscany.sca.interfacedef.util;version="1.4",org.apache.xmlbe
- ans,org.osoa.sca;version="1.4",org.osoa.sca.annotations;version="1.4"
- ,org.w3c.dom,org.apache.xmlbeans.impl.values;resolution:=optional,jun
- it.framework;resolution:=optional,org.apache.xmlbeans.xml.stream;reso
- lution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.xmlbeans,
+ org.apache.xmlbeans.impl.values;resolution:=optional,
+ org.apache.xmlbeans.xml.stream;resolution:=optional,
+ org.osoa.sca;version="1.4",
+ org.osoa.sca.annotations;version="1.4",
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.xmlbeans
 Bundle-DocURL: http://www.apache.org/
 

@@ -17,7 +17,7 @@ Import-Package: javax.resource.spi,
  javax.transaction;version="1.0.1",
  javax.wsdl,
  javax.xml.namespace,
- junit.framework;resolution:=optional,
+ 
  org.apache.commons.logging,
  org.apache.geronimo.transaction.manager,
  org.apache.ode.bpel.compiler,

@@ -21,7 +21,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Implementation
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.builder;version="1.4",
  org.apache.tuscany.sca.contribution;version="1.4",
@@ -40,7 +40,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.work;version="1.4",
  org.apache.tuscany.sca.workspace;version="1.4",
  org.apache.tuscany.sca.workspace.builder;version="1.4",
- org.junit;resolution:=optional,
+ 
  org.osoa.sca;version="1.4",
  org.osoa.sca.annotations;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.node.impl

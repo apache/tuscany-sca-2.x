@@ -9,13 +9,16 @@ Bnd-LastModified: 1225397120421
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Policy XML WS Model
-Import-Package: javax.xml.namespace,javax.xml.stream;version="1.0",org
- .apache.axiom.om,org.apache.neethi,org.apache.tuscany.sca.contributio
- n.processor;version="1.4",org.apache.tuscany.sca.contribution.resolve
- r;version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.
- tuscany.sca.monitor;version="1.4",org.apache.tuscany.sca.policy.xml;v
- ersion="1.4";resolution:=optional,junit.framework;resolution:=optiona
- l,org.apache.tuscany.sca.policy;version="1.4";resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.stream;version="1.0",
+ org.apache.axiom.om,
+ org.apache.neethi,
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.policy.xml;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.xml.ws
 Bundle-DocURL: http://www.apache.org/
 

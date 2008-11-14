@@ -15,7 +15,7 @@ Import-Package: javax.xml.namespace,javax.xml.stream,org.apache.tuscan
  ion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscan
  y.sca.definitions;version="1.4",org.apache.tuscany.sca.definitions.ut
  il;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apa
- che.tuscany.sca.policy;version="1.4",org.junit;resolution:=optional
+ che.tuscany.sca.policy;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.definitions.xml
 Bundle-DocURL: http://www.apache.org/
 

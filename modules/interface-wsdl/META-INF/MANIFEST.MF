@@ -18,7 +18,6 @@ Bundle-Description: Apache Tuscany SCA WSDL Interface Model
 Import-Package: javax.wsdl,
  javax.wsdl.extensions,
  javax.xml.namespace,
- junit.framework;resolution:=optional,
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.contribution;version="1.4.0";resolution:=optional,
  org.apache.tuscany.sca.contribution.processor;version="1.4.0";resolution:=optional,
@@ -31,8 +30,7 @@ Import-Package: javax.wsdl,
  org.apache.tuscany.sca.monitor;version="1.4.0";resolution:=optional,
  org.apache.tuscany.sca.policy;version="1.4",
  org.apache.tuscany.sca.xsd;version="1.4",
- org.apache.ws.commons.schema,
- org.junit;resolution:=optional
+ org.apache.ws.commons.schema
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl
 Bundle-DocURL: http://www.apache.org/
 

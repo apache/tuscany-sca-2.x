@@ -30,7 +30,7 @@ Import-Package: javax.activation,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.transform.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4.0",
  org.apache.tuscany.sca.contribution.resolver;version="1.4",
  org.apache.tuscany.sca.databinding;version="1.4",
@@ -44,7 +44,7 @@ Import-Package: javax.activation,
  org.apache.tuscany.sca.policy;version="1.4.0",
  org.apache.tuscany.sca.xsd;version="1.4",
  org.apache.ws.commons.schema.resolver,
- org.junit;resolution:=optional,
+ 
  org.osoa.sca;version="1.4",
  org.w3c.dom,
  org.xml.sax

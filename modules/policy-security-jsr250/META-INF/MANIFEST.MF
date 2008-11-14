@@ -20,7 +20,7 @@ Import-Package: javax.annotation.security,javax.xml.namespace,org.apac
  impl;resolution:=optional,org.osoa.sca.annotations;version="1.4";reso
  lution:=optional,org.apache.tuscany.sca.interfacedef.java;version="1.
  4";resolution:=optional,org.apache.tuscany.sca.interfacedef;version="
- 1.4";resolution:=optional,junit.framework;resolution:=optional,org.ap
+ 1.4";resolution:=optional,org.ap
  ache.tuscany.sca.interfacedef.java.impl;version="1.4";resolution:=opt
  ional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.jsr250

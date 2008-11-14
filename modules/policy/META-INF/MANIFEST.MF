@@ -16,12 +16,17 @@ Bnd-LastModified: 1225397083703
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Policy Model
-Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.transf
- orm,javax.xml.transform.dom,javax.xml.transform.stream,javax.xml.xpat
- h,org.apache.tuscany.sca.extensibility;version="1.4",org.apache.tusca
- ny.sca.policy;version="1.4",org.apache.tuscany.sca.policy.impl;versio
- n="1.4",org.apache.tuscany.sca.policy.util;version="1.4",org.w3c.dom,
- junit.framework;resolution:=optional
+Import-Package: javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.stream,
+ javax.xml.xpath,
+ org.apache.tuscany.sca.extensibility;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4",
+ org.apache.tuscany.sca.policy.impl;version="1.4",
+ org.apache.tuscany.sca.policy.util;version="1.4",
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.policy
 Bundle-DocURL: http://www.apache.org/
 

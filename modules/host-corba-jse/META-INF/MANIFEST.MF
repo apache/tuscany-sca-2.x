@@ -19,8 +19,8 @@ Import-Package: org.apache.tuscany.sca.core;version="1.4",org.apache.t
  .jse;version="1.4",org.apache.tuscany.sca.host.corba.naming;version="
  1.4",org.omg.CORBA,org.omg.CosNaming,org.omg.CosNaming.NamingContextE
  xtPackage,org.omg.CosNaming.NamingContextPackage,org.omg.PortableServ
- er,junit.framework;resolution:=optional,org.omg.CORBA.portable;resolu
- tion:=optional,org.junit;resolution:=optional
+ er,org.omg.CORBA.portable;resolu
+ tion:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jse
 Bundle-DocURL: http://www.apache.org/
 

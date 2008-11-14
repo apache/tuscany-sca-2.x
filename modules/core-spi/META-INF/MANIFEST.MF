@@ -38,7 +38,7 @@ Import-Package: org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.provider;version="1.4",
  org.apache.tuscany.sca.runtime;version="1.4",
  org.apache.tuscany.sca.work;version="1.4",
- org.junit;resolution:=optional,
+ 
  org.osoa.sca;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.core.spi
 Bundle-DocURL: http://www.apache.org/

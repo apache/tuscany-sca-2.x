@@ -11,13 +11,11 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Transient Name Server CORBA Hos
  t
-Import-Package: org.apache.tuscany.sca.core;version="1.4",org.apache.t
- uscany.sca.host.corba;version="1.4",org.apache.tuscany.sca.host.corba
- .jse;version="1.4",org.apache.tuscany.sca.host.corba.naming;version="
- 1.4",org.omg.CORBA,org.apache.tuscany.sca.binding.corba.provider.serv
- ice;resolution:=optional,org.apache.tuscany.sca.host.corba.jse.tns;re
- solution:=optional,junit.framework;resolution:=optional,org.junit;res
- olution:=optional
+Import-Package: org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.corba;version="1.4",
+ org.apache.tuscany.sca.host.corba.jse;version="1.4",
+ org.apache.tuscany.sca.host.corba.naming;version="1.4",
+ org.omg.CORBA
 Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jse.tns
 Bundle-DocURL: http://www.apache.org/
 

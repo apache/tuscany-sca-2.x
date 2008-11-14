@@ -11,7 +11,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA CORBA Host Extension Point
 Import-Package: org.apache.tuscany.sca.host.corba;version="1.4",org.om
- g.CORBA,org.junit;resolution:=optional
+ g.CORBA
 Bundle-SymbolicName: org.apache.tuscany.sca.host.corba
 Bundle-DocURL: http://www.apache.org/
 

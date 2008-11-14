@@ -30,8 +30,8 @@ Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.stream
  ca.interfacedef;version="1.4",org.apache.tuscany.sca.interfacedef.imp
  l;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apac
  he.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.policy.uti
- l;version="1.4",org.w3c.dom,org.junit;resolution:=optional,org.xml.sa
- x;resolution:=optional,junit.framework;resolution:=optional,javax.xml
+ l;version="1.4",org.w3c.dom,org.xml.sa
+ x;resolution:=optional,javax.xml
  .validation;resolution:=optional,org.apache.tuscany.sca.assembly.buil
  der;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xml

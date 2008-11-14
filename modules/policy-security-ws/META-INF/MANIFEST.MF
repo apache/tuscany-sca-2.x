@@ -17,18 +17,25 @@ Bnd-LastModified: 1225397300062
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany Security Policy WS Model
-Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
- sion="1.0",org.apache.axiom.om,org.apache.axis2,org.apache.axis2.cont
- ext,org.apache.axis2.description,org.apache.axis2.engine,org.apache.n
- eethi,org.apache.tuscany.sca.assembly;version="1.4",org.apache.tuscan
- y.sca.contribution.processor;version="1.4",org.apache.tuscany.sca.con
- tribution.resolver;version="1.4",org.apache.tuscany.sca.core;version=
- "1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apache.tuscany
- .sca.policy;version="1.4",org.apache.tuscany.sca.policy.security.ws;v
- ersion="1.4",org.apache.tuscany.sca.policy.util;version="1.4",org.apa
- che.tuscany.sca.provider;version="1.4",org.apache.tuscany.sca.runtime
- ;version="1.4",org.osoa.sca;version="1.4",junit.framework;resolution:
- =optional
+Import-Package: javax.xml.namespace;version="1.0",
+ javax.xml.stream;version="1.0",
+ org.apache.axiom.om,
+ org.apache.axis2,
+ org.apache.axis2.context,
+ org.apache.axis2.description,
+ org.apache.axis2.engine,
+ org.apache.neethi,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4",
+ org.apache.tuscany.sca.policy.security.ws;version="1.4",
+ org.apache.tuscany.sca.policy.util;version="1.4",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4",
+ org.osoa.sca;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.ws
 Bundle-DocURL: http://www.apache.org/
 

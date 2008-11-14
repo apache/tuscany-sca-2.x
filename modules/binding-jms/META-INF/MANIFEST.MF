@@ -14,7 +14,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JMS Binding Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.xml;version="1.4",
  org.apache.tuscany.sca.binding.jms;version="1.4",

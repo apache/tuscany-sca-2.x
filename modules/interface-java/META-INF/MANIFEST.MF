@@ -21,16 +21,18 @@ Bnd-LastModified: 1225397130359
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Java Interface Model
-Import-Package: javax.xml.namespace,org.apache.tuscany.sca.assembly;ve
- rsion="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tusc
- any.sca.extensibility;version="1.4",org.apache.tuscany.sca.interfaced
- ef;version="1.4",org.apache.tuscany.sca.interfacedef.impl;version="1.
- 4",org.apache.tuscany.sca.interfacedef.java;version="1.4",org.apache.
- tuscany.sca.interfacedef.java.impl;version="1.4",org.apache.tuscany.s
- ca.interfacedef.java.introspect;version="1.4",org.apache.tuscany.sca.
- interfacedef.util;version="1.4",org.apache.tuscany.sca.policy;version
- ="1.4",org.osoa.sca.annotations;version="1.4",junit.framework;resolut
- ion:=optional
+Import-Package: javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.extensibility;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.introspect;version="1.4",
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4",
+ org.osoa.sca.annotations;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java
 Bundle-DocURL: http://www.apache.org/
 

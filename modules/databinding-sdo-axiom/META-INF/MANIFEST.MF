@@ -17,7 +17,7 @@ Import-Package: commonj.sdo;version="2.1",
  commonj.sdo.impl;resolution:=optional,
  javax.xml.namespace,
  javax.xml.stream;version="1.0",
- junit.framework;resolution:=optional,
+ 
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
  org.apache.axiom.om.impl.serialize,

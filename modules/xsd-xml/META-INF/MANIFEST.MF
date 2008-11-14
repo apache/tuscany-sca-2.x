@@ -17,7 +17,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA XSD XML Processor
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4.0",
  org.apache.tuscany.sca.contribution;version="1.4",
  org.apache.tuscany.sca.contribution.namespace;version="1.4",
@@ -29,7 +29,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.xsd.xml;version="1.4",
  org.apache.ws.commons.schema,
  org.apache.ws.commons.schema.resolver,
- org.junit;resolution:=optional,
+ 
  org.w3c.dom,
  org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.xsd.xml

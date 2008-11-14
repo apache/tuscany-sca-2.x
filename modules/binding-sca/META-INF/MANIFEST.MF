@@ -24,8 +24,8 @@ Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
  tion:=optional,org.apache.tuscany.sca.assembly.builder.impl;resolutio
  n:=optional,org.apache.tuscany.sca.contribution;version="1.4";resolut
  ion:=optional,org.apache.tuscany.sca.monitor;version="1.4";resolution
- :=optional,org.junit;resolution:=optional,javax.xml.stream;resolution
- :=optional,junit.framework;resolution:=optional,org.apache.tuscany.sc
+ :=optional,javax.xml.stream;resolution
+ :=optional,org.apache.tuscany.sc
  a.assembly.xml;version="1.4";resolution:=optional,org.apache.tuscany.
  sca.contribution.resolver;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca

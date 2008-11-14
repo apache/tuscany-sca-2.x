@@ -17,8 +17,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.contribution.resolver;version="1.4",
  org.apache.tuscany.sca.core;version="1.4",
  org.apache.tuscany.sca.monitor;version="1.4",
- org.apache.tuscany.sca.workspace;version="1.4",
- org.junit;resolution:=optional
+ org.apache.tuscany.sca.workspace;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.workspace.xml
 Bundle-DocURL: http://www.apache.org/
 

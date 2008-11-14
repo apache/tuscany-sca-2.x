@@ -12,13 +12,12 @@ Bnd-LastModified: 1225397253156
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
- he.tuscany.sca.binding.atom;version="1.4",org.apache.tuscany.sca.poli
- cy;version="1.4",javax.xml.stream;resolution:=optional,org.apache.tus
- cany.sca.contribution.processor;resolution:=optional,org.apache.tusca
- ny.sca.core;version="1.4";resolution:=optional,org.apache.tuscany.sca
- .monitor;version="1.4";resolution:=optional,org.junit;resolution:=opt
- ional
+Import-Package: javax.xml.stream;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.binding.atom;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.monitor;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom
 Bundle-DocURL: http://www.apache.org/
 

@@ -9,13 +9,15 @@ Bnd-LastModified: 1225397427890
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JEE environment CORBA Host
-Import-Package: javax.naming,javax.rmi,org.apache.tuscany.sca.core;ver
- sion="1.4",org.apache.tuscany.sca.host.corba;version="1.4",org.omg.CO
- RBA,org.omg.CosNaming,org.omg.CosNaming.NamingContextPackage,junit.fr
- amework;resolution:=optional,org.apache.tuscany.sca.host.corba.jee;re
- solution:=optional,org.apache.tuscany.sca.host.corba.naming;resolutio
- n:=optional,org.omg.CORBA.portable;resolution:=optional,javax.naming.
- spi;resolution:=optional,org.junit;resolution:=optional
+Import-Package: javax.naming,
+ javax.naming.spi;resolution:=optional,
+ javax.rmi,
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.corba;version="1.4",
+ org.omg.CORBA,
+ org.omg.CORBA.portable;resolution:=optional,
+ org.omg.CosNaming,
+ org.omg.CosNaming.NamingContextPackage
 Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jee
 Bundle-DocURL: http://www.apache.org/
 

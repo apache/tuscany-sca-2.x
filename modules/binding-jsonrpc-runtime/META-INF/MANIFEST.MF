@@ -16,12 +16,10 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
 Import-Package: com.metaparadigm.jsonrpc,
- com.meterware.httpunit;resolution:=optional,
  javax.servlet,
  javax.servlet.http,
- junit.framework;resolution:=optional,
+ 
  org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.assembly.xml,
  org.apache.tuscany.sca.binding.jsonrpc;version="1.4",
  org.apache.tuscany.sca.binding.jsonrpc.provider;version="1.4",
  org.apache.tuscany.sca.core;version="1.4",
@@ -31,12 +29,11 @@ Import-Package: com.metaparadigm.jsonrpc,
  org.apache.tuscany.sca.interfacedef;version="1.4",
  org.apache.tuscany.sca.interfacedef.java;version="1.4",
  org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.node;resolution:=optional,
  org.apache.tuscany.sca.policy;version="1.4.0",
  org.apache.tuscany.sca.provider;version="1.4",
  org.apache.tuscany.sca.runtime;version="1.4",
  org.json,
- org.junit;resolution:=optional,
+ 
  org.osoa.sca;version="1.4",
  org.osoa.sca.annotations;version="1.4";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime

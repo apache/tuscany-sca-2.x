@@ -37,7 +37,7 @@ Import-Package: javax.xml.namespace;version="1.0",javax.xml.stream;ver
  rsion="1.4",org.apache.tuscany.sca.policy;version="1.4",org.apache.tu
  scany.sca.policy.util;version="1.4",org.apache.tuscany.sca.provider;v
  ersion="1.4",org.apache.tuscany.sca.runtime;version="1.4",org.osoa.sc
- a;version="1.4",junit.framework;resolution:=optional
+ a;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security.ws
 Bundle-DocURL: http://www.apache.org/
 

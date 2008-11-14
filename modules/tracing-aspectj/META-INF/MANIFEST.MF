@@ -16,7 +16,7 @@ Bundle-Description: The Apache Software Foundation provides support fo
     We consider ourselves not simply a group of projects sharing a ser
  ver, but rather a community of developers    and users.
 Import-Package: org.aspectj.lang,org.aspectj.lang.annotation,org.aspec
- tj.lang.reflect,org.junit;resolution:=optional
+ tj.lang.reflect
 Bundle-SymbolicName: org.apache.tuscany.sca.tracing.aspect
 Bundle-DocURL: http://www.apache.org/
 
