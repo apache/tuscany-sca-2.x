@@ -82,6 +82,11 @@ public class TestRuntimeWire implements RuntimeWire {
 
         return null;
     }
+    
+    public Object invoke(Message arg1) throws InvocationTargetException {
+
+        return null;
+    }    
 
     public void rebuild() {
 
