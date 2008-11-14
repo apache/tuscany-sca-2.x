@@ -174,7 +174,6 @@
                 <module>policy-reliability</module>
                 <module>policy-security</module>
                 <module>policy-security-jsr250</module>
-                <!--module>policy-security-ws</module-->
                 <module>policy-transaction</module>
                 <module>runtime</module>
                 <module>runtime-tomcat</module>
