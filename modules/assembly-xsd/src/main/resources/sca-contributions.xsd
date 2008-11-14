@@ -10,7 +10,7 @@
     <element name="contribution" type="sca:ContributionType"/>        
     <complexType name="ContributionType">
          <sequence>
-             <element name="deployable" type="sca:DeployableType" minOccurs="1" maxOccurs="unbounded"/>
+             <element name="deployable" type="sca:DeployableType" minOccurs="0" maxOccurs="unbounded"/>
              <element ref="sca:import" minOccurs="0" maxOccurs="unbounded"/>
              <element ref="sca:export" minOccurs="0" maxOccurs="unbounded"/>
              <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
