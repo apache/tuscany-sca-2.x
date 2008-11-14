@@ -31,7 +31,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
@@ -42,7 +41,6 @@ import org.osoa.sca.ServiceReference;
  * 
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unused")
 public class CglibProxyFactory implements ProxyFactory {
     private MessageFactory messageFactory;
 
