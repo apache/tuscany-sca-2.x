@@ -159,7 +159,7 @@
                                <id>generate-pde</id> 
                                <phase>generate-resources</phase> 
                                <goals> 
-                                   <goal>generate-pde</goal> 
+                                   <goal>eclipse</goal> 
                                </goals> 
                                <configuration> 
                                </configuration> 
