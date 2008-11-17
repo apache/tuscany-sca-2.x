@@ -1,16 +1,16 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.monitor;version="1.4"
-Private-Package: org.apache.tuscany.sca.monitor.impl;version="1.4"
+Export-Package: org.apache.tuscany.sca.monitor;version="2.0"
+Private-Package: org.apache.tuscany.sca.monitor.impl;version="2.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Monitor
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0
 Bnd-LastModified: 1225397090921
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Monitor
-Import-Package: org.apache.tuscany.sca.monitor;version="1.4"
+Import-Package: org.apache.tuscany.sca.monitor;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.monitor
 Bundle-DocURL: http://www.apache.org/
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Assembly Model XML Schemas
 Bnd-LastModified: 1225397088359

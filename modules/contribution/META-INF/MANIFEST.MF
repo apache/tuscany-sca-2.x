@@ -1,25 +1,25 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.contribution.scanner;uses:="org
  .apache.tuscany.sca.contribution.processor,org.apache.tuscany.sca.ext
- ensibility";version="1.4",org.apache.tuscany.sca.contribution.resolve
+ ensibility";version="2.0",org.apache.tuscany.sca.contribution.resolve
  r;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core,
  org.apache.tuscany.sca.contribution,org.apache.tuscany.sca.extensibil
- ity";version="1.4",org.apache.tuscany.sca.contribution.processor;uses
+ ity";version="2.0",org.apache.tuscany.sca.contribution.processor;uses
  :="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core,org.ap
  ache.tuscany.sca.policy,org.apache.tuscany.sca.monitor,org.apache.tus
  cany.sca.extensibility,org.xml.sax,javax.xml.namespace,javax.xml.stre
  am,javax.xml.stream.util,javax.xml.transform,org.apache.tuscany.sca.c
  ontribution.resolver,javax.xml.transform.stream,javax.xml.validation,
- org.xml.sax.helpers";version="1.4",org.apache.tuscany.sca.contributio
+ org.xml.sax.helpers";version="2.0",org.apache.tuscany.sca.contributio
  n;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contr
- ibution.resolver";version="1.4"
-Private-Package: org.apache.tuscany.sca.contribution.impl;version="1.4
+ ibution.resolver";version="2.0"
+Private-Package: org.apache.tuscany.sca.contribution.impl;version="2.0
  "
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Contribution Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0
 Bnd-LastModified: 1225397102546
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -30,15 +30,15 @@ Import-Package: javax.xml.namespace,
  javax.xml.transform,
  javax.xml.transform.stream,
  javax.xml.validation,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.contribution;version="1.4",
- org.apache.tuscany.sca.contribution.processor;version="1.4",
- org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.contribution.scanner;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.extensibility;version="1.4",
- org.apache.tuscany.sca.monitor;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0",
+ org.apache.tuscany.sca.contribution;version="2.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0",
+ org.apache.tuscany.sca.contribution.scanner;version="2.0",
+ org.apache.tuscany.sca.core;version="2.0",
+ org.apache.tuscany.sca.extensibility;version="2.0",
+ org.apache.tuscany.sca.monitor;version="2.0",
+ org.apache.tuscany.sca.policy;version="2.0",
  org.xml.sax,
  org.xml.sax.helpers
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution
