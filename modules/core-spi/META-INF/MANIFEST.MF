@@ -1,45 +1,45 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.invocation;uses:="org.apache.tu
- scany.sca.runtime,org.apache.tuscany.sca.interfacedef";version="1.4",
+ scany.sca.runtime,org.apache.tuscany.sca.interfacedef";version="2.0",
  org.apache.tuscany.sca.runtime;uses:="org.apache.tuscany.sca.invocati
  on,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.endpointres
  olver,org.apache.tuscany.sca.provider,org.osoa.sca,org.apache.tuscany
- .sca.interfacedef";version="1.4",org.apache.tuscany.sca.context;uses:
+ .sca.interfacedef";version="2.0",org.apache.tuscany.sca.context;uses:
  ="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.
  apache.tuscany.sca.core,org.osoa.sca,org.apache.tuscany.sca.extensibi
- lity";version="1.4",org.apache.tuscany.sca.provider;uses:="org.apache
+ lity";version="2.0",org.apache.tuscany.sca.provider;uses:="org.apache
  .tuscany.sca.invocation,org.apache.tuscany.sca.runtime,org.apache.tus
  cany.sca.assembly,org.apache.tuscany.sca.definitions,org.apache.tusca
  ny.sca.core,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sc
- a.extensibility";version="1.4",org.apache.tuscany.sca.endpointresolve
+ a.extensibility";version="2.0",org.apache.tuscany.sca.endpointresolve
  r;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core,
- org.apache.tuscany.sca.extensibility";version="1.4",org.apache.tuscan
- y.sca.work;version="1.4",org.apache.tuscany.sca.management;uses:="org
- .apache.tuscany.sca.runtime";version="1.4"
+ org.apache.tuscany.sca.extensibility";version="2.0",org.apache.tuscan
+ y.sca.work;version="2.0",org.apache.tuscany.sca.management;uses:="org
+ .apache.tuscany.sca.runtime";version="2.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Core SPI
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0
 Bnd-LastModified: 1225397108125
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Core SPI
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.context;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.definitions;version="1.4",
- org.apache.tuscany.sca.endpointresolver;version="1.4",
- org.apache.tuscany.sca.extensibility;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.management;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4.0",
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
- org.apache.tuscany.sca.work;version="1.4",
+Import-Package: org.apache.tuscany.sca.assembly;version="2.0",
+ org.apache.tuscany.sca.context;version="2.0",
+ org.apache.tuscany.sca.core;version="2.0",
+ org.apache.tuscany.sca.definitions;version="2.0",
+ org.apache.tuscany.sca.endpointresolver;version="2.0",
+ org.apache.tuscany.sca.extensibility;version="2.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0",
+ org.apache.tuscany.sca.invocation;version="2.0",
+ org.apache.tuscany.sca.management;version="2.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0",
+ org.apache.tuscany.sca.runtime;version="2.0",
+ org.apache.tuscany.sca.work;version="2.0",
  
- org.osoa.sca;version="1.4"
+ org.osoa.sca;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.core.spi
 Bundle-DocURL: http://www.apache.org/
 

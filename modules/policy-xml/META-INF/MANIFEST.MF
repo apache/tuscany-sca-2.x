@@ -1,20 +1,20 @@
 Manifest-Version: 1.0
-Private-Package: org.apache.tuscany.sca.policy.xml;version="1.4"
+Private-Package: org.apache.tuscany.sca.policy.xml;version="2.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Policy XML Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0
 Bnd-LastModified: 1225397115375
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Policy XML Model
 Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.xpath,o
- rg.apache.tuscany.sca.contribution.processor;version="1.4",org.apache
- .tuscany.sca.contribution.resolver;version="1.4",org.apache.tuscany.s
- ca.core;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",or
- g.apache.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.poli
- cy.impl;version="1.4"
+ rg.apache.tuscany.sca.contribution.processor;version="2.0",org.apache
+ .tuscany.sca.contribution.resolver;version="2.0",org.apache.tuscany.s
+ ca.core;version="2.0",org.apache.tuscany.sca.monitor;version="2.0",or
+ g.apache.tuscany.sca.policy;version="2.0",org.apache.tuscany.sca.poli
+ cy.impl;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.xml
 Bundle-DocURL: http://www.apache.org/
 
