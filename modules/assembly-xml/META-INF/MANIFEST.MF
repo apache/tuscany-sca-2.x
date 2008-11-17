@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.assembly.xml;uses:="org.apache.
+ tuscany.sca.definitions,javax.xml.transform.dom,org.apache.tuscany.sc
+ a.core,org.apache.tuscany.sca.policy,javax.xml.namespace,org.apache.t
+ uscany.sca.contribution.java,javax.xml.stream,org.apache.tuscany.sca.
+ contribution.resolver,org.apache.tuscany.sca.policy.util,org.apache.t
+ uscany.sca.assembly,javax.xml.parsers,org.apache.tuscany.sca.contribu
+ tion,org.apache.tuscany.sca.monitor,org.w3c.dom,org.apache.tuscany.sc
+ a.interfacedef,org.apache.tuscany.sca.contribution.namespace,javax.xm
+ l.xpath,javax.xml.transform,org.apache.tuscany.sca.contribution.proce
+ ssor,org.apache.tuscany.sca.interfacedef.impl";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA XML Assembly Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397124328
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA XML Assembly Model
+Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.stream
+ ,javax.xml.transform,javax.xml.transform.dom,javax.xml.xpath,org.apac
+ he.tuscany.sca.assembly;version="1.4",org.apache.tuscany.sca.assembly
+ .xml;version="1.4",org.apache.tuscany.sca.contribution;version="1.4",
+ org.apache.tuscany.sca.contribution.java;version="1.4",org.apache.tus
+ cany.sca.contribution.namespace;version="1.4",org.apache.tuscany.sca.
+ contribution.processor;version="1.4",org.apache.tuscany.sca.contribut
+ ion.resolver;version="1.4",org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.definitions;version="1.4",org.apache.tuscany.s
+ ca.interfacedef;version="1.4",org.apache.tuscany.sca.interfacedef.imp
+ l;version="1.4",org.apache.tuscany.sca.monitor;version="1.4",org.apac
+ he.tuscany.sca.policy;version="1.4",org.apache.tuscany.sca.policy.uti
+ l;version="1.4",org.w3c.dom,org.xml.sa
+ x;resolution:=optional,javax.xml
+ .validation;resolution:=optional,org.apache.tuscany.sca.assembly.buil
+ der;version="1.4";resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xml
+Bundle-DocURL: http://www.apache.org/
+
