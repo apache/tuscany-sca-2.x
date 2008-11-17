@@ -1,0 +1,53 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.databinding.jaxb;uses:="org.apa
+ che.tuscany.sca.databinding,org.apache.tuscany.sca.interfacedef.util,
+ javax.xml.transform.dom,org.xml.sax,javax.xml.namespace,javax.imageio
+ ,javax.xml.stream,org.apache.tuscany.sca.contribution.resolver,org.ap
+ ache.tuscany.sca.databinding.util,org.osoa.sca,org.apache.tuscany.sca
+ .databinding.xml,org.apache.tuscany.sca.databinding.impl,org.apache.w
+ s.commons.schema.resolver,org.apache.tuscany.sca.interfacedef,org.w3c
+ .dom,javax.xml.datatype,javax.activation,javax.xml.bind.attachment,ja
+ vax.xml.transform,javax.xml.bind.annotation,javax.xml.transform.strea
+ m,org.apache.tuscany.sca.interfacedef.impl,org.apache.tuscany.sca.xsd
+ ,javax.xml.bind";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Data Binding for JAXB
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397221390
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for JAXB
+Import-Package: javax.activation,
+ javax.imageio,
+ javax.xml.bind,
+ javax.xml.bind.annotation,
+ javax.xml.bind.attachment,
+ javax.xml.datatype,
+ javax.xml.namespace,
+ javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.stream,
+ 
+ org.apache.tuscany.sca.assembly;version="1.4.0",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.impl;version="1.4",
+ org.apache.tuscany.sca.databinding.jaxb;version="1.4",
+ org.apache.tuscany.sca.databinding.util;version="1.4",
+ org.apache.tuscany.sca.databinding.xml;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ org.apache.tuscany.sca.xsd;version="1.4",
+ org.apache.ws.commons.schema.resolver,
+ 
+ org.osoa.sca;version="1.4",
+ org.w3c.dom,
+ org.xml.sax
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb
+Bundle-DocURL: http://www.apache.org/
+

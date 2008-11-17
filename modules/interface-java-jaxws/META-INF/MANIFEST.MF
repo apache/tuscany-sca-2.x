@@ -1,0 +1,50 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.interfacedef.java.jaxws;uses:="
+ org.apache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacede
+ f.util,org.objectweb.asm,javax.jws,javax.xml.namespace,javax.jws.soap
+ ,org.apache.tuscany.sca.interfacedef.java.impl,org.apache.tuscany.sca
+ .databinding.annotation,org.osoa.sca,javax.xml.bind.annotation.adapte
+ rs,org.apache.tuscany.sca.interfacedef.java,org.apache.tuscany.sca.in
+ terfacedef,org.apache.tuscany.sca.interfacedef.java.introspect,javax.
+ xml.bind.annotation,org.apache.tuscany.sca.databinding.jaxb,org.apach
+ e.tuscany.sca.interfacedef.impl,javax.xml.ws";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany Java Interface for JAXWS
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397232156
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany Java Interface for JAXWS
+Import-Package: javax.jws,
+ javax.jws.soap,
+ javax.xml.bind;resolution:=optional,
+ javax.xml.bind.annotation,
+ javax.xml.bind.annotation.adapters,
+ javax.xml.namespace,
+ javax.xml.transform;resolution:=optional,
+ javax.xml.transform.stream;resolution:=optional,
+ javax.xml.ws,
+ 
+ org.apache.tuscany.sca.assembly;version="1.4.0",
+ org.apache.tuscany.sca.databinding;version="1.4",
+ org.apache.tuscany.sca.databinding.annotation;version="1.4",
+ org.apache.tuscany.sca.databinding.javabeans;version="1.4.0",
+ org.apache.tuscany.sca.databinding.jaxb;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.impl;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.introspect;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.jaxws;version="1.4",
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ 
+ org.objectweb.asm;version="3.1",
+ org.objectweb.asm.util;version="3.1";resolution:=optional,
+ org.osoa.sca;version="1.4",
+ org.osoa.sca.annotations;version="1.4";resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.jaxws
+Bundle-DocURL: http://www.apache.org/
+
