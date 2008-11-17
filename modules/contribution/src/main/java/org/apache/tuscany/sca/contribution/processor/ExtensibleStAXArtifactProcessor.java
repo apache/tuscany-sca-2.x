@@ -135,12 +135,17 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
             }
             warning("ElementCannotBeProcessed", processors, name, location);
             
+            return null;
+            
+            //FIXME Re-enable feature after complete merge is done
+            /*
             StAXArtifactProcessor<?> anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
             if (anyElementProcessor != null) {
                 return anyElementProcessor.read(source);
             } else {
                 return null;
             }
+            */
         }
         return processor.read(source);
     }
@@ -159,10 +164,13 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
                 }
                 warning("NoStaxProcessor", processors, model.getClass());
                 
+                //FIXME Re-enable feature after complete merge is done
+                /*
                 StAXArtifactProcessor anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
                 if (anyElementProcessor != null) {
                     anyElementProcessor.write(model, outputSource);
                 }
+                */
             }
         }
     }
