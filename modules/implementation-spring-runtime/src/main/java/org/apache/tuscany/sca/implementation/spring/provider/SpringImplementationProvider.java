@@ -17,10 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.spring;
+package org.apache.tuscany.sca.implementation.spring.provider;
 
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
+import org.apache.tuscany.sca.implementation.spring.impl.SCAApplicationContext;
+import org.apache.tuscany.sca.implementation.spring.impl.SCAParentApplicationContext;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;

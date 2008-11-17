@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.implementation.spring;
+package org.apache.tuscany.sca.implementation.spring.impl;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.springframework.beans.BeansException;
@@ -54,7 +55,7 @@ import org.springframework.core.io.Resource;
  *
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
  */
-class SCAParentApplicationContext implements ApplicationContext {
+public class SCAParentApplicationContext implements ApplicationContext {
 
     // The Spring implementation for which this is the parent application context
     private SpringImplementation implementation;

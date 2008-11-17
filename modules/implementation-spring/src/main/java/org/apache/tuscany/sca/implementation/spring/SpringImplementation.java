@@ -38,73 +38,73 @@ import org.springframework.core.io.Resource;
  */
 public class SpringImplementation extends ImplementationImpl implements Implementation, Extensible {
 
-    // The location attribute which points to the Spring application-context XML file
+    /** The location attribute which points to the Spring application-context XML file **/
     private String location;
-    // The application-context file as a Spring Resource
+    /** The application-context file as a Spring Resource **/
     private Resource resource;
+    /** **/
     private ComponentType componentType;
-    // Mapping of Services to Beans
+    /** Mapping of Services to Beans **/
     private Hashtable<String, SpringBeanElement> serviceMap;
-    // Mapping of property names to Java class
+    /** Mapping of property names to Java class **/
     private Hashtable<String, Class> propertyMap;
 
-    protected SpringImplementation() {
+    public SpringImplementation() {
         this.location = null;
         this.resource = null;
         setUnresolved(true);
         serviceMap = new Hashtable<String, SpringBeanElement>();
         propertyMap = new Hashtable<String, Class>();
-    } // end method SpringImplementation
+    }
 
-    /* Returns the location attribute for this Spring implementation */
+
+    /**
+     * Returns the location attribute for this Spring implementation
+     * @return URI for the location of the Spring implementation
+     */
     public String getLocation() {
         return location;
     }
 
     /**
      * Sets the location attribute for this Spring implementation
-     * location - a URI to the Spring application-context file
+     * @param location a URI to the Spring application-context file
      */
     public void setLocation(String location) {
         this.location = location;
         return;
     }
 
+    /**
+     * 
+     * @param resource
+     */
     public void setResource(Resource resource) {
         this.resource = resource;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Resource getResource() {
         return resource;
     }
 
-    /* 
-     * Returns the componentType for this Spring implementation 
+    /**
+     * Returns the componentType for this Spring implementation
+     * @return
      */
     public ComponentType getComponentType() {
         return componentType;
     }
 
-    /*
+    /**
      * Sets the componentType for this Spring implementation
+     * @param componentType
      */
     public void setComponentType(ComponentType componentType) {
         this.componentType = componentType;
-    }
-
-    @Override
-    public List<Service> getServices() {
-        return componentType.getServices();
-    }
-
-    @Override
-    public List<Reference> getReferences() {
-        return componentType.getReferences();
-    }
-
-    @Override
-    public List<Property> getProperties() {
-        return componentType.getProperties();
     }
 
     /**
@@ -136,7 +136,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
             return;
         propertyMap.put(propertyName, propertyClass);
         return;
-    } // end method setPropertyClass
+    }
 
     /**
      * Gets the Java Class for an SCA property 
@@ -145,5 +145,20 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
      */
     public Class getPropertyClass(String propertyName) {
         return propertyMap.get(propertyName);
-    } // end method getPropertyClass
+    }
+
+    @Override
+    public List<Service> getServices() {
+        return componentType.getServices();
+    }
+
+    @Override
+    public List<Reference> getReferences() {
+        return componentType.getReferences();
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        return componentType.getProperties();
+    }
 }
