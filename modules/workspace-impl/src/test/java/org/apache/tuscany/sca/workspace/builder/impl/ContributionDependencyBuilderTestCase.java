@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.workspace.builder.impl;
 
-import java.util.List;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -33,29 +33,28 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactor
 import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test the contribution dependency analyzer.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionDependencyBuilderTestCase extends TestCase {
+public class ContributionDependencyBuilderTestCase {
 
     private ContributionFactory contributionFactory;
     private WorkspaceFactory workspaceFactory;
     private NamespaceImportExportFactory importExportFactory;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         contributionFactory = new DefaultContributionFactory();
         workspaceFactory = new DefaultWorkspaceFactory();
         importExportFactory = new DefaultNamespaceImportExportFactory();
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    }
-
+    @Test
     public void testAnalyze() throws Exception {
         Workspace workspace = workspaceFactory.createWorkspace();
         Contribution importer = contributionFactory.createContribution();
