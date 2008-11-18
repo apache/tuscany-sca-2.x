@@ -12,7 +12,7 @@ Bundle-Description: Apache Tuscany SCA WS Binding XML Model
 Import-Package: javax.wsdl,
  javax.xml.namespace;version="1.0",
  javax.xml.parsers,
- javax.xml.stream;version="1.0",
+ javax.xml.stream,
  javax.xml.transform,
  javax.xml.transform.dom,
  org.apache.tuscany.sca.assembly;version="1.4",

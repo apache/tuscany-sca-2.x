@@ -12,8 +12,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for JSON
 Import-Package: com.metaparadigm.jsonrpc,
  javax.xml.namespace,
- javax.xml.stream;version="1.0",
- 
+ javax.xml.stream,
  org.apache.axiom.om,
  org.apache.tuscany.sca.databinding;version="1.4",
  org.apache.tuscany.sca.databinding.impl;version="1.4",

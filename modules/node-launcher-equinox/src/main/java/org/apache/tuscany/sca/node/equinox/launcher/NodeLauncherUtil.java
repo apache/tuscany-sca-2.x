@@ -301,8 +301,6 @@ final class NodeLauncherUtil {
 
             Set<String> importPackages = new HashSet<String>();
             for (String pkg : packages) {
-                exports.append(pkg);
-                exports.append(',');
 
                 String importPackage = pkg;
                 int index = pkg.indexOf(';');
@@ -313,6 +311,10 @@ final class NodeLauncherUtil {
                     imports.append(importPackage);
                     imports.append(',');
                     importPackages.add(importPackage);
+                    exports.append(pkg);
+                    exports.append(',');
+                } else {
+                    logger.warning("Duplicate package skipped: " + pkg);
                 }
             }
 

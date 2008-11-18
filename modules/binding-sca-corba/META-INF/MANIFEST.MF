@@ -12,7 +12,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA CORBA-based Default Binding Ext
  ension
 Import-Package: javax.xml.namespace;version="1.0",
- javax.xml.stream;version="1.0",
+ javax.xml.stream,
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
  org.apache.tuscany.sca.assembly;version="1.4",

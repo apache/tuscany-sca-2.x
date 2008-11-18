@@ -20,7 +20,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JMS Binding Runtime
 Import-Package: javax.jms,
  javax.naming,
- javax.xml.stream;version="1.0",
+ javax.xml.stream,
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
  org.apache.tuscany.sca.assembly;version="1.4",
