@@ -43,6 +43,12 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>calculator-equinox</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>old</id>
+            <modules>
                 <module>binding-echo</module>
                 <module>binding-echo-extension</module>
                 <module>binding-notification-broker</module>
