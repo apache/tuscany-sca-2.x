@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jms.provider;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +27,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -33,17 +35,37 @@ import javax.naming.NamingException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
+import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.transport.TransportReferenceInterceptor;
+import org.apache.tuscany.sca.binding.jms.transport.TransportServiceInterceptor;
+import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
+import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
+import org.apache.tuscany.sca.provider.WireFormatProvider;
+import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
@@ -51,7 +73,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingServiceBindingProvider implements ServiceBindingProvider {
+public class JMSBindingServiceBindingProvider implements ServiceBindingProviderRRB {
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private RuntimeComponentService service;
@@ -68,16 +90,30 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
     private RuntimeComponent component;
     private InterfaceContract wsdlInterfaceContract;
+    
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints) {
+    private ProviderFactoryExtensionPoint providerFactories;
+    private ModelFactoryExtensionPoint modelFactories;
+    
+    private MessageFactory messageFactory;
+    
+    private OperationSelectorProviderFactory operationSelectorProviderFactory;
+    private OperationSelectorProvider operationSelectorProvider;
+    
+    private WireFormatProviderFactory requestWireFormatProviderFactory;
+    private WireFormatProvider requestWireFormatProvider;
+    
+    private WireFormatProviderFactory responseWireFormatProviderFactory;
+    private WireFormatProvider responseWireFormatProvider;
+
+    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, WorkScheduler workScheduler, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
         this.component = component;
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
         this.targetBinding = targetBinding;
         this.extensionPoints = extensionPoints;
-
-        jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        this.jmsResourceFactory = jmsResourceFactory;
 
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
             if (!service.isCallback()) {
@@ -85,56 +121,35 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
                 jmsBinding.setDestinationName(service.getName());
             }
         }
+        
+        // Get Message factory
+        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        messageFactory = modelFactories.getFactory(MessageFactory.class);
 
-        if (XMLTextMessageProcessor.class.isAssignableFrom(JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding).getClass())) {
-            if (!isOnMessage()) {
-                setXMLDataBinding(service);
-            }
+        // Get the factories/providers for operation selection       
+        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        this.operationSelectorProviderFactory =
+            (OperationSelectorProviderFactory)providerFactories.getProviderFactory(jmsBinding.getOperationSelector().getClass());
+        if (this.operationSelectorProviderFactory != null){
+            this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(component, service, jmsBinding);
         }
-
-    }
-    
-    protected boolean isOnMessage() {
-        InterfaceContract ic = getBindingInterfaceContract();
-        if (ic.getInterface().getOperations().size() != 1) {
-            return false;
+        
+        // Get the factories/providers for wire format        
+        this.requestWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
+        if (this.requestWireFormatProviderFactory != null){
+            this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
         }
-        return "onMessage".equals(ic.getInterface().getOperations().get(0).getName());
-    }
-
-    protected void setXMLDataBinding(RuntimeComponentService service) {
-        if (service.getInterfaceContract() != null) {
-            WebServiceBindingFactory wsFactory = extensionPoints.getExtensionPoint(WebServiceBindingFactory.class);
-            WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-            BindingWSDLGenerator.generateWSDL(component, service, wsBinding, extensionPoints, null);
-            wsdlInterfaceContract = wsBinding.getBindingInterfaceContract();
-            wsdlInterfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
-            
-            // TODO: TUSCANY-xxx, section 5.2 "Default Data Binding" in the JMS binding spec  
-
-//            try {
-//                InterfaceContract ic = (InterfaceContract)service.getInterfaceContract().clone();
-//                Interface ii = ic.getInterface();
-//                if (ii.getOperations().size() == 1 && "onMessage".equals(ii.getOperations().get(0).getName())) {
-//                    return;
-//                }
-//                ii = (Interface)ii.clone();
-//                ii.resetDataBinding("org.apache.axiom.om.OMElement");
-//                ic.setInterface(ii);
-//                service.setInterfaceContract(ic);
-//
-//            } catch (CloneNotSupportedException e) {
-//                throw new RuntimeException(e);
-//            }
+        
+        this.responseWireFormatProviderFactory = 
+            (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
+        if (this.responseWireFormatProviderFactory != null){
+            this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
         }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (wsdlInterfaceContract != null) {
-            return wsdlInterfaceContract;
-        } else {
-            return service.getInterfaceContract();
-        }
+        return requestWireFormatProvider.getWireFormatInterfaceContract();
     }
 
     public boolean supportsOneWayInvocation() {
@@ -180,7 +195,16 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             consumer = session.createConsumer(destination);
         }
 
-        final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+        MessageListener tmpListener = null;
+        
+        /*
+         * TODO turn on RRB version of JMS binding
+         */
+        tmpListener = new RRBJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding, messageFactory);
+        //tmpListener = new DefaultJMSBindingListener(jmsBinding, jmsResourceFactory, service, targetBinding);
+    
+        final MessageListener listener = tmpListener;
+        
         try {
 
             consumer.setMessageListener(listener);
@@ -302,6 +326,34 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             }
         } catch (JMSException e) {
             throw new JMSBindingException(e);
+        }
+    }
+    
+    /*
+     * RRB test methods
+     */
+    public void configureBindingChain(RuntimeWire runtimeWire) {
+        
+        InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
+        
+        // add transport interceptor
+        bindingChain.addInterceptor(Phase.SERVICE_BINDING_TRANSPORT, 
+                                    new TransportServiceInterceptor(jmsBinding,
+                                                                    jmsResourceFactory,
+                                                                    runtimeWire) );
+
+        // add operation selector interceptor
+        bindingChain.addInterceptor(operationSelectorProvider.getPhase(), 
+                                    operationSelectorProvider.createInterceptor());
+        
+        // add request wire format
+        bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
+                                    requestWireFormatProvider.createInterceptor());
+        
+        // add response wire format, but only add it if it's different from the request
+        if (!jmsBinding.getRequestWireFormat().equals(jmsBinding.getResponseWireFormat())){
+            bindingChain.addInterceptor(responseWireFormatProvider.getPhase(), 
+                                        responseWireFormatProvider.createInterceptor());
         }
     }
 }

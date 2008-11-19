@@ -16,48 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.binding.jms.provider;
 
-import java.util.Properties;
-
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
-
-/**
- * Abstracts away any JMS provide specific feature from the JMS binding
- * 
- * @version $Rev$ $Date$
- */
-public class JMSResourceFactory {
-
-    private String initialContextFactoryName;
-    private String connectionFactoryName = "ConnectionFactory";
-    private String jndiURL;
-
-    private Connection connection;
-    private Context context;
-    private boolean isConnectionStarted;
-
-    public JMSResourceFactory(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
-        if (connectionFactoryName != null && connectionFactoryName.trim().length() > 0) {
-            this.connectionFactoryName = connectionFactoryName.trim();
-        }
-        if (initialContextFactoryName != null && initialContextFactoryName.trim().length() > 0) {
-            this.initialContextFactoryName = initialContextFactoryName.trim();
-        }
-        if (jndiURL != null) {
-            this.jndiURL = jndiURL.trim();
-        }
-    }
+public interface JMSResourceFactory {
 
     /*
      * This is a simple implementation where a connection is created per binding Ideally the resource factory should be
@@ -66,155 +34,34 @@ public class JMSResourceFactory {
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
      */
-    public Connection getConnection() throws NamingException, JMSException {
-        if (connection == null) {
-            createConnection();
-        }
-        return connection;
-    }
+    public abstract Connection getConnection() throws NamingException, JMSException;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createSession()
      */
-    public Session createSession() throws JMSException, NamingException {
-        return getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
-    }
+    public abstract Session createSession() throws JMSException, NamingException;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#startConnection()
      */
-    public void startConnection() throws JMSException, NamingException {
-        if (!isConnectionStarted) {
-            getConnection().start();
-            isConnectionStarted = true;
-        }
-    }
+    public abstract void startConnection() throws JMSException, NamingException;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#closeConnection()
      */
-    public void closeConnection() throws JMSException {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (JMSException e) {
-                // if using an embedded broker then when shutting down Tuscany the broker may get closed
-                // before this stop method is called. I can't see how to detect that so for now just
-                // ignore the exception if the message is that the transport is already disposed
-                if (!e.getMessage().contains("disposed")) {
-                    throw e;
-                }
-            }
-        }
-    }
+    public abstract void closeConnection() throws JMSException;
 
-    private void createConnection() throws NamingException, JMSException {
-        ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
-        if (connectionFactory == null) {
-            throw new JMSBindingException("connection factory not found: " + connectionFactoryName);
-        }
-        connection = connectionFactory.createConnection();
-    }
-
-    private synchronized Context getInitialContext() throws NamingException {
-        if (context == null) {
-            Properties props = new Properties();
-
-            if (initialContextFactoryName != null) {
-                props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
-            }
-            if (jndiURL != null) {
-                props.setProperty(Context.PROVIDER_URL, jndiURL);
-            }
-
-            initJREEnvironment(props);
-
-            context = new InitialContext(props);
-        }
-        return context;
-    }
-
-    /**
-     * If using the WAS JMS Client with a non-IBM JRE then an additional
-     * environment property needs to be set to initialize the ORB correctly. 
-     * See: http://www-1.ibm.com/support/docview.wss?uid=swg24012804
-     */
-    private void initJREEnvironment(Properties props) {
-        if ("com.ibm.websphere.naming.WsnInitialContextFactory".equals(props.get(Context.INITIAL_CONTEXT_FACTORY))) {
-            String vendor = System.getProperty("java.vendor");
-            if (vendor == null || !vendor.contains("IBM")) {
-                props.setProperty("com.ibm.CORBA.ORBInit", "com.ibm.ws.sib.client.ORB");
-            }
-        }
-    }
-
-    public Destination lookupDestination(String destName) throws NamingException {
-        if (JMSBindingConstants.DEFAULT_DESTINATION_NAME.equals(destName)) {
-            return null;
-        }
-        
-        Destination dest = (Destination)jndiLookUp(destName);
-        if (dest == null) {
-            dest = lookupPhysical(destName);
-        }
-        return dest;
-    }
-
-    protected Destination lookupPhysical(String jndiName) {
-
-        // TODO: the SCA JMS spec says a destination name may be a non-jndi plain destination name 
-        
-//        Session session = null;
-//        try {
-//
-//            Destination dest;
-//            session = createSession();
-//            dest = session.createQueue(jndiName);
-//            return dest;
-//
-//        } catch (JMSException e) {
-//            throw new JMSBindingException(e);
-//        } catch (NamingException e) {
-//            throw new JMSBindingException(e);
-//        } finally {
-//            if (session != null) {
-//                try {
-//                    session.close();
-//                } catch (JMSException e) {
-//                    throw new JMSBindingException(e);
-//                }
-//            }
-//        }
-        return null;
-    }
+    public abstract Destination lookupDestination(String destName) throws NamingException;
 
     /**
      * You can create a destination in ActiveMQ (and have it appear in JNDI) by putting "dynamicQueues/" in front of the queue name being looked up
      */
-    public Destination createDestination(String jndiName) throws NamingException {
-        return lookupDestination("dynamicQueues/" + jndiName);
-    }
+    public abstract Destination createDestination(String jndiName) throws NamingException;
 
-    protected Object jndiLookUp(String name) {
-        Object o = null;
-        try {
-            o = getInitialContext().lookup("java:comp/env/" + name);
-        } catch (NamingException ex) {
-            // ignore
-        }
-        if (o == null) {
-            try {
-                o = getInitialContext().lookup(name);
-            } catch (NamingException ex) {
-                // ignore
-            }
-        }
-        return o;
-    }
 }

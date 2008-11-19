@@ -461,7 +461,7 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
+        	// PostInvoker can detect media by content type (non-Feed, non-Entry)
             return super.invoke(msg);
         }
     }
@@ -477,7 +477,7 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-            // TODO implement
+        	// PutInvoker can detect media by content type (non-Feed, non-Entry)
             return super.invoke(msg);
         }
     }

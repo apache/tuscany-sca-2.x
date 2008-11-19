@@ -39,10 +39,10 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * @version $Rev$ $Date$
  */
 public class HTTPServiceBindingProvider implements ServiceBindingProvider {
-    
     private RuntimeComponentService service;  
     private HTTPBinding binding;
     private MessageFactory messageFactory;
+    
     private ServletHost servletHost;
     private String servletMapping;
     private HTTPBindingListenerServlet bindingListenerServlet;
@@ -63,7 +63,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
         Servlet servlet = null;
-        bindingListenerServlet = new HTTPBindingListenerServlet( messageFactory );
+        bindingListenerServlet = new HTTPBindingListenerServlet(binding, messageFactory );
         for (InvocationChain invocationChain : wire.getInvocationChains()) {
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
@@ -101,7 +101,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("service")) {
                 Invoker serviceInvoker = invocationChain.getHeadInvoker();
-                servlet = new HTTPServiceListenerServlet(serviceInvoker, messageFactory);
+                servlet = new HTTPServiceListenerServlet(binding, serviceInvoker, messageFactory);
                 break;
             }
         }

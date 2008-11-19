@@ -23,8 +23,7 @@
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
 	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" 
- 		constrains="sca:implementation.java">
+	<intent name="logging" constrains="sca:implementation.java sca:implementation.spring">
 		<description>
 			All messages to and from this implementation must be logged
 		</description>

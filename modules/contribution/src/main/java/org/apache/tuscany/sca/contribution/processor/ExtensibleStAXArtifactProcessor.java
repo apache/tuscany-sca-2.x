@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -47,9 +48,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Object> {
-    private static final Logger logger = Logger.getLogger(ExtensibleStAXArtifactProcessor.class.getName()); 
 	
-    private static final QName ANY_ELEMENT = new QName("http://www.w3.org/2001/XMLSchema", "anyElement");
+	private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "anyElement");
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
@@ -134,8 +134,14 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
                 logger.warning("Element " + name + " cannot be processed. (" + location + ")");
             }
             warning("ElementCannotBeProcessed", processors, name, location);
+
+            StAXArtifactProcessor anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
+            if(anyElementProcessor != null) {
+            	return anyElementProcessor.read(source);	
+            } else {
+            	return null;
+            }
             
-            return null;
             
             //FIXME Re-enable feature after complete merge is done
             /*
@@ -163,14 +169,10 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
                     logger.warning("No StAX processor is configured to handle " + model.getClass());
                 }
                 warning("NoStaxProcessor", processors, model.getClass());
-                
-                //FIXME Re-enable feature after complete merge is done
-                /*
                 StAXArtifactProcessor anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
-                if (anyElementProcessor != null) {
-                    anyElementProcessor.write(model, outputSource);
+                if(anyElementProcessor != null) {
+                	anyElementProcessor.write(model, outputSource);
                 }
-                */
             }
         }
     }

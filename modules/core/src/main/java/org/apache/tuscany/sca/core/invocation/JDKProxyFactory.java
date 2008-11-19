@@ -19,11 +19,12 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.HashMap;
 
+import org.apache.tuscany.sca.core.invocation.SCAProxy;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -54,7 +55,7 @@ public class JDKProxyFactory implements ProxyFactory {
         ServiceReference<T> serviceReference = new ServiceReferenceImpl(interfaze, wire, this);
         return createProxy(serviceReference);
     }
-
+    
     public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
         assert callableReference != null;
         final Class<T> interfaze = callableReference.getBusinessInterface();
@@ -62,10 +63,10 @@ public class JDKProxyFactory implements ProxyFactory {
         // Allow privileged access to class loader. Requires RuntimePermission in security policy.
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
-                return interfaze.getClassLoader();
+               return interfaze.getClassLoader();
             }
         });
-        Object proxy = Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
+        Object proxy = SCAProxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
         ((CallableReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
@@ -80,13 +81,13 @@ public class JDKProxyFactory implements ProxyFactory {
         Class<T> interfaze = callbackReference.getBusinessInterface();
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         ClassLoader cl = interfaze.getClassLoader();
-		Object proxy = Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
+		Object proxy = SCAProxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
 		callbackReference.setProxy(proxy);
         return interfaze.cast(proxy);
     }
 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        InvocationHandler handler = Proxy.getInvocationHandler(target);
+        InvocationHandler handler = SCAProxy.getInvocationHandler(target);
         if (handler instanceof JDKInvocationHandler) {
             return (R)((JDKInvocationHandler)handler).getCallableReference();
         } else {
@@ -98,6 +99,6 @@ public class JDKProxyFactory implements ProxyFactory {
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#isProxyClass(java.lang.Class)
      */
     public boolean isProxyClass(Class<?> clazz) {
-        return Proxy.isProxyClass(clazz);
+        return SCAProxy.isProxyClass(clazz);
     }
 }

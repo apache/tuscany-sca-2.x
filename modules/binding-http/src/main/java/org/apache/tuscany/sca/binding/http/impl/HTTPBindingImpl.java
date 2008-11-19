@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.binding.http.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 
 /**
@@ -31,10 +34,16 @@ import org.apache.tuscany.sca.binding.http.HTTPBinding;
  * 
  * @version $Rev$ $Date$
  */
-class HTTPBindingImpl implements HTTPBinding {
+class HTTPBindingImpl implements HTTPBinding, PolicySetAttachPoint {
     
     private String name;
     private String uri;
+    
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType intentAttachPointType;
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+
 
     public String getName() {
         return name;
@@ -60,7 +69,37 @@ class HTTPBindingImpl implements HTTPBinding {
     public void setUnresolved(boolean unresolved) {
         // The sample binding is always resolved
     }
+    
+    //Policy related getters/setters
+    
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+    
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
 
+    public IntentAttachPointType getType() {
+        return intentAttachPointType;
+    }
+    
+    public void setType(IntentAttachPointType intentAttachPointType) {
+        this.intentAttachPointType = intentAttachPointType;
+    }
+
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }    
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+    
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

@@ -32,15 +32,14 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public class XMLStringDataBinding extends BaseDataBinding {
     public static final String NAME = String.class.getName();
-    public static final String[] ALIASES = new String[] {"xml.string"};
 
     public XMLStringDataBinding() {
-        super(NAME, ALIASES, String.class);
+        super(NAME, String.class);
     }
 
     @Override
     public boolean introspect(DataType type, Operation operation) {
-        if (type.getPhysical() == String.class && NAME.equals(type.getDataBinding()) || ALIASES[0].equals(type.getDataBinding())) {
+        if (type.getPhysical() == String.class && NAME.equals(type.getDataBinding())) {
             type.setDataBinding(NAME);
             type.setLogical(XMLType.UNKNOWN);
             return true;

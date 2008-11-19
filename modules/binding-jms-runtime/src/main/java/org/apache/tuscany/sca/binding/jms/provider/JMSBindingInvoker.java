@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 
 import javax.jms.DeliveryMode;
@@ -29,14 +30,21 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
+import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
+import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
+import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -59,6 +67,8 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected Destination bindingRequestDest;
     protected Destination bindingReplyDest;
     protected RuntimeComponentReference reference;
+    protected JMSTokenAuthenticationPolicy jmsTokenAuthenticationPolicy = null;
+    protected JMSHeaderPolicy jmsHeaderPolicy = null;
 
     public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
 
@@ -71,6 +81,22 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
 
+        // find out which policies are active
+        if (jmsBinding instanceof PolicySetAttachPoint) {
+            List<PolicySet> policySets = ((PolicySetAttachPoint)jmsBinding).getApplicablePolicySets();
+            for (PolicySet ps : policySets) {
+                for (Object p : ps.getPolicies()) {
+                    if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
+                        jmsTokenAuthenticationPolicy = (JMSTokenAuthenticationPolicy)p;
+                    }else if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
+                        jmsHeaderPolicy = (JMSHeaderPolicy)p;
+                    } else {
+                        // etc. check for other types of policy being present
+                    }
+                }
+            }
+        }
+        
         try {
 
             bindingRequestDest = lookupDestination();
@@ -302,7 +328,15 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
         requestMessageProcessor.setOperationName(jmsBinding.getNativeOperationName(operationName), jmsMsg);
 
-        if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
+        if ((jmsHeaderPolicy != null) && 
+            (jmsHeaderPolicy.getDeliveryModePersistent() != null)) {
+            if (jmsHeaderPolicy.getDeliveryModePersistent()) {
+                jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+            } else {
+                jmsMsg.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            }
+            
+        } else if (jmsBinding.getOperationJMSDeliveryMode(operationName) != null) {
             if (jmsBinding.getOperationJMSDeliveryMode(operationName)) {
                 jmsMsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
             } else {
@@ -310,15 +344,24 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             }
         }
 
-        if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
+        if ((jmsHeaderPolicy != null) && 
+            (jmsHeaderPolicy.getJmsCorrelationId() != null)) {
+            jmsMsg.setJMSCorrelationID(jmsHeaderPolicy.getJmsCorrelationId());
+        } else if (jmsBinding.getOperationJMSCorrelationId(operationName) != null) {
             jmsMsg.setJMSCorrelationID(jmsBinding.getOperationJMSCorrelationId(operationName));
         }
 
-        if (jmsBinding.getOperationJMSPriority(operationName) != null) {
+        if ((jmsHeaderPolicy != null) && 
+            (jmsHeaderPolicy.getJmsPriority() != null)) {
+            jmsMsg.setJMSPriority(jmsHeaderPolicy.getJmsPriority());
+        } else if (jmsBinding.getOperationJMSPriority(operationName) != null) {
             jmsMsg.setJMSPriority(jmsBinding.getOperationJMSPriority(operationName));
         }
 
-        if (jmsBinding.getOperationJMSType(operationName) != null) {
+        if ((jmsHeaderPolicy != null) && 
+            (jmsHeaderPolicy.getJmsType() != null)) {
+            jmsMsg.setJMSType(jmsHeaderPolicy.getJmsType());
+        } else if (jmsBinding.getOperationJMSType(operationName) != null) {
             jmsMsg.setJMSType(jmsBinding.getOperationJMSType(operationName));
         }
 
@@ -341,6 +384,12 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             }
         }
         
+        if (jmsHeaderPolicy != null){
+            for (String propName : jmsHeaderPolicy.getProperties().keySet()) {
+                jmsMsg.setObjectProperty(propName, jmsHeaderPolicy.getProperties().get(propName));
+            }
+        }
+        
         for (String propName : jmsBinding.getPropertyNames()) {
             Object value = jmsBinding.getProperty(propName);
             jmsMsg.setObjectProperty(propName, value);
@@ -351,6 +400,14 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
             for (String propName : operationProperties.keySet()) {
                 Object value = operationProperties.get(propName);
                 jmsMsg.setObjectProperty(propName, value);
+            }
+        }
+        
+        if (jmsTokenAuthenticationPolicy != null) {
+            Subject subject = SecurityUtil.getSubject(tuscanyMsg);
+            TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
+            if (principal != null){
+                jmsMsg.setStringProperty(jmsTokenAuthenticationPolicy.getTokenName().toString(), principal.getName());
             }
         }
     }
@@ -370,7 +427,10 @@ public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
         MessageConsumer consumer = session.createConsumer(replyToDest, msgSelector);
       
         long receiveWait;
-        if (jmsBinding.getOperationJMSTimeToLive(operationName) != null) {
+        if ((jmsHeaderPolicy != null) && 
+            (jmsHeaderPolicy.getTimeToLive() != null)) {
+            receiveWait = jmsHeaderPolicy.getTimeToLive();
+        } else if (jmsBinding.getOperationJMSTimeToLive(operationName) != null) {
             receiveWait = jmsBinding.getOperationJMSTimeToLive(operationName) * 2;        
         } else {
             receiveWait = JMSBindingConstants.DEFAULT_TIME_TO_LIVE;

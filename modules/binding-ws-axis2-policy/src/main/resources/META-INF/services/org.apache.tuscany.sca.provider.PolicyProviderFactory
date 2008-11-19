@@ -16,4 +16,5 @@
 # under the License. 
 
 # Implementation class for the policy extension
-org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.Axis2BasicAuthenticationPolicy
+org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy
+org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyProviderFactory;model=org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy

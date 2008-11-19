@@ -31,7 +31,7 @@
     
 	<!-- Policy Intents Defined by the SCA Runtime -->
 	<intent name="authentication" 
-	 		constrains="sca:binding">
+	 		constrains="sca:binding tuscany:binding">
 		<description>
 			Specifying this intent on references requires necessary authentication information
 			to be sent along with outgoing messages. Specifying this intent on service requires
@@ -40,14 +40,14 @@
 	</intent>
 	
 	<intent name="confidentiality" 
-	 		constrains="sca:binding">
+	 		constrains="sca:binding tuscany:binding">
 		<description>
 			Specifying this intent requires message exchanged to be encrypted
 		</description>
 	</intent>
 	
 	<intent name="integrity" 
-	 		constrains="sca:binding">
+	 		constrains="sca:binding tuscany:binding">
 		<description>
 			Specifying this intent requires message exchanged to be signed
 		</description>

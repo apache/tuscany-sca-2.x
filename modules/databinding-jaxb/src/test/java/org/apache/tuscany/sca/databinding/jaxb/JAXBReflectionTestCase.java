@@ -24,7 +24,6 @@ import javax.xml.bind.JAXBContext;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.xml.Node2String;
-import org.w3c.dom.Node;
 
 /**
  * @version $Rev$ $Date$
@@ -33,7 +32,7 @@ public class JAXBReflectionTestCase extends TestCase {
 
     public void testGenerateSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance("com.example.ipo.jaxb");
-        Node schema = JAXBContextHelper.generateSchema(context);
-        System.out.println(new Node2String().transform(schema, null));
+        Map<String, String> schemas = JAXBTypeHelper.generateSchema(context);
+        System.out.println(schemas);
     }
 }

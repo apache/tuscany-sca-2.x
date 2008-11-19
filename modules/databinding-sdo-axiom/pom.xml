@@ -117,7 +117,7 @@
                 <executions>
                     <execution>
                         <id>generate-po-sdo</id>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/ipo.xsd</schemaFile>
                             <javaPackage>com.example.ipo.sdo</javaPackage>
@@ -131,7 +131,7 @@
                     </execution>
                     <execution>
                         <id>generate-stock-sdo</id>
-                        <phase>generate-sources</phase>
+                        <phase>generate-test-sources</phase>
                         <configuration>
                             <schemaFile>${basedir}/src/test/resources/stock.xsd</schemaFile>
                             <javaPackage>com.example.stock.sdo</javaPackage>

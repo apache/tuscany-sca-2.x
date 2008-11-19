@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * Mock RuntimeWire implementation. Only few methods needs to be implemented.
  */
 public class TestRuntimeWire implements RuntimeWire {
-
     private Object invocationTarget;
 
     public TestRuntimeWire(Object invocationTarget) {
@@ -83,6 +82,11 @@ public class TestRuntimeWire implements RuntimeWire {
 
         return null;
     }
+    
+    public Object invoke(Message arg1) throws InvocationTargetException {
+
+        return null;
+    }    
 
     public void rebuild() {
 
@@ -97,4 +101,7 @@ public class TestRuntimeWire implements RuntimeWire {
         return null;
     }
 
+    public InvocationChain getBindingInvocationChain() {
+        return null;
+    }
 }

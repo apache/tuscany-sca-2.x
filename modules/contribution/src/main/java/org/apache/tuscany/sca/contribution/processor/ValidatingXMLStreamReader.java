@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.util.logging.Logger;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
@@ -46,7 +47,8 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @version $Rev$ $Date$
  */
-class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
+class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStreamReader {
+
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
     private int level;
@@ -257,6 +259,11 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
                     break;
             }
         }
+    }
+    
+    @Override
+    public NamespaceContext getNamespaceContext(){
+    	return super.getNamespaceContext();
     }
     
     /**

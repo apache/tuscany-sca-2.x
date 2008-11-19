@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -124,14 +125,25 @@ public final class DomainManagerUtil {
      * @throws MalformedURLException
      */
     static URL locationURL(String location) throws MalformedURLException {
-        URI uri = URI.create(location);
-        String scheme = uri.getScheme();
+        String scheme = null; 
+        URI uri = null;
+        
+        IllegalArgumentException uriException = null;
+        try {
+            uri = URI.create(location);
+            scheme = uri.getScheme();
+        }catch (java.lang.IllegalArgumentException e) {
+            uriException = e;
+        }
+        
         if (scheme == null) {
             File file = new File(location);
             return file.toURI().toURL();
         } else if (scheme.equals("file")) {
             File file = new File(location.substring(5));
             return file.toURI().toURL();
+        } else if(uri == null){
+            throw uriException;
         } else {
             return uri.toURL();
         }

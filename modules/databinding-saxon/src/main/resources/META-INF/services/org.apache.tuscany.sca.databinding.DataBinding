@@ -16,5 +16,5 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.saxon.SaxonNodeDataBinding;type=net.sf.saxon.om.NodeInfo,name=saxon_node
-org.apache.tuscany.sca.databinding.saxon.SaxonValueDataBinding;type=net.sf.saxon.value.Value,name=saxon_value
+org.apache.tuscany.sca.databinding.saxon.SaxonNodeDataBinding;name=net.sf.saxon.om.NodeInfo
+org.apache.tuscany.sca.databinding.saxon.SaxonValueDataBinding;name=net.sf.saxon.value.Value

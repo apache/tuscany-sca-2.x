@@ -16,5 +16,5 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.axiom.AxiomDataBinding;type=org.apache.axiom.om.OMElement,name=axiom
+org.apache.tuscany.sca.databinding.axiom.AxiomDataBinding;name=org.apache.axiom.om.OMElement
 

@@ -38,7 +38,6 @@ public abstract class BaseDataBinding implements DataBinding {
     private Class<?> baseType;
 
     private String name;
-    private String[] aliases;
 
     /**
      * Create a databinding with the base java type whose name will be used as
@@ -48,7 +47,7 @@ public abstract class BaseDataBinding implements DataBinding {
      *            databinding, for example, org.w3c.dom.Node
      */
     protected BaseDataBinding(Class<?> baseType) {
-        this(baseType.getName(), null, baseType);
+        this(baseType.getName(), baseType);
     }
 
     /**
@@ -59,21 +58,8 @@ public abstract class BaseDataBinding implements DataBinding {
      *            databinding, for example, org.w3c.dom.Node
      */
     protected BaseDataBinding(String name, Class<?> baseType) {
-        this(name, null, baseType);
-    }
-
-    /**
-     * Create a databinding with the name and base java type
-     * 
-     * @param name The name of the databinding
-     * @param aliases The aliases of the databinding
-     * @param baseType The base java class or interface representing the
-     *            databinding, for example, org.w3c.dom.Node
-     */
-    protected BaseDataBinding(String name, String[] aliases, Class<?> baseType) {
         this.name = name;
         this.baseType = baseType;
-        this.aliases = aliases;
     }
 
     @SuppressWarnings("unchecked")
@@ -118,16 +104,8 @@ public abstract class BaseDataBinding implements DataBinding {
         return object;
     }
 
-    public SimpleTypeMapper getSimpleTypeMapper() {
-        return new SimpleTypeMapperImpl();
-    }
-
     public XMLTypeHelper getXMLTypeHelper() {
         return null;
-    }
-
-    public String[] getAliases() {
-        return aliases;
     }
 
 }

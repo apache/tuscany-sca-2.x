@@ -52,7 +52,7 @@ import org.apache.axis2.util.Loader;
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
     
     /* these two fields are part of a temporary fix to solve problems that Maven has with including
-     * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
+     * rampart-1.4.mar into the classpath and also at the time of Release 1.0 rampart-1.4.mar seems
      * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
      * as a Maven dependency and has been packed with this module 
      */
@@ -61,7 +61,7 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
         getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml");
     private URL axis2_repository = null;
     private URL rampart_mar_url =
-        getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart-1.3.mar");
+        getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart-1.4.mar");
     /************** end of fix *************************************************************/
     
     private boolean isRampartRequired;
@@ -157,8 +157,8 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
             module.setParent(axisConfig);
             //String moduleFile = fileUrl.substring(0, fileUrl.indexOf(".mar"));
             if (module.getName() == null) {
-                module.setName(org.apache.axis2.util.Utils.getModuleName("rampart-1.3"));
-                module.setVersion(org.apache.axis2.util.Utils.getModuleVersion("rampart-1.3"));
+                module.setName(org.apache.axis2.util.Utils.getModuleName("rampart-1.4"));
+                module.setVersion(org.apache.axis2.util.Utils.getModuleVersion("rampart-1.4"));
             }
             populateModule(module, rampart_mar_url);
             module.setFileName(rampart_mar_url);

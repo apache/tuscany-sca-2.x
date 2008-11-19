@@ -50,7 +50,7 @@ public class XMLDocumentStreamReader implements XMLStreamReader {
 
     private XMLStreamReader realReader;
     private boolean fragment;
-    private int level = 0;
+    private int level = 1;
 
     private int state = STATE_INIT;
 

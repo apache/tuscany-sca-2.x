@@ -29,10 +29,9 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 public class ExternalizableDataBinding extends BaseDataBinding {
     
     public static final String NAME = java.io.Externalizable.class.getName();
-    public static final String[] ALIASES = new String[] {"externalizable"};
 
     public ExternalizableDataBinding() {
-        super(NAME, ALIASES, java.io.Externalizable.class);
+        super(NAME, java.io.Externalizable.class);
     }
 
     
