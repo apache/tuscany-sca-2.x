@@ -608,7 +608,7 @@ class BaseWireBuilderImpl {
             
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
                 if (endpoints.size() == 0) {
-                    warning("NoComponentReferenceTarget", componentReference, componentReference.getName());
+                    warning(monitor, "NoComponentReferenceTarget", componentReference, componentReference.getName());
                 }
             }
         }
