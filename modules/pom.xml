@@ -33,6 +33,9 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
+        <module>binding-atom</module>
+        <module>binding-http</module>
+        <module>binding-http-runtime</module>
         <module>binding-sca</module>
         <module>binding-sca-xml</module>
         <module>contribution</module>
@@ -42,16 +45,23 @@
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>
+        <module>data-api</module>
         <module>databinding</module>
         <module>databinding-jaxb</module>
         <module>definitions</module>
         <module>definitions-xml</module>
         <module>endpoint</module>
         <module>extensibility</module>
+        <module>extensibility-equinox</module>
+        <module>host-http</module>
+        <module>host-jetty</module>
         <module>implementation-java</module>
         <module>implementation-java-xml</module>
         <module>implementation-java-runtime</module>
         <module>implementation-node</module>
+        <module>implementation-node-runtime</module>
+        <module>implementation-resource</module>
+        <module>implementation-resource-runtime</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
@@ -59,7 +69,9 @@
         <module>monitor</module>
         <module>node-api</module>
         <module>node-impl</module>
+        <module>node-launcher</module>
         <module>policy</module>
+        <module>policy-security</module>
         <module>policy-xml</module>
         <module>sca-api</module>
         <module>workspace</module>
