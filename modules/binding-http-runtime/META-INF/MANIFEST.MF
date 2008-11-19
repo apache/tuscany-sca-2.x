@@ -12,7 +12,6 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA HTTP Binding Runtime
 Import-Package: javax.servlet,
  javax.servlet.http,
- 
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.binding.http;version="1.4",
  org.apache.tuscany.sca.core;version="1.4",
@@ -20,6 +19,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.interfacedef;version="1.4",
  org.apache.tuscany.sca.invocation;version="1.4",
  org.apache.tuscany.sca.policy;version="1.4.0",
+ org.apache.tuscany.sca.policy.authentication.basic;version="1.4.0",
  org.apache.tuscany.sca.provider;version="1.4",
  org.apache.tuscany.sca.runtime;version="1.4",
  org.osoa.sca.annotations;version="1.4";resolution:=optional
