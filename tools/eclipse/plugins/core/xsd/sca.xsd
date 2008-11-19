@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <include schemaLocation="sca-interface-java.xsd"/>
+    <include schemaLocation="sca-interface-wsdl.xsd"/>
+
+    <include schemaLocation="sca-implementation-java.xsd"/>
+    <include schemaLocation="sca-implementation-composite.xsd"/>
+
+    <include schemaLocation="sca-binding-webservice.xsd"/>
+    <include schemaLocation="sca-binding-jms.xsd"/>
+    <include schemaLocation="sca-binding-sca.xsd"/>
+    
+    <include schemaLocation="sca-definitions.xsd"/>
+    <include schemaLocation="sca-policy.xsd"/>
+    
+</schema>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006, 2007 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+        xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        elementFormDefault="qualified">
+
+    <element name="componentType" type="sca:ComponentType"/>
+    <complexType name="ComponentType">
+    	<sequence>
+             <choice minOccurs="0" maxOccurs="1">
+	             <element ref="sca:implementation"/>
+	             <any namespace="##other" processContents="lax"/>
+             </choice>
+        	<choice minOccurs="0" maxOccurs="unbounded">
+            	<element name="service" type="sca:ComponentService" />
+            	<element name="reference" type="sca:ComponentReference"/>
+            	<element name="property" type="sca:Property"/>
+        	</choice>
+        	<!-- 
+        	<any namespace="##other" processContents="lax" minOccurs="0" 
+        		maxOccurs="unbounded"/>
+        	-->
+        </sequence>
+        <attribute name="constrainingType" type="QName" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <element name="composite" type="sca:Composite"/>
+    <complexType name="Composite">
+         <sequence>
+             <choice minOccurs="0" maxOccurs="unbounded">
+	             <element name="include" type="sca:Include"/>
+                 <element name="service" type="sca:Service"/>
+                 <element name="property" type="sca:Property"/>
+                 <element name="component" type="sca:Component"/>
+                 <element name="reference" type="sca:Reference"/>
+                 <element name="wire" type="sca:Wire"/>
+                 <any namespace="##other" processContents="lax"/>
+             </choice>
+             <!-- 
+             <any namespace="##other" processContents="lax" minOccurs="0" 
+             	maxOccurs="unbounded"/>
+             -->
+        </sequence>
+        <attribute name="name" type="NCName" use="required"/>
+        <attribute name="targetNamespace" type="anyURI" use="optional"/>
+        <attribute name="local" type="boolean" use="optional" default="false"/>
+        <attribute name="autowire" type="boolean" use="optional" default="false"/>
+        <attribute name="constrainingType" type="QName" use="optional"/>
+        <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+    
+    <complexType name="Service">
+    	<sequence>
+    		<element ref="sca:interface" minOccurs="0" maxOccurs="1" />
+    		<element name="operation" type="sca:Operation" minOccurs="0" 
+    			maxOccurs="unbounded" />
+    		<choice minOccurs="0" maxOccurs="unbounded">
+    			<element ref="sca:binding" />
+    			<any namespace="##other" processContents="lax"/>
+    		</choice>
+    		<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+    		<!--
+    		<any namespace="##other" processContents="lax" minOccurs="0"
+    			maxOccurs="unbounded" />
+    		-->
+    	</sequence>
+    	<attribute name="name" type="NCName" use="required" />
+    	<attribute name="promote" type="anyURI" use="required" />
+    	<attribute name="requires" type="sca:listOfQNames" use="optional" />
+    	<attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+    	<anyAttribute namespace="##any" processContents="lax" />
+    </complexType>
+
+    <element name="interface" type="sca:Interface" abstract="true" />
+    <complexType name="Interface" abstract="true"/>
+
+    <complexType name="Reference">
+    	<sequence>
+    		<element ref="sca:interface" minOccurs="0" maxOccurs="1" />
+    		<element name="operation" type="sca:Operation" minOccurs="0" 
+    			maxOccurs="unbounded" />
+    		<choice minOccurs="0" maxOccurs="unbounded">
+    			<element ref="sca:binding" />
+    			<any namespace="##other" processContents="lax" />
+    		</choice>
+    		<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+    		<!--
+    		<any namespace="##other" processContents="lax" minOccurs="0"
+    			maxOccurs="unbounded" />
+    		-->
+    	</sequence>
+    	<attribute name="name" type="NCName" use="required" />
+    	<attribute name="target" type="sca:listOfAnyURIs" use="optional"/>
+    	<attribute name="wiredByImpl" type="boolean" use="optional" default="false"/>
+    	<attribute name="multiplicity" type="sca:Multiplicity"
+    		use="optional" default="1..1" />
+    	<attribute name="promote" type="sca:listOfAnyURIs" use="required" />
+    	<attribute name="requires" type="sca:listOfQNames" use="optional" />
+    	<attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+    	<anyAttribute namespace="##any" processContents="lax" />
+    </complexType>
+
+    <complexType name="SCAPropertyBase" mixed="true">
+    	<!-- mixed="true" to handle simple type -->
+    	<sequence>
+    		<any namespace="##any" processContents="lax" minOccurs="0"
+    			maxOccurs="1" />
+    		<!-- NOT an extension point; This xsd:any exists to accept
+    			 the element-based or complex type property
+    			 i.e. no element-based extension point under "sca:property" -->
+    	</sequence>
+    </complexType>
+
+    <!-- complex type for sca:property declaration --> 
+    <complexType name="Property" mixed="true">
+       <complexContent>
+	       <extension base="sca:SCAPropertyBase">  
+	          <!-- extension defines the place to hold default value --> 
+	          <attribute name="name" type="NCName" use="required"/>
+	          <attribute name="type" type="QName" use="optional"/> 
+	          <attribute name="element" type="QName" use="optional"/>
+	          <attribute name="many" type="boolean" default="false" 
+	          	use="optional"/>
+	          <attribute name="noDefault" type="boolean" default="false" 
+	          	use="optional"/>
+	          <anyAttribute namespace="##any" processContents="lax"/>
+	          <!-- an extension point ; attribute-based only --> 
+	       </extension>
+       </complexContent> 
+    </complexType>
+    
+    <complexType name="PropertyValue" mixed="true">
+       <complexContent>
+          <extension base="sca:SCAPropertyBase">
+             <attribute name="name" type="NCName" use="required"/>
+	         <attribute name="type" type="QName" use="optional"/> 
+	         <attribute name="element" type="QName" use="optional"/> 
+	         <attribute name="many" type="boolean" default="false" 
+	         	use="optional"/>            
+             <attribute name="source" type="string" use="optional"/>
+             <attribute name="file" type="anyURI" use="optional"/> 
+             <anyAttribute namespace="##any" processContents="lax"/>
+             <!-- an extension point ; attribute-based only --> 
+          </extension> 
+       </complexContent> 
+    </complexType>
+
+    <element name="binding" type="sca:Binding" abstract="true"/>
+    <complexType name="Binding" abstract="true">
+    	<sequence>
+    		<element name="operation" type="sca:Operation" minOccurs="0" 
+    			maxOccurs="unbounded" />
+    	</sequence>
+        <attribute name="uri" type="anyURI" use="optional"/>
+        <attribute name="name" type="QName" use="optional"/>
+        <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+    </complexType>
+    
+    <element name="bindingType" type="sca:BindingType"/>
+    <complexType name="BindingType">
+    	<sequence minOccurs="0" maxOccurs="unbounded">
+    		<any namespace="##other" processContents="lax" />
+    	</sequence>
+    	<attribute name="type" type="QName" use="required"/>
+    	<attribute name="alwaysProvides" type="sca:listOfQNames" use="optional"/>
+    	<attribute name="mayProvide" type="sca:listOfQNames" use="optional"/>
+    	<anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+    
+    <element name="callback" type="sca:Callback"/>
+    <complexType name="Callback">
+    	<choice minOccurs="0" maxOccurs="unbounded">
+        	<element ref="sca:binding"/>
+        	<any namespace="##other" processContents="lax"/>
+        </choice>
+        <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>  
+      
+    <complexType name="Component">
+        <sequence>
+             <choice minOccurs="0" maxOccurs="1">
+	             <element ref="sca:implementation"/>
+	             <any namespace="##other" processContents="lax"/>
+             </choice>
+             <choice minOccurs="0" maxOccurs="unbounded">
+             	<element name="service" type="sca:ComponentService"/>
+                <element name="reference" type="sca:ComponentReference"/>
+                <element name="property" type="sca:PropertyValue" />
+             </choice>
+             <!-- 
+             <any namespace="##other" processContents="lax" minOccurs="0" 
+             	maxOccurs="unbounded"/>
+             -->
+        </sequence>
+        <attribute name="name" type="NCName" use="required"/>
+        <attribute name="autowire" type="boolean" use="optional" default="false"/>
+        <attribute name="constrainingType" type="QName" use="optional"/>
+        <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="ComponentService">
+        <sequence>
+        	 <element ref="sca:interface" minOccurs="0" maxOccurs="1"/>
+        	 <element name="operation" type="sca:Operation" minOccurs="0" 
+  					maxOccurs="unbounded" />
+    		<choice minOccurs="0" maxOccurs="unbounded">
+    			<element ref="sca:binding" />
+    			<any namespace="##other" processContents="lax"/>
+    		</choice>
+             <element ref="sca:callback" minOccurs="0" maxOccurs="1"/>
+             <!--
+             <any namespace="##other" processContents="lax" minOccurs="0" 
+             	maxOccurs="unbounded"/>
+             -->
+        </sequence>
+        <attribute name="name" type="NCName" use="required"/>
+        <attribute name="requires" type="sca:listOfQNames" 
+        	use="optional"/>
+        <attribute name="policySets" type="sca:listOfQNames" 
+        	use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+
+    <complexType name="ComponentReference">
+		<sequence>
+			<element ref="sca:interface" minOccurs="0" maxOccurs="1" />
+			<element name="operation" type="sca:Operation" minOccurs="0" 
+				maxOccurs="unbounded" />
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element ref="sca:binding" />
+				<any namespace="##other" processContents="lax" />
+			</choice>
+			<element ref="sca:callback" minOccurs="0" maxOccurs="1" />
+			<!--
+			<any namespace="##other" processContents="lax" minOccurs="0" 
+				maxOccurs="unbounded" />
+			-->
+		</sequence>
+		<attribute name="name" type="NCName" use="required" />
+		<attribute name="target" type="sca:listOfAnyURIs" use="optional"/>
+		<attribute name="multiplicity" type="sca:Multiplicity" 
+			use="optional" default="1..1" />
+		<attribute name="requires" type="sca:listOfQNames" use="optional"/>
+   		<attribute name="policySets" type="sca:listOfQNames" 
+   			use="optional"/>
+		<anyAttribute namespace="##any" processContents="lax" />
+    </complexType>
+
+    <element name="implementation" type="sca:Implementation"
+    	abstract="true" />
+    <complexType name="Implementation" abstract="true">
+    	<attribute name="requires" type="sca:listOfQNames" use="optional"/>
+    	<attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+    </complexType>
+
+    <element name="implementationType" type="sca:ImplementationType"/>
+    <complexType name="ImplementationType">
+    	<sequence minOccurs="0" maxOccurs="unbounded">
+    		<any namespace="##other" processContents="lax" />
+    	</sequence>
+    	<attribute name="type" type="QName" use="required"/>
+    	<attribute name="alwaysProvides" type="sca:listOfQNames" use="optional"/>
+    	<attribute name="mayProvide" type="sca:listOfQNames" use="optional"/>
+    	<anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+    
+    <complexType name="Wire">
+        <sequence>
+            <any namespace="##other" processContents="lax" minOccurs="0" 
+            	maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="source" type="anyURI" use="required"/>
+        <attribute name="target" type="anyURI" use="required"/>
+        <anyAttribute namespace="##any" processContents="lax"/>     
+    </complexType>
+    
+    <element name="include" type="sca:Include"/>
+    <complexType name="Include">
+		<attribute name="name" type="QName"/>
+		<anyAttribute namespace="##any" processContents="lax"/>   
+	</complexType>
+    
+    <complexType name="Operation">
+    	<attribute name="name" type="NCName" use="required"/>
+    	<attribute name="requires" type="sca:listOfQNames" use="optional"/>
+    	<attribute name="policySets" type="sca:listOfQNames" use="optional"/>
+    	<anyAttribute namespace="##any" processContents="lax"/>  	
+    </complexType>
+    
+    <element name="constrainingType" type="sca:ConstrainingType"/>
+    <complexType name="ConstrainingType">
+        <sequence>
+        	<choice minOccurs="0" maxOccurs="unbounded">
+                <element name="service" type="sca:ComponentService"/>
+                <element name="reference" type="sca:ComponentReference"/>
+                <element name="property" type="sca:Property" />
+            </choice>
+            <any namespace="##other" processContents="lax" minOccurs="0"
+            	maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="name" type="NCName" use="required"/>
+        <attribute name="targetNamespace" type="anyURI"/>
+        <attribute name="requires" type="sca:listOfQNames" use="optional"/>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+    
+
+    <simpleType name="Multiplicity">
+        <restriction base="string">
+            <enumeration value="0..1"/>
+            <enumeration value="1..1"/>
+            <enumeration value="0..n"/>
+            <enumeration value="1..n"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="OverrideOptions">
+        <restriction base="string">
+            <enumeration value="no"/>
+            <enumeration value="may"/>
+            <enumeration value="must"/>
+        </restriction>
+    </simpleType>
+    
+    <!-- Global attribute definition for @requires to permit use of intents
+         within WSDL documents -->
+    <attribute name="requires" type="sca:listOfQNames"/>
+    
+    <!-- Global attribute defintion for @endsConversation to mark operations 
+         as ending a conversation -->
+    <attribute name="endsConversation" type="boolean" default="false"/>
+    
+    <simpleType name="listOfQNames">
+    	<list itemType="QName"/>
+    </simpleType>
+    
+    <simpleType name="listOfAnyURIs">
+        <list itemType="anyURI"/>
+    </simpleType>
+
+</schema>
