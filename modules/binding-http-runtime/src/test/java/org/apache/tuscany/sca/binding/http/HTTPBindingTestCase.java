@@ -72,7 +72,7 @@ public class HTTPBindingTestCase extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
+        String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCaseFIXME.class);
         node = NodeFactory.newInstance().createNode("test.composite", new Contribution("test", contribution));
         node.start();
     }
