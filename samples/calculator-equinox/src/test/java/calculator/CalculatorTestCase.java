@@ -40,6 +40,11 @@ public class CalculatorTestCase {
     private static NodeLauncher launcher;
     private static Node node;   
     
+    public static void main(String[] args) throws Exception {
+    	setUpBeforeClass();
+    	tearDownAfterClass();
+    }
+    
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         launcher = NodeLauncher.newInstance();
