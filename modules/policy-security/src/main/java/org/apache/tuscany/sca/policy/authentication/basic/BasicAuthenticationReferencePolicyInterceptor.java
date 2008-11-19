@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.policy.authentication.basic;
 
 import javax.security.auth.Subject;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
