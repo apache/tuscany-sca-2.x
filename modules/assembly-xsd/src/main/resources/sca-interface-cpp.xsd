@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  (c) Copyright SCA Collaboration 2006  -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.commonj.org/xmlns/sca/1.0/"
+    xmlns:sca="http://www.commonj.org/xmlns/sca/1.0/"
+    xmlns:sdo="commonj.sdo/XML"
+    elementFormDefault="qualified">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <element name="interface.cpp" type="sca:CPPInterface" substitutionGroup="sca:interface"/>
+
+    <complexType name="CPPInterface">
+        <complexContent>
+            <extension base="sca:Interface">
+                <sequence>
+                    <element name="method" type="sca:CPPMethod" minOccurs="0" maxOccurs="unbounded" />
+                    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <attribute name="header" type="NCName" use="required"/>
+                <attribute name="class" type="Name" use="required"/>
+                <attribute name="callbackHeader" type="NCName" use="optional"/>
+                <attribute name="callbackClass" type="Name" use="optional"/>
+                <attribute name="remotable" type="boolean" use="optional"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="CPPMethod">
+        <complexContent>
+            <attribute name="name" type="NCName" use="required"/>
+            <attribute name="oneWay" type="boolean" use="optional"/>
+            <attribute name="endConversation" type="boolean" use="optional"/>
+            <anyAttribute namespace="##any" processContents="lax"/>
+        </complexContent>
+    </complexType>
+
+</schema>
+

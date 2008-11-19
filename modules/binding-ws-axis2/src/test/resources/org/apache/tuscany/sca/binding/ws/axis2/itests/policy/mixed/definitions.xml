@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<sca:definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+
+ <!-- WS Security POLICY SETS -->
+  <sca:policySet name="wsAuthenticationPolicy"
+ 	provides="sca:authentication"
+ 	appliesTo="//sca:binding.ws"
+ 	>
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ServerPWCBHandler</passwordCallbackClass>
+       		</action>
+      	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsClientAuthenticationPolicy"
+ 	provides="tuscany:wsAuthentication"
+ 	appliesTo="//sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="OutflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<user>TuscanyWsUser</user>
+				<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ClientPWCBHandler</passwordCallbackClass>" +
+                <passwordType>PasswordText</passwordType>
+               </action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsMixedReceiverIntegrityPolicy"
+ 	provides="sca:integrity"
+ 	appliesTo="//sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+		    <action>
+		        <items>Signature</items>
+		        <signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+		    </action>
+		</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsMixedSenderIntegrityPolicy"
+ 	provides="sca:integrity"
+ 	appliesTo="//sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="OutflowSecurity">
+      		<action>
+        		<items>Signature</items>
+        		<user>TuscanyWsUser</user>
+        		<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+        		<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.IntegrityPWCBHandler</passwordCallbackClass>
+        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      		</action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsServerAuthenticationIntegrityPolicy"
+ 	provides="sca:authentication sca:integrity"
+ 	appliesTo="//sca:binding.ws"
+ 	>
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+ 			<action>
+ 				<items>UsernameToken Signature</items>
+ 				<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+ 				<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ServerPWCBHandler</passwordCallbackClass>
+       		</action>
+      	</parameter>
+      	<parameter name="OutflowSecurity">
+      		<action>
+        		<items>Signature</items>
+        		<user>TuscanyWsUser</user>
+        		<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+        		<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ServerPWCBHandler</passwordCallbackClass>
+        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      		</action>
+  		</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsClientAuthenticationIntegrityPolicy"
+ 	provides="tuscany:wsAuthentication"
+ 	appliesTo="//sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+		    <action>
+		        <items>Signature</items>
+		        <signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+		    </action>
+		</parameter>
+ 		<parameter name="OutflowSecurity">
+ 			<action>
+ 				<items>UsernameToken Signature</items>
+ 				<user>TuscanyWsUser</user>
+				<passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ClientPWCBHandler</passwordCallbackClass>" +
+				<signaturePropFile>org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/security.properties</signaturePropFile>
+                <passwordType>PasswordText</passwordType>
+                <signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+            </action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="clientWsPolicyForAuthentication"
+ 	provides="sca:authentication"
+ 	appliesTo="//sca:binding.ws"
+ 	>
+ 	<wsp:Policy wsu:Id="UTOverTransport" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+		  <wsp:All>
+ 		 	<sp:SignedSupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+				<wsp:Policy>
+					<sp:UsernameToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient" />
+				</wsp:Policy>
+			</sp:SignedSupportingTokens>
+			
+			<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+				<ramp:user>TuscanyWsUser</ramp:user>
+				<!-- ramp:passwordType>PasswordText</ramp:passwordType-->
+				<ramp:passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ClientPWCBHandler</ramp:passwordCallbackClass>
+			</ramp:RampartConfig>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+ </sca:policySet>
+ 
+ <sca:policySet name="serverWsPolicyForAuthentication"
+ 	provides="sca:authentication"
+ 	appliesTo="//sca:binding.ws"
+ 	>
+ 	<wsp:Policy wsu:Id="UTOverTransport" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+		  <wsp:All>
+ 		 	<sp:SignedSupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+				<wsp:Policy>
+					<sp:UsernameToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient" />
+				</wsp:Policy>
+			</sp:SignedSupportingTokens>
+			
+			<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+				<ramp:passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.ServerPWCBHandler</ramp:passwordCallbackClass>
+			</ramp:RampartConfig>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+ </sca:policySet>
+ 
+  <!-- A policyset that uses WS Policy --> 
+ <sca:policySet name="serverWsPolicyForIntegrity"
+ 	provides="sca:integrity"
+ 	appliesTo="//sca:binding.ws">
+ 	<wsp:Policy wsu:Id="SignOnly" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:TripleDesRsa15/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+	
+				<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+					<ramp:user>TuscanyWsUser</ramp:user>
+					<ramp:encryptionUser>TuscanyWsUser</ramp:encryptionUser>
+					<ramp:passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.wspolicy.IntegrityPWCBHandler</ramp:passwordCallbackClass>
+					
+					<ramp:signatureCrypto>
+						<ramp:crypto provider="org.apache.ws.security.components.crypto.Merlin">
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.type">JKS</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.file">org/apache/tuscany/sca/binding/ws/axis2/itests/policy/wspolicy/tuscanyKeys.jks</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.password">TuscanyWsUserPasswd</ramp:property>
+						</ramp:crypto>
+					</ramp:signatureCrypto>
+				</ramp:RampartConfig>
+	
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+ </sca:policySet>
+ 
+ 
+ <!-- A policyset that uses WS Policy --> 
+ <!-- sca:policySet name="tuscany:wsSecurityPolicyForIntegritys"
+ 	provides="sca:integrity"
+ 	appliesTo="sca:binding.ws">
+ 	<wsp:Policy wsu:Id="SignOnly" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:TripleDesRsa15/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+	
+				<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+					<ramp:user>TuscanyWsUser</ramp:user>
+					<ramp:encryptionUser>TuscanyWsUser</ramp:encryptionUser>
+					<ramp:passwordCallbackClass>org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed.IntegrityPWCBHandler</ramp:passwordCallbackClass>
+					
+					<ramp:signatureCrypto>
+						<ramp:crypto provider="org.apache.ws.security.components.crypto.Merlin">
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.type">JKS</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.file">org/apache/tuscany/sca/binding/ws/axis2/itests/policy/mixed/tuscanyKeys.jks</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.password">TuscanyWsUserPasswd</ramp:property>
+						</ramp:crypto>
+					</ramp:signatureCrypto>
+				</ramp:RampartConfig>
+	
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+ </sca:policySet-->
+ </sca:definitions>

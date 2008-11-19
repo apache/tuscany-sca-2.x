@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://data.tuscany.apache.org/xmlns/sca/1.0" 
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0" 
+    xmlns:data="http://data.tuscany.apache.org/xmlns/sca/1.0"
+    elementFormDefault="qualified">
+
+    <complexType name="ConnectionProperties">
+    	<attribute name="driverClass" type="string" />
+    	<attribute name="databaseURL" type="string" />
+    	<attribute name="userName" type="string" default="" />
+    	<attribute name="password" type="string" default="" />
+    	<attribute name="loginTimeout" type="int" default="0" />
+    </complexType>
+
+    <complexType name="ConnectionInfo">
+    	<sequence>
+    		<element maxOccurs="1" minOccurs="0"
+    			name="ConnectionProperties" type="data:ConnectionProperties" />
+    	</sequence>
+    	<attribute name="dataSource" type="string" />
+    	<attribute name="managedtx" type="boolean"
+    		default="true" />
+    </complexType>
+</schema>

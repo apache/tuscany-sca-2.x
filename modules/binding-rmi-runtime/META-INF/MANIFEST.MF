@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.binding.rmi.provider;version="
+ 1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA RMI Binding Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397324375
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA RMI Binding Extension
+Import-Package: net.sf.cglib.asm,
+ net.sf.cglib.core,
+ net.sf.cglib.proxy,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.binding.rmi;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.rmi;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java;version="1.4",
+ org.apache.tuscany.sca.interfacedef.java.impl;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4",
+ org.osoa.sca;version="1.4",
+ org.osoa.sca.annotations;version="1.4";resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.rmi.runtime
+Bundle-DocURL: http://www.apache.org/
+

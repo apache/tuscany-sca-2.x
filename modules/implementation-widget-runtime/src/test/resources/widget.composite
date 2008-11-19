@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+	targetNamespace="http://sample/resource"
+	xmlns:sr="http://sample/resource"
+	name="resource">
+
+    <component name="store">
+        <tuscany:implementation.widget location="content/store.html"/>
+        <property name="locale">en</property>
+        <service name="Widget">
+        	<tuscany:binding.http uri="http://localhost:8085/store"/> 
+        </service>
+		<reference name="Catalog" target="Catalog">
+		 	<tuscany:binding.jsonrpc uri="http://localhost:8085/Catalog"/>
+		 </reference>
+		 <reference name="ShoppingCart" target="ShoppingCart">
+		 	<tuscany:binding.atom uri="http://localhost:8085/ShoppingCart"/>
+		 </reference>
+    </component>
+    
+    <component name="Catalog">
+		<implementation.java class="store.CatalogImpl"/> 
+		<service name="Catalog">
+			<tuscany:binding.jsonrpc uri="http://localhost:8085/Catalog"/>
+   		</service>
+	</component> 
+	
+	<component name="ShoppingCart">
+		<implementation.java class="store.ShoppingCartImpl"/>
+		<service name="Collection">
+			<tuscany:binding.atom uri="http://localhost:8085/ShoppingCart"/>
+		</service>    	
+	</component>
+
+</composite>

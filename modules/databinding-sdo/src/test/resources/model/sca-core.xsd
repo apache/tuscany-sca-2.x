@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.osoa.org/xmlns/sca/0.9" 
+		xmlns:sca="http://www.osoa.org/xmlns/sca/0.9"
+		elementFormDefault="qualified">
+
+	<element name="componentType" type="sca:ComponentType"/>
+	<complexType name="ComponentType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="service" type="sca:Service"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="reference" type="sca:Reference"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="property" type="sca:Property"/>
+		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<complexType name="Service">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:interface"/>
+		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<element name="interface" type="sca:Interface"/>
+	<complexType name="Interface"/>
+
+	<complexType name="Reference">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:interface"/>
+		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<attribute name="multiplicity" type="sca:Multiplicity" use="optional" default="1..1"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<complexType name="Property">
+		<sequence>
+		    <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+  		<attribute name="name" type="NCName" use="required"/>
+   		<attribute name="type" type="QName" use="required"/>		
+  		<attribute name="many" type="boolean" default="false" use="optional"/>
+  		<attribute name="required" type="boolean" default="false" use="optional"/>  		
+		<attribute name="default" type="string" use="optional"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+
+	<element name="moduleFragment" type="sca:ModuleFragment"/>
+	<complexType name="ModuleFragment">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="entryPoint" type="sca:EntryPoint"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="component" type="sca:Component"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="externalService" type="sca:ExternalService"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="wire" type="sca:ModuleWire"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<element name="module" type="sca:Module"/>
+	<complexType name="Module">
+		<complexContent>
+			<extension base="sca:ModuleFragment"/>
+		</complexContent>
+	</complexType>
+
+	<complexType name="EntryPoint">
+		<sequence>
+			<element minOccurs="0" maxOccurs="1" ref="sca:interface"/>
+			<element minOccurs="1" maxOccurs="unbounded" ref="sca:binding"/>
+			<element minOccurs="1" maxOccurs="unbounded" name="reference" type="anyURI"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<attribute name="multiplicity" type="sca:Multiplicity" use="optional" default="1..1"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+	<!-- a multiplicity 1..1 or 0..n sample
+			<reference>StockQuoteComponent</reference>		- type must be URI
+		 a multiplicity 1..n or 0..n sample
+			<reference>StockQuoteComponent1</reference>		- type must be URI
+			<reference>StockQuoteComponent2</reference>
+	 -->
+
+	<element name="binding" type="sca:Binding"/>
+	<complexType name="Binding">
+		<attribute name="uri" type="anyURI" use="optional"/>
+	</complexType>
+	
+	<complexType name="Component">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:implementation"/>
+			<element minOccurs="0" maxOccurs="1" name="properties" type="sca:PropertyValues"/>
+			<element minOccurs="0" maxOccurs="1" name="references" type="sca:ReferenceValues"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+	<!-- a multiplicity 1..1 or 0..1 sample
+			<references>
+				<v:stockQuote>StockQuoteComponent</v:stockquote>	- type must be URI
+			</references>
+		 a multiplicity 1..n or 0..n sample
+			<references>
+				<v:stockQuote>StockQuoteComponent1</v:stockQuote>	- type must be URI
+				<v:stockQuote>StockQuoteComponent2</v:stockQuote>
+			</references>
+	 -->
+
+	<element name="implementation" type="sca:Implementation"/>
+	<complexType name="Implementation"/>
+
+	<complexType name="PropertyValues">
+		<sequence>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<anyAttribute namespace="##any" processContents="lax"/>			
+	</complexType>
+
+	<complexType name="ReferenceValues">
+		<sequence>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<anyAttribute namespace="##any" processContents="lax"/>			
+	</complexType>
+
+
+	<complexType name="ExternalService">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:interface"/>
+			<element minOccurs="0" maxOccurs="unbounded" ref="sca:binding"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<attribute name="overridable" type="sca:OverrideOptions" default="may" use="optional"/>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	
+	<complexType name="ModuleWire">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:source.uri"/>
+			<element minOccurs="1" maxOccurs="1" ref="sca:target.uri"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<element name="source" type="anyType"/>
+	<element name="target" type="anyType"/>
+	
+	<element name="source.uri" type="anyURI" substitutionGroup="sca:source"/>
+	<element name="target.uri" type="anyURI" substitutionGroup="sca:target"/>
+
+	<element name="subsystem" type="sca:Subsystem"/>
+	<complexType name="Subsystem">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="entryPoint" type="sca:EntryPoint"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="moduleComponent" type="sca:ModuleComponent"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="externalService" type="sca:ExternalService"/>
+			<element minOccurs="0" maxOccurs="unbounded" name="wire" type="sca:SystemWire"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<attribute name="uri" type="anyURI" use="optional"/>		
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+	
+	<complexType name="ModuleComponent">
+		<sequence>
+			<element minOccurs="0" maxOccurs="1" name="properties" type="sca:PropertyValues"/>
+			<element minOccurs="0" maxOccurs="1" name="references" type="sca:ReferenceValues"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"/>
+		<attribute name="module" type="NCName" use="required"/>
+		<attribute name="uri" type="anyURI" use="optional"/>		
+		<anyAttribute namespace="##any" processContents="lax"/>
+	</complexType>
+
+	<complexType name="SystemWire">
+		<sequence>
+			<element minOccurs="1" maxOccurs="1" ref="sca:source"/>
+			<element minOccurs="1" maxOccurs="1" ref="sca:target"/>
+			<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<element name="source.epr" type="anyType" substitutionGroup="sca:source"/>
+	<element name="target.epr" type="anyType" substitutionGroup="sca:target"/>
+
+	<simpleType name="Multiplicity">
+		<restriction base="string">
+			<enumeration value="0..1"/>
+			<enumeration value="1..1"/>
+			<enumeration value="0..n"/>
+			<enumeration value="1..n"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="OverrideOptions">
+		<restriction base="string">
+			<enumeration value="no"/>
+			<enumeration value="may"/>
+			<enumeration value="must"/>
+		</restriction>
+	</simpleType>
+
+</schema>

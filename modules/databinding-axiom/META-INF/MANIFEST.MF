@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.databinding.axiom;uses:="org.ap
+ ache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacedef.util
+ ,org.apache.tuscany.sca.databinding.impl,org.apache.axiom.om.impl.bui
+ lder,org.apache.tuscany.sca.interfacedef,org.apache.axiom.om,javax.xm
+ l.namespace,javax.xml.stream,org.apache.tuscany.sca.interfacedef.impl
+ ,org.apache.tuscany.sca.databinding.javabeans";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Data Binding for Axiom
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397285015
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for Axiom
+Import-Package: javax.xml.namespace,javax.xml.stream,org
+ .apache.axiom.om,org.apache.axiom.om.impl.builder,org.apache.tuscany.
+ sca.databinding;version="1.4",org.apache.tuscany.sca.databinding.axio
+ m;version="1.4",org.apache.tuscany.sca.databinding.impl;version="1.4"
+ ,org.apache.tuscany.sca.databinding.javabeans;version="1.4",org.apach
+ e.tuscany.sca.interfacedef;version="1.4",org.apache.tuscany.sca.inter
+ facedef.impl;version="1.4",org.apache.tuscany.sca.interfacedef.util;v
+ ersion="1.4"
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.axiom
+Bundle-DocURL: http://www.apache.org/
+
