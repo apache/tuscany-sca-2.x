@@ -12,9 +12,11 @@ Bnd-LastModified: 1225397256703
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA HTTP Binding Model
-Import-Package: javax.servlet.http,org.apache.tuscany.sca.assembly;ver
- sion="1.4",org.apache.tuscany.sca.assembly.xml;version="1.4",org.apac
- he.tuscany.sca.binding.http;version="1.4"
+Import-Package: javax.servlet.http,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.assembly.xml;version="1.4",
+ org.apache.tuscany.sca.binding.http;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.http
 Bundle-DocURL: http://www.apache.org/
 
