@@ -43,7 +43,6 @@ Import-Package: javax.activation,
  org.apache.tuscany.sca.interfacedef.util;version="1.4",
  org.apache.tuscany.sca.policy;version="1.4.0",
  org.apache.tuscany.sca.xsd;version="1.4",
- org.apache.ws.commons.schema.resolver,
  
  org.osoa.sca;version="1.4",
  org.w3c.dom,
