@@ -74,20 +74,6 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     	 }
      }
      
-     /**
-      * Report a exception.
-      * 
-      * @param problems
-      * @param message
-      * @param model
-      */
-     private void error(String message, Object model, Exception ex) {
-         if (monitor != null) {
-             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-java-validation-messages", Severity.ERROR, model, message, ex);
-             monitor.problem(problem);
-         }
-     }
-
     public QName getArtifactType() {
         return EXPORT_JAVA;
     }
