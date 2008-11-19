@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.binding.sca.xml;version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Default Binding XML Model
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397190578
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Default Binding XML Model
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.assembly.builder;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.assembly.xml;version="1.4",
+ org.apache.tuscany.sca.contribution.processor;version="1.4",
+ org.apache.tuscany.sca.contribution.resolver;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.definitions;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef;version="1.4.0",
+ org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca.xml
+Bundle-DocURL: http://www.apache.org/
+

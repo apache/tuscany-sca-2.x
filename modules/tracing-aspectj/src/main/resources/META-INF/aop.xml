@@ -1,0 +1,17 @@
+<aspectj>
+
+    <aspects>
+        <!-- declare two existing aspects to the weaver -->
+        <aspect name="org.apache.tuscany.sca.aspectj.SimpleTracingAspect" />
+        <!-- 
+        <aspect name="org.apache.tuscany.sca.aspectj.LoggingAspect" />
+         -->
+
+    </aspects>
+
+    <!--weaver options="-verbose -debug -showWeaveInfo"-->
+    <weaver options="">
+        <include within="org.apache.tuscany.sca..*" />
+    </weaver>
+
+</aspectj>

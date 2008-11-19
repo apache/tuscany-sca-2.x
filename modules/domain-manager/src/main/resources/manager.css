@@ -1,0 +1,104 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *   
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+body {
+	white-space: nowrap; margin: 2px;
+}
+
+table {
+	border: 1px; border-collapse: separate
+}
+
+th {
+	font-weight: bold; white-space: nowrap; background-color: #e5ecf9; color: #598edd;
+	text-align: left; padding-left: 2px; padding-right: 20px; padding-top: 2px; padding-bottom: 2px; vertical-align: text-top;
+	border-top: 1px; border-bottom: 1px; border-left: 0px; border-right: 0px;
+	border-style: solid; border-top-color: #a2bae7; border-bottom-color: #d1d3d4
+}
+
+td {
+	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: nowrap; vertical-align: text-top
+}
+
+iframe {
+	visibility: hidden;
+}
+
+input {
+	vertical-align: middle
+}
+
+a:link {
+  color: blue
+}
+
+a:visited {
+  color: blue
+}
+
+.tdw {
+	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: normal; vertical-align: text-top
+}
+
+.hd1 {
+	font-size:150%; font-weight: bold
+}
+
+.tbar {
+	margin: 0px;
+	padding-top: 0px; padding-left: 0px; padding-right: 0px; padding-bottom: 3px;
+	border-bottom: 1px solid #a2bae7
+}
+
+.ltbar {
+	padding-left: 0px; padding-top: 0px; padding-right: 20px; white-space: nowrap; vertical-align: top
+}
+
+.rtbar {
+	padding-left: 0px; padding-right: 0px; padding-top: 0px; white-space: nowrap; vertical-align: top;
+	text-align: right
+}
+
+.suggest {
+	background-color: #e5ecf9; color: #598edd;
+	border-top: 1px; border-bottom: 1px; border-left: 1px; border-right: 1px;
+	border-style: solid; border-top-color: #a2bae7; border-bottom-color: #d1d3d4;
+	border-left-color: #d1d3d4; border-right-color: #d1d3d4;
+    position: absolute;
+    overflow: auto; overflow-x: hidden;
+    cursor: default;
+    padding: 0px; margin: 0px;
+}
+
+suggestTable {
+	border: 0px; border-collapse: separate;
+    padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; 
+	margin: 0px;
+}
+
+.suggestItem {
+	padding-left: 2px; padding-top: 0px; padding-bottom: 0px; padding-right: 2px; white-space: nowrap; vertical-align: text-top;
+	background-color: #e5ecf9; color: #598edd;
+}
+
+.suggestHilighted {
+	padding-left: 2px; padding-top: 0px; padding-bottom: 0px; padding-right: 2px; white-space: nowrap; vertical-align: text-top;
+	background-color: #598edd; color: #e5ecf9;
+}
+

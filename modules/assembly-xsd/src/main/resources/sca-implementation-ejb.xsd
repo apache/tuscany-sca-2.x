@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) Copyright SCA Collaboration 2006 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+    elementFormDefault="qualified">
+
+    <include schemaLocation="sca-core.xsd"/>
+
+    <element name="implementation.ejb" type="sca:EJBImplementation" 
+    	substitutionGroup="sca:implementation"/>
+    <complexType name="EJBImplementation">
+        <complexContent>
+            <extension base="sca:Implementation">
+                <sequence>
+                    <any namespace="##other" processContents="lax" 
+                    	minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+                <!--  we might want to make this refer to the JEE ejb-link type -->
+                <attribute name="ejb-link" type="token" use="required"/>
+                <anyAttribute namespace="##any" processContents="lax"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

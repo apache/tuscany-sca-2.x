@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+
+    <intent name="managedTransaction" constrains="implementation">
+        <description>Used to indicate the transaction environment desired by a component implementation.</description>
+    </intent>
+    <intent name="managedTransaction.global">
+        <description>
+            Used to indicate that a component implementation requires a managed global transaction.
+        </description>
+    </intent>
+    <intent name="managedTransaction.local">
+        <description>
+            Used to indicate that a component implementation requires a managed local transaction.
+        </description>
+    </intent>
+    <intent name="noManagedTransaction" constrains="implementation">
+        <description>
+            Used to indicate that a component implementation will manage its own transaction resources.
+        </description>
+    </intent>
+    <intent name="propagatesTransaction" constrains="binding">
+        <description>
+            Used to indicate that a reference will propagate any client transaction or that a service will be dispatched
+            under any received transaction.
+        </description>
+    </intent>
+    <intent name="suspendsTransaction" constrains="binding">
+        <description>
+            Used to indicate that a reference will not propagate any client transaction or that a service will not be
+            dispatched under any received transaction.
+        </description>
+    </intent>
+    <intent name="transactedOneWay" constrains="binding">
+        <description>
+            Used to indicate that the component requires the SCA runtime to transact OneWay send of messages as part of
+            any client global transaction or to transact oneWay message receipt as part of any service global
+            transaction.
+        </description>
+    </intent>
+    <intent name="immediateOneWay" constrains="binding">
+        <description>
+            Used to indicate that the component requires the SCA runtime to process the sending or receiving of OneWay
+            messages immediately, regardless of any transaction under which the sending/receiving component runs.
+        </description>
+    </intent>
+</definitions>

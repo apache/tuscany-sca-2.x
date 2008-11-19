@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.host.corba.naming;uses:="org.om
+ g.CosNaming.NamingContextPackage,org.omg.CosNaming,org.omg.CosNaming.
+ NamingContextExtPackage,org.omg.CORBA,org.omg.PortableServer";version
+ ="1.4",org.apache.tuscany.sca.host.corba.jse;uses:="org.omg.CosNaming
+ .NamingContextPackage,org.omg.CosNaming,org.apache.tuscany.sca.host.c
+ orba,org.omg.CORBA,org.apache.tuscany.sca.core";version="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA JSE built-in CORBA Host
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397133187
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA JSE built-in CORBA Host
+Import-Package: org.apache.tuscany.sca.core;version="1.4",org.apache.t
+ uscany.sca.host.corba;version="1.4",org.apache.tuscany.sca.host.corba
+ .jse;version="1.4",org.apache.tuscany.sca.host.corba.naming;version="
+ 1.4",org.omg.CORBA,org.omg.CosNaming,org.omg.CosNaming.NamingContextE
+ xtPackage,org.omg.CosNaming.NamingContextPackage,org.omg.PortableServ
+ er,org.omg.CORBA.portable;resolu
+ tion:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.host.corba.jse
+Bundle-DocURL: http://www.apache.org/
+
