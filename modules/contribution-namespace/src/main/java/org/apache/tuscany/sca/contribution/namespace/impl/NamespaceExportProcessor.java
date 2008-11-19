@@ -72,20 +72,6 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
     	 }
      }
      
-     /**
-      * Report a exception.
-      * 
-      * @param problems
-      * @param message
-      * @param model
-      */
-     private void error(String message, Object model, Exception ex) {
-         if (monitor != null) {
-             Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-namespace-validation-messages", Severity.ERROR, model, message, ex);
-             monitor.problem(problem);
-         }
-     }
-
     public QName getArtifactType() {
         return EXPORT;
     }
