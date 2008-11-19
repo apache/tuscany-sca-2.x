@@ -19,11 +19,11 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import java.util.Map;
+
 import javax.xml.bind.JAXBContext;
 
 import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.databinding.xml.Node2String;
 
 /**
  * @version $Rev$ $Date$

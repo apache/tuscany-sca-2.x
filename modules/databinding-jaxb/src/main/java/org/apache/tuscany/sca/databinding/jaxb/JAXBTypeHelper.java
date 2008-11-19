@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,10 +44,8 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.osoa.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public class JAXBTypeHelper implements XMLTypeHelper {
     private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
@@ -97,25 +94,25 @@ public class JAXBTypeHelper implements XMLTypeHelper {
         return xsds;
     }
 
-    private static class XSDResolver implements URIResolver {
-        private Map<String, String> xsds;
-
-        public XSDResolver(Map<String, String> xsds) {
-            super();
-            this.xsds = xsds;
-        }
-
-        public InputSource resolveEntity(java.lang.String namespace,
-                                         java.lang.String schemaLocation,
-                                         java.lang.String baseUri) {
-            String xsd = xsds.get(schemaLocation);
-            if (xsd == null) {
-                return null;
-            }
-            return new InputSource(new StringReader(xsd));
-        }
-
-    }
+//    private static class XSDResolver implements URIResolver {
+//        private Map<String, String> xsds;
+//
+//        public XSDResolver(Map<String, String> xsds) {
+//            super();
+//            this.xsds = xsds;
+//        }
+//
+//        public InputSource resolveEntity(java.lang.String namespace,
+//                                         java.lang.String schemaLocation,
+//                                         java.lang.String baseUri) {
+//            String xsd = xsds.get(schemaLocation);
+//            if (xsd == null) {
+//                return null;
+//            }
+//            return new InputSource(new StringReader(xsd));
+//        }
+//
+//    }
 
     /*
     private void generateJAXBSchemas1(List<XSDefinition> definitions, XSDFactory factory) {
