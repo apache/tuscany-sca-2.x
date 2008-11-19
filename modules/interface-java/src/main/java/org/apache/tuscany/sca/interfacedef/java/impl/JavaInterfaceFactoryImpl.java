@@ -19,7 +19,10 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -36,6 +39,7 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
     private JavaInterfaceIntrospectorImpl introspector;
+    private Map<Class<?>, JavaInterface> cache  = Collections.synchronizedMap(new WeakHashMap<Class<?>, JavaInterface>());
     
     public JavaInterfaceFactoryImpl() {
         introspector = new JavaInterfaceIntrospectorImpl(this);
@@ -46,9 +50,16 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     }
     
     public JavaInterface createJavaInterface(Class<?> interfaceClass) throws InvalidInterfaceException {
-        JavaInterface javaInterface = createJavaInterface();
-        introspector.introspectInterface(javaInterface, interfaceClass);
-        return javaInterface;
+        // TODO: Review if the sharing of JavaInterface is ok
+        synchronized (interfaceClass) {
+            JavaInterface javaInterface = cache.get(interfaceClass);
+            if (javaInterface == null) {
+                javaInterface = createJavaInterface();
+                introspector.introspectInterface(javaInterface, interfaceClass);
+                cache.put(interfaceClass, javaInterface);
+            }
+            return javaInterface;
+        }
     }
     
     public void createJavaInterface(JavaInterface javaInterface, Class<?> interfaceClass) throws InvalidInterfaceException {

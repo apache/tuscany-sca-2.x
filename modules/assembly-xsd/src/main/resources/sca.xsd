@@ -18,6 +18,8 @@
 
     <include schemaLocation="sca-contributions.xsd"/>
         
+    <include schemaLocation="sca-contributions.xsd"/>
+    
     <include schemaLocation="sca-definitions.xsd"/>
     <include schemaLocation="sca-policy.xsd"/>
     

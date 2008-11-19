@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -32,12 +32,11 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
  * @version $Rev $Date$
  */
 public class MessageImpl implements Message { 
-    private Map<String, Object> header = new Hashtable<String, Object>();
+    private List<Object> headers = new ArrayList<Object>();
     private Object body;
     private Object messageID;
     private boolean isFault;
     private Operation operation;
-    private Map<String, Object> qosContext = new Hashtable<String, Object>();
 
     private EndpointReference from;
     private EndpointReference to;
@@ -97,13 +96,9 @@ public class MessageImpl implements Message {
     public void setOperation(Operation op) {
         this.operation = op;
     }
-
-    public Map<String, Object> getQoSContext() {
-        return qosContext;
-    }
     
-    public Map<String, Object> getHeader() {
-        return qosContext;
+    public List<Object> getHeaders() {
+        return headers;
     }    
 
 }

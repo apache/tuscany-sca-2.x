@@ -20,11 +20,11 @@
 <componentType xmlns="http://www.osoa.org/xmlns/sca/1.0">
 
   <service name="CalculatorService">
-        <interface.java class="calculator.CalculatorService" />
+        <interface.java interface="calculator.CalculatorService" />
   </service>
 
   <reference name="divideService">
-        <interface.java class="calculator.DivideService" />
+        <interface.java interface="calculator.DivideService" />
   </reference>  
 
 </componentType>              

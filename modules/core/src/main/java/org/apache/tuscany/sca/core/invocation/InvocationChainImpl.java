@@ -45,8 +45,9 @@ public class InvocationChainImpl implements InvocationChain {
     private boolean allowsPassByReference;
 
     public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference) {
-        assert sourceOperation != null;
-        assert targetOperation != null;
+        // TODO - binding invocation chain doesn't provide operations
+        //assert sourceOperation != null;
+        //assert targetOperation != null;
         this.targetOperation = targetOperation;
         this.sourceOperation = sourceOperation;
         this.forReference = forReference;

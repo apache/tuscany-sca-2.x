@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -60,7 +61,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories,
                                                  StAXArtifactProcessor staxProcessor,
                                                  Monitor monitor) {
-        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.staxProcessor = staxProcessor;
         this.monitor = monitor;
     }

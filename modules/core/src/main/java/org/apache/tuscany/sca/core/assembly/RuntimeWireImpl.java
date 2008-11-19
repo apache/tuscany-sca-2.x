@@ -41,10 +41,15 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.PolicyProviderRRB;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ReferenceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -76,6 +81,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private RuntimeWireImpl clonedFrom;
 
     private List<InvocationChain> chains;
+    private InvocationChain bindingInvocationChain;
 
     /**
      * @param source
@@ -110,6 +116,20 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
         return chains;
     }
+    
+    public synchronized InvocationChain getBindingInvocationChain() {
+        if (bindingInvocationChain == null) {
+            Contract source = wireSource.getContract();
+            if (source instanceof RuntimeComponentReference) {
+                bindingInvocationChain = new InvocationChainImpl(null, null, true);
+                initReferenceBindingInvocationChains();
+            } else {
+                bindingInvocationChain = new InvocationChainImpl(null, null, false);
+                initServiceBindingInvocationChains();
+            }
+        }
+        return bindingInvocationChain;
+    }
 
     public InvocationChain getInvocationChain(Operation operation) {
         for (InvocationChain chain : getInvocationChains()) {
@@ -127,6 +147,10 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
         return null;
     }
+    
+    public Object invoke(Message msg) throws InvocationTargetException {
+        return getBindingInvocationChain().getHeadInvoker().invoke(msg);
+    }    
 
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
         Message msg = messageFactory.createMessage();
@@ -167,6 +191,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 addReferenceBindingInterceptor(reference, refBinding, chain, operation);
                 chains.add(chain);
             }
+            
         } else {
             // It's the service wire
             RuntimeComponentService service = (RuntimeComponentService)wireTarget.getContract();
@@ -189,8 +214,67 @@ public class RuntimeWireImpl implements RuntimeWire {
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
             }
+            
         }
         wireProcessor.process(this);
+    }
+    
+    private void initReferenceBindingInvocationChains() {
+        RuntimeComponentReference reference = (RuntimeComponentReference)wireSource.getContract();
+        Binding referenceBinding = wireSource.getBinding();
+        
+        // add the binding interceptors to the reference binding wire
+        ReferenceBindingProvider provider = reference.getBindingProvider(referenceBinding);
+        if ((provider != null) &&
+            (provider instanceof ReferenceBindingProviderRRB)){
+            ((ReferenceBindingProviderRRB)provider).configureBindingChain(this);
+        }
+        
+        // add the policy interceptors to the service binding wire
+        // find out which policies are active
+        List<PolicyProvider> pps = ((RuntimeComponentReference)reference).getPolicyProviders(referenceBinding);
+        if (pps != null) {
+            for (PolicyProvider p : pps) {
+                if (p instanceof PolicyProviderRRB) {
+                    Interceptor interceptor = ((PolicyProviderRRB)p).createBindingInterceptor();
+                    if (interceptor != null) {
+                        bindingInvocationChain.addInterceptor(p.getPhase(), interceptor);
+                    }
+                }
+            }
+        }               
+    }    
+    
+    private void initServiceBindingInvocationChains() {
+        RuntimeComponentService service = (RuntimeComponentService)wireTarget.getContract();
+        Binding serviceBinding = wireTarget.getBinding();
+        
+        // add the binding interceptors to the service binding wire
+        ServiceBindingProvider provider = service.getBindingProvider(serviceBinding);
+        if ((provider != null) &&
+            (provider instanceof ServiceBindingProviderRRB)){
+            ((ServiceBindingProviderRRB)provider).configureBindingChain(this);
+        }
+        
+        // add the policy interceptors to the service binding wire
+        List<PolicyProvider> pps = ((RuntimeComponentService)service).getPolicyProviders(serviceBinding);
+        if (pps != null) {
+            for (PolicyProvider p : pps) {
+                if (p instanceof PolicyProviderRRB) {
+                    Interceptor interceptor = ((PolicyProviderRRB)p).createBindingInterceptor();
+                    if (interceptor != null) {
+                        bindingInvocationChain.addInterceptor(p.getPhase(), interceptor);
+                    }
+                }
+            }
+        }        
+        
+        
+        // TODO - add something on the end of the wire to invoke the 
+        //        invocation chain. Need to split out the runtime
+        //        wire invoker into conversation, callback interceptors etc
+        bindingInvocationChain.addInvoker(invoker);
+        
     }
 
     public EndpointReference getSource() {
@@ -336,6 +420,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         copy.wireSource = (EndpointReference)wireSource.clone();
         copy.wireTarget = (EndpointReference)wireTarget.clone();
         copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
+        copy.cachedWire = null; // TUSCANY-2630
         return copy;
     }
 

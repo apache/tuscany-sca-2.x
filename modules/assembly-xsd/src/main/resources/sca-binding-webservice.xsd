@@ -6,6 +6,11 @@
     xmlns:wsdli="http://www.w3.org/2004/08/wsdl-instance"
     xmlns:wsa="http://www.w3.org/2004/12/addressing"
     elementFormDefault="qualified">
+    
+    <import namespace="http://www.w3.org/2004/08/wsdl-instance"
+            schemaLocation="wsdli.xsd" />
+    <!-- import namespace="http://www.w3.org/2005/08/addressing" 
+            schemaLocation="ws-addr.xsd" /-->
 
     <include schemaLocation="sca-core.xsd"/>
 
@@ -15,11 +20,14 @@
         <complexContent>
             <extension base="sca:Binding">
                 <sequence>
+                    <!-- element ref="wsa:EndpointReference" minOccurs="0"
+                         maxOccurs="unbounded"/-->                  
                     <any namespace="##other" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/>
                 </sequence>
 			 <attribute name="wsdlElement" type="anyURI" use="optional"/>
-                <anyAttribute namespace="##any" processContents="lax"/>
+             <attribute ref="wsdli:wsdlLocation" use="optional"/>
+             <anyAttribute namespace="##any" processContents="lax"/>
             </extension>
         </complexContent>
     </complexType>

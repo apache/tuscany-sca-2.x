@@ -506,7 +506,8 @@ class BaseWireBuilderImpl {
                     		composite.getName().toString(), componentService.getName());
                 }
             }
-        } else if (componentReference.getReference() != null) {
+        } else if ((componentReference.getReference() != null) &&
+                   (!componentReference.getReference().getTargets().isEmpty())) {
 
             // Resolve targets from the corresponding reference in the
             // componentType
@@ -568,7 +569,49 @@ class BaseWireBuilderImpl {
                     		         composite.getName().toString(), componentService.getName());
                 }
             }
-        } 
+        } else if (componentReference.getAutowire() == Boolean.TRUE) {
+
+            // Find suitable targets in the current composite for an
+            // autowired reference
+            Multiplicity multiplicity = componentReference.getMultiplicity();
+            for (Component targetComponent : composite.getComponents()) {
+                // prevent autowire connecting to self
+                boolean skipSelf = false;
+                for (ComponentReference targetComponentReference : targetComponent.getReferences()) {
+                    if (componentReference == targetComponentReference){
+                        skipSelf = true;
+                    }
+                }
+                
+                if (!skipSelf){
+                    for (ComponentService targetComponentService : targetComponent.getServices()) {
+                        if (componentReference.getInterfaceContract() == null ||
+                            interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+                            
+                            Endpoint endpoint = endpointFactory.createEndpoint();
+                            endpoint.setTargetName(targetComponent.getName());
+                            endpoint.setSourceComponent(null); // TODO - fixed up at start
+                            endpoint.setSourceComponentReference(componentReference);
+                            endpoint.setInterfaceContract(componentReference.getInterfaceContract());
+                            endpoint.setTargetComponent(targetComponent);
+                            endpoint.setTargetComponentService(targetComponentService);
+                            endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                            endpoints.add(endpoint);
+                            
+                            if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
+                if (endpoints.size() == 0) {
+                    warning("NoComponentReferenceTarget", componentReference, componentReference.getName());
+                }
+            }
+        }
             
                 
         // if no endpoints have found so far retrieve any target names that are in binding URIs

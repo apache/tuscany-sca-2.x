@@ -20,7 +20,8 @@ org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=h
 org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#allow,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
 org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#permitAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
 org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#denyAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
-org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#runAs,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
 org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#basicAuthentication,model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy

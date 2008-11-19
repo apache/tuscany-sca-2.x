@@ -35,13 +35,12 @@ import org.w3c.dom.Node;
  */
 public class DOMDataBinding extends BaseDataBinding {
     public static final String NAME = Node.class.getName();
-    public static final String[] ALIASES = new String[] {"dom"};
 
     public static final String ROOT_NAMESPACE = "http://tuscany.apache.org/xmlns/sca/databinding/dom/1.0";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
 
     public DOMDataBinding() {
-        super(NAME, ALIASES, Node.class);
+        super(NAME, Node.class);
     }
 
     @Override

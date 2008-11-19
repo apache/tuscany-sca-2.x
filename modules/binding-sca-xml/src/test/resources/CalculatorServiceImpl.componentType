@@ -20,12 +20,12 @@
 <componentType xmlns="http://www.osoa.org/xmlns/sca/1.0">
 
   <service name="CalculatorService">
-        <interface.java class="calculator.CalculatorService" />
+        <interface.java interface="calculator.CalculatorService" />
         <binding.sca/>
   </service>
 
   <reference name="addService">
-        <interface.java class="calculator.AddService" />
+        <interface.java interface="calculator.AddService" />
         <binding.sca/>
   </reference>  
 

@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -43,10 +44,12 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
 
     private XSDFactory factory;
+    private XMLInputFactory inputFactory;
     private Monitor monitor;
 
     public XSDDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(XSDFactory.class);
+        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.monitor = monitor;
     }
     
@@ -90,7 +93,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
     protected XSDefinition indexRead(URL doc) throws Exception {
         XSDefinition xsd = factory.createXSDefinition();
         xsd.setUnresolved(true);
-        xsd.setNamespace(XMLDocumentHelper.readTargetNamespace(doc, XSD, true, "targetNamespace"));
+        xsd.setNamespace(XMLDocumentHelper.readTargetNamespace(doc, XSD, true, "targetNamespace", inputFactory));
         xsd.setLocation(doc.toURI());
         xsd.setUnresolved(false);
         return xsd;

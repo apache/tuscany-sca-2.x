@@ -47,13 +47,6 @@ public interface DataBinding {
      * @return The name of the databinding
      */
     String getName();
-    
-    /**
-     * Get the aliases for the databinding
-     * 
-     * @return An array of aliases
-     */
-    String[] getAliases();
 
     /**
      * Introspect and populate information to a DataType model
@@ -88,12 +81,6 @@ public interface DataBinding {
      * @return copy of the object passed in as argument
      */
     Object copy(Object object, DataType dataType, Operation operation);
-    
-    /**
-     * Get the type mapper for simple types
-     * @return The databinding-specific simple type mapper
-     */
-    SimpleTypeMapper getSimpleTypeMapper();
     
     /**
      * Get the XML type helper for Java types

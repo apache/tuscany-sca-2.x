@@ -38,7 +38,7 @@
 
     <component name="AddServiceComponent">
     <implementation.java class="calculator.AddServiceImpl"/>
-    <service>
+    <service name="AddService">
         <interface.java interface="calculator.AddService"/>
             <binding.sca/>
     </service>        

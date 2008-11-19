@@ -131,7 +131,6 @@
         <module>policy-logging</module>
         <module>policy-security</module>
         <module>policy-security-jsr250</module>
-        <module>policy-security-ws</module>
         <module>policy-transaction</module>
         <module>sca-api</module>
         <module>tracing-aspectj</module>

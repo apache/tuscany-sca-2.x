@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.io.IOException;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -34,15 +33,12 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -53,7 +49,6 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -442,27 +437,6 @@ public class JAXBContextHelper {
         }
 
         return name.substring(0, decap).toLowerCase() + name.substring(decap);
-    }
-
-    public static Node generateSchema(JAXBContext context) throws Exception {
-        SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
-        context.generateSchema(resolver);
-        return resolver.getSchema();
-    }
-
-    public static class SchemaOutputResolverImpl extends SchemaOutputResolver {
-        private DOMResult result = new DOMResult();
-
-        @Override
-        public Result createOutput(String ns, String file) throws IOException {
-            result.setSystemId("sca:dom");
-            return result;
-        }
-
-        public Node getSchema() {
-            return result != null ? result.getNode() : null;
-        }
-
     }
 
 }

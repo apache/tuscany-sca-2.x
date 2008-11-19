@@ -32,11 +32,26 @@ public interface PackageType {
     String JAR = "application/x-compressed";
 
     /**
+     * Zip archive contribution package
+     */
+    String ZIP = "application/x-compressed";
+
+    /**
      * Filesystem folder contribution package
      */
     String FOLDER = "application/vnd.tuscany.folder";
     
     
     String BUNDLE = "application/osgi.bundle";
+    
+    /**
+     * Java EE Web Application Archive
+     */
+    String WAR = "application/war";
+    
+    /**
+     * Java EE Enterprise Application Archive
+     */
+    String EAR = "application/ear";
 
 }

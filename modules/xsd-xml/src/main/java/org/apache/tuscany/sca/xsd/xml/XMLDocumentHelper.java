@@ -150,9 +150,7 @@ public class XMLDocumentHelper {
         return inputSource;
     }
 
-    private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-
-    public static String readTargetNamespace(URL doc, QName element, boolean rootOnly, String attribute)
+    public static String readTargetNamespace(URL doc, QName element, boolean rootOnly, String attribute, XMLInputFactory inputFactory)
         throws IOException, XMLStreamException {
         if (attribute == null) {
             attribute = "targetNamespace";

@@ -41,10 +41,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor<BasicAuthenticationPolicy> {
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
 
-    private static final String USER_NAME = "userName";
-    private static final String PASSWORD = "password";
-
-    
     public QName getArtifactType() {
         return BasicAuthenticationPolicy.BASIC_AUTHENTICATION_POLICY_QNAME;
     }
@@ -65,9 +61,9 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
                     name = reader.getName();
                     if ( name.equals(getArtifactType()) ) {
                         // no attributes at the moment
-                    } else if ( USER_NAME.equals(name.getLocalPart()) ) {
+                    } else if ( BasicAuthenticationPolicy.BASIC_AUTHENTICATION_USERNAME.equals(name.getLocalPart()) ) {
                         policy.setUserName(reader.getElementText());
-                    } else if ( PASSWORD.equals(name.getLocalPart()) ) {
+                    } else if ( BasicAuthenticationPolicy.BASIC_AUTHENTICATION_PASSWORD.equals(name.getLocalPart()) ) {
                         policy.setPassword(reader.getElementText());
                     }
                     break;
@@ -99,7 +95,7 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
 
         if ( policy.getUserName() != null ) {
             writer.writeStartElement(prefix, 
-                                     USER_NAME,
+                                     BasicAuthenticationPolicy.BASIC_AUTHENTICATION_USERNAME,
                                      getArtifactType().getNamespaceURI());
             writer.writeCharacters(policy.getUserName());
             writer.writeEndElement();
@@ -107,7 +103,7 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
         
         if ( policy.getPassword() != null ) {
             writer.writeStartElement(prefix, 
-                                     PASSWORD,
+                                     BasicAuthenticationPolicy.BASIC_AUTHENTICATION_PASSWORD,
                                      getArtifactType().getNamespaceURI());
             writer.writeCharacters(policy.getPassword());
             writer.writeEndElement();

@@ -16,4 +16,4 @@
 # under the License.
 
 # implementation classes for the databindings
-org.apache.tuscany.sca.databinding.json.JSONDataBinding;type=JSON,name=json
+org.apache.tuscany.sca.databinding.json.JSONDataBinding;name=JSON

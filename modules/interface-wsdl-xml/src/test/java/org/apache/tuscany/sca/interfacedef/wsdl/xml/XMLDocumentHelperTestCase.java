@@ -21,10 +21,11 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.net.URL;
 
+import javax.xml.stream.XMLInputFactory;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class XMLDocumentHelperTestCase {
 
     @Test
     public void testReadTNS() throws Exception {
-        String tns = XMLDocumentHelper.readTargetNamespace(wsdl, XMLDocumentHelper.WSDL11, true, "targetNamespace");
+        String tns = XMLDocumentHelper.readTargetNamespace(wsdl, XMLDocumentHelper.WSDL11, true, "targetNamespace", XMLInputFactory.newInstance());
         Assert.assertEquals("http://helloworld", tns);
     }
 
