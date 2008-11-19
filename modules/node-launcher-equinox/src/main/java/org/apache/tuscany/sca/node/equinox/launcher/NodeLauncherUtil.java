@@ -626,7 +626,13 @@ final class NodeLauncherUtil {
         Set<URL> jarURLs = new HashSet<URL>();
     
         // Determine the path to the launcher class
-        URI uri = URI.create(codeLocation(NodeLauncherUtil.class));
+        URI uri;
+        try {
+        	uri = URI.create(codeLocation(NodeLauncherUtil.class));
+        } catch (Exception e) {
+        	// FIXME
+        	uri = URI.create("");
+        }
     
         // If the launcher class is in a JAR, add all runtime JARs from directory containing
         // that JAR (e.g. the Tuscany modules directory) as well as the ../modules and
