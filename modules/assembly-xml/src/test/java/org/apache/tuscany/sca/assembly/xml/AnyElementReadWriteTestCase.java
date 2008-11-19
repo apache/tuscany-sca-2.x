@@ -28,10 +28,8 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.Test;
@@ -44,9 +42,8 @@ public class AnyElementReadWriteTestCase extends TestCase {
 
 	@Override
 	public void setUp() throws Exception {
-		ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-		 ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-		 inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
 		
 		StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints
 				.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
