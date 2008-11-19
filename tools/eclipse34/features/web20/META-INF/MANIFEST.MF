@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Apache Tuscany SCA Web 2.0 Eclipse Feature
-Bundle-SymbolicName: org.apache.tuscany.sca.feature.web20
-Bundle-Version: 1.4.0
-Bundle-Vendor: Apache Software Foundation

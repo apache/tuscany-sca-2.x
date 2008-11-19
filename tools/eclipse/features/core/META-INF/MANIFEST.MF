@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Apache Tuscany SCA Tools Core Feature
-Bundle-SymbolicName: org.apache.tuscany.sca.feature.core
-Bundle-Version: 1.4.0
-Bundle-Vendor: Apache Software Foundation

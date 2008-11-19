@@ -38,12 +38,13 @@
             </activation>
             <modules>
                 <module>maven-ant-generator</module>
+                <module>maven-bundle-plugin</module>
                 <module>maven-dependency-lister</module>
+                <module>maven-eclipse-compiler</module>
                 <module>maven-incremental-build</module>
                 <module>maven-java2wsdl</module>
                 <module>maven-web-junit</module>
                 <module>maven-wsdl2java</module>
-                <module>maven-tuscany-bundle-plugin</module>
             </modules>
         </profile>
     </profiles>
