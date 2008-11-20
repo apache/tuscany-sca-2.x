@@ -82,6 +82,113 @@
         <module>xsd</module>
     </modules>
 
+<!--
+            <modules>
+                <module>assembly</module>
+                <module>assembly-xml</module>
+                <module>assembly-xsd</module>
+                <module>binding-atom</module>
+                <module>binding-atom-abdera</module>
+                <module>binding-corba</module>
+                <module>binding-corba-runtime</module>
+                <module>binding-ejb</module>
+                <module>binding-ejb-runtime</module>
+                <module>binding-gdata</module>
+                <module>binding-gdata-runtime</module>
+                <module>binding-http</module>
+                <module>binding-http-runtime</module>
+                <module>binding-jms</module>
+                <module>binding-jms-runtime</module>
+                <module>binding-jsonrpc</module>
+                <module>binding-jsonrpc-runtime</module>
+                <module>binding-rmi</module>
+                <module>binding-rmi-runtime</module>
+                <module>binding-rss</module>
+                <module>binding-rss-rome</module>
+                <module>binding-sca</module>
+                <module>binding-sca-axis2</module>
+                <module>binding-sca-xml</module>
+                <module>binding-ws</module>
+                <module>binding-ws-axis2</module>
+                <module>binding-ws-axis2-policy</module>
+                <module>binding-ws-wsdlgen</module>
+                <module>binding-ws-xml</module>
+                <module>contribution</module>
+                <module>contribution-java</module>
+                <module>contribution-namespace</module>
+                <module>contribution-resource</module>
+                <module>contribution-xml</module>
+                <module>core</module>
+                <module>core-databinding</module>
+                <module>core-spi</module>
+                <module>data-api</module>
+                <module>databinding</module>
+                <module>databinding-axiom</module>
+                <module>databinding-fastinfoset</module>
+                <module>databinding-jaxb</module>
+                <module>databinding-jaxb-axiom</module>
+                <module>databinding-json</module>
+                <module>databinding-saxon</module>
+                <module>databinding-sdo</module>
+                <module>databinding-sdo-axiom</module>
+                <module>databinding-xmlbeans</module>
+                <module>definitions</module>
+                <module>definitions-xml</module>
+                <module>domain-manager</module>
+                <module>endpoint</module>
+                <module>extensibility</module>
+                <module>extensibility-equinox</module>
+                <module>host-corba</module>
+                <module>host-corba-jee</module>
+                <module>host-corba-jse</module>
+                <module>host-http</module>
+                <module>host-jetty</module>
+                <module>host-rmi</module>
+                <module>implementation-bpel</module>
+                <module>implementation-bpel-ode</module>
+                <module>implementation-ejb</module>
+                <module>implementation-java</module>
+                <module>implementation-java-runtime</module>
+                <module>implementation-java-xml</module>
+                <module>implementation-node</module>
+                <module>implementation-node-runtime</module>
+                <module>implementation-resource</module>
+                <module>implementation-resource-runtime</module>
+                <module>implementation-script</module>
+                <module>implementation-script-runtime</module>
+                <module>implementation-spring</module>
+                <module>implementation-widget</module>
+                <module>implementation-widget-runtime</module>
+                <module>implementation-xquery</module>
+                <module>interface</module>
+                <module>interface-java</module>
+                <module>interface-java-jaxws</module>
+                <module>interface-java-xml</module>
+                <module>interface-wsdl</module>
+                <module>interface-wsdl-xml</module>
+                <module>monitor</module>
+                <module>node-api</module>
+                <module>node-impl</module>
+                <module>node-launcher</module>
+                <module>node-launcher-equinox</module>
+                <module>node-launcher-webapp</module>
+                <module>node-manager</module>
+                <module>policy</module>
+                <module>policy-security</module>
+                <module>policy-security-jsr250</module>
+                <module>policy-transaction</module>
+                <module>policy-xml</module>
+                <module>policy-xml-ws</module>
+                <module>sca-api</module>
+                <module>tracing-aspectj</module>
+                <module>workspace</module>
+                <module>workspace-impl</module>
+                <module>workspace-xml</module>
+                <module>xsd</module>
+                <module>xsd-xml</module>
+            </modules>
+-->
+
     <profiles>
         <profile>
             <id>eclipse</id>
@@ -125,7 +232,7 @@
                    <artifactId>maven-eclipse-plugin</artifactId>
                    <version>2.5.1</version>
                    <configuration>
-                       <skip>false</skip>
+                       <skip>true</skip>
                    </configuration>
                </plugin>
     
