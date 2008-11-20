@@ -33,12 +33,18 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-all</artifactId>
+            <artifactId>tuscany-distribution-core</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <type>jar</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
         <!-- host-tomcat is not in the all-in-one distro -->
+        <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
@@ -57,6 +63,7 @@
             <type>jar</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
