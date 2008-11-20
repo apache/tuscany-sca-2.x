@@ -18,6 +18,7 @@ Bundle-Description: Apache Tuscany SCA XML Contribution Model
 Import-Package: javax.xml.namespace,
  javax.xml.parsers,
  javax.xml.stream,
+ javax.xml.stream.events,
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.contribution;version="1.4",
  org.apache.tuscany.sca.contribution.processor;version="1.4",
@@ -26,7 +27,6 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.core;version="1.4",
  org.apache.tuscany.sca.monitor;version="1.4",
  org.apache.tuscany.sca.policy;version="1.4.0",
- 
  org.w3c.dom,
  org.w3c.dom.traversal
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution.xml
