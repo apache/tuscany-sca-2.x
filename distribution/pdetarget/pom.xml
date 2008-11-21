@@ -39,13 +39,14 @@
         </dependency>
 
         <!-- Extra dependencies not in the core distro -->
-        <!--
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <type>jar</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+         <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-xml-ws</artifactId>

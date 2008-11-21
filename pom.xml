@@ -245,9 +245,9 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
-                <module>vtest</module>
-                <module>tutorials</module>
-                <module>demos</module>
+                <!--module>vtest</module-->
+                <!--module>tutorials</module-->
+                <!--module>demos</module-->
                 <module>distribution</module>
             </modules>
            <build>
@@ -289,9 +289,9 @@
             <id>dependencies</id>
             <modules>
                 <module>modules</module>
-                <module>samples</module>
+                <!--module>samples</module>
                 <module>tutorials</module>
-                <module>demos</module>
+                <module>demos</module-->
             </modules>
             <build>
                 <plugins>
