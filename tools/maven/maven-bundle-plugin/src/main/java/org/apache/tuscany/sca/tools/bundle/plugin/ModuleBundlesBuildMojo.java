@@ -96,6 +96,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private String[] eclipseFeatures;
+    
+    /**
+     * If we use the running eclipse as the default location for the target 
+     * @parameter
+     */
+    private boolean useDefaultLocation = true;
 
     /**
      * Set to true to generate a plugin.xml.
@@ -103,6 +109,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      *  @parameter
      */
     private boolean generatePlugin;
+    
+    /**
+     * Generate a configuration/config.ini for equinox
+     * @parameter
+     */
+    private boolean generateConfig;
 
     /**
      * @parameter
@@ -149,6 +161,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Process all the dependency artifacts
             Set<String> bundleSymbolicNames = new HashSet<String>();
+            Set<String> fileNames = new HashSet<String>();
             for (Object o : project.getArtifacts()) {
                 Artifact artifact = (Artifact)o;
 
@@ -208,6 +221,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
                     bundleSymbolicNames.add(bundleName);
+                    fileNames.add(artifactFile.getName());
 
                 } else if ("war".equals(artifact.getType())) {
 
@@ -223,7 +237,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
                 } else {
 
-                    File dir = new File(root, artifactFile.getName().substring(0, artifactFile.getName().length() - 4));
+//                    String version = BundleUtil.osgiVersion(artifact.getVersion());
+//                    String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId());
+//                    String dirName = symbolicName + "_" + version;
+                    
+                    String dirName = artifactFile.getName().substring(0, artifactFile.getName().length() - 4);
+                    File dir = new File(root, dirName);
 
                     // Exclude artifact if its file name is excluded
                     if (excludedFileNames.contains(dir.getName())) {
@@ -262,6 +281,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     fos.close();
                     copyFile(artifactFile, dir);
                     bundleSymbolicNames.add(symbolicName);
+                    fileNames.add(dir.getName());
                 }
             }
 
@@ -289,13 +309,18 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     write(mf, fos);
                     fos.close();
                     bundleSymbolicNames.add(symbolicName);
+                    fileNames.add(dir.getName());
                 }
             }
 
             // Generate a PDE target
             if (generateTargetPlatform) {
                 File target = new File(project.getBuild().getDirectory(), project.getArtifactId() + ".target");
+                log.info("Generating target definition: " + target);
                 FileOutputStream targetFile = new FileOutputStream(target);
+                if (!bundleSymbolicNames.contains("org.eclipse.osgi")) {
+                    bundleSymbolicNames.add("org.eclipse.osgi");
+                }
                 writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
                 targetFile.close();
             }
@@ -306,6 +331,23 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 FileOutputStream pluginXMLFile = new FileOutputStream(pluginxml);
                 writePluginXML(new PrintStream(pluginXMLFile));
                 pluginXMLFile.close();
+            }
+            
+            if(generateConfig) {
+                File config = new File(root, "configuration");
+                config.mkdir();
+                File ini = new File(config, "config.ini");
+                log.info("Generating configuation: " + ini);
+                FileOutputStream fos = new FileOutputStream(ini); 
+                PrintStream ps = new PrintStream(fos);
+                ps.print("osgi.bundles=");
+                for(String f: fileNames) {
+                    ps.print(f);
+                    ps.print("@:start,");
+                }
+                ps.println();
+                ps.println("eclipse.ignoreApp=true");
+                ps.close();
             }
 
         } catch (Exception e) {
@@ -341,7 +383,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         ps.println("    <execEnv>J2SE-1.5</execEnv>");
         ps.println("  </targetJRE>");
 
-        ps.println("  <location useDefault=\"true\"/>");
+        if(useDefaultLocation) {
+            ps.println("  <location useDefault=\"true\"/>");
+        } else {
+            ps.println("  <location path=\"" + targetDirectory + "\"/>");
+        }
 
         // ps.println("<content useAllPlugins=\"true\">");
         ps.println("  <content>");
@@ -357,10 +403,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
         }
         ps.println("    </features>");
-        ps.println("    <extraLocations>");
-        // Not sure why the extra path needs to the plugins folder
-        ps.println("      <location path=\"" + targetDirectory + "\"/>");
-        ps.println("    </extraLocations>");
+        if (useDefaultLocation) {
+            ps.println("    <extraLocations>");
+            // Not sure why the extra path needs to the plugins folder
+            ps.println("      <location path=\"" + targetDirectory + "\"/>");
+            ps.println("    </extraLocations>");
+        }
         ps.println("  </content>");
 
         ps.println("</target>");
