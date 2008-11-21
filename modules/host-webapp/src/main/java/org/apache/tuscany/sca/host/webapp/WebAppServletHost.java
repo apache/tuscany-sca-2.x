@@ -217,7 +217,7 @@ public class WebAppServletHost implements ServletHost {
             initContextPath(config);
             contributionRoot = getContributionRoot(servletContext);
             NodeFactory factory = NodeFactory.newInstance();
-            node = factory.createNode(null, new Contribution(contributionRoot, contributionRoot));
+            node = factory.createNode("WEB-INF/web.composite", new Contribution(contributionRoot, contributionRoot));
             node.start();
             servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
         }

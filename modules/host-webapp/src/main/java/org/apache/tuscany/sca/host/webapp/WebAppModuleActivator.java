@@ -39,7 +39,12 @@ public class WebAppModuleActivator implements ModuleActivator {
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
 
         List<ServletHost> hosts = servletHosts.getServletHosts();
-        ServletHost host = TuscanyServletFilter.getServletHost();
+        ServletHost host = null;
+        try {
+           host = TuscanyServletFilter.getServletHost();
+        } catch (NoClassDefFoundError e) {
+        	// ignore 
+        }
         if (host != null) {
             hosts.clear();
             hosts.add(host);
