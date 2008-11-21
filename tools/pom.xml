@@ -39,7 +39,14 @@
                 <module>eclipse</module>
                 <module>sdo</module>
                 <module>maven</module>
-                <module>runtime-inspector</module>
+                <!--module>runtime-inspector</module-->
+            </modules>
+        </profile>
+        <profile>
+            <id>eclipse</id>
+            <activation>
+            </activation>
+            <modules>
             </modules>
         </profile>
     </profiles>

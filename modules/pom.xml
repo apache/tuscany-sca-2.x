@@ -53,8 +53,6 @@
         <module>endpoint</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
-        <module>host-http</module>
-        <module>host-jetty</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
         <module>implementation-java-xml</module>
@@ -74,7 +72,6 @@
         <module>policy</module>
         <module>policy-security</module>
         <module>policy-xml</module>
-        <module>policy-xml-ws</module>
         <module>sca-api</module>
         <module>workspace</module>
         <module>workspace-impl</module>
@@ -232,7 +229,7 @@
                    <artifactId>maven-eclipse-plugin</artifactId>
                    <version>2.5.1</version>
                    <configuration>
-                       <skip>true</skip>
+                       <skip>false</skip>
                    </configuration>
                </plugin>
     

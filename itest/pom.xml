@@ -58,6 +58,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+            </modules>
+        </profile>
+        <profile>
+            <id>old</id>
+            <modules>
                 <module>bpel</module>
                 <module>builder</module>
                 <module>callablereferences</module>
