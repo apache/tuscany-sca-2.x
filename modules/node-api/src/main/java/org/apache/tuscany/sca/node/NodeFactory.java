@@ -156,6 +156,13 @@ public abstract class NodeFactory {
     }
 
     /**
+     * Creates a new SCA node using defaults for the contribution location and runnable composite
+     * 
+     * @return a new SCA node.
+     */
+    public abstract Node createNode();
+
+    /**
      * Creates a new SCA node from the configuration URL
      * 
      * @param configurationURL the URL of the node configuration which is the ATOM feed

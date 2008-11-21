@@ -25,7 +25,6 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -63,6 +62,11 @@ public class NodeImplTestCase {
         testNode(node);
     }
 
+    @Test
+    public void testDefaultNode() {
+        testNode(new NodeFactoryImpl().createNode());
+    }
+    
     private void testNode(Node node) {
         node.start();
         HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");

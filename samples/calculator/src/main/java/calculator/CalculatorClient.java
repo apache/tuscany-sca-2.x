@@ -20,8 +20,6 @@
 package calculator;
 
 import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -32,10 +30,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        NodeFactory factory = NodeFactory.newInstance();
-        String root = ContributionLocationHelper.getContributionLocation("Calculator.composite");
-        Contribution contribution = new Contribution(root, root);
-        Node node = factory.createNode("Calculator.composite", contribution);
+        Node node = NodeFactory.newInstance().createNode();
 
         node.start();
         

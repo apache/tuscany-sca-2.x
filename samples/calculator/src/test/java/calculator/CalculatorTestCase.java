@@ -21,8 +21,6 @@ package calculator;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -36,11 +34,7 @@ public class CalculatorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        NodeFactory factory = NodeFactory.newInstance();
-        String root = ContributionLocationHelper.getContributionLocation("Calculator.composite");
-        Contribution contribution = new Contribution(root, root);
-        node = factory.createNode("Calculator.composite", contribution);
-
+        node = NodeFactory.newInstance().createNode();
         node.start();
         
         calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");

@@ -76,6 +76,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -121,6 +122,50 @@ public class NodeImpl implements Node, Client {
     private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
     private Definitions systemDefinitions;
+
+    /** 
+     * Constructs a new SCA node.
+     */
+    NodeImpl() {
+        configurationName = "default";
+        logger.log(Level.INFO, "Creating node: " + configurationName);
+
+        String root = ContributionLocationHelper.getContributionLocation("META-INF/sca-contribution.xml");
+        if (root == null) {
+            throw new ServiceRuntimeException("no META-INF/sca-contribution.xml found");
+        }
+
+        String compositeURI = null;
+        org.apache.tuscany.sca.node.Contribution[] contributions = new org.apache.tuscany.sca.node.Contribution[]{new org.apache.tuscany.sca.node.Contribution(root, root)};
+      
+        try {
+            // Initialize the runtime
+            init();
+
+            // Create a node configuration
+            NodeImplementationFactory nodeImplementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
+
+            if (compositeURI != null) {
+                Composite composite = assemblyFactory.createComposite();
+                composite.setURI(compositeURI);
+                composite.setUnresolved(true);
+                configuration.setComposite(composite);
+            }
+  
+                // Create contribution models
+            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
+                Contribution contribution = contribution(contributionFactory, c);
+                configuration.getContributions().add(contribution);
+            }
+
+            // Configure the node
+            configureNode(configuration);
+
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
 
     /** 
      * Constructs a new SCA node.
@@ -401,6 +446,10 @@ public class NodeImpl implements Node, Client {
         
         composite = configuration.getComposite();
         
+        if (composite == null) {
+            setDefaultComposite(configuration, workspace);
+        }
+        
         // Find the composite in the given contributions
         boolean found = false;
         Artifact compositeFile = contributionFactory.createArtifact();
@@ -590,4 +639,20 @@ public class NodeImpl implements Node, Client {
         }
     }
 
+    /*
+     * Sets a default composite by using any deployable one.
+     */
+    private void setDefaultComposite(ConfiguredNodeImplementation configuration, Workspace workspace) {
+        // just use the first deployable composte
+        for (Contribution contribution : workspace.getContributions()) {
+            for (Composite c : contribution.getDeployables()) {
+                composite = assemblyFactory.createComposite();
+                composite.setURI(c.getURI());
+                composite.setUnresolved(true);
+                configuration.setComposite(composite);
+                return;
+            }
+        }
+        throw new ServiceRuntimeException("no deployable composite found");
+    }
 }
