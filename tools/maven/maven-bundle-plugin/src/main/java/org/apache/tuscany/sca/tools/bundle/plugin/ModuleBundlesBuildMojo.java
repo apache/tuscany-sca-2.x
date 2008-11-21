@@ -90,6 +90,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      *  @parameter
      */
     private boolean generateTargetPlatform;
+    
+    /**
+     * OSGi execution environment
+     */
+    private String executionEnvironment;
 
     /**
      * A list of Eclipse features to be added to the target definition
@@ -379,9 +384,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
         ps.println("<target name=\"Eclipse Target - " + project.getArtifactId() + "\">");
 
-        ps.println("  <targetJRE>");
-        ps.println("    <execEnv>J2SE-1.5</execEnv>");
-        ps.println("  </targetJRE>");
+        if (executionEnvironment != null) {
+            ps.println("  <targetJRE>");
+            ps.println("    <execEnv>" + executionEnvironment + "</execEnv>");
+            ps.println("  </targetJRE>");
+        }
 
         if(useDefaultLocation) {
             ps.println("  <location useDefault=\"true\"/>");
