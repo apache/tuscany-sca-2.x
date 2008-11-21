@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -51,7 +52,7 @@ import org.osgi.framework.Version;
  * @version $Rev$ $Date$
  */
 final class BundleUtil {
-
+    private final static Logger logger = Logger.getLogger(BundleUtil.class.getName());
     /**
      * Returns the name of a bundle, or null if the given file is not a bundle.
      *  
@@ -116,7 +117,7 @@ final class BundleUtil {
             // Generate export-package and import-package declarations
             StringBuffer exports = new StringBuffer();
             StringBuffer imports = new StringBuffer();
-            Set<String> importedPackages = new HashSet<String>();
+            Set<String> pkgs = new HashSet<String>();
             for (String export : exportedPackages) {
 
                 // Add export declaration
@@ -125,13 +126,17 @@ final class BundleUtil {
 
                 // Add corresponding import declaration
                 String packageName = packageName(export);
-                if (!importedPackages.contains(packageName)) {
-                    importedPackages.add(packageName);
-                    imports.append(packageName);
-                    imports.append(',');
+                if (!pkgs.contains(packageName)) {
+//                    imports.append(export);
+//                    imports.append(',');
+                    pkgs.add(packageName);
+                    exports.append(export);
+                    exports.append(',');
+                } else {
+                    logger.warning("Duplicate package skipped: " + export);
                 }
             }
-
+ 
             // Create a manifest
             Manifest manifest = new Manifest();
             Attributes attributes = manifest.getMainAttributes();
