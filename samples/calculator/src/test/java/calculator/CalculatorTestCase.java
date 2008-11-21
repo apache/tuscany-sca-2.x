@@ -20,9 +20,11 @@ package calculator;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -30,15 +32,18 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class CalculatorTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode node;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANodeFromClassLoader("Calculator.composite", getClass().getClassLoader());
+        NodeFactory factory = NodeFactory.newInstance();
+        String root = ContributionLocationHelper.getContributionLocation("Calculator.composite");
+        Contribution contribution = new Contribution(root, root);
+        node = factory.createNode("Calculator.composite", contribution);
+
         node.start();
         
-        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override
