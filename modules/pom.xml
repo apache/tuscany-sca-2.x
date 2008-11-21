@@ -53,6 +53,8 @@
         <module>endpoint</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
+        <module>host-http</module>
+        <module>host-jetty</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
         <module>implementation-java-xml</module>
