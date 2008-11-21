@@ -47,4 +47,8 @@ public class NodeFactoryImpl extends NodeFactory {
         return new NodeImpl(compositeURI, compositeContent, contributions);
     }
 
+    @Override
+    public Node createNode() {
+        return new NodeImpl();
+    }
 }
