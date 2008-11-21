@@ -119,14 +119,9 @@ final class BundleUtil {
             StringBuffer imports = new StringBuffer();
             Set<String> pkgs = new HashSet<String>();
             for (String export : exportedPackages) {
-
-                // Add export declaration
-                exports.append(export);
-                exports.append(',');
-
-                // Add corresponding import declaration
                 String packageName = packageName(export);
                 if (!pkgs.contains(packageName)) {
+                    // Add corresponding import declaration
 //                    imports.append(export);
 //                    imports.append(',');
                     pkgs.add(packageName);
