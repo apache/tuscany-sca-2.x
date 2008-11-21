@@ -37,14 +37,21 @@
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Extra dependencies not in the core distro -->
+        <!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <type>jar</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        <!-- host-tomcat is not in the all-in-one distro -->
-        <!--
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-xml-ws</artifactId>
+            <type>jar</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
@@ -70,20 +77,6 @@
             <version>4.5</version>
             <scope>test</scope>
         </dependency>
-        <!--  
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <version>1.2</version>
-            <scope>test</scope>
-        </dependency>   
-        <dependency>
-            <groupId>httpunit</groupId>
-            <artifactId>httpunit</artifactId>
-            <version>1.6.1</version>
-            <scope>test</scope>
-        </dependency>
-         -->      
     </dependencies>
 
     <profiles>
@@ -106,6 +99,8 @@
                                 <configuration>
                                     <targetDirectory>target/modules</targetDirectory>
                                     <generateTargetPlatform>true</generateTargetPlatform>
+                                    <generateConfig>true</generateConfig>
+                                    <useDefaultLocation>true</useDefaultLocation>
                                     <excludeGroupIds>
                                         <excludeGroupId>org.apache.tuscany.sca</excludeGroupId>
                                     </excludeGroupIds>
