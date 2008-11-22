@@ -33,9 +33,6 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
-        <module>binding-atom</module>
-        <module>binding-http</module>
-        <module>binding-http-runtime</module>
         <module>binding-sca</module>
         <module>binding-sca-xml</module>
         <module>contribution</module>
