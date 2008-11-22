@@ -18,9 +18,11 @@
  */
 package calculator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -40,7 +42,9 @@ public class CalculatorTestCase{
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        node = NodeFactory.newInstance().createNode();
+    	NodeFactory factory = NodeFactory.newInstance();
+        String contribution = ContributionLocationHelper.getContributionLocation(CalculatorClient.class);
+        node = factory.createNode("Calculator.composite", new Contribution("calculator", contribution));
         node.start();
         
         calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
