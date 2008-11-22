@@ -18,38 +18,45 @@
  */
 package calculator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * This shows how to test the Calculator service component.
  */
-public class CalculatorTestCase extends TestCase {
+@Scope("COMPOSITE") @EagerInit
+public class CalculatorTestCase{
+	private static Node node;
+    private static CalculatorService calculatorService;
+    
 
-    private CalculatorService calculatorService;
-    private Node node;
-
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
         node = NodeFactory.newInstance().createNode();
         node.start();
         
         calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        node.stop();
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+    	node.stop();
     }
 
+    @Test
     public void testCalculator() throws Exception {
         // Calculate
-        assertEquals(calculatorService.add(3, 2), 5.0);
-        assertEquals(calculatorService.subtract(3, 2), 1.0);
-        assertEquals(calculatorService.multiply(3, 2), 6.0);
-        assertEquals(calculatorService.divide(3, 2), 1.5);
+        assertEquals(calculatorService.add(3, 2), 5.0, 0);
+        assertEquals(calculatorService.subtract(3, 2), 1.0, 0);
+        assertEquals(calculatorService.multiply(3, 2), 6.0, 0);
+        assertEquals(calculatorService.divide(3, 2), 1.5, 0);
     }
 }
