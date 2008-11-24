@@ -17,8 +17,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Implementation Extension
 Import-Package: javax.servlet,javax.servlet.http,org.apache.tuscany.sc
- a.assembly;version="1.4",org.apache.tuscany.sca.core;version="1.4",or
- g.apache.tuscany.sca.host.http;version="1.4",org.apache.tuscany.sca.i
+ a.assembly;version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.i
  mplementation.node;version="1.4",org.apache.tuscany.sca.implementatio
  n.node.launcher;version="1.4",org.apache.tuscany.sca.implementation.n
  ode.webapp;version="1.4",org.apache.tuscany.sca.interfacedef;version=
