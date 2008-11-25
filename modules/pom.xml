@@ -42,7 +42,6 @@
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>
-        <module>data-api</module>
         <module>databinding</module>
         <module>databinding-jaxb</module>
         <module>definitions</module>
@@ -55,8 +54,6 @@
         <module>implementation-java-xml</module>
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
-        <module>implementation-resource</module>
-        <module>implementation-resource-runtime</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
