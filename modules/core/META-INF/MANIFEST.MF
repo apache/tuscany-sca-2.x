@@ -11,7 +11,7 @@ Export-Package: org.apache.tuscany.sca.core.assembly;uses:="org.apache
  cany.sca.interfacedef,org.apache.tuscany.sca.invocation,org.apache.tu
  scany.sca.work,org.apache.tuscany.sca.contribution.processor";version
  ="1.4",org.apache.tuscany.sca.core.work;uses:="javax.naming,org.osoa.
- sca.annotations,commonj.work,org.apache.tuscany.sca.work";version="1.
+ sca.annotations,org.apache.tuscany.sca.work";version="1.
  4",org.apache.tuscany.sca.core.context;uses:="org.apache.tuscany.sca.
  runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contex
  t,javax.security.auth,org.apache.tuscany.sca.monitor,org.apache.tusca
@@ -47,8 +47,7 @@ Bnd-LastModified: 1225397162265
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Core Runtime
-Import-Package: commonj.work,
- javax.naming,
+Import-Package: javax.naming,
  javax.security.auth,
  javax.xml.namespace,
  javax.xml.stream,

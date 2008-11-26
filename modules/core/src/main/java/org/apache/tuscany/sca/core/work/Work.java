@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.core.work;
  *
  * @version $Rev$ $Date$
  */
-public class Jsr237Work<T extends Runnable> implements commonj.work.Work {
+public class Work<T extends Runnable> {
 
     // Work that is being executed.
     private T work;
@@ -32,7 +32,7 @@ public class Jsr237Work<T extends Runnable> implements commonj.work.Work {
     /*
      * Initializes the work instance.
      */
-    public Jsr237Work(T work) {
+    public Work(T work) {
         this.work = work;
     }
 

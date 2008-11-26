@@ -23,11 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.tuscany.sca.work.WorkSchedulerException;
 import org.junit.Assert;
-
-import commonj.work.WorkEvent;
-import commonj.work.WorkException;
-import commonj.work.WorkListener;
 
 /**
  * A simple WorkListener that tracks invocations to it.
@@ -59,7 +56,7 @@ public class TestWorkListener implements WorkListener {
     /**
      * List of all exceptions thrown by Work items
      */
-    private List<WorkException> workExceptions = Collections.synchronizedList(new ArrayList<WorkException>());
+    private List<WorkSchedulerException> workExceptions = Collections.synchronizedList(new ArrayList<WorkSchedulerException>());
 
     /**
      * {@inheritDoc}
@@ -150,7 +147,7 @@ public class TestWorkListener implements WorkListener {
      * 
      * @return A List of all exceptions that are thrown by the Work items
      */
-    public List<WorkException> getWorkExceptions() {
+    public List<WorkSchedulerException> getWorkExceptions() {
         return Collections.unmodifiableList(workExceptions);
     }
 }

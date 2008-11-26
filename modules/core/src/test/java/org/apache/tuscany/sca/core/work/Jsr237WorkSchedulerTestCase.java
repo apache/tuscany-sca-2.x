@@ -38,14 +38,14 @@ public class Jsr237WorkSchedulerTestCase {
     /**
      * This is the shared instance of the ThreadPoolWorkManager used by the tests
      */
-    private static Jsr237WorkScheduler workSchedular = null;
+    private static DefaultWorkScheduler workSchedular = null;
 
     /**
      * Setup the Jsr237WorkScheduler
      */
     @BeforeClass
     public static void setup() {
-        workSchedular = new Jsr237WorkScheduler();
+        workSchedular = new DefaultWorkScheduler();
     }
 
     /**
