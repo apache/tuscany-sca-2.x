@@ -87,6 +87,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
             return Class.forName(className, false, classLoaderReference.get());
         }
 
+        @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
             sb.append("ClassLoader: ").append(classLoaderReference.get());

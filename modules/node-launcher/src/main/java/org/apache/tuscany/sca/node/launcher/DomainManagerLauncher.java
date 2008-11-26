@@ -168,6 +168,7 @@ public class DomainManagerLauncher {
             this.domainManager = domainManager;
         }
 
+        @Override
         public void run() {
             try {
                 stopDomainManager(domainManager);

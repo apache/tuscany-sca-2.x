@@ -143,6 +143,7 @@ public class NodeDaemonLauncher {
             this.equinox = equinox;
         }
 
+        @Override
         public void run() {
             try {
                 stopNode(node);

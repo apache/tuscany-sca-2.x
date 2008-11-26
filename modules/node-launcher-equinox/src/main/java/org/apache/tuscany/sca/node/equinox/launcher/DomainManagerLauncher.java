@@ -156,6 +156,7 @@ public class DomainManagerLauncher {
             this.equinox = equinox;
         }
 
+        @Override
         public void run() {
             try {
                 stopDomainManager(domainManager);
