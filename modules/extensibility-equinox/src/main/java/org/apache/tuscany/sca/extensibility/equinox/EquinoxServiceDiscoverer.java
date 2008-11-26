@@ -106,6 +106,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             });
         }
 
+        @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
             sb.append("Bundle: ").append(EquinoxServiceDiscoverer.toString(bundle));

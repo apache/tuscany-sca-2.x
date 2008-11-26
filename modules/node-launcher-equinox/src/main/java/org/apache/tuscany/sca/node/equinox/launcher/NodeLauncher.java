@@ -199,6 +199,7 @@ public class NodeLauncher {
             this.equinox = equinox;
         }
 
+        @Override
         public void run() {
             try {
                 destroyNode(node);
