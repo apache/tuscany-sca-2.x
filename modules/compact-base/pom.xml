@@ -243,6 +243,7 @@
 
   <!-- these remaining dependencies are not required when using JDK6, maybe make them optional -->
 
+<!--
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-commonj_1.1_spec</artifactId>
@@ -296,7 +297,7 @@
             <artifactId>jsr181-api</artifactId>
             <version>1.0-MR1</version>
         </dependency>
-
+-->
     </dependencies>
 
     <build>
