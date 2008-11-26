@@ -18,30 +18,34 @@
  */
 package org.apache.tuscany.sca.core.work;
 
+import org.apache.tuscany.sca.work.WorkSchedulerException;
 
-import commonj.work.WorkEvent;
-import commonj.work.WorkException;
-import commonj.work.WorkItem;
+
 
 /**
  * Default immutable implementation of the <code>WorkEvent</code> class.
  *
  * @version $Rev$ $Date$
  */
-class WorkEventImpl implements WorkEvent {
+class WorkEvent {
     
+    public static final int WORK_ACCEPTED = 1;
+    public static final int WORK_REJECTED = 2;
+    public static final int WORK_STARTED = 3;
+    public static final int WORK_COMPLETED = 4;
+
     // Work item for this event
     private WorkItem workItem;
 
     // Exception if something has gone wrong
-    private WorkException exception;
+    private WorkSchedulerException exception;
 
     /**
      * Instantiates the event.
      *
      * @param workItem Work item for this event.
      */
-    public WorkEventImpl(final WorkItemImpl workItem) {
+    public WorkEvent(final WorkItem workItem) {
         this.workItem = workItem;
         this.exception = workItem.getException();
     }
@@ -70,7 +74,7 @@ class WorkEventImpl implements WorkEvent {
      *
      * @return Work exception.
      */
-    public WorkException getException() {
+    public WorkSchedulerException getException() {
         return exception;
     }
 }

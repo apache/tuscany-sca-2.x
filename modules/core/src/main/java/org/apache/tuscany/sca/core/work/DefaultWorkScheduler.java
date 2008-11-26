@@ -21,16 +21,9 @@ package org.apache.tuscany.sca.core.work;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.apache.tuscany.sca.work.WorkSchedulerException;
-
-import commonj.work.WorkEvent;
-import commonj.work.WorkListener;
-import commonj.work.WorkManager;
 
 /**
  * A work scheduler implementation based on a JSR 237 work manager.
@@ -43,31 +36,31 @@ import commonj.work.WorkManager;
  *
  * @version $Rev$ $Date$
  */
-public class Jsr237WorkScheduler implements WorkScheduler {
+public class DefaultWorkScheduler implements WorkScheduler {
 
     /**
      * Underlying JSR-237 work manager
      */
-    private WorkManager jsr237WorkManager;
+    private ThreadPoolWorkManager jsr237WorkManager;
 
     /**
      * Initializes the JSR 237 work manager.
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public Jsr237WorkScheduler() {
+    public DefaultWorkScheduler() {
     }
 
-    private synchronized WorkManager getWorkManager() {
+    private synchronized ThreadPoolWorkManager getWorkManager() {
         if (jsr237WorkManager != null) {
             return jsr237WorkManager;
         }
-        try {
-            InitialContext ctx = new InitialContext();
-            jsr237WorkManager = (WorkManager)ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
-        } catch (Throwable e) {
-            // ignore
-        }
+//        try {
+//            InitialContext ctx = new InitialContext();
+//            jsr237WorkManager = (ThreadPoolWorkManager)ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
+//        } catch (Throwable e) {
+//            // ignore
+//        }
         if (jsr237WorkManager == null) {
             jsr237WorkManager = new ThreadPoolWorkManager(10);
         }
@@ -97,7 +90,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
             throw new IllegalArgumentException("Work cannot be null");
         }
 
-        Jsr237Work<T> jsr237Work = new Jsr237Work<T>(work);
+        Work<T> jsr237Work = new Work<T>(work);
         try {
             if (listener == null) {
                 getWorkManager().schedule(jsr237Work);

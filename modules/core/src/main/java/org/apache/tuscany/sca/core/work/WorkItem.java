@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.sca.core.work;
 
-import commonj.work.Work;
-import commonj.work.WorkException;
-import commonj.work.WorkItem;
+import org.apache.tuscany.sca.work.WorkSchedulerException;
 
 /**
  * An identity based immutable implementation of the <code>WorkItem</code>
@@ -28,7 +26,7 @@ import commonj.work.WorkItem;
  *
  * @version $Rev$ $Date$
  */
-class WorkItemImpl implements WorkItem {
+class WorkItem {
     
     // Id scoped for the VM
     private String id;
@@ -43,14 +41,14 @@ class WorkItemImpl implements WorkItem {
     private Work originalWork;
 
     // Exception
-    private WorkException exception;
+    private WorkSchedulerException exception;
 
     /**
      * Instantiates an id for this item.
      *
      * @param id of this work event.
      */
-    protected WorkItemImpl(final String id, final Work orginalWork) {
+    protected WorkItem(final String id, final Work orginalWork) {
         this.id = id;
         this.originalWork = orginalWork;
     }
@@ -97,7 +95,7 @@ class WorkItemImpl implements WorkItem {
      *
      * @return Work exception.
      */
-    protected WorkException getException() {
+    protected WorkSchedulerException getException() {
         return exception;
     }
 
@@ -106,7 +104,7 @@ class WorkItemImpl implements WorkItem {
      *
      * @param exception Exception.
      */
-    protected void setException(final WorkException exception) {
+    protected void setException(final WorkSchedulerException exception) {
         this.exception = exception;
     }
 
@@ -146,7 +144,7 @@ class WorkItemImpl implements WorkItem {
      */
     @Override
     public boolean equals(final Object obj) {
-        return (obj != null) && (obj.getClass() == WorkItemImpl.class) && ((WorkItemImpl) obj).id.equals(id);
+        return (obj != null) && (obj.getClass() == WorkItem.class) && ((WorkItem) obj).id.equals(id);
     }
 
     /**
@@ -160,10 +158,10 @@ class WorkItemImpl implements WorkItem {
      * @throws ClassCastException needs better documentation.
      */
     public int compareTo(final Object o) {
-        if (o.getClass() != WorkItemImpl.class) {
+        if (o.getClass() != WorkItem.class) {
             throw new ClassCastException(o.getClass().getName());
         } else {
-            return ((WorkItemImpl) o).getId().compareTo(getId());
+            return ((WorkItem) o).getId().compareTo(getId());
         }
     }
 }

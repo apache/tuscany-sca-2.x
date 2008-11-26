@@ -20,15 +20,13 @@ package org.apache.tuscany.sca.core.work;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import commonj.work.Work;
-
 /**
  * Simple Work item that will sleep in the run() method for the specified 
  * period of time
  * 
  * @version $Rev$ $Date$
  */
-public class TimeDelayWork implements Work {
+public class TimeDelayWork extends Work {
 
     /**
      * Count of completed run() method calls
@@ -46,6 +44,7 @@ public class TimeDelayWork implements Work {
      * @param sleepTime The amount of time to sleep (in milliseconds) in the run() method
      */
     public TimeDelayWork(long sleepTime) {
+        super(null);
         this.sleepTime = sleepTime;
     }
 

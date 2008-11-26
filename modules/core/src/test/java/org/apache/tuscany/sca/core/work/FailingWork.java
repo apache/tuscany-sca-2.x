@@ -18,14 +18,17 @@
  */
 package org.apache.tuscany.sca.core.work;
 
-import commonj.work.Work;
 
 /**
  * Simple Work item that will throw an exception
  * 
  * @version $Rev$ $Date$
  */
-public class FailingWork implements Work {
+public class FailingWork extends Work {
+
+    public FailingWork() {
+        super(null);
+    }
 
     /**
      * {@inheritDoc}
