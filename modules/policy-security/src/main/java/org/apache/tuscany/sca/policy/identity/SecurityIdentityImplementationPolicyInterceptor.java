@@ -19,12 +19,9 @@
 
 package org.apache.tuscany.sca.policy.identity;
 
-import java.security.Principal;
 import java.util.List;
 
 import javax.security.auth.Subject;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
 
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;

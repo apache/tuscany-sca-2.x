@@ -22,9 +22,7 @@ import java.lang.reflect.InvocationHandler;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
-import java.util.HashMap;
 
-import org.apache.tuscany.sca.core.invocation.SCAProxy;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;

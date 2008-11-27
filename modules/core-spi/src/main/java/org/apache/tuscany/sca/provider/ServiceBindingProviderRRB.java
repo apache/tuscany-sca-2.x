@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.provider;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**

@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.databinding.impl;
 
 
 import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;

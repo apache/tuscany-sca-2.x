@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.endpointresolver;
 
-import java.util.List;
 
 
 /**

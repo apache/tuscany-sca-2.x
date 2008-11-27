@@ -27,7 +27,6 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
