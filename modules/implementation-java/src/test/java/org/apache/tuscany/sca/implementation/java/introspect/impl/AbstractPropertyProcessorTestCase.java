@@ -107,7 +107,6 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         extension = new TestProcessor();
@@ -126,7 +125,6 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void initProperty(Property property, Bar annotation) {
             // property.setDefaultValueFactory(EasyMock.createMock(ObjectFactory.class));
             property.setName("test");

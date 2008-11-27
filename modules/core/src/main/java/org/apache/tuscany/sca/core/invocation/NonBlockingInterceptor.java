@@ -121,7 +121,6 @@ public class NonBlockingInterceptor implements Interceptor {
      */
     private static class ImmutableMessage implements Message {
 
-        @SuppressWarnings("unchecked")
         public Object getBody() {
             return null;
         }

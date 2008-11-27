@@ -63,7 +63,6 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
         this.optional = optional;
     }
 
-    @SuppressWarnings({"unchecked"})
     public T getInstance() throws ObjectCreationException {
         try {
             T resource;

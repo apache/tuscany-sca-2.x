@@ -175,7 +175,6 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
 
     protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
 
-    @SuppressWarnings("unchecked")
     protected Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
 
         Property property = assemblyFactory.createProperty();
