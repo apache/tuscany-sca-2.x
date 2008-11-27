@@ -63,7 +63,6 @@ public class RequestContextImpl implements RequestContext {
         return ThreadMessageContext.getMessageContext().getTo().getContract().getName();
     }
 
-    @SuppressWarnings("unchecked")
     public <B> CallableReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
@@ -78,7 +77,6 @@ public class RequestContextImpl implements RequestContext {
         return callableReference;
     }
 
-    @SuppressWarnings("unchecked")
     public <CB> CB getCallback() {
         CallableReference<CB> cb = getCallbackReference(); 
         if (cb == null) {

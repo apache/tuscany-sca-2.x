@@ -151,7 +151,6 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
         assertNotNull(ModelHelper.getReference(type, "myRef"));
     }
 
-    @SuppressWarnings("unchecked")
     public void testDefaultConstructor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo3.class, type);

@@ -104,7 +104,6 @@ public class JavaInstanceFactoryProvider<T> implements InstanceFactoryProvider<T
     @SuppressWarnings("unchecked")
     private Injector<T>[] getInjectors() {
         // work around JDK1.5 issue with allocating generic arrays
-        @SuppressWarnings("unchecked")
         Injector<T>[] injectors = new Injector[injectionSites.size()];
 
         int i = 0;

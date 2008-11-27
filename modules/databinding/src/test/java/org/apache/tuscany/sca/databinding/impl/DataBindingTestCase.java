@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.databinding.annotation.DataBinding;
  * @version $Rev$ $Date$
  */
 public class DataBindingTestCase extends TestCase {
-    @SuppressWarnings("unused")
     public void testDataType() throws Exception {
         Class<Test> testClass = Test.class;
         DataBinding d = testClass.getAnnotation(DataBinding.class);

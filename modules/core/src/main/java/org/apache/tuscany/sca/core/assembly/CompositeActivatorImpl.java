@@ -248,7 +248,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             (EndpointResolverFactory<Endpoint>)endpointResolverFactories.getEndpointResolverFactory(endpoint.getClass());
         
         if (resolverFactory != null) {
-            @SuppressWarnings("unchecked")
             EndpointResolver endpointResolver =
                 resolverFactory.createEndpointResolver(endpoint, null);
             if (endpointResolver != null) {

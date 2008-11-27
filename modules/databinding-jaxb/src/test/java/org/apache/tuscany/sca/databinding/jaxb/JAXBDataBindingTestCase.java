@@ -107,7 +107,6 @@ public class JAXBDataBindingTestCase extends TestCase {
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getName());
     }
 
-    @SuppressWarnings("unchecked")
     public void testCopyNonElement() {
         ObjectFactory factory = new ObjectFactory();
         PurchaseOrderType poType = factory.createPurchaseOrderType();
@@ -117,7 +116,6 @@ public class JAXBDataBindingTestCase extends TestCase {
         assertEquals("Comment", (copy).getComment());
     }
 
-    @SuppressWarnings("unchecked")
     public void testCopyNonRoot() {
         ObjectFactory factory = new ObjectFactory();
         USAddress address = factory.createUSAddress();

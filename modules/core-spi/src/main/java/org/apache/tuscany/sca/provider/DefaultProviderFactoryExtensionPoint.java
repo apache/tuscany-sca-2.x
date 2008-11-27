@@ -416,14 +416,12 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return factory;
         }
 
-        @SuppressWarnings("unchecked")
         public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
                                                                     RuntimeComponentReference reference,
                                                                     Binding binding){
             return getFactory().createReferenceWireFormatProvider(component, reference, binding);
         }
 
-        @SuppressWarnings("unchecked")
         public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
                                                                   RuntimeComponentService service,
                                                                   Binding binding){
@@ -479,14 +477,12 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return factory;
         }
 
-        @SuppressWarnings("unchecked")
         public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
                                                                     RuntimeComponentReference reference,
                                                                     Binding binding){
             return getFactory().createReferenceOperationSelectorProvider(component, reference, binding);
         }
 
-        @SuppressWarnings("unchecked")
         public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
                                                                   RuntimeComponentService service,
                                                                   Binding binding){

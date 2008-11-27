@@ -221,7 +221,6 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
             super(property, propertyValue, isSimpleType, javaType);
         }
 
-        @SuppressWarnings("unchecked")
         public Object getInstance() throws ObjectCreationException {
             if (isSimpleType) {
                 try {

@@ -96,7 +96,6 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         type.getResources().put(resource.getName(), resource);
     }
 
-    @SuppressWarnings("unchecked")
     public JavaResourceImpl createResource(String name, JavaElementImpl element) {
         element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
         element.setName(name);
