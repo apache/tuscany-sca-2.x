@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.invocation;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.EndpointReference;

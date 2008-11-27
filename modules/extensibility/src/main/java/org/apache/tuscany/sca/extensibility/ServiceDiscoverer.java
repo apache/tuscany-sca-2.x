@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**

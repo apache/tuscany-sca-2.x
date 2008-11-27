@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;

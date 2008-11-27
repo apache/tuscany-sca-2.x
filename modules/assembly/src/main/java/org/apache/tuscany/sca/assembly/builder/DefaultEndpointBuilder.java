@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.builder.impl.EndpointBuilderImpl;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A default builder.

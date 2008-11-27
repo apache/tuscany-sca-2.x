@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 
 /**
