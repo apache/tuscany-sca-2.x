@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-assembly-xml</artifactId>
-    <name>Apache Tuscany SCA XML Assembly Model</name>
+    <name>Apache Tuscany SCA Assembly XML Model</name>
 
     <dependencies>
         <dependency>

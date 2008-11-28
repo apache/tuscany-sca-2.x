@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-binding-sca-xml</artifactId>
-    <name>Apache Tuscany SCA Default Binding XML Model</name>
+    <name>Apache Tuscany SCA Binding SCA XML Model</name>
 
     <dependencies>
 

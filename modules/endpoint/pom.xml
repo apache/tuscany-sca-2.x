@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-endpoint</artifactId>
-    <name>Apache Tuscany SCA Default Endpoint Implementation</name>
+    <name>Apache Tuscany SCA Endpoint Default Runtime</name>
 
     <dependencies>
       
