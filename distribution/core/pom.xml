@@ -291,7 +291,7 @@
                                         <descriptor>src/main/assembly/src.xml</descriptor>
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-2.0-SNAPSHOT</finalName>
+                                    <finalName>apache-tuscany-sca-core-2.0-SNAPSHOT</finalName>
                                 </configuration>
                             </execution>
                         </executions>
