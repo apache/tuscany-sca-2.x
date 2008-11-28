@@ -102,6 +102,7 @@
                     <archive>
                         <manifest>
                             <mainClass>org.apache.tuscany.sca.node.equinox.launcher.NodeMain</mainClass>
+                            <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
                 </configuration>
