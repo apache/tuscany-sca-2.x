@@ -115,7 +115,7 @@ final class NodeLauncherUtil {
                 if (jarDirectory != null && jarDirectory.exists()) {
                     File homeDirectory = jarDirectory.getParentFile();
                     if (homeDirectory != null && homeDirectory.exists()) {
-                        collectJARFiles(jarDirectory.getPath(), jarDirectoryURLs, jarURLs, filter);
+                        collectJARFiles(homeDirectory.getPath(), jarDirectoryURLs, jarURLs, filter);
                     }
                 }
             }
@@ -185,7 +185,7 @@ final class NodeLauncherUtil {
             if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
                 jarDirectoryURLs.add(modulesDirectoryURL);
                 collectJARFiles(modulesDirectory, jarURLs, filter, true);
-            }
+            }          
 
             // Collect files under $TUSCANY_HOME/lib
             File libDirectory = new File(directoryFile, "lib");
