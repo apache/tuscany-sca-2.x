@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-implementation-node-runtime</artifactId>
-    <name>Apache Tuscany SCA Node Implementation Extension</name>
+    <name>Apache Tuscany SCA Node Implementation Model Runtime</name>
 
     <dependencies>
         <dependency>

@@ -26,6 +26,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-assembly-xsd</artifactId>
-    <name>Apache Tuscany SCA Assembly Model XML Schemas</name>
+    <name>Apache Tuscany SCA Assembly Model XSD Files</name>
 
 </project>
