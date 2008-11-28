@@ -235,11 +235,11 @@
             <version>3.1</version>
         </dependency>
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.apache.ws.commons.schema</groupId>
             <artifactId>XmlSchema</artifactId>
             <version>1.4.2</version>
-        </dependency>
+        </dependency -->
 
   <!-- these remaining dependencies are not required when using JDK6, maybe make them optional -->
 
