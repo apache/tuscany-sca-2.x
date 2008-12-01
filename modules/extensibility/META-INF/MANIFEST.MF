@@ -12,6 +12,7 @@ Bnd-LastModified: 1225397079296
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Extensibility
-Import-Package: org.apache.tuscany.sca.core;version="1.4"
+Import-Package: org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.extensibility;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.extensibility
 Bundle-DocURL: http://www.apache.org/
