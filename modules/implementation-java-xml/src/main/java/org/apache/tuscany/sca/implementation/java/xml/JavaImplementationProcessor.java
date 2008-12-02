@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.implementation.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.CLASS;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.OPERATION_QNAME;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.SCA10_NS;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,7 +46,6 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -67,8 +71,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *
  * @version $Rev$ $Date$
  */
-public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
-    JavaImplementationConstants {
+public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation> {
 
     private JavaImplementationFactory javaFactory;
     private AssemblyFactory assemblyFactory;
@@ -141,7 +144,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             event = reader.next();
             switch ( event ) {
                 case START_ELEMENT  : {
-                    if ( Constants.OPERATION_QNAME.equals(reader.getName()) ) {
+                    if ( OPERATION_QNAME.equals(reader.getName()) ) {
                         confOp = configuredOperationProcessor.read(reader);
                         if ( confOp != null ) {
                             ((OperationsConfigurator)javaImplementation).getConfiguredOperations().add(confOp);
@@ -163,7 +166,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         // Write an <implementation.java>
         policyProcessor.writePolicyPrefixes(javaImplementation, writer);
-        writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_JAVA);
+        writer.writeStartElement(SCA10_NS, IMPLEMENTATION_JAVA);
         policyProcessor.writePolicyAttributes(javaImplementation, writer);
 
         if (javaImplementation.getName() != null) {
