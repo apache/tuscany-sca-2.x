@@ -1,9 +1,4 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.contribution.xml;uses:="org.apa
- che.tuscany.sca.assembly,org.apache.tuscany.sca.core,org.apache.tusca
- ny.sca.contribution,org.apache.tuscany.sca.monitor,javax.xml.namespac
- e,javax.xml.stream,org.apache.tuscany.sca.contribution.resolver,org.a
- pache.tuscany.sca.contribution.processor";version="1.4"
 Private-Package: org.apache.tuscany.sca.contribution.processor.xml;ver
  sion="1.4"
 Tool: Bnd-0.0.255
@@ -23,7 +18,6 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.contribution;version="1.4",
  org.apache.tuscany.sca.contribution.processor;version="1.4",
  org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.contribution.xml;version="1.4",
  org.apache.tuscany.sca.core;version="1.4",
  org.apache.tuscany.sca.monitor;version="1.4",
  org.apache.tuscany.sca.policy;version="1.4.0",
