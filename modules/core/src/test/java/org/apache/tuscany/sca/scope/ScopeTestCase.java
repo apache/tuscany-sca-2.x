@@ -18,32 +18,37 @@
  */
 package org.apache.tuscany.sca.scope;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.tuscany.sca.core.scope.Scope;
-
+import org.junit.Test;
 /**
  * @version $Rev$ $Date$
  */
-public class ScopeTestCase extends TestCase {
+public class ScopeTestCase {
 
+    @Test
     public void testEquals() throws Exception {
         Scope scope = new Scope("COMPOSITE");
         assertTrue(scope.equals(Scope.COMPOSITE));
     }
 
+    @Test
     public void testEqualsNew() throws Exception {
         Scope foo = new Scope("foo");
         Scope foo2 = new Scope("FOO");
         assertTrue(foo.equals(foo2));
     }
 
+    @Test
     public void testNotEquals() throws Exception {
         Scope foo = new Scope("BAR");
         Scope foo2 = new Scope("FOO");
         assertFalse(foo.equals(foo2));
     }
 
+    @Test
     public void testNotEqualsDifferent() throws Exception {
         Scope foo = new Scope("FOO");
         assertFalse(foo.equals(new Bar("FOO")));
