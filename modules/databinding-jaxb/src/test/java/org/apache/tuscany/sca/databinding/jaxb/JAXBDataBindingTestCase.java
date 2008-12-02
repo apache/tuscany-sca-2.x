@@ -19,16 +19,18 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
@@ -39,15 +41,11 @@ import com.example.ipo.jaxb.USState;
  *
  * @version $Rev$ $Date$
  */
-public class JAXBDataBindingTestCase extends TestCase {
+public class JAXBDataBindingTestCase {
     private JAXBDataBinding binding;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         binding = new JAXBDataBinding();
     }
 
@@ -55,6 +53,7 @@ public class JAXBDataBindingTestCase extends TestCase {
      * Test method for
      * {@link org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, Operation)}.
      */
+    @Test
     public final void testIntrospect() {
         DataType dataType = new DataTypeImpl<Class>(JAXBElement.class, null);
         Operation op = null;
@@ -99,6 +98,7 @@ public class JAXBDataBindingTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testCopy() {
         ObjectFactory factory = new ObjectFactory();
         PurchaseOrderType poType = factory.createPurchaseOrderType();
@@ -107,6 +107,7 @@ public class JAXBDataBindingTestCase extends TestCase {
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getName());
     }
 
+    @Test
     public void testCopyNonElement() {
         ObjectFactory factory = new ObjectFactory();
         PurchaseOrderType poType = factory.createPurchaseOrderType();
@@ -116,6 +117,7 @@ public class JAXBDataBindingTestCase extends TestCase {
         assertEquals("Comment", (copy).getComment());
     }
 
+    @Test
     public void testCopyNonRoot() {
         ObjectFactory factory = new ObjectFactory();
         USAddress address = factory.createUSAddress();

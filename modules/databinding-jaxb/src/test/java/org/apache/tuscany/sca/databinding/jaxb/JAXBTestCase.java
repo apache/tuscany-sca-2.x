@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.junit.Test;
 import org.w3c.dom.Node;
 
 import com.example.ipo.jaxb.ObjectFactory;
@@ -39,7 +40,7 @@ import com.example.ipo.jaxb.PurchaseOrderType;
  *
  * @version $Rev$ $Date$
  */
-public class JAXBTestCase extends TestCase {
+public class JAXBTestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -70,11 +71,7 @@ public class JAXBTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testTransform() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
 
@@ -101,6 +98,7 @@ public class JAXBTestCase extends TestCase {
 
     }
 
+    @Test
     public void testTransform2() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
 
@@ -129,6 +127,7 @@ public class JAXBTestCase extends TestCase {
 
     }    
 
+    @Test
     public void testTransform3() throws Exception {
 
         DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
@@ -144,10 +143,4 @@ public class JAXBTestCase extends TestCase {
         Assert.assertNotNull(node);
 
     }
-    
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
 }
