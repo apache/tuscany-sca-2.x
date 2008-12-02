@@ -13,7 +13,6 @@ Bundle-Description: Apache Tuscany SCA Default Endpoint Implementation
 Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.builder;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.assembly.builder.impl;resolution:=optional,
  org.apache.tuscany.sca.contribution;version="1.4";resolution:=optional,
  org.apache.tuscany.sca.contribution.processor;version="1.4";resolution:=optional,
  org.apache.tuscany.sca.contribution.resolver;version="1.4";resolution:=optional,
