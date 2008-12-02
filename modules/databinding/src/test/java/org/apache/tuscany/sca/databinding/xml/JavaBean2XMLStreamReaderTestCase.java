@@ -20,30 +20,22 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReaderTransformer;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Test;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class JavaBean2XMLStreamReaderTestCase extends TestCase {
+public class JavaBean2XMLStreamReaderTestCase {
     private static final String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" 
             + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
             + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i><str>ABC</str>"
             + "</MyBean>";
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testTransformation() throws Exception {
         JavaBean2XMLStreamReaderTransformer t2 = new JavaBean2XMLStreamReaderTransformer();
         MyBean bean = new MyBean();

@@ -30,6 +30,8 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -40,18 +42,15 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @version $Rev$ $Date$
  */
-public class TraxTransformerTestCase extends TestCase {
+public class TraxTransformerTestCase {
     private URL url;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         url = getClass().getResource("foo.xml");
     }
 
+    @Test
     public void testTransformDOM() throws IOException {
         InputStream is = url.openStream();
         InputStream2Node t1 = new InputStream2Node();
@@ -72,6 +71,7 @@ public class TraxTransformerTestCase extends TestCase {
         node = t5.transform(inputSource, null);
     }
 
+    @Test
     public void testTransformSAX() throws IOException {
         MyContentHandler handler = new MyContentHandler();
         InputStream is = url.openStream();

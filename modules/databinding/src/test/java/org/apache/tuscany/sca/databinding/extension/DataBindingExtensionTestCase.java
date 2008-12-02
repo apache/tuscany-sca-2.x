@@ -19,13 +19,18 @@
 
 package org.apache.tuscany.sca.databinding.extension;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -33,16 +38,9 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
-public class DataBindingExtensionTestCase extends TestCase {
+public class DataBindingExtensionTestCase {
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     @SuppressWarnings("unchecked")
     public void testExtension() {
         DataBinding1 binding1 = new DataBinding1(Node.class);

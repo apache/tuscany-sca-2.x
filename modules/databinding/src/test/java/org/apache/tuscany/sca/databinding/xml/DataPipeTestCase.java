@@ -26,12 +26,12 @@ import java.io.Reader;
 import java.io.Writer;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,8 +41,9 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
-public class DataPipeTestCase extends TestCase {
+public class DataPipeTestCase {
 
+    @Test
     public final void testStreamPipe() throws IOException {
         byte[] bytes = new byte[] {1, 2, 3};
         DataPipeTransformer<OutputStream, InputStream> pipe = new StreamDataPipe();
@@ -57,6 +58,7 @@ public class DataPipeTestCase extends TestCase {
         }
     }
 
+    @Test
     public final void testWriter2ReaderPipe() throws IOException {
         String str = "ABC";
         Writer2ReaderDataPipe pipe = new Writer2ReaderDataPipe();
@@ -72,6 +74,7 @@ public class DataPipeTestCase extends TestCase {
         }
     }
 
+    @Test
     public final void testPiped() throws Exception {
         Node2Writer node2Writer = new Node2Writer();
         Writer2ReaderDataPipe pipe = new Writer2ReaderDataPipe();

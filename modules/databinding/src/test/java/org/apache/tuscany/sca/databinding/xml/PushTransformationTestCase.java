@@ -24,6 +24,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
+import org.junit.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
@@ -31,7 +32,7 @@ import org.xml.sax.ContentHandler;
  *
  * @version $Rev$ $Date$
  */
-public class PushTransformationTestCase extends TestCase {
+public class PushTransformationTestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -62,14 +63,7 @@ public class PushTransformationTestCase extends TestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testTransformation() {
         String2XMLStreamReader t1 = new String2XMLStreamReader();
         XMLStreamReader reader = t1.transform(IPO_XML, null);

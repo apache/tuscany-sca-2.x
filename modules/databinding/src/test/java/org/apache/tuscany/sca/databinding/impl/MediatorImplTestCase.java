@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.sca.databinding.xml.String2SAX;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,7 +46,7 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
-public class MediatorImplTestCase extends TestCase {
+public class MediatorImplTestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -77,10 +79,8 @@ public class MediatorImplTestCase extends TestCase {
 
     private MediatorImpl mediator;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
         TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint();
 
@@ -101,6 +101,7 @@ public class MediatorImplTestCase extends TestCase {
         return context;
     }
 
+    @Test
     public void testTransform1() {
         TransformationContext context = createTransformationContext(String.class, Node.class);
         Object node =
@@ -111,6 +112,7 @@ public class MediatorImplTestCase extends TestCase {
         Assert.assertEquals(root.getLocalName(), "purchaseOrder");
     }
 
+    @Test
     public void testTransform2() {
         TransformationContext context = createTransformationContext(String.class, Writer.class);
         Writer writer = new StringWriter();

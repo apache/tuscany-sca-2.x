@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,7 +27,9 @@ import org.w3c.dom.Element;
  *
  * @version $Rev$ $Date$
  */
-public class Node2StringTestCase extends TestCase {
+public class Node2StringTestCase {
+    
+    @Test
     public void testTransformation() throws Exception {
         Document document = DOMHelper.newDocument();
         Element element = document.createElementNS("http://ns1", "test");
