@@ -31,7 +31,7 @@ import org.osoa.sca.ServiceReference;
 public interface Client {
 
     /**
-     * Cast a type-safe reference to a CallahbleReference. Converts a type-safe
+     * Cast a type-safe reference to a CallableReference. Converts a type-safe
      * reference to an equivalent CallableReference; if the target refers to a
      * service then a ServiceReference will be returned, if the target refers to
      * a callback then a CallableReference will be returned.
