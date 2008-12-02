@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.sca;uses:="org.apache.t
- uscany.sca.assembly";version="1.4"
 Private-Package: org.apache.tuscany.sca.binding.sca.impl;version="1.4"
  ,org.apache.tuscany.sca.binding.sca.provider;version="1.4"
 Tool: Bnd-0.0.255
@@ -16,8 +14,6 @@ Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.builder;version="1.4",
  org.apache.tuscany.sca.assembly.xml;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.binding.sca;version="1.4",
- org.apache.tuscany.sca.binding.sca.impl;resolution:=optional,
  org.apache.tuscany.sca.contribution;version="1.4";resolution:=optional,
  org.apache.tuscany.sca.contribution.processor;version="1.4",
  org.apache.tuscany.sca.contribution.resolver;version="1.4";resolution:=optional,
