@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -26,21 +30,23 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 
 /**
  * Test reading SCA XML assemblies.
  * 
  * @version $Rev: 711584 $ $Date: 2008-11-05 15:07:03 +0000 (Wed, 05 Nov 2008) $
  */
-public class ReadWriteLocalCompositeTestCase extends TestCase {
+public class ReadWriteLocalCompositeTestCase {
 
     private XMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
@@ -49,7 +55,7 @@ public class ReadWriteLocalCompositeTestCase extends TestCase {
     "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
     "</composite>";
     
-    @Override
+    @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
@@ -61,11 +67,12 @@ public class ReadWriteLocalCompositeTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance(), null);
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
     	
     }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("local.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -75,6 +82,7 @@ public class ReadWriteLocalCompositeTestCase extends TestCase {
         is.close();
     }
     
+    @Test
     public void testWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("local.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

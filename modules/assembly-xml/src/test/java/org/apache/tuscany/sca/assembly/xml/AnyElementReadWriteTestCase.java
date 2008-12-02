@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -25,22 +27,22 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class AnyElementReadWriteTestCase extends TestCase {
+public class AnyElementReadWriteTestCase {
 
 	private XMLInputFactory inputFactory;
 	String XML = "<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\"><interface.java interface=\"calculator.CalculatorService\" /></service><component name=\"CalculatorServiceComponent\"><reference name=\"addService\" multiplicity=\"0..1\" target=\"AddServiceComponent\" /><reference name=\"subtractService\" target=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceComponent\" /></component><component name=\"AddServiceComponent\" /><component name=\"SubtractServiceComponent\" /><component name=\"MultiplyServiceComponent\" /><component name=\"DivideServiceComponent\" /><x:unknownElement xmlns:x=\"http://x\" uknAttr=\"attribute1\"><y:subUnknownElement1 xmlns:y=\"http://y\" uknAttr1=\"attribute2\" /><x:subUnknownElement2 /></x:unknownElement></composite>";
 	private ExtensibleStAXArtifactProcessor staxProcessor;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
@@ -51,7 +53,7 @@ public class AnyElementReadWriteTestCase extends TestCase {
 				inputFactory, XMLOutputFactory.newInstance(), null);
 	}
 
-	@Override
+	@After
 	public void tearDown() throws Exception {
 	}
 
