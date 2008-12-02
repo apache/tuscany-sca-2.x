@@ -21,17 +21,21 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class PhaseSorterTestCase extends TestCase {
+public class PhaseSorterTestCase {
     private PhaseSorter<String> graph;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         graph = new PhaseSorter<String>();
     }
 
+    @Test
     public void testSort() {
         graph.addEdge("a", "b");
         graph.addEdge("a", "c");
@@ -55,9 +59,8 @@ public class PhaseSorterTestCase extends TestCase {
         assertTrue(graph.getVertices().isEmpty());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
     }
 
 }

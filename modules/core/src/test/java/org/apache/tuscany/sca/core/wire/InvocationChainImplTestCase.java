@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.core.wire;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -28,12 +28,14 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InvocationChainImplTestCase extends TestCase {
+public class InvocationChainImplTestCase {
 
+    @Test
     public void testInsertAtEnd() throws Exception {
         Operation op = newOperation("foo");
         InvocationChain chain = new InvocationChainImpl(op, op, true);
@@ -48,6 +50,7 @@ public class InvocationChainImplTestCase extends TestCase {
 
     }
 
+    @Test
     public void testAddByPhase() throws Exception {
         Operation op = newOperation("foo");
         InvocationChain chain = new InvocationChainImpl(op, op, false);
