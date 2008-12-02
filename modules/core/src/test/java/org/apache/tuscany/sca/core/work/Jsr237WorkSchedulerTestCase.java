@@ -107,11 +107,11 @@ public class Jsr237WorkSchedulerTestCase {
     @Test
     public void testMultipleJobs() {
         // Create the work and register it
-        JSR237MyRunnable fast1 = new JSR237MyRunnable(50);
-        JSR237MyRunnable fast2 = new JSR237MyRunnable(100);
-        JSR237MyRunnable fast3 = new JSR237MyRunnable(200);
-        JSR237MyRunnable slow1= new JSR237MyRunnable(2000);
-        JSR237MyRunnable slow2 = new JSR237MyRunnable(2000);
+        JSR237MyRunnable fast1 = new JSR237MyRunnable(5);
+        JSR237MyRunnable fast2 = new JSR237MyRunnable(10);
+        JSR237MyRunnable fast3 = new JSR237MyRunnable(20);
+        JSR237MyRunnable slow1= new JSR237MyRunnable(200);
+        JSR237MyRunnable slow2 = new JSR237MyRunnable(200);
         JSR237MyRunnerListener listener = new JSR237MyRunnerListener();
         workSchedular.scheduleWork(fast1, listener);
         workSchedular.scheduleWork(fast2, listener);
@@ -137,11 +137,11 @@ public class Jsr237WorkSchedulerTestCase {
     @Test
     public void testMultipleJobsSomeFail() {
         // Create the work and register it
-        JSR237MyRunnable fast1 = new JSR237MyRunnable(50);
-        JSR237MyRunnable fast2 = new JSR237MyRunnable(100);
-        JSR237MyRunnable fast3 = new JSR237MyRunnable(200);
-        JSR237MyRunnable slow1= new JSR237MyRunnable(2000);
-        JSR237MyRunnable slow2 = new JSR237MyRunnable(2000);
+        JSR237MyRunnable fast1 = new JSR237MyRunnable(5);
+        JSR237MyRunnable fast2 = new JSR237MyRunnable(10);
+        JSR237MyRunnable fast3 = new JSR237MyRunnable(20);
+        JSR237MyRunnable slow1= new JSR237MyRunnable(200);
+        JSR237MyRunnable slow2 = new JSR237MyRunnable(200);
         JSR237MyFailingRunnable fail1 = new JSR237MyFailingRunnable();
         JSR237MyFailingRunnable fail2 = new JSR237MyFailingRunnable();
         JSR237MyRunnerListener listener = new JSR237MyRunnerListener();
