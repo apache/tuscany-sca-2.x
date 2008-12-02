@@ -20,17 +20,16 @@ package org.apache.tuscany.sca.implementation.java.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-
 /**
  * Constants for the Java Implementation.
  *
  * @version $Rev$ $Date$
  */
 public interface JavaImplementationConstants {
-
+    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     String IMPLEMENTATION_JAVA = "implementation.java";
-    QName IMPLEMENTATION_JAVA_QNAME = new QName(Constants.SCA10_NS, "implementation.java");
+    QName IMPLEMENTATION_JAVA_QNAME = new QName(SCA10_NS, "implementation.java");
     String CLASS = "class";
-
+    String OPERATION = "operation";
+    QName OPERATION_QNAME = new QName(SCA10_NS, OPERATION);
 }
