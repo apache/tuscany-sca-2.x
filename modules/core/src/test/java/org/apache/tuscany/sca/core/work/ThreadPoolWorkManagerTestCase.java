@@ -106,11 +106,11 @@ public class ThreadPoolWorkManagerTestCase {
     @Test
     public void testMultipleJobs() {
         // Create the work and register it
-        TimeDelayWork fast1 = new TimeDelayWork(50);
-        TimeDelayWork fast2 = new TimeDelayWork(100);
-        TimeDelayWork fast3 = new TimeDelayWork(200);
-        TimeDelayWork slow1= new TimeDelayWork(2000);
-        TimeDelayWork slow2 = new TimeDelayWork(2000);
+        TimeDelayWork fast1 = new TimeDelayWork(5);
+        TimeDelayWork fast2 = new TimeDelayWork(10);
+        TimeDelayWork fast3 = new TimeDelayWork(20);
+        TimeDelayWork slow1= new TimeDelayWork(200);
+        TimeDelayWork slow2 = new TimeDelayWork(200);
         TestWorkListener listener = new TestWorkListener();
         workManager.schedule(fast1, listener);
         workManager.schedule(fast2, listener);
@@ -136,11 +136,11 @@ public class ThreadPoolWorkManagerTestCase {
     @Test
     public void testMultipleJobsSomeFail() {
         // Create the work and register it
-        TimeDelayWork fast1 = new TimeDelayWork(50);
-        TimeDelayWork fast2 = new TimeDelayWork(100);
-        TimeDelayWork fast3 = new TimeDelayWork(200);
-        TimeDelayWork slow1= new TimeDelayWork(2000);
-        TimeDelayWork slow2 = new TimeDelayWork(2000);
+        TimeDelayWork fast1 = new TimeDelayWork(5);
+        TimeDelayWork fast2 = new TimeDelayWork(10);
+        TimeDelayWork fast3 = new TimeDelayWork(20);
+        TimeDelayWork slow1= new TimeDelayWork(200);
+        TimeDelayWork slow2 = new TimeDelayWork(200);
         FailingWork fail1 = new FailingWork();
         FailingWork fail2 = new FailingWork();
         TestWorkListener listener = new TestWorkListener();
