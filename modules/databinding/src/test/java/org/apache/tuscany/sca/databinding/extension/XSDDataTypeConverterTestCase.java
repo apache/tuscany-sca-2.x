@@ -19,35 +19,29 @@
 
 package org.apache.tuscany.sca.databinding.extension;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
+import org.junit.Test;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class XSDDataTypeConverterTestCase extends TestCase {
+public class XSDDataTypeConverterTestCase {
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testConvert() throws Exception {
         XSDDataTypeConverter c = new XSDDataTypeConverter();
         assertEquals("123", c.parseAnySimpleType(c.printAnySimpleType("123")));
         assertEquals(true, c.parseBoolean(c.printBoolean(true)));
         assertEquals(false, c.parseBoolean(c.printBoolean(false)));
-        assertEquals(123.0, c.parseDouble(c.printDouble(123.0)));
-        assertEquals(123.0f, c.parseFloat(c.printFloat(123.0f)));
+        assertEquals(123.0, c.parseDouble(c.printDouble(123.0)), 0);
+        assertEquals(123.0f, c.parseFloat(c.printFloat(123.0f)), 0);
         assertEquals(64, c.parseByte(c.printByte((byte)64)));
         assertEquals(123, c.parseInt(c.printInt(123)));
         assertEquals(new BigInteger("123456"), c.parseInteger(c.printInteger(new BigInteger("123456"))));

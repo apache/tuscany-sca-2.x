@@ -20,24 +20,23 @@ package org.apache.tuscany.sca.databinding.impl;
 
 import java.lang.reflect.Method;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class DataBindingTestCase extends TestCase {
+public class DataBindingTestCase {
+    @org.junit.Test
     public void testDataType() throws Exception {
         Class<Test> testClass = Test.class;
         DataBinding d = testClass.getAnnotation(DataBinding.class);
-        Assert.assertEquals(d.value(), "sdo");
+        assertEquals(d.value(), "sdo");
 
         Method method = testClass.getMethod("test", new Class[] {Object.class});
         DataBinding d2 = method.getAnnotation(DataBinding.class);
-        Assert.assertEquals(d2.value(), "jaxb");
+        assertEquals(d2.value(), "jaxb");
     }
 
     @DataBinding("sdo")

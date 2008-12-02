@@ -18,18 +18,19 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Test;
 import org.w3c.dom.Node;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class DOM2StAXTestCase extends TestCase {
+public class DOM2StAXTestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -63,14 +64,7 @@ public class DOM2StAXTestCase extends TestCase {
     private static final String CRAZY_XML =
         "<p:e1 xmlns=\"http://ns0\" xmlns:p=\"http://p1\">" + "<p:e2 xmlns:p=\"http://p2\"/><e3/><e4 xmlns=\"\">E4</e4></p:e1>";
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testTransformation() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(IPO_XML, null);
@@ -82,6 +76,7 @@ public class DOM2StAXTestCase extends TestCase {
         // assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
 
+    @Test
     public void testTransformation2() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(CRAZY_XML, null);
@@ -94,6 +89,7 @@ public class DOM2StAXTestCase extends TestCase {
         assertTrue(xml.contains("<p:e2 xmlns:p=\"http://p2\""));
     }
 
+    @Test
     public void testTransformation3() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(IPO_XML, null);

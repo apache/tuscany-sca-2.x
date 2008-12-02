@@ -19,31 +19,25 @@
 
 package org.apache.tuscany.sca.databinding.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Test;
 
 /**
  * Test Case for StAXHelper
  *
  * @version $Rev$ $Date$
  */
-public class StAXHelperTestCase extends TestCase {
+public class StAXHelperTestCase {
     private static final String XML =
         "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" 
             + "<doo a:name='doo' xmlns:a='http://doo'/>"
             + "</bar></a:foo>";
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testHelper() throws Exception {
         XMLStreamReader reader = StAXHelper.createXMLStreamReader(XML);
         String xml = StAXHelper.save(reader);

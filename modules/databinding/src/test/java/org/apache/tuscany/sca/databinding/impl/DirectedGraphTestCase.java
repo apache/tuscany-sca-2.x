@@ -18,28 +18,32 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Edge;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Vertex;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class DirectedGraphTestCase extends TestCase {
+public class DirectedGraphTestCase {
     private DirectedGraph<String, Object> graph;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         graph = new DirectedGraph<String, Object>();
     }
 
+    @Test
     public void testGraph() {
         graph.addEdge("a", "b", null, 3, true);
         graph.addEdge("b", "c", null, 1, true);
@@ -94,6 +98,7 @@ public class DirectedGraphTestCase extends TestCase {
 
     }
 
+    @Test
     public void testSort() {
         graph.addEdge("a", "b");
         graph.addEdge("a", "c");
@@ -116,10 +121,4 @@ public class DirectedGraphTestCase extends TestCase {
         assertEquals(Arrays.asList("a", "b", "c", "d"), order);
         assertTrue(graph.getVertices().isEmpty());
     }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
 }
