@@ -19,22 +19,24 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBWrapperHandler;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.example.stock.StockQuoteOffer;
 
@@ -43,20 +45,17 @@ import com.example.stock.StockQuoteOffer;
  *
  * @version $Rev$ $Date$
  */
-public class JAXBWrapperHandlerTestCase extends TestCase {
+public class JAXBWrapperHandlerTestCase {
     private static final QName ELEMENT = new QName("http://www.example.com/stock", "stockQuoteOffer");
     private static final QName INPUT = new QName("", "input");
     private JAXBWrapperHandler handler;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.handler = new JAXBWrapperHandler();
     }
 
+    @Test
     public void testCreate() {
         ElementInfo element = new ElementInfo(ELEMENT, null);
         Operation op = new OperationImpl();
@@ -68,12 +67,14 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
         Assert.assertTrue(offer instanceof StockQuoteOffer);
     }
 
+    @Test
     public void testSetChild() {
         StockQuoteOffer wrapper = new StockQuoteOffer();
         handler.setChild(wrapper, 0, new ElementInfo(INPUT, null), "IBM");
         Assert.assertEquals("IBM", wrapper.getInput());
     }
 
+    @Test
     public void testGetChildren() {
         StockQuoteOffer wrapper = new StockQuoteOffer();
         wrapper.setInput("IBM");

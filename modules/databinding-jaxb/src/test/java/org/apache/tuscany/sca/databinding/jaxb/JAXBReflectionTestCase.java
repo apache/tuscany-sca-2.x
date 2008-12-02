@@ -23,13 +23,14 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JAXBReflectionTestCase extends TestCase {
+public class JAXBReflectionTestCase {
 
+    @Test
     public void testGenerateSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance("com.example.ipo.jaxb");
         Map<String, String> schemas = JAXBTypeHelper.generateSchema(context);

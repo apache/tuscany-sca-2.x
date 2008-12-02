@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
@@ -27,14 +31,16 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class POJOTestCase extends TestCase {
+public class POJOTestCase {
+    
+    @Test
     public void testAdapter() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyJaxbBean.class, MyInterfaceImpl.class);
         StringWriter writer = new StringWriter();
@@ -53,6 +59,7 @@ public class POJOTestCase extends TestCase {
         System.out.println(schemas);
     }
     
+    @Test
     public void testPOJO() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);
         StringWriter writer = new StringWriter();
@@ -78,6 +85,7 @@ public class POJOTestCase extends TestCase {
         assertEquals(bean, newBean);
     }
     
+    @Test
     public void testPOJOArray() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean[].class, MySubBean.class);
         StringWriter writer = new StringWriter();
@@ -136,6 +144,7 @@ public class POJOTestCase extends TestCase {
     }
     */
 
+    @Test
     public void testString() throws Exception {
         JAXBContext context = JAXBContext.newInstance(String.class);
         StringWriter writer = new StringWriter();
@@ -149,6 +158,7 @@ public class POJOTestCase extends TestCase {
         assertEquals("ABC", e2.getValue());
     }
 
+    @Test
     public void testNull() throws Exception {
         JAXBContext context = JAXBContext.newInstance(String.class);
         StringWriter writer = new StringWriter();
@@ -163,6 +173,7 @@ public class POJOTestCase extends TestCase {
         assertNull(e2.getValue());
     }
 
+    @Test
     public void testArray() throws Exception {
         JAXBContext context = JAXBContext.newInstance(String[].class);
         StringWriter writer = new StringWriter();
@@ -177,6 +188,7 @@ public class POJOTestCase extends TestCase {
         assertTrue(e2.getValue() instanceof String[]);
     }
 
+    @Test
     public void testByteArray() throws Exception {
         JAXBContext context = JAXBContext.newInstance(byte[].class);
         StringWriter writer = new StringWriter();
@@ -193,6 +205,7 @@ public class POJOTestCase extends TestCase {
         assertTrue(e2.getValue() instanceof byte[]);
     }
 
+    @Test
     public void testPrimitive() throws Exception {
         JAXBContext context = JAXBContext.newInstance(int.class);
         StringWriter writer = new StringWriter();
