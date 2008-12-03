@@ -158,7 +158,7 @@ public class XmlNodeIterator implements Iterator<XmlNode> {
                     prefixList.add(entry.getKey());
                 }
             }
-            final Iterator currentIterator = prefixList.iterator();
+            final Iterator<String> currentIterator = prefixList.iterator();
             final Iterator parentIterator = parent != null ? null : parent.getPrefixes(nsURI);
             return new Iterator() {
 

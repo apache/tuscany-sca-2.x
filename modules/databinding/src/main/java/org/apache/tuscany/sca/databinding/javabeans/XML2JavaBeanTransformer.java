@@ -226,7 +226,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
 
         if (arraySetters.size() > 0) {
             for (Method aMethod : arraySetters.keySet()) {
-                Class paramType = aMethod.getParameterTypes()[0];
+                Class<?> paramType = aMethod.getParameterTypes()[0];
                 if (paramType.getComponentType().isPrimitive()) {
                     aMethod.invoke(javaInstance,
                                    new Object[] {createPrimitiveArray(paramType.getComponentType(),
