@@ -27,16 +27,18 @@ import java.lang.annotation.Annotation;
 import javax.xml.bind.JAXBContext;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
+import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
  * @version $Rev$ $Date$
  */
-public class FaultBeanGeneratorTestCase extends TestCase {
+public class FaultBeanGeneratorTestCase {
+
+    @Test
     public void testGenerate() throws IOException {
         byte[] content = new FaultBeanGenerator().generate(MyException.class);
         ClassReader cr = new ClassReader(content);
@@ -44,6 +46,7 @@ public class FaultBeanGeneratorTestCase extends TestCase {
         CheckClassAdapter.verify(cr, false, pw);
     }
 
+    @Test
     public void testGenerateClass() throws Exception {
         Class<?> cls = FaultBeanGenerator.generateFaultBeanClass(MyException.class);
         Assert.assertEquals("org.apache.tuscany.sca.interfacedef.java.jaxws.jaxws.MyExceptionBean", cls.getName());
