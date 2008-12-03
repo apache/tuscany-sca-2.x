@@ -54,10 +54,13 @@
         <module>implementation-java-xml</module>
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
+        <module>host-http</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
         <module>interface-java-xml</module>
+        <module>interface-wsdl</module>
+        <module>interface-wsdl-xml</module>
         <module>monitor</module>
         <module>node-api</module>
         <module>node-impl</module>
@@ -71,6 +74,7 @@
         <module>workspace-impl</module>
         <module>workspace-xml</module>
         <module>xsd</module>
+        <module>xsd-xml</module>
     </modules>
 
 <!--
@@ -223,7 +227,7 @@
                    <artifactId>maven-eclipse-plugin</artifactId>
                    <version>2.5.1</version>
                    <configuration>
-                       <skip>false</skip>
+                       <skip>true</skip>
                    </configuration>
                </plugin>
     
