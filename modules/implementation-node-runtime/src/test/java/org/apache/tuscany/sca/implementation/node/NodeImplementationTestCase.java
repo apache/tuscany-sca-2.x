@@ -18,34 +18,36 @@
  */
 package org.apache.tuscany.sca.implementation.node;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for node component implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class NodeImplementationTestCase extends TestCase {
+public class NodeImplementationTestCase {
 
     private Node node;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         String contribution = ContributionLocationHelper.getContributionLocation(getClass());
         node = NodeFactory.newInstance().createNode("TestNode.composite", new Contribution("test", contribution));
         node.start();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         node.stop();
     }
     
+    @Test
     public void testNode() {
     }
 
