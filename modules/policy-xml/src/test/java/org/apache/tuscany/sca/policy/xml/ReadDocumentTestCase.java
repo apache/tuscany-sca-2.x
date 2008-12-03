@@ -20,6 +20,11 @@
 package org.apache.tuscany.sca.policy.xml;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -31,8 +36,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -51,13 +54,15 @@ import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
 import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test reading SCA XML assembly documents.
  * 
  * @version $Rev: 551296 $ $Date: 2007-06-28 01:18:35 +0530 (Thu, 28 Jun 2007) $
  */
-public class ReadDocumentTestCase extends TestCase {
+public class ReadDocumentTestCase {
 
     private ModelResolver resolver;
     private StAXArtifactProcessor<Object> staxProcessor;
@@ -84,7 +89,7 @@ public class ReadDocumentTestCase extends TestCase {
     private static final QName wsBinding = new QName(scaNamespace, "binding.ws");
     private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         resolver = new DefaultModelResolver();
@@ -156,10 +161,7 @@ public class ReadDocumentTestCase extends TestCase {
         urlStream.close();
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    }
-
+    @Test
     public void testReadSCADefinitions() throws Exception {
         assertNotNull(intentTable.get(confidentiality));
         assertNotNull(intentTable.get(messageProtection));
@@ -179,6 +181,7 @@ public class ReadDocumentTestCase extends TestCase {
         assertNotNull(implTypesTable.get(javaImpl));
     }
 
+    @Test
     public void testResolution() throws Exception {
         assertTrue(intentTable.get(messageProtection) instanceof ProfileIntent);
         ProfileIntent profileIntent = (ProfileIntent)intentTable.get(new QName(namespace, "messageProtection"));
