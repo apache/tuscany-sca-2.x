@@ -18,8 +18,11 @@
  */
 
 package org.apache.tuscany.sca.assembly.xml;
-
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.OPERATION;
+import static org.apache.tuscany.sca.assembly.xml.Constants.OPERATION_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -34,15 +37,15 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Processor for dealing with  'operation' elements from composite definitions
  *
  * @version $Rev$ $Date$
  */
-public class ConfiguredOperationProcessor implements StAXArtifactProcessor<ConfiguredOperation>, Constants{
+public class ConfiguredOperationProcessor implements StAXArtifactProcessor<ConfiguredOperation> {
     
     private AssemblyFactory assemblyFactory;
     private PolicyAttachPointProcessor policyProcessor;

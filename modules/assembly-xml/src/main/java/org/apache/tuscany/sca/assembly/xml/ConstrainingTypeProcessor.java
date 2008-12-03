@@ -21,6 +21,21 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.CONSTRAINING_TYPE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.CONSTRAINING_TYPE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.OPERATION_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
