@@ -83,7 +83,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
             Class<?> osgiResolverClass =
                 Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiClassReferenceModelResolver");
             if (osgiResolverClass != null) {
-                Constructor constructor =
+                Constructor<?> constructor =
                     osgiResolverClass.getConstructor(Contribution.class, FactoryExtensionPoint.class);
                 this.osgiResolver = (ModelResolver)constructor.newInstance(contribution, modelFactories);
             }
@@ -114,7 +114,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
         }
 
         //Load a class on demand
-        Class clazz = null;
+        Class<?> clazz = null;
         
         if (osgiResolver != null) {
             resolved = osgiResolver.resolveModel(modelClass, unresolved);
