@@ -18,30 +18,35 @@
  */
 package org.apache.tuscany.sca.policy;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test building of policy model instances using the policy factory.
  * 
  * @version $Rev$ $Date$
  */
-public class PolicyFactoryTestCase extends TestCase {
+public class PolicyFactoryTestCase {
 
     PolicyFactory factory;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         factory = new DefaultPolicyFactory();
     }
 
+    @Test
     public void testCreateIntent() {
         Intent intent = factory.createIntent();
         intent.setName(new QName("http://test", "reliability"));
         assertEquals(intent.getName(), new QName("http://test", "reliability"));
     }
 
+    @Test
     public void testCreatePolicySet() {
         PolicySet policySet = factory.createPolicySet();
         policySet.setName(new QName("http://test", "reliability"));
