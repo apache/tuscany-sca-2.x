@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import javax.xml.namespace.QName;
 

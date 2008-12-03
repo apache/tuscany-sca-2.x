@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
 

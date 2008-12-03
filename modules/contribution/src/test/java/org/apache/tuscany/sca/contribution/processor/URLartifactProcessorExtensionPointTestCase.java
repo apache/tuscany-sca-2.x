@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 import java.net.URL;
