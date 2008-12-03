@@ -19,11 +19,13 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getProperty;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
@@ -31,21 +33,25 @@ import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.Property;
 
 /**
  * @version $Rev$ $Date$
  */
-public class PropertyProcessorTestCase extends TestCase {
+public class PropertyProcessorTestCase {
 
     JavaImplementation type;
     PropertyProcessor processor;
 
+    @Test
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(Foo.class.getMethod("setFoo", String.class), type);
         assertNotNull(getProperty(type, "foo"));
     }
 
+    @Test
     public void testMethodRequired() throws Exception {
         processor.visitMethod(Foo.class.getMethod("setFooRequired", String.class), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "fooRequired");
@@ -53,16 +59,19 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMustSupply());
     }
 
+    @Test
     public void testMethodName() throws Exception {
         processor.visitMethod(Foo.class.getMethod("setBarMethod", String.class), type);
         assertNotNull(getProperty(type, "bar"));
     }
 
+    @Test
     public void testFieldAnnotation() throws Exception {
         processor.visitField(Foo.class.getDeclaredField("baz"), type);
         assertNotNull(getProperty(type, "baz"));
     }
 
+    @Test
     public void testFieldRequired() throws Exception {
         processor.visitField(Foo.class.getDeclaredField("bazRequired"), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "bazRequired");
@@ -70,11 +79,13 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMustSupply());
     }
 
+    @Test
     public void testFieldName() throws Exception {
         processor.visitField(Foo.class.getDeclaredField("bazField"), type);
         assertNotNull(getProperty(type, "theBaz"));
     }
 
+    @Test
     public void testDuplicateFields() throws Exception {
         processor.visitField(Bar.class.getDeclaredField("dup"), type);
         try {
@@ -85,6 +96,7 @@ public class PropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testDuplicateMethods() throws Exception {
         processor.visitMethod(Bar.class.getMethod("setDupMethod", String.class), type);
         try {
@@ -95,6 +107,7 @@ public class PropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testInvalidProperty() throws Exception {
         try {
             processor.visitMethod(Bar.class.getMethod("badMethod"), type);
@@ -104,9 +117,8 @@ public class PropertyProcessorTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
         processor = new PropertyProcessor(new DefaultAssemblyFactory());
@@ -178,6 +190,7 @@ public class PropertyProcessorTestCase extends TestCase {
         return JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
     }
 
+    @Test
     public void testMultiplicityCollection() throws Exception {
         processor.visitField(Multiple.class.getDeclaredField("refs1"), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "refs1");
@@ -186,6 +199,7 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMany());
     }
 
+    @Test
     public void testMultiplicityArray() throws Exception {
         processor.visitField(Multiple.class.getDeclaredField("refs2"), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "refs2");
@@ -194,6 +208,7 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMany());
     }
 
+    @Test
     public void testMultiplicityArrayMethod() throws Exception {
         processor.visitMethod(Multiple.class.getMethod("setRefs3", String[].class), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "refs3");
@@ -202,6 +217,7 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMany());
     }
 
+    @Test
     public void testMultiplicityCollectionMethod() throws Exception {
         processor.visitMethod(Multiple.class.getMethod("setRefs4", Collection.class), type);
         org.apache.tuscany.sca.assembly.Property prop = getProperty(type, "refs4");

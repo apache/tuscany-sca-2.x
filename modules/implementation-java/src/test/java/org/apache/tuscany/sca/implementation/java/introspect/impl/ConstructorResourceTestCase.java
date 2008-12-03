@@ -18,12 +18,17 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
@@ -32,6 +37,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
     
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
+    @Test
     public void testResource() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
@@ -40,6 +46,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         assertFalse(resource.isOptional());
     }
 
+    @Test
     public void testTwoResourcesSameType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
@@ -48,6 +55,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         assertNotNull(type.getResources().get("myResource2"));
     }
 
+    @Test
     public void testDuplicateResource() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
@@ -59,6 +67,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Test
     public void testNoName() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
@@ -71,6 +80,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Test
     public void testNamesOnConstructor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
@@ -78,6 +88,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         assertNotNull(type.getResources().get("myResource"));
     }
 
+    @Test
     public void testInvalidNumberOfNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =
@@ -90,6 +101,7 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Test
     public void testNoMatchingNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ConstructorResourceTestCase.BadFoo> ctor =

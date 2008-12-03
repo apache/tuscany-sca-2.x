@@ -19,6 +19,12 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import junit.framework.TestCase;
 
@@ -26,12 +32,13 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Init;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InitProcessorTestCase extends TestCase {
+public class InitProcessorTestCase {
     
     private JavaImplementationFactory javaImplementationFactory;
     
@@ -39,6 +46,7 @@ public class InitProcessorTestCase extends TestCase {
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 
+    @Test
     public void testInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -47,6 +55,7 @@ public class InitProcessorTestCase extends TestCase {
         assertNotNull(type.getInitMethod());
     }
 
+    @Test
     public void testBadInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -59,6 +68,7 @@ public class InitProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testTwoInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -73,6 +83,7 @@ public class InitProcessorTestCase extends TestCase {
         }
     }
     
+    @Test
     public void testProtectedInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -85,6 +96,7 @@ public class InitProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testPrivateInit() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -97,6 +109,7 @@ public class InitProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testBadInit2() throws Exception {
         InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

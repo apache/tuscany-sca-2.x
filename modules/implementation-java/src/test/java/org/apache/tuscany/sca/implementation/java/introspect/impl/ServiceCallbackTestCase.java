@@ -19,11 +19,13 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
@@ -32,6 +34,8 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
@@ -39,16 +43,17 @@ import org.osoa.sca.annotations.Service;
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceCallbackTestCase extends TestCase {
+public class ServiceCallbackTestCase {
     private ServiceProcessor processor;
     private JavaImplementationFactory javaImplementationFactory;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 
+    @Test
     public void testMethodCallbackInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
@@ -59,6 +64,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertEquals(method, type.getCallbackMembers().get(FooCallback.class.getName()).iterator().next().getAnchor());
     }
 
+    @Test
     public void testFieldCallbackInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl.class, type);
@@ -69,6 +75,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertEquals(field, type.getCallbackMembers().get(FooCallback.class.getName()).iterator().next().getAnchor());
     }
 
+    @Test
     public void testFieldCallbackInterface1() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooImpl1.class, type);
@@ -80,6 +87,7 @@ public class ServiceCallbackTestCase extends TestCase {
         
     }
     
+    @Test
     public void testMethodDoesNotMatchCallback() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
@@ -92,6 +100,7 @@ public class ServiceCallbackTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNoParamCallback() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
@@ -104,6 +113,7 @@ public class ServiceCallbackTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testFieldDoesNotMatchCallback() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadBarImpl.class, type);
@@ -116,6 +126,7 @@ public class ServiceCallbackTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testBadCallbackInterfaceAnnotation() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {

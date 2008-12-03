@@ -18,25 +18,28 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Destroy;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DestroyProcessorTestCase extends TestCase {
+public class DestroyProcessorTestCase {
     
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
+    @Test
     public void testDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -45,6 +48,7 @@ public class DestroyProcessorTestCase extends TestCase {
         assertNotNull(type.getDestroyMethod());
     }
 
+    @Test
     public void testBadDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -57,6 +61,7 @@ public class DestroyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testTwoDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -71,6 +76,7 @@ public class DestroyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testProtectedDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -83,6 +89,7 @@ public class DestroyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testPrivateDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

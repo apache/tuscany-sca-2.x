@@ -20,6 +20,12 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import junit.framework.TestCase;
 
@@ -27,6 +33,8 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.ComponentName;
@@ -35,11 +43,12 @@ import org.osoa.sca.annotations.Context;
 /**
  * @version $Rev$ $Date$
  */
-public class ContextProcessorTestCase extends TestCase {
+public class ContextProcessorTestCase  {
     private ContextProcessor processor;
     private ComponentNameProcessor nameProcessor;
     private JavaImplementationFactory javaImplementationFactory;
 
+    @Test
     public void testComponentContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setContext", ComponentContext.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -47,6 +56,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("context"));
     }
 
+    @Test
     public void testComponentContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("context");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -54,6 +64,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("context"));
     }
 
+    @Test
     public void testRequestContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setRequestContext", RequestContext.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -61,6 +72,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("requestContext"));
     }
 
+    @Test
     public void testRequestContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("requestContext");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -68,6 +80,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("requestContext"));
     }
 
+    @Test
     public void testComponentNameMethod() throws Exception {
         Method method = Foo.class.getMethod("setName", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -75,6 +88,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("name"));
     }
 
+    @Test
     public void testComponentNameField() throws Exception {
         Field field = Foo.class.getDeclaredField("name");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -82,6 +96,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("name"));
     }
 
+    @Test
     public void testInvalidParamType() throws Exception {
         Method method = Foo.class.getMethod("setContext", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -93,6 +108,7 @@ public class ContextProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testInvalidParamTypeField() throws Exception {
         Field field = Foo.class.getDeclaredField("badContext");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -105,6 +121,7 @@ public class ContextProcessorTestCase extends TestCase {
     }
 
 
+    @Test
     public void testInvalidParamNum() throws Exception {
         Method method = Foo.class.getMethod("setContext", ComponentContext.class, String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -116,6 +133,7 @@ public class ContextProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testInvalidNoParams() throws Exception {
         Method method = Foo.class.getMethod("setContext");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -127,6 +145,7 @@ public class ContextProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNoContext() throws Exception {
         Method method = Foo.class.getMethod("noContext", ComponentContext.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -134,6 +153,7 @@ public class ContextProcessorTestCase extends TestCase {
         assertEquals(0, type.getResources().size());
     }
 
+    @Test
     public void testNoContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("noContext");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -141,9 +161,8 @@ public class ContextProcessorTestCase extends TestCase {
         assertEquals(0, type.getResources().size());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new ContextProcessor(new DefaultAssemblyFactory());
         nameProcessor = new ComponentNameProcessor(new DefaultAssemblyFactory());

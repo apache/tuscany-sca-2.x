@@ -18,15 +18,17 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
@@ -34,10 +36,11 @@ import org.osoa.sca.annotations.Scope;
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationProcessorTestCase extends TestCase {
+public class ConversationProcessorTestCase {
     private ConversationProcessor processor = new ConversationProcessor(new DefaultAssemblyFactory());
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
+    @Test
     public void testMaxIdleTime() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooMaxIdle.class, type);
@@ -45,6 +48,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxAge());
     }
 
+    @Test
     public void testMaxAge() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(FooMaxAge.class, type);
@@ -52,6 +56,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxIdleTime());
     }
 
+    @Test
     public void testImplicitScope() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(ImplicitFooScope.class, type);
@@ -70,6 +75,7 @@ public class ConversationProcessorTestCase extends TestCase {
     }
     */
 
+    @Test
     public void testBadFooBoth() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(BadFooBoth.class, type);
@@ -77,6 +83,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(10000L, type.getMaxIdleTime());
     }
 
+    @Test
     public void testJustConversation() throws Exception {
         // TODO do we want these semantics
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -86,6 +93,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxIdleTime());
     }
 
+    @Test
     public void testSetConversationIDField() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Field field = FooWithConversationIDField.class.getDeclaredField("conversationID");
@@ -94,6 +102,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(field, type.getConversationIDMembers().get(0));
     }
 
+    @Test
     public void testSetConversationIDMethod() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Method method = FooWithConversationIDMethod.class.getDeclaredMethods()[0];
