@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -32,9 +31,10 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 
 /**
  * Test case for WSDLOperation.
@@ -53,9 +53,9 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         resolver.addModel(definition);
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
-        Operation operation = portType.getOperation("getLastTradePrice", null, null);
-
-        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, operation, definition, "org.w3c.dom.Node", resolver);
+        
+        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
 
         DataType<List<DataType>> inputType = op.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
@@ -67,13 +67,13 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
                             outputType.getLogical().getElementName());
         Assert.assertTrue(op.isWrapperStyle());
 
-        DataType<List<DataType>> unwrappedInputType = op.getWrapper().getWrapperInfo().getUnwrappedInputType();
+        DataType<List<DataType>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();
         List<DataType> childTypes = unwrappedInputType.getLogical();
         Assert.assertEquals(1, childTypes.size());
         DataType<XMLType> childType = childTypes.get(0);
         Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical().getElementName());
 
-        childType = op.getWrapper().getWrapperInfo().getUnwrappedOutputType();
+        childType = op.getWrapper().getUnwrappedOutputType();
         Assert.assertEquals(new QName(null, "price"), childType.getLogical().getElementName());
     }
 
@@ -84,13 +84,12 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
-        Operation operation = portType.getOperation("getLastTradePrice1", null, null);
-        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, operation, definition, "org.w3c.dom.Node", resolver);
+        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLOperation op = (WSDLOperation) wi.getOperations().get(1);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(1, op.getInputType().getLogical().size());
 
-        operation = portType.getOperation("getLastTradePrice2", null, null);
-        op = new WSDLOperationIntrospectorImpl(xsdFactory, operation, definition, "org.w3c.dom.Node", resolver);
+        op = (WSDLOperation) wi.getOperations().get(2);
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
@@ -102,10 +101,10 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
 
-        Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, operation, definition, "org.w3c.dom.Node", resolver);
-
         try {
+            WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+            WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
+
             op.isWrapperStyle();
             fail("InvalidWSDLException should have been thrown");
         } catch (InvalidInterfaceException e) {
