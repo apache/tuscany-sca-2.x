@@ -111,13 +111,13 @@ class PrintUtil {
 
                             // Print elements in a list
                             if (value instanceof List) {
-                                if (!((List)value).isEmpty()) {
+                                if (!((List<?>)value).isEmpty()) {
                                     indent++;
                                     indent();
                                     out.println(accessor.getName(i) + "= [");
 
                                     // Print each element, recursively
-                                    for (Object element : (List)value) {
+                                    for (Object element : (List<?>)value) {
                                         indent++;
                                         print(element, printed);
                                         indent--;
