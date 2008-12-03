@@ -18,16 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
