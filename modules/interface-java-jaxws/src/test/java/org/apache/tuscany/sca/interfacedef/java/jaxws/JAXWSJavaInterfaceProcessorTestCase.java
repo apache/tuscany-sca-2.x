@@ -19,13 +19,15 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
@@ -34,26 +36,29 @@ import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.example.stock.StockExceptionTest;
+
 /**
  *
  * @version $Rev$ $Date$
  */
-public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
+public class JAXWSJavaInterfaceProcessorTestCase {
     private JAXWSJavaInterfaceProcessor interfaceProcessor;
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint();
         XMLAdapterExtensionPoint xa = new DefaultXMLAdapterExtensionPoint();
         interfaceProcessor = new JAXWSJavaInterfaceProcessor(db, new JAXWSFaultExceptionMapper(db, xa), xa);
     }
 
+    @Test
     public void testWrapper() throws Exception {
         DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
         JavaInterface contract = iFactory.createJavaInterface(StockExceptionTest.class);
@@ -69,6 +74,7 @@ public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
      * Test method for
      * {@link org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor#visitInterface(JavaInterface)}.
      */
+    @Test
     public final void testProcessor() throws Exception {
         DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
         JavaInterface contract = iFactory.createJavaInterface(WebServiceInterfaceWithoutAnnotation.class);
