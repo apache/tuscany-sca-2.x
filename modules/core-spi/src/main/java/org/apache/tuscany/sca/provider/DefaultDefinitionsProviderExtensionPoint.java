@@ -63,8 +63,8 @@ public class DefaultDefinitionsProviderExtensionPoint implements
         // Get the provider service declarations
         Set<ServiceDeclaration> defnProviderDecls;
         DefinitionsProvider aProvider = null;
-        Class providerClass = null;
-        Constructor constructor = null;
+        Class<?> providerClass = null;
+        Constructor<?> constructor = null;
 
         try {
             defnProviderDecls =
