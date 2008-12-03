@@ -19,15 +19,13 @@
 
 package org.apache.tuscany.sca.contribution.java.impl;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.Assert;
 
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -40,6 +38,7 @@ import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
