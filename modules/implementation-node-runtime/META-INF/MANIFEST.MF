@@ -16,15 +16,20 @@ Bnd-LastModified: 1225397409312
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Implementation Extension
-Import-Package: javax.servlet,javax.servlet.http,org.apache.tuscany.sc
- a.assembly;version="1.4",org.apache.tuscany.sca.core;version="1.4",org.apache.tuscany.sca.i
- mplementation.node;version="1.4",org.apache.tuscany.sca.implementatio
- n.node.launcher;version="1.4",org.apache.tuscany.sca.implementation.n
- ode.webapp;version="1.4",org.apache.tuscany.sca.interfacedef;version=
- "1.4",org.apache.tuscany.sca.invocation;version="1.4",org.apache.tusc
- any.sca.node;version="1.4",org.apache.tuscany.sca.provider;version="1
- .4",org.apache.tuscany.sca.runtime;version="1.4",org.osoa.sca;version
- ="1.4"
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.host.http;version="1.4.0",
+ org.apache.tuscany.sca.implementation.node;version="1.4",
+ org.apache.tuscany.sca.implementation.node.launcher;version="1.4",
+ org.apache.tuscany.sca.implementation.node.webapp;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.node;version="1.4",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4",
+ org.osoa.sca;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.node.runtim
  e
 Bundle-DocURL: http://www.apache.org/
