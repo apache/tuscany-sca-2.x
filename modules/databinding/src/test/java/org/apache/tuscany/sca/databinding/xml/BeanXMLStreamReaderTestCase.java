@@ -80,7 +80,7 @@ public class BeanXMLStreamReaderTestCase {
         private String str;
         private int i;
         private String nil;
-        private List<String> list = new ArrayList();
+        private List<String> list = new ArrayList<String>();
         private AnotherBean bean;
         private Map<String, String> map = new HashMap<String, String>();
 

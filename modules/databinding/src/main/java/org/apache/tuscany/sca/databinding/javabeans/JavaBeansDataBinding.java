@@ -59,7 +59,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
         if (arg == null) {
             return null;
         }
-        final Class clazz = arg.getClass();
+        final Class<?> clazz = arg.getClass();
         if (String.class == clazz || clazz.isPrimitive()
             || Number.class.isAssignableFrom(clazz)
             || Boolean.class.isAssignableFrom(clazz)

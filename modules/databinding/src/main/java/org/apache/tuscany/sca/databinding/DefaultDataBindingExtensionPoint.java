@@ -193,7 +193,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         }
         // FIXME: Should we honor the databinding from operation/interface
         // level?
-        Class physical = dataType.getPhysical();
+        Class<?> physical = dataType.getPhysical();
         if (physical == Object.class) {
             dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;
@@ -211,11 +211,11 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     }
 
     private boolean introspectArray(DataType dataType, Operation operation) {
-        Class physical = dataType.getPhysical();
+        Class<?> physical = dataType.getPhysical();
         if (!physical.isArray() || physical == byte[].class) {
             return false;
         }
-        Class componentType = physical.getComponentType();
+        Class<?> componentType = physical.getComponentType();
         DataType logical = new DataTypeImpl(componentType, dataType.getLogical());
         introspectType(logical, operation);
         dataType.setDataBinding("java:array");
