@@ -24,8 +24,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -36,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.osoa.sca.annotations.Remotable;
 

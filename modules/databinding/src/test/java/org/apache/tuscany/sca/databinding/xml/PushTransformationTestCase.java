@@ -20,10 +20,8 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;

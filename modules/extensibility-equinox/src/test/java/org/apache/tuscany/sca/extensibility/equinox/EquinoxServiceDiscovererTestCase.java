@@ -31,10 +31,9 @@ import java.util.Set;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;

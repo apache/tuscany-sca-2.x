@@ -29,10 +29,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.Assert;
-
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextCache;
 import org.apache.tuscany.sca.databinding.util.LRUCache;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.example.ipo.jaxb.Address;

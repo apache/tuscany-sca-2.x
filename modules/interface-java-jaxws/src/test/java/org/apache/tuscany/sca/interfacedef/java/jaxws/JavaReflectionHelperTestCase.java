@@ -21,8 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.reflect.Field;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

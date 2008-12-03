@@ -28,8 +28,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 
-import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Node;

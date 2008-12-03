@@ -31,9 +31,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
-
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -27,14 +27,13 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
