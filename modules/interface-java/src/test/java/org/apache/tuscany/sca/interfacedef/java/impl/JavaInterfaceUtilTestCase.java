@@ -19,24 +19,26 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import static org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil.findOperation;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JavaInterfaceUtilTestCase extends TestCase {
+public class JavaInterfaceUtilTestCase {
     private List<Operation> operations;
 
+    @Test
     public void testNoParamsFindOperation() throws Exception {
         Method method = Foo.class.getMethod("foo");
         Operation ret = findOperation(method, operations);
@@ -44,6 +46,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         assertEquals(0, method.getParameterTypes().length);
     }
 
+    @Test
     public void testParamsFindOperation() throws Exception {
         Method method = Foo.class.getMethod("foo", String.class);
         Operation ret = findOperation(method, operations);
@@ -51,16 +54,15 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         assertEquals(String.class, method.getParameterTypes()[0]);
     }
 
+    @Test
     public void testPrimitiveParamFindOperation() throws NoSuchMethodException {
         Method method = Foo.class.getMethod("foo", Integer.TYPE);
         Operation operation = findOperation(method, operations);
         assertEquals(Integer.TYPE, operation.getInputType().getLogical().get(0).getPhysical());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         Operation operation = newOperation("foo");
         List<DataType> types = new ArrayList<DataType>();
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);

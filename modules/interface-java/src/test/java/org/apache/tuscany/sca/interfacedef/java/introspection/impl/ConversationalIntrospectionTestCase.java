@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.introspection.impl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -26,17 +30,19 @@ import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationalIntrospectionTestCase extends TestCase {
+public class ConversationalIntrospectionTestCase {
     private JavaInterfaceFactory javaFactory;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         javaFactory = new DefaultJavaInterfaceFactory();
     }
 
@@ -49,6 +55,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         return null;
     }
 
+    @Test
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
         Interface i = javaFactory.createJavaInterface(Foo.class);
         assertNotNull(i);
@@ -59,6 +66,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         assertEquals(ConversationSequence.CONVERSATION_END, seq);
     }
 
+    @Test
     public void testBadServiceContract() throws Exception {
         try {
             javaFactory.createJavaInterface(BadFoo.class);
@@ -68,6 +76,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNonConversationalInformationIntrospection() throws Exception {
         Interface i = javaFactory.createJavaInterface(NonConversationalFoo.class);
         assertFalse(i.isConversational());

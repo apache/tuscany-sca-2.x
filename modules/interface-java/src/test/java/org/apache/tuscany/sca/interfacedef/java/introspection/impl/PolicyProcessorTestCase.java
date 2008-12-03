@@ -18,23 +18,26 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.introspection.impl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.PolicySets;
 import org.osoa.sca.annotations.Requires;
 
 /**
  * @version $Rev$ $Date$
  */
-public class PolicyProcessorTestCase extends TestCase {
+public class PolicyProcessorTestCase {
     private JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
     private PolicyJavaInterfaceVisitor policyProcessor;
 
+    @Test
     public void testInterfaceLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface1.class);
         policyProcessor.visitInterface(type);
@@ -42,6 +45,7 @@ public class PolicyProcessorTestCase extends TestCase {
         assertEquals(1, type.getPolicySets().size());
     }
 
+    @Test
     public void testMethodLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface2.class);
         policyProcessor.visitInterface(type);
@@ -53,6 +57,7 @@ public class PolicyProcessorTestCase extends TestCase {
         assertEquals(1, type.getOperations().get(1).getPolicySets().size());
     }
 
+    @Test
     public void testInterfaceAndMethodLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface3.class);
         policyProcessor.visitInterface(type);
@@ -64,9 +69,8 @@ public class PolicyProcessorTestCase extends TestCase {
         assertEquals(1, type.getOperations().get(1).getPolicySets().size());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         policyProcessor = new PolicyJavaInterfaceVisitor(new DefaultPolicyFactory());
     }
 

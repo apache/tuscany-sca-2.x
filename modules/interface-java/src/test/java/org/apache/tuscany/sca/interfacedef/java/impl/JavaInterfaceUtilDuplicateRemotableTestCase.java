@@ -18,12 +18,13 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -35,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -43,13 +45,14 @@ import org.osoa.sca.annotations.Remotable;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
+public class JavaInterfaceUtilDuplicateRemotableTestCase {
 
     /**
      * Test to get the getTime() method from the LocalTimeService
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testLocalTimeServiceGetTime() throws Exception {
         doTestLocalTimeServiceGetTime(LocalTimeService.class);
     }
@@ -75,6 +78,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testWorldTimeServiceGetTime() throws Exception {
         doTestWorldTimeServiceGetTime(WorldTimeService.class);
     }
@@ -101,6 +105,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testGMTTimeServiceGetTime() throws Exception {
         doTestGMTTimeServiceGetTime(GMTTimeService.class);
     }
@@ -129,6 +134,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testLocalTimeServiceGetTimeFromTimeServiceImpl() throws Exception {
         doTestLocalTimeServiceGetTime(TimeServiceImpl.class);
     }
@@ -139,6 +145,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testWorldTimeServiceGetTimeFromTimeServiceImpl() throws Exception {
         doTestWorldTimeServiceGetTime(TimeServiceImpl.class);
     }
@@ -148,6 +155,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      *
      * @throws Exception Test failed
      */
+    @Test
     public void testGMTTimeServiceGetTimeFromTimeServiceImpl() throws Exception {
         doTestGMTTimeServiceGetTime(TimeServiceImpl.class);
     }
@@ -189,6 +197,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
      * 
      * This test case is for TUSCANY-2194
      */
+    @Test
     public void testDuplicateOpeartionOnRemotableInterface()
     {
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
