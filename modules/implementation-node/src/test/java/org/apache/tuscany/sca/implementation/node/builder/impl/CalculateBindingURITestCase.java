@@ -19,13 +19,14 @@
 
 package org.apache.tuscany.sca.implementation.node.builder.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -43,12 +44,15 @@ import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.impl.NodeImplementationFactoryImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class CalculateBindingURITestCase extends TestCase {
+public class CalculateBindingURITestCase {
     private static final Logger logger = Logger.getLogger(CalculateBindingURITestCase.class.getName());
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
@@ -58,8 +62,8 @@ public class CalculateBindingURITestCase extends TestCase {
     private CompositeBuilder nodeConfigurationBuilder;
     private List<Binding> defaultBindings = new ArrayList<Binding>();
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestBindingFactory();
         nodeImplementationFactory = new NodeImplementationFactoryImpl();
@@ -95,8 +99,8 @@ public class CalculateBindingURITestCase extends TestCase {
         return nodeComposite;
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         assemblyFactory = null;
     }
 
@@ -241,6 +245,7 @@ public class CalculateBindingURITestCase extends TestCase {
 
     // component service binding tests
 
+    @Test
     public void testComponentServiceSingleService() {
         Composite composite = createComponentServiceBinding();
         composite.getComponents().get(0).getServices().remove(1);
@@ -256,6 +261,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testComponentServiceBindingDefault() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
@@ -270,6 +276,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testComponentServiceBindingName() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
@@ -285,6 +292,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testComponentServiceBindingURIRelative() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
@@ -301,6 +309,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testComponentServiceBindingURIAbsolute() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
@@ -317,6 +326,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testComponentServiceBindingURIRelative2() {
         Composite composite = createComponentServiceBinding();
         Binding b = composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
@@ -335,6 +345,7 @@ public class CalculateBindingURITestCase extends TestCase {
 
     // top level composite service binding tests
 
+    @Test
     public void testCompositeServiceSingleService() {
         Composite composite = createTopLevelCompositeServiceBinding();
         composite.getServices().remove(1);
@@ -350,6 +361,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testCompositeServiceBindingDefault() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
@@ -364,6 +376,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testCompositeServiceBindingName() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
@@ -379,6 +392,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testCompositeServiceBindingURIRelative() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
@@ -395,6 +409,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testCompositeServiceBindingURIAbsolute() {
         Composite composite = createTopLevelCompositeServiceBinding();
         Binding b = composite.getServices().get(0).getBindings().get(0);
@@ -413,6 +428,7 @@ public class CalculateBindingURITestCase extends TestCase {
 
     // nested composite service binding tests
 
+    @Test
     public void testNestedCompositeServiceSingleService() {
         Composite composite = createNestCompositeServiceBinding();
         ((Composite)composite.getComponents().get(0).getImplementation()).getComponents().get(0).getServices()
@@ -431,6 +447,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNestedCompositeServiceBindingDefault() {
         Composite composite = createNestCompositeServiceBinding();
         Binding b =
@@ -447,6 +464,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNestedCompositeServiceBindingName() {
         Composite composite = createNestCompositeServiceBinding();
         Binding b =
@@ -464,6 +482,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNestedCompositeServiceBindingURIRelative() {
         Composite composite = createNestCompositeServiceBinding();
         Binding b =
@@ -482,6 +501,7 @@ public class CalculateBindingURITestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNestedCompositeServiceBindingURIAbsolute() {
         Composite composite = createNestCompositeServiceBinding();
         Binding b =

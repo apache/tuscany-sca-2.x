@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.node.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -34,19 +34,21 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test reading Node implementations.
  * 
  * @version $Rev$ $Date$
  */
-public class ReadTestCase extends TestCase {
+public class ReadTestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
     private CompositeBuilder compositeBuilder;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
@@ -57,6 +59,7 @@ public class ReadTestCase extends TestCase {
 
     }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestNode.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
