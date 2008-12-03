@@ -28,7 +28,7 @@ import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.XMLConstants;
 
 /*
- * Custom implementaion of the XMLStreamReader to keep track of the namespace context for each element
+ * Custom implementation of the XMLStreamReader to keep track of the namespace context for each element
  */
 public class TuscanyXMLStreamReader extends StreamReaderDelegate implements
 		XMLStreamReader {
