@@ -1093,8 +1093,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                         if (component.getRequiredIntents().contains(excluded)) {
                             component.getRequiredIntents().remove(excluded);
                         }
-                        for (Iterator i = component.getPolicySets().iterator(); i.hasNext(); ) {
-                            PolicySet cmpPolicySet = (PolicySet) i.next();
+                        for (Iterator<PolicySet> i = component.getPolicySets().iterator(); i.hasNext(); ) {
+                            PolicySet cmpPolicySet = i.next();
                             if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
                                 i.remove();
                             }
@@ -1107,8 +1107,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             if (component.getRequiredIntents().contains(excluded)) {
                                 component.getRequiredIntents().remove(excluded);
                             }
-                            for (Iterator i = component.getPolicySets().iterator(); i.hasNext(); ) {
-                                PolicySet cmpPolicySet = (PolicySet) i.next();
+                            for (Iterator<PolicySet> i = component.getPolicySets().iterator(); i.hasNext(); ) {
+                                PolicySet cmpPolicySet = i.next();
                                 if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
                                     i.remove();
                                 }
@@ -1146,8 +1146,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                             if (compConfOp.getRequiredIntents().contains(excluded)) {
                                                 compConfOp.getRequiredIntents().remove(excluded);
                                             }
-                                            for (Iterator i = compConfOp.getPolicySets().iterator(); i.hasNext(); ) {
-                                                PolicySet cmpPolicySet = (PolicySet) i.next();
+                                            for (Iterator<PolicySet> i = compConfOp.getPolicySets().iterator(); i.hasNext(); ) {
+                                                PolicySet cmpPolicySet = i.next();
                                                 if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
                                                     i.remove();
                                                 }
