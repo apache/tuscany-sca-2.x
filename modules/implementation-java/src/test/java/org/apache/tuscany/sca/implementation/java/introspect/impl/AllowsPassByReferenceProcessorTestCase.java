@@ -18,25 +18,29 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.AllowsPassByReference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AllowsPassByReferenceProcessorTestCase extends TestCase {
+public class AllowsPassByReferenceProcessorTestCase {
 
     JavaImplementation type;
     AllowsPassByReferenceProcessor processor;
     private JavaImplementationFactory javaImplementationFactory;
 
+    @Test
     public void testClassAnnotation() throws Exception {
         processor.visitClass(Foo.class, type);
         assertEquals(true, type.isAllowsPassByReference());
@@ -49,9 +53,8 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
         assertTrue(type.isAllowsPassByReference(m1));
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
         processor = new AllowsPassByReferenceProcessor(new DefaultAssemblyFactory());

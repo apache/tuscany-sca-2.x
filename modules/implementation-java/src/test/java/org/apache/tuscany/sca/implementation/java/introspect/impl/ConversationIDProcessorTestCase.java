@@ -18,15 +18,17 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.ConversationID;
 
 /**
@@ -34,10 +36,11 @@ import org.osoa.sca.annotations.ConversationID;
  *
  * @version $Rev$ $Date$
  */
-public class ConversationIDProcessorTestCase extends TestCase {
+public class ConversationIDProcessorTestCase {
     private ConversationIDProcessor processor;
     private JavaImplementationFactory javaImplementationFactory;
 
+    @Test
     public void testConversationIDMethod() throws Exception {
         Method method = Foo.class.getMethod("setConversationID", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -45,6 +48,7 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("conversationID"));
     }
 
+    @Test
     public void testConversationIDField() throws Exception {
         Field field = Foo.class.getDeclaredField("cid");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -52,6 +56,7 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("cid"));
     }
 
+    @Test
     public void testConversationIDMethodNotString() throws Exception {
         Method method = Foo.class.getMethod("setConversationID", Long.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -59,6 +64,7 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("conversationID"));
     }
 
+    @Test
     public void testConversationIDFieldNotString() throws Exception {
         Field field = Foo.class.getDeclaredField("longCID");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -66,9 +72,8 @@ public class ConversationIDProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("longCID"));
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new ConversationIDProcessor(new DefaultAssemblyFactory());
     }

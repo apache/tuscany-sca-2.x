@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import java.lang.reflect.Constructor;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -29,12 +29,14 @@ import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.Property;
 
 /**
  * @version $Rev$ $Date$
  */
-public class HeuristicAndPropertyTestCase extends TestCase {
+public class HeuristicAndPropertyTestCase {
 
     private PropertyProcessor propertyProcessor;
     private HeuristicPojoProcessor heuristicProcessor;
@@ -45,6 +47,7 @@ public class HeuristicAndPropertyTestCase extends TestCase {
      * Verifies the property and heuristic processors don't collide
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testPropertyProcessorWithHeuristicProcessor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor ctor = Foo.class.getConstructor(String.class);
@@ -55,9 +58,8 @@ public class HeuristicAndPropertyTestCase extends TestCase {
         assertEquals("foo", type.getProperties().get(0).getName());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         propertyProcessor = new PropertyProcessor(assemblyFactory);
         heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory());
     }

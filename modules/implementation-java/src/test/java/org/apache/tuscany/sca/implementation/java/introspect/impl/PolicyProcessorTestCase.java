@@ -18,12 +18,13 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -37,13 +38,15 @@ import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
 /**
  * @version $Rev$ $Date$
  */
-public class PolicyProcessorTestCase extends TestCase {
+public class PolicyProcessorTestCase {
     private ServiceProcessor serviceProcessor;
     private PolicyProcessor policyProcessor;
     private PolicyJavaInterfaceVisitor visitor;
@@ -87,6 +90,7 @@ public class PolicyProcessorTestCase extends TestCase {
         verifyIntents(Service5.class, type);
     }
 
+    @Test
     public void testSingleInterfaceWithIntentsOnServiceAndInterfaceAtImplAndInertfaceAndMethodLevel() throws Exception {
         serviceProcessor.visitClass(Service6.class, type);
         visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
@@ -231,9 +235,8 @@ public class PolicyProcessorTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
         visitor = new PolicyJavaInterfaceVisitor(new DefaultPolicyFactory());

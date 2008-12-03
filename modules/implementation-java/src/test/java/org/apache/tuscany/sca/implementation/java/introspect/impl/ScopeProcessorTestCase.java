@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
@@ -26,14 +26,17 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ScopeProcessorTestCase extends TestCase {
+public class ScopeProcessorTestCase {
 
     private JavaImplementationFactory javaImplementationFactory;
 
+    @Test
     public void testCompositeScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -42,6 +45,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.COMPOSITE, type.getJavaScope());
     }
 
+    @Test
     public void testSessionScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -49,6 +53,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.SESSION, type.getJavaScope());
     }
 
+    @Test
     public void testConversationalScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -56,6 +61,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.CONVERSATION, type.getJavaScope());
     }
 
+    @Test
     public void testRequestScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -63,6 +69,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.REQUEST, type.getJavaScope());
     }
 
+    @Test
     public void testStatelessScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -70,6 +77,7 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.STATELESS, type.getJavaScope());
     }
 
+    @Test
     public void testNoScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -77,9 +85,8 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(JavaScopeImpl.STATELESS, type.getJavaScope());
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

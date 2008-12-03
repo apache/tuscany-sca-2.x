@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Reference;
 
 /**
@@ -36,6 +40,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
+    @Test
     public void testReference() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
@@ -45,6 +50,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         assertEquals("myRef", reference.getName());
     }
 
+    @Test
     public void testTwoReferencesSameType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
@@ -53,6 +59,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         assertNotNull(getReference(type, "myRef2"));
     }
 
+    @Test
     public void testDuplicateProperty() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
@@ -64,6 +71,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Test
     public void testNoName() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<NoNameFoo> ctor = NoNameFoo.class.getConstructor(String.class);
@@ -71,6 +79,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         assertNotNull(getReference(type, "_ref0"));
     }
 
+    @Test
     public void testNamesOnConstructor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
@@ -78,6 +87,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         assertNotNull(getReference(type, "myRef"));
     }
 
+    @Test
     public void testInvalidNumberOfNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
@@ -89,6 +99,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         }
     }
 
+    @Test
     public void testNoMatchingNames() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
@@ -98,11 +109,6 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         } catch (InvalidConstructorException e) {
             // expected
         }
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
     }
 
 //    public void testMultiplicityRequired() throws Exception {

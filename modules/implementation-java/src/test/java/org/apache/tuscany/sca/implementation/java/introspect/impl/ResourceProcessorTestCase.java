@@ -18,25 +18,31 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ResourceProcessorTestCase extends TestCase {
+public class ResourceProcessorTestCase {
 
     JavaImplementation type;
     ResourceProcessor processor = new ResourceProcessor(new DefaultAssemblyFactory());
 
+    @Test
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");
         processor.visitField(field, type);
@@ -46,6 +52,7 @@ public class ResourceProcessorTestCase extends TestCase {
         assertEquals(field.getType(), resource.getElement().getType());
     }
 
+    @Test
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", Bar.class);
         processor.visitMethod(method, type);
@@ -55,6 +62,7 @@ public class ResourceProcessorTestCase extends TestCase {
         assertEquals(method.getParameterTypes()[0], resource.getElement().getType());
     }
 
+    @Test
     public void testVisitNamedMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar2", Bar.class);
         processor.visitMethod(method, type);
@@ -63,6 +71,7 @@ public class ResourceProcessorTestCase extends TestCase {
         assertEquals("mapped", resource.getMappedName());
     }
 
+    @Test
     public void testVisitBadMethod() throws Exception {
         Method method = Foo.class.getMethod("setBad");
         try {
@@ -73,6 +82,7 @@ public class ResourceProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testDuplicateResources() throws Exception {
         Field field = Foo.class.getDeclaredField("bar");
         processor.visitField(field, type);
@@ -84,9 +94,8 @@ public class ResourceProcessorTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
     }

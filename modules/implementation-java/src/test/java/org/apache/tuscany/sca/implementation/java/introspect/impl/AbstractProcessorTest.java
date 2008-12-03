@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -37,7 +35,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class AbstractProcessorTest extends TestCase {
+public abstract class AbstractProcessorTest {
     protected AssemblyFactory factory;
     protected JavaInterfaceFactory javaFactory;
     protected ConstructorProcessor constructorProcessor;

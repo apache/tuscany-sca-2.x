@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +38,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
+import org.junit.Test;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -66,6 +71,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies a single service interface is computed when only one interface
      * is implemented
      */
+    @Test
     public void testSingleInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceImpl> ctor = SingleInterfaceImpl.class.getConstructor();
@@ -81,6 +87,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
     /**
      * Verifies property and reference setters are computed
      */
+    @Test
     public void testPropertyReference() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceWithPropertyReferenceImpl> ctor = SingleInterfaceWithPropertyReferenceImpl.class
@@ -102,6 +109,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies that a property setter is not introspected if an analogous
      * operation is in the service interface
      */
+    @Test
     public void testPropertySetterInInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<SingleInterfaceImpl> ctor = SingleInterfaceImpl.class.getConstructor();
@@ -114,6 +122,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies that a reference setter is not introspected if an analogous
      * operation is in the service interface
      */
+    @Test
     public void testReferenceSetterInInterface() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<RefInterfaceImpl> ctor = RefInterfaceImpl.class.getConstructor();
@@ -126,6 +135,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies collection generic types or array types are introspected as
      * references according to specification rules
      */
+    @Test
     public void testReferenceCollectionType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ReferenceCollectionImpl> ctor = ReferenceCollectionImpl.class.getConstructor();
@@ -139,6 +149,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies collection generic types or array types are introspected as
      * properties according to specification rules
      */
+    @Test
     public void testPropertyCollectionType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<PropertyCollectionImpl> ctor = PropertyCollectionImpl.class.getConstructor();
@@ -153,6 +164,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * 
      * @Remotable
      */
+    @Test
     public void testRemotableRef() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<RemotableRefImpl> ctor = RemotableRefImpl.class.getConstructor();
@@ -162,6 +174,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertEquals(0, type.getProperties().size());
     }
 
+    @Test
     public void testParentInterface() throws IntrospectionException, NoSuchMethodException {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Child> ctor = Child.class.getConstructor();
@@ -174,6 +187,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Verifies a service interface is calculated when only props and refs are
      * given
      */
+    @Test
     public void testExcludedPropertyAndReference() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         org.apache.tuscany.sca.assembly.Reference ref = factory.createReference();
@@ -196,6 +210,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertEquals(1, type.getServices().size());
     }
 
+    @Test
     public void testProtectedRemotableRefField() throws IntrospectionException, NoSuchMethodException {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ProtectedRemotableRefFieldImpl> ctor = ProtectedRemotableRefFieldImpl.class.getConstructor();
@@ -204,6 +219,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertNotNull(ModelHelper.getReference(type, "otherRef"));
     }
 
+    @Test
     public void testProtectedRemotableRefMethod() throws IntrospectionException, NoSuchMethodException {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<ProtectedRemotableRefMethodImpl> ctor = ProtectedRemotableRefMethodImpl.class.getConstructor();
@@ -212,6 +228,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         assertNotNull(ModelHelper.getReference(type, "otherRef"));
     }
 
+    @Test
     public void testSetDataTypes() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor();
@@ -228,6 +245,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * is corrected as per the errata.  A notable difference is that the interfaces annotated with @Service
      * no longer result in references.
      */
+    @Test
     public void testUpdatedRule() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(SomeServiceImpl.class, type);
@@ -273,6 +291,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
      * Interfaces with "@WebService" annotation implemented by the class should result
      * in a Service in the same manner as an "@Remotable" annotation would.
      */
+    @Test
     public void testInterfaceWithWebServiceAnnotation() throws Exception{
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(SomeWebServiceImpl.class, type);

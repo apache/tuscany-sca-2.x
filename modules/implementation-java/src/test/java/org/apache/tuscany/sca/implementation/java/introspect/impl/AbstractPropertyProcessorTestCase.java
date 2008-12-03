@@ -20,13 +20,14 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getProperty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.lang.annotation.Retention;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
@@ -36,16 +37,19 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractPropertyProcessorTestCase extends TestCase {
+public class AbstractPropertyProcessorTestCase {
 
     private JavaClassVisitor extension;
     private JavaImplementationFactory javaImplementationFactory;
 
+    @Test
     public void testVisitMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -54,6 +58,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         assertNotNull(prop);
     }
 
+    @Test
     public void testVisitNoParamsMethod() throws Exception {
         Method method = Foo.class.getMethod("setNoParamsBar");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -65,6 +70,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testVisitNonVoidMethod() throws Exception {
         Method method = Foo.class.getMethod("setBadBar", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -76,6 +82,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testDuplicateMethod() throws Exception {
         Method method = Foo.class.getMethod("setBar", String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -88,6 +95,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testVisitField() throws Exception {
         Field field = Foo.class.getDeclaredField("d");
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -96,6 +104,7 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         assertNotNull(prop);
     }
 
+    @Test
     public void testVisitConstructor() throws Exception {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -106,9 +115,8 @@ public class AbstractPropertyProcessorTestCase extends TestCase {
         assertNotNull(getProperty(type, "test"));
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         extension = new TestProcessor();
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }

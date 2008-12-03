@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -29,6 +31,7 @@ import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.junit.Test;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have
@@ -58,6 +61,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * Verifies heuristic processing can be called prior to an extension
      * annotation processors being called.
      */
+    @Test
     public void testBarAnnotationProcessedFirst() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
@@ -84,6 +88,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * @Bar
      * @throws Exception
      */
+    @Test
     public void testBarAnnotationProcessedLast() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         visitEnd(Foo.class, type);
@@ -105,6 +110,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * position. Specifically, verifies that the heuristic processor updates
      * injection names and preserves their ordering.
      */
+    @Test
     public void testBarAnnotationProcessedFirstInMiddle() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo2> ctor = Foo2.class.getConstructor(String.class, String.class, String.class);

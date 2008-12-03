@@ -18,30 +18,31 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.EagerInit;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EagerInitProcessorTestCase extends TestCase {
+public class EagerInitProcessorTestCase {
 
     private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
     
+    @Test
     public void testNoLevel() throws IntrospectionException {
         EagerInitProcessor processor = new EagerInitProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Level.class, type);
     }
 
+    @Test
     public void testSubclass() throws IntrospectionException {
         EagerInitProcessor processor = new EagerInitProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

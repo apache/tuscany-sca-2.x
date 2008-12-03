@@ -28,17 +28,27 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.junit.Before;
+import org.junit.Test;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ServiceProcessorTestCase extends TestCase {
+public class ServiceProcessorTestCase {
     private ServiceProcessor processor;
     private JavaImplementation type;
 
+    @Test
     public void testMultipleInterfaces() throws Exception {
         processor.visitClass(FooMultiple.class, type);
         assertEquals(2, type.getServices().size());
@@ -48,12 +58,14 @@ public class ServiceProcessorTestCase extends TestCase {
         assertNotNull(ModelHelper.getService(type, Bar.class.getSimpleName()));
     }
 
+    @Test
     public void testSingleInterfaces() throws Exception {
         processor.visitClass(FooSingle.class, type);
         assertEquals(1, type.getServices().size());
         assertNotNull(ModelHelper.getService(type, Baz.class.getSimpleName()));
     }
 
+    @Test
     public void testMultipleNoService() throws Exception {
         processor.visitClass(FooMultipleNoService.class, type);
         assertEquals(0, type.getServices().size());
@@ -62,17 +74,20 @@ public class ServiceProcessorTestCase extends TestCase {
     /**
      * Verifies a service with a callback annotation is recognized
      */
+    @Test
     public void testMultipleWithCallbackAnnotation() throws Exception {
         processor.visitClass(FooMultipleWithCalback.class, type);
         assertEquals(1, type.getServices().size());
     }
 
 
+    @Test
     public void testMultipleWithWebServiceAnnotation() throws Exception {
         processor.visitClass(FooMultipleWithWebService.class, type);
         assertEquals(2, type.getServices().size());
     }
     
+    @Test
     public void testRemotableNoService() throws Exception {
         processor.visitClass(FooRemotableNoService.class, type);
         assertEquals(1, type.getServices().size());
@@ -80,10 +95,12 @@ public class ServiceProcessorTestCase extends TestCase {
         assertEquals(BazRemotable.class, ((JavaInterface)service.getInterfaceContract().getInterface()).getJavaClass());
     }
 
+    @Test
     public void testNonInterface() throws Exception {
         processor.visitClass(FooServiceUsingClassImpl.class, type);
     }
 
+    @Test
     public void testNoInterfaces() throws Exception {
         try {
             processor.visitClass(BadDefinition.class, type);
@@ -93,9 +110,8 @@ public class ServiceProcessorTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         processor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();

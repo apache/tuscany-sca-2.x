@@ -20,13 +20,16 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getProperty;
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.ModelHelper.getReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -37,17 +40,19 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.junit.Test;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ConstructorProcessorTestCase extends TestCase {
+public class ConstructorProcessorTestCase {
     private ConstructorProcessor processor = new ConstructorProcessor(new DefaultAssemblyFactory());
     
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
+    @Test
     public void testDuplicateConstructor() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
@@ -58,6 +63,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testConstructorAnnotation() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class);
@@ -65,6 +71,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         assertEquals("foo", type.getConstructor().getParameters()[0].getName());
     }
 
+    @Test
     public void testNoAnnotation() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<NoAnnotation> ctor1 = NoAnnotation.class.getConstructor();
@@ -72,6 +79,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         assertNull(type.getConstructor());
     }
 
+    @Test
     public void testBadAnnotation() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<BadAnnotation> ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
@@ -83,6 +91,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testMixedParameters() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
@@ -154,6 +163,7 @@ public class ConstructorProcessorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testMultiplicity() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Multiple> ctor1 = Multiple.class.getConstructor(Collection.class,
