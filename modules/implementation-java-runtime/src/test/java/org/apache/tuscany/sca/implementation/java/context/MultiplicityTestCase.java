@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 
 
 /**
@@ -26,8 +27,9 @@ import junit.framework.TestCase;
  *
  * @version $Rev$ $Date$
  */
-public class MultiplicityTestCase extends TestCase {
+public class MultiplicityTestCase {
 
+    @Test
     public void testMultiplicity() throws Exception {
         // TODO implement
     }
