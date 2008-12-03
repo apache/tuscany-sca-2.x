@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.java.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -25,15 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.junit.Test;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class JavaIntrospectionHelperTestCase extends TestCase {
+public class JavaIntrospectionHelperTestCase {
 
     private List testNoGenericsList;
     private List<String> testList;
@@ -41,29 +43,25 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     private Entry[] testArray;
     private String[] testStringArray;
 
-    public JavaIntrospectionHelperTestCase() {
-        super();
-    }
-
-    public JavaIntrospectionHelperTestCase(String arg0) {
-        super(arg0);
-    }
-
+    @Test
     public void testBean1AllPublicProtectedFields() throws Exception {
         Set<Field> beanFields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(Bean1.class, true);
         assertEquals(4, beanFields.size());                //Bean1.ALL_BEAN1_PUBLIC_PROTECTED_FIELDS
     }
 
+    @Test
     public void testGetSuperAllMethods() throws Exception {
         Set<Method> superBeanMethods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(SuperBean.class, true);
         assertEquals(SuperBean.ALL_SUPER_METHODS, superBeanMethods.size());
     }
 
+    @Test
     public void testGetBean1AllMethods() throws Exception {
         Set<Method> beanMethods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class, true);
         assertEquals(Bean1.ALL_BEAN1_METHODS, beanMethods.size());
     }
 
+    @Test
     public void testOverrideMethod() throws Exception {
         Set<Method> beanFields = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class, true);
         boolean invoked = false;
@@ -78,6 +76,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testNoOverrideMethod() throws Exception {
         Set<Method> beanFields = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(Bean1.class, true);
         boolean found = false;
@@ -91,6 +90,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testDefaultConstructor() throws Exception {
         Constructor ctr = JavaIntrospectionHelper.getDefaultConstructor(Bean2.class);
         assertEquals(ctr, Bean2.class.getConstructor());
@@ -98,6 +98,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     }
 
 
+    @Test
     public void testGetAllInterfaces() {
         Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Z.class);
         assertEquals(2, interfaces.size());
@@ -106,11 +107,13 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     }
 
 
+    @Test
     public void testGetAllInterfacesObject() {
         Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Object.class);
         assertEquals(0, interfaces.size());
     }
 
+    @Test
     public void testGetAllInterfacesNoInterfaces() {
         Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(NoInterface.class);
         assertEquals(0, interfaces.size());
@@ -119,6 +122,7 @@ public class JavaIntrospectionHelperTestCase extends TestCase {
     /**
      * Tests generics introspection capabilities
      */
+    @Test
     public void testGenerics() throws Exception {
 
         List classes = JavaIntrospectionHelper.getGenerics(getClass().getDeclaredField("testList").getGenericType());

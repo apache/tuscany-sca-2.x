@@ -18,13 +18,16 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SingletonObjectFactoryTestCase extends TestCase {
+public class SingletonObjectFactoryTestCase {
 
+    @Test
     public void testSingleton() throws Exception {
         Object o = new Object();
         SingletonObjectFactory<Object> factory = new SingletonObjectFactory<Object>(o);

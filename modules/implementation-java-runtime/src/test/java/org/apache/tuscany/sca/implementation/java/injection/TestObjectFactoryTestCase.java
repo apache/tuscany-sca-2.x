@@ -18,21 +18,25 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class TestObjectFactoryTestCase extends TestCase {
+public class TestObjectFactoryTestCase {
 
     private Constructor<Foo> ctor;
 
+    @Test
     public void testConstructorInjection() throws Exception {
         List<ObjectFactory> initializers = new ArrayList<ObjectFactory>();
         initializers.add(new SingletonObjectFactory<String>("foo"));
@@ -45,6 +49,7 @@ public class TestObjectFactoryTestCase extends TestCase {
      * Verifies null parameters can be passed to a constructor. This is valid when a reference is optional during
      * constructor injection
      */
+    @Test
     public void testConstructorInjectionOptionalParam() throws Exception {
         List<ObjectFactory> initializers = new ArrayList<ObjectFactory>();
         initializers.add(null);
@@ -53,6 +58,7 @@ public class TestObjectFactoryTestCase extends TestCase {
         assertNull(foo.foo);
     }
 
+    @Test
     public void testConstructorInitializerInjection() throws Exception {
         TestObjectFactory<Foo> factory = new TestObjectFactory<Foo>(ctor);
         factory.setInitializerFactory(0, new SingletonObjectFactory<String>("foo"));
@@ -60,9 +66,8 @@ public class TestObjectFactoryTestCase extends TestCase {
         assertEquals("foo", foo.foo);
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         ctor = Foo.class.getConstructor(String.class);
     }
 

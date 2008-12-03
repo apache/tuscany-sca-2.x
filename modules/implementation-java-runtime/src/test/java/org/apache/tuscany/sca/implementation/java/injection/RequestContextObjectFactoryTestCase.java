@@ -18,13 +18,16 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RequestContextObjectFactoryTestCase extends TestCase {
+public class RequestContextObjectFactoryTestCase {
 
+    @Test
     public void testInstanceCreate() {
         RequestContextObjectFactory factory = new RequestContextObjectFactory(null);
         assertNotNull(factory.getInstance());

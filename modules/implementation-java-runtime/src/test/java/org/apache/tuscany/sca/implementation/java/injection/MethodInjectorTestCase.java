@@ -18,21 +18,24 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MethodInjectorTestCase extends TestCase {
+public class MethodInjectorTestCase {
     private Method fooMethod;
     private Method privateMethod;
     private Method exceptionMethod;
 
+    @Test
     public void testIllegalArgument() throws Exception {
         ObjectFactory<Object> factory = new SingletonObjectFactory<Object>(new Object());
         MethodInjector<Foo> injector = new MethodInjector<Foo>(fooMethod, factory);
@@ -44,6 +47,7 @@ public class MethodInjectorTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testException() throws Exception {
         ObjectFactory<Object> factory = new SingletonObjectFactory<Object>("foo");
         MethodInjector<Foo> injector = new MethodInjector<Foo>(exceptionMethod, factory);
@@ -55,9 +59,8 @@ public class MethodInjectorTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         fooMethod = Foo.class.getMethod("foo", String.class);
         privateMethod = Foo.class.getDeclaredMethod("hidden", String.class);
         exceptionMethod = Foo.class.getDeclaredMethod("exception", String.class);

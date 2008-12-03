@@ -18,20 +18,23 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.implementation.java.invocation.EventInvocationException;
 import org.apache.tuscany.sca.implementation.java.invocation.MethodEventInvoker;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MethodEventInvokerTestCase extends TestCase {
+public class MethodEventInvokerTestCase {
     private Method privateMethod;
     private Method exceptionMethod;
 
+    @Test
     public void testIllegalAccess() throws Exception {
         MethodEventInvoker<MethodEventInvokerTestCase.Foo> injector = new MethodEventInvoker<Foo>(privateMethod);
         try {
@@ -42,6 +45,7 @@ public class MethodEventInvokerTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testException() throws Exception {
         MethodEventInvoker<MethodEventInvokerTestCase.Foo> injector = new MethodEventInvoker<Foo>(exceptionMethod);
         try {
@@ -52,9 +56,8 @@ public class MethodEventInvokerTestCase extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         privateMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("hidden");
         exceptionMethod = MethodEventInvokerTestCase.Foo.class.getDeclaredMethod("exception");
 

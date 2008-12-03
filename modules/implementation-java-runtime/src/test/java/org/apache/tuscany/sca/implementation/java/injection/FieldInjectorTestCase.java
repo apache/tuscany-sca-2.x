@@ -18,17 +18,21 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Field;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class FieldInjectorTestCase extends TestCase {
+public class FieldInjectorTestCase {
 
     protected Field protectedField;
 
+    @Test
     public void testIllegalAccess() throws Exception {
         FieldInjector<Foo> injector = new FieldInjector<Foo>(protectedField, new SingletonObjectFactory<String>("foo"));
         Foo foo = new Foo();
@@ -37,9 +41,8 @@ public class FieldInjectorTestCase extends TestCase {
     }
 
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         protectedField = Foo.class.getDeclaredField("hidden");
     }
 
