@@ -44,7 +44,7 @@ import org.junit.Test;
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractPropertyProcessorTestCase {
+public class TestAbstractPropertyProcessorTestCase {
 
     private JavaClassVisitor extension;
     private JavaImplementationFactory javaImplementationFactory;
