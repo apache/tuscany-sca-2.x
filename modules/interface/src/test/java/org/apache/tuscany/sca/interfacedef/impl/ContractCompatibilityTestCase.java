@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.sca.interfacedef.impl;
 
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -35,29 +35,33 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * TODO some tests commented out due to DataType.equals() needing to be strict
  * 
  * @version $Rev$ $Date$
  */
-public class ContractCompatibilityTestCase extends TestCase {
+public class ContractCompatibilityTestCase {
 
     private InterfaceContractMapper mapper;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         mapper = utilities.getUtility(InterfaceContractMapper.class);
     }
 
+    @Test
     public void testNoOperation() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         InterfaceContract target = new MockContract("FooContract");
         mapper.checkCompatibility(source, target, false, false);
     }
 
+    @Test
     public void testBasic() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         Operation opSource1 = newOperation("op1");
@@ -72,6 +76,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         mapper.checkCompatibility(source, target, false, false);
     }
 
+    @Test
     public void testBasicIncompatibleOperationNames() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         Operation opSource1 = newOperation("op1");
@@ -91,6 +96,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testInputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
@@ -115,6 +121,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         mapper.checkCompatibility(source, target, false, false);
     }
 
+    @Test
     public void testIncompatibleInputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
@@ -145,8 +152,9 @@ public class ContractCompatibilityTestCase extends TestCase {
     }
 
     /**
-     * Verfies source input types can be super types of the target
+     * Verifies source input types can be super types of the target
      */
+    @Test
     public void testSourceSuperTypeInputCompatibility() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
         // List<DataType> sourceInputTypes = new ArrayList<DataType>();
@@ -177,6 +185,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // wireService.checkCompatibility(source, target, false);
     }
 
+    @Test
     public void testOutputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
@@ -199,6 +208,7 @@ public class ContractCompatibilityTestCase extends TestCase {
     /**
      * Verifies a return type that is a supertype of of the target is compatible
      */
+    @Test
     public void testSupertypeOutputTypes() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceOutputType = new DataTypeImpl<Type>(Object.class,
@@ -222,6 +232,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // wireService.checkCompatibility(source, target, false);
     }
 
+    @Test
     public void testIncompatibleOutputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
@@ -246,6 +257,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
     }
 
+    @Test
     public void testFaultTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
@@ -270,6 +282,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         mapper.checkCompatibility(source, target, false, false);
     }
 
+    @Test
     public void testSourceFaultTargetNoFaultCompatibility() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
@@ -295,6 +308,7 @@ public class ContractCompatibilityTestCase extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testFaultSuperTypes() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceFaultType = new DataTypeImpl<Type>(Exception.class,
@@ -327,6 +341,7 @@ public class ContractCompatibilityTestCase extends TestCase {
      * Verifies a source's faults which are supertypes and a superset of the
      * target's faults are compatible
      */
+    @Test
     public void testFaultSuperTypesAndSuperset() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceFaultType = new DataTypeImpl<Type>(Exception.class,
