@@ -21,9 +21,6 @@ package org.apache.tuscany.sca.databinding.impl;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
@@ -35,6 +32,7 @@ import org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.sca.databinding.xml.String2SAX;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;

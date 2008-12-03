@@ -31,13 +31,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;
 import org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy;
 import org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

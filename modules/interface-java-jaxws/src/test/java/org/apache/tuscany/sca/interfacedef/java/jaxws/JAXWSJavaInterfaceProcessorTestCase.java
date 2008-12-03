@@ -27,8 +27,6 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.jaxb.DefaultXMLAdapterExtensionPoint;
@@ -36,6 +34,7 @@ import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,9 +47,6 @@ import com.example.stock.StockExceptionTest;
 public class JAXWSJavaInterfaceProcessorTestCase {
     private JAXWSJavaInterfaceProcessor interfaceProcessor;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
         DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint();

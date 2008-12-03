@@ -26,10 +26,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.databinding.xml.XMLDocumentStreamReader;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
+import org.junit.Assert;
 
 /**
  * @version $Rev$ $Date$

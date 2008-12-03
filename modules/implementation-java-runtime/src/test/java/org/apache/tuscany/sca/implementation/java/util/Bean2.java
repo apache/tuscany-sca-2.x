@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.implementation.java.util;
 
 import java.util.List;
 
-import junit.framework.AssertionFailedError;
-
 /**
  *
  * @version $Rev$ $Date$
@@ -44,7 +42,7 @@ public class Bean2 {
     }
 
     public void setfieldList(List list) {
-        throw new AssertionFailedError("setter inadvertantly called");
+        throw new RuntimeException("setter inadvertantly called");
     }
 
 

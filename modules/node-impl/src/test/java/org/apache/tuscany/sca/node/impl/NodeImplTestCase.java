@@ -23,11 +23,10 @@ import hello.HelloWorld;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

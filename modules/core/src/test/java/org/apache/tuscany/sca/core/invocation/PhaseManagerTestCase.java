@@ -21,8 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

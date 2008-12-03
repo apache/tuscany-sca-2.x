@@ -22,8 +22,7 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

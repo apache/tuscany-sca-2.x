@@ -22,9 +22,8 @@ package org.apache.tuscany.sca.extensibility;
 import java.io.IOException;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

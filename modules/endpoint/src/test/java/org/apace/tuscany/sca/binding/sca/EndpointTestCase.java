@@ -26,8 +26,6 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -56,6 +54,7 @@ import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

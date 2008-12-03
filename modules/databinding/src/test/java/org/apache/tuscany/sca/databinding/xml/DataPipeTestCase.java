@@ -25,12 +25,11 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

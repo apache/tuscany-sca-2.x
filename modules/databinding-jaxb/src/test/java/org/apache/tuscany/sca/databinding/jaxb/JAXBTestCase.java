@@ -22,14 +22,12 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Node;
 

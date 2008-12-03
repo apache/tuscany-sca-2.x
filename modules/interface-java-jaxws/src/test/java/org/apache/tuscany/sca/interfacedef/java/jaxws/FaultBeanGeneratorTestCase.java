@@ -26,9 +26,8 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.bind.JAXBContext;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
