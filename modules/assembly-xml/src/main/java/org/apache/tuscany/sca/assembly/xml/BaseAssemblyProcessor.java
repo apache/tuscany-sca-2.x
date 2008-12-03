@@ -21,6 +21,18 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.MULTIPLICITY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
+import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_N;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_ONE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SCA10_NS;
+import static org.apache.tuscany.sca.assembly.xml.Constants.TARGET;
+import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ZERO_N;
+import static org.apache.tuscany.sca.assembly.xml.Constants.ZERO_ONE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +98,7 @@ import org.w3c.dom.NodeList;
  * 
  * @version $Rev$ $Date$
  */
-abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implements Constants {
+abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     protected AssemblyFactory assemblyFactory;
     protected PolicyFactory policyFactory;

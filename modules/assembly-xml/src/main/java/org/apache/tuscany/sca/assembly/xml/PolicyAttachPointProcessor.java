@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import static org.apache.tuscany.sca.assembly.xml.Constants.APPLICABLE_POLICY_SETS;
+import static org.apache.tuscany.sca.assembly.xml.Constants.POLICY_SETS;
+import static org.apache.tuscany.sca.assembly.xml.Constants.REQUIRES;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SCA10_TUSCANY_NS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -42,7 +47,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  *
  * @version $Rev$ $Date$
  */
-public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implements Constants {
+public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
     
     private PolicyFactory policyFactory;
     
