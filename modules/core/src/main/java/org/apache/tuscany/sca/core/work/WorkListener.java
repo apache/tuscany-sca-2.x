@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.core.work;
 
 public interface WorkListener {
 
-    static long IMMEDIATE = 0;
-    static long INDEFINITE = java.lang.Long.MAX_VALUE;
+    long IMMEDIATE = 0;
+    long INDEFINITE = java.lang.Long.MAX_VALUE;
 
     void workAccepted(WorkEvent event);
     void workCompleted(WorkEvent event);
