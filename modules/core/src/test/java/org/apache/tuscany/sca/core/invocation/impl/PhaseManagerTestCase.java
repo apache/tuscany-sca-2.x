@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.invocation.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.invocation.impl.PhaseManager;
 import org.junit.Assert;
 import org.junit.Test;
 
