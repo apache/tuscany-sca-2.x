@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
  *
  * @version $Rev$ $Date$
  */
-public class DataTypeHelper {
+public final class DataTypeHelper {
     private DataTypeHelper() {
     }
 
@@ -121,7 +121,7 @@ public class DataTypeHelper {
 
     /**
      * Get all the data types in the operation
-     * @param op The operaiton
+     * @param op The operation
      * @param useWrapper Use wrapper classes?
      * @return A list of DataTypes
      */
