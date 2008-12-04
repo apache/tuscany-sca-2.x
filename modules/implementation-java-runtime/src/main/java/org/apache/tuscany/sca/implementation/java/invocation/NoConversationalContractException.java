@@ -25,7 +25,6 @@ package org.apache.tuscany.sca.implementation.java.invocation;
  * @version $Rev: 487877 $ $Date: 2006-12-16 15:32:16 -0500 (Sat, 16 Dec 2006) $
  */
 public class NoConversationalContractException extends Exception {
-
     private static final long serialVersionUID = -1157790036638157539L;
 
     public NoConversationalContractException(String message) {

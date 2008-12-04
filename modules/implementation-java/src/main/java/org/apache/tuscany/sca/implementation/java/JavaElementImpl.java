@@ -126,6 +126,9 @@ public class JavaElementImpl {
         return type;
     }
 
+    /**
+     * @return the annotations
+     */
     public Annotation[] getAnnotations() {
         if (elementType == ElementType.PARAMETER) {
             if (anchor instanceof Method) {
@@ -147,6 +150,35 @@ public class JavaElementImpl {
         }
         return null;
     }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the classifier
+     */
+    public Class<? extends Annotation> getClassifer() {
+        return classifer;
+    }
+
+    /**
+     * @param classifer the classifier to set
+     */
+    public void setClassifer(Class<? extends Annotation> classifer) {
+        this.classifer = classifer;
+    }
+    
 
     @Override
     public String toString() {
@@ -185,34 +217,6 @@ public class JavaElementImpl {
             return false;
         }
         return true;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the classifier
-     */
-    public Class<? extends Annotation> getClassifer() {
-        return classifer;
-    }
-
-    /**
-     * @param classifer the classifier to set
-     */
-    public void setClassifer(Class<? extends Annotation> classifer) {
-        this.classifer = classifer;
-    }
+    }    
 
 }
