@@ -35,7 +35,7 @@ public interface WireFormatProvider {
      * format on the wire
      * @return the wire format interface contract
      */
-    public InterfaceContract getWireFormatInterfaceContract();
+    InterfaceContract getWireFormatInterfaceContract();
     
     /**
      * Create an interceptor for the wire format
