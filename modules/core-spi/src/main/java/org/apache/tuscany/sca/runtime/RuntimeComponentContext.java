@@ -25,6 +25,8 @@ import java.io.Writer;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
@@ -101,4 +103,7 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @return
      */
     <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service);
+    
+    ExtensionPointRegistry getExtensionPointRegistry();
+    void setPropertyValueFactory(PropertyValueFactory propertyValueFactory);
 }

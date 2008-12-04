@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.util.StreamReaderDelegate;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -60,6 +61,14 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                     try {
                         unmarshaller = JAXBContextHelper.getUnmarshaller(jaxbContext);
                         reader = source.getXMLStreamReaderWithoutCaching();
+                        // https://issues.apache.org/jira/browse/WSCOMMONS-395
+                        reader = new StreamReaderDelegate(reader) {
+                            // Fix the issue in WSCOMMONS-395
+                            public String getAttributeType(int index) {
+                                String type = super.getAttributeType(index);
+                                return type == null ? "CDATA" : type;
+                            }
+                        };
                         result = unmarshaller.unmarshal(reader, JAXBContextHelper.getJavaType(context.getTargetDataType()));
                     } finally {
                         if (reader != null) {

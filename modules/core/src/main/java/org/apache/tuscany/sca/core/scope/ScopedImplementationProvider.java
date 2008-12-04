@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core.scope;
 
-import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 
 /**

@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.core.wire;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
+import org.apache.tuscany.sca.core.invocation.impl.InvocationChainImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;

@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.core.wire;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.core.invocation.impl.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
 import org.easymock.EasyMock;

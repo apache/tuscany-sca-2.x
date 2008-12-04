@@ -23,7 +23,8 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="StockExceptionTest">
     <wsdl:types>
         <schema targetNamespace="http://www.example.com/stock" xmlns="http://www.w3.org/2001/XMLSchema"
-            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"  jaxb:version="2.0">
             <complexType name="StockOffer">
                     <sequence>
                         <element name="symbol" minOccurs="1" type="xsd:string" />
@@ -61,6 +62,27 @@
             <element name="MarketClosedFault"   type="xsd:int" />
 			
 			<element name="TestNotDeclaredAtSourceFault" type="xsd:string" />
+
+    <element name="anyElement">
+        <complexType>
+            <sequence>
+                <element name="first" type="anyType">
+                                    <annotation>
+                        <appinfo>
+                            <jaxb:dom />
+                        </appinfo>
+                    </annotation>
+                    </element>
+                <any maxOccurs="unbounded" processContents="skip">
+                    <annotation>
+                        <appinfo>
+                            <jaxb:dom />
+                        </appinfo>
+                    </annotation>
+                </any>
+            </sequence>
+        </complexType>
+    </element>
      
         </schema>
     </wsdl:types>

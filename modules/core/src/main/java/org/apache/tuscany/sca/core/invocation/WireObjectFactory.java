@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
+import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
+import org.apache.tuscany.sca.core.invocation.impl.NoMethodForOperationException;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**

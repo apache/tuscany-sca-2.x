@@ -26,8 +26,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
+import org.apache.tuscany.sca.core.context.CallableReferenceExt;
+import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -40,18 +40,19 @@ public class XMLStreamReader2CallableReference extends BaseTransformer<XMLStream
 
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private static final String COMPOSITE = "composite";
-    public static final QName COMPOSITE_QNAME = new QName(SCA10_NS, COMPOSITE);
+    private static final QName COMPOSITE_QNAME = new QName(SCA10_NS, COMPOSITE);
     
     public CallableReference transform(XMLStreamReader source, TransformationContext context) {
         try {
             if (source != null) {
                 skipTopLevelElement(source);
-                Class refType = context.getTargetDataType().getPhysical();
+                Class refType =
+                    context == null ? CallableReferenceExt.class : context.getTargetDataType().getPhysical();
                 Class implType;
-                if (refType.isAssignableFrom(CallableReferenceImpl.class)) {
-                    implType = CallableReferenceImpl.class;
-                } else if (refType.isAssignableFrom(ServiceReferenceImpl.class)) {
-                    implType = ServiceReferenceImpl.class;
+                if (refType.isAssignableFrom(CallableReferenceExt.class)) {
+                    implType = CallableReferenceExt.class;
+                } else if (refType.isAssignableFrom(ServiceReferenceExt.class)) {
+                    implType = ServiceReferenceExt.class;
                 } else {   
                     throw new TransformationException("Unrecognized transformation target type");
                 }

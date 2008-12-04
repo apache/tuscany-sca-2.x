@@ -299,6 +299,12 @@ public class NodeImpl implements Node, Client {
         
         // Create extension point registry 
         extensionPoints = new DefaultExtensionPointRegistry();
+
+        // Use the runtime-enabled assembly factory 
+        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        assemblyFactory = new RuntimeAssemblyFactory();
+        modelFactories.addFactory(assemblyFactory);
+        
         
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -318,18 +324,12 @@ public class NodeImpl implements Node, Client {
         }
 
         // Get XML input/output factories
-        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         
         // Get contribution workspace and assembly model factories
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
 
-        // Use the runtime-enabled assembly factory 
-        assemblyFactory = new RuntimeAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        
         // Create XML artifact processors
         xmlProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         compositeProcessor = xmlProcessors.getProcessor(Composite.class);

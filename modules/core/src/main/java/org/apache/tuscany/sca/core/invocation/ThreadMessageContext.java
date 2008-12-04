@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**

@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
-import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
+import org.apache.tuscany.sca.core.conversation.ConversationExt;
+import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -50,7 +50,7 @@ import org.osoa.sca.ServiceRuntimeException;
 public class RuntimeWireInvoker implements Invoker{
     protected ConversationManager conversationManager;
     protected boolean conversational;
-    protected ExtendedConversation conversation;
+    protected ConversationExt conversation;
     protected MessageFactory messageFactory;
     protected Object conversationID;
     protected Object callbackID;

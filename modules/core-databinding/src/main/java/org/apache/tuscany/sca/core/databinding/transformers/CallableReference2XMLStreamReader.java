@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
+import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -44,12 +44,12 @@ public class CallableReference2XMLStreamReader extends BaseTransformer<CallableR
     public XMLStreamReader transform(CallableReference source, TransformationContext context) {
         try {
             if (source != null) {
-                if (source instanceof CallableReferenceImpl) {
-                    XMLStreamReader xmlReader = ((CallableReferenceImpl)source).getXMLReader();
+                if (source instanceof CallableReferenceExt) {
+                    XMLStreamReader xmlReader = ((CallableReferenceExt)source).getXMLReader();
                     if (xmlReader != null) {
                         return xmlReader;
                     } else {
-                        String xmlString = ((CallableReferenceImpl)source).toXMLString();
+                        String xmlString = ((CallableReferenceExt)source).toXMLString();
 
                         // remove "<?xml...?>" processing instruction and wrap with a top-level element
                         return StAXHelper.createXMLStreamReader("<reference xmlns=\"http://callable\">"

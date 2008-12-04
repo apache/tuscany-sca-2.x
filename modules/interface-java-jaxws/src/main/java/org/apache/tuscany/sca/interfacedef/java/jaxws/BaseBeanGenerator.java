@@ -222,7 +222,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
         fv = cw.visitField(ACC_PROTECTED, getFieldName(propName), propClassSignature, propTypeSignature, null);
 
         // For Map property, we cannot have the XmlElement annotation
-        if (isElement) {
+        if (isElement && xmlAdapterClassSignature == null) {
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlElement;", true);
             av0.visit("name", propName);
             av0.visit("namespace", "");
@@ -235,6 +235,9 @@ public abstract class BaseBeanGenerator implements Opcodes {
         }
 
         if (xmlAdapterClassSignature != null) {
+            av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlAnyElement;", true);
+            av0.visit("lax", Boolean.TRUE);
+            av0.visitEnd();
             av0 = fv.visitAnnotation("Ljavax/xml/bind/annotation/adapters/XmlJavaTypeAdapter;", true);
             av0.visit("value", org.objectweb.asm.Type.getType(xmlAdapterClassSignature));
             av0.visitEnd();

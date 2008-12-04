@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.assembly;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.context.ComponentContextHelper;
+import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -110,7 +110,7 @@ public interface CompositeActivator {
      * Get the component context helper
      * @return
      */
-    ComponentContextHelper getComponentContextHelper();
+    CompositeContext getCompositeContext();
 
     /**
      * Get the proxy factory

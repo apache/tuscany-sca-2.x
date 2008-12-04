@@ -19,43 +19,32 @@
 
 package org.apache.tuscany.sca.core.databinding.transformers;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
+import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
+import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
 import org.osoa.sca.CallableReference;
+import org.w3c.dom.Element;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CallableReferenceXMLAdapter extends XmlAdapter<Source, CallableReference> {
-    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+public class CallableReferenceXMLAdapter extends XmlAdapter<Element, CallableReference> {
 
     @Override
-    public CallableReference unmarshal(Source v) throws Exception {
-        StringWriter sw = new StringWriter();
-        StreamResult result = new StreamResult(sw);
-        transformerFactory.newTransformer().transform(v, result);
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(sw.toString()));
+    public CallableReference unmarshal(Element v) throws Exception {
+        Node2XMLStreamReader tf = new Node2XMLStreamReader();
+        XMLStreamReader reader = tf.transform(v, null);
         XMLStreamReader2CallableReference t2 = new XMLStreamReader2CallableReference();
         return t2.transform(reader, null);
     }
 
     @Override
-    public Source marshal(CallableReference v) throws Exception {
+    public Element marshal(CallableReference v) throws Exception {
         CallableReference2XMLStreamReader t = new CallableReference2XMLStreamReader();
         XMLStreamReader reader = t.transform(v, null);
-        XMLStreamReader2String t2 = new XMLStreamReader2String();
-        String xml = t2.transform(reader, null);
-        return new StreamSource(new StringReader(xml));
+        XMLStreamReader2Node t2 = new XMLStreamReader2Node();
+        return (Element) t2.transform(reader, null);
     }
 }

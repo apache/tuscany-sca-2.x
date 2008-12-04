@@ -28,13 +28,13 @@ public interface ConversationListener {
     /**
      * The conversation is started
      */
-    void conversationStarted(ExtendedConversation conversation);
+    void conversationStarted(ConversationExt conversation);
     /**
      * The conversation is ended
      */
-    void conversationEnded(ExtendedConversation conversation);
+    void conversationEnded(ConversationExt conversation);
     /**
      * The conversation is expired
      */
-    void conversationExpired(ExtendedConversation conversation);
+    void conversationExpired(ConversationExt conversation);
 }
