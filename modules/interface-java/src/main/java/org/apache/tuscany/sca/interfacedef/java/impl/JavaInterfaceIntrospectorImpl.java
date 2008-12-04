@@ -219,7 +219,7 @@ public class JavaInterfaceIntrospectorImpl {
             List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
             Type[] genericParamTypes = method.getGenericParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
-                Class paramType = parameterTypes[i];
+                Class<?> paramType = parameterTypes[i];
                 XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);
                 paramDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, paramType, genericParamTypes[i],
                                                              xmlParamType));

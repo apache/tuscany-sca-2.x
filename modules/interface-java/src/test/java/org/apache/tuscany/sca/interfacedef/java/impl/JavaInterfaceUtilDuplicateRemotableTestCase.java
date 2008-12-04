@@ -63,7 +63,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
      * @param timeServiceClass The class that implements the LocalTimeService
      * @throws Exception Test failed
      */
-    private void doTestLocalTimeServiceGetTime(Class timeServiceClass) throws Exception {
+    private void doTestLocalTimeServiceGetTime(Class<?> timeServiceClass) throws Exception {
         // Add a getTime() method
         Operation operation = newOperation("getTime", LocalTimeService.class);
 
@@ -89,7 +89,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
      * @param timeServiceClass The class that implements the WorldTimeService
      * @throws Exception Test failed
      */
-    private void doTestWorldTimeServiceGetTime(Class timeServiceClass) throws Exception {
+    private void doTestWorldTimeServiceGetTime(Class<?> timeServiceClass) throws Exception {
         // Add a getTime(String) method
         Operation operation = newOperation("getTime", WorldTimeService.class, String.class);
 
@@ -116,7 +116,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
     * @param timeServiceClass The class that implements the WorldTimeService
      * @throws Exception Test failed
      */
-    private void doTestGMTTimeServiceGetTime(Class timeServiceClass) throws Exception {
+    private void doTestGMTTimeServiceGetTime(Class<?> timeServiceClass) throws Exception {
         // Add a getTime(String) method
         Operation operation = newOperation("getTime", GMTTimeService.class, Integer.TYPE);
 
@@ -167,7 +167,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
      * @param parameterTypes The types of the parameters for this operation
      * @return An operation with the specified name and parameter types
      */
-    private static Operation newOperation(String name, Class operationInterface, Class... parameterTypes) {
+    private static Operation newOperation(String name, Class<?> operationInterface, Class<?>... parameterTypes) {
         // Create and set the operation name
         Operation operation = new OperationImpl();
         operation.setName(name);
@@ -180,7 +180,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
         // Construct the parameters
         List<DataType> types = new ArrayList<DataType>();
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
-        for (Class parameterType : parameterTypes) {
+        for (Class<?> parameterType : parameterTypes) {
             DataType type = new DataTypeImpl<Class>(parameterType, Object.class);
             types.add(type);
         }
