@@ -21,23 +21,23 @@ package org.apache.tuscany.sca.assembly;
 
 /**
  * TODO RRB experiment. 
- * Represents a binding implemented using Requst/Response binding chains
+ * Represents a binding implemented using Request/Response binding chains
  * Used to test the RRB idea hence no integrated into the Binding interface, yet
  * 
  * @version $Rev$ $Date$
  */
 public interface BindingRRB extends Binding {
 
-    public WireFormat getRequestWireFormat();
+    WireFormat getRequestWireFormat();
     
-    public void setRequestWireFormat(WireFormat wireFormat);
+    void setRequestWireFormat(WireFormat wireFormat);
     
-    public WireFormat getResponseWireFormat();
+    WireFormat getResponseWireFormat();
     
-    public void setResponseWireFormat(WireFormat wireFormat);    
+    void setResponseWireFormat(WireFormat wireFormat);    
     
-    public OperationSelector getOperationSelector();
+    OperationSelector getOperationSelector();
     
-    public void setOperationSelector(OperationSelector operationSelector);
+    void setOperationSelector(OperationSelector operationSelector);
 
 }
