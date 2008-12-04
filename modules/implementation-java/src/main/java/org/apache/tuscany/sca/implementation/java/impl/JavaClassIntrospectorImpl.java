@@ -118,7 +118,7 @@ public class JavaClassIntrospectorImpl {
             }
         }
 
-        Class superClass = clazz.getSuperclass();
+        Class<?> superClass = clazz.getSuperclass();
         if (superClass != null) {
             visitSuperClass(superClass, type);
         }

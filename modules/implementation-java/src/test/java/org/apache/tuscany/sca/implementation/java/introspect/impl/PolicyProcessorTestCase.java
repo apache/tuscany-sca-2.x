@@ -101,7 +101,7 @@ public class PolicyProcessorTestCase {
         verifyIntents(Service6.class, type);
     }
 
-    private void verifyIntents(Class serviceImplClass, JavaImplementation type) {
+    private void verifyIntents(Class<?> serviceImplClass, JavaImplementation type) {
         if ( !(type instanceof PolicySetAttachPoint) ) {
             fail("No Intents on the service ");
         }
@@ -134,7 +134,7 @@ public class PolicyProcessorTestCase {
         for (org.apache.tuscany.sca.assembly.Service service: type.getServices()) {
             serviceMap.put(service.getName(), service);
         }
-        for (Class interfaceClass : serviceImplClass.getInterfaces()) {
+        for (Class<?> interfaceClass : serviceImplClass.getInterfaces()) {
             Requires interfaceIntentAnnotation = (Requires)interfaceClass.getAnnotation(Requires.class);
             org.apache.tuscany.sca.assembly.Service service = serviceMap.get(interfaceClass.getSimpleName());
             if (service == null) {

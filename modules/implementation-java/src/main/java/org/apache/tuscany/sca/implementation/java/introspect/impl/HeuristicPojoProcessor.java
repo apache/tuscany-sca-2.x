@@ -98,7 +98,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
              * interfaces is remotable, then by default the implementation offers a single service whose type 
              * is the implementation class.
              */
-            Set<Class> interfaces = getAllInterfaces(clazz);
+            Set<Class<?>> interfaces = getAllInterfaces(clazz);
             for (Class<?> i : interfaces) {
                 if (i.isAnnotationPresent(Remotable.class) || i.isAnnotationPresent(WebService.class)) {
                     addService(type, i);
@@ -360,8 +360,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private static boolean areUnique(Class[] collection) {
-        Set<Class> set = new HashSet<Class>(Arrays.asList(collection));
+    private static boolean areUnique(Class<?>[] collection) {
+        Set<Class<?>> set = new HashSet<Class<?>>(Arrays.asList(collection));
         return set.size() == collection.length;
     }
 
@@ -371,7 +371,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      */
     private boolean calcPropRefUniqueness(Collection<JavaElementImpl> props, Collection<JavaElementImpl> refs) {
 
-        Class[] classes = new Class[props.size() + refs.size()];
+        Class<?>[] classes = new Class[props.size() + refs.size()];
         int i = 0;
         for (JavaElementImpl property : props) {
             classes[i] = property.getType();
@@ -530,7 +530,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     public boolean areUnique(JavaParameterImpl[] parameters) {
-        Set<Class> set = new HashSet<Class>(parameters.length);
+        Set<Class<?>> set = new HashSet<Class<?>>(parameters.length);
         for (JavaParameterImpl p : parameters) {
             if (!set.add(p.getType())) {
                 return false;

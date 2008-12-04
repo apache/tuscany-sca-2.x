@@ -100,7 +100,7 @@ public class JavaIntrospectionHelperTestCase {
 
     @Test
     public void testGetAllInterfaces() {
-        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Z.class);
+        Set<Class<?>> interfaces = JavaIntrospectionHelper.getAllInterfaces(Z.class);
         assertEquals(2, interfaces.size());
         assertTrue(interfaces.contains(W.class));
         assertTrue(interfaces.contains(W2.class));
@@ -109,13 +109,13 @@ public class JavaIntrospectionHelperTestCase {
 
     @Test
     public void testGetAllInterfacesObject() {
-        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(Object.class);
+        Set<Class<?>> interfaces = JavaIntrospectionHelper.getAllInterfaces(Object.class);
         assertEquals(0, interfaces.size());
     }
 
     @Test
     public void testGetAllInterfacesNoInterfaces() {
-        Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(NoInterface.class);
+        Set<Class<?>> interfaces = JavaIntrospectionHelper.getAllInterfaces(NoInterface.class);
         assertEquals(0, interfaces.size());
     }
 

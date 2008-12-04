@@ -66,7 +66,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
             // scan interfaces for remotable
-            Set<Class> interfaces = getAllInterfaces(clazz);
+            Set<Class<?>> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
                 if (interfaze.isAnnotationPresent(Remotable.class) 
                     || interfaze.isAnnotationPresent(WebService.class)

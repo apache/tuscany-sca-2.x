@@ -136,7 +136,7 @@ public class JavaElementImpl {
                 return ((Method)anchor).getAnnotations();
             }
             if (anchor instanceof Constructor) {
-                return ((Constructor)anchor).getParameterAnnotations()[index];
+                return ((Constructor<?>)anchor).getParameterAnnotations()[index];
             }
         }
         return anchor.getAnnotations();
