@@ -23,9 +23,8 @@ import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

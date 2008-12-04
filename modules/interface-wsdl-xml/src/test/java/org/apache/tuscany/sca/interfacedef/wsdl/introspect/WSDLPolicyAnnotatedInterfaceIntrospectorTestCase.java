@@ -25,15 +25,14 @@ import java.net.URL;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.policy.Intent;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,9 +48,6 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
     private PortType portType;
     private WSDLDefinition definition;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     @Override
     public void setUp() throws Exception {

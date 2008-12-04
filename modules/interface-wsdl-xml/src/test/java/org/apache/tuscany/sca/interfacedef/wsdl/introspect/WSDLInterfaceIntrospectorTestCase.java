@@ -26,15 +26,14 @@ import java.util.List;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,9 +48,6 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
     private PortType portType;
     private WSDLDefinition definition;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Override
     @Before
     public void setUp() throws Exception {

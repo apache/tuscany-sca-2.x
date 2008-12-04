@@ -45,9 +45,6 @@ public abstract class AbstractWSDLTestCase {
     protected WSDLFactory wsdlFactory;
     protected XSDFactory xsdFactory;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
