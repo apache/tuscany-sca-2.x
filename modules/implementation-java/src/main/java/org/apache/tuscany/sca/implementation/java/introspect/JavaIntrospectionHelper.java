@@ -287,7 +287,7 @@ public final class JavaIntrospectionHelper {
         return implClass.getSimpleName();
     }
 
-    public static boolean isImmutable(Class clazz) {
+    public static boolean isImmutable(Class<?> clazz) {
         return String.class == clazz || clazz.isPrimitive()
             || Number.class.isAssignableFrom(clazz)
             || Boolean.class.isAssignableFrom(clazz)
@@ -318,7 +318,7 @@ public final class JavaIntrospectionHelper {
 
     public static Class<?> getErasure(Type type) {
         if (type instanceof Class) {
-            return (Class)type;
+            return (Class<?>)type;
         } else if (type instanceof GenericArrayType) {
             // FIXME: How to deal with the []?
             GenericArrayType arrayType = (GenericArrayType)type;
@@ -399,7 +399,7 @@ public final class JavaIntrospectionHelper {
      * Compares a two types, assuming one is a primitive, to determine if the
      * other is its object counterpart
      */
-    private static boolean primitiveAssignable(Class memberType, Class param) {
+    private static boolean primitiveAssignable(Class<?> memberType, Class<?> param) {
         if (memberType == Integer.class) {
             return param == Integer.TYPE;
         } else if (memberType == Double.class) {
@@ -490,15 +490,15 @@ public final class JavaIntrospectionHelper {
      * Returns the set of interfaces implemented by the given class and its
      * ancestors or a blank set if none
      */
-    public static Set<Class> getAllInterfaces(Class clazz) {
-        Set<Class> implemented = new HashSet<Class>();
+    public static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
+        Set<Class<?>> implemented = new HashSet<Class<?>>();
         getAllInterfaces(clazz, implemented);
         return implemented;
     }
 
-    private static void getAllInterfaces(Class clazz, Set<Class> implemented) {
-        Class[] interfaces = clazz.getInterfaces();
-        for (Class interfaze : interfaces) {
+    private static void getAllInterfaces(Class<?> clazz, Set<Class<?>> implemented) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> interfaze : interfaces) {
             implemented.add(interfaze);
         }
         Class<?> superClass = clazz.getSuperclass();
@@ -518,7 +518,7 @@ public final class JavaIntrospectionHelper {
             .startsWith("get"));
     }
 
-    private final static Map<Class, String> signatures = new HashMap<Class, String>();
+    private final static Map<Class<?>, String> signatures = new HashMap<Class<?>, String>();
     static {
         signatures.put(boolean.class, "Z");
         signatures.put(byte.class, "B");
@@ -549,7 +549,7 @@ public final class JavaIntrospectionHelper {
         return Class.forName(buf.toString(), false, componentType.getClassLoader());
     }
 
-    public static Set<Method> getPrivateMethods(Class clazz) {
+    public static Set<Method> getPrivateMethods(Class<?> clazz) {
         Set<Method> methods = new HashSet<Method>();
         Method[] declaredMethods = clazz.getDeclaredMethods();
         for (final Method declaredMethod : declaredMethods) {
@@ -562,7 +562,7 @@ public final class JavaIntrospectionHelper {
         return methods;
     }
 
-    public static Set<Field> getPrivateFields(Class clazz) {
+    public static Set<Field> getPrivateFields(Class<?> clazz) {
         Set<Field> fields = new HashSet<Field>();
         Field[] declaredFields = clazz.getDeclaredFields();
         for (final Field declaredField : declaredFields) {
