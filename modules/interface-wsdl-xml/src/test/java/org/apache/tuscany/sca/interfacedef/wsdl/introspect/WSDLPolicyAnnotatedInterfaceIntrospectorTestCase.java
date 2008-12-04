@@ -61,7 +61,6 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
-    @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
         WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
