@@ -194,7 +194,7 @@ public class PhaseManager {
             }
             Stage stage = stages.get(stageName);
             if (stage == null) {
-                throw new ServiceRuntimeException("Invalid stage: " + stage);
+                throw new ServiceRuntimeException("Invalid stage: " + stageName);
             }
             PhaseSorter<String> graph = stage.getSorter();
             Set<String> firstSet = stage.getFirstSet(), lastSet = stage.getLastSet();
