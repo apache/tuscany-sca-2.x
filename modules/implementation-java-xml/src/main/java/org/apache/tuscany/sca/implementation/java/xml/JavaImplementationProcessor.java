@@ -181,7 +181,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         ClassReference classReference = new ClassReference(javaImplementation.getName());
         classReference = resolver.resolveModel(ClassReference.class, classReference);
-        Class javaClass = classReference.getJavaClass();
+        Class<?> javaClass = classReference.getJavaClass();
         if (javaClass == null) {
         	error("ClassNotFoundException", resolver, javaImplementation.getName());
             //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
