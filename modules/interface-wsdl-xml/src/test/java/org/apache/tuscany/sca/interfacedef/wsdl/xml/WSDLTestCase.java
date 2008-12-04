@@ -19,12 +19,14 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -32,18 +34,20 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test reading WSDL interfaces.
  * 
  * @version $Rev$ $Date$
  */
-public class WSDLTestCase extends TestCase {
+public class WSDLTestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
     private WSDLModelResolver wsdlResolver;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
@@ -53,6 +57,7 @@ public class WSDLTestCase extends TestCase {
         wsdlResolver = new WSDLModelResolver(null, modelFactories);
     }
 
+    @Test
     public void testReadWSDLDocument() throws Exception {
         URL url = getClass().getResource("example.wsdl");
         WSDLDefinition definition = documentProcessor.read(null, new URI("example.wsdl"), url, WSDLDefinition.class);
@@ -61,6 +66,7 @@ public class WSDLTestCase extends TestCase {
         assertEquals(definition.getNamespace(), "http://www.example.org");
     }
 
+    @Test
     public void testReadWSDLImports() throws Exception {
         QName aBinding = new QName("http://helloworld", "HelloWorldSoapBinding");
         QName aPortType = new QName("http://helloworld", "HelloWorld");
@@ -76,6 +82,7 @@ public class WSDLTestCase extends TestCase {
         assertNotNull(test1Defn.getDefinition().getPortType(aPortType));
     }
 
+    @Test
     public void testReadSameNamespaceWSDLDocument() throws Exception {
         QName aBinding = new QName("http://helloworld", "HelloWorldSoapBinding");
         QName aPortType = new QName("http://helloworld", "HelloWorld");
