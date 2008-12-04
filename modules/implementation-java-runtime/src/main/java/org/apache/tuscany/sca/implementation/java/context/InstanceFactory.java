@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.context;
 
-import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 
 /**
  * Interface for a factory that returns an injected component instance.

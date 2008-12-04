@@ -29,7 +29,7 @@ public interface ConversationManager {
      * @param conversationID
      * @return
      */
-    ExtendedConversation startConversation(Object conversationID);
+    ConversationExt startConversation(Object conversationID);
 
     /**
      * @param conversationID
@@ -40,7 +40,7 @@ public interface ConversationManager {
      * @param conversationID
      * @return
      */
-    ExtendedConversation getConversation(Object conversationID);
+    ConversationExt getConversation(Object conversationID);
 
     /**
      * @param conversationID

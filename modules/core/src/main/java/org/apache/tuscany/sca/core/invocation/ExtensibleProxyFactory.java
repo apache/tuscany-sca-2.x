@@ -21,13 +21,14 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 
 /**
  * An extensible proxy factory.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ExtensibleProxyFactory implements ProxyFactory {
     

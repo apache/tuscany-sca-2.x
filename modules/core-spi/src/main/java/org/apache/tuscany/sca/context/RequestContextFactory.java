@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.context;
 
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.osoa.sca.RequestContext;
 
 /**
@@ -29,5 +30,5 @@ public interface RequestContextFactory {
     /**
      * @return An instance of RequestContext for the current invocation
      */
-    RequestContext createRequestContext();
+    RequestContext createRequestContext(RuntimeComponent component);
 }

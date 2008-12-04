@@ -21,9 +21,16 @@ package org.apache.tuscany.sca.core.context;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.context.impl.ComponentContextImpl;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -39,6 +46,18 @@ public class DefaultComponentContextFactory implements ComponentContextFactory {
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final InterfaceContractMapper interfaceContractMapper;
+
+    public DefaultComponentContextFactory(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        this.requestContextFactory =
+            registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
+        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+    }
 
     public DefaultComponentContextFactory(CompositeActivator compositeActivator,
                                           AssemblyFactory assemblyFactory,

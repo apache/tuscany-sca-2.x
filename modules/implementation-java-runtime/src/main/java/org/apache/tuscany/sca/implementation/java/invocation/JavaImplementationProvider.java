@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.core.context.InstanceWrapper;
+import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.Scope;
@@ -124,7 +124,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                 if (ComponentContext.class.equals(type)) {
                     objectFactory = new JavaComponentContextFactory(componentContextProvider);
                 } else if (RequestContext.class.equals(type)) {
-                    objectFactory = new RequestContextObjectFactory(requestContextFactory, proxyService);
+                    objectFactory = new RequestContextObjectFactory(requestContextFactory, componentContextProvider.getComponent());
                 } else if (String.class.equals(type)) {
                     objectFactory = new JavaComponentNameFactory(componentContextProvider);
                 } else {

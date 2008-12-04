@@ -24,6 +24,9 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentServiceImpl;
 
 /**
  * The runtime version of assembly factory
