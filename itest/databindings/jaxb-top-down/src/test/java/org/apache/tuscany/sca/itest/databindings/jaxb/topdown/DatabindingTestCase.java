@@ -27,9 +27,9 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceClient;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,8 +39,8 @@ import org.junit.Test;
  */
 public class DatabindingTestCase {
 
-    private static SCAClient client;
-    private static SCANode node;
+    private static Client client;
+    private static Node node;
 
     /**
      * Runs once before running the tests
@@ -48,10 +48,13 @@ public class DatabindingTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
         try {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         node = nodeFactory.createSCANodeFromClassLoader("wsdl/wrapped/helloservice.composite", null);
         node.start();
-        client = (SCAClient)node;
+        client = (Client)node;
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
         }catch(Throwable e) {
             e.printStackTrace();
         }

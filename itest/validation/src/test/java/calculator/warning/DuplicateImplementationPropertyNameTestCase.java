@@ -27,23 +27,22 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * This shows how to test the Calculator service component.
  */
 public class DuplicateImplementationPropertyNameTestCase extends TestCase {
-    private SCANode node;
+    private Node node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/DuplicateImplementationPropertyName/Calculator.composite").toURL().toString(),
-        		                 new SCAContribution("TestContribution", 
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        node = nodeFactory.createNode(new File("src/main/resources/DuplicateImplementationPropertyName/Calculator.composite").toURL().toString(),
+        		                 new Contribution("TestContribution", 
         		                                     new File("src/main/resources/DuplicateImplementationPropertyName").toURL().toString()));
     }
 
@@ -56,7 +55,7 @@ public class DuplicateImplementationPropertyNameTestCase extends TestCase {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
-        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+        Problem problem = monitor.getLastProblem();
         
         assertNotNull(problem);
         assertEquals("DuplicateImplementationPropertyName", problem.getMessageId());

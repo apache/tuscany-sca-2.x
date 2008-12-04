@@ -24,8 +24,8 @@ import java.lang.reflect.Method;
 import java.net.URLClassLoader;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

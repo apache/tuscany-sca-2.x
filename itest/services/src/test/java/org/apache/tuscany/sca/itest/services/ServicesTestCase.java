@@ -22,73 +22,76 @@ package org.apache.tuscany.sca.itest.services;
 import static junit.framework.Assert.assertEquals;
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class ServicesTestCase {
-    private static SCADomain domain;
+    private static Node node;
 
     @BeforeClass
     public static void init() throws Exception {
-        if (domain == null) {
-            domain = SCADomain.newInstance("ServicesTest.composite");
-        }
+        String location = ContributionLocationHelper.getContributionLocation("ServicesTest.composite");
+        node = NodeFactory.newInstance().createNode("ServicesTest.composite", new Contribution("c1", location));
+        node.start();        
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 
     @Test
     public void testAService() {
-        AComponent a1 = domain.getService(AComponent.class, "AComponent1");
+        AComponent a1 = node.getService(AComponent.class, "AComponent1");
         assertEquals("AComponent", a1.foo());
 
-        AComponent a2 = domain.getService(AComponent.class, "AComponent2/AComponent");
+        AComponent a2 = node.getService(AComponent.class, "AComponent2/AComponent");
         assertEquals("AComponent", a2.foo());
     }
 
     @Test
     public void testBService() {
-        BComponent a1 = domain.getService(BComponent.class, "BComponent1");
+        BComponent a1 = node.getService(BComponent.class, "BComponent1");
         assertEquals("BComponent", a1.foo());
 
-        BComponent a2 = domain.getService(BComponent.class, "BComponent2/BComponent");
+        BComponent a2 = node.getService(BComponent.class, "BComponent2/BComponent");
         assertEquals("BComponent", a2.foo());
     }
 
     @Test
     public void testCService() {
-        CComponent a1 = domain.getService(CComponent.class, "CComponent1");
+        CComponent a1 = node.getService(CComponent.class, "CComponent1");
         assertEquals("CComponent", a1.foo());
 
-        CComponent a2 = domain.getService(CComponent.class, "CComponent2/CComponent");
+        CComponent a2 = node.getService(CComponent.class, "CComponent2/CComponent");
         assertEquals("CComponent", a2.foo());
     }
 
     @Test
     public void testDService() {
-        DComponent a1 = domain.getService(DComponent.class, "DComponent1/DComponent");
+        DComponent a1 = node.getService(DComponent.class, "DComponent1/DComponent");
         assertEquals("DComponent", a1.foo());
 
-        D1Component a2 = domain.getService(D1Component.class, "DComponent1/D1Component");
+        D1Component a2 = node.getService(D1Component.class, "DComponent1/D1Component");
         assertEquals("DComponent", a2.foo1());
 
         try {
-            domain.getService(DComponent.class, "DComponent1");
+            node.getService(DComponent.class, "DComponent1");
             Assert.fail("The service name is required");
         } catch (ServiceRuntimeException e) {
             Assert.assertTrue("The service name is required", true);
         }
 
-        DComponent a3 = domain.getService(DComponent.class, "DComponent2/DComponent");
+        DComponent a3 = node.getService(DComponent.class, "DComponent2/DComponent");
         assertEquals("DComponent", a3.foo());
 
-        D1Component a4 = domain.getService(D1Component.class, "DComponent2/D1Component");
+        D1Component a4 = node.getService(D1Component.class, "DComponent2/D1Component");
         assertEquals("DComponent", a4.foo1());
 
     }

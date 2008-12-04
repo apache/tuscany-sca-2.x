@@ -24,10 +24,10 @@ import java.io.File;
 
 
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,20 +35,20 @@ import org.junit.Test;
 
 public class ConversationWSDLTestCase {
 
-    private SCANode node; 
+    private Node node; 
     private ConversationalClient conversationalStatelessClientStatefulService;    
 
     @Before
     public void setUp() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/ConversationalWSDL/conversationalWSDL.composite").toURL().toString(),
-                                         new SCAContribution("TestContribution", 
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        node = nodeFactory.createNode(new File("src/main/resources/ConversationalWSDL/conversationalWSDL.composite").toURL().toString(),
+                                         new Contribution("TestContribution", 
                                                                      new File("src/main/resources/ConversationalWSDL").toURL().toString()));
                 
          
         node.start();
         
-        conversationalStatelessClientStatefulService = ((SCAClient)node).getService(ConversationalClient.class, "ConversationalStatelessClientStatefulService");
+        conversationalStatelessClientStatefulService = ((Client)node).getService(ConversationalClient.class, "ConversationalStatelessClientStatefulService");
         
         
         ConversationalClientStatelessImpl.calls  = new StringBuffer(); 

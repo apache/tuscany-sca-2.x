@@ -22,28 +22,33 @@ package org.apache.tuscany.sca.itest.interfaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class InterfacesTestCase {
-    private static SCADomain domain;
+    private static Node node;
 
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("InterfacesTest.composite");
+        String location = ContributionLocationHelper.getContributionLocation("InterfacesTest.composite");
+        node = NodeFactory.newInstance().createNode("InterfacesTest.composite", new Contribution("c1", location));
+        node.start();
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 
     @Test
     public void testLocalClient() {
-        LocalServiceComponent service = domain.getService(LocalServiceComponent.class, "LocalServiceComponent");
-        LocalClientComponent local = domain.getService(LocalClientComponent.class, "LocalClientComponent");
+        LocalServiceComponent service = node.getService(LocalServiceComponent.class, "LocalServiceComponent");
+        LocalClientComponent local = node.getService(LocalClientComponent.class, "LocalClientComponent");
 
         try {
             ParameterObject po = new ParameterObject();
@@ -83,8 +88,8 @@ public class InterfacesTestCase {
 
     @Test
     public void testRemoteClient() {
-        RemoteServiceComponent service = domain.getService(RemoteServiceComponent.class, "RemoteServiceComponent");
-        RemoteClientComponent remote = domain.getService(RemoteClientComponent.class, "RemoteClientComponent");
+        RemoteServiceComponent service = node.getService(RemoteServiceComponent.class, "RemoteServiceComponent");
+        RemoteClientComponent remote = node.getService(RemoteClientComponent.class, "RemoteClientComponent");
 
         try {
             // Test Pass By Value

@@ -23,10 +23,10 @@ import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,9 +38,9 @@ import org.junit.Test;
  */
 public class LateReferenceResolutionTestCase {
 
-    private static SCANode nodeA;
-    private static SCANode nodeB;
-    private static SCANode nodeC;
+    private static Node nodeA;
+    private static Node nodeB;
+    private static Node nodeC;
 
     private static CalculatorService calculatorService;
     
@@ -53,22 +53,22 @@ public class LateReferenceResolutionTestCase {
             System.out.println("Setting up domain");
 
             
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            nodeC = nodeFactory.createSCANode(new File("src/main/resources/nodeC/Calculator.composite").toURL().toString(),
-                new SCAContribution("NodeC", 
+            NodeFactory nodeFactory = NodeFactory.newInstance();
+            nodeC = nodeFactory.createNode(new File("src/main/resources/nodeC/Calculator.composite").toURL().toString(),
+                new Contribution("NodeC", 
                                     new File("src/main/resources/nodeC").toURL().toString()));
-            nodeB = nodeFactory.createSCANode(new File("src/main/resources/nodeB/Calculator.composite").toURL().toString(),
-                new SCAContribution("NodeB", 
+            nodeB = nodeFactory.createNode(new File("src/main/resources/nodeB/Calculator.composite").toURL().toString(),
+                new Contribution("NodeB", 
                                     new File("src/main/resources/nodeB").toURL().toString()));
-            nodeA = nodeFactory.createSCANode(new File("src/main/resources/nodeA/Calculator.composite").toURL().toString(),
-                new SCAContribution("NodeA", 
+            nodeA = nodeFactory.createNode(new File("src/main/resources/nodeA/Calculator.composite").toURL().toString(),
+                new Contribution("NodeA", 
                                     new File("src/main/resources/nodeA").toURL().toString()));
 
             nodeC.start();
             nodeB.start();
             nodeA.start();
             
-            SCAClient client = (SCAClient)nodeA;
+            Client client = (Client)nodeA;
             calculatorService = 
                 client.getService(CalculatorService.class, "CalculatorServiceComponentA");
 

@@ -36,20 +36,12 @@
             <version>4.5</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.4</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <properties>
         <was.ant.script>${basedir}/build-was-integration.xml</was.ant.script>
         <was.python.script>${basedir}/wasAdmin.py</was.python.script>
     </properties>
-
 
     <profiles>
         <profile>
@@ -58,7 +50,35 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-            </modules>
+                <module>builder</module>
+                <module>callablereferences</module>
+                <module>callback-api</module>
+                <module>callback-basic</module>
+                <module>callback-complex-type</module>
+                <module>callback-id</module>
+                <module>callback-multiple-wires</module>
+                <module>callback-separatethread</module>
+                <module>callback-set-callback</module>
+                <module>callback-set-conversation</module>
+                <module>component-type</module>
+                <module>contribution</module>
+                <module>contribution-import-export</module>
+                <module>conversations</module>
+                <module>exceptions</module>
+                <module>extended-api</module>
+                <module>interfaces</module>
+                <module>late-reference-resolution</module>
+                <module>oneway</module>
+                <module>operation-overloading</module>
+                <module>properties</module>
+                <module>recursive</module>
+                <module>recursive-multi-level</module>
+                <module>references</module>
+                <module>serialization</module>
+                <module>services</module>
+                <module>scopes</module>
+                <module>wires</module>
+           </modules>
         </profile>
         <profile>
             <id>old</id>
@@ -77,15 +97,13 @@
                 <module>callback-set-conversation</module>
                 <module>component-type</module>
                 <module>contribution</module>
-                <module>contribution-multiple</module>
-                <module>contribution-import-export</module>
               <!--  
  <module>contribution-classloader</module> -->
+                <module>contribution-import-export</module>
                 <module>conversations</module>
-                <module>corba</module>
                 <module>conversations-ws</module>
+                <module>corba</module>
                 <module>databindings</module>
-                <!--module>domain</module-->
                 <module>exceptions</module>
                 <module>exceptions-cross-binding</module>
                 <module>exceptions-cross-binding-ws</module>
@@ -107,28 +125,33 @@
                 <module>late-reference-resolution</module>
                 <module>oneway</module>
                 <module>operation-overloading</module>
+                <!--
                 <module>osgi-implementation</module>
                 <module>osgi-contribution</module>
+                -->
                 <module>policy</module>
                 <module>policy-security</module>
                 <module>policy-security-basicauth</module>
                 <module>policy-security-jsr250</module>
                 <module>policy-security-token</module>
+                <!--
+                <module>promotion-interface-missmatch</module>
+                -->
                 <module>properties</module>
                 <module>recursive</module>
                 <module>recursive-multi-level</module>
                 <module>recursive-ws</module>
                 <module>references</module>
+                <module>scopes</module>
                 <module>serialization</module>
                 <module>services</module>
                 <module>spring</module>
-                <module>scopes</module>
                 <module>transaction</module>
                 <module>validation</module>
                 <module>wires</module>
                 <module>wsdl</module>
-                <module>wsdlless</module>
                 <module>wsdl2java</module>
+                <module>wsdlless</module>
                 <module>wsdl-multiple</module>
                 <module>ws-void-args-return</module>
            </modules>
@@ -164,7 +187,7 @@
                 <dependency>
 	    	    <groupId>javax.servlet</groupId>
 	    	    <artifactId>servlet-api</artifactId>
-	    	    <version>2.3</version>
+	    	    <version>2.5</version>
                     <scope>provided</scope>
 	    	</dependency>
 	    </dependencies>    
@@ -172,29 +195,16 @@
             <modules>
                 <module>callback-api</module>
                 <module>callback-basic</module>
-                <!--
-                <module>callback-complex-type</module>
-                -->
                 <module>callback-id</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
-                <!--
-                <module>contribution</module>
-                <module>contribution-multiple</module>
-                <module>contribution-import-export</module>
-                <module>contribution-classloader</module>
-                -->
                 <module>conversations</module>
                 <module>exceptions</module>
                 <module>exceptions-cross-binding</module>
                 <module>extended-api</module>
                 <module>oneway</module>
                 <module>operation-overloading</module>
-                <!--
-                <module>properties</module>
-                <module>recursive</module>
-                -->
                 <module>references</module>
                 <module>services</module>
                 <module>component-type</module>
@@ -266,7 +276,7 @@
                         <configuration>
                             <primaryArtifact>false</primaryArtifact>
                             <!-- Exclude a few jars to avoid conflicts -->
-                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar, WEB-INF/lib/catalina*.jar,WEB-INF/classes/META-INF/sca-contribution*.xml</warSourceExcludes>
+                            <warSourceExcludes>WEB-INF/lib/tuscany-host-jetty-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar, WEB-INF/lib/catalina*.jar,WEB-INF/classes/META-INF/sca-contribution*.xml</warSourceExcludes>
                             <webResources>
                                 <!-- Add the tests jar into the WAR -->
                                 <!--

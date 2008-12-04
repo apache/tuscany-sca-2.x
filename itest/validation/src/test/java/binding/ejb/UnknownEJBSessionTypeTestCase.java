@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 
 import domain.CustomCompositeBuilder;
 
@@ -59,7 +58,7 @@ public class UnknownEJBSessionTypeTestCase extends TestCase {
 
     public void testCalculator() {
         Monitor monitor = customDomain.getMonitorInstance();
-        Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
+        Problem problem = monitor.getLastProblem();
 
         assertNotNull(problem);
         assertEquals("UnknownEJBSessionType", problem.getMessageId());

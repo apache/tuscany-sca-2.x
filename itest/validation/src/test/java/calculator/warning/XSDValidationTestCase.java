@@ -22,10 +22,10 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -33,18 +33,18 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 public class XSDValidationTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    private SCANode node;
+    private Node node;
     private Exception startUpException;
 
     @Override
     protected void setUp() throws Exception {
-        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        NodeFactory nodeFactory = NodeFactory.newInstance();
         try {
-            node = nodeFactory.createSCANode(new File("src/main/resources/XsdValidation/Calculator.composite").toURL().toString(),
-            		                 new SCAContribution("TestContribution", 
+            node = nodeFactory.createNode(new File("src/main/resources/XsdValidation/Calculator.composite").toURL().toString(),
+            		                 new Contribution("TestContribution", 
             		                                     new File("src/main/resources/XsdValidation").toURL().toString()));
             node.start();
-            calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+            calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
         } catch (Exception ex){
             startUpException = ex;
         }        

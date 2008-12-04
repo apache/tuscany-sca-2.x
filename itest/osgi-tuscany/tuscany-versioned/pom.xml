@@ -36,11 +36,6 @@
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-monitor-logging</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-assembly</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -446,7 +441,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
+                    <artifactId>tuscany-host-jetty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -538,7 +533,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>${pom.groupId}</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
+                    <artifactId>tuscany-host-jetty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
