@@ -18,15 +18,15 @@
  */
 package org.apache.tuscany.sca.core.invocation.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.invocation.impl.PhaseSorter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class PhaseSorterTestCase {
     private PhaseSorter<String> graph;
