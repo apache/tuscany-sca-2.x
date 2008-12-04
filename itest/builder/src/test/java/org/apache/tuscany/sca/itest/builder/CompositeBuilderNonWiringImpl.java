@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -49,16 +49,12 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 public class CompositeBuilderNonWiringImpl implements CompositeBuilder {
     private static final Logger logger = Logger.getLogger(CompositeBuilderNonWiringImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
-  //private CompositeBuilder componentReferenceWireBuilder;
-  //private CompositeBuilder componentReferencePromotionWireBuilder;
-  //private CompositeBuilder compositeReferenceWireBuilder;
     private CompositeBuilder compositeCloneBuilder;
     private CompositeBuilder componentConfigurationBuilder;
     private CompositeBuilder compositeServiceConfigurationBuilder;
     private CompositeBuilder compositeReferenceConfigurationBuilder;
     private CompositeBuilder compositeBindingURIBuilder;
     private CompositeBuilder componentServicePromotionBuilder;
-  //private CompositeBuilder compositeServicePromotionBuilder;
     private CompositeBuilder compositePromotionBuilder;
     private CompositeBuilder compositePolicyBuilder;
     private CompositeBuilder componentServiceBindingBuilder;
@@ -76,9 +72,8 @@ public class CompositeBuilderNonWiringImpl implements CompositeBuilder {
     public CompositeBuilderNonWiringImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
-                                InterfaceContractMapper interfaceContractMapper,
-                                Monitor monitor) {
-        this(assemblyFactory, null, scaBindingFactory,  intentAttachPointTypeFactory, interfaceContractMapper, null, monitor);
+                                InterfaceContractMapper interfaceContractMapper) {
+        this(assemblyFactory, null, scaBindingFactory,  intentAttachPointTypeFactory, interfaceContractMapper);
     }
     
     /**
@@ -96,77 +91,59 @@ public class CompositeBuilderNonWiringImpl implements CompositeBuilder {
                                 EndpointFactory endpointFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
-                                InterfaceContractMapper interfaceContractMapper,
-                                SCADefinitions policyDefinitions,
-                                Monitor monitor) {
+                                InterfaceContractMapper interfaceContractMapper) {
         
         if (endpointFactory == null){
             endpointFactory = new DefaultEndpointFactory();
         }       
         
-        compositeIncludeBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl(monitor); 
-      //componentReferenceWireBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
-      //componentReferencePromotionWireBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
-      //compositeReferenceWireBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory, monitor);
-        compositeCloneBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeCloneBuilderImpl(monitor);
-        componentConfigurationBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        compositeIncludeBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl(); 
+        compositeCloneBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeCloneBuilderImpl();
+        componentConfigurationBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper);
         compositeServiceConfigurationBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeServiceConfigurationBuilderImpl(assemblyFactory);
         compositeReferenceConfigurationBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
-        compositeBindingURIBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
-      //componentServicePromotionBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentServicePromotionBuilderImpl(assemblyFactory);
-      //compositeServicePromotionBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeServicePromotionBuilderImpl(assemblyFactory);
-        compositePromotionBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
-        compositePolicyBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
-        componentServiceBindingBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentServiceBindingBuilderImpl(monitor);
-        componentReferenceBindingBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentReferenceBindingBuilderImpl(monitor);
+        compositeBindingURIBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper);
+        compositePromotionBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
+        compositePolicyBuilder = new org.apache.tuscany.sca.assembly.builder.impl.CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
+        componentServiceBindingBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentServiceBindingBuilderImpl();
+        componentReferenceBindingBuilder = new org.apache.tuscany.sca.assembly.builder.impl.ComponentReferenceBindingBuilderImpl();
     }
 
-    public void build(Composite composite) throws CompositeBuilderException {
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.CompositeBuilderNonWiring";
+    }
+
+    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // Collect and fuse includes
-        compositeIncludeBuilder.build(composite);
+        compositeIncludeBuilder.build(composite, definitions, monitor);
 
         // Expand nested composites
-        compositeCloneBuilder.build(composite);
+        compositeCloneBuilder.build(composite, definitions, monitor);
 
         // Configure all components
-        componentConfigurationBuilder.build(composite);
+        componentConfigurationBuilder.build(composite, definitions, monitor);
 
         // Connect composite services/references to promoted services/references
-        compositePromotionBuilder.build(composite);
+        compositePromotionBuilder.build(composite, definitions, monitor);
         
         // Compute the policies across the model hierarchy
-        compositePolicyBuilder.build(composite);
+        compositePolicyBuilder.build(composite, definitions, monitor);
         
         // Configure composite services
-        compositeServiceConfigurationBuilder.build(composite);
+        compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
         
         // Configure composite references
-        compositeReferenceConfigurationBuilder.build(composite);
+        compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
 
         // Configure binding URIs
-        compositeBindingURIBuilder.build(composite);
-
-        // Create promoted component services
-//      componentServicePromotionBuilder.build(composite);
-
-        // Create promoted composite services
-//      compositeServicePromotionBuilder.build(composite);
+        compositeBindingURIBuilder.build(composite, definitions, monitor);
 
         // Build component service binding-related information
-        componentServiceBindingBuilder.build(composite);
+        componentServiceBindingBuilder.build(composite, definitions, monitor);
         
-        // Wire the components
-//      componentReferenceWireBuilder.build(composite);
-
-        // Wire the promoted component references
-//      componentReferencePromotionWireBuilder.build(composite);
-
-        // Wire the composite references
-//      compositeReferenceWireBuilder.build(composite);
-
         // Build component reference binding-related information
-        componentReferenceBindingBuilder.build(composite);
+        componentReferenceBindingBuilder.build(composite, definitions, monitor);
         
         // Fuse nested composites
         //FIXME do this later

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaArray;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaArray;
 
 /**
  * @version $Rev$ $Date$ Scenario six structure used by Tuscany.

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.logging.impl.DefaultLoggingMonitorImpl;
 
 import domain.CustomCompositeBuilder;
 
@@ -52,7 +51,7 @@ public class MissingResponseConnectionFactoryTestCase extends TestCase {
 
     public void testCalculator() {
     	Monitor monitor = customDomain.getMonitorInstance();
-    	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getProblems().get(1);
+    	Problem problem = monitor.getLastProblem();
         
     	assertNotNull(problem);
         assertEquals("MissingResponseConnectionFactory", problem.getMessageId()); 

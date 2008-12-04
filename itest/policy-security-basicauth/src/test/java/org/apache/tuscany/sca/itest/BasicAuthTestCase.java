@@ -24,9 +24,9 @@ import java.io.ByteArrayInputStream;
 import junit.framework.Assert;
 import helloworld.HelloWorldService;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.ws.security.util.Base64;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -39,18 +39,18 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 public class BasicAuthTestCase {
-    private static SCANode node;
+    private static Node node;
     private static HelloWorldService service;
 
     @BeforeClass
     public static void init() throws Exception {
         try {
-            SCANodeFactory factory = SCANodeFactory.newInstance();
+            NodeFactory factory = NodeFactory.newInstance();
             node = factory.createSCANodeFromClassLoader("helloworld.composite", 
                                                         BasicAuthTestCase.class.getClassLoader());
             node.start();
             
-            service = ((SCAClient)node).getService(HelloWorldService.class, "HelloWorldClientComponent");
+            service = ((Client)node).getService(HelloWorldService.class, "HelloWorldClientComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

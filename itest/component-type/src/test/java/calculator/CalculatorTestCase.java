@@ -18,35 +18,44 @@
  */
 package calculator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This shows how to test the Calculator service component.
  */
-public class CalculatorTestCase extends TestCase {
+public class CalculatorTestCase {
 
     private CalculatorService calculatorService;
-    private SCADomain scaDomain;
+    private Node node;
 
-    @Override
-    protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("Calculator.composite");
-        calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorService");
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("Calculator.composite");
+        node = NodeFactory.newInstance().createNode("Calculator.composite", new Contribution("c1", location));
+        node.start();
+        calculatorService = node.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorService");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        scaDomain.close();
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
 
+    @Test
     public void testCalculator() throws Exception {
         // Calculate
-        assertEquals(calculatorService.add(3, 2), 5.0);
-        assertEquals(calculatorService.subtract(3, 2), 1.0);
-        assertEquals(calculatorService.multiply(3, 2), 6.0);
-        assertEquals(calculatorService.divide(3, 2), 1.5);
+        assertEquals(calculatorService.add(3, 2), 5.0, 0.0);
+        assertEquals(calculatorService.subtract(3, 2), 1.0, 0.0);
+        assertEquals(calculatorService.multiply(3, 2), 6.0, 0.0);
+        assertEquals(calculatorService.divide(3, 2), 1.5, 0.0);
 
     }
 }

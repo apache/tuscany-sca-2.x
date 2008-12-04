@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
-import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElement;
-import org.apache.tuscany.sca.binding.corba.meta.CorbaUnionElementType;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaUnionElement;
+import org.apache.tuscany.sca.binding.corba.provider.meta.CorbaUnionElementType;
 
 /**
  * @version $Rev$ $Date$
