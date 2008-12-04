@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.introspect;
 
+import static org.junit.Assert.fail;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
+import org.junit.Test;
 
 /**
  * Test case for WSDLOperation.
@@ -47,6 +50,7 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
 
 
     @SuppressWarnings("unchecked")
+    @Test
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
@@ -77,6 +81,7 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         Assert.assertEquals(new QName(null, "price"), childType.getLogical().getElementName());
     }
 
+    @Test
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
         WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
@@ -94,6 +99,7 @@ public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
         Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
 
+    @Test
     public final void testInvalidWSDL() throws Exception {
         URL url = getClass().getResource("../xml/invalid-stockquote.wsdl");
         WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("invalid-stockquote.wsdl"), url);

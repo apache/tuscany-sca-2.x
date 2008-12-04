@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -29,31 +31,12 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    @Override
-    public void tearDown() throws Exception {
-    }
 
     @Test
     public void testWSDL() throws Exception {

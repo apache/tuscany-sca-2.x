@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
+import org.junit.Test;
 
 /**
  * Test case for WSDLOperation.
@@ -40,6 +41,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
+    @Test
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
         WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
@@ -53,6 +55,7 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
         Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
     }
 
+    @Test
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
         WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
