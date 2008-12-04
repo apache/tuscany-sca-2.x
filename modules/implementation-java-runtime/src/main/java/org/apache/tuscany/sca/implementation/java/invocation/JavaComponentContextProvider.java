@@ -73,7 +73,6 @@ import org.osoa.sca.annotations.ConversationID;
  */
 public class JavaComponentContextProvider {
     private JavaPropertyValueObjectFactory propertyValueFactory;
-    private DataBindingExtensionPoint dataBindingRegistry;
     private RuntimeComponent component;
     private JavaInstanceFactoryProvider<?> instanceFactoryProvider;
     private ProxyFactory proxyFactory;
@@ -93,7 +92,6 @@ public class JavaComponentContextProvider {
         //            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
         //        }
         this.component = component;
-        this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
     }
 

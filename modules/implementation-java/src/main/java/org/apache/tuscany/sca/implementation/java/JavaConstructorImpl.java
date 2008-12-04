@@ -28,7 +28,6 @@ import java.lang.reflect.Constructor;
  * @version $Rev$ $Date$
  */
 public class JavaConstructorImpl<T> {
-
     private Constructor<T> constructor;
     private JavaParameterImpl[] parameters;
 
@@ -41,6 +40,9 @@ public class JavaConstructorImpl<T> {
         }
     }
 
+    /**
+     * @return the constructor
+     */
     public Constructor<T> getConstructor() {
         return constructor;
     }

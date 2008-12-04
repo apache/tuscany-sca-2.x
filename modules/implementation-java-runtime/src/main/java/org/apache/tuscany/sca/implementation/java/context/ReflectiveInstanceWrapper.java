@@ -47,7 +47,6 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
         }
     }
 
-
     public void stop() throws TargetDestructionException {
         if (destroyInvoker != null) {
             destroyInvoker.invokeEvent(instance);

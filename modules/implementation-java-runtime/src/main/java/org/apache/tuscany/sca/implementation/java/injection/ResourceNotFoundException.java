@@ -26,10 +26,6 @@ import org.apache.tuscany.sca.core.factory.ObjectCreationException;
  * @version $Rev$ $Date$
  */
 public class ResourceNotFoundException extends ObjectCreationException {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     public ResourceNotFoundException() {
