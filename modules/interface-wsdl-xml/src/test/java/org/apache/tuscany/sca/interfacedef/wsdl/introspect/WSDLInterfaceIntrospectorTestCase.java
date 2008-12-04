@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for InterfaceWSDLIntrospectorImpl.
@@ -51,7 +53,8 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         URL url = getClass().getResource("../xml/stockquote.wsdl");
@@ -61,6 +64,7 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
         WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver);

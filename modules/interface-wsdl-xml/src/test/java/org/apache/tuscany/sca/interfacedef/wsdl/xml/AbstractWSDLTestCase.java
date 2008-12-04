@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -34,13 +32,14 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.junit.Before;
 
 /**
  * Test case for WSDLOperation.
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractWSDLTestCase extends TestCase {
+public abstract class AbstractWSDLTestCase {
     protected URLArtifactProcessor<Object> documentProcessor;
     protected ModelResolver resolver;
     protected WSDLFactory wsdlFactory;
@@ -49,8 +48,8 @@ public abstract class AbstractWSDLTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#setUp()
      */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
