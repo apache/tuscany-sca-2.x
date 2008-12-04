@@ -44,7 +44,7 @@ import javax.xml.namespace.QName;
 /**
  * 
  */
-public class XMLRootElementUtil {
+public final class XMLRootElementUtil {
 
     /** Constructor is intentionally private.  This class only provides static utility methods */
     private XMLRootElementUtil() {
@@ -273,7 +273,7 @@ public class XMLRootElementUtil {
     /**
      * Get an annotation.  This is wrappered to avoid a Java2Security violation.
      * @param cls Class that contains annotation 
-     * @param annotation Class of requrested Annotation
+     * @param annotation Class of requested Annotation
      * @return annotation or null
      */
     private static <T extends Annotation> T getAnnotation(final AnnotatedElement element, final Class<T> annotation) {
