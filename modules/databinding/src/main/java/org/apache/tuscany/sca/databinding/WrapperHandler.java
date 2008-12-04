@@ -62,7 +62,7 @@ public interface WrapperHandler<T> {
      * @param operation The operation
      * @param input Is it for input or output
      */
-    public void setChildren(T wrapper,
+    void setChildren(T wrapper,
                             Object[] childObjects,
                             Operation operation,
                             boolean input);
