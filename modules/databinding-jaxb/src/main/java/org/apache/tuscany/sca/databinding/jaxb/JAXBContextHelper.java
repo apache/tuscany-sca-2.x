@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 // FIXME: [rfeng] We probably should turn this into a pluggable system service
-public class JAXBContextHelper {
+public final class JAXBContextHelper {
     // public static final String JAXB_CLASSES = "jaxb.classes";
 
     // public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
@@ -79,7 +79,7 @@ public class JAXBContextHelper {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
-        // TODO: [rfeng] Need to figure out what's the best grantularity to create the JAXBContext
+        // TODO: [rfeng] Need to figure out what's the best granularity to create the JAXBContext
         // per interface, operation or parameter
         Operation op = source ? tContext.getSourceOperation() : tContext.getTargetOperation();
         if (op != null) {
