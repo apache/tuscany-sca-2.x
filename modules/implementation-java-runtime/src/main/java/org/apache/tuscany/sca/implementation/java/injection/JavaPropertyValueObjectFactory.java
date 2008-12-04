@@ -59,7 +59,7 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     public ObjectFactory createValueFactory(Property property, Object propertyValue, JavaElementImpl javaElement) {
         isSimpleType = isSimpleType(property);
         Document doc = (Document)propertyValue;
-        Class javaType = JavaIntrospectionHelper.getBaseType(javaElement.getType(), javaElement.getGenericType());
+        Class<?> javaType = JavaIntrospectionHelper.getBaseType(javaElement.getType(), javaElement.getGenericType());
         Element rootElement = doc.getDocumentElement();
         if (property.isMany()) {
             if (isSimpleType) {
@@ -148,7 +148,7 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         return false;
     }
 
-    private List<String> getSimplePropertyValues(String concatenatedValue, Class javaType) {
+    private List<String> getSimplePropertyValues(String concatenatedValue, Class<?> javaType) {
         List<String> propValues = new ArrayList<String>();
         StringTokenizer st = null;
         if (javaType.getName().equals("java.lang.String")) {

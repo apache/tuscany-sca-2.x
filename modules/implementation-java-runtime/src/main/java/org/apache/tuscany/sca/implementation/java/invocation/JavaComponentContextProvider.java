@@ -131,7 +131,7 @@ public class JavaComponentContextProvider {
                 createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), element);
             instanceFactoryProvider.setObjectFactory(element, propertyObjectFactory);
             
-            JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+            JavaConstructorImpl<?> constructor = instanceFactoryProvider.getImplementation().getConstructor();
             for(JavaElementImpl p: constructor.getParameters()){
                 if(element.getName().equals(p.getName())) {
                     instanceFactoryProvider.setObjectFactory(p, propertyObjectFactory);
@@ -228,7 +228,7 @@ public class JavaComponentContextProvider {
                         factories.add(factory);
                     }
                     instanceFactoryProvider.setObjectFactories(element, factories);
-                    JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+                    JavaConstructorImpl<?> constructor = instanceFactoryProvider.getImplementation().getConstructor();
                     for(JavaElementImpl p: constructor.getParameters()){
                         if(element.getName().equals(p.getName())) {
                             instanceFactoryProvider.setObjectFactories(p, factories);
@@ -251,7 +251,7 @@ public class JavaComponentContextProvider {
                             factory = createObjectFactory(element.getType(), wireList.get(0));
                         }
                         instanceFactoryProvider.setObjectFactory(element, factory);
-                        JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+                        JavaConstructorImpl<?> constructor = instanceFactoryProvider.getImplementation().getConstructor();
                         for(JavaElementImpl p: constructor.getParameters()){
                             if(element.getName().equals(p.getName())) {
                                 instanceFactoryProvider.setObjectFactory(p, factory);
