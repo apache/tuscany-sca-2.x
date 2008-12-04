@@ -327,8 +327,8 @@ public class JAXBContextCache {
                     new ConcurrentHashMap<K, List<V>>());
 
         // The maps are freed up when a LOAD FACTOR is hit
-        private static int MAX_LIST_FACTOR = 50;
-        private static int MAX_LOAD_FACTOR = 32;  // Maximum number of JAXBContext to store
+        private static final int MAX_LIST_FACTOR = 50;
+        private static final int MAX_LOAD_FACTOR = 32;  // Maximum number of JAXBContext to store
         
         /**
          * @param key
