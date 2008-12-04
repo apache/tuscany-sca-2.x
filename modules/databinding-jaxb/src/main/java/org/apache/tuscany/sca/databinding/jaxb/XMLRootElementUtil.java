@@ -228,7 +228,7 @@ public class XMLRootElementUtil {
      * @param beanClass
      * @return
      */
-    static private List<Field> getFields(final Class<?> beanClass) {
+    private static List<Field> getFields(final Class<?> beanClass) {
         // This class must remain private due to Java 2 Security concerns
         List<Field> fields = AccessController.doPrivileged(new PrivilegedAction<List<Field>>() {
             public List<Field> run() {
