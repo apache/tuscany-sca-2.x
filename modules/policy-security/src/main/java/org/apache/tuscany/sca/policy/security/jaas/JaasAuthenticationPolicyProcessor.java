@@ -134,7 +134,7 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
          if (policy.getCallbackHandlerClassName() != null) {
              ClassReference classReference = new ClassReference(policy.getCallbackHandlerClassName());
              classReference = resolver.resolveModel(ClassReference.class, classReference);
-             Class callbackClass = classReference.getJavaClass();
+             Class<?> callbackClass = classReference.getJavaClass();
              if (callbackClass == null) {
             	 error("ClassNotFoundException", resolver, policy.getCallbackHandlerClassName());
                  //throw new ContributionResolveException(new ClassNotFoundException(policy.getCallbackHandlerClassName()));
