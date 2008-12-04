@@ -332,7 +332,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 && JAXWSFaultExceptionMapper.isMappedGetter(aMethod.getName())) {
                 String propName = resolvePropertyFromMethod(aMethod.getName());
                 QName propQName = new QName(faultBeanName.getNamespaceURI(), propName);
-                Class propType = aMethod.getReturnType();
+                Class<?> propType = aMethod.getReturnType();
                 XMLType xmlPropType = new XMLType(propQName, null);
                 DataType<XMLType> propDT = new DataTypeImpl<XMLType>(propType, xmlPropType);
                 org.apache.tuscany.sca.databinding.annotation.DataType dt =
