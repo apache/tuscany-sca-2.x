@@ -96,12 +96,6 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         type.getResources().put(resource.getName(), resource);
     }
 
-    public JavaResourceImpl createResource(String name, JavaElementImpl element) {
-        element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
-        element.setName(name);
-        return new JavaResourceImpl(element);
-    }
-
     @Override
     public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type)
         throws IntrospectionException {
@@ -135,4 +129,20 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
         }
     }
 
+
+    /**
+     * Utility methods
+     */
+    
+    /**
+     * 
+     * @param name
+     * @param element
+     * @return
+     */
+    private static JavaResourceImpl createResource(String name, JavaElementImpl element) {
+        element.setClassifer(org.apache.tuscany.sca.implementation.java.introspect.impl.Resource.class);
+        element.setName(name);
+        return new JavaResourceImpl(element);
+    }
 }

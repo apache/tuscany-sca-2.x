@@ -50,7 +50,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         this.annotationClass = annotationClass;
     }
     
-    private boolean removeProperty(JavaElementImpl prop, JavaImplementation type) {
+    private static boolean removeProperty(JavaElementImpl prop, JavaImplementation type) {
         if(prop==null) {
             return false;
         }

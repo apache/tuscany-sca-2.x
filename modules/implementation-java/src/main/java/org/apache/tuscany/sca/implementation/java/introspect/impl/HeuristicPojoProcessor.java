@@ -134,17 +134,6 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private boolean isPublicSetter(Method method) {
-        return method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers())
-            && method.getName().startsWith("set")
-            && method.getReturnType() == void.class;
-    }
-
-    private boolean isProtectedSetter(Method method) {
-        return method.getParameterTypes().length == 1 && Modifier.isProtected(method.getModifiers())
-            && method.getName().startsWith("set")
-            && method.getReturnType() == void.class;
-    }
 
     private <T> void calcPropRefs(Set<Method> methods,
                                   List<org.apache.tuscany.sca.assembly.Service> services,
@@ -360,10 +349,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private static boolean areUnique(Class<?>[] collection) {
-        Set<Class<?>> set = new HashSet<Class<?>>(Arrays.asList(collection));
-        return set.size() == collection.length;
-    }
+
 
     /**
      * Returns true if the union of the given collections of properties and
@@ -440,6 +426,119 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     /**
+     * Creates a mapped property.
+     * 
+     * @param name the property name
+     * @param paramType the property type
+     */
+    private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> paramType) {
+        org.apache.tuscany.sca.assembly.Property property = assemblyFactory.createProperty();
+        property.setName(name);
+        property.setXSDType(JavaXMLMapper.getXMLType(paramType));
+        return property;
+    }
+
+     private org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType)
+        throws IntrospectionException {
+        org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
+        reference.setName(name);
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        reference.setInterfaceContract(interfaceContract);
+        try {
+            JavaInterface callInterface = javaFactory.createJavaInterface(paramType);
+            reference.getInterfaceContract().setInterface(callInterface);
+            if (callInterface.getCallbackClass() != null) {
+                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+                reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+            }
+            reference.setMultiplicity(Multiplicity.ZERO_ONE);
+        } catch (InvalidInterfaceException e1) {
+            throw new IntrospectionException(e1);
+        }
+
+        // FIXME:  This part seems to have already been taken care above!!
+        try {
+            processCallback(paramType, reference);
+        } catch (InvalidServiceTypeException e) {
+            throw new IntrospectionException(e);
+        }
+        return reference;
+    }
+
+    private org.apache.tuscany.sca.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
+        org.apache.tuscany.sca.assembly.Service service = assemblyFactory.createService();
+        service.setName(interfaze.getSimpleName());
+
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        service.setInterfaceContract(interfaceContract);
+
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        service.getInterfaceContract().setInterface(callInterface);
+        if (callInterface.getCallbackClass() != null) {
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        }
+
+        Interface javaInterface = service.getInterfaceContract().getInterface();
+        javaInterface.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
+        service.getInterfaceContract().setInterface(javaInterface);
+        return service;
+    }
+
+    private void processCallback(Class<?> interfaze, Contract contract) throws InvalidServiceTypeException {
+        Callback callback = interfaze.getAnnotation(Callback.class);
+        if (callback != null && !Void.class.equals(callback.value())) {
+            Class<?> callbackClass = callback.value();
+            JavaInterface javaInterface;
+            try {
+                javaInterface = javaFactory.createJavaInterface(callbackClass);
+                contract.getInterfaceContract().setCallbackInterface(javaInterface);
+            } catch (InvalidInterfaceException e) {
+                throw new InvalidServiceTypeException("Invalid callback interface "+callbackClass, interfaze);
+            }
+        } else if (callback != null && Void.class.equals(callback.value())) {
+            throw new InvalidServiceTypeException("No callback interface specified on annotation", interfaze);
+        }
+    }
+
+
+    /**
+     * Utility methods
+     */
+    
+    
+    /**
+     * Verify if the method is a public setter
+     * @param method
+     * @return
+     */
+    private static boolean isPublicSetter(Method method) {
+        return method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers())
+            && method.getName().startsWith("set")
+            && method.getReturnType() == void.class;
+    }
+
+    /**
+     * Verify if the method is a protected setter
+     * @param method
+     * @return
+     */
+    private static boolean isProtectedSetter(Method method) {
+        return method.getParameterTypes().length == 1 && Modifier.isProtected(method.getModifiers())
+            && method.getName().startsWith("set")
+            && method.getReturnType() == void.class;
+    }
+
+    /**
+     * @param collection
+     * @return
+     */
+    private static boolean areUnique(Class<?>[] collection) {
+        Set<Class<?>> set = new HashSet<Class<?>>(Arrays.asList(collection));
+        return set.size() == collection.length;
+    }
+
+    /**
      * Returns true if a given type is reference according to the SCA
      * specification rules for determining reference types The following rules
      * are used to determine whether an unannotated field or setter method is a
@@ -462,7 +561,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      *          The name of the reference or of the property is derived from the
      *          name found on the setter method or on the field.
      */
-    private boolean isReferenceType(Class<?> cls, Type genericType) {
+    private static boolean isReferenceType(Class<?> cls, Type genericType) {
         Class<?> baseType = JavaIntrospectionHelper.getBaseType(cls, genericType);
         return baseType.isInterface() && baseType.isAnnotationPresent(Remotable.class);
     }
@@ -470,8 +569,11 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     /**
      * Returns true if the given operation is defined in the collection of
      * service interfaces
+     * @param operation
+     * @param services
+     * @return
      */
-    private boolean isInServiceInterface(Method operation, List<org.apache.tuscany.sca.assembly.Service> services) {
+    private static boolean isInServiceInterface(Method operation, List<org.apache.tuscany.sca.assembly.Service> services) {
         for (org.apache.tuscany.sca.assembly.Service service : services) {
             Interface interface1 = service.getInterfaceContract().getInterface();
             if (interface1 instanceof JavaInterface) {
@@ -492,7 +594,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      * @param method
      * @return
      */
-    private boolean isMethodMatched(Class<?> clazz, Method method) {
+    private static boolean isMethodMatched(Class<?> clazz, Method method) {
         if (method.getDeclaringClass() == clazz) {
             return true;
         }
@@ -506,19 +608,11 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     /**
-     * Creates a mapped property.
-     * 
-     * @param name the property name
-     * @param paramType the property type
+     * Verify if there is any SCA annotation on the parameter
+     * @param parameter
+     * @return
      */
-    private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> paramType) {
-        org.apache.tuscany.sca.assembly.Property property = assemblyFactory.createProperty();
-        property.setName(name);
-        property.setXSDType(JavaXMLMapper.getXMLType(paramType));
-        return property;
-    }
-
-    private boolean isAnnotated(JavaParameterImpl parameter) {
+    private static boolean isAnnotated(JavaParameterImpl parameter) {
         for (Annotation annotation : parameter.getAnnotations()) {
             Class<? extends Annotation> annotType = annotation.annotationType();
             if (annotType.equals(Property.class) || annotType.equals(Reference.class)
@@ -529,7 +623,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         return false;
     }
 
-    public boolean areUnique(JavaParameterImpl[] parameters) {
+    /**
+     * Verify if the parameters are unique
+     * @param parameters
+     * @return
+     */
+    private static boolean areUnique(JavaParameterImpl[] parameters) {
         Set<Class<?>> set = new HashSet<Class<?>>(parameters.length);
         for (JavaParameterImpl p : parameters) {
             if (!set.add(p.getType())) {
@@ -538,71 +637,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         }
         return true;
     }
-
-    public org.apache.tuscany.sca.assembly.Reference createReference(String name, Class<?> paramType)
-        throws IntrospectionException {
-        org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
-        reference.setName(name);
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
-        reference.setInterfaceContract(interfaceContract);
-        try {
-            JavaInterface callInterface = javaFactory.createJavaInterface(paramType);
-            reference.getInterfaceContract().setInterface(callInterface);
-            if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
-                reference.getInterfaceContract().setCallbackInterface(callbackInterface);
-            }
-            reference.setMultiplicity(Multiplicity.ZERO_ONE);
-        } catch (InvalidInterfaceException e1) {
-            throw new IntrospectionException(e1);
-        }
-
-        // FIXME:  This part seems to have already been taken care above!!
-        try {
-            processCallback(paramType, reference);
-        } catch (InvalidServiceType e) {
-            throw new IntrospectionException(e);
-        }
-        return reference;
-    }
-
-    public org.apache.tuscany.sca.assembly.Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        org.apache.tuscany.sca.assembly.Service service = assemblyFactory.createService();
-        service.setName(interfaze.getSimpleName());
-
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
-        service.setInterfaceContract(interfaceContract);
-
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
-        service.getInterfaceContract().setInterface(callInterface);
-        if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
-            service.getInterfaceContract().setCallbackInterface(callbackInterface);
-        }
-
-        Interface javaInterface = service.getInterfaceContract().getInterface();
-        javaInterface.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        service.getInterfaceContract().setInterface(javaInterface);
-        return service;
-    }
-
-    public void processCallback(Class<?> interfaze, Contract contract) throws InvalidServiceType {
-        Callback callback = interfaze.getAnnotation(Callback.class);
-        if (callback != null && !Void.class.equals(callback.value())) {
-            Class<?> callbackClass = callback.value();
-            JavaInterface javaInterface;
-            try {
-                javaInterface = javaFactory.createJavaInterface(callbackClass);
-                contract.getInterfaceContract().setCallbackInterface(javaInterface);
-            } catch (InvalidInterfaceException e) {
-                throw new InvalidServiceType("Invalid callback interface "+callbackClass, interfaze);
-            }
-        } else if (callback != null && Void.class.equals(callback.value())) {
-            throw new InvalidServiceType("No callback interface specified on annotation", interfaze);
-        }
-    }
-
-    public boolean injectionAnnotationsPresent(Annotation[][] annots) {
+    
+    /**
+     * Verify if the annotations are SCA annotation
+     * @param annots
+     * @return
+     */
+    private static boolean injectionAnnotationsPresent(Annotation[][] annots) {
         for (Annotation[] annotations : annots) {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();

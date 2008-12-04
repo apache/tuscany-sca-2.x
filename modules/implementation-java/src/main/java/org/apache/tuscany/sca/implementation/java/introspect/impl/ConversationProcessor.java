@@ -65,7 +65,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
                     type.setMaxAge(maxAge);
                 }
             } catch (NumberFormatException e) {
-                throw new InvalidConversationalImplementation("Invalid maximum age", e);
+                throw new InvalidConversationalImplementationException("Invalid maximum age", e);
             }
             try {
                 if (maxIdleTimeVal.length() > 0) {
@@ -73,7 +73,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
                     type.setMaxIdleTime(maxIdleTime);
                 }
             } catch (NumberFormatException e) {
-                throw new InvalidConversationalImplementation("Invalid maximum idle time", e);
+                throw new InvalidConversationalImplementationException("Invalid maximum idle time", e);
             }
         }
 
@@ -99,7 +99,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         type.addConversationIDMember(field);
     }
 
-    protected long convertTimeMillis(String expr) throws NumberFormatException {
+    static long convertTimeMillis(String expr) throws NumberFormatException {
         expr = expr.trim().toUpperCase();
         int i = expr.lastIndexOf(SECONDS);
         if (i >= 0) {

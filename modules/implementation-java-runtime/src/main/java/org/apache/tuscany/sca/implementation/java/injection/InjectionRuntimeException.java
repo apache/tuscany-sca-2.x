@@ -25,8 +25,9 @@ package org.apache.tuscany.sca.implementation.java.injection;
  * @version $Rev$ $Date$
  */
 public abstract class InjectionRuntimeException extends RuntimeException {
+	private static final long serialVersionUID = -2264137603099898773L;
 
-    public InjectionRuntimeException() {
+	public InjectionRuntimeException() {
         super();
     }
 

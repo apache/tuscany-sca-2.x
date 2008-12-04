@@ -58,93 +58,45 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         this.policyFactory = policyFactory;
     }
 
-    private QName getQName(String intentName) {
-        QName qname;
-        if (intentName.startsWith("{")) {
-            int i = intentName.indexOf('}');
-            if (i != -1) {
-                qname = new QName(intentName.substring(1, i), intentName.substring(i + 1));
-            } else {
-                qname = new QName("", intentName);
-            }
-        } else {
-            qname = new QName("", intentName);
+
+    @Override
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
+        org.osoa.sca.annotations.Reference annotation = 
+            field.getAnnotation( org.osoa.sca.annotations.Reference.class);
+        if (annotation == null) {
+            return;
         }
-        return qname;
-    }
-
-    /**
-     * Read policy intents on the given interface or class 
-     * @param clazz
-     * @param requiredIntents
-     */
-    private void readIntentsAndPolicySets(Class<?> clazz, 
-                                          List<Intent> requiredIntents, 
-                                          List<PolicySet> policySets) {
-        Requires intentAnnotation = clazz.getAnnotation(Requires.class);
-        if (intentAnnotation != null) {
-            String[] intentNames = intentAnnotation.value();
-            if (intentNames.length != 0) {
-                for (String intentName : intentNames) {
-
-                    // Add each intent to the list
-                    Intent intent = policyFactory.createIntent();
-                    intent.setName(getQName(intentName));
-                    requiredIntents.add(intent);
-                }
-            }
+        String name = annotation.name();
+        if ("".equals(name)) {
+            name = field.getName();
         }
         
-        PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
-        if (policySetAnnotation != null) {
-            String[] policySetNames = policySetAnnotation.value();
-            if (policySetNames.length != 0) {
-                for (String policySetName : policySetNames) {
-
-                    // Add each intent to the list
-                    PolicySet policySet = policyFactory.createPolicySet();
-                    policySet.setName(getQName(policySetName));
-                    policySets.add(policySet);
-                }
-            }
+        Reference reference = null;
+        if ( (reference = getReferenceByName(name, type)) != null ) {
+            readIntents(field.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readPolicySets(field.getAnnotation(PolicySets.class), reference.getPolicySets());
         }
     }
-    
-    private void readIntents(Requires intentAnnotation, List<Intent> requiredIntents) {
-        //Requires intentAnnotation = method.getAnnotation(Requires.class);
-        if (intentAnnotation != null) {
-            String[] intentNames = intentAnnotation.value();
-            if (intentNames.length != 0) {
-                //Operation operation = assemblyFactory.createOperation();
-                //operation.setName(method.getName());
-                //operation.setUnresolved(true);
-                for (String intentName : intentNames) {
 
-                    // Add each intent to the list, associated with the
-                    // operation corresponding to the annotated method
-                    Intent intent = policyFactory.createIntent();
-                    intent.setName(getQName(intentName));
-                    //intent.getOperations().add(operation);
-                    requiredIntents.add(intent);
-                }
-            }
-        }
-    }
-    
-    private void readPolicySets(PolicySets policySetAnnotation, List<PolicySet> policySets) {
-        if (policySetAnnotation != null) {
-            String[] policySetNames = policySetAnnotation.value();
-            if (policySetNames.length != 0) {
-                //Operation operation = assemblyFactory.createOperation();
-                //operation.setName(method.getName());
-                //operation.setUnresolved(true);
-                for (String policySetName : policySetNames) {
-                    // Add each intent to the list, associated with the
-                    // operation corresponding to the annotated method
-                    PolicySet policySet = policyFactory.createPolicySet();
-                    policySet.setName(getQName(policySetName));
-                    //intent.getOperations().add(operation);
-                    policySets.add(policySet);
+    @Override
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
+        Reference reference = null;
+        if ( (reference = getReference(method, type)) != null ) {
+            readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
+        } else {
+            if ( type instanceof OperationsConfigurator ) {
+                //Read the intents specified on the given implementation method
+                if ( (method.getAnnotation(Requires.class) != null || 
+                        method.getAnnotation(PolicySets.class) != null ) && 
+                            (type instanceof PolicySetAttachPoint )) {
+                    ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
+                    confOp.setName(method.getName());
+                    ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
+            
+                
+                    readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
+                    readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                 }
             }
         }
@@ -223,7 +175,142 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private Reference getReference(Method method, JavaImplementation type) {
+    /**
+     * Read policy intents on the given interface or class 
+     * @param clazz
+     * @param requiredIntents
+     */
+    private void readIntentsAndPolicySets(Class<?> clazz, 
+                                          List<Intent> requiredIntents, 
+                                          List<PolicySet> policySets) {
+        Requires intentAnnotation = clazz.getAnnotation(Requires.class);
+        if (intentAnnotation != null) {
+            String[] intentNames = intentAnnotation.value();
+            if (intentNames.length != 0) {
+                for (String intentName : intentNames) {
+
+                    // Add each intent to the list
+                    Intent intent = policyFactory.createIntent();
+                    intent.setName(getQName(intentName));
+                    requiredIntents.add(intent);
+                }
+            }
+        }
+        
+        PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
+        if (policySetAnnotation != null) {
+            String[] policySetNames = policySetAnnotation.value();
+            if (policySetNames.length != 0) {
+                for (String policySetName : policySetNames) {
+
+                    // Add each intent to the list
+                    PolicySet policySet = policyFactory.createPolicySet();
+                    policySet.setName(getQName(policySetName));
+                    policySets.add(policySet);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Read intent annotations on the given interface or class
+     * @param intentAnnotation
+     * @param requiredIntents
+     */
+    private void readIntents(Requires intentAnnotation, List<Intent> requiredIntents) {
+        //Requires intentAnnotation = method.getAnnotation(Requires.class);
+        if (intentAnnotation != null) {
+            String[] intentNames = intentAnnotation.value();
+            if (intentNames.length != 0) {
+                //Operation operation = assemblyFactory.createOperation();
+                //operation.setName(method.getName());
+                //operation.setUnresolved(true);
+                for (String intentName : intentNames) {
+
+                    // Add each intent to the list, associated with the
+                    // operation corresponding to the annotated method
+                    Intent intent = policyFactory.createIntent();
+                    intent.setName(getQName(intentName));
+                    //intent.getOperations().add(operation);
+                    requiredIntents.add(intent);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Read policy set annotations on a given interface or class
+     * @param policySetAnnotation
+     * @param policySets
+     */
+    private void readPolicySets(PolicySets policySetAnnotation, List<PolicySet> policySets) {
+        if (policySetAnnotation != null) {
+            String[] policySetNames = policySetAnnotation.value();
+            if (policySetNames.length != 0) {
+                //Operation operation = assemblyFactory.createOperation();
+                //operation.setName(method.getName());
+                //operation.setUnresolved(true);
+                for (String policySetName : policySetNames) {
+                    // Add each intent to the list, associated with the
+                    // operation corresponding to the annotated method
+                    PolicySet policySet = policyFactory.createPolicySet();
+                    policySet.setName(getQName(policySetName));
+                    //intent.getOperations().add(operation);
+                    policySets.add(policySet);
+                }
+            }
+        }
+    }
+
+    /**
+     * Utility methods
+     */
+    
+    /**
+     * 
+     * @param intentName
+     * @return
+     */
+    private static QName getQName(String intentName) {
+        QName qname;
+        if (intentName.startsWith("{")) {
+            int i = intentName.indexOf('}');
+            if (i != -1) {
+                qname = new QName(intentName.substring(1, i), intentName.substring(i + 1));
+            } else {
+                qname = new QName("", intentName);
+            }
+        } else {
+            qname = new QName("", intentName);
+        }
+        return qname;
+    }
+    
+
+    /**
+     * 
+     * @param name
+     * @param type
+     * @return
+     */
+    private static Reference getReferenceByName(String name, JavaImplementation type) {
+        for ( Reference reference : type.getReferences() ) {
+            if ( reference.getName().equals(name) ) {
+                return reference;
+            }
+        }
+        return null;
+    }
+    
+
+    /**
+     * 
+     * @param method
+     * @param type
+     * @return
+     */
+    private static Reference getReference(Method method, JavaImplementation type) {
         //since the ReferenceProcessor is called ahead of the PolicyProcessor the type should have
         //picked up the reference setter method
         org.osoa.sca.annotations.Reference annotation = 
@@ -238,57 +325,5 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             }
         }
         return null;
-    }
-    
-    private Reference getReferenceByName(String name, JavaImplementation type) {
-        for ( Reference reference : type.getReferences() ) {
-            if ( reference.getName().equals(name) ) {
-                return reference;
-            }
-        }
-        return null;
-    }
-    
-    @Override
-    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
-        org.osoa.sca.annotations.Reference annotation = 
-            field.getAnnotation( org.osoa.sca.annotations.Reference.class);
-        if (annotation == null) {
-            return;
-        }
-        String name = annotation.name();
-        if ("".equals(name)) {
-            name = field.getName();
-        }
-        
-        Reference reference = null;
-        if ( (reference = getReferenceByName(name, type)) != null ) {
-            readIntents(field.getAnnotation(Requires.class), reference.getRequiredIntents());
-            readPolicySets(field.getAnnotation(PolicySets.class), reference.getPolicySets());
-        }
-    }
-
-    @Override
-    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
-        Reference reference = null;
-        if ( (reference = getReference(method, type)) != null ) {
-            readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
-            readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
-        } else {
-            if ( type instanceof OperationsConfigurator ) {
-                //Read the intents specified on the given implementation method
-                if ( (method.getAnnotation(Requires.class) != null || 
-                        method.getAnnotation(PolicySets.class) != null ) && 
-                            (type instanceof PolicySetAttachPoint )) {
-                    ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
-                    confOp.setName(method.getName());
-                    ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
-            
-                
-                    readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
-                    readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
-                }
-            }
-        }
     }
 }
