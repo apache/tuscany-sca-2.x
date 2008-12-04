@@ -92,7 +92,7 @@ public class JavaIntrospectionHelperTestCase {
 
     @Test
     public void testDefaultConstructor() throws Exception {
-        Constructor ctr = JavaIntrospectionHelper.getDefaultConstructor(Bean2.class);
+        Constructor<Bean2> ctr = JavaIntrospectionHelper.getDefaultConstructor(Bean2.class);
         assertEquals(ctr, Bean2.class.getConstructor());
         assertTrue(Bean2.class == ctr.newInstance((Object[]) null).getClass());
     }

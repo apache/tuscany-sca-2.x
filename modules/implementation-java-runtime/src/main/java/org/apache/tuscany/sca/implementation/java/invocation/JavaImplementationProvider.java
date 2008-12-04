@@ -186,7 +186,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         componentContextProvider.stop();
     }
 
-    public InstanceWrapper createInstanceWrapper() {
+    public InstanceWrapper<?> createInstanceWrapper() {
         return componentContextProvider.createInstanceWrapper();
     }
 
