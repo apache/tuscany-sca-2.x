@@ -25,12 +25,11 @@ import java.net.URL;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

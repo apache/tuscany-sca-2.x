@@ -28,9 +28,8 @@ import java.util.List;
 import javax.wsdl.Import;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

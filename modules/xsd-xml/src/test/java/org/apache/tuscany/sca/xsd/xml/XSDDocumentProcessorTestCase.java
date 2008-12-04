@@ -24,8 +24,6 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -37,6 +35,7 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaType;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
