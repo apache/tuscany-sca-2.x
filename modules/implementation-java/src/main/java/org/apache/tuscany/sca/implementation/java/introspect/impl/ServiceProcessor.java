@@ -135,12 +135,34 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         createCallback(type, element);
     }
 
+    public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
+        Service service = assemblyFactory.createService();
+        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        service.setInterfaceContract(interfaceContract);
+
+        // create a relative URI
+        service.setName(interfaze.getSimpleName());
+
+        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        service.getInterfaceContract().setInterface(callInterface);
+        if (callInterface.getCallbackClass() != null) {
+            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        }
+        return service;
+    }
+    
+    /**
+     * Utility methods
+     */
+
+
     /**
      * @param type
      * @param element
      * @throws IllegalCallbackReferenceException
      */
-    private void createCallback(JavaImplementation type, JavaElementImpl element)
+    private static void createCallback(JavaImplementation type, JavaElementImpl element)
         throws IllegalCallbackReferenceException {
         Service callbackService = null;
         Class<?> callbackClass = element.getType();
@@ -165,22 +187,4 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }
         type.getCallbackMembers().get(baseType.getName()).add(element);
     }
-
-    public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
-        Service service = assemblyFactory.createService();
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
-        service.setInterfaceContract(interfaceContract);
-
-        // create a relative URI
-        service.setName(interfaze.getSimpleName());
-
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
-        service.getInterfaceContract().setInterface(callInterface);
-        if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
-            service.getInterfaceContract().setCallbackInterface(callbackInterface);
-        }
-        return service;
-    }
-
 }

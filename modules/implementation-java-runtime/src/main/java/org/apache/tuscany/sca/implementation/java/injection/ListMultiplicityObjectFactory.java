@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.core.factory.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class ListMultiplicityObjectFactory implements ObjectFactory<List> {
+public class ListMultiplicityObjectFactory implements ObjectFactory<List<?>> {
 
     private ObjectFactory[] factories;
 
@@ -39,7 +39,7 @@ public class ListMultiplicityObjectFactory implements ObjectFactory<List> {
         this.factories = factories.toArray(new ObjectFactory[factories.size()]);
     }
 
-    public List getInstance() throws ObjectCreationException {
+    public List<?> getInstance() throws ObjectCreationException {
         List<Object> list = new ArrayList<Object>();
         for (ObjectFactory factory : factories) {
             list.add(factory.getInstance());

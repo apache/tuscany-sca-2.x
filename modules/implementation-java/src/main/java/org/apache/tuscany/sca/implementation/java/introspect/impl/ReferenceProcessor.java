@@ -83,19 +83,6 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         type.getReferenceMembers().put(name, element);
     }
 
-    private boolean removeReference(JavaElementImpl ref, JavaImplementation type) {
-        if (ref == null) {
-            return false;
-        }
-        List<org.apache.tuscany.sca.assembly.Reference> refs = type.getReferences();
-        for (int i = 0; i < refs.size(); i++) {
-            if (refs.get(i).getName().equals(ref.getName())) {
-                refs.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
@@ -145,20 +132,13 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         parameter.setName(name);
     }
 
-    private String getReferenceName(String paramName, int pos, String name) throws InvalidConstructorException {
-        if ("".equals(name)) {
-            name = paramName;
-        }
-        if ("".equals(name)) {
-            return "_ref" + pos;
-        }
-        if (!"".equals(paramName) && !name.equals(paramName)) {
-            throw new InvalidConstructorException("Mismatching names specified for reference parameter " + pos);
-        } else {
-            return name;
-        }
-    }
-
+    /**
+     * Create a SCA reference for a java Element
+     * @param element
+     * @param name
+     * @return
+     * @throws IntrospectionException
+     */
     private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name)
         throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
@@ -207,4 +187,53 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
         return reference;
     }
+
+
+    /**
+     * Utility methods
+     */
+
+    /**
+     * 
+     * @param paramName
+     * @param pos
+     * @param name
+     * @return
+     * @throws InvalidConstructorException
+     */
+    private static String getReferenceName(String paramName, int pos, String name) throws InvalidConstructorException {
+        if ("".equals(name)) {
+            name = paramName;
+        }
+        if ("".equals(name)) {
+            return "_ref" + pos;
+        }
+        if (!"".equals(paramName) && !name.equals(paramName)) {
+            throw new InvalidConstructorException("Mismatching names specified for reference parameter " + pos);
+        } else {
+            return name;
+        }
+    }
+    
+    /**
+     * 
+     * @param ref
+     * @param type
+     * @return
+     */
+    private static boolean removeReference(JavaElementImpl ref, JavaImplementation type) {
+        if (ref == null) {
+            return false;
+        }
+        List<org.apache.tuscany.sca.assembly.Reference> refs = type.getReferences();
+        for (int i = 0; i < refs.size(); i++) {
+            if (refs.get(i).getName().equals(ref.getName())) {
+                refs.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

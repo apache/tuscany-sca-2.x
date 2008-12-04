@@ -98,8 +98,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
 
         }
     }
-
-    public ObjectFactory createValueFactory(Property property, Object propertyValue, Class javaType) {
+    
+    public ObjectFactory createValueFactory(Property property, Object propertyValue, Class<?> javaType) {
         isSimpleType = isSimpleType(property);
         Document doc = (Document)propertyValue;
         Element rootElement = doc.getDocumentElement();
@@ -133,61 +133,24 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     } 
 
-    private boolean isSimpleType(Property property) {
-        if (property.getXSDType() != null) {
-            return SimpleTypeMapperImpl.isSimpleXSDType(property.getXSDType());
-        } else {
-            if (property instanceof Document) {
-                Document doc = (Document)property;
-                Element element = doc.getDocumentElement();
-                if (element.getChildNodes().getLength() == 1 && element.getChildNodes().item(0).getNodeType() == Element.TEXT_NODE) {
-                    return true;
-                }
-            }
-        }
-        return false;
+
+    public <B> B createPropertyValue(ComponentProperty property, Class<B> type)
+    {
+        ObjectFactory<B> factory = this.createValueFactory(property, property.getValue(), type);
+        return factory.getInstance();
     }
 
-    private List<String> getSimplePropertyValues(String concatenatedValue, Class<?> javaType) {
-        List<String> propValues = new ArrayList<String>();
-        StringTokenizer st = null;
-        if (javaType.getName().equals("java.lang.String")) {
-            st = new StringTokenizer(concatenatedValue, "\"");
-        } else {
-            st = new StringTokenizer(concatenatedValue);
-        }
-        String aToken = null;
-        while (st.hasMoreTokens()) {
-            aToken = st.nextToken();
-            if (aToken.trim().length() > 0) {
-                propValues.add(aToken);
-            }
-        }
-        return propValues;
-    }
 
-    private List<Node> getComplexPropertyValues(Document document) {
-        Element rootElement = document.getDocumentElement();
-        List<Node> propValues = new ArrayList<Node>();
-        NodeList nodes = rootElement.getChildNodes();
-        for (int count = 0; count < nodes.getLength(); ++count) {
-            if (nodes.item(count).getNodeType() == Document.ELEMENT_NODE) {
-                propValues.add(DOMHelper.promote(nodes.item(count)));
-            }
-        }
-        return propValues;
-    }
-
-    public abstract class ObjectFactoryImplBase implements ObjectFactory {
+    abstract class ObjectFactoryImplBase implements ObjectFactory {
         protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
         protected Property property;
         protected Object propertyValue;
-        protected Class javaType;
+        protected Class<?> javaType;
         protected DataType<XMLType> sourceDataType;
         protected DataType<?> targetDataType;
         boolean isSimpleType;
 
-        public ObjectFactoryImplBase(Property property, Object propertyValue, boolean isSimpleType, Class javaType) {
+        public ObjectFactoryImplBase(Property property, Object propertyValue, boolean isSimpleType, Class<?> javaType) {
             this.isSimpleType = isSimpleType;
             this.property = property;
             this.propertyValue = propertyValue;
@@ -216,8 +179,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     }
 
-    public class ObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ObjectFactoryImpl(Property property, Object propertyValue, boolean isSimpleType, Class javaType) {
+    class ObjectFactoryImpl extends ObjectFactoryImplBase {
+        public ObjectFactoryImpl(Property property, Object propertyValue, boolean isSimpleType, Class<?> javaType) {
             super(property, propertyValue, isSimpleType, javaType);
         }
 
@@ -239,8 +202,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     }
 
-    public class ListObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ListObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class javaType) {
+    class ListObjectFactoryImpl extends ObjectFactoryImplBase {
+        public ListObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class<?> javaType) {
             super(property, propertyValues, isSimpleType, javaType);
         }
 
@@ -272,8 +235,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     }
     
-    public class ArrayObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class javaType) {
+    class ArrayObjectFactoryImpl extends ObjectFactoryImplBase {
+        public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class<?> javaType) {
             super(property, propertyValues, isSimpleType, javaType);
         }
 
@@ -307,18 +270,71 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     }
 
+    
+
     /**
-     * This method will create an instance of the value for the specified Property.
-     * 
-     * @param property The Property from which to retrieve the property value
-     * @param type The type of the property value being retrieved from the Property
-     * @param <B> Type type of the property value being looked up
-     * 
-     * @return the value for the Property
+     * Utility methods
      */
-    public <B> B createPropertyValue(ComponentProperty property, Class<B> type)
-    {
-        ObjectFactory<B> factory = this.createValueFactory(property, property.getValue(), type);
-        return factory.getInstance();
+    
+    /**
+     * 
+     * @param property
+     * @return
+     */
+    private static boolean isSimpleType(Property property) {
+        if (property.getXSDType() != null) {
+            return SimpleTypeMapperImpl.isSimpleXSDType(property.getXSDType());
+        } else {
+            if (property instanceof Document) {
+                Document doc = (Document)property;
+                Element element = doc.getDocumentElement();
+                if (element.getChildNodes().getLength() == 1 && element.getChildNodes().item(0).getNodeType() == Element.TEXT_NODE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Retrieve list of simple property values
+     * @param concatenatedValue
+     * @param javaType
+     * @return
+     */
+    private static List<String> getSimplePropertyValues(String concatenatedValue, Class<?> javaType) {
+        List<String> propValues = new ArrayList<String>();
+        StringTokenizer st = null;
+        if (javaType.getName().equals("java.lang.String")) {
+            st = new StringTokenizer(concatenatedValue, "\"");
+        } else {
+            st = new StringTokenizer(concatenatedValue);
+        }
+        String aToken = null;
+        while (st.hasMoreTokens()) {
+            aToken = st.nextToken();
+            if (aToken.trim().length() > 0) {
+                propValues.add(aToken);
+            }
+        }
+        return propValues;
+    }
+
+    /**
+     * Retrieve the list of complex property values
+     * @param document
+     * @return
+     */
+    private static List<Node> getComplexPropertyValues(Document document) {
+        Element rootElement = document.getDocumentElement();
+        List<Node> propValues = new ArrayList<Node>();
+        NodeList nodes = rootElement.getChildNodes();
+        for (int count = 0; count < nodes.getLength(); ++count) {
+            if (nodes.item(count).getNodeType() == Document.ELEMENT_NODE) {
+                propValues.add(DOMHelper.promote(nodes.item(count)));
+            }
+        }
+        return propValues;
     }
 }

@@ -22,21 +22,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConvertTimeMillisTestCase {
-    private MockProcessor registy;
 
-    @Test
+	@Test
     public void testConvertSeconds() throws Exception {
-        assertEquals(10000L, registy.convertTimeMillis("10 seconds"));
-        assertEquals(10000L, registy.convertTimeMillis("10 SECONDS"));
+        assertEquals(10000L, MockProcessor.convertTimeMillis("10 seconds"));
+        assertEquals(10000L, MockProcessor.convertTimeMillis("10 SECONDS"));
         try {
-            registy.convertTimeMillis("10seconds");
+        	MockProcessor.convertTimeMillis("10seconds");
             fail();
         } catch (NumberFormatException e) {
             // expected
@@ -45,10 +43,10 @@ public class ConvertTimeMillisTestCase {
 
     @Test
     public void testConvertMinutes() throws Exception {
-        assertEquals(600000L, registy.convertTimeMillis("10 minutes"));
-        assertEquals(600000L, registy.convertTimeMillis("10 MINUTES"));
+        assertEquals(600000L, MockProcessor.convertTimeMillis("10 minutes"));
+        assertEquals(600000L, MockProcessor.convertTimeMillis("10 MINUTES"));
         try {
-            registy.convertTimeMillis("10minutes");
+        	MockProcessor.convertTimeMillis("10minutes");
             fail();
         } catch (NumberFormatException e) {
             // expected
@@ -57,10 +55,10 @@ public class ConvertTimeMillisTestCase {
 
     @Test
     public void testConvertHours() throws Exception {
-        assertEquals(36000000L, registy.convertTimeMillis("10 hours"));
-        assertEquals(36000000L, registy.convertTimeMillis("10 HOURS"));
+        assertEquals(36000000L, MockProcessor.convertTimeMillis("10 hours"));
+        assertEquals(36000000L, MockProcessor.convertTimeMillis("10 HOURS"));
         try {
-            registy.convertTimeMillis("10hours");
+        	MockProcessor.convertTimeMillis("10hours");
             fail();
         } catch (NumberFormatException e) {
             // expected
@@ -69,10 +67,10 @@ public class ConvertTimeMillisTestCase {
 
     @Test
     public void testConvertDays() throws Exception {
-        assertEquals(864000000L, registy.convertTimeMillis("10 days"));
-        assertEquals(864000000L, registy.convertTimeMillis("10 DAYS"));
+        assertEquals(864000000L, MockProcessor.convertTimeMillis("10 days"));
+        assertEquals(864000000L, MockProcessor.convertTimeMillis("10 DAYS"));
         try {
-            registy.convertTimeMillis("10days");
+        	MockProcessor.convertTimeMillis("10days");
             fail();
         } catch (NumberFormatException e) {
             // expected
@@ -81,10 +79,10 @@ public class ConvertTimeMillisTestCase {
 
     @Test
     public void testConvertYears() throws Exception {
-        assertEquals(315569260000L, registy.convertTimeMillis("10 years"));
-        assertEquals(315569260000L, registy.convertTimeMillis("10 YEARS"));
+        assertEquals(315569260000L, MockProcessor.convertTimeMillis("10 years"));
+        assertEquals(315569260000L, MockProcessor.convertTimeMillis("10 YEARS"));
         try {
-            registy.convertTimeMillis("10years");
+        	MockProcessor.convertTimeMillis("10years");
             fail();
         } catch (NumberFormatException e) {
             // expected
@@ -93,34 +91,24 @@ public class ConvertTimeMillisTestCase {
 
     @Test
     public void testConvertDefault() throws Exception {
-        assertEquals(10000L, registy.convertTimeMillis("10 "));
-        assertEquals(10000L, registy.convertTimeMillis("10"));
+        assertEquals(10000L, MockProcessor.convertTimeMillis("10 "));
+        assertEquals(10000L, MockProcessor.convertTimeMillis("10"));
     }
 
     @Test
     public void testInvalid() throws Exception {
         try {
-            registy.convertTimeMillis("foo");
+        	MockProcessor.convertTimeMillis("foo");
             fail();
         } catch (NumberFormatException e) {
             // expected
         }
     }
 
-    @Before
-    public void setUp() throws Exception {
-        registy = new MockProcessor();
-    }
-
     private class MockProcessor extends ConversationProcessor {
         
         public MockProcessor() {
             super(new DefaultAssemblyFactory());
-        }
-
-        @Override
-        protected long convertTimeMillis(String expr) throws NumberFormatException {
-            return super.convertTimeMillis(expr);
         }
     }
 }
