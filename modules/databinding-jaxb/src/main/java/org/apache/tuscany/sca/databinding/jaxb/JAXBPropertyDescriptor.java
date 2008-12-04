@@ -31,11 +31,11 @@ import javax.xml.namespace.QName;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * A PropertyDescriptor provides acesss to a bean property.  Values can be queried/changed using the
+ * A PropertyDescriptor provides access to a bean property.  Values can be queried/changed using the
  * read and writer methods of the PropertyDescriptor.
  * <p/>
  * A PropertyDescriptorPlus object wraps a PropertyDescriptor and supplies enhanced set/get methods
- * that match JAXB semantis.
+ * that match JAXB semantics.
  * <p/>
  * For example, the set(..) method is smart enough to add lists, arrays and atomic values on JAXB
  * beans.
