@@ -144,7 +144,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 // If the Java interface has never been resolved yet, do it now
                 ClassReference classReference = new ClassReference(javaInterface.getName());
                 classReference = resolver.resolveModel(ClassReference.class, classReference);
-                Class javaClass = classReference.getJavaClass();
+                Class<?> javaClass = classReference.getJavaClass();
                 if (javaClass == null) {
                     error("ClassNotFoundException", resolver, javaInterface.getName());
                     return javaInterface;
