@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;

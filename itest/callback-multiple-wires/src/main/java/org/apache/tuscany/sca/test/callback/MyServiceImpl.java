@@ -32,13 +32,13 @@ public class MyServiceImpl implements MyService {
 
     @Context
     protected RequestContext requestContext;
-    
+
     public void someMethod(String arg) {
         // invoke the callback
         try {
             MyServiceCallback myServiceCallback = requestContext.getCallback();
             myServiceCallback.receiveResult(arg + " -> receiveResult");
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
         }
     }

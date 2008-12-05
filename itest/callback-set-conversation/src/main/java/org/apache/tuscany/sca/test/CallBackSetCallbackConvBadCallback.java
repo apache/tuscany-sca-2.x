@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test;
 
 import java.io.Serializable;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class CallBackSetCallbackConvBadCallback implements Serializable {
 

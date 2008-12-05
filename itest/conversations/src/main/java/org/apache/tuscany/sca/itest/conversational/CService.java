@@ -29,14 +29,14 @@ public interface CService {
     String getState();
 
     void setState(String aState);
-    
+
     Object getConversationID();
-    
+
     Object getConversationObjectConversationId();
-        
+
     void setConversationID(String theID);
-    
+
     void endConversation();
-    
+
     void endConversationViaAnnotatedMethod();
 }

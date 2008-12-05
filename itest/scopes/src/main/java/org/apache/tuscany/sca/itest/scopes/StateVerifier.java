@@ -20,6 +20,6 @@ package org.apache.tuscany.sca.itest.scopes;
 
 public interface StateVerifier {
     void setState(int i);
+
     boolean checkState(int i);
 }
-

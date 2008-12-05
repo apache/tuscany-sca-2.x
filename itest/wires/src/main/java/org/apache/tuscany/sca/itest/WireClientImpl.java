@@ -19,8 +19,7 @@
 
 package org.apache.tuscany.sca.itest;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -41,10 +40,10 @@ public class WireClientImpl implements WireClient {
     public void runTests() {
         // Make sure the wire has injected a reference
         Assert.assertNotNull(aWireService);
-        
+
         // Test the injected reference
         String msg = aWireService.sayHello("MCC");
-        
+
         // Validate the response
         Assert.assertNotNull(msg);
         Assert.assertEquals("Hello MCC", msg);

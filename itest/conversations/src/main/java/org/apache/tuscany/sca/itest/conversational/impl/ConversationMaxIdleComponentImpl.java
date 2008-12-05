@@ -26,17 +26,17 @@ import org.osoa.sca.annotations.Service;
 
 @Service(ConversationalService.class)
 @Scope("CONVERSATION")
-@ConversationAttributes(maxIdleTime="1 seconds")
+@ConversationAttributes(maxIdleTime = "1 seconds")
 public class ConversationMaxIdleComponentImpl implements ConversationalService {
 
     private int count;
 
-    public void businessException() throws Exception {   
+    public void businessException() throws Exception {
     }
-    
-    public void businessExceptionCallback() throws Exception {   
-    }    
-    
+
+    public void businessExceptionCallback() throws Exception {
+    }
+
     public void destroy() {
     }
 

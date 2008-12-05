@@ -20,8 +20,7 @@ package org.apache.tuscany.sca.test;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
@@ -111,7 +110,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
 
         Assert.assertEquals("CallBackSetCallback - Test4", true, aFile.exists());
 
-        aCallBackService.setCallback(null);  // leave this in the default state for next test
+        aCallBackService.setCallback(null); // leave this in the default state for next test
 
     }
 
@@ -178,10 +177,10 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
         // If not, this method will return false.
         //
 
-        aCallBackService.setCallback(callBack);  // ensure no client-side exception
+        aCallBackService.setCallback(callBack); // ensure no client-side exception
 
-        boolean result = aCallBackService.getService().setCallbackIllegally
-                             ("Try to set callback on your own service reference");
+        boolean result =
+            aCallBackService.getService().setCallbackIllegally("Try to set callback on your own service reference");
 
         Assert.assertEquals("CallBackSetCallback - Test10", true, result);
 

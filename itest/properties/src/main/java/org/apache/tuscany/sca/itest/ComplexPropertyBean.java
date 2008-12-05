@@ -97,7 +97,7 @@ public class ComplexPropertyBean {
     /**
      * It is a method which implements toString() function
      */
-    @Override
+
     public String toString() {
         return Double.toString(integerNumber) + " - "
             + Double.toString(floatNumber)

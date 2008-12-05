@@ -18,28 +18,34 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+public class CallBackIdTestCase {
 
-public class CallBackIdTestCase extends TestCase {
-
-    private SCADomain domain;
+    private Node node;
     private CallBackIdClient aCallBackClient;
 
+    @Test
     public void testCallBackBasic() {
         aCallBackClient.run();
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("CallBackIdClient.composite");
-
-        aCallBackClient = domain.getService(CallBackIdClient.class, "CallBackIdClient");
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("CallBackIdClient.composite");
+        node = NodeFactory.newInstance().createNode("CallBackIdClient.composite", new Contribution("c1", location));
+        node.start();
+        aCallBackClient = node.getService(CallBackIdClient.class, "CallBackIdClient");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
 }

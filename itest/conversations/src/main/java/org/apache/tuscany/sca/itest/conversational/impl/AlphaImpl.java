@@ -39,10 +39,10 @@ import org.osoa.sca.annotations.Service;
 public class AlphaImpl implements Alpha {
     @Reference
     public Beta beta;
-    
+
     @Context
     protected ComponentContext componentContext;
-    
+
     public void run(int param) {
         CallableReference<Gamma> gammaRef = null;
         boolean testPassed = true;
@@ -61,8 +61,7 @@ public class AlphaImpl implements Alpha {
         } finally {
             TestResult.updateCompleted();
             if (gammaRef != null) {
-                TestResult.results.put(gammaRef.getConversation()
-                        .getConversationID(), testPassed);
+                TestResult.results.put(gammaRef.getConversation().getConversationID(), testPassed);
                 gammaRef.getService().stop();
             }
         }

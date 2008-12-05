@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,25 +30,26 @@ import org.junit.Test;
 
 public class ConversationalJ2SETestCase {
 
-    private SCADomain domain;
+    private Node node;
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance("conversational.composite");
-
+        String location = ContributionLocationHelper.getContributionLocation("conversational.composite");
+        node = NodeFactory.newInstance().createNode("conversational.composite", new Contribution("c1", location));
+        node.start();
     }
 
     @After
     public void tearDown() throws Exception {
-        if (domain != null) {
-            domain.close();
+        if (node != null) {
+            node.stop();
         }
     }
 
     @Test
     public void testStatefulConversation() {
         ConversationalService conversationalService =
-            domain.getService(ConversationalService.class, "ConversationalServiceStateful");
+            node.getService(ConversationalService.class, "ConversationalServiceStateful");
 
         conversationalService.initializeCount(1);
         Assert.assertEquals(1, conversationalService.retrieveCount());
@@ -66,7 +70,7 @@ public class ConversationalJ2SETestCase {
     @Test
     public void testStatelessConversation() {
         ConversationalService conversationalService =
-            domain.getService(ConversationalService.class, "ConversationalServiceStateless");
+            node.getService(ConversationalService.class, "ConversationalServiceStateless");
 
         conversationalService.initializeCount(1);
         Assert.assertEquals(1, conversationalService.retrieveCount());

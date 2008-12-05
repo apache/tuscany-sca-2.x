@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
@@ -81,8 +80,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         aCallbackObject = new CallBackSetCallbackConvObjectCallback();
         aCallbackObject.incrementCallBackCount();
 
-        ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
-                = componentContext.cast(aCallBackService);
+        ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef = componentContext.cast(aCallBackService);
         aCallBackServiceRef.setCallback(aCallbackObject);
         aCallBackService.knockKnock("Knock Knock 7");
 
@@ -102,8 +100,8 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         //
 
         try {
-            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
-                    = componentContext.cast(aCallBackService);
+            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef =
+                componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvBadCallback());
             aCallBackService.knockKnock("Knock Knock 8");
         }
@@ -112,8 +110,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         // This should catch an appropriate exception.
         // 
 
-        catch (IllegalArgumentException goodEx)
-        {
+        catch (IllegalArgumentException goodEx) {
             System.out.println("correct exception " + goodEx);
             correctException = true;
         }
@@ -140,16 +137,15 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         //
 
         try {
-            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
-                    = componentContext.cast(aCallBackService);
+            ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef =
+                componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvNonSerCallback());
             aCallBackService.knockKnock("Knock Knock 9");
         }
         //
         // This should catch an appropriate exception.
         //
-        catch (IllegalArgumentException goodEx)
-        {
+        catch (IllegalArgumentException goodEx) {
             System.out.println("correct exception " + goodEx);
             correctException = true;
         } catch (Exception ex) {

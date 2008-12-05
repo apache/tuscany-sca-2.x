@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.itest.services;
 
 public class AComponentImpl implements AComponent {
 
-	public String foo() {
-		return "AComponent";
-	}
+    public String foo() {
+        return "AComponent";
+    }
 
 }

@@ -32,14 +32,14 @@ public class ConversationIdComponentImpl implements ConversationIdService {
     public String cid;
 
     private String setterCid;
-    
+
     public String getCIDField() {
         return cid;
     }
+
     public String getCIDSetter() {
         return setterCid;
     }
-    
 
     @ConversationID
     public void setCID(String cid) {

@@ -22,15 +22,12 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2008.06.07 at 03:30:47 PM EDT 
 //
-
-
 package test.jaxb.props;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-
 
 /**
  * This object contains factory methods for each 

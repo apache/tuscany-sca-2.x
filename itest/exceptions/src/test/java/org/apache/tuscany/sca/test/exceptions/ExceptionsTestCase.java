@@ -18,56 +18,68 @@
  */
 package org.apache.tuscany.sca.test.exceptions;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class ExceptionsTestCase extends TestCase {
+public class ExceptionsTestCase {
 
-    private SCADomain domain;
+    private static Node node;
 
     /**
      * Test exception handling over a local interface
      */
+    @Test
     public void testLocal() {
-        ExceptionHandler exceptionHandler = domain.getService(ExceptionHandler.class, "main");
+        ExceptionHandler exceptionHandler = node.getService(ExceptionHandler.class, "main");
         exceptionHandler.testing();
-        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood() );
+        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood());
         assertNotNull(exceptionHandler.getTheBad());
-        assertEquals( Checked.class, exceptionHandler.getTheBad().getClass());
+        assertEquals(Checked.class, exceptionHandler.getTheBad().getClass());
         assertSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
         assertNotNull(exceptionHandler.getTheUgly());
-        assertEquals( UnChecked.class, exceptionHandler.getTheUgly().getClass());
+        assertEquals(UnChecked.class, exceptionHandler.getTheUgly().getClass());
         assertSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
     }
-    
+
     /**
      * Test exception handling over a remotable interface
      */
+    @Test
     public void testRemote() {
-        ExceptionHandler exceptionHandler = domain.getService(ExceptionHandler.class, "mainRemote");
+        ExceptionHandler exceptionHandler = node.getService(ExceptionHandler.class, "mainRemote");
         exceptionHandler.testing();
-        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood() );
+        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood());
         assertNotNull(exceptionHandler.getTheBad());
-        assertEquals( Checked.class, exceptionHandler.getTheBad().getClass());
+        assertEquals(Checked.class, exceptionHandler.getTheBad().getClass());
         assertNotSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
         assertNotNull(exceptionHandler.getTheUgly());
-        assertEquals( UnChecked.class, exceptionHandler.getTheUgly().getClass());
-        
+        assertEquals(UnChecked.class, exceptionHandler.getTheUgly().getClass());
+
         // [rfeng] We're not in a position to copy non business exceptions
         // assertNotSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
 
     }
 
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("ExceptionTest.composite");
+        node = NodeFactory.newInstance().createNode("ExceptionTest.composite", new Contribution("c1", location));
+        node.start();
+    }
 
-    @Override
-    protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("ExceptionTest.composite");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
     }
-    
-    @Override
-    protected void tearDown() throws Exception {
-    	domain.close();
-    }
-    
+
 }

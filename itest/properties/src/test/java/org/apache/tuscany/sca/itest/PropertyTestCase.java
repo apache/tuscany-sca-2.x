@@ -19,22 +19,24 @@
 
 package org.apache.tuscany.sca.itest;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import java.math.BigInteger;
-
-import junit.framework.Assert;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import test.jaxb.props.ReturnCodeProperties;
+
 import commonj.sdo.DataObject;
 
 /**
@@ -43,13 +45,11 @@ import commonj.sdo.DataObject;
  * 'PropertyTest.composite'. It basically tests all types of property values returned from SCA runtime environment.
  */
 public class PropertyTestCase {
-    private static SCADomain domain;
+    private static Node node;
     private static ABComponent abService;
     private static CDComponent cdService;
     private static ABCDComponent abcdService;
     private static PropertyComponent propertyService;
-
-
 
     /**
      * Method annotated with
@@ -368,7 +368,6 @@ public class PropertyTestCase {
         assertEquals("Sdo Middler Name", dataObject.getString("middleName"));
         assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
     }
-     
 
     @Test
     public void testGetLocationFromComponentContext() {
@@ -439,30 +438,32 @@ public class PropertyTestCase {
      * Method annotated with
      * 
      * @BeforeClass is used for one time set Up, it executes before every tests. This method is used to create a test
-     *              Embedded SCA Domain, to start the SCA Domain and to get a reference to 4 services namely 'abService'
+     *              Embedded SCA node, to start the SCA node and to get a reference to 4 services namely 'abService'
      *              service, 'cdService' service, 'abcdService' service and 'propertyService' service
      */
     @BeforeClass
     public static void init() throws Exception {
         try {
-            domain = SCADomain.newInstance("PropertyTest.composite");
+            String location = ContributionLocationHelper.getContributionLocation("PropertyTest.composite");
+            node = NodeFactory.newInstance().createNode("PropertyTest.composite", new Contribution("c1", location));
+            node.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        abService = domain.getService(ABComponent.class, "ABComponent");
-        cdService = domain.getService(CDComponent.class, "CDComponent");
-        abcdService = domain.getService(ABCDComponent.class, "ABCDComponent");
-        propertyService = domain.getService(PropertyComponent.class, "PropertyComponent");
+        abService = node.getService(ABComponent.class, "ABComponent");
+        cdService = node.getService(CDComponent.class, "CDComponent");
+        abcdService = node.getService(ABCDComponent.class, "ABCDComponent");
+        propertyService = node.getService(PropertyComponent.class, "PropertyComponent");
     }
 
     /**
      * Method annotated with
      * 
      * @AfterClass is used for one time Tear Down, it executes after every tests. This method is used to close the
-     *             domain, close any previously opened connections etc
+     *             node, close any previously opened connections etc
      */
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 }

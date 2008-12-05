@@ -91,7 +91,7 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
 
     }
 
-    @Reference 
+    @Reference
     public void setExceptionThrower(ExceptionThrower exceptionThrower) {
         this.exceptionThrower = exceptionThrower;
     }

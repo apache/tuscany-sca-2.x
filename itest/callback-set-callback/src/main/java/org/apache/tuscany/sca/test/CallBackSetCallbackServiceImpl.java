@@ -56,7 +56,7 @@ public class CallBackSetCallbackServiceImpl implements CallBackSetCalbackService
 
         try {
             requestContext = context.getRequestContext();
-            serviceRef = (ServiceReference) requestContext.getServiceReference();
+            serviceRef = (ServiceReference)requestContext.getServiceReference();
             serviceRef.setCallback(serviceRef);
         } catch (ClassCastException goodEx) {
             exceptionProduced = true;

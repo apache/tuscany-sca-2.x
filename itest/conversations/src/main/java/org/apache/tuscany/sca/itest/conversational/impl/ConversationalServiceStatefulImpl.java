@@ -28,7 +28,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-
 /**
  * The service used when testing stateful conversations
  *
@@ -36,82 +35,80 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(ConversationalService.class)
 @Scope("CONVERSATION")
-@ConversationAttributes(maxAge="10 minutes",
-                        maxIdleTime="5 minutes",
-                        singlePrincipal=false)
+@ConversationAttributes(maxAge = "10 minutes", maxIdleTime = "5 minutes", singlePrincipal = false)
 public class ConversationalServiceStatefulImpl implements ConversationalService {
 
     @ConversationID
     protected String conversationId;
-    
+
     @Callback
-    protected ConversationalCallback conversationalCallback; 
-    
+    protected ConversationalCallback conversationalCallback;
+
     // local count - accumulates during the conversation
     private int count = 0;
-          
+
     // a static member variable that records the number of times this service is called
     public static StringBuffer calls = new StringBuffer();
-   
+
     @Init
-    public void init(){
+    public void init() {
         calls.append("init,");
     }
-    
+
     @Destroy
-    public void destroy(){
+    public void destroy() {
         calls.append("destroy,");
     }
-    
-    public void initializeCount(int count){
-        calls.append("initializeCount,");       
+
+    public void initializeCount(int count) {
+        calls.append("initializeCount,");
         this.count = count;
     }
-    
-    public void incrementCount(){
-        calls.append("incrementCount,");        
+
+    public void incrementCount() {
+        calls.append("incrementCount,");
         count++;
     }
-    
-    public int retrieveCount(){
-        calls.append("retrieveCount,"); 
+
+    public int retrieveCount() {
+        calls.append("retrieveCount,");
         return count;
     }
-    
+
     public void businessException() throws Exception {
         throw new Exception("Business Exception");
-    }     
-    
-    public void initializeCountCallback(int count){
-        calls.append("initializeCountCallback,"); 
+    }
+
+    public void initializeCountCallback(int count) {
+        calls.append("initializeCountCallback,");
         this.count = count;
         conversationalCallback.initializeCount(count);
     }
-    
-    public void incrementCountCallback(){
-        calls.append("incrementCountCallback,"); 
+
+    public void incrementCountCallback() {
+        calls.append("incrementCountCallback,");
         count++;
         conversationalCallback.incrementCount();
     }
-    
-    public int retrieveCountCallback(){
-        calls.append("retrieveCountCallback,"); 
+
+    public int retrieveCountCallback() {
+        calls.append("retrieveCountCallback,");
         return conversationalCallback.retrieveCount();
     }
-    
+
     public void businessExceptionCallback() throws Exception {
-        calls.append("businessExceptionCallback,");        
+        calls.append("businessExceptionCallback,");
         conversationalCallback.businessException();
-    }    
-    
-    public String endConversation(){
-        calls.append("endConversation,"); 
+    }
+
+    public String endConversation() {
+        calls.append("endConversation,");
         count = 0;
         return conversationId;
     }
-    
-    public String endConversationCallback(){
-        calls.append("endConversationCallback,"); 
+
+    public String endConversationCallback() {
+        calls.append("endConversationCallback,");
         return conversationalCallback.endConversation();
     }
 }

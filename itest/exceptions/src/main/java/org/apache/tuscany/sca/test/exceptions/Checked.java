@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.test.exceptions;
 
-
 public class Checked extends Exception {
     private static final long serialVersionUID = -129752837478357452L;
 

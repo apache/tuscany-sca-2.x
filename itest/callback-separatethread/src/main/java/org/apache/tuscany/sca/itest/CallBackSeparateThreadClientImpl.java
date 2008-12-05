@@ -21,8 +21,7 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -58,22 +57,22 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
     public void runTests() {
         // Register for 1 second call back
         registerFor1SecondCallback();
-        
+
         // Wait for a few 1 second call backs
         System.out.println("Waiting for some 1 second calls");
         waitForSome1SecondCallbacks();
 
         // Register for 5 second call back
         registerFor5SecondCallback();
-        
+
         // Wait for a few 1 second call backs
         System.out.println("Waiting for some 1 second calls");
         waitForSome1SecondCallbacks();
-        
+
         // Wait for a few 5 second call backs
         System.out.println("Waiting for some 5 second calls");
         waitForSome5SecondCallbacks();
-        
+
         System.out.println("Done");
     }
 
@@ -83,7 +82,7 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
     private void waitForSome1SecondCallbacks() {
         // Reset the one second call back count
         oneSecondCallbackCount.set(0);
-        
+
         // Wait until we have 10 1 second call backs or 60 seconds has passed
         final long start = System.currentTimeMillis();
         do {
@@ -91,15 +90,14 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
                 System.out.println("Received enough 1 second notifications");
                 return;
             }
-            
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 Assert.fail("Unexpeceted exception " + e);
             }
-        }
-        while (System.currentTimeMillis() - start < SIXTY_SECONDS);
-        
+        } while (System.currentTimeMillis() - start < SIXTY_SECONDS);
+
         // If we get to here then we did not receive enough events
         Assert.fail("Did not receive enough 1 second events");
     }
@@ -110,31 +108,26 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
     private void waitForSome5SecondCallbacks() {
         // Reset the five second call back count
         fiveSecondCallbackCount.set(0);
-        
+
         // Wait until we have 4 5 second call backs or 60 seconds has passed
         final long start = System.currentTimeMillis();
-        do
-        {
+        do {
             if (fiveSecondCallbackCount.get() >= 4) {
                 System.out.println("Received enough 5 second notifications");
                 return;
             }
-            
-            try
-            {
+
+            try {
                 Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 Assert.fail("Unexpeceted exception " + e);
             }
-        }
-        while (System.currentTimeMillis() - start < SIXTY_SECONDS);
-        
+        } while (System.currentTimeMillis() - start < SIXTY_SECONDS);
+
         // If we get to here then we did not receive enough events
         Assert.fail("Did not receive enough 5 second events");
     }
-    
+
     /**
      * Register to receive one second call backs
      */
@@ -165,8 +158,7 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
         } else if (aEventName.equals("FIVE")) {
             final int newValue = fiveSecondCallbackCount.incrementAndGet();
             //System.out.println("Received total of " + newValue + " 5 second call backs");
-        }
-        else
+        } else
             System.out.println("Unknown event type of " + aEventName);
     }
 }

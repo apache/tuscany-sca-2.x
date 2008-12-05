@@ -23,5 +23,5 @@ import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 public interface AComponent {
-	String foo();
+    String foo();
 }

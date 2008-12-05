@@ -32,15 +32,15 @@ public class CompositeScopeStateVerifierImpl implements StateVerifier {
     ThreadLocal<Integer> moduleState;
 
     public CompositeScopeStateVerifierImpl() {
-      moduleState = new ThreadLocal<Integer>();
+        moduleState = new ThreadLocal<Integer>();
     }
 
     public void setState(int i) {
-      moduleState.set(i);
+        moduleState.set(i);
     }
 
     public boolean checkState(int i) {
-      return (moduleState.get() == i);
+        return (moduleState.get() == i);
     }
 
 }

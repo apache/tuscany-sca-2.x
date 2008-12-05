@@ -42,8 +42,7 @@ public class BetaImpl implements Beta {
     public Gamma gamma;
 
     public CallableReference<Gamma> getRef(int param) {
-        ServiceReference<Gamma> gammaRef = componentContext
-                .getServiceReference(Gamma.class, "gamma");
+        ServiceReference<Gamma> gammaRef = componentContext.getServiceReference(Gamma.class, "gamma");
         Gamma g = gammaRef.getService();
         g.start(param);
         return gammaRef;

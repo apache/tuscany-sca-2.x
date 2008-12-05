@@ -19,10 +19,16 @@
 
 package org.apache.tuscany.sca.itest;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test case will attempt to use a wire
@@ -30,10 +36,10 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class WireTestCase extends TestCase {
 
     /**
-     * The SCADomain we are using 
+     * The Node we are using 
      */
-    private SCADomain domain;
-    
+    private Node node;
+
     /**
      * The client the tests should use
      */
@@ -42,28 +48,33 @@ public class WireTestCase extends TestCase {
     /**
      * Run the wire tests
      */
+    @Test
     public void testWire() {
-        aWireClient.runTests(); 
+        aWireClient.runTests();
     }
 
     /**
      * Load the Wire composite and look up the client.
      */
-    @Override
-    protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("WireTest.composite");
-        aWireClient = domain.getService(WireClient.class, "WireClient");
+
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("WireTest.composite");
+        node = NodeFactory.newInstance().createNode("WireTest.composite", new Contribution("c1", location));
+        node.start();
+        aWireClient = node.getService(WireClient.class, "WireClient");
         Assert.assertNotNull(aWireClient);
-        
-        aWireClient = domain.getService(WireClient.class, "AnotherWireClient");
+
+        aWireClient = node.getService(WireClient.class, "AnotherWireClient");
         Assert.assertNotNull(aWireClient);
     }
 
     /**
-     * Shutdown the SCA domain
+     * Shutdown the SCA node
      */
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
 }
