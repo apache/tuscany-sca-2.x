@@ -396,7 +396,7 @@ class BaseWireBuilderImpl {
 
         List<Endpoint> endpoints = new ArrayList<Endpoint>();
         
-        if (componentReference.getAutowire() == Boolean.TRUE) {
+        if (componentReference.getAutowire() == Boolean.TRUE && componentReference.getTargets().isEmpty()) {
 
             // Find suitable targets in the current composite for an
             // autowired reference
