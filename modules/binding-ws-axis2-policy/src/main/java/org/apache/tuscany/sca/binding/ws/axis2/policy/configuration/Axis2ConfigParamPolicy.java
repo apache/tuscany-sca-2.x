@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -33,8 +34,7 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev$ $Date$
  */
 public class Axis2ConfigParamPolicy implements Policy {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-    public static final QName NAME = new QName(SCA10_TUSCANY_NS, "wsConfigParam");
+    public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "wsConfigParam");
     private Map<String, OMElement> paramElements = new Hashtable<String, OMElement>();
     
     public Map<String, OMElement> getParamElements() {
