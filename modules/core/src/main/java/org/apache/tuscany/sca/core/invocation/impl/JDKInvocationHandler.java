@@ -29,10 +29,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
+import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
+import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
-import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.scope.Scope;
@@ -91,7 +92,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
             this.conversation = (ConversationExt)callableReference.getConversation();
-            this.wire = ((CallableReferenceImpl<?>)callableReference).getRuntimeWire();
+            this.wire = ((CallableReferenceExt<?>)callableReference).getRuntimeWire();
             if (wire != null) {
                 init(wire);
             }
@@ -351,7 +352,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         Interface interfaze = msg.getFrom().getCallbackEndpoint().getInterfaceContract().getInterface();
         if (callbackObject != null) {
             if (callbackObject instanceof ServiceReference) {
-                EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
+                EndpointReference callbackRef = ((CallableReferenceExt<?>)callbackObject).getEndpointReference();
                 parameters.setCallbackReference(callbackRef);
             } else {
                 if (interfaze != null) {
