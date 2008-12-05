@@ -26,7 +26,7 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.security.SecurityUtil;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
