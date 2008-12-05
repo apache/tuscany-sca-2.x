@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-security-ws</artifactId>
+            <artifactId>tuscany-binding-ws-axis2-policy</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
