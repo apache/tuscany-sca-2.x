@@ -77,7 +77,9 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
+        utilities.addUtility(mediator);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
+        factories.addFactory(factory);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);

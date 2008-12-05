@@ -31,8 +31,7 @@ public interface ComponentContextFactory {
      * Create an instance of ComponentContext
      * 
      * @param component The runtime component
-     * @param requestContextFactory The factory to create RequestContext
      * @return An instance of ComponentContext for the component
      */
-    ComponentContext createComponentContext(RuntimeComponent component, RequestContextFactory requestContextFactory);
+    ComponentContext createComponentContext(RuntimeComponent component);
 }

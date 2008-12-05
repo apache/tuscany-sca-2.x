@@ -24,6 +24,7 @@ import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
@@ -101,8 +102,7 @@ public class RequestContextImpl implements RequestContext {
         JavaInterface javaInterface = (JavaInterface) callbackReference.getInterfaceContract().getInterface();
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
-        ProxyFactory proxyFactory = javaClass.isInterface() ? proxyFactoryExtensionPoint.getInterfaceProxyFactory() :
-            proxyFactoryExtensionPoint.getClassProxyFactory();
+        ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactoryExtensionPoint);
         CallbackReferenceImpl ref = CallbackReferenceImpl.newInstance(javaClass, proxyFactory, wires);
         if (ref != null) {  
             //ref.resolveTarget();

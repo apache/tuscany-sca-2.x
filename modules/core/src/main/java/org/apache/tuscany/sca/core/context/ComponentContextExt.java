@@ -27,4 +27,5 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
  */
 public interface ComponentContextExt extends RuntimeComponentContext {
     CompositeActivator getCompositeActivator();
+    CompositeContext getCompositeContext();
 }
