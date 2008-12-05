@@ -30,6 +30,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
+
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -64,7 +66,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
                 case START_ELEMENT : {
                     name = reader.getName();
                     if ( PARAMETER.equals(name.getLocalPart()) ) {
-                        paramName = reader.getAttributeValue(null, "name");
+                        paramName = reader.getAttributeValue(null, Constants.NAME);
                         parameterElement = loadElement(reader);
                         policy.getParamElements().put(paramName, parameterElement);
                     }
