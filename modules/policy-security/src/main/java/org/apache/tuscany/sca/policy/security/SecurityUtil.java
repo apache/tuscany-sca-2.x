@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.policy;
+package org.apache.tuscany.sca.policy.security;
 
 import java.security.Principal;
 
