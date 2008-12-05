@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.test.exceptions;
 
-
 /**
  * Local exception thrower
  * @version $Rev$ $Date$

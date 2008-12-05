@@ -19,8 +19,8 @@
 
 package mysca.test.myservice;
 
-
 public interface MyService {
     String getLocation();
+
     String getYear();
 }

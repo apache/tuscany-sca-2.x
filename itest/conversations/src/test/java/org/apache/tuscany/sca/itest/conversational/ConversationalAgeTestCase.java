@@ -19,29 +19,33 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.After;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osoa.sca.ConversationEndedException;
 
 public class ConversationalAgeTestCase {
 
-    private SCADomain domain;
+    private static Node node;
 
-    @Before
-    public void setUp() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.ReaperInterval", "2");        
-        domain = SCADomain.newInstance("ConversationAge.composite");
-
+    @BeforeClass
+    public static void setUp() throws Exception {
+        System.setProperty("org.apache.tuscany.sca.core.conversation.ConversationManager.ReaperInterval", "2");
+        String location = ContributionLocationHelper.getContributionLocation("ConversationAge.composite");
+        node = NodeFactory.newInstance().createNode("ConversationAge.composite", new Contribution("c1", location));
+        node.start();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.ReaperInterval");        
-        if (domain != null) {
-            domain.close();
+    @AfterClass
+    public static void tearDown() throws Exception {
+        System.clearProperty("org.apache.tuscany.sca.core.conversation.ConversationManager.ReaperInterval");
+        if (node != null) {
+            node.stop();
         }
     }
 
@@ -49,7 +53,7 @@ public class ConversationalAgeTestCase {
     public void testMaxAge() throws InterruptedException {
 
         ConversationalService conversationalService =
-            domain.getService(ConversationalService.class, "ConversationAgeComponent");
+            node.getService(ConversationalService.class, "ConversationAgeComponent");
 
         Assert.assertEquals(0, conversationalService.retrieveCount());
         conversationalService.initializeCount(42);
@@ -67,7 +71,7 @@ public class ConversationalAgeTestCase {
     public void testAgeExpired() throws InterruptedException {
 
         ConversationalService conversationalService =
-            domain.getService(ConversationalService.class, "ConversationAgeComponent");
+            node.getService(ConversationalService.class, "ConversationAgeComponent");
 
         Assert.assertEquals(0, conversationalService.retrieveCount());
         conversationalService.initializeCount(42);
@@ -86,7 +90,7 @@ public class ConversationalAgeTestCase {
     public void testMaxIdle() throws InterruptedException {
 
         ConversationalService conversationalService =
-            domain.getService(ConversationalService.class, "ConversationIdleComponent");
+            node.getService(ConversationalService.class, "ConversationIdleComponent");
 
         Assert.assertEquals(0, conversationalService.retrieveCount());
         conversationalService.initializeCount(42);

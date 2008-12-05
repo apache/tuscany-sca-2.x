@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class CallBackSetCallbackBadCallback {
 

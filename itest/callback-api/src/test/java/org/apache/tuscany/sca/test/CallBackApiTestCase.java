@@ -18,13 +18,17 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+public class CallBackApiTestCase {
 
-public class CallBackApiTestCase extends TestCase {
-
-    private static SCADomain domain;
+    private static Node node;
     private CallBackApiClient aCallBackClient;
 
     /**
@@ -35,28 +39,32 @@ public class CallBackApiTestCase extends TestCase {
      * 2. Test in which the target does not call back to the client <br>
      * 3. Test in which the target calls back multiple times to the client.
      */
+    @Test
     public void testCallBackBasic() {
+        aCallBackClient = node.getService(CallBackApiClient.class, "CallBackApiClient");
         aCallBackClient.run();
     }
 
     /**
-     * This function creates the SCADomain instance and gets an Instance of CallBackApiClient.class
+     * This function creates the Node instance and gets an Instance of CallBackApiClient.class
      */
-    @Override
-    protected void setUp() throws Exception {
-        if (domain == null) {
-            domain = SCADomain.newInstance("CallBackApiTest.composite");
-        }
 
-        aCallBackClient = domain.getService(CallBackApiClient.class, "CallBackApiClient");
+    @BeforeClass
+    public static void setUp() throws Exception {
+        if (node == null) {
+            String location = ContributionLocationHelper.getContributionLocation("CallBackApiTest.composite");
+            node = NodeFactory.newInstance().createNode("CallBackApiTest.composite", new Contribution("c1", location));
+            node.start();
+        }
     }
 
     /**
-     * This function destroys the SCADomain instance that was created in setUp()
+     * This function destroys the Node instance that was created in setUp()
      */
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
     }
 
 }

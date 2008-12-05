@@ -18,20 +18,26 @@
  */
 package org.apache.tuscany.sca.test.opoverload.impl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+public class OverloadATestCase {
 
-public class OverloadATestCase extends TestCase {
-
-    private SCADomain domain;
-    private OverloadASourceTarget overloadA;
+    private static Node node;
+    private static OverloadASourceTarget overloadA;
 
     /**
      * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
      * test verifies the values compared are same as the values retrieved from the SCA runtime.
      */
+    @Test
     public void testOperationAall() {
         String[] result = overloadA.operationAall();
         assertEquals(5, result.length);
@@ -42,21 +48,25 @@ public class OverloadATestCase extends TestCase {
         assertEquals(OverloadASourceTarget.opName + "four" + 4, result[4]);
     }
 
+    @Test
     public void testOperationAInt() {
         String result = overloadA.operationA(29);
         assertEquals(OverloadASourceTarget.opName + 29, result);
     }
 
+    @Test
     public void testOperationAString() {
         String result = overloadA.operationA("rick:-)");
         assertEquals(OverloadASourceTarget.opName + "rick:-)", result);
     }
 
+    @Test
     public void testOperationAIntString() {
         String result = overloadA.operationA(123, "Tuscany");
         assertEquals(OverloadASourceTarget.opName + 123 + "Tuscany", result);
     }
 
+    @Test
     public void testOperationStringInt() {
         String result = overloadA.operationA("StringInt", 77);
         assertEquals(OverloadASourceTarget.opName + "StringInt" + 77, result);
@@ -64,21 +74,25 @@ public class OverloadATestCase extends TestCase {
 
     /**
      * setUp() is a method in JUnit Frame Work which is executed before all others methods in the class extending
-     * unit.framework.TestCase. So this method is used to create a test Embedded SCA Domain, to start the SCA Domain and
+     * unit.framework.TestCase. So this method is used to create a test Embedded SCA node, to start the SCA node and
      * to get a reference to the contribution service
      */
-    @Override
-    protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("OperationOverload.composite");
-        overloadA = domain.getService(OverloadASourceTarget.class, "OverloadASourceComponent");
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("OperationOverload.composite");
+        node = NodeFactory.newInstance().createNode("OperationOverload.composite", new Contribution("c1", location));
+        node.start();
+        overloadA = node.getService(OverloadASourceTarget.class, "OverloadASourceComponent");
     }
 
     /**
      * tearDown() is a method in JUnit Frame Work which is executed after all other methods in the class extending
-     * unit.framework.TestCase. So this method is used to close the SCA domain.
+     * unit.framework.TestCase. So this method is used to close the SCA node.
      */
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
     }
 }

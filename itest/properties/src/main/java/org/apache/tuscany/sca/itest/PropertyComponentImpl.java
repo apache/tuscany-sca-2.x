@@ -25,10 +25,10 @@ import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
 
+import test.jaxb.props.ReturnCodeProperties;
+
 import com.example.customer.sdo.impl.CustomerImpl;
 import commonj.sdo.DataObject;
-
-import test.jaxb.props.ReturnCodeProperties;
 
 /**
  * This class Implements the interface PropertyComponent and gives implementation for all methods which are declared in
@@ -37,7 +37,7 @@ import test.jaxb.props.ReturnCodeProperties;
 public class PropertyComponentImpl implements PropertyComponent {
     @Context
     protected ComponentContext context;
-    
+
     @Property
     protected CustomerImpl customerSdo;
 
@@ -173,7 +173,7 @@ public class PropertyComponentImpl implements PropertyComponent {
     public DataObject[] getSdoArrayProperty() {
         return sdoArray;
     }
-    
+
     public String getLocationFromComponentContext() {
         return context.getProperty(String.class, "location");
     }

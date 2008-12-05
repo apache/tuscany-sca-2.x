@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
-
 import org.apache.tuscany.sca.itest.conversational.BService;
 import org.apache.tuscany.sca.itest.conversational.Constants;
 import org.osoa.sca.annotations.ConversationID;
@@ -43,7 +42,7 @@ public class BServiceImpl implements BService {
     public BServiceImpl() {
         System.out.println("---> BServiceImpl constructor for " + this);
     }
-    
+
     /**
      * Returns the state for this service.
      * 

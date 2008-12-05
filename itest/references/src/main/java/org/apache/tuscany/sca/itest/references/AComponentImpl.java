@@ -37,10 +37,9 @@ public class AComponentImpl implements AComponent {
 
     @Reference(name = "dReferences")
     public Collection<DComponent> dReferences;
-    
+
     @Reference(name = "dReferenceArray")
     public DComponent[] dReferenceArray;
-
 
     @Reference(name = "dServiceReferences")
     public List<ServiceReference<DComponent>> dServiceReferences;
@@ -93,8 +92,8 @@ public class AComponentImpl implements AComponent {
             str.deleteCharAt(str.length() - 1);
         }
         return str.toString();
-    }    
-    
+    }
+
     public String fooMultipleD() {
         StringBuffer str = new StringBuffer();
         for (DComponent d : dReferences) {
@@ -106,7 +105,7 @@ public class AComponentImpl implements AComponent {
         }
         return str.toString();
     }
-    
+
     public String fooMultipleDServiceRef() {
         StringBuffer str = new StringBuffer();
         for (ServiceReference<DComponent> d : dServiceReferences) {

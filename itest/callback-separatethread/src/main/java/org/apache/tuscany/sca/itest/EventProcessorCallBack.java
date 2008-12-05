@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.itest;
 
-
 import org.osoa.sca.annotations.Remotable;
 
 /**

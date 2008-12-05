@@ -18,31 +18,40 @@
  */
 package org.apache.tuscany.sca.test.callback;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * A TestCase that demonstrates resolving the client service and initiating the callback sequence
  */
-public class CallbackMultiWireTestCase extends TestCase {
+public class CallbackMultiWireTestCase {
 
-    private SCADomain scaDomain;
+    private Node node;
     private MyClient myClient1;
     private MyClient myClient2;
 
-    @Override
-    protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("CallbackMultiWireTest.composite");
-        myClient1 = scaDomain.getService(MyClient.class, "MyClientComponent1");
-        myClient2 = scaDomain.getService(MyClient.class, "MyClientComponent2");
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
-        scaDomain.close();
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("CallbackMultiWireTest.composite");
+        node = NodeFactory.newInstance().createNode("CallbackMultiWireTest.composite", new Contribution("c1", location));
+        node.start();
+        myClient1 = node.getService(MyClient.class, "MyClientComponent1");
+        myClient2 = node.getService(MyClient.class, "MyClientComponent2");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
+    }
+
+    @Test
     public void test() throws Exception {
         System.out.println("Main thread " + Thread.currentThread());
         myClient1.aClientMethod();

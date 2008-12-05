@@ -41,7 +41,7 @@ public class RemoteClientComponentImpl implements RemoteClientComponent, RemoteC
         po.field1 = "BComponent";
         return "BComponent";
     }
-    
+
     public String foo2(int i, String str) throws Exception {
         return str + "BComponent" + i;
     }

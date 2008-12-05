@@ -18,7 +18,6 @@
  */
 package calculator;
 
-
 /**
  * The Calculator service interface.
  */

@@ -21,9 +21,10 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
+import test.jaxb.props.ReturnCodeProperties;
+
 import commonj.sdo.DataObject;
 
-import test.jaxb.props.ReturnCodeProperties;
 /**
  * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
  * interface. Implementation for these methods is provided in PropertyComponentImpl Class
@@ -113,7 +114,7 @@ public interface PropertyComponent {
      * PropertyComponentImpl
      */
     public DataObject getCustomerSdo();
-    
+
     /**
      * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * PropertyComponentImpl

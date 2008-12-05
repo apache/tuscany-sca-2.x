@@ -22,24 +22,17 @@ package mysca.test.myservice;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import mysca.test.myservice.MyService;
-import mysca.test.myservice.MySimpleTotalService;
-
 @Service(MySimpleTotalService.class)
-public class MySimpleTotalServiceImpl implements MySimpleTotalService
-{
+public class MySimpleTotalServiceImpl implements MySimpleTotalService {
     // default required==true so it is 1:1
     @Reference
     public MyService myService;
 
-
-    public String getLocation()
-    {
+    public String getLocation() {
         return myService.getLocation();
     }
 
-    public String getYear()
-    {
+    public String getYear() {
         return myService.getYear();
     }
 

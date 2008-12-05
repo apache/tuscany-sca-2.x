@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.interfaces;
 
-
 /**
  * only for callBack
  */

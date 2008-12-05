@@ -23,7 +23,6 @@ import org.apache.tuscany.sca.itest.oneway.OneWayService;
 import org.junit.Assert;
 import org.osoa.sca.annotations.Reference;
 
-
 /**
  * The client for the oneway itest.
  *
@@ -33,7 +32,7 @@ public class OneWayClientImpl implements OneWayClient {
     /**
      * Injected reference to the OneWayService.
      */
-    @Reference 
+    @Reference
     protected OneWayService oneWayService;
 
     /**

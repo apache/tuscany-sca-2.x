@@ -18,10 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.oneway;
 
-
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
-
 
 /**
  * The service interface used when testing @OneWay interactions.

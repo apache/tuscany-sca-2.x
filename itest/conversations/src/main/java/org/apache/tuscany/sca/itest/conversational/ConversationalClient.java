@@ -28,23 +28,39 @@ import org.osoa.sca.annotations.Remotable;
  */
 
 @Remotable
-public interface ConversationalClient { 
-	
-	public int runConversationFromInjectedReference();
-	public int runConversationFromInjectedReference2();
-	public int runConversationFromServiceReference();
-	public int runConversationWithUserDefinedConversationId();
-	public String runConversationCheckUserDefinedConversationId();	
-	public int runConversationCheckingScope();
-	public int runConversationWithCallback(); 
-	public int runConversationHavingPassedReference();
-	public String runConversationBusinessException();
-	public String runConversationBusinessExceptionCallback();
-	public int runConversationCallingEndedConversation();
-	public int runConversationCallingEndedConversationCallback();
-        public String runConversationCallingEndedConversationCheckConversationId(); 
-	public String runConversationCallingEndedConversationCallbackCheckConversationId();
-	public int runConversationAgeTimeout();
-	public int runConversationIdleTimeout();
-	public int runConversationPrincipleError();	
+public interface ConversationalClient {
+
+    public int runConversationFromInjectedReference();
+
+    public int runConversationFromInjectedReference2();
+
+    public int runConversationFromServiceReference();
+
+    public int runConversationWithUserDefinedConversationId();
+
+    public String runConversationCheckUserDefinedConversationId();
+
+    public int runConversationCheckingScope();
+
+    public int runConversationWithCallback();
+
+    public int runConversationHavingPassedReference();
+
+    public String runConversationBusinessException();
+
+    public String runConversationBusinessExceptionCallback();
+
+    public int runConversationCallingEndedConversation();
+
+    public int runConversationCallingEndedConversationCallback();
+
+    public String runConversationCallingEndedConversationCheckConversationId();
+
+    public String runConversationCallingEndedConversationCallbackCheckConversationId();
+
+    public int runConversationAgeTimeout();
+
+    public int runConversationIdleTimeout();
+
+    public int runConversationPrincipleError();
 }

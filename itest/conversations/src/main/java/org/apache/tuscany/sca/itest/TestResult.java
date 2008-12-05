@@ -26,10 +26,11 @@ import java.util.Hashtable;
 public class TestResult {
     public static Hashtable<Object, Boolean> results = new Hashtable<Object, Boolean>();
     private static int completed = 0;
+
     public static synchronized void updateCompleted() {
         ++completed;
     }
-    
+
     public static synchronized int getCompleted() {
         return completed;
     }

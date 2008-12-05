@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.itest.services;
 
-
 public interface DComponent {
-	String foo();
+    String foo();
 }

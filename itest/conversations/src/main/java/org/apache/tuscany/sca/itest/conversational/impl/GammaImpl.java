@@ -37,7 +37,7 @@ public class GammaImpl implements Gamma {
     public String conversationId;
 
     private ArrayList<Record> list;
-    
+
     public void start(int param) {
         list = new ArrayList<Record>();
         fillList(param, conversationId);
@@ -54,7 +54,7 @@ public class GammaImpl implements Gamma {
     public void stop() {
         list = null;
     }
-    
+
     private void fillList(int param, String cid) {
         for (int i = 0; i < param; i++) {
             Record record = new Record();

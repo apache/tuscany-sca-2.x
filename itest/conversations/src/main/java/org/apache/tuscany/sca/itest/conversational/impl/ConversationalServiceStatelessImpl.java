@@ -29,7 +29,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-
 /**
  * The service used when testing stateful conversations
  *
@@ -38,86 +37,86 @@ import org.osoa.sca.annotations.Service;
 @Service(ConversationalService.class)
 @Scope("STATELESS")
 public class ConversationalServiceStatelessImpl implements ConversationalService {
-    
+
     @ConversationID
     protected String conversationId;
-    
+
     @Callback
-    protected ConversationalCallback conversationalCallback; 
-    
+    protected ConversationalCallback conversationalCallback;
+
     // static area in which to hold conversational data
     private static HashMap<String, Integer> conversationalState = new HashMap<String, Integer>();
-   
+
     // a static member variable that records the number of times this service is called
     public static StringBuffer calls = new StringBuffer();
-   
+
     @Init
-    public void init(){
+    public void init() {
         calls.append("init,");
     }
-    
+
     @Destroy
-    public void destroy(){
+    public void destroy() {
         calls.append("destroy,");
     }
-    
-    public void initializeCount(int count){
+
+    public void initializeCount(int count) {
         calls.append("initializeCount,");
-        Integer conversationalCount = new Integer(count); 
+        Integer conversationalCount = new Integer(count);
         conversationalState.put(conversationId, conversationalCount);
     }
-    
-    public void incrementCount(){
+
+    public void incrementCount() {
         calls.append("incrementCount,");
         Integer conversationalCount = conversationalState.get(conversationId);
         conversationalCount++;
         conversationalState.put(conversationId, conversationalCount);
     }
-    
-    public int retrieveCount(){
+
+    public int retrieveCount() {
         calls.append("retrieveCount,");
         Integer count = conversationalState.get(conversationId);
-        if (count != null){
+        if (count != null) {
             return count.intValue();
         } else {
             return -999;
         }
     }
-    
+
     public void businessException() throws Exception {
         throw new Exception("Business Exception");
-    }    
-    
-    public void initializeCountCallback(int count){
+    }
+
+    public void initializeCountCallback(int count) {
         calls.append("initializeCountCallback,");
         initializeCount(count);
         conversationalCallback.initializeCount(count);
     }
-    
-    public void incrementCountCallback(){
+
+    public void incrementCountCallback() {
         calls.append("incrementCountCallback,");
         incrementCount();
         conversationalCallback.incrementCount();
     }
-    
-    public int retrieveCountCallback(){
+
+    public int retrieveCountCallback() {
         calls.append("retrieveCountCallback,");
         return conversationalCallback.retrieveCount();
     }
-    
+
     public void businessExceptionCallback() throws Exception {
-        calls.append("businessExceptionCallback,");        
+        calls.append("businessExceptionCallback,");
         conversationalCallback.businessException();
     }
-    
-    public String endConversation(){
+
+    public String endConversation() {
         calls.append("endConversation,");
         conversationalState.remove(conversationId);
         return conversationId;
     }
-    
-    public String endConversationCallback(){
-        calls.append("endConversationCallback,");       
+
+    public String endConversationCallback() {
+        calls.append("endConversationCallback,");
         return conversationalCallback.endConversation();
-    }   
+    }
 }

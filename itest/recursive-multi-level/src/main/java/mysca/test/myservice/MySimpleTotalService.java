@@ -21,5 +21,6 @@ package mysca.test.myservice;
 
 public interface MySimpleTotalService {
     String getLocation();
+
     String getYear();
 }

@@ -24,8 +24,8 @@ import org.osoa.sca.annotations.Service;
 @Service(BComponent.class)
 public class BComponentImpl implements BComponent {
 
-	public String foo() {
-		return "BComponent";
-	}
+    public String foo() {
+        return "BComponent";
+    }
 
 }

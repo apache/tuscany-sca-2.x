@@ -30,14 +30,13 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
 
-@Service(interfaces={ConversationalReferenceClient.class})
-public class ConversationalReferenceClientImpl implements ConversationalReferenceClient{
-   
-    public void incrementCount(CallableReference<ConversationalService> conversationalService){
-        ConversationalService callableReference = conversationalService.getService();
-        
-        callableReference.incrementCount();        
-    }
+@Service(interfaces = {ConversationalReferenceClient.class})
+public class ConversationalReferenceClientImpl implements ConversationalReferenceClient {
 
+    public void incrementCount(CallableReference<ConversationalService> conversationalService) {
+        ConversationalService callableReference = conversationalService.getService();
+
+        callableReference.incrementCount();
+    }
 
 }

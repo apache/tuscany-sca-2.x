@@ -22,8 +22,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2008.06.07 at 03:30:47 PM EDT 
 //
-
-
 package test.jaxb.props;
 
 import java.math.BigInteger;
@@ -32,7 +30,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * <p>Java class for ReturnCodeProperties complex type.
@@ -55,10 +52,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReturnCodeProperties", namespace = "http://test.sca.jaxb/rcprops", propOrder = {
-    "a",
-    "b"
-})
+@XmlType(name = "ReturnCodeProperties", namespace = "http://test.sca.jaxb/rcprops", propOrder = {"a", "b"})
 public class ReturnCodeProperties {
 
     @XmlElement(name = "AInt")

@@ -26,16 +26,16 @@ import org.osoa.sca.annotations.Service;
 
 @Service(ConversationalService.class)
 @Scope("CONVERSATION")
-@ConversationAttributes(maxAge="1 seconds")
+@ConversationAttributes(maxAge = "1 seconds")
 public class ConversationAgeComponentImpl implements ConversationalService {
 
     private int count;
-    
-    public void businessException() throws Exception {   
+
+    public void businessException() throws Exception {
     }
-    
-    public void businessExceptionCallback() throws Exception {   
-    }      
+
+    public void businessExceptionCallback() throws Exception {
+    }
 
     public void destroy() {
     }

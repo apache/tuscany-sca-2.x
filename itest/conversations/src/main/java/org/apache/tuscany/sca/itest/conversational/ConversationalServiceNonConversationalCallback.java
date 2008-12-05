@@ -23,7 +23,6 @@ import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Remotable;
 
-
 /**
  * The service interface used when testing conversations
  *
@@ -33,30 +32,30 @@ import org.osoa.sca.annotations.Remotable;
 @Conversational
 @Callback(NonConversationalCallback.class)
 public interface ConversationalServiceNonConversationalCallback {
-	
+
     public void init();
-    
+
     public void destroy();
-    
+
     public void initializeCount(int count);
-    
+
     public void incrementCount();
-    
+
     public int retrieveCount();
-    
-    public void businessException() throws Exception;        
-    
+
+    public void businessException() throws Exception;
+
     public void initializeCountCallback(int count);
-    
+
     public void incrementCountCallback();
-    
+
     public int retrieveCountCallback();
-    
-    public void businessExceptionCallback() throws Exception;    
-    
+
+    public void businessExceptionCallback() throws Exception;
+
     @EndsConversation
     public String endConversation();
-    
+
     public String endConversationCallback();
 
 }

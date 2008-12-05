@@ -21,5 +21,5 @@ package org.apache.tuscany.sca.itest.services;
 
 public interface BComponent {
 
-	String foo();
+    String foo();
 }

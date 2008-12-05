@@ -33,10 +33,10 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
     protected String cid;
 
     static Map<String, Integer> state = new HashMap<String, Integer>();
-    
+
     public void destroy() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public String endConversation() {
@@ -47,25 +47,25 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
     public String endConversationCallback() {
         // TODO Auto-generated method stub
         return null;
-        
+
     }
 
     public void incrementCount() {
-        state.put(cid, Integer.valueOf(state.get(cid)+1));
+        state.put(cid, Integer.valueOf(state.get(cid) + 1));
     }
 
     public void businessException() throws Exception {
         throw new Exception("Business Exception");
     }
-    
+
     public void incrementCountCallback() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void init() {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void initializeCount(int count) {
@@ -74,12 +74,12 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
 
     public void initializeCountCallback(int count) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     public void businessExceptionCallback() throws Exception {
         throw new Exception("Business Exception");
-    }    
+    }
 
     public int retrieveCount() {
         return state.get(cid);
@@ -89,5 +89,5 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
         // TODO Auto-generated method stub
         return 0;
     }
-    
+
 }

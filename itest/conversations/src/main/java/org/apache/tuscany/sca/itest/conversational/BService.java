@@ -25,7 +25,7 @@ import org.osoa.sca.annotations.Conversational;
  */
 @Conversational
 public interface BService {
-    
+
     /**
      * Returns the state for this service.
      * 

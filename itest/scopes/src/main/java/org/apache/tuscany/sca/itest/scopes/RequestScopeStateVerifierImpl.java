@@ -17,6 +17,7 @@
  * under the License.    
  */
 package org.apache.tuscany.sca.itest.scopes;
+
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -30,21 +31,21 @@ public class RequestScopeStateVerifierImpl implements StateVerifier {
     int requestState;
 
     public void setState(int i) {
-      requestState = i;
+        requestState = i;
     }
 
     public boolean checkState(int i) {
-      return (requestState == i);
+        return (requestState == i);
     }
-    
+
     @Init
     public void init() {
         requestState = 0;
     }
-    
+
     @Destroy
     public void destroy() {
-        requestState = -1; 
+        requestState = -1;
     }
 
 }

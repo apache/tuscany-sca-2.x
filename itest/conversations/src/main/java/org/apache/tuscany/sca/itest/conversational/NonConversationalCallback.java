@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.itest.conversational;
 
 import org.osoa.sca.annotations.Remotable;
 
-
 /**
  * The callback interface used when testing conversational callbacks
  *
@@ -28,19 +27,19 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 public interface NonConversationalCallback {
-	
+
     public void init();
-    
+
     public void destroy();
-    
+
     public void initializeCount(int count);
-    
+
     public void incrementCount();
-    
+
     public int retrieveCount();
-    
-    public void businessException() throws Exception;        
-    
+
+    public void businessException() throws Exception;
+
     public String endConversation();
 
 }

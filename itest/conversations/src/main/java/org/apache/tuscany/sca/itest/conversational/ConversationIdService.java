@@ -25,5 +25,6 @@ import org.osoa.sca.annotations.Conversational;
 public interface ConversationIdService {
 
     String getCIDField();
+
     String getCIDSetter();
 }

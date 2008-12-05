@@ -18,11 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
-
-import org.apache.tuscany.sca.itest.conversational.Constants;
 import org.apache.tuscany.sca.itest.conversational.DService;
 import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -62,10 +59,10 @@ public class DServiceImpl implements DService {
      */
     @ConversationID
     public void setConversationID(String id) {
-        System.out.println ("Setting conversation ID at service = " + id );
+        System.out.println("Setting conversation ID at service = " + id);
     }
-    
+
     public void endConversationViaAnnotatedMethod() {
-        System.out.println ("Annotated Ends Conversation");
+        System.out.println("Annotated Ends Conversation");
     }
 }

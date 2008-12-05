@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.itest;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Iterator;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,30 +39,32 @@ import org.junit.Test;
  */
 public class OuterPropertyTestCase {
 
-    private static SCADomain domain;
+    private static Node node;
     private static ABComponent outerABService;
 
     /**
      * Method annotated with
      * 
      * @BeforeClass is used for one time set Up, it executes before every tests. This method is used to create a test
-     *              Embedded SCA Domain, to start the SCA Domain and to get a reference to the 'outerABService' service
+     *              Embedded SCA node, to start the SCA node and to get a reference to the 'outerABService' service
      */
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("OuterPropertyTest.composite");
-        outerABService = domain.getService(ABComponent.class, "OuterComponent");
+        String location = ContributionLocationHelper.getContributionLocation("OuterPropertyTest.composite");
+        node = NodeFactory.newInstance().createNode("OuterPropertyTest.composite", new Contribution("c1", location));
+        node.start();
+        outerABService = node.getService(ABComponent.class, "OuterComponent");
     }
 
     /**
      * Method annotated with
      * 
      * @AfterClass is used for one time Tear Down, it executes after every tests. This method is used to close the
-     *             domain, close any previously opened connections etc
+     *             node, close any previously opened connections etc
      */
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 
     /**

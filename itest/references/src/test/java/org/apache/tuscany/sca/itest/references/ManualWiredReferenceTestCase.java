@@ -18,28 +18,33 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
-import static junit.framework.Assert.assertEquals;
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class ManualWiredReferenceTestCase {
-    private static SCADomain domain;
+    private static Node node;
     private static AComponent acomponent;
 
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("ManualWiredReferencesTest.composite");
-        acomponent = domain.getService(AComponent.class, "AComponent");
+        String location = ContributionLocationHelper.getContributionLocation("ManualWiredReferencesTest.composite");
+        node = NodeFactory.newInstance().createNode("ManualWiredReferencesTest.composite", new Contribution("c1", location));
+        node.start();
+        acomponent = node.getService(AComponent.class, "AComponent");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        domain.close();
+        node.stop();
     }
 
     @Test
@@ -67,19 +72,19 @@ public class ManualWiredReferenceTestCase {
     public void testD2Reference() {
         assertEquals("DComponent", acomponent.fooD2());
     }
-    
+
     @Test
     public void testMultiDReferenceArray() {
         String components = acomponent.fooMultipleDArray();
         Assert.assertTrue(components.contains("DComponent1"));
-    }    
-    
+    }
+
     @Test
     public void testMultiDServiceReference() {
         String components = acomponent.fooMultipleDServiceRef();
         Assert.assertTrue(components.contains("DComponent"));
         Assert.assertTrue(components.contains("DComponent1"));
-    }        
+    }
 
     @Test
     public void testRequiredFalseReference() {

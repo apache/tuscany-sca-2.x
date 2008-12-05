@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.sca.itest.services;
 
-import static junit.framework.Assert.assertEquals;
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
@@ -38,7 +38,7 @@ public class ServicesTestCase {
     public static void init() throws Exception {
         String location = ContributionLocationHelper.getContributionLocation("ServicesTest.composite");
         node = NodeFactory.newInstance().createNode("ServicesTest.composite", new Contribution("c1", location));
-        node.start();        
+        node.start();
     }
 
     @AfterClass

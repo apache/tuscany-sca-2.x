@@ -25,15 +25,16 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
 import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,25 +51,30 @@ public class OneWayTestCase {
     private static final int MAX_SLEEP_TIME = 10000;
 
     private Node node;
-    
+
     /**
-     * Initialise the SCADomain.
+     * Initialise the Node.
      *
-     * @throws Exception Failed to initialise the SCADomain
+     * @throws Exception Failed to initialise the Node
      */
     @Before
     public void setUp() throws Exception {
-        
+
         NodeFactory nodeFactory = NodeFactory.newInstance();
-        node = nodeFactory.createSCANodeFromClassLoader("OneWayContribution/META-INF/sca-deployables/oneWay.composite", null);
+        String location =
+            ContributionLocationHelper
+                .getContributionLocation("OneWayContribution/META-INF/sca-deployables/oneWay.composite");
+        node =
+            nodeFactory.createNode("OneWayContribution/META-INF/sca-deployables/oneWay.composite",
+                                   new Contribution("c1", location));
         node.start();
-        
+
     }
 
     /**
-     * This method will ensure that the SCADomain is shutdown.
+     * This method will ensure that the Node is shutdown.
      *
-     * @throws Exception Failed to shutdown the SCADomain
+     * @throws Exception Failed to shutdown the Node
      */
     @After
     public void tearDown() throws Exception {
@@ -83,14 +89,13 @@ public class OneWayTestCase {
      */
     @Test
     public void testOneWay() throws Exception {
-        OneWayClient client =
-            ((Client)node).getService(OneWayClient.class, "OneWayClientComponent");
+        OneWayClient client = ((Client)node).getService(OneWayClient.class, "OneWayClientComponent");
 
         int count = 100;
 
         for (int i = 0; i < 10; i++) {
-           // System.out.println("Test: doSomething " + count);
-           // System.out.flush();
+            // System.out.println("Test: doSomething " + count);
+            // System.out.flush();
             client.doSomething(count);
 
             // TUSCANY-2192 - We need to sleep to allow the @OneWay method calls to complete.
@@ -99,8 +104,7 @@ public class OneWayTestCase {
             // This loop will wait for the required number of @OneWay method calls to
             // have taken place or MAX_SLEEP_TIME to have passed.
             long startSleep = System.currentTimeMillis();
-            while (OneWayClientImpl.callCount != OneWayServiceImpl.CALL_COUNT.get() 
-                    && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
+            while (OneWayClientImpl.callCount != OneWayServiceImpl.CALL_COUNT.get() && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
                 Thread.sleep(100);
                 // System.out.println("" + OneWayClientImpl.callCount + "," + OneWayServiceImpl.callCount);
             }
@@ -119,9 +123,8 @@ public class OneWayTestCase {
      */
     @Test
     public void testOneWayUsingNonBlockingInterceptorThrowsAnException() {
-        OneWayClient client =
-            ((Client)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
-            
+        OneWayClient client = ((Client)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
+
         // We need to modify the JDK Logger for the NonBlockingInterceptor so we
         // can check that it logs a message for the @OneWay invocation that throws
         // an Exception
@@ -198,7 +201,7 @@ public class OneWayTestCase {
         /**
          * {@inheritDoc}
          */
-        @Override
+
         public void close() throws SecurityException {
             // Nothing to do
         }
@@ -206,7 +209,7 @@ public class OneWayTestCase {
         /**
          * {@inheritDoc}
          */
-        @Override
+
         public void flush() {
             // Nothing to do
         }
@@ -217,13 +220,12 @@ public class OneWayTestCase {
          * 
          * @param record The Log Record that is being published
          */
-        @Override
+
         public void publish(LogRecord record) {
             // The log message we are looking for is Severe
             if (record.getLevel() == Level.SEVERE) {
-                if (record.getThrown() != null
-                        && record.getThrown().toString().indexOf(
-                                OneWayServiceImpl.EXCEPTION_MESSAGE) != -1) {
+                if (record.getThrown() != null && record.getThrown().toString()
+                    .indexOf(OneWayServiceImpl.EXCEPTION_MESSAGE) != -1) {
                     // We have found our Exception.
                     exceptionLogged.set(true);
                 }

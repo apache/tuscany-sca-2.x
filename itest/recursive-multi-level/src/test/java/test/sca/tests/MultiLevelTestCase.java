@@ -18,51 +18,72 @@
  */
 package test.sca.tests;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
+import static org.junit.Assert.assertEquals;
 import mysca.test.myservice.MySimpleTotalService;
-import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests to make sure that autowiring and recusive composite work together
  *
  */
-public class MultiLevelTestCase extends TestCase
-{
-    private SCADomain domain1;
-    private SCADomain domain2;
-    private SCADomain domain3;
-    private MySimpleTotalService myService1;
-    private MySimpleTotalService myService2;
-    private MySimpleTotalService myService3;
+public class MultiLevelTestCase {
+    private static Node node1;
+    private static Node node2;
+    private static Node node3;
+    private static MySimpleTotalService myService1;
+    private static MySimpleTotalService myService2;
+    private static MySimpleTotalService myService3;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        domain1 = SCADomain.newInstance("TotalService1Auto.composite");
-        domain2 = SCADomain.newInstance("TotalService2Auto.composite");
-        domain3 = SCADomain.newInstance("TotalService3Auto.composite");
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("TotalService1Auto.composite");
+        Contribution contribution = new Contribution("c1", location);
+        try {
+            node1 = NodeFactory.newInstance().createNode("TotalService1Auto.composite", contribution);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        node2 = NodeFactory.newInstance().createNode("TotalService2Auto.composite", contribution);
+        node3 = NodeFactory.newInstance().createNode("TotalService3Auto.composite", contribution);
+        
+        node1.start();
+        node2.start();
+        node3.start();
 
-        myService1 = domain1.getService(MySimpleTotalService.class, "TotalServiceComponentLevel1Auto");
-        myService2 = domain2.getService(MySimpleTotalService.class, "TotalServiceInRecursive2Auto/MyServiceLevel1Auto");
-        myService3 = domain3.getService(MySimpleTotalService.class, "TotalServiceInRecursive3Auto/MyServiceLevel2Auto");
+        myService1 = node1.getService(MySimpleTotalService.class, "TotalServiceComponentLevel1Auto");
+        myService2 = node2.getService(MySimpleTotalService.class, "TotalServiceInRecursive2Auto/MyServiceLevel1Auto");
+        myService3 = node3.getService(MySimpleTotalService.class, "TotalServiceInRecursive3Auto/MyServiceLevel2Auto");
     }
-   
-    public void testLevel1()
-    {
-        assertEquals("Level 1",myService1.getLocation());
-        assertEquals("2001",myService1.getYear());
+
+    @Test
+    public void testLevel1() {
+        assertEquals("Level 1", myService1.getLocation());
+        assertEquals("2001", myService1.getYear());
+    }
+
+    @Test
+    public void testLevel2() {
+        assertEquals("Default 2", myService2.getLocation());
+        assertEquals("1992", myService2.getYear());
+    }
+
+    @Test
+    public void testLevel3() {
+        assertEquals("Default 3", myService3.getLocation());
+        assertEquals("1993", myService3.getYear());
     }
     
-    public void testLevel2()
-    {
-        assertEquals("Default 2",myService2.getLocation());
-        assertEquals("1992",myService2.getYear());
-    }
-
-    public void testLevel3()
-    {
-        assertEquals("Default 3",myService3.getLocation());
-        assertEquals("1993",myService3.getYear());
+    @AfterClass
+    public static void tearDown() {
+        node1.stop();
+        node2.stop();
+        node3.stop();
     }
 }

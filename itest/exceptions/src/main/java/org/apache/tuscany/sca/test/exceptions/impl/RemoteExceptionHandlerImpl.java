@@ -92,7 +92,7 @@ public class RemoteExceptionHandlerImpl implements ExceptionHandler {
 
     }
 
-    @Reference 
+    @Reference
     public void setExceptionThrower(ExceptionRemoteThrower exceptionThrower) {
         this.exceptionThrower = exceptionThrower;
     }

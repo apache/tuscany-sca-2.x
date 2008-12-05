@@ -21,7 +21,13 @@ package org.apache.tuscany.sca.itest;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test case will attempt to trigger a call back using a separate thread
@@ -29,10 +35,10 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CallBackSeparateThreadTestCase extends TestCase {
 
     /**
-     * The SCADomain we are using 
+     * The Node we are using 
      */
-    private SCADomain domain;
-    
+    private Node node;
+
     /**
      * The client the tests should use
      */
@@ -41,24 +47,29 @@ public class CallBackSeparateThreadTestCase extends TestCase {
     /**
      * Run the call back in separate thread tests
      */
+    @Test
     public void testCallBackSeparateThread() {
-        aCallBackClient.runTests(); 
+        aCallBackClient.runTests();
     }
 
     /**
      * Load the Call back in separate thread composite and look up the client.
      */
-    @Override
-    protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("CallBackSeparateThreadTest.composite");
-        aCallBackClient = domain.getService(CallBackSeparateThreadClient.class, "CallBackSeparateThreadClient");
+
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("CallBackSeparateThreadTest.composite");
+        node = NodeFactory.newInstance().createNode("CallBackSeparateThreadTest.composite", new Contribution("c1", location));
+        node.start();
+        aCallBackClient = node.getService(CallBackSeparateThreadClient.class, "CallBackSeparateThreadClient");
     }
 
     /**
-     * Shutdown the SCA domain
+     * Shutdown the SCA node
      */
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
 }

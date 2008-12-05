@@ -22,7 +22,6 @@ import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Remotable;
 
-
 /**
  * The callback interface used when testing conversational callbacks
  *
@@ -31,19 +30,19 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 @Conversational
 public interface ConversationalCallback {
-	
+
     public void init();
-    
+
     public void destroy();
-    
+
     public void initializeCount(int count);
-    
+
     public void incrementCount();
-    
+
     public int retrieveCount();
-    
-    public void businessException() throws Exception;        
-    
+
+    public void businessException() throws Exception;
+
     @EndsConversation
     public String endConversation();
 

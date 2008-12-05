@@ -33,7 +33,6 @@ public class ParameterObject implements Serializable {
         this.field1 = field1;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (o == this)
             return true;

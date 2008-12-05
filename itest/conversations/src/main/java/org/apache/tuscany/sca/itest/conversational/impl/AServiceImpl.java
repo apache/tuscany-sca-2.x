@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
-import java.lang.reflect.Proxy;
-import org.apache.tuscany.sca.core.invocation.JDKInvocationHandler;
-
 import org.apache.tuscany.sca.itest.conversational.AService;
 import org.apache.tuscany.sca.itest.conversational.BService;
 import org.apache.tuscany.sca.itest.conversational.Constants;
@@ -40,12 +37,12 @@ public class AServiceImpl implements AService {
      * The state 
      */
     private String state = Constants.A_INITIAL_VALUE;
-    
+
     /**
      * The reference to the other service
      */
     private BService b;
-    
+
     /**
      * Constructor
      *
@@ -58,12 +55,12 @@ public class AServiceImpl implements AService {
      * Inject the reference to the other service
      * @param aB The other service.
      */
-    @Reference(name="b")
+    @Reference(name = "b")
     public void setB(BService aB) {
         System.out.println("---> Setting reference to B on " + this + " to " + aB);
         this.b = aB;
     }
-    
+
     /**
      * Returns the state for this service.
      * 
@@ -99,7 +96,7 @@ public class AServiceImpl implements AService {
     public void setStateOnB(String aState) {
         b.setState(aState);
     }
-    
+
     /**
      * Sets the conversation ID for this service
      * @param id The Conversation ID

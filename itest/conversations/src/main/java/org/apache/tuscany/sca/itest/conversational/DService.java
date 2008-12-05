@@ -26,7 +26,7 @@ import org.osoa.sca.annotations.EndsConversation;
  */
 @Conversational
 public interface DService {
-    
+
     /**
      * Returns the state for this service.
      * 
@@ -40,7 +40,7 @@ public interface DService {
      * @param aState The state for this service
      */
     void setState(String aState);
-    
+
     @EndsConversation
     void endConversationViaAnnotatedMethod();
 }

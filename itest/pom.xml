@@ -50,8 +50,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>builder</module>
-                <module>callablereferences</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
@@ -61,22 +59,17 @@
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
                 <module>component-type</module>
-                <module>contribution</module>
-                <module>contribution-import-export</module>
                 <module>conversations</module>
                 <module>exceptions</module>
-                <module>extended-api</module>
                 <module>interfaces</module>
-                <module>late-reference-resolution</module>
-                <module>oneway</module>
                 <module>operation-overloading</module>
+<!-- wait until databinding-sdo is in
                 <module>properties</module>
-                <module>recursive</module>
+-->
                 <module>recursive-multi-level</module>
                 <module>references</module>
-                <module>serialization</module>
-                <module>services</module>
                 <module>scopes</module>
+                <module>services</module>
                 <module>wires</module>
            </modules>
         </profile>

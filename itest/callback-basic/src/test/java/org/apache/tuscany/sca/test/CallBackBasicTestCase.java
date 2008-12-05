@@ -21,30 +21,36 @@ package org.apache.tuscany.sca.test;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
 
 public class CallBackBasicTestCase extends TestCase {
 
-    private static SCADomain domain;
+    private static Node node;
     private CallBackBasicClient aCallBackClient;
 
     public void testCallBackBasic() {
-        aCallBackClient.run(); 
+        aCallBackClient.run();
     }
 
-    @Override
-    protected void setUp() throws Exception {
-    	if( domain==null ) {
-    		domain = SCADomain.newInstance("CallBackBasicTest.composite");
-    	}
-    	
-        aCallBackClient = domain.getService(CallBackBasicClient.class, "CallBackBasicClient");
+    @Before
+    public void setUp() throws Exception {
+        if (node == null) {
+            String location = ContributionLocationHelper.getContributionLocation("CallBackBasicTest.composite");
+            node = NodeFactory.newInstance().createNode("CallBackBasicTest.composite", new Contribution("c1", location));
+            node.start();
+        }
+
+        aCallBackClient = node.getService(CallBackBasicClient.class, "CallBackBasicClient");
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        domain.close();
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
-
 
 }

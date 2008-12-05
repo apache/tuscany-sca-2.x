@@ -22,27 +22,21 @@ package mysca.test.myservice;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
 
-import mysca.test.myservice.MyService;
-
 @Service(MyService.class)
 public class MyServiceImpl implements MyService {
-	
-	@Property(name="location")
-	protected String location = "ABC";
 
-    @Property(name="year")
+    @Property(name = "location")
+    protected String location = "ABC";
+
+    @Property(name = "year")
     protected String year = "2006";
-    
 
-    public String getLocation()
-    {
-       return location;
+    public String getLocation() {
+        return location;
     }
 
-    public String getYear()
-    {
+    public String getYear() {
         return year;
     }
-	
 
 }

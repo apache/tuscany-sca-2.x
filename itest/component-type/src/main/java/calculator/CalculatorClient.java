@@ -34,8 +34,8 @@ public class CalculatorClient {
         String location = ContributionLocationHelper.getContributionLocation("Calculator.composite");
         Node node = NodeFactory.newInstance().createNode("Calculator.composite", new Contribution("c1", location));
         node.start();
-        
-        CalculatorService calculatorService = 
+
+        CalculatorService calculatorService =
             node.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorService");
 
         // Calculate
@@ -46,5 +46,4 @@ public class CalculatorClient {
 
         node.stop();
     }
-
 }

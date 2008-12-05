@@ -18,31 +18,35 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+public class CallBackSetCallbackConvTestCase {
 
-public class CallBackSetCallbackConvTestCase extends TestCase {
-
-    private SCADomain domain;
+    private Node node;
     private CallBackSetCallbackConvClient aCallBackClient;
 
+    @Test
     public void testCallBackSetCallback() {
         aCallBackClient.run();
     }
 
-    @Override
-    protected void setUp() throws Exception {
-    	domain = SCADomain.newInstance("CallBackSetCallbackConvTest.composite");
-    	
-        aCallBackClient =
-            domain.getService(CallBackSetCallbackConvClient.class,
-                                                               "CallBackSetCallbackConvClient");
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("CallBackSetCallbackConvTest.composite");
+        node = NodeFactory.newInstance().createNode("CallBackSetCallbackConvTest.composite", new Contribution("c1", location));
+        node.start();
+        aCallBackClient = node.getService(CallBackSetCallbackConvClient.class, "CallBackSetCallbackConvClient");
     }
-    
-    @Override
-    protected void tearDown() throws Exception {
-    	domain.close();
+
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
     }
 
 }
