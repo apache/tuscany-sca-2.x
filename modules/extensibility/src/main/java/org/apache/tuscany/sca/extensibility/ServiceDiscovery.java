@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @version $Rev$ $Date$
  */
-public class ServiceDiscovery implements ServiceDiscoverer {
+public final class ServiceDiscovery implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
 
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
