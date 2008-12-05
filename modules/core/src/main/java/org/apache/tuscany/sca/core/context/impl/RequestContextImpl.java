@@ -23,6 +23,7 @@ import java.util.List;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
@@ -75,8 +76,8 @@ public class RequestContextImpl implements RequestContext {
         
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
         ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
-        ((CallableReferenceImpl<B>) callableReference).attachCallbackID(parameters.getCallbackID());
-        ((CallableReferenceImpl<B>) callableReference).attachConversation(parameters.getConversationID());
+        ((CallableReferenceExt<B>) callableReference).attachCallbackID(parameters.getCallbackID());
+        ((CallableReferenceExt<B>) callableReference).attachConversation(parameters.getConversationID());
         return callableReference;
     }
 

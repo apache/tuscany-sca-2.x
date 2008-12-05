@@ -25,32 +25,28 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
-import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
-import org.osoa.sca.Conversation;
 
 /**
  * Extended version of CallableReference
  */
 public interface CallableReferenceExt<B> extends CallableReference<B>, Externalizable {
+    /**
+     * @return
+     */
     RuntimeWire getRuntimeWire();
 
-    B getProxy() throws ObjectCreationException;
-
-    B getService();
-
-    Class<B> getBusinessInterface();
-
-    boolean isConversational();
-
-    Conversation getConversation();
-
-    Object getCallbackID();
-
+    /**
+     * @return
+     * @throws IOException
+     */
     String toXMLString() throws IOException;
 
+    /**
+     * @param callbackID
+     */
     void attachCallbackID(Object callbackID);
 
     void attachConversationID(Object conversationID);
@@ -59,8 +55,14 @@ public interface CallableReferenceExt<B> extends CallableReference<B>, Externali
 
     void attachConversation(Object conversationID);
 
+    /**
+     * @return
+     */
     EndpointReference getEndpointReference();
 
+    /**
+     * @return
+     */
     XMLStreamReader getXMLReader();
 
 }
