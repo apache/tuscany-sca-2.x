@@ -60,7 +60,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
@@ -261,12 +260,6 @@ public class JavaComponentContextProvider {
                 }
             }
         }
-
-        // We need to set the PropertyValueFactory on the ComponentContextImpl
-        // so the ComponentContext can "de-marshal" the property type to a value 
-        // when the getProperty() method is called
-        RuntimeComponentContext ccImpl = (RuntimeComponentContext)component.getComponentContext();
-        ccImpl.setPropertyValueFactory(propertyValueFactory);
 
         //setUpPolicyHandlers();
     }

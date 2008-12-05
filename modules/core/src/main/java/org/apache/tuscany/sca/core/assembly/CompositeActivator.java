@@ -113,20 +113,6 @@ public interface CompositeActivator {
     CompositeContext getCompositeContext();
 
     /**
-     * Get the proxy factory
-     * @return
-     */
-    ProxyFactory getProxyFactory();
-
-    /**
-     * Get the java interface factory
-     * @return
-     */
-    JavaInterfaceFactory getJavaInterfaceFactory();
-    
-    ConversationManager getConversationManager();
-
-    /**
      * Configure the runtime component with component context
      * @param component
      */

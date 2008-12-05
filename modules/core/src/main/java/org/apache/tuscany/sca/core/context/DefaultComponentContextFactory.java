@@ -19,20 +19,9 @@
 
 package org.apache.tuscany.sca.core.context;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
-import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
-import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.impl.ComponentContextImpl;
-import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.osoa.sca.ComponentContext;
 
@@ -40,50 +29,14 @@ import org.osoa.sca.ComponentContext;
  * @version $Rev$ $Date$
  */
 public class DefaultComponentContextFactory implements ComponentContextFactory {
-    private final CompositeActivator compositeActivator;
-    private final RequestContextFactory requestContextFactory;
-    private final ProxyFactory proxyFactory;
-    private final AssemblyFactory assemblyFactory;
-    private final JavaInterfaceFactory javaInterfaceFactory;
-    private final InterfaceContractMapper interfaceContractMapper;
+    private final ExtensionPointRegistry registry;
 
     public DefaultComponentContextFactory(ExtensionPointRegistry registry) {
-        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
-        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        this.requestContextFactory =
-            registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
-        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+        this.registry = registry;
     }
 
-    public DefaultComponentContextFactory(CompositeActivator compositeActivator,
-                                          AssemblyFactory assemblyFactory,
-                                          ProxyFactory proxyFactory,
-                                          InterfaceContractMapper interfaceContractMapper,
-                                          RequestContextFactory requestContextFactory,
-                                          JavaInterfaceFactory javaInterfaceFactory) {
-        super();
-        this.compositeActivator = compositeActivator;
-        this.assemblyFactory = assemblyFactory;
-        this.proxyFactory = proxyFactory;
-        this.requestContextFactory = requestContextFactory;
-        this.javaInterfaceFactory = javaInterfaceFactory;
-        this.interfaceContractMapper = interfaceContractMapper;
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.context.ComponentContextFactory#createComponentContext(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.context.RequestContextFactory)
-     */
-    public ComponentContext createComponentContext(RuntimeComponent component,
-                                                   RequestContextFactory requestContextFactory) {
-        if (requestContextFactory == null) {
-            requestContextFactory = this.requestContextFactory;
-        }
-        return new ComponentContextImpl(compositeActivator, assemblyFactory, proxyFactory, interfaceContractMapper,
-                                        requestContextFactory, javaInterfaceFactory, component);
+    public ComponentContext createComponentContext(RuntimeComponent component) {
+        return new ComponentContextImpl(registry, component);
     }
 
 }

@@ -37,21 +37,20 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.CompositeContext;
-import org.apache.tuscany.sca.core.context.impl.ComponentContextImpl;
+import org.apache.tuscany.sca.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
@@ -97,16 +96,20 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final ProviderFactoryExtensionPoint providerFactories;
     private final EndpointResolverFactoryExtensionPoint endpointResolverFactories;
 
+    private final ComponentContextFactory componentContextFactory;
     private final RequestContextFactory requestContextFactory;
     private final ProxyFactory proxyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
+    private final PropertyValueFactory propertyValueFactory;
+
     private final ConversationManager conversationManager;
 
-    private final CompositeContext componentContextHelper;
+    private final CompositeContext compositeContext;
 
     private Composite domainComposite;
     
     public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
+        this.compositeContext = new CompositeContextImpl(extensionPoints);
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.messageFactory = factories.getFactory(MessageFactory.class);
@@ -117,14 +120,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         this.endpointResolverFactories = extensionPoints.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);
-        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        this.javaInterfaceFactory = compositeContext.getJavaInterfaceFactory();
+        this.propertyValueFactory = factories.getFactory(PropertyValueFactory.class);
         ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
+        this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         this.requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
-        ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
-        this.conversationManager = utilities.getUtility(ConversationManager.class);
-        StAXArtifactProcessorExtensionPoint processors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        this.componentContextHelper = new CompositeContext(extensionPoints);
+        proxyFactory = compositeContext.getProxyFactory();
+        this.conversationManager = compositeContext.getConversationManager();
     }
 
     /**
@@ -651,9 +653,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param runtimeComponent
      */
     public void configureComponentContext(RuntimeComponent runtimeComponent) {
-        RuntimeComponentContext componentContext =
-            new ComponentContextImpl(this, assemblyFactory, proxyFactory, interfaceContractMapper,
-                                     requestContextFactory, javaInterfaceFactory, runtimeComponent);
+        RuntimeComponentContext componentContext = (RuntimeComponentContext) componentContextFactory.createComponentContext(runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
     }
 
@@ -1025,14 +1025,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @return the referenceHelper
      */
     public CompositeContext getCompositeContext() {
-        return componentContextHelper;
-    }
-
-    /**
-     * @return the proxyFactory
-     */
-    public ProxyFactory getProxyFactory() {
-        return proxyFactory;
+        return compositeContext;
     }
 
     /**
@@ -1074,20 +1067,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
         return null;
-    }
-
-    /**
-     * @return the javaInterfaceFactory
-     */
-    public JavaInterfaceFactory getJavaInterfaceFactory() {
-        return javaInterfaceFactory;
-    }
-
-    /**
-     * @return the conversationManager
-     */
-    public ConversationManager getConversationManager() {
-        return conversationManager;
     }
     
 }

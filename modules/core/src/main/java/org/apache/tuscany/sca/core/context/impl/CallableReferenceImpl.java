@@ -88,7 +88,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     private transient RuntimeComponentReference clonedRef;
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
-    
+
     private transient RuntimeWire endpointWire;
 
     /*
@@ -138,7 +138,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
         this.compositeActivator = compositeActivator;
-        this.conversationManager = this.compositeActivator.getConversationManager();
+        this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
         initCallbackID();
     }
 
@@ -151,7 +151,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public RuntimeWire getRuntimeWire() {
         try {
             resolve();
-            if (endpointWire != null){
+            if (endpointWire != null) {
                 return endpointWire;
             } else if (reference != null) {
                 return reference.getRuntimeWire(binding);
@@ -165,15 +165,15 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected void bind(RuntimeWire wire) {
         if (wire != null) {
-            
-            if (wire instanceof EndpointWireImpl){
+
+            if (wire instanceof EndpointWireImpl) {
                 endpointWire = wire;
             }
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
             this.binding = wire.getSource().getBinding();
             this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
-            this.conversationManager = this.compositeActivator.getConversationManager();
+            this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
             initCallbackID();
         }
     }
@@ -189,7 +189,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public B getProxy() throws ObjectCreationException {
         try {
             if (proxy == null) {
-                proxy = createProxy(); 
+                proxy = createProxy();
             }
             return businessInterface.cast(proxy);
         } catch (Exception e) {
@@ -197,13 +197,13 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         }
     }
 
-	public void setProxy(Object proxy) {
-	    this.proxy = proxy;
-	}
+    public void setProxy(Object proxy) {
+        this.proxy = proxy;
+    }
 
     protected Object createProxy() throws Exception {
         return proxyFactory.createProxy(this);
-	}
+    }
 
     public B getService() {
         try {
@@ -220,12 +220,12 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             return businessInterface;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
-        }            
+        }
     }
 
     public boolean isConversational() {
         try {
-            resolve();        
+            resolve();
             return reference == null ? false : reference.getInterfaceContract().getInterface().isConversational();
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -237,12 +237,12 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             // resolve from XML just in case this CallableReference is the result of
             // passing a CallableReference as a parameter
             resolve();
-            
+
             if (conversation == null || conversation.getState() == ConversationState.ENDED) {
                 conversation = null;
             }
             return conversation;
-        
+
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -250,11 +250,11 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     public Object getCallbackID() {
         try {
-            resolve();        
+            resolve();
             return callbackID;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
-        }        
+        }
     }
 
     /**
@@ -277,14 +277,14 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
             if (componentContextHelper != null) {
                 this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
-                this.conversationManager = this.compositeActivator.getConversationManager();
+                this.conversationManager = componentContextHelper.getConversationManager();
                 Component c;
                 if (xmlReader != null) {
                     c = componentContextHelper.fromXML(xmlReader);
-                    xmlReader = null;  // OK to GC this now
+                    xmlReader = null; // OK to GC this now
                 } else {
                     c = componentContextHelper.fromXML(scdl);
-                    scdl = null;  // OK to GC this now
+                    scdl = null; // OK to GC this now
                 }
                 this.component = (RuntimeComponent)c;
                 compositeActivator.configureComponentContext(this.component);
@@ -309,21 +309,21 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                         // Resolve the Component
                         final String bindingURI = binding.getURI();
                         final Component targetComponent = resolveComponentURI(bindingURI);
-                        
+
                         // Find the Service
                         ComponentService targetService = resolveServiceURI(bindingURI, targetComponent);
-                        
+
                         // if the target service is a promoted service then find the
                         // service it promotes
                         if ((targetService != null) && (targetService.getService() instanceof CompositeService)) {
-                            CompositeService compositeService = (CompositeService) targetService.getService();
+                            CompositeService compositeService = (CompositeService)targetService.getService();
                             // Find the promoted component service
                             ComponentService promotedComponentService = getPromotedComponentService(compositeService);
                             if (promotedComponentService != null && !promotedComponentService.isUnresolved()) {
                                 targetService = promotedComponentService;
                             }
                         }
-                        
+
                         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
                         optimizableBinding.setTargetComponent(targetComponent);
                         optimizableBinding.setTargetComponentService(targetService);
@@ -357,28 +357,28 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                             }
                         });
                         javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
-                        compositeActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface,
-                                                                                       javaInterface.getJavaClass());
+                        compositeActivator.getCompositeContext().getJavaInterfaceFactory()
+                            .createJavaInterface(javaInterface, javaInterface.getJavaClass());
                         //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
                         // this needs to be done here.  We usually search for XSDs in the current
                         // contribution at resolve time.  Is it possible to locate the current
                         // contribution at runtime?
-                        }
+                    }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
                 if (binding instanceof BindingBuilderExtension) {
                     ((BindingBuilderExtension)binding).getBuilder().build(component, reference, binding, null);
                 }
-                this.proxyFactory = compositeActivator.getProxyFactory();
+                this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();
             }
         } else {
             this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
             if (this.compositeActivator != null) {
-                this.proxyFactory = this.compositeActivator.getProxyFactory();
+                this.proxyFactory = this.compositeActivator.getCompositeContext().getProxyFactory();
             }
         }
     }
-    
+
     /**
      * Follow a service promotion chain down to the inner most (non composite)
      * component service.
@@ -386,26 +386,26 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
      * @param topCompositeService
      * @return
      */
-     private ComponentService getPromotedComponentService(CompositeService compositeService) {
+    private ComponentService getPromotedComponentService(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
             if (componentService.getName() != null && service instanceof CompositeService) {
-    
+
                 // Continue to follow the service promotion chain
                 return getPromotedComponentService((CompositeService)service);
-    
+
             } else {
-    
+
                 // Found a non-composite service
                 return componentService;
             }
         } else {
-    
+
             // No promoted service
             return null;
         }
-    }    
+    }
 
     /**
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
@@ -436,29 +436,28 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             }
             if (refParams == null) {
                 refParams = new ReferenceParametersImpl();
-               
+
                 // remove any existing reference parameters from the clone                
                 Object toRemove = null;
-                for (Object extension : clonedRef.getExtensions()){
-                    if (extension instanceof ReferenceParameters){
+                for (Object extension : clonedRef.getExtensions()) {
+                    if (extension instanceof ReferenceParameters) {
                         toRemove = extension;
                     }
                 }
-               
-                if (toRemove != null){
+
+                if (toRemove != null) {
                     clonedRef.getExtensions().remove(toRemove);
                 }
-                
+
                 // add the new reference parameter object
                 clonedRef.getExtensions().add(refParams);
             }
             refParams.setCallbackID(callbackID);
-            if (conversation != null){
+            if (conversation != null) {
                 refParams.setConversationID(conversation.getConversationID());
             }
-            return ((CompositeActivatorImpl)compositeActivator).getCompositeContext()
-                    .toXML(component, clonedRef);
-        } else { 
+            return ((CompositeActivatorImpl)compositeActivator).getCompositeContext().toXML(component, clonedRef);
+        } else {
             return scdl;
         }
     }
@@ -479,7 +478,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public void attachConversationID(Object conversationID) {
         this.conversationID = conversationID;
     }
-    
+
     public void attachConversation(ConversationExt conversation) {
         this.conversation = conversation;
     }
@@ -487,7 +486,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public void attachConversation(Object conversationID) {
         if (conversationID != null) {
             ConversationExt conversation = conversationManager.getConversation(conversationID);
-            if (conversation == null){
+            if (conversation == null) {
                 conversation = conversationManager.startConversation(conversationID);
             }
             this.conversation = conversation;
@@ -507,8 +506,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     public EndpointReference getEndpointReference() {
         try {
-            resolve();  
-            
+            resolve();
+
             // Use the interface contract of the reference on the component type
             Reference componentTypeRef = reference.getReference();
             InterfaceContract sourceContract =
@@ -520,7 +519,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             return epr;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
-        }        
+        }
     }
 
     public XMLStreamReader getXMLReader() {
@@ -571,14 +570,14 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
      * @return The Service with the specified serviceName or null if no such Service found.
      */
     protected ComponentService resolveServiceURI(String bindingURI, Component targetComponent) {
-        
+
         ComponentService targetService = null;
-        
+
         if (targetComponent != null) {
             if (bindingURI.startsWith("/")) {
                 bindingURI = bindingURI.substring(1);
             }
-    
+
             final String componentURI = targetComponent.getURI();
             final String serviceName;
             if (componentURI.equals(bindingURI)) {

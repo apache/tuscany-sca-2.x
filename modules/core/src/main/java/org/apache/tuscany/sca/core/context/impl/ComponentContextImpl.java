@@ -34,16 +34,20 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
 import org.apache.tuscany.sca.core.context.CompositeContext;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -68,30 +72,19 @@ public class ComponentContextImpl implements ComponentContextExt {
     private final ProxyFactory proxyFactory;
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
-
-    /**
-     * This is a reference to the PropertyValueFactory that is provided by the Implementation
-     * that can be used to get the value from a Property Object.
-     * 
-     * @see #setPropertyValueFactory(PropertyValueFactory)
-     * @see #getProperty(Class, String)
-     */
-    private PropertyValueFactory propertyFactory;
-
-    public ComponentContextImpl(CompositeActivator compositeActivator,
-                                AssemblyFactory assemblyFactory,
-                                ProxyFactory proxyFactory,
-                                InterfaceContractMapper interfaceContractMapper,
-                                RequestContextFactory requestContextFactory,
-                                JavaInterfaceFactory javaInterfaceFactory,
-                                RuntimeComponent component) {
-        super();
-        this.compositeActivator = compositeActivator;
-        this.assemblyFactory = assemblyFactory;
-        this.proxyFactory = proxyFactory;
-        this.requestContextFactory = requestContextFactory;
-        this.javaInterfaceFactory = javaInterfaceFactory;
+    private final PropertyValueFactory propertyFactory;
+    
+    public ComponentContextImpl(ExtensionPointRegistry registry, RuntimeComponent component) {
         this.component = component;
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+        this.requestContextFactory =
+            registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
+        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+        this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
     }
 
     public String getURI() {
@@ -129,19 +122,6 @@ public class ComponentContextImpl implements ComponentContextExt {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
-    }
-
-    /**
-     * The Implementation is responsible for calling this method to set the 
-     * PropertyValueFactory that is used to get the Property Value from 
-     * a Tuscany Property object.
-     *   
-     * @param factory The PropertyValueFactory to use
-     * 
-     * @see #getProperty(Class, String)
-     */
-    public void setPropertyValueFactory(PropertyValueFactory factory) {
-        propertyFactory = factory;
     }
 
     /**
@@ -455,8 +435,12 @@ public class ComponentContextImpl implements ComponentContextExt {
     }
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
+    public CompositeContext getCompositeContext() {
+        return compositeActivator.getCompositeContext();
+    }
+
     public ExtensionPointRegistry getExtensionPointRegistry() {
-        return compositeActivator.getCompositeContext().getExtensionPointRegistry();
+        return getCompositeContext().getExtensionPointRegistry();
     }
 
 }

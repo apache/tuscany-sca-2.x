@@ -26,6 +26,8 @@ import java.util.StringTokenizer;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -52,6 +54,9 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private Mediator mediator = null;
     private boolean isSimpleType;
 
+    public JavaPropertyValueObjectFactory(ExtensionPointRegistry registry) {
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
+    }
     public JavaPropertyValueObjectFactory(Mediator mediator) {
         this.mediator = mediator;
     }
