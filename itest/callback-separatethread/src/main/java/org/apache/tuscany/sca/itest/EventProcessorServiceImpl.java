@@ -62,8 +62,8 @@ public class EventProcessorServiceImpl implements EventProcessorService {
 
         // We will simulate an Event generator
         allEventGenerators = new EventGenerator[2];
-        allEventGenerators[0] = new EventGenerator("ONE", 1); // Generate the SECOND event every second
-        allEventGenerators[1] = new EventGenerator("FIVE", 5); // Generate the FIVE event every 5 seconds
+        allEventGenerators[0] = new EventGenerator("FAST", 10); // Generate the FAST event every 10ms
+        allEventGenerators[1] = new EventGenerator("SLOW", 50); // Generate the SLOW event every 50ms
     }
 
     /**
@@ -137,22 +137,29 @@ public class EventProcessorServiceImpl implements EventProcessorService {
         private final Timer timer = new Timer();
 
         /**
+         * Lock object to ensure that we can cancel the timer cleanly. 
+         */
+        private final Object lock = new Object();
+        
+        /**
          * Constructor
          *
          * @param aEventName The name of the Event to generate
-         * @param frequencyInSeconds How frequently we should generate the Events
+         * @param frequencyInMilliseconds How frequently we should generate the Events
          */
-        private EventGenerator(String aEventName, int frequencyInSeconds) {
+        private EventGenerator(String aEventName, int frequencyInMilliseconds) {
             timer.schedule(new EventGeneratorTimerTask(aEventName),
-                           frequencyInSeconds * 1000,
-                           frequencyInSeconds * 1000);
+                           frequencyInMilliseconds,
+                           frequencyInMilliseconds);
         }
 
         /**
          * Stop this Event Generator
          */
         private void stop() {
-            timer.cancel();
+            synchronized (lock) {
+                timer.cancel();
+            }
         }
 
         /**
@@ -178,8 +185,10 @@ public class EventProcessorServiceImpl implements EventProcessorService {
              */
 
             public void run() {
-                // System.out.println("Generating new event " + eventName);
-                receiveEvent(eventName, "Separate Thread Notification: " + UUID.randomUUID().toString());
+                synchronized(lock) {
+                    // System.out.println("Generating new event " + eventName);
+                    receiveEvent(eventName, "Separate Thread Notification: " + UUID.randomUUID().toString());
+                }
             }
         }
     }

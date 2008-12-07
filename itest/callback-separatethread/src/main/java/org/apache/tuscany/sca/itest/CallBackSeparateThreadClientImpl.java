@@ -31,19 +31,19 @@ import org.osoa.sca.annotations.Service;
 @Service(CallBackSeparateThreadClient.class)
 public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadClient, EventProcessorCallBack {
     /**
-     * Used to sleep for 60 seconds.
+     * Max time to wait to receive events. If not all the events are received then timeout.
      */
-    private static final int SIXTY_SECONDS = 60 * 1000;
+    private static final int TIMEOUT = 30 * 1000;
 
     /**
-     * Counts the number of one second call backs
+     * Counts the number of fast call backs.
      */
-    private static final AtomicInteger oneSecondCallbackCount = new AtomicInteger();
+    private static final AtomicInteger fastCallbackCount = new AtomicInteger();
 
     /**
-     * Counts the number of five second call backs
+     * Counts the number of slow call backs.
      */
-    private static final AtomicInteger fiveSecondCallbackCount = new AtomicInteger();
+    private static final AtomicInteger slowCallbackCount = new AtomicInteger();
 
     /**
      * This is our injected reference to the EventProcessorService
@@ -55,92 +55,115 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
      * This tests call back patterns using separate threads.
      */
     public void runTests() {
-        // Register for 1 second call back
-        registerFor1SecondCallback();
-
-        // Wait for a few 1 second call backs
-        System.out.println("Waiting for some 1 second calls");
-        waitForSome1SecondCallbacks();
-
-        // Register for 5 second call back
-        registerFor5SecondCallback();
-
-        // Wait for a few 1 second call backs
-        System.out.println("Waiting for some 1 second calls");
-        waitForSome1SecondCallbacks();
-
-        // Wait for a few 5 second call backs
-        System.out.println("Waiting for some 5 second calls");
-        waitForSome5SecondCallbacks();
-
-        System.out.println("Done");
+    	try {
+	        // Register for fast call back
+	        registerForFastCallback();
+	
+	        // Wait for a few fast call backs
+	        System.out.println("Waiting for some fast call backs");
+	        waitForSomeFastCallbacks();
+	
+	        try {
+		        // Register for slow call back
+		        registerForSlowCallback();
+		
+		        // Wait for a few fast call backs
+		        System.out.println("Waiting for some fast calls");
+		        waitForSomeFastCallbacks();
+		
+		        // Wait for a few slow call backs
+		        System.out.println("Waiting for some slow calls");
+		        waitForSomeSlowCallbacks();
+	        } finally {
+	        	unregisterForSlowCallback();
+	        }
+	
+	        System.out.println("Done");
+    	} finally {
+    		unregisterForFastCallback();
+    	}
     }
 
     /**
-     * Waits for some one second call backs to be fired
+     * Waits for some fast call backs to be fired
      */
-    private void waitForSome1SecondCallbacks() {
-        // Reset the one second call back count
-        oneSecondCallbackCount.set(0);
+    private void waitForSomeFastCallbacks() {
+        // Reset the fast call back count
+        fastCallbackCount.set(0);
 
-        // Wait until we have 10 1 second call backs or 60 seconds has passed
+        // Wait until we have 10 fast call backs or timeout occurs
         final long start = System.currentTimeMillis();
         do {
-            if (oneSecondCallbackCount.get() >= 10) {
-                System.out.println("Received enough 1 second notifications");
+            if (fastCallbackCount.get() >= 10) {
+                System.out.println("Received enough fast notifications");
                 return;
             }
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 Assert.fail("Unexpeceted exception " + e);
             }
-        } while (System.currentTimeMillis() - start < SIXTY_SECONDS);
+        } while (System.currentTimeMillis() - start < TIMEOUT);
 
         // If we get to here then we did not receive enough events
-        Assert.fail("Did not receive enough 1 second events");
+        Assert.fail("Did not receive enough fast events");
     }
 
     /**
-     * Waits for some five second call backs to be fired
+     * Waits for some slow call backs to be fired
      */
-    private void waitForSome5SecondCallbacks() {
-        // Reset the five second call back count
-        fiveSecondCallbackCount.set(0);
+    private void waitForSomeSlowCallbacks() {
+        // Reset the slow call back count
+        slowCallbackCount.set(0);
 
-        // Wait until we have 4 5 second call backs or 60 seconds has passed
+        // Wait until we have 4 slow call backs or timeout
         final long start = System.currentTimeMillis();
         do {
-            if (fiveSecondCallbackCount.get() >= 4) {
-                System.out.println("Received enough 5 second notifications");
+            if (slowCallbackCount.get() >= 4) {
+                System.out.println("Received enough slow notifications");
                 return;
             }
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 Assert.fail("Unexpeceted exception " + e);
             }
-        } while (System.currentTimeMillis() - start < SIXTY_SECONDS);
+        } while (System.currentTimeMillis() - start < TIMEOUT);
 
         // If we get to here then we did not receive enough events
-        Assert.fail("Did not receive enough 5 second events");
+        Assert.fail("Did not receive enough slow events");
     }
 
     /**
-     * Register to receive one second call backs
+     * Register to receive fast call backs
      */
-    private void registerFor1SecondCallback() {
-        aCallBackService.registerForEvent("ONE");
+    private void registerForFastCallback() {
+        aCallBackService.registerForEvent("FAST");
         return;
     }
 
     /**
-     * Register to receive five second call backs
+     * Register to receive slow call backs
      */
-    private void registerFor5SecondCallback() {
-        aCallBackService.registerForEvent("FIVE");
+    private void registerForSlowCallback() {
+        aCallBackService.registerForEvent("SLOW");
+    }
+
+    /**
+     * Unregister to receive fast call backs
+     */
+    private void unregisterForFastCallback() {
+        aCallBackService.unregisterForEvent("FAST");
+        return;
+    }
+
+    /**
+     * Unregister to receive slow call backs
+     */
+    private void unregisterForSlowCallback() {
+        aCallBackService.unregisterForEvent("SLOW");
     }
 
     /**
@@ -152,12 +175,12 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
     public void eventNotification(String aEventName, Object aEventData) {
         // System.out.println("Received Event : " + aEventName + " " + aEventData);
 
-        if (aEventName.equals("ONE")) {
-            final int newValue = oneSecondCallbackCount.incrementAndGet();
-            //System.out.println("Received total of " + newValue + " 1 second call backs");
-        } else if (aEventName.equals("FIVE")) {
-            final int newValue = fiveSecondCallbackCount.incrementAndGet();
-            //System.out.println("Received total of " + newValue + " 5 second call backs");
+        if (aEventName.equals("FAST")) {
+            final int newValue = fastCallbackCount.incrementAndGet();
+            //System.out.println("Received total of " + newValue + " fast call backs");
+        } else if (aEventName.equals("SLOW")) {
+            final int newValue = slowCallbackCount.incrementAndGet();
+            //System.out.println("Received total of " + newValue + " slow call backs");
         } else
             System.out.println("Unknown event type of " + aEventName);
     }
