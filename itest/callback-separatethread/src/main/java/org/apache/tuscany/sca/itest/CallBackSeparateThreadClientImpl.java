@@ -38,12 +38,12 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
     /**
      * Counts the number of fast call backs.
      */
-    private static final AtomicInteger fastCallbackCount = new AtomicInteger();
+    private static final AtomicInteger FAST_CALLBACK_COUNT = new AtomicInteger();
 
     /**
      * Counts the number of slow call backs.
      */
-    private static final AtomicInteger slowCallbackCount = new AtomicInteger();
+    private static final AtomicInteger SLOW_CALLBACK_COUNT = new AtomicInteger();
 
     /**
      * This is our injected reference to the EventProcessorService
@@ -89,12 +89,12 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
      */
     private void waitForSomeFastCallbacks() {
         // Reset the fast call back count
-        fastCallbackCount.set(0);
+        FAST_CALLBACK_COUNT.set(0);
 
         // Wait until we have 10 fast call backs or timeout occurs
         final long start = System.currentTimeMillis();
         do {
-            if (fastCallbackCount.get() >= 10) {
+            if (FAST_CALLBACK_COUNT.get() >= 10) {
                 System.out.println("Received enough fast notifications");
                 return;
             }
@@ -115,12 +115,12 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
      */
     private void waitForSomeSlowCallbacks() {
         // Reset the slow call back count
-        slowCallbackCount.set(0);
+        SLOW_CALLBACK_COUNT.set(0);
 
         // Wait until we have 4 slow call backs or timeout
         final long start = System.currentTimeMillis();
         do {
-            if (slowCallbackCount.get() >= 4) {
+            if (SLOW_CALLBACK_COUNT.get() >= 4) {
                 System.out.println("Received enough slow notifications");
                 return;
             }
@@ -176,10 +176,10 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
         // System.out.println("Received Event : " + aEventName + " " + aEventData);
 
         if (aEventName.equals("FAST")) {
-            final int newValue = fastCallbackCount.incrementAndGet();
+            final int newValue = FAST_CALLBACK_COUNT.incrementAndGet();
             //System.out.println("Received total of " + newValue + " fast call backs");
         } else if (aEventName.equals("SLOW")) {
-            final int newValue = slowCallbackCount.incrementAndGet();
+            final int newValue = SLOW_CALLBACK_COUNT.incrementAndGet();
             //System.out.println("Received total of " + newValue + " slow call backs");
         } else {
             System.out.println("Unknown event type of " + aEventName);
