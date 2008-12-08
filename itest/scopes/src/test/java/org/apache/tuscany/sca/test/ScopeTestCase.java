@@ -31,14 +31,27 @@ import org.junit.Test;
 
 public class ScopeTestCase {
 
-    private static final int NUM_THREADS = 4; // number of threads to drive each scope container
-    private static final int ITERATIONS = 200; // number of iterations per thread
+    /**
+     * Number of threads to drive each scope container.
+     */
+    private static final int NUM_THREADS = 4;
+    
+    /**
+     *  Number of iterations per thread.
+     */
+    private static final int ITERATIONS = 200;
+    
     private Node node;
 
-    // Test scope containers.
-    // The request scope container isn't hooked up for some reason so the code below
-    // that tests request scope is commented out.
-    // Code could be added to test session scope once it is supported in a standalone environment.
+    /**
+     * Test scope containers.
+     * 
+     * The request scope container isn't hooked up for some reason so the code below
+     * that tests request scope is commented out.
+     * Code could be added to test session scope once it is supported in a standalone environment.
+     * 
+     * @throws InterruptedException Test failed
+     */
     @Test
     public void testScopes() throws InterruptedException {
 
