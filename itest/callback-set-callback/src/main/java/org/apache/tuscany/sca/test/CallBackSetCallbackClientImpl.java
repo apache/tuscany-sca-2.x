@@ -89,8 +89,9 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
 
         // Make sure the marker file is not present before starting the test.
         File aFile = new File("target/test4_marker");
-        if (aFile.exists())
+        if (aFile.exists()) {
             aFile.delete();
+        }
 
         aCallBackService.setCallback(callBack);
 

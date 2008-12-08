@@ -34,12 +34,14 @@ public class ParameterObject implements Serializable {
     }
 
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
         if (o instanceof ParameterObject) {
             ParameterObject other = (ParameterObject)o;
-            if (field1 != null)
+            if (field1 != null) {
                 return field1.equals(other.field1);
+            }
         }
         return false;
     }
