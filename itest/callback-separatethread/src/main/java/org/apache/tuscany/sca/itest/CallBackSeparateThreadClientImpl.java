@@ -181,7 +181,8 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
         } else if (aEventName.equals("SLOW")) {
             final int newValue = slowCallbackCount.incrementAndGet();
             //System.out.println("Received total of " + newValue + " slow call backs");
-        } else
+        } else {
             System.out.println("Unknown event type of " + aEventName);
+        }
     }
 }

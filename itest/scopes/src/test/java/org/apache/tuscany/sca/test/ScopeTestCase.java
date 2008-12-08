@@ -65,8 +65,9 @@ public class ScopeTestCase {
             StateVerifier moduleScopeService = node.getService(StateVerifier.class, "ModuleScopeComponent");
             for (int i = 1; i <= iterations; i++) {
                 moduleScopeService.setState(i);
-                if (!moduleScopeService.checkState(i))
+                if (!moduleScopeService.checkState(i)) {
                     fail("The module scope service lost its state on iteration " + i);
+                }
             }
         }
     }
@@ -77,8 +78,9 @@ public class ScopeTestCase {
             StateVerifier requestScopeService = node.getService(StateVerifier.class, "RequestScopeComponent");
             for (int i = 1; i <= iterations; i++) {
                 requestScopeService.setState(i);
-                if (!requestScopeService.checkState(i))
+                if (!requestScopeService.checkState(i)) {
                     fail("The request scope service lost its state on iteration " + i);
+                }
             }
         }
     }
