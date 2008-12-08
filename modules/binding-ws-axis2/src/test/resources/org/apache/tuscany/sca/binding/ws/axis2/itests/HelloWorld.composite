@@ -18,7 +18,8 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+		   xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorld">
 
     <service name="helloWorld" promote="HelloWorldService">
