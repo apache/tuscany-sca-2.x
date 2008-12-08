@@ -62,7 +62,7 @@ public class ConversationalServiceStatelessImpl implements ConversationalService
 
     public void initializeCount(int count) {
         calls.append("initializeCount,");
-        Integer conversationalCount = new Integer(count);
+        Integer conversationalCount = Integer.valueOf(count);
         conversationalState.put(conversationId, conversationalCount);
     }
 
