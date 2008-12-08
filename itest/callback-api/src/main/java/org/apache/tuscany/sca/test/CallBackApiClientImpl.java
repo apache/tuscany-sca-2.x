@@ -50,8 +50,6 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
 
         // Test3c is where the target calls back multiple times to the client.
         test3c();
-
-        return;
     }
 
     /**
@@ -111,7 +109,6 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
     private void test3b() {
         aCallBackService.noCallBack("No Reply Desired");
         Assert.assertEquals("CallBackApiITest - test3b", 1, 1);
-        return;
     }
 
     /**
@@ -137,7 +134,6 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         }
 
         Assert.assertEquals("CallBackApiITest - test3c", 3, this.getCallBackCount());
-        return;
     }
 
     /**
