@@ -64,8 +64,6 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
          * case.
          */
         test9();
-
-        return;
     }
 
     private void test7() {

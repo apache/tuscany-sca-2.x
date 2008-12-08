@@ -32,7 +32,6 @@ public class CallBackSetCallbackBadCallback {
         //
         System.out.println("CallBackSetCallbackBadCallback: callback called");
         Assert.fail("CallBackSetCallbackBadCallback: callback called");
-        return;
     }
 
 }

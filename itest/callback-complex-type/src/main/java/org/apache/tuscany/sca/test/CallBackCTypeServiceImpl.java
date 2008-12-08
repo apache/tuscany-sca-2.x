@@ -35,7 +35,6 @@ public class CallBackCTypeServiceImpl implements CallBackCTypeService {
         System.out.println("CallBackCTypeServiceImpl message received: " + aString);
         callback.callBackMessage("Who's There");
         System.out.println("CallBackCTypeServiceImpl response sent");
-        return;
 
     }
 
@@ -48,7 +47,6 @@ public class CallBackCTypeServiceImpl implements CallBackCTypeService {
         System.out.println("CallBackCTypeServiceImpl response sent");
         callback.callBackIncrement("Who's There 3");
         System.out.println("CallBackCTypeServiceImpl response sent");
-        return;
 
     }
 
@@ -56,7 +54,6 @@ public class CallBackCTypeServiceImpl implements CallBackCTypeService {
 
         System.out.println("CallBackCTypeServiceImpl message received: " + aString);
         System.out.println("CallBackCTypeServiceImpl No response desired");
-        return;
 
     }
 }
