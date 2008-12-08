@@ -27,8 +27,8 @@ import org.osoa.sca.annotations.Callback;
  */
 public interface CallBackSetCalbackService {
 
-    public void knockKnock(String aString);
+    void knockKnock(String aString);
 
-    public boolean setCallbackIllegally(String aString);
+    boolean setCallbackIllegally(String aString);
 
 }

@@ -27,8 +27,8 @@ import org.osoa.sca.annotations.Conversational;
  */
 public interface CallBackSetCallbackConvCallback {
 
-    public void callBackMessage(String aString);
+    void callBackMessage(String aString);
 
-    public void callBackIncrement(String aString);
+    void callBackIncrement(String aString);
 
 }

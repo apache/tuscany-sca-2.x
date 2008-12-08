@@ -26,8 +26,8 @@ import org.osoa.sca.annotations.Remotable;
  */
 public interface CallBackBasicCallBack {
 
-    public void callBackMessage(String aString);
+    void callBackMessage(String aString);
 
-    public void callBackIncrement(String aString);
+    void callBackIncrement(String aString);
 
 }

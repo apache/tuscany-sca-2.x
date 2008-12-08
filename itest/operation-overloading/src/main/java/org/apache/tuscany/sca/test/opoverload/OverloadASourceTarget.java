@@ -26,7 +26,7 @@ package org.apache.tuscany.sca.test.opoverload;
 
 //@AllowsPassByReference
 public interface OverloadASourceTarget {
-    final String opName = "operationA:";
+    String opName = "operationA:";
 
     /**
      * Method with no parameters

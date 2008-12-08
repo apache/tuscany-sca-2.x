@@ -26,6 +26,6 @@ import org.osoa.sca.annotations.Remotable;
  */
 public interface CallBackIdCallBack {
 
-    public void callBackMessage(String aString);
+    void callBackMessage(String aString);
 
 }

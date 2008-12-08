@@ -28,18 +28,18 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface NonConversationalCallback {
 
-    public void init();
+    void init();
 
-    public void destroy();
+    void destroy();
 
-    public void initializeCount(int count);
+    void initializeCount(int count);
 
-    public void incrementCount();
+    void incrementCount();
 
-    public int retrieveCount();
+    int retrieveCount();
 
-    public void businessException() throws Exception;
+    void businessException() throws Exception;
 
-    public String endConversation();
+    String endConversation();
 
 }

@@ -31,6 +31,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface ConversationalReferenceClient {
 
-    public void incrementCount(CallableReference<ConversationalService> conversationalService);
+    void incrementCount(CallableReference<ConversationalService> conversationalService);
 
 }

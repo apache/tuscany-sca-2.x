@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.test.exceptions;
 
 public interface ExceptionHandler {
 
-    public void testing();
+    void testing();
 
-    public Checked getTheBad();
+    Checked getTheBad();
 
-    public String getTheGood();
+    String getTheGood();
 
-    public UnChecked getTheUgly();
+    UnChecked getTheUgly();
 
 }

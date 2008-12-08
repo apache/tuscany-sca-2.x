@@ -30,21 +30,21 @@ public interface CallBackApiService {
     /**
      * This function is defined in CallBackApiServiceImpl
      */
-    public void knockKnock(String aString);
+    void knockKnock(String aString);
 
     /**
      * This function is defined in CallBackApiServiceImpl
      */
-    public void knockKnockByRef(String aString);
+    void knockKnockByRef(String aString);
 
     /**
      * This function is defined in CallBackApiServiceImpl
      */
-    public void noCallBack(String aString);
+    void noCallBack(String aString);
 
     /**
      * This function is defined in CallBackApiServiceImpl
      */
-    public void multiCallBack(String aString);
+    void multiCallBack(String aString);
 
 }

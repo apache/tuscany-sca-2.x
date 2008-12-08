@@ -28,10 +28,10 @@ import org.osoa.sca.annotations.Remotable;
  */
 public interface CallBackBasicService {
 
-    public void knockKnock(String aString);
+    void knockKnock(String aString);
 
-    public void noCallBack(String aString);
+    void noCallBack(String aString);
 
-    public void multiCallBack(String aString);
+    void multiCallBack(String aString);
 
 }
