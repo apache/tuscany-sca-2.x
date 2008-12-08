@@ -28,6 +28,6 @@ import org.osoa.sca.annotations.Remotable;
  */
 public interface CallBackIdService {
 
-    public void knockKnock(String aString);
+    void knockKnock(String aString);
 
 }

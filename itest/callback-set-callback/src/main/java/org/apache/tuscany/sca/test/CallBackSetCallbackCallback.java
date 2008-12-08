@@ -24,8 +24,8 @@ package org.apache.tuscany.sca.test;
  */
 public interface CallBackSetCallbackCallback {
 
-    public void callBackMessage(String aString);
+    void callBackMessage(String aString);
 
-    public void callBackIncrement(String aString);
+    void callBackIncrement(String aString);
 
 }

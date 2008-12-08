@@ -23,6 +23,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface CallBackSetCallbackConvClient {
 
-    public void run();
+    void run();
 
 }

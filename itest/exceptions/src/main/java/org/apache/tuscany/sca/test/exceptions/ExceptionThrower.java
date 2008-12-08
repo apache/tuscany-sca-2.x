@@ -24,14 +24,14 @@ package org.apache.tuscany.sca.test.exceptions;
  * @version $Rev$ $Date$
  */
 public interface ExceptionThrower {
-    public static final Checked BAD = new Checked("theBad");
-    public static final UnChecked UGLY = new UnChecked("theUgly");
-    public static final String SO_THEY_SAY = "All is good that ends good.";
+    Checked BAD = new Checked("theBad");
+    UnChecked UGLY = new UnChecked("theUgly");
+    String SO_THEY_SAY = "All is good that ends good.";
 
-    public String theGood() throws Checked;
+    String theGood() throws Checked;
 
-    public String theBad() throws Checked;
+    String theBad() throws Checked;
 
-    public String theUgly() throws Checked;
+    String theUgly() throws Checked;
 
 }

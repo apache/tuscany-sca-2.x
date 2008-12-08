@@ -31,19 +31,19 @@ import org.osoa.sca.annotations.Remotable;
 @Conversational
 public interface ConversationalCallback {
 
-    public void init();
+    void init();
 
-    public void destroy();
+    void destroy();
 
-    public void initializeCount(int count);
+    void initializeCount(int count);
 
-    public void incrementCount();
+    void incrementCount();
 
-    public int retrieveCount();
+    int retrieveCount();
 
-    public void businessException() throws Exception;
+    void businessException() throws Exception;
 
     @EndsConversation
-    public String endConversation();
+    String endConversation();
 
 }

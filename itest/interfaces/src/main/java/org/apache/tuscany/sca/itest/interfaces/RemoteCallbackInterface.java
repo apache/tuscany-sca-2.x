@@ -27,7 +27,7 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface RemoteCallbackInterface {
 
-    public void callbackMethod(String str);
+    void callbackMethod(String str);
 
-    public void modifyParameter(ParameterObject po);
+    void modifyParameter(ParameterObject po);
 }

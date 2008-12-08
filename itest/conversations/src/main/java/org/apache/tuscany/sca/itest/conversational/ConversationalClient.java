@@ -30,37 +30,37 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface ConversationalClient {
 
-    public int runConversationFromInjectedReference();
+    int runConversationFromInjectedReference();
 
-    public int runConversationFromInjectedReference2();
+    int runConversationFromInjectedReference2();
 
-    public int runConversationFromServiceReference();
+    int runConversationFromServiceReference();
 
-    public int runConversationWithUserDefinedConversationId();
+    int runConversationWithUserDefinedConversationId();
 
-    public String runConversationCheckUserDefinedConversationId();
+    String runConversationCheckUserDefinedConversationId();
 
-    public int runConversationCheckingScope();
+    int runConversationCheckingScope();
 
-    public int runConversationWithCallback();
+    int runConversationWithCallback();
 
-    public int runConversationHavingPassedReference();
+    int runConversationHavingPassedReference();
 
-    public String runConversationBusinessException();
+    String runConversationBusinessException();
 
-    public String runConversationBusinessExceptionCallback();
+    String runConversationBusinessExceptionCallback();
 
-    public int runConversationCallingEndedConversation();
+    int runConversationCallingEndedConversation();
 
-    public int runConversationCallingEndedConversationCallback();
+    int runConversationCallingEndedConversationCallback();
 
-    public String runConversationCallingEndedConversationCheckConversationId();
+    String runConversationCallingEndedConversationCheckConversationId();
 
-    public String runConversationCallingEndedConversationCallbackCheckConversationId();
+    String runConversationCallingEndedConversationCallbackCheckConversationId();
 
-    public int runConversationAgeTimeout();
+    int runConversationAgeTimeout();
 
-    public int runConversationIdleTimeout();
+    int runConversationIdleTimeout();
 
-    public int runConversationPrincipleError();
+    int runConversationPrincipleError();
 }

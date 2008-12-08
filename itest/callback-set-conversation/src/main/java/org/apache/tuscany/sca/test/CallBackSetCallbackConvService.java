@@ -29,8 +29,8 @@ import org.osoa.sca.annotations.Conversational;
  */
 public interface CallBackSetCallbackConvService {
 
-    public void knockKnock(String aString);
+    void knockKnock(String aString);
 
-    public void setCallbackIllegally(String aString);
+    void setCallbackIllegally(String aString);
 
 }

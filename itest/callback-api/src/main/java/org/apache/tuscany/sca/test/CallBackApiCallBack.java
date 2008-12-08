@@ -28,11 +28,11 @@ public interface CallBackApiCallBack {
     /**
      * This function is defined in CallBackApiClientImpl
      */
-    public void callBackMessage(String aString);
+    void callBackMessage(String aString);
 
     /**
      * This function is defined in CallBackApiClientImpl
      */
-    public void callBackIncrement(String aString);
+    void callBackIncrement(String aString);
 
 }

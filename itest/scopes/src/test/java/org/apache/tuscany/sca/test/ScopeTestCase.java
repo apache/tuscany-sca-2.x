@@ -31,8 +31,8 @@ import org.junit.Test;
 
 public class ScopeTestCase {
 
-    final static int numThreads = 4; // number of threads to drive each scope container
-    final static int iterations = 200; // number of iterations per thread
+    static final int numThreads = 4; // number of threads to drive each scope container
+    static final int iterations = 200; // number of iterations per thread
     private Node node;
 
     // Test scope containers.

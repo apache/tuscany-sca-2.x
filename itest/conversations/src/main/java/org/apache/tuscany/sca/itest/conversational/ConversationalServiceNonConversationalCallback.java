@@ -33,29 +33,29 @@ import org.osoa.sca.annotations.Remotable;
 @Callback(NonConversationalCallback.class)
 public interface ConversationalServiceNonConversationalCallback {
 
-    public void init();
+    void init();
 
-    public void destroy();
+    void destroy();
 
-    public void initializeCount(int count);
+    void initializeCount(int count);
 
-    public void incrementCount();
+    void incrementCount();
 
-    public int retrieveCount();
+    int retrieveCount();
 
-    public void businessException() throws Exception;
+    void businessException() throws Exception;
 
-    public void initializeCountCallback(int count);
+    void initializeCountCallback(int count);
 
-    public void incrementCountCallback();
+    void incrementCountCallback();
 
-    public int retrieveCountCallback();
+    int retrieveCountCallback();
 
-    public void businessExceptionCallback() throws Exception;
+    void businessExceptionCallback() throws Exception;
 
     @EndsConversation
-    public String endConversation();
+    String endConversation();
 
-    public String endConversationCallback();
+    String endConversationCallback();
 
 }

@@ -23,8 +23,8 @@ package org.apache.tuscany.sca.itest.interfaces;
  */
 public interface LocalCallbackInterface {
 
-    public void callbackMethod(String str);
+    void callbackMethod(String str);
 
-    public void modifyParameter(ParameterObject po);
+    void modifyParameter(ParameterObject po);
 
 }

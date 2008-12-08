@@ -25,6 +25,6 @@ public interface CallBackApiClient {
     /**
      * This function is defined in CallBackApiClientImpl
      */
-    public void run();
+    void run();
 
 }
