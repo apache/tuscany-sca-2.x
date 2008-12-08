@@ -41,7 +41,6 @@ public class CallBackIdServiceImpl implements CallBackIdService {
 
         callback.callBackMessage("Who's There");
         System.out.println("CallBackIdServiceImpl response sent");
-        return;
 
     }
 

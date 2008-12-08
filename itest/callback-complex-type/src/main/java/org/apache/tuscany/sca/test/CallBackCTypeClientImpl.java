@@ -53,7 +53,6 @@ public class CallBackCTypeClientImpl implements CallBackCTypeClient, CallBackCTy
         // Test12c is where the target calls back multiple times to the client.
         test12c();
 
-        return;
     }
 
     private void test12a() {
@@ -81,7 +80,6 @@ public class CallBackCTypeClientImpl implements CallBackCTypeClient, CallBackCTy
     private void test12b() {
         aCallBackService.noCallBack("No Reply Desired");
         Assert.assertEquals("CallBackBasicITest - test12b -", 1, 1);
-        return;
     }
 
     private void test12c() {
@@ -103,7 +101,6 @@ public class CallBackCTypeClientImpl implements CallBackCTypeClient, CallBackCTy
         }
 
         Assert.assertEquals("CallBackBasicITest - test12c -", 3, this.getCallBackCount());
-        return;
     }
 
     public String getReturnMessage() {

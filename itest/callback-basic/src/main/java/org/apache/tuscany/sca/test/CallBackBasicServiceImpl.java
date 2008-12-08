@@ -32,7 +32,6 @@ public class CallBackBasicServiceImpl implements CallBackBasicService {
         System.out.println("CallBackBasicServiceImpl message received: " + aString);
         callback.callBackMessage("Who's There");
         System.out.println("CallBackBasicServiceImpl response sent");
-        return;
 
     }
 
@@ -45,7 +44,6 @@ public class CallBackBasicServiceImpl implements CallBackBasicService {
         System.out.println("CallBackBasicServiceImpl response sent");
         callback.callBackIncrement("Who's There 3");
         System.out.println("CallBackBasicServiceImpl response sent");
-        return;
 
     }
 
@@ -53,7 +51,6 @@ public class CallBackBasicServiceImpl implements CallBackBasicService {
 
         System.out.println("CallBackBasicServiceImpl message received: " + aString);
         // System.out.println("CallBackBasicServiceImpl No response desired");
-        return;
 
     }
 }

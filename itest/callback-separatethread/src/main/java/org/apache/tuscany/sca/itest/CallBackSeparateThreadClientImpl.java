@@ -141,7 +141,6 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
      */
     private void registerForFastCallback() {
         aCallBackService.registerForEvent("FAST");
-        return;
     }
 
     /**
@@ -156,7 +155,6 @@ public class CallBackSeparateThreadClientImpl implements CallBackSeparateThreadC
      */
     private void unregisterForFastCallback() {
         aCallBackService.unregisterForEvent("FAST");
-        return;
     }
 
     /**

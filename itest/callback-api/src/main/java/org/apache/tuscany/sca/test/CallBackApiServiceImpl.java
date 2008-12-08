@@ -51,8 +51,6 @@ public class CallBackApiServiceImpl implements CallBackApiService {
         callback = this.getCallBackInterface();
         callback.callBackMessage("Who's There");
         System.out.println("CallBackApiServiceImpl response sent");
-        return;
-
     }
 
     /**
@@ -66,8 +64,6 @@ public class CallBackApiServiceImpl implements CallBackApiService {
         System.out.println("CallBackApiServiceImpl message received: " + aString);
         callbackRef.getService().callBackMessage("Who's There");
         System.out.println("CallBackApiServiceImpl response sent");
-        return;
-
     }
 
     /**
@@ -88,8 +84,6 @@ public class CallBackApiServiceImpl implements CallBackApiService {
         System.out.println("CallBackApiServiceImpl response sent");
         callback.callBackIncrement("Who's There 3");
         System.out.println("CallBackApiServiceImpl response sent");
-        return;
-
     }
 
     /**
@@ -98,11 +92,7 @@ public class CallBackApiServiceImpl implements CallBackApiService {
      * @param aString String passed by a function call
      */
     public void noCallBack(String aString) {
-
         System.out.println("CallBackApiServiceImpl message received: " + aString);
-
-        return;
-
     }
 
     /**

@@ -52,7 +52,6 @@ public class CallBackIdClientImpl implements CallBackIdClient, CallBackIdCallBac
         // callbackID returned during callback.
         test11b();
 
-        return;
     }
 
     private void test11a() {

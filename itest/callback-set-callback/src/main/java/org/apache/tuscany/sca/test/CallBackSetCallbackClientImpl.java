@@ -72,8 +72,6 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
          */
 
         test10();
-
-        return;
     }
 
     private void test4() {

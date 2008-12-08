@@ -44,8 +44,6 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
 
         // Test3 is where the target calls back multiple times to the client.
         test1c();
-
-        return;
     }
 
     private void test1a() {
@@ -73,8 +71,6 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
     private void test1b() {
         aCallBackService.noCallBack("No Reply Desired");
         Assert.assertEquals("CallBackBasicITest - test1b", 1, 1);
-
-        return;
     }
 
     private void test1c() {
@@ -96,7 +92,6 @@ public class CallBackBasicClientImpl implements CallBackBasicClient, CallBackBas
         }
 
         Assert.assertEquals("CallBackBasicITest - test1c", 3, this.getCallBackCount());
-        return;
     }
 
     public String getReturnMessage() {
