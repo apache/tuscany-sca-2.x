@@ -31,8 +31,8 @@ import org.junit.Test;
 
 public class ScopeTestCase {
 
-    static final int numThreads = 4; // number of threads to drive each scope container
-    static final int iterations = 200; // number of iterations per thread
+    private static final int NUM_THREADS = 4; // number of threads to drive each scope container
+    private static final int ITERATIONS = 200; // number of iterations per thread
     private Node node;
 
     // Test scope containers.
@@ -42,18 +42,18 @@ public class ScopeTestCase {
     @Test
     public void testScopes() throws InterruptedException {
 
-        Thread[] moduleScopeThreadTable = new Thread[numThreads];
-        Thread[] requestScopeThreadTable = new Thread[numThreads];
+        Thread[] moduleScopeThreadTable = new Thread[NUM_THREADS];
+        Thread[] requestScopeThreadTable = new Thread[NUM_THREADS];
 
-        for (int i = 0; i < numThreads; i++) {
+        for (int i = 0; i < NUM_THREADS; i++) {
             moduleScopeThreadTable[i] = new ModuleScopeTestThread();
             requestScopeThreadTable[i] = new RequestScopeTestThread();
         }
-        for (int j = 0; j < numThreads; j++) {
+        for (int j = 0; j < NUM_THREADS; j++) {
             moduleScopeThreadTable[j].start();
             requestScopeThreadTable[j].start();
         }
-        for (int k = 0; k < numThreads; k++) {
+        for (int k = 0; k < NUM_THREADS; k++) {
             moduleScopeThreadTable[k].join();
             requestScopeThreadTable[k].join();
         }
@@ -63,7 +63,7 @@ public class ScopeTestCase {
 
         public void run() {
             StateVerifier moduleScopeService = node.getService(StateVerifier.class, "ModuleScopeComponent");
-            for (int i = 1; i <= iterations; i++) {
+            for (int i = 1; i <= ITERATIONS; i++) {
                 moduleScopeService.setState(i);
                 if (!moduleScopeService.checkState(i)) {
                     fail("The module scope service lost its state on iteration " + i);
@@ -76,7 +76,7 @@ public class ScopeTestCase {
 
         public void run() {
             StateVerifier requestScopeService = node.getService(StateVerifier.class, "RequestScopeComponent");
-            for (int i = 1; i <= iterations; i++) {
+            for (int i = 1; i <= ITERATIONS; i++) {
                 requestScopeService.setState(i);
                 if (!requestScopeService.checkState(i)) {
                     fail("The request scope service lost its state on iteration " + i);
