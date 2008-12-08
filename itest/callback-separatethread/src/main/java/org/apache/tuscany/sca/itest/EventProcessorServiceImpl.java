@@ -130,7 +130,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
     /**
      * Utility class for generating Events
      */
-    private class EventGenerator {
+    private final class EventGenerator {
         /**
          * The Timer we are using to generate the events
          */
@@ -165,7 +165,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
         /**
          * The TimerTask that is invoked by the Timer for the EventGenerator
          */
-        private class EventGeneratorTimerTask extends TimerTask {
+        private final class EventGeneratorTimerTask extends TimerTask {
             /**
              * The name of the Event we should generate
              */
