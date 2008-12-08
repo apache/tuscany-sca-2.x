@@ -19,14 +19,22 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A factory for the Endpoint model.
@@ -92,10 +100,10 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
         
 
         // Match the binding against the bindings of the target service
-        Binding resolvedBinding = BindingConfigurationUtil.matchBinding(endpoint.getTargetComponent(),
-                                                                        endpoint.getTargetComponentService(),
-                                                                        endpoint.getCandidateBindings(),
-                                                                        endpoint.getTargetComponentService().getBindings());
+        Binding resolvedBinding = matchBinding(endpoint.getTargetComponent(),
+                                               endpoint.getTargetComponentService(),
+                                               endpoint.getCandidateBindings(),
+                                               endpoint.getTargetComponentService().getBindings());
         if (resolvedBinding == null) {
             warning(monitor, "NoMatchingBinding", 
                     endpoint.getSourceComponentReference(),
@@ -106,10 +114,10 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
         }
         
         if (bidirectional) {
-            Binding resolvedCallbackBinding = BindingConfigurationUtil.matchBinding(endpoint.getTargetComponent(),
-                                                                                    endpoint.getTargetComponentService(),
-                                                                                    endpoint.getSourceComponentReference().getCallback().getBindings(),
-                                                                                    endpoint.getTargetComponentService().getCallback().getBindings());
+            Binding resolvedCallbackBinding = matchBinding(endpoint.getTargetComponent(),
+                                                           endpoint.getTargetComponentService(),
+                                                           endpoint.getSourceComponentReference().getCallback().getBindings(),
+                                                           endpoint.getTargetComponentService().getCallback().getBindings());
             if (resolvedBinding == null) {
                 warning(monitor, "NoMatchingCallbackBinding", 
                         endpoint.getSourceComponentReference(),
@@ -120,5 +128,82 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
             }
         }       
     }  
+    
+    private boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
+        boolean isCompatible = true;
+        if ( refBinding instanceof PolicySetAttachPoint && svcBinding instanceof PolicySetAttachPoint ) {
+            //TODO : need to add more compatibility checks at the policy attachment levels
+            for ( PolicySet svcPolicySet : ((PolicySetAttachPoint)svcBinding).getPolicySets() ) {
+                isCompatible = false;
+                for ( PolicySet refPolicySet : ((PolicySetAttachPoint)refBinding).getPolicySets() ) {
+                    if ( svcPolicySet.equals(refPolicySet) ) {
+                        isCompatible = true;
+                        break;
+                    }
+                }
+                //if there exists no matching policy set in the reference binding
+                if ( !isCompatible ) {
+                    return isCompatible;
+                }
+            }
+        }
+        return isCompatible;
+    }
+    
+    
+    private Binding matchBinding(Component targetComponent, ComponentService targetComponentService, List<Binding> source, List<Binding> target) {
+        List<Binding> matched = new ArrayList<Binding>();
+        // Find the corresponding bindings from the service side
+        for (Binding binding : source) {
+            for (Binding serviceBinding : target) {
+                if (binding.getClass() == serviceBinding.getClass() && 
+                    hasCompatiblePolicySets(binding, serviceBinding)) {
+
+                    try {
+                        Binding cloned = (Binding)binding.clone();
+                        
+                        //Customise the binding name to make it unique 
+                        // regardless of how many bindings or targets there are
+                        if ( targetComponent != null){
+                            cloned.setName(binding.getName() + "#" + targetComponent.getName() + "/" + serviceBinding.getName());
+                        } else {
+                            cloned.setName(binding.getName() + "#" + serviceBinding.getName());
+                        }
+                        
+                        // Set the binding URI to the URI of the target service
+                        // that has been matched
+                        if (binding.getURI() == null) {
+                            cloned.setURI(serviceBinding.getURI());
+                        }
+                        
+                        if (binding instanceof OptimizableBinding) {
+                            OptimizableBinding endpoint = ((OptimizableBinding)cloned);
+                            endpoint.setTargetComponent(targetComponent);
+                            endpoint.setTargetComponentService(targetComponentService);
+                            endpoint.setTargetBinding(serviceBinding);
+                        } 
+                           
+                        matched.add(cloned);
+                        break;
+                    } catch (Exception ex) {
+                        // do nothing 
+                    }                   
+                }
+            }
+        }
+        if (matched.isEmpty()) {
+            // No matching binding
+            return null;
+        } else {
+            for (Binding binding : matched) {
+                // If binding.sca is present, use it
+                if (SCABinding.class.isInstance(binding)) {
+                    return binding;
+                }
+            }
+            // Use the first one
+            return matched.get(0);
+        }
+    }    
     
 }

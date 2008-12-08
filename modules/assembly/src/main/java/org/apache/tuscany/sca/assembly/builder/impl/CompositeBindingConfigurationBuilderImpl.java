@@ -35,10 +35,13 @@ import org.apache.tuscany.sca.monitor.Monitor;
 /**
  * A composite builder that performs any additional building steps that
  * composite service bindings may need.  Used for WSDL generation.
+ * 
+ * TODO - What is this actually used for? I can't find any references in the
+ *        code base
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBindingConfigurationBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
+public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingURIBuilderImpl implements CompositeBuilder {
 
     public CompositeBindingConfigurationBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
         super(factories.getFactory(AssemblyFactory.class),
