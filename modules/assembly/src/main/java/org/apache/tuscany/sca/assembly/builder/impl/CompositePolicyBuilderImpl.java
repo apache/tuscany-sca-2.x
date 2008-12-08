@@ -20,14 +20,28 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 /**
  * A composite builder that computes policy sets based on attached intents and policy sets.
@@ -36,10 +50,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class CompositePolicyBuilderImpl extends BaseWireBuilderImpl implements CompositeBuilder {
+public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
     public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, endpointFactory, interfaceContractMapper);
+        super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
 
     public String getID() {
@@ -49,4 +63,200 @@ public class CompositePolicyBuilderImpl extends BaseWireBuilderImpl implements C
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         computePolicies(composite, monitor);
     }
+    
+    protected void computePolicies(Composite composite, Monitor monitor) {
+        
+        // compute policies recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                computePolicies((Composite)implementation, monitor);
+            }
+        }
+    
+        for (Component component : composite.getComponents()) {
+
+            // Inherit default policies from the component to component-level contracts.
+            // This must be done BEFORE computing implementation policies because the
+            // implementation policy computer removes from the component any
+            // intents and policy sets that don't apply to implementations.
+            PolicyConfigurationUtil.inheritDefaultPolicies(component, component.getServices());
+            PolicyConfigurationUtil.inheritDefaultPolicies(component, component.getReferences());
+
+            Implementation implemenation = component.getImplementation(); 
+            try {
+                PolicyConfigurationUtil.computeImplementationIntentsAndPolicySets(implemenation, component);
+            } catch ( Exception e ) {
+                error(monitor, "PolicyRelatedException", implemenation, e);
+                //throw new RuntimeException(e);
+            }
+
+            for (ComponentService componentService : component.getServices()) {
+                Service service = componentService.getService();
+                if (service != null) {
+                    // reconcile intents and policysets from componentType
+                     PolicyComputationUtils.addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
+                     PolicyComputationUtils.addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
+                     
+                     //reconcile intents and policysets for operations 
+                     boolean notFound;
+                     List<ConfiguredOperation> opsFromComponentType = new ArrayList<ConfiguredOperation>();
+                     for ( ConfiguredOperation ctsConfOp : service.getConfiguredOperations() ) {
+                         notFound = true;
+                         for ( ConfiguredOperation csConfOp : componentService.getConfiguredOperations() ) {
+                             if ( csConfOp.getName().equals(ctsConfOp.getName()) ) {
+                                 PolicyComputationUtils.addInheritedIntents(ctsConfOp.getRequiredIntents(), csConfOp.getRequiredIntents());
+                                 PolicyComputationUtils.addInheritedPolicySets(ctsConfOp.getPolicySets(), csConfOp.getPolicySets(), true);
+                                 notFound = false;
+                             } 
+                         }
+                         
+                         if ( notFound ) {
+                             opsFromComponentType.add(ctsConfOp);
+                         }
+                     }
+                     componentService.getConfiguredOperations().addAll(opsFromComponentType);
+                }
+                
+                try {
+                    //compute the intents for operations under service element
+                    PolicyConfigurationUtil.computeIntentsForOperations(componentService);
+                    //compute intents and policyset for each binding
+                    //addInheritedOpConfOnBindings(componentService);
+                    PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentService);
+                    PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentService, null);
+    
+                } catch ( Exception e ) {
+                    error(monitor, "PolicyRelatedException", componentService, e);
+                    //throw new RuntimeException(e);
+                }
+            }
+        
+            for (ComponentReference componentReference : component.getReferences()) {
+                Reference reference = componentReference.getReference();
+                if (reference != null) {
+                    // reconcile intents and policysets
+                    PolicyComputationUtils.addInheritedIntents(reference.getRequiredIntents(), componentReference.getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(reference.getPolicySets(), componentReference.getPolicySets(), true);
+                }
+                
+               
+                try {
+                    //compute the intents for operations under reference element
+                    PolicyConfigurationUtil.computeIntentsForOperations(componentReference);
+                    //compute intents and policyset for each binding
+                    //addInheritedOpConfOnBindings(componentReference);
+                    PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentReference);
+                    PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentReference, null);
+    
+                
+                    if ( componentReference.getCallback() != null ) {
+                        PolicyComputationUtils.addInheritedIntents(componentReference.getRequiredIntents(), 
+                                            componentReference.getCallback().getRequiredIntents());
+                        PolicyComputationUtils.addInheritedPolicySets(componentReference.getPolicySets(), 
+                                               componentReference.getCallback().getPolicySets(), 
+                                               false);
+                    }
+                } catch ( Exception e ) {
+                    error(monitor, "PolicyRelatedException", componentReference, e);
+                    //throw new RuntimeException(e);
+                }
+            }
+        }
+
+        PolicyConfigurationUtil.inheritDefaultPolicies(composite, composite.getServices());
+        PolicyConfigurationUtil.inheritDefaultPolicies(composite, composite.getReferences());
+
+        //compute policies for composite service bindings
+        for (Service service : composite.getServices()) {
+            addPoliciesFromPromotedService((CompositeService)service);
+            try {
+                //compute the intents for operations under service element
+                PolicyConfigurationUtil.computeIntentsForOperations(service);
+                //add or merge service operations to the binding
+                //addInheritedOpConfOnBindings(service);
+                PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(service);
+                PolicyConfigurationUtil.determineApplicableBindingPolicySets(service, null);
+            } catch ( Exception e ) {
+                error(monitor, "PolicyRelatedException", service, e);
+                //throw new RuntimeException(e);
+            }
+                
+        }
+    
+        for (Reference reference : composite.getReferences()) {
+            CompositeReference compReference = (CompositeReference)reference;
+            addPoliciesFromPromotedReference(compReference);
+            try {
+                //compute the intents for operations under service element
+                PolicyConfigurationUtil.computeIntentsForOperations(reference);
+                //addInheritedOpConfOnBindings(reference);
+                
+                if (compReference.getCallback() != null) {
+                    PolicyComputationUtils.addInheritedIntents(compReference.getRequiredIntents(), 
+                                        compReference.getCallback().getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(compReference.getPolicySets(), 
+                                           compReference.getCallback().getPolicySets(), 
+                                           false);
+                }
+                
+                PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(reference);
+                PolicyConfigurationUtil.determineApplicableBindingPolicySets(reference, null);
+            } catch ( Exception e ) {
+                error(monitor, "PolicyRelatedException", reference, e);
+                //throw new RuntimeException(e);
+            }
+        }
+    }
+    
+    private void addPoliciesFromPromotedService(CompositeService compositeService) {
+        //inherit intents and policies from promoted service
+        PolicyComputationUtils.addInheritedIntents(compositeService.getPromotedService().getRequiredIntents(), 
+                            compositeService.getRequiredIntents());
+        PolicyComputationUtils.addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
+                               compositeService.getPolicySets(), true);
+        addInheritedOperationConfigurations(compositeService.getPromotedService(), compositeService);
+    }
+    
+    private void addPoliciesFromPromotedReference(CompositeReference compositeReference) {
+        for ( Reference promotedReference : compositeReference.getPromotedReferences() ) {
+           PolicyComputationUtils.addInheritedIntents(promotedReference.getRequiredIntents(), 
+                               compositeReference.getRequiredIntents());
+       
+           PolicyComputationUtils.addInheritedPolicySets(promotedReference.getPolicySets(), 
+                                  compositeReference.getPolicySets(), true);
+           addInheritedOperationConfigurations(promotedReference, compositeReference);
+        }
+    } 
+    
+    private void addInheritedOperationConfigurations(
+            OperationsConfigurator source, OperationsConfigurator target) {
+        boolean found = false;
+
+        List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
+        for (ConfiguredOperation sourceConfOp : source
+                .getConfiguredOperations()) {
+            for (ConfiguredOperation targetConfOp : target
+                    .getConfiguredOperations()) {
+                if (sourceConfOp.getName().equals(targetConfOp.getName())) {
+                    PolicyComputationUtils.addInheritedIntents(sourceConfOp
+                            .getRequiredIntents(), targetConfOp
+                            .getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(sourceConfOp
+                            .getPolicySets(), targetConfOp.getPolicySets(),
+                            true);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                additionalOperations.add(sourceConfOp);
+            }
+        }
+
+        if (!additionalOperations.isEmpty()) {
+            target.getConfiguredOperations().addAll(additionalOperations);
+        }
+    }    
 }
