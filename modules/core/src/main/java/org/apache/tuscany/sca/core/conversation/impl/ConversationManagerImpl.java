@@ -85,7 +85,7 @@ public class ConversationManagerImpl implements ConversationManager {
         });
         if (aProperty != null) {
             try {
-                mit = (new Long(aProperty) * 1000);
+                mit = Long.parseLong(aProperty) * 1000;
             } catch (NumberFormatException nfe) {
                 // Ignore
             }
@@ -100,7 +100,7 @@ public class ConversationManagerImpl implements ConversationManager {
         });
         if (aProperty != null) {
             try {
-                ma = (new Long(aProperty) * 1000);
+                ma = Long.parseLong(aProperty) * 1000;
             } catch (NumberFormatException nfe) {
                 // Ignore
             }
