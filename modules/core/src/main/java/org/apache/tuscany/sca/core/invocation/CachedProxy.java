@@ -34,20 +34,20 @@ public class CachedProxy extends Proxy {
     // This is a cache containing the proxy class constructor for each business interface.
     // This improves performance compared to calling Proxy.newProxyInstance()
     // every time that a proxy is needed.
-    private static WeakHashMap<Class<?>, Object> cache = new WeakHashMap<Class<?>, Object>();
+    private final static WeakHashMap<Class<?>, Constructor<?>> cache = new WeakHashMap<Class<?>, Constructor<?>>();
 
-    public static Object newProxyInstance(ClassLoader classloader, Class aclass[], InvocationHandler invocationhandler)
+    public static Object newProxyInstance(ClassLoader classloader, Class<?> aclass[], InvocationHandler invocationhandler)
         throws IllegalArgumentException {
         try {
             if (invocationhandler == null)
                 throw new NullPointerException();
             // Lookup cached constructor.  aclass[0] is the reference's business interface.
-            Constructor proxyCTOR;
+            Constructor<?> proxyCTOR;
             synchronized (cache) {
-                proxyCTOR = (Constructor)cache.get(aclass[0]);
+                proxyCTOR = cache.get(aclass[0]);
             }
             if (proxyCTOR == null) {
-                Class proxyClass = getProxyClass(classloader, aclass);
+                Class<?> proxyClass = getProxyClass(classloader, aclass);
                 proxyCTOR = proxyClass.getConstructor(constructorParams);
                 synchronized (cache) {
                     cache.put(aclass[0], proxyCTOR);
