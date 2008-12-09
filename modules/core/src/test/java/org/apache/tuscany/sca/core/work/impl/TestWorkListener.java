@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.core.work;
+package org.apache.tuscany.sca.core.work.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.tuscany.sca.core.work.impl.WorkEvent;
+import org.apache.tuscany.sca.core.work.impl.WorkListener;
 import org.apache.tuscany.sca.work.WorkSchedulerException;
 import org.junit.Assert;
 

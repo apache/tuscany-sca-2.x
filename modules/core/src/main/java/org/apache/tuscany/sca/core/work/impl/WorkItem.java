@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.core.work;
+package org.apache.tuscany.sca.core.work.impl;
 
 import org.apache.tuscany.sca.work.WorkSchedulerException;
 
@@ -35,10 +35,10 @@ class WorkItem {
     private int status = -1;
 
     // Result
-    private Work result;
+    private Work<?> result;
     
     // Original work
-    private Work originalWork;
+    private Work<?> originalWork;
 
     // Exception
     private WorkSchedulerException exception;
@@ -48,7 +48,7 @@ class WorkItem {
      *
      * @param id of this work event.
      */
-    protected WorkItem(final String id, final Work orginalWork) {
+    protected WorkItem(final String id, final Work<?> orginalWork) {
         this.id = id;
         this.originalWork = orginalWork;
     }
@@ -67,7 +67,7 @@ class WorkItem {
      *
      * @return Original work.
      */
-    public Work getOriginalWork() {
+    public Work<?> getOriginalWork() {
         return originalWork;
     }
 
@@ -77,7 +77,7 @@ class WorkItem {
      * @return Work.
      * @throws WorkException If the work completed with an exception.
      */
-    public Work getResult() {
+    public Work<?> getResult() {
         return result;
     }
 
@@ -86,7 +86,7 @@ class WorkItem {
      *
      * @param result Result.
      */
-    protected void setResult(final Work result) {
+    protected void setResult(final Work<?> result) {
         this.result = result;
     }
 

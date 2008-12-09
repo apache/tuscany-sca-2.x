@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.core.work;
+package org.apache.tuscany.sca.core.work.impl;
 
 import java.rmi.server.UID;
 import java.util.Collection;
@@ -77,7 +77,7 @@ public class ThreadPoolWorkManager {
      * @param work Work that needs to be scheduled.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work work) throws IllegalArgumentException {
+    public WorkItem schedule(Work<?> work) throws IllegalArgumentException {
         return schedule(work, null);
     }
 
@@ -88,7 +88,7 @@ public class ThreadPoolWorkManager {
      * @param workListener Work listener for callbacks.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work work, WorkListener workListener) throws IllegalArgumentException {
+    public WorkItem schedule(Work<?> work, WorkListener workListener) throws IllegalArgumentException {
 
         WorkItem workItem = new WorkItem(new UID().toString(), work);
         if (workListener != null) {
@@ -112,7 +112,7 @@ public class ThreadPoolWorkManager {
      * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
-    public boolean waitForAll(Collection works, long timeout) {
+    public boolean waitForAll(Collection<Work<?>> works, long timeout) {
         throw new UnsupportedOperationException("waitForAll not supported");
     }
 
@@ -122,7 +122,7 @@ public class ThreadPoolWorkManager {
      * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
-    public Collection waitForAny(Collection works, long timeout) {
+    public Collection<Work<?>> waitForAny(Collection<Work<?>> works, long timeout) {
         throw new UnsupportedOperationException("waitForAny not supported");
     }
 
@@ -132,7 +132,7 @@ public class ThreadPoolWorkManager {
      * @param workItem Work item representing the work that was accepted.
      * @param work     Work that was accepted.
      */
-    private void workAccepted(final WorkItem workItem, final Work work) {
+    private void workAccepted(final WorkItem workItem, final Work<?> work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_ACCEPTED);
@@ -144,7 +144,7 @@ public class ThreadPoolWorkManager {
     /*
      * Method to indicate a work start.
      */
-    private void workStarted(final WorkItem workItem, final Work work) {
+    private void workStarted(final WorkItem workItem, final Work<?> work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_STARTED);
@@ -156,14 +156,14 @@ public class ThreadPoolWorkManager {
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final WorkItem workItem, final Work work) {
+    private void workCompleted(final WorkItem workItem, final Work<?> work) {
         workCompleted(workItem, work, null);
     }
 
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final WorkItem workItem, final Work work, final WorkSchedulerException exception) {
+    private void workCompleted(final WorkItem workItem, final Work<?> work, final WorkSchedulerException exception) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_COMPLETED);
@@ -178,7 +178,7 @@ public class ThreadPoolWorkManager {
     /*
      * Schedules the work using the ThreadPool.
      */
-    private boolean scheduleWork(final Work work, final WorkItem workItem) {
+    private boolean scheduleWork(final Work<?> work, final WorkItem workItem) {
         try {
             executor.execute(new DecoratingWork(workItem, work));
             return true;

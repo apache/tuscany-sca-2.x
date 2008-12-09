@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.core.wire;
+package org.apache.tuscany.sca.core.invocation.impl;
 
 import static org.junit.Assert.assertEquals;
 

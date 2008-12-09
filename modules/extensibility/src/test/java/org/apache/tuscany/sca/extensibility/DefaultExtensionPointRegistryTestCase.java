@@ -17,11 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core;
+package org.apache.tuscany.sca.extensibility;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
