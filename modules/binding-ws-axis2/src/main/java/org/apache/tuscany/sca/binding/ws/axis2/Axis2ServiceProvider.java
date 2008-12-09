@@ -71,6 +71,7 @@ import org.apache.axis2.transport.jms.JMSListener;
 import org.apache.axis2.transport.jms.JMSSender;
 import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
@@ -80,7 +81,8 @@ import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingB
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -252,6 +254,14 @@ public class Axis2ServiceProvider {
         }
     }
 
+    // FIXME: [rfeng] Need to have a better way
+    private EndpointReference createEndpointReference(String uri) {
+        FactoryExtensionPoint factories =
+            component.getComponentContext().getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class);
+        RuntimeAssemblyFactory factory = (RuntimeAssemblyFactory)factories.getFactory(AssemblyFactory.class);
+        return factory.createEndpointReference(uri);
+    }
+    
     private String computeEndpointURI(String uri, ServletHost servletHost) {
 
         if (uri == null) {
@@ -713,14 +723,14 @@ public class Axis2ServiceProvider {
         if (callbackAddress != null ||
             callbackID != null ||
             conversationID != null) {
-            from = new EndpointReferenceImpl(null);
+            from = createEndpointReference(null);
             parameters = from.getReferenceParameters();
             msg.setFrom(from);
         }
 
         // set the reference parameters into the "From" EPR
         if (callbackAddress != null) {
-            parameters.setCallbackReference(new EndpointReferenceImpl(callbackAddress));
+            parameters.setCallbackReference(createEndpointReference(callbackAddress));
         }
         if (callbackID != null) {
             parameters.setCallbackID(callbackID);
