@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core.work;
+package org.apache.tuscany.sca.core.work.impl;
 
 /**
  * JCA work wrapper.

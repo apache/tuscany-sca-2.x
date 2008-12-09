@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.core.work;
+package org.apache.tuscany.sca.core.work.impl;
 
+import org.apache.tuscany.sca.core.work.impl.DefaultWorkScheduler;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
