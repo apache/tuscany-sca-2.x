@@ -135,7 +135,7 @@ public class DefaultEndpointResolverFactoryExtensionPoint implements EndpointRes
         private String modelTypeName;
         private ServiceDeclaration providerClass;
         private EndpointResolverFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyEndpointResolverFactory(ExtensionPointRegistry registry,
                                             String modelTypeName,
@@ -164,7 +164,7 @@ public class DefaultEndpointResolverFactoryExtensionPoint implements EndpointRes
             return getFactory().createEndpointResolver(endpoint, binding);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
                     modelType = providerClass.loadClass(modelTypeName);

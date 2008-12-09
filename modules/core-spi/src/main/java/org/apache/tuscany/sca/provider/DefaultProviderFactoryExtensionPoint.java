@@ -208,7 +208,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         private String modelTypeName;
         private ServiceDeclaration factoryDeclaration;
         private BindingProviderFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyBindingProviderFactory(ExtensionPointRegistry registry,
                                            String modelTypeName,
@@ -248,7 +248,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return getFactory().createServiceBindingProvider(component, service, binding);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
                     modelType = factoryDeclaration.loadClass(modelTypeName);
@@ -271,7 +271,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         private String modelTypeName;
         private ServiceDeclaration providerClass;
         private ImplementationProviderFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyImplementationProviderFactory(ExtensionPointRegistry registry,
                                                   String modelTypeName,
@@ -303,7 +303,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return getFactory().createImplementationProvider(component, Implementation);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
 
@@ -326,7 +326,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         private String modelTypeName;
         private ServiceDeclaration providerClass;
         private PolicyProviderFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyPolicyProviderFactory(ExtensionPointRegistry registry,
                                           String modelTypeName,
@@ -368,7 +368,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return getFactory().createServicePolicyProvider(component, service, binding);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
                     modelType = providerClass.loadClass(modelTypeName);
@@ -390,7 +390,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         private String modelTypeName;
         private ServiceDeclaration providerClass;
         private WireFormatProviderFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyWireFormatProviderFactory(ExtensionPointRegistry registry,
                                               String modelTypeName,
@@ -428,7 +428,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return getFactory().createServiceWireFormatProvider(component, service, binding);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
 
@@ -451,7 +451,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         private String modelTypeName;
         private ServiceDeclaration providerClass;
         private OperationSelectorProviderFactory factory;
-        private Class modelType;
+        private Class<?> modelType;
 
         private LazyOperationSelectorProviderFactory(ExtensionPointRegistry registry,
                                                      String modelTypeName,
@@ -489,7 +489,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return getFactory().createServiceOperationSelectorProvider(component, service, binding);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
 
