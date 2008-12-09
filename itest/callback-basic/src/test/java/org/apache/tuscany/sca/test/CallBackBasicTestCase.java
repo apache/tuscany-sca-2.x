@@ -19,20 +19,20 @@
 
 package org.apache.tuscany.sca.test;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
-public class CallBackBasicTestCase extends TestCase {
+public class CallBackBasicTestCase {
 
     private static Node node;
     private CallBackBasicClient aCallBackClient;
 
+    @Test
     public void testCallBackBasic() {
         aCallBackClient.run();
     }
