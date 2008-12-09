@@ -21,21 +21,18 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -43,6 +40,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Axis2HeaderPolicy> {
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     
     public QName getArtifactType() {
         return Axis2HeaderPolicy.AXIS2_HEADER_POLICY_QNAME;
@@ -90,7 +88,7 @@ public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implem
         writer.writeStartElement(prefix, 
                                  getArtifactType().getLocalPart(),
                                  getArtifactType().getNamespaceURI());
-        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", SCA10_TUSCANY_NS);
 
         if ( policy.getHeaderName() != null ) {
             writer.writeStartElement(prefix, 

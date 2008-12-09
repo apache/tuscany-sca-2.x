@@ -26,6 +26,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -41,7 +43,6 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
 import org.apache.axis2.i18n.Messages;
-import org.apache.axis2.util.Loader;
 
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
@@ -89,6 +90,15 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
         return configContext;
     }
     
+    private InputStream getResourceAsStream(final String resource) {
+        return AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
+            public InputStream run() {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                return cl.getResourceAsStream(resource);
+            }
+        });
+    }
+    
     /* these three methods are part of a temporary fix to solve problems that Maven has with including
      * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
      * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
@@ -101,7 +111,7 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
         try {
             if (axis2_xml == null) {
                 axis2xmlStream =
-                        Loader.getResourceAsStream(DeploymentConstants.AXIS2_CONFIGURATION_RESOURCE);
+                        getResourceAsStream(DeploymentConstants.AXIS2_CONFIGURATION_RESOURCE);
             } else {
                 axis2xmlStream = axis2_xml.openStream();
             }
@@ -157,8 +167,8 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
             module.setParent(axisConfig);
             //String moduleFile = fileUrl.substring(0, fileUrl.indexOf(".mar"));
             if (module.getName() == null) {
-                module.setName(org.apache.axis2.util.Utils.getModuleName("rampart-1.4"));
-                module.setVersion(org.apache.axis2.util.Utils.getModuleVersion("rampart-1.4"));
+                module.setName("rampart");
+                module.setVersion("1.4");
             }
             populateModule(module, rampart_mar_url);
             module.setFileName(rampart_mar_url);
@@ -175,13 +185,126 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
                 throw (AxisFault)e.getException();
             }            
            
-            org.apache.axis2.util.Utils.
-                    calculateDefaultModuleVersion(axisConfig.getModules(), axisConfig);
+            calculateDefaultModuleVersion(axisConfig.getModules(), axisConfig);
             axisConfig.validateSystemPredefinedPhases();
         } catch (IOException e) {
             throw new DeploymentException(e);
         }
     }
+    /**
+     * Get the name of the module , where archive name is combination of module name + its version
+     * The format of the name is as follows:
+     * moduleName-00.0000
+     * Example: "addressing-01.0001.mar" would return "addressing"
+     *
+     * @param moduleName the name of the module archive
+     * @return the module name parsed out of the file name
+     */
+    public static String getModuleName(String moduleName) {
+        if (moduleName.endsWith("-SNAPSHOT")) {
+            return moduleName.substring(0, moduleName.indexOf("-SNAPSHOT"));
+        }
+        char delimiter = '-';
+        int version_index = moduleName.lastIndexOf(delimiter);
+        if (version_index > 0) {
+            String versionString = getModuleVersion(moduleName);
+            if (versionString == null) {
+                return moduleName;
+            } else {
+                return moduleName.substring(0, version_index);
+            }
+        } else {
+            return moduleName;
+        }
+    }
+
+    public static String getModuleVersion(String moduleName) {
+        if (moduleName.endsWith("-SNAPSHOT")) {
+            return "SNAPSHOT";
+        }
+        char version_seperator = '-';
+        int version_index = moduleName.lastIndexOf(version_seperator);
+        if (version_index > 0) {
+            String versionString = moduleName.substring(version_index + 1, moduleName.length());
+            try {
+                Float.parseFloat(versionString);
+                return versionString;
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static String getModuleName(String moduleName, String moduleVersion) {
+        if (moduleVersion != null && moduleVersion.length() != 0) {
+            moduleName = moduleName + "-" + moduleVersion;
+        } 
+        return moduleName;
+    }
+
+    public static boolean isLatest(String moduleVersion, String currentDefaultVersion) {
+        if (AxisModule.VERSION_SNAPSHOT.equals(moduleVersion)) {
+            return true;
+        } else {
+            float m_version = Float.parseFloat(moduleVersion);
+            float m_c_vresion = Float.parseFloat(currentDefaultVersion);
+            return m_version > m_c_vresion;
+        }
+    }
+
+    public static void calculateDefaultModuleVersion(HashMap modules,
+                                                     AxisConfiguration axisConfig) {
+        Iterator allModules = modules.values().iterator();
+        HashMap defaultModules = new HashMap();
+        while (allModules.hasNext()) {
+            AxisModule axisModule = (AxisModule) allModules.next();
+            String moduleName = axisModule.getName();
+            String moduleNameString;
+            String moduleVersionString;
+            if (AxisModule.VERSION_SNAPSHOT.equals(axisModule.getVersion())) {
+                moduleNameString = axisModule.getName();
+                moduleVersionString = axisModule.getVersion();
+            } else {
+                if (axisModule.getVersion() == null) {
+                    moduleNameString = getModuleName(moduleName);
+                    moduleVersionString = getModuleVersion(moduleName);
+                    if (moduleVersionString != null) {
+                        try {
+                            Float.valueOf(moduleVersionString);
+                            axisModule.setVersion(moduleVersionString);
+                            axisModule.setName(moduleName);
+                        } catch (NumberFormatException e) {
+                            moduleVersionString = null;
+                        }
+                    }
+                } else {
+                    moduleNameString = axisModule.getName();
+                    moduleVersionString = axisModule.getVersion();
+                }
+            }
+            String currentDefaultVerison = (String) defaultModules.get(moduleNameString);
+            if (currentDefaultVerison != null) {
+                // if the module version is null then , that will be ignore in this case
+                if (!AxisModule.VERSION_SNAPSHOT.equals(currentDefaultVerison)) {
+                    if (moduleVersionString != null &&
+                        isLatest(moduleVersionString, currentDefaultVerison)) {
+                        defaultModules.put(moduleNameString, moduleVersionString);
+                    }
+                }
+            } else {
+                defaultModules.put(moduleNameString, moduleVersionString);
+            }
+
+        }
+        Iterator def_mod_itr = defaultModules.keySet().iterator();
+        while (def_mod_itr.hasNext()) {
+            String moduleName = (String) def_mod_itr.next();
+            axisConfig.addDefaultModuleVersion(moduleName, (String) defaultModules.get(moduleName));
+        }
+    }
+
     
     private void populateModule(AxisModule module, URL moduleUrl) throws DeploymentException {
         try {

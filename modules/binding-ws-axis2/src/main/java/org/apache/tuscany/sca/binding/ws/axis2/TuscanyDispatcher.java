@@ -30,7 +30,6 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.HandlerDescription;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.RequestURIBasedDispatcher;
-import org.apache.axis2.util.JavaUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -86,7 +85,7 @@ public class TuscanyDispatcher extends RequestURIBasedDispatcher {
         if (services == null) {
             return null;
         }
-        String[] parts = JavaUtils.split(path, '/');
+        String[] parts = path.split("/");
         String serviceName = "";
         for (int i=parts.length-1; i>=0; i--) {
             serviceName = parts[i] + serviceName;
