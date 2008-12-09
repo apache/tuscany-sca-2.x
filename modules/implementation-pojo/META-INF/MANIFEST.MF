@@ -1,11 +1,5 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.implementation.java.introspect;
- uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.impleme
- ntation.java,org.osoa.sca";version="1.4",org.apache.tuscany.sca.imple
- mentation.java;uses:="org.apache.tuscany.sca.assembly,org.apache.tusc
- any.sca.implementation.java.introspect,org.apache.tuscany.sca.core,or
- g.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef.java"
- ;version="1.4"
+Export-Package: org.apache.tuscany.sca.pojo
 Private-Package: org.apache.tuscany.sca.implementation.java.impl;versi
  on="1.4",org.apache.tuscany.sca.implementation.java.introspect.impl;v
  ersion="1.4"
@@ -20,12 +14,9 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Java Implementation Model
 Import-Package: javax.jws,
  javax.xml.namespace,
- 
  org.apache.tuscany.sca.assembly;version="1.4",
  org.apache.tuscany.sca.assembly.impl;version="1.4",
  org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.implementation.java;version="1.4",
- org.apache.tuscany.sca.implementation.java.introspect;version="1.4",
  org.apache.tuscany.sca.interfacedef;version="1.4",
  org.apache.tuscany.sca.interfacedef.java;version="1.4",
  org.apache.tuscany.sca.interfacedef.java.impl;version="1.4";resolution:=optional,

@@ -44,12 +44,12 @@ public class JavaElementImpl implements JavaElement {
     private String name;
     private Class<? extends Annotation> classifer;
 
-    public JavaElementImpl(Class<?> cls) {
-        this.anchor = cls;
+    public JavaElementImpl(Class<?> clazz) {
+        this.anchor = clazz;
         this.elementType = ElementType.TYPE;
-        this.type = cls;
-        this.genericType = cls;
-        this.name = cls.getName();
+        this.type = clazz;
+        this.genericType = clazz;
+        this.name = clazz.getName();
     }
 
     public JavaElementImpl(Field field) {
