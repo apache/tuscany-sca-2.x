@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.itest;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -32,7 +30,7 @@ import org.junit.Test;
 /**
  * This test case will attempt to trigger a call back using a separate thread
  */
-public class CallBackSeparateThreadTestCase extends TestCase {
+public class CallBackSeparateThreadTestCase {
 
     /**
      * The Node we are using 
