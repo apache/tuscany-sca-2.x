@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.itest;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -33,7 +31,7 @@ import org.junit.Test;
 /**
  * This test case will attempt to use a wire
  */
-public class WireTestCase extends TestCase {
+public class WireTestCase {
 
     /**
      * The Node we are using 
