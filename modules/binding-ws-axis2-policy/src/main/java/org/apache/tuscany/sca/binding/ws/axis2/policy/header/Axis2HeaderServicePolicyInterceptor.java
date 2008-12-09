@@ -19,10 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
 
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;

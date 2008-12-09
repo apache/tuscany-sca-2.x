@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
@@ -30,7 +29,8 @@ import org.apache.tuscany.sca.policy.Policy;
  * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
  */
 public class Axis2TokenAuthenticationPolicy implements Policy {
-    public static final QName AXIS2_TOKEN_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "axis2TokenAuthentication");
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    public static final QName AXIS2_TOKEN_AUTHENTICATION_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "axis2TokenAuthentication");
     public static final String AXIS2_TOKEN_AUTHENTICATION_TOKEN_NAME = "tokenName";
 
     private QName tokenName;

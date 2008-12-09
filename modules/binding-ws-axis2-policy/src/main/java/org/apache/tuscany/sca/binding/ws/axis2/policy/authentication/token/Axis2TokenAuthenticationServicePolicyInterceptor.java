@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.SecurityUtil;
+import org.apache.tuscany.sca.policy.security.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 
 /**

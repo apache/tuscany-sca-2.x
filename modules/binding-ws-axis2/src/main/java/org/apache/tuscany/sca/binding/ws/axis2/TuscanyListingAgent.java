@@ -39,7 +39,6 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
-import org.apache.axis2.util.JavaUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 
@@ -160,7 +159,7 @@ public class TuscanyListingAgent extends ListingAgent {
         if (services == null) {
             return null;
         }
-        String[] parts = JavaUtils.split(path, '/');
+        String[] parts = path.split("/");
         String serviceName = "";
         for (int i=parts.length-1; i>=0; i--) {
             serviceName = parts[i] + serviceName;

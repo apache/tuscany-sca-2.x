@@ -80,7 +80,7 @@ import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingB
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
