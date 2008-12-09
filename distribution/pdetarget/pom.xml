@@ -39,39 +39,16 @@
         </dependency>
 
         <!-- Extra dependencies not in the core distro -->
-        
-         <!--
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <type>jar</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-xml-ws</artifactId>
-            <type>jar</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-tomcat</artifactId>
-            <type>jar</type>
-            <version>2.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>annotations-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>       
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-webapp</artifactId>
-            <type>jar</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>        
+        <!--
+            <dependency> <groupId>org.apache.tuscany.sca</groupId> <artifactId>tuscany-host-jetty</artifactId>
+            <type>jar</type> <version>2.0-SNAPSHOT</version> </dependency> <dependency>
+            <groupId>org.apache.tuscany.sca</groupId> <artifactId>tuscany-policy-xml-ws</artifactId> <type>jar</type>
+            <version>2.0-SNAPSHOT</version> </dependency> <dependency> <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-tomcat</artifactId> <type>jar</type> <version>2.0-SNAPSHOT</version> <exclusions>
+            <exclusion> <groupId>org.apache.tomcat</groupId> <artifactId>annotations-api</artifactId> </exclusion>
+            </exclusions> </dependency> <dependency> <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-webapp</artifactId> <type>jar</type> <version>2.0-SNAPSHOT</version> </dependency>
         -->
         <dependency>
             <groupId>junit</groupId>
@@ -82,7 +59,53 @@
     </dependencies>
 
     <profiles>
-    
+        <profile>
+            <id>ws</id>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-binding-ws</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-binding-ws-axis2</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-binding-ws-xml</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-databinding-axiom</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-databinding-jaxb-axiom</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-policy-xml-ws</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+        </profile>
+
         <!-- Build profile that can be used to configure your Eclipse environment -->
         <profile>
             <id>eclipse</id>
@@ -116,13 +139,11 @@
                                                     <artifactId>*</artifactId>
                                                     <version>1.0</version>
                                                 </artifactMember>
-                                                <!-- 
-                                                <artifactMember>
-                                                    <groupId>com.google.gdata</groupId>
-                                                    <artifactId>gdata-media</artifactId>
-                                                    <version>1.0</version>
-                                                </artifactMember>
-                                                 -->
+                                                <!--
+                                                    <artifactMember> <groupId>com.google.gdata</groupId>
+                                                    <artifactId>gdata-media</artifactId> <version>1.0</version>
+                                                    </artifactMember>
+                                                -->
                                             </artifactMembers>
                                         </artifactAggregation>
                                     </artifactAggregations>
@@ -203,17 +224,22 @@
                 <module>../../../modules/implementation-bpel-ode</module>
                 <module>../../../modules/implementation-ejb</module>
                 <module>../../../modules/implementation-java</module>
-                <module>../../../modules/implementation-java-runtime</module>
+                <module>../../../modules/implementation-java-runtime
+                </module>
                 <module>../../../modules/implementation-java-xml</module>
                 <module>../../../modules/implementation-node</module>
-                <module>../../../modules/implementation-node-runtime</module>
+                <module>../../../modules/implementation-node-runtime
+                </module>
                 <module>../../../modules/implementation-resource</module>
-                <module>../../../modules/implementation-resource-runtime</module>
+                <module>../../../modules/implementation-resource-runtime
+                </module>
                 <module>../../../modules/implementation-script</module>
-                <module>../../../modules/implementation-script-runtime</module>
+                <module>../../../modules/implementation-script-runtime
+                </module>
                 <module>../../../modules/implementation-spring</module>
                 <module>../../../modules/implementation-widget</module>
-                <module>../../../modules/implementation-widget-runtime</module>
+                <module>../../../modules/implementation-widget-runtime
+                </module>
                 <module>../../../modules/implementation-xquery</module>
                 <module>../../../modules/interface</module>
                 <module>../../../modules/interface-java</module>
