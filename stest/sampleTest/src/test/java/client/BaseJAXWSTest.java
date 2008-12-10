@@ -29,6 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osoa.sca.annotations.Reference;
 
+import javax.xml.ws.Service;
+import javax.xml.namespace.QName;
+
 import test.ASM_0001_Client;
 import test.TestInvocation;
 
@@ -71,6 +74,12 @@ public class BaseJAXWSTest {
     }
     
     public String invokeTest( String input ) {
+    	//Web service invocation
+    	QName serviceName = new QName("http://localhost:8080", "TestInvocation");
+    	javax.xml.ws.Service webService = Service.create(serviceName);
+    	TestInvocation wsProxy = (TestInvocation) webService.getPort(testConfiguration.getServiceInterface());
+    	String output = wsProxy.invokeTest(input);
+    	System.out.println("web service invoked - output = " + output);
 
     	TestInvocation service = (TestInvocation) getService( testConfiguration.getServiceInterface(), 
     														  testConfiguration.getTestServiceName() );    	
@@ -112,7 +121,7 @@ public class BaseJAXWSTest {
     	config.testName 		= "ASM_0001";
     	config.input 			= "request";
     	config.output 			= config.testName + " " + config.input + " invoked ok";
-    	config.composite 		= "Test_ASM_0001.composite";
+    	config.composite 		= "Test_ASM_0101.composite";
     	config.testServiceName 	= "TestClient";
     	config.testClass 		= ASM_0001_Client.class;
     	config.serviceInterface = TestInvocation.class;

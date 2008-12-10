@@ -20,13 +20,14 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TEST_ASM_0001">
+           name="TEST_ASM_0101">
            
     <component name="TestClient">
 		<implementation.java class="test.ASM_0001_Client"/>
 		<service name="TestInvocation">
 			<interface.java interface="test.TestInvocation"/>
 			<binding.sca/>
+			<binding.ws/>
 		</service>
         <!--  reference name="testRef1" target="TestComponent1/service1" / -->
     </component>
