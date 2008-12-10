@@ -9,10 +9,19 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Core SPI
 Import-Package: javax.xml.namespace,
+ javax.xml.xpath,
+ javax.xml.datatype,
  javax.xml.parsers,
  javax.xml.stream,
+ javax.xml.stream.util,
  javax.xml.transform,
- javax.xml.xpath,
+ javax.xml.transform.dom,
+ javax.xml.transform.sax,
+ javax.xml.transform.stream,
+ org.w3c.dom,
+ org.xml.sax,
+ org.xml.sax.ext,
+ org.xml.sax.helpers,
  org.apache.tuscany.sca.core;version="1.4.0",
  org.apache.tuscany.sca.extensibility;version="1.4.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.common.xml
