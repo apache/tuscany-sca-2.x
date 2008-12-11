@@ -63,9 +63,9 @@
                 <module>exceptions</module>
                 <module>interfaces</module>
                 <module>operation-overloading</module>
-<!-- wait until databinding-sdo is in
+                <!-- wait until databinding-sdo is in
                 <module>properties</module>
--->
+                -->
                 <module>recursive-multi-level</module>
                 <module>references</module>
                 <module>scopes</module>
@@ -73,6 +73,7 @@
                 <module>wires</module>
            </modules>
         </profile>
+        
         <profile>
             <id>old</id>
             <modules>
@@ -90,8 +91,9 @@
                 <module>callback-set-conversation</module>
                 <module>component-type</module>
                 <module>contribution</module>
-              <!--  
- <module>contribution-classloader</module> -->
+                <!--  
+                <module>contribution-classloader</module>
+                -->
                 <module>contribution-import-export</module>
                 <module>conversations</module>
                 <module>conversations-ws</module>
