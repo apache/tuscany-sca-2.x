@@ -188,6 +188,13 @@
         </profile>
 
         <profile>
+            <id>setup</id>
+            <modules>
+                <module>tools/maven/maven-eclipse-compiler</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>distribution</id>
             <modules>
                 <module>modules</module>
