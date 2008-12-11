@@ -35,14 +35,14 @@ import test.TestInvocation;
 /**
  * A generic test client based on Tuscany APIs
  */
-public class BaseTest {
+public class BaseTestCase {
 
     protected NodeLauncher launcher;
     protected Node node;
     protected TestConfiguration testConfiguration = getTestConfiguration();
     
     public static void main(String[] args) throws Exception {
-    	BaseTest test = new BaseTest(); 
+    	BaseTestCase test = new BaseTestCase(); 
     	test.setUp();
     	test.tearDown();
     }

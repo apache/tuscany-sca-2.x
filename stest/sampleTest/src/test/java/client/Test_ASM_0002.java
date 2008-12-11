@@ -25,7 +25,7 @@ import test.TestInvocation;
 /**
  * A generic test client based on Tuscany APIs
  */
-public class Test_ASM_0002 extends BaseTest {
+public class Test_ASM_0002 extends BaseTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {
