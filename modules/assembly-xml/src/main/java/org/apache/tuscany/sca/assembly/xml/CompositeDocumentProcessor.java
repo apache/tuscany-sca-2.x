@@ -62,44 +62,14 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     private int scaDefnsCount = 0;
 
     /**
-     * Construct a new composite processor
-     * @param assemblyFactory
-     * @param policyFactory
-     * @param staxProcessor
-     */
-    @Deprecated
-    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
-                                                                  XMLInputFactory inputFactory,
-                                                                  List scaDefnsSink, Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
-        this.inputFactory = inputFactory;
-        this.scaDefnSink = scaDefnsSink;
-    }
-
-    /**
-     * Construct a new composite processor
-     * @param assemblyFactory
-     * @param policyFactory
-     * @param staxProcessor
-     */
-    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
-    								  XMLInputFactory inputFactory,
-    								  DocumentBuilderFactory documentBuilderFactory,
-    								  List scaDefnsSink, Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
-        this.documentBuilderFactory = documentBuilderFactory;
-        this.inputFactory = inputFactory;
-        this.scaDefnSink = scaDefnsSink;
-    }
-
-    /**
      * Constructs a new composite processor.
      * @param modelFactories
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(FactoryExtensionPoint modelFactories, 
-    								  StAXArtifactProcessor staxProcessor, Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
+    public CompositeDocumentProcessor(FactoryExtensionPoint modelFactories,
+                                      StAXArtifactProcessor staxProcessor,
+                                      Monitor monitor) {
+        super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
     }

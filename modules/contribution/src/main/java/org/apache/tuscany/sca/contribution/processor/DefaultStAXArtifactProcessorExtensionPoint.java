@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -41,7 +40,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * The default implementation of an extension point for StAX artifact processors.
@@ -246,8 +244,6 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
 
                     // Specific initialization for the DefaultBeanModelProcessor
                     FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-                    AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-                    PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                     try {
                         Class<StAXArtifactProcessor> processorClass =
                             (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
@@ -259,15 +255,13 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                             modelFactory = null;
                         }
                         Constructor<StAXArtifactProcessor> constructor =
-                            processorClass.getConstructor(AssemblyFactory.class,
-                                                          PolicyFactory.class,
+                            processorClass.getConstructor(FactoryExtensionPoint.class,
                                                           QName.class,
                                                           Class.class,
                                                           Object.class,
                                                           Monitor.class);
                         processor =
-                            constructor.newInstance(assemblyFactory,
-                                                    policyFactory,
+                            constructor.newInstance(modelFactories,
                                                     artifactType,
                                                     getModelType(),
                                                     modelFactory,

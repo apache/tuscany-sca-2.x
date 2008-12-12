@@ -70,7 +70,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
@@ -107,7 +106,6 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
@@ -158,11 +156,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
              StAXAttributeProcessor extensionAttributeProcessor,
              Monitor monitor) {
         
-    	super(modelFactories.getFactory(ContributionFactory.class),
-            modelFactories.getFactory(AssemblyFactory.class),
-            modelFactories.getFactory(PolicyFactory.class),
-            extensionProcessor, 
-            monitor);
+    	super(modelFactories, extensionProcessor, monitor);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         this.xPathFactory = modelFactories.getFactory(XPathFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);

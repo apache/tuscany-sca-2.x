@@ -44,7 +44,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -65,7 +64,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.w3c.dom.Document;
 
@@ -78,27 +76,17 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
     
     /**
      * Constructs a new componentType processor.
-     * @param factory
-     * @param policyFactory
-     * @param registry
-     */
-    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, 
-    							  StAXArtifactProcessor extensionProcessor, StAXAttributeProcessor extensionAttributeProcessor, Monitor monitor) {
-        super(factory, policyFactory, extensionProcessor, monitor);
-    }
-
-    /**
-     * Constructs a new componentType processor.
      * 
      * @param modelFactories
      * @param extensionProcessor
+     * @param extensionAttributeProcessor
+     * @param monitor
      */
-    public ComponentTypeProcessor(FactoryExtensionPoint modelFactories, 
-    							  StAXArtifactProcessor extensionProcessor,
-    							  StAXAttributeProcessor extensionAttributeProcessor,
-    							  Monitor monitor) {
-        super(modelFactories.getFactory(AssemblyFactory.class),
-              modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
+    public ComponentTypeProcessor(FactoryExtensionPoint modelFactories,
+                                  StAXArtifactProcessor extensionProcessor,
+                                  StAXAttributeProcessor extensionAttributeProcessor,
+                                  Monitor monitor) {
+        super(modelFactories, extensionProcessor, monitor);
     }
     
     public ComponentType read(XMLStreamReader reader) throws ContributionReadException {
