@@ -10,7 +10,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA WS Binding XML Model
 Import-Package: javax.wsdl,
- javax.xml.namespace;version="1.0",
+ javax.xml.namespace,
  javax.xml.parsers,
  javax.xml.stream,
  javax.xml.transform,
