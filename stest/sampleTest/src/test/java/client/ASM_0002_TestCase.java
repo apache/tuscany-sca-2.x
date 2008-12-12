@@ -25,19 +25,19 @@ import test.TestInvocation;
 /**
  * A generic test client based on Tuscany APIs
  */
-public class Test_ASM_0004 extends BaseTestCase {
+public class ASM_0002_TestCase extends BaseTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {
     	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0004";
+    	config.testName 		= "ASM_0002";
     	config.input 			= "request";
-    	config.output 			= "exception";
-    	config.composite 		= "Test_ASM_0004.composite";
+    	config.output 			= config.testName + " " + config.input + " service1 operation1 invoked";
+    	config.composite 		= "Test_ASM_0002.composite";
     	config.testServiceName 	= "TestClient";
     	config.testClass 		= ASM_0002_Client.class;
     	config.serviceInterface = TestInvocation.class;
     	return config;
     }
     
-} // end class Test_ASM_0003
+} // end class Test_ASM_0002
