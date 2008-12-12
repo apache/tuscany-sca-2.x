@@ -28,14 +28,6 @@
 			<interface.java interface="test.TestInvocation"/>
 			<binding.sca/>
 		</service>
-        <!--  reference name="testRef1" target="TestComponent1/service1" / -->
     </component>
-
-<!--  
-    <component name="TestComponent1">
-		<implementation.java class="test.ASM_0001_Impl1"/>
-        <service name="service1"/>
-    </component>
--->
 
 </composite>
