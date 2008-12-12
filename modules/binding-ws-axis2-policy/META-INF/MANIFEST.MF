@@ -29,7 +29,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany Policy Model for Axis2 WS binding
 Import-Package: javax.xml.namespace,
- javax.xml.stream;version="1.0",
+ javax.xml.stream,
  org.apache.axiom.om,
  org.apache.axiom.soap,
  org.apache.axis2,
