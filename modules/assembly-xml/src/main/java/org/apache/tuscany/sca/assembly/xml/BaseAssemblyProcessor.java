@@ -67,7 +67,6 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -75,6 +74,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -109,40 +109,37 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     /**
      * Constructs a new BaseArtifactProcessor.
-     * @param contribFactory
      * @param factory
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    public BaseAssemblyProcessor(ContributionFactory contribFactory,
-                                 AssemblyFactory factory,
+    protected BaseAssemblyProcessor(AssemblyFactory factory,
                                  PolicyFactory policyFactory,
+                                 DocumentBuilderFactory documentBuilderFactory,
                                  StAXArtifactProcessor extensionProcessor,
                                  Monitor monitor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
+        this.documentBuilderFactory = documentBuilderFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.monitor = monitor;
     }
-
+    
     /**
-     * Constructs a new BaseArtifactProcessor.
-     * @param factory
-     * @param policyFactory
+     * @param modelFactories
+     * @param staxProcessor
+     * @param monitor
      */
-    @SuppressWarnings("unchecked")
-    public BaseAssemblyProcessor(AssemblyFactory factory,
-                                 PolicyFactory policyFactory,
-                                 StAXArtifactProcessor extensionProcessor,
-                                 Monitor monitor) {
-        this.assemblyFactory = factory;
-        this.policyFactory = policyFactory;
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
+    protected BaseAssemblyProcessor(FactoryExtensionPoint modelFactories,
+                                    StAXArtifactProcessor staxProcessor,
+                                    Monitor monitor) {
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.monitor = monitor;
-        
-        //TODO - this constructor should take a monitor too. 
     }
     
     /**

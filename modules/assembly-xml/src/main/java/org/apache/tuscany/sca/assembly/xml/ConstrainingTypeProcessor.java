@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -58,7 +57,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -69,27 +67,15 @@ import org.w3c.dom.Document;
 public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<ConstrainingType> {
 
     /**
-     * Construct a new constrainingType processor.
-     * @param factory
-     * @param policyFactory
-     * @param extensionProcessor
-     */
-    public ConstrainingTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, 
-    								 StAXArtifactProcessor extensionProcessor, Monitor monitor) {
-        super(factory, policyFactory, extensionProcessor, monitor);
-    }
-
-    /**
      * Constructs a new constrainingType processor.
      * 
      * @param modelFactories
      * @param extensionProcessor
      */
-    public ConstrainingTypeProcessor(FactoryExtensionPoint modelFactories, 
-    								 StAXArtifactProcessor extensionProcessor,
-    								 Monitor monitor) {
-        super(modelFactories.getFactory(AssemblyFactory.class),
-              modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
+    public ConstrainingTypeProcessor(FactoryExtensionPoint modelFactories,
+                                     StAXArtifactProcessor extensionProcessor,
+                                     Monitor monitor) {
+        super(modelFactories, extensionProcessor, monitor);
     }
     
     public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {

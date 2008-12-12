@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -38,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A componentType processor.
@@ -49,26 +49,13 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
     
     /**
      * Constructs a new componentType processor.
-     * @param factory
-     * @param policyFactory
-     * @param registry
-     */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
-    									  XMLInputFactory inputFactory, 
-    									  Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
-        this.inputFactory = inputFactory;
-    }
-    
-    /**
-     * Constructs a new componentType processor.
      * @param modelFactories
      * @param staxProcessor
      */
-    public ComponentTypeDocumentProcessor(FactoryExtensionPoint modelFactories, 
-    									  StAXArtifactProcessor staxProcessor,
-    									  Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
+    public ComponentTypeDocumentProcessor(FactoryExtensionPoint modelFactories,
+                                          StAXArtifactProcessor staxProcessor,
+                                          Monitor monitor) {
+        super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     

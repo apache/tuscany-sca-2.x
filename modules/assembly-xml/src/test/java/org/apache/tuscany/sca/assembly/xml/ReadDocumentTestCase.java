@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPo
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -131,7 +132,10 @@ public class ReadDocumentTestCase {
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null, null);
+        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        factories.addFactory(validatingInputFactory);
+        
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(factories , staxProcessor, null);
         
         URL url = getClass().getResource("JavaScriptReference.composite");
         URI uri = URI.create("JavaScriptReference.composite");
@@ -169,7 +173,9 @@ public class ReadDocumentTestCase {
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null, null);
+        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        factories.addFactory(validatingInputFactory);
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(factories , staxProcessor, null);
         
         URL url = getClass().getResource("RMIBindingTest.composite");
         URI uri = URI.create("RMIBindingTest.composite");

@@ -48,27 +48,14 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
     private XMLInputFactory inputFactory;
 
     /**
-     * Construct a new constrainingType processor.
-     * @param factory
-     * @param policyFactory
-     * @param staxProcessor
-     */
-    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
-    									     XMLInputFactory inputFactory,
-    									     Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
-        this.inputFactory = inputFactory;
-    }
-
-    /**
      * Constructs a new constrainingType processor.
      * @param modelFactories
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(FactoryExtensionPoint modelFactories, 
-    										 StAXArtifactProcessor staxProcessor,
-    										 Monitor monitor) {
-        super(null, null, staxProcessor, monitor);
+    public ConstrainingTypeDocumentProcessor(FactoryExtensionPoint modelFactories,
+                                             StAXArtifactProcessor staxProcessor,
+                                             Monitor monitor) {
+        super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     
