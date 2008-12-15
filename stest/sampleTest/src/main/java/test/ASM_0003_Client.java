@@ -15,7 +15,7 @@ import java.util.List;
 public class ASM_0003_Client implements TestInvocation {
 	
 	@Property
-	private String testName = "ASM_xxxx";
+	public String testName = "ASM_xxxx";
 	
 	@Reference
 	public List<Service1> reference1;

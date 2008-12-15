@@ -13,7 +13,7 @@ import org.osoa.sca.annotations.Property;
 public class ASM_0002_Client implements TestInvocation {
 	
 	@Property
-	private String testName = "ASM_xxxx";
+	public String testName = "ASM_xxxx";
 	
 	@Reference
 	public Service1 reference1;
