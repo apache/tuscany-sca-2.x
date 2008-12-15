@@ -1,10 +1,13 @@
 package test;
 
+import org.osoa.sca.annotations.Remotable;
+
 /**
  * Basic interface to invoke testcases
  * @author MikeEdwards
  *
  */
+@Remotable
 public interface TestInvocation {
 	
 	/**
