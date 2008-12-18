@@ -21,24 +21,27 @@
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TEST_ASM_0002">
+           name="TestClient_0003">
+
+	<service name="TestInvocation" promote="TestClient/TestInvocation">
+		<interface.java interface="test.TestInvocation"/>
+	</service>
+	
+	<property name="testName" type="string"/>
            
     <component name="TestClient">
-		<implementation.composite name="tns:TestClient_0002"/>
+		<implementation.java class="test.ASM_0003_Client"/>
 		<service name="TestInvocation">
 			<interface.java interface="test.TestInvocation"/>
-			<binding.ws/>
 		</service>
-        <reference name="reference1" target="TestComponent1/Service1" />
-        <property name="testName">ASM_0002</property>
+        <reference name="reference1">
+        	<interface.java interface="test.Service1"/>
+        </reference>
+        <property name="testName" source="$testName"/>
     </component>
-
-    <component name="TestComponent1">
-		<implementation.composite name="tns:TestComposite1"/>
-        <service name="Service1">
-        	<interface.java interface="test.Service1"></interface.java>
-        </service>
-        <property name="serviceName">service1</property>
-    </component>
+    
+    <reference name="reference1" promote="TestClient/reference1" multiplicity="1..n">
+    	<interface.java interface="test.Service1"/>
+    </reference>
 
 </composite>
