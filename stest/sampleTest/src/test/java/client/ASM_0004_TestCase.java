@@ -20,12 +20,12 @@ package client;
 
 
 import test.ASM_0002_Client;
-import test.TestInvocation;
+import testClient.TestInvocation;
 
 /**
  * A generic test client based on Tuscany APIs
  */
-public class ASM_0004_TestCase extends BaseTestCase {
+public class ASM_0004_TestCase extends BaseJAXWSTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {

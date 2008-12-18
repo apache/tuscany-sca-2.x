@@ -17,6 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+<!-- Test case that verifies that an implementation with a reference with multiplicity 1..n can
+     be validly wired to 3 target services and invoke them all correctly.
+-->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
@@ -26,6 +29,7 @@
 		<implementation.java class="test.ASM_0003_Client"/>
 		<service name="TestInvocation">
 			<interface.java interface="test.TestInvocation"/>
+			<binding.ws/>
 		</service>
         <reference name="reference1" target="TestComponent1/Service1 TestComponent2/Service1 TestComponent3/Service1" />
         <property name="testName">ASM_0003</property>

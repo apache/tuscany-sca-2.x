@@ -20,6 +20,9 @@ package client;
 
 import static org.junit.Assert.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
@@ -27,25 +30,24 @@ import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.Reference;
 
 import javax.xml.ws.Service;
 import javax.xml.namespace.QName;
 
 import test.ASM_0001_Client;
-import test.TestInvocation;
+import testClient.TestInvocation;
 
 /**
  * A generic test client based on JAX-WS APIs
  */
-public class BaseJAXWSTest {
+public class BaseJAXWSTestCase {
 
     protected NodeLauncher launcher;
     protected Node node;
     protected TestConfiguration testConfiguration = getTestConfiguration();
     
     public static void main(String[] args) throws Exception {
-    	BaseJAXWSTest test = new BaseJAXWSTest(); 
+    	BaseJAXWSTestCase test = new BaseJAXWSTestCase(); 
     	test.setUp();
     	test.tearDown();
     }
@@ -65,26 +67,25 @@ public class BaseJAXWSTest {
     	// System.out.println("Test " + testName + " starting");
     	try {
 	    	String output = invokeTest( testConfiguration.getInput() );
-	    	assertEquals( output, testConfiguration.getExpectedOutput() );
+	    	assertEquals( testConfiguration.getExpectedOutput(), output );
     	} catch (Exception e) {
-    		assertEquals( "exception", testConfiguration.getExpectedOutput() );
-    		System.out.println( "Expected exception - detail: " + e.getMessage() );
+    		e.printStackTrace();
+    		System.out.println( "Exception received - detail: " + e.getMessage() );
+    		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
     	}
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
     }
     
-    public String invokeTest( String input ) {
-    	//Web service invocation
-    	QName serviceName = new QName("http://localhost:8080", "TestInvocation");
-    	javax.xml.ws.Service webService = Service.create(serviceName);
+    public String invokeTest( String input ) throws MalformedURLException {
+    	//Web service invocation via JAXWS
+    	QName serviceName = new QName("http://test/", "TestInvocationService");
+    	URL wsdlLocation = this.getClass().getClassLoader().getResource("TestClient.wsdl");
+    	javax.xml.ws.Service webService = Service.create( wsdlLocation, serviceName );
     	TestInvocation wsProxy = (TestInvocation) webService.getPort(testConfiguration.getServiceInterface());
-    	String output = wsProxy.invokeTest(input);
-    	System.out.println("web service invoked - output = " + output);
 
-    	TestInvocation service = (TestInvocation) getService( testConfiguration.getServiceInterface(), 
-    														  testConfiguration.getTestServiceName() );    	
-    	
-    	return service.invokeTest( input );
+    	String output = wsProxy.invokeTest(input);
+
+    	return output;
     } // end method invokeTest
     
     protected <T> T getService( Class<T> interfaze, String serviceName ) {

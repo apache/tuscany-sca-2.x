@@ -1,8 +1,5 @@
 package client;
 
-import test.ASM_0001_Client;
-import test.TestInvocation;
-
 /** 
  * A class to hold the metadata about the test
  * @author MikeEdwards

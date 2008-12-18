@@ -2,6 +2,8 @@ package test;
 
 import org.osoa.sca.annotations.Service;
 
+import test.TestInvocation;
+
 /**
  * Basic test initiation class
  * @author MikeEdwards

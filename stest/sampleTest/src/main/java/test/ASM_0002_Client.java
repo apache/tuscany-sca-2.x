@@ -4,6 +4,8 @@ import org.osoa.sca.annotations.Service;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Property;
 
+import test.TestInvocation;
+
 /**
  * Test initiation class with a single reference of multiplicity 1..1
  * @author MikeEdwards
