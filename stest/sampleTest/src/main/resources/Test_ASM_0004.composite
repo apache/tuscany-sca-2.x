@@ -21,11 +21,12 @@
 	 with multiple wire targets in the component configuration is marked as an error  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
+           xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TEST_ASM_0004">
            
     <component name="TestClient">
-		<implementation.java class="test.ASM_0002_Client"/>
+		<implementation.composite name="tns:TestClient_0002"/>
 		<service name="TestInvocation">
 			<interface.java interface="test.TestInvocation"/>
             <binding.ws/>
@@ -34,9 +35,8 @@
         <property name="testName">ASM_0004</property>
     </component>
 
- 
     <component name="TestComponent1">
-		<implementation.java class="test.service1Impl"/>
+		<implementation.composite name="tns:TestComposite1"/>
         <service name="Service1">
         	<interface.java interface="test.Service1"></interface.java>
         </service>
@@ -44,7 +44,7 @@
     </component>
     
     <component name="TestComponent2">
-		<implementation.java class="test.service1Impl"/>
+		<implementation.composite name="tns:TestComposite1"/>
         <service name="Service1">
         	<interface.java interface="test.Service1"></interface.java>
         </service>
@@ -52,7 +52,7 @@
     </component>
     
     <component name="TestComponent3">
-		<implementation.java class="test.service1Impl"/>
+		<implementation.composite name="tns:TestComposite1"/>
         <service name="Service1">
         	<interface.java interface="test.Service1"></interface.java>
         </service>

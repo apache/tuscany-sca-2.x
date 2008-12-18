@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions name="TestInvocationService" targetNamespace="http://test/"
-xmlns:test="http://test/" 
-xmlns="http://test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" 
-xmlns:SOAP11="http://schemas.xmlsoap.org/wsdl/soap/">
+  xmlns:test="http://test/" 
+  xmlns="http://test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" 
+  xmlns:SOAP11="http://schemas.xmlsoap.org/wsdl/soap/">
   <wsdl:types>
-    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://test/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-<xs:element name="invokeTest">
-<xs:complexType>
-<xs:sequence>
-<xs:element minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
-</xs:sequence>
-</xs:complexType>
-</xs:element>
-<xs:element name="invokeTestResponse">
-<xs:complexType>
-<xs:sequence>
-<xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
-</xs:sequence>
-</xs:complexType>
-</xs:element>
-</xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" 
+      targetNamespace="http://test/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="invokeTest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="invokeTestResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
   </wsdl:types>
   <wsdl:message name="invokeTest">
     <wsdl:part name="invokeTest" element="test:invokeTest">
