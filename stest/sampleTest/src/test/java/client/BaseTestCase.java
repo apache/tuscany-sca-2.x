@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.Reference;
 
 import test.ASM_0001_Client;
 import test.TestInvocation;
@@ -62,9 +61,9 @@ public class BaseTestCase {
     	// System.out.println("Test " + testName + " starting");
     	try {
 	    	String output = invokeTest( testConfiguration.getInput() );
-	    	assertEquals( output, testConfiguration.getExpectedOutput() );
+	    	assertEquals( testConfiguration.getExpectedOutput(), output );
     	} catch (Exception e) {
-    		assertEquals( "exception", testConfiguration.getExpectedOutput() );
+    		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
     		System.out.println( "Expected exception - detail: " + e.getMessage() );
     	}
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");

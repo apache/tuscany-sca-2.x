@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="TestInvocationService" targetNamespace="http://test/"
+xmlns:test="http://test/" 
+xmlns="http://test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:SOAP11="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://test/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="invokeTest">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="invokeTestResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="invokeTest">
+    <wsdl:part name="invokeTest" element="test:invokeTest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="invokeTestResponse">
+    <wsdl:part name="invokeTestResponse" element="test:invokeTestResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="TestInvocation">
+    <wsdl:operation name="invokeTest">
+      <wsdl:input message="test:invokeTest">
+    </wsdl:input>
+      <wsdl:output message="test:invokeTestResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TestInvocationBinding" type="test:TestInvocation">
+    <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="invokeTest">
+      <SOAP:operation soapAction=""/>
+      <wsdl:input>
+        <SOAP:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <SOAP:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TestInvocationService">
+    <wsdl:port name="TestInvocationPort" binding="test:TestInvocationBinding">
+      <SOAP:address location="http://localhost:8080/TestClient"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

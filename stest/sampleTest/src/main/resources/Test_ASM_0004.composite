@@ -28,6 +28,7 @@
 		<implementation.java class="test.ASM_0002_Client"/>
 		<service name="TestInvocation">
 			<interface.java interface="test.TestInvocation"/>
+            <binding.ws/>
 		</service>
         <reference name="reference1" target="TestComponent1/Service1 TestComponent2/Service1 TestComponent3/Service1" />
         <property name="testName">ASM_0004</property>
