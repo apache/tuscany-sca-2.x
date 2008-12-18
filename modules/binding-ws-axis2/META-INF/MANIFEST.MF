@@ -41,6 +41,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Axis2-based WS Binding Extensio
  n
+Eclipse-RegisterBuddy: org.apache.axis2.kernel
 Import-Package: javax.security.auth.callback;resolution:=optional,
  javax.servlet,
  javax.servlet.http,
@@ -114,4 +115,3 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.axis2
 Bundle-DocURL: http://www.apache.org/
-
