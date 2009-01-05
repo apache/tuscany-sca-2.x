@@ -17,32 +17,27 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!--
- ASM_0002_TestCase tests that component with a single reference can be wired to a single
- component service in the same composite.
--->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
-           xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TEST_ASM_0002">
+           name="TestComposite2">
            
-    <component name="TestClient">
-		<implementation.composite name="tns:TestClient_0002"/>
-		<service name="TestInvocation">
-			<interface.java interface="test.TestInvocation"/>
-			<binding.ws/>
-		</service>
-        <reference name="reference1" target="TestComponent1/Service1" />
-        <property name="testName">ASM_0002</property>
-    </component>
+	<service name="Service1" promote="TestComponent1/Service1">
+		<interface.java interface="test.Service1"></interface.java>
+	</service>
+	
+	<service name="Service1" promote="TestComponent1/Service1">
+		<interface.java interface="test.Service1"></interface.java>
+	</service>
 
+    <property name="serviceName" type="string"/>
+ 
     <component name="TestComponent1">
-		<implementation.composite name="tns:TestComposite1"/>
+		<implementation.java class="test.service1Impl"/>
         <service name="Service1">
         	<interface.java interface="test.Service1"></interface.java>
         </service>
-        <property name="serviceName">service1</property>
+        <property name="serviceName" source="$serviceName"/>
     </component>
 
 </composite>

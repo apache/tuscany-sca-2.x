@@ -23,21 +23,22 @@ import test.ASM_0002_Client;
 import testClient.TestInvocation;
 
 /**
- * ASM_0002_TestCase
+ * Client for ASM_0005_TestCase, which checks that a component with multiple <service/>
+ * elements with the same @name attribute is an error
  */
-public class ASM_0002_TestCase extends BaseJAXWSTestCase {
+public class ASM_0005_TestCase extends BaseJAXWSTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {
     	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0002";
+    	config.testName 		= "ASM_0005";
     	config.input 			= "request";
-    	config.output 			= config.testName + " " + config.input + " service1 operation1 invoked";
-    	config.composite 		= "Test_ASM_0002.composite";
+    	config.output 			= "exception";
+    	config.composite 		= "Test_ASM_0005.composite";
     	config.testServiceName 	= "TestClient";
     	config.testClass 		= ASM_0002_Client.class;
     	config.serviceInterface = TestInvocation.class;
     	return config;
     }
     
-} // end class Test_ASM_0002
+} // end class Test_ASM_0003
