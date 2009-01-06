@@ -69,7 +69,7 @@ public class BaseTestCase {
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
     }
     
-    public String invokeTest( String input ) {
+    public String invokeTest( String input ) throws Exception {
 
     	TestInvocation service = (TestInvocation) getService( testConfiguration.getServiceInterface(), 
     														  testConfiguration.getTestServiceName() );    	
