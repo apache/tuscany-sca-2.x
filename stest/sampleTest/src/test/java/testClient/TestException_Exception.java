@@ -18,13 +18,7 @@
  */
 package testClient;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.ws.RequestWrapper;
-import javax.xml.ws.ResponseWrapper;
+import javax.xml.ws.WebFault;
 
 
 /**
@@ -33,28 +27,45 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.1
  * 
  */
-@WebService(name = "TestInvocation", targetNamespace = "http://test/")
-@XmlSeeAlso({
-    ObjectFactory.class
-})
-public interface TestInvocation {
+@WebFault(name = "TestException", targetNamespace = "http://test/")
+public class TestException_Exception
+    extends Exception
+{
 
+    /**
+     * Java type that goes as soapenv:Fault detail element.
+     * 
+     */
+    private TestException faultInfo;
 
     /**
      * 
-     * @param arg0
-     * @return
-     *     returns java.lang.String
-     * @throws TestException_Exception
+     * @param message
+     * @param faultInfo
      */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "invokeTest", targetNamespace = "http://test/", className = "testClient.InvokeTest")
-    @ResponseWrapper(localName = "invokeTestResponse", targetNamespace = "http://test/", className = "testClient.InvokeTestResponse")
-    public String invokeTest(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0)
-        throws TestException_Exception
-    ;
+    public TestException_Exception(String message, TestException faultInfo) {
+        super(message);
+        this.faultInfo = faultInfo;
+    }
+
+    /**
+     * 
+     * @param message
+     * @param faultInfo
+     * @param cause
+     */
+    public TestException_Exception(String message, TestException faultInfo, Throwable cause) {
+        super(message, cause);
+        this.faultInfo = faultInfo;
+    }
+
+    /**
+     * 
+     * @return
+     *     returns fault bean: testClient.TestException
+     */
+    public TestException getFaultInfo() {
+        return faultInfo;
+    }
 
 }

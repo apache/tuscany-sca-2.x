@@ -68,7 +68,7 @@ public class BaseJAXWSTestCase {
     	try {
 	    	String output = invokeTest( testConfiguration.getInput() );
 	    	assertEquals( testConfiguration.getExpectedOutput(), output );
-    	} catch (Exception e) {
+    	} catch (Throwable e) {
     		e.printStackTrace();
     		System.out.println( "Exception received - detail: " + e.getMessage() );
     		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
@@ -76,7 +76,7 @@ public class BaseJAXWSTestCase {
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
     }
     
-    public String invokeTest( String input ) throws MalformedURLException {
+    public String invokeTest( String input ) throws Exception {
     	//Web service invocation via JAXWS
     	QName serviceName = new QName("http://test/", "TestInvocationService");
     	URL wsdlLocation = this.getClass().getClassLoader().getResource("TestClient.wsdl");
