@@ -11,9 +11,8 @@ Bnd-LastModified: 1225397320062
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA RMI Binding Model
-Import-Package: org.apache.tuscany.sca.assembly;version="1.4",org.apac
- he.tuscany.sca.assembly.xml;version="1.4",org.apache.tuscany.sca.bind
- ing.rmi;version="1.4"
+Import-Package: org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.binding.rmi;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rmi
 Bundle-DocURL: http://www.apache.org/
 
