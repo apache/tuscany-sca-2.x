@@ -47,6 +47,7 @@ public class BaseJAXWSTestCase {
     protected NodeLauncher launcher;
     protected Node node;
     protected TestConfiguration testConfiguration = getTestConfiguration();
+    static boolean proceed = true;
     
     public static void main(String[] args) throws Exception {
     	BaseJAXWSTestCase test = new BaseJAXWSTestCase(); 
@@ -56,7 +57,17 @@ public class BaseJAXWSTestCase {
     
     @Before
     public void setUp() throws Exception {	
-    	startContribution();
+    	try {
+    		startContribution();
+    	} catch (Exception e) {
+    		// If the SCA runtime refuses to start an invalid contribution, then this is also
+    		// regarded as a successful outcome
+   			System.out.println( "Exception received - detail: " + e.getMessage() );
+    		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
+    		System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
+    		// Mark this test as not to proceed further
+    		proceed = false;
+    	} // end try
     }
 
     @After
@@ -66,6 +77,9 @@ public class BaseJAXWSTestCase {
 
     @Test
     public void testDummy() throws Exception {
+    	// If an exception were thrown during initialization, let's go no further
+    	if( proceed == false ) return;
+    	
     	// System.out.println("Test " + testName + " starting");
     	try {
     		// Just requires input to proceed
