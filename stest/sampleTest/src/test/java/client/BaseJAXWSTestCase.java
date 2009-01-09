@@ -36,6 +36,8 @@ import javax.xml.namespace.QName;
 
 import test.ASM_0001_Client;
 import testClient.TestInvocation;
+import testClient.TestException_Exception;
+import testClient.TestException;
 
 /**
  * A generic test client based on JAX-WS APIs
@@ -66,11 +68,18 @@ public class BaseJAXWSTestCase {
     public void testDummy() throws Exception {
     	// System.out.println("Test " + testName + " starting");
     	try {
+    		// Just requires input to proceed
+    		// System.in.read();
+    		//
 	    	String output = invokeTest( testConfiguration.getInput() );
 	    	assertEquals( testConfiguration.getExpectedOutput(), output );
+    	} catch ( TestException_Exception e ) {
+    		TestException exceptionContent = e.getFaultInfo();
+    		System.out.println("Service fault received - detail: " + exceptionContent.getMessage() );
+    		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
     	} catch (Throwable e) {
     		e.printStackTrace();
-    		System.out.println( "Exception received - detail: " + e.getMessage() );
+   			System.out.println( "Exception received - detail: " + e.getMessage() );
     		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
     	}
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
