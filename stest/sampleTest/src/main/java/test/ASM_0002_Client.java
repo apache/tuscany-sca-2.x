@@ -48,7 +48,7 @@ public class ASM_0002_Client implements TestInvocation {
 		try {
 			response = runTest( input );
 		} catch( Exception e ) {
-			throw new TestException("Test service got an exception during execution: " );
+			throw new TestException("Test service got an exception during execution: " + e.getClass().getName()+ " " + e.getMessage()  );
 		} // end try
 		return response;
 	} // end method invokeTest
