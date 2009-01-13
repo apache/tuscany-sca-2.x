@@ -66,6 +66,11 @@
         <module>node-impl</module>
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
+
+        <module>host-rmi</module>
+        <module>binding-rmi</module>
+        <module>binding-rmi-runtime</module>
+
         <module>policy</module>
         <module>policy-security</module>
         <module>policy-xml</module>
