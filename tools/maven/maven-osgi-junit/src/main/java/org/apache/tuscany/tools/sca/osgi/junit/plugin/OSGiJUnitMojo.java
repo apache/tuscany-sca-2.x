@@ -38,8 +38,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.apache.tuscany.sca.node.osgi.launcher.FelixOSGiHost;
-import org.apache.tuscany.sca.node.osgi.launcher.LauncherBundleActivator;
+import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -129,6 +128,44 @@ public class OSGiJUnitMojo extends AbstractMojo {
 
         return artifact;
     }
+    
+    /**
+     * Returns a string representation of the given bundle.
+     * 
+     * @param b
+     * @param verbose
+     * @return
+     */
+    static String string(Bundle bundle, boolean verbose) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(bundle.getBundleId()).append(" ").append(bundle.getSymbolicName());
+        int s = bundle.getState();
+        if ((s & Bundle.UNINSTALLED) != 0) {
+            sb.append(" UNINSTALLED");
+        }
+        if ((s & Bundle.INSTALLED) != 0) {
+            sb.append(" INSTALLED");
+        }
+        if ((s & Bundle.RESOLVED) != 0) {
+            sb.append(" RESOLVED");
+        }
+        if ((s & Bundle.STARTING) != 0) {
+            sb.append(" STARTING");
+        }
+        if ((s & Bundle.STOPPING) != 0) {
+            sb.append(" STOPPING");
+        }
+        if ((s & Bundle.ACTIVE) != 0) {
+            sb.append(" ACTIVE");
+        }
+
+        if (verbose) {
+            sb.append(" ").append(bundle.getLocation());
+            sb.append(" ").append(bundle.getHeaders());
+        }
+        return sb.toString();
+    }
+
 
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
@@ -170,13 +207,12 @@ public class OSGiJUnitMojo extends AbstractMojo {
         //        System.setProperty("TUSCANY_HOME", home);
         //        getLog().info(home);
         try {
-            FelixOSGiHost host = new FelixOSGiHost();
-            host.setActivator(new LauncherBundleActivator(jarFiles));
+            EquinoxHost host = new EquinoxHost();
             BundleContext context = host.start();
 
             for (Bundle b : context.getBundles()) {
                 if (getLog().isDebugEnabled()) {
-                    getLog().debug(LauncherBundleActivator.toString(b, false));
+                    getLog().debug(string(b, false));
                 }
             }
 
