@@ -28,8 +28,8 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
 import net.sf.cglib.asm.ClassWriter;
-import net.sf.cglib.asm.Constants;
 import net.sf.cglib.asm.Type;
+import net.sf.cglib.core.Constants;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -153,11 +153,11 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
      */
     private byte[] generateRemoteInterface(Class serviceInterface) {
         String interfazeName = serviceInterface.getName();
-        ClassWriter cw = new ClassWriter(false);
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
         String simpleName = serviceInterface.getSimpleName();
         cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE, interfazeName
-            .replace('.', '/'), "java/lang/Object", new String[] {"java/rmi/Remote"}, simpleName + ".java");
+            .replace('.', '/'), null, "java/lang/Object", new String[] {"java/rmi/Remote"});
 
         StringBuffer argsAndReturn = null;
         Method[] methods = serviceInterface.getMethods();
@@ -175,8 +175,8 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
             cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT,
                            method.getName(),
                            argsAndReturn.toString(),
-                           new String[] {"java/rmi/RemoteException"},
-                           null);
+                           null,
+                           new String[] {"java/rmi/RemoteException"});
         }
         cw.visitEnd();
         return cw.toByteArray();
