@@ -199,6 +199,7 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
                     case XMLStreamConstants.START_ELEMENT:
                         level++;
                         handleStartElement();
+                        pushContext();
                         return event;
                     case XMLStreamConstants.PROCESSING_INSTRUCTION:
                         handler.processingInstruction(super.getPITarget(), super.getPIData());
@@ -212,6 +213,7 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
                     case XMLStreamConstants.END_ELEMENT:
                         handleEndElement();
                         level--;
+                        popContext();
                         return event;
                     case XMLStreamConstants.END_DOCUMENT:
                         handler.endDocument();

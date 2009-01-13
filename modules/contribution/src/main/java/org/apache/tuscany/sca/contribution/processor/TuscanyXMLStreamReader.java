@@ -1,4 +1,5 @@
 package org.apache.tuscany.sca.contribution.processor;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,92 +22,88 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
-import javax.xml.XMLConstants;
 
 /*
  * Custom implementation of the XMLStreamReader to keep track of the namespace context for each element
  */
-public class TuscanyXMLStreamReader extends StreamReaderDelegate implements
-		XMLStreamReader {
+public class TuscanyXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
 
-	Stack<ArrayList<ArrayList<String>>> context = new Stack<ArrayList<ArrayList<String>>>();
-	
-	List contextList;
-	List<String> prefixList;
-	List<String> uriList;
+    Stack<List<String>[]> context = new Stack<List<String>[]>();
 
-	public TuscanyXMLStreamReader(XMLStreamReader reader) {
-		super(reader);
-	}
+    List<String>[] contextList;
+    List<String> prefixList;
+    List<String> uriList;
 
-	public void pushContext() throws XMLStreamException {
-		contextList = new ArrayList<ArrayList<String>>();
-		prefixList = new ArrayList<String>();
-		uriList = new ArrayList<String>();
-		int namespaceCount = this.getNamespaceCount();
-		if (namespaceCount == 0) {
-			prefixList.add(null);
-			uriList.add(null);
-		}
-		for (int i = 0; i < namespaceCount; i++) {
-			prefixList.add(checkString(this.getNamespacePrefix(i)));
-			uriList.add(this.getNamespaceURI(i));
-		}
-		contextList.add(prefixList);
-		contextList.add(uriList);
-		context.push((ArrayList) contextList);
-	}
+    public TuscanyXMLStreamReader(XMLStreamReader reader) {
+        super(reader);
+    }
 
-	private String checkString(String namespacePrefix) {
-		if (namespacePrefix == null) {
-			return XMLConstants.DEFAULT_NS_PREFIX;
-		} else {
-			return namespacePrefix;
-		}
-	}
+    public void pushContext() throws XMLStreamException {
+        contextList = new List[2];
+        prefixList = new ArrayList<String>();
+        uriList = new ArrayList<String>();
+        int namespaceCount = this.getNamespaceCount();
+        for (int i = 0; i < namespaceCount; i++) {
+            prefixList.add(checkString(this.getNamespacePrefix(i)));
+            uriList.add(this.getNamespaceURI(i));
+        }
+        contextList[0] = prefixList;
+        contextList[1] = uriList;
+        context.push(contextList);
+    }
 
-	public void popContext() throws XMLStreamException {
-		context.pop();
-	}
+    private String checkString(String namespacePrefix) {
+        if (namespacePrefix == null) {
+            return XMLConstants.DEFAULT_NS_PREFIX;
+        } else {
+            return namespacePrefix;
+        }
+    }
 
-	/*
-	 * Overriding the next() method to perform PUSH and POP operations 
-	 * for the NamespaceContext for the current element
-	 */
-			
-	@Override
-	public int next() throws XMLStreamException {
-		// POP the context if the element ends
-		if (this.getEventType() == END_ELEMENT) {
-			popContext();
-		}
-		
-		//get the next event 
-		int nextEvent = super.next();
-		//PUSH the events info onto the Stack 
-		if (nextEvent == START_ELEMENT) {
-			pushContext();
-		}
-		return nextEvent;
-	}
-	
-	@Override
-	public int nextTag() throws XMLStreamException {
-		if (this.getEventType() == START_ELEMENT) {
-			pushContext();
-		}
-		if (this.getEventType() == END_ELEMENT) {
-			popContext();
-		}
-		return super.nextTag();
-	}
-	
-	@Override
-	public NamespaceContext getNamespaceContext(){
-		return new TuscanyNamespaceContext((Stack)context.clone());
-	}
+    public void popContext() throws XMLStreamException {
+        context.pop();
+    }
+
+    /*
+     * Overriding the next() method to perform PUSH and POP operations 
+     * for the NamespaceContext for the current element
+     */
+
+    @Override
+    public int next() throws XMLStreamException {
+        // POP the context if the element ends
+        if (this.getEventType() == END_ELEMENT) {
+            popContext();
+        }
+
+        //get the next event 
+        int nextEvent = super.next();
+        //PUSH the events info onto the Stack 
+        if (nextEvent == START_ELEMENT) {
+            pushContext();
+        }
+        return nextEvent;
+    }
+
+    @Override
+    public int nextTag() throws XMLStreamException {
+        int event = super.nextTag();
+        if (event == START_ELEMENT) {
+            pushContext();
+        }
+        if (event == END_ELEMENT) {
+            popContext();
+        }
+        return event;
+    }
+
+    @Override
+    public NamespaceContext getNamespaceContext() {
+        return new TuscanyNamespaceContext((Stack<List<String>[]>)context.clone());
+    }
 }
