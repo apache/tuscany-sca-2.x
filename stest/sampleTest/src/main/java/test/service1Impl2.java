@@ -32,6 +32,7 @@ public class service1Impl2 implements Service1 {
 	
 	@Property
 	public String serviceName = "service1";
+	// Reference with an implied multiplicity of (1..1) since required=true is the default
 	@Reference
 	public Service1 reference1 = null;
 
