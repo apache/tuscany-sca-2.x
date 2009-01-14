@@ -19,7 +19,10 @@
 
 package calculator;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This client program shows how to create an SCA runtime, start it,
@@ -27,17 +30,19 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("CalculatorRMIReference.composite");
-        CalculatorService calculatorService = 
-            scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
+        String uri = ContributionLocationHelper.getContributionLocation("CalculatorRMIReference.composite");
+        Contribution contribution = new Contribution("c1", uri);
+        Node node = NodeFactory.newInstance().createNode("CalculatorRMIReference.composite", contribution);
+        node.start();
+        CalculatorService calculatorService = node.getService(CalculatorService.class, "CalculatorServiceComponent");
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-        
-        scaDomain.close();
+
+        node.stop();
 
     }
 

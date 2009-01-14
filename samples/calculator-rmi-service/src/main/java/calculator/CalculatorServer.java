@@ -19,7 +19,10 @@
 
 package calculator;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * A claculator service server. Starts up the SCA runtime which 
@@ -28,10 +31,13 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class CalculatorServer {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting of the SCA Calculator Application exposed as RMI Services...");
-        SCADomain scaDomain = SCADomain.newInstance("CalculatorRMIServer.composite");
+        String uri = ContributionLocationHelper.getContributionLocation("CalculatorRMIServer.composite");
+        Contribution contribution = new Contribution("c1", uri);
+        Node node = NodeFactory.newInstance().createNode("CalculatorRMIServer.composite", contribution);
+        node.start();
         System.out.println("... Press Enter to Exit...");
         System.in.read();
-        scaDomain.close();
+        node.stop();
         System.out.println("Exited...");
         System.exit(0);
     }
