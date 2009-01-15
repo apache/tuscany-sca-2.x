@@ -81,12 +81,13 @@ public class BaseJAXWSTestCase {
     	if( proceed == false ) return;
     	
     	// System.out.println("Test " + testName + " starting");
+    	String output = null;
     	try {
     		// Just requires input to proceed
     		// System.in.read();
     		//
-	    	String output = invokeTest( testConfiguration.getInput() );
-	    	assertEquals( testConfiguration.getExpectedOutput(), output );
+	    	output = invokeTest( testConfiguration.getInput() );
+
     	} catch ( TestException_Exception e ) {
     		TestException exceptionContent = e.getFaultInfo();
     		System.out.println("Service fault received - detail: " + exceptionContent.getMessage() );
@@ -96,6 +97,7 @@ public class BaseJAXWSTestCase {
    			System.out.println( "Exception received - detail: " + e.getMessage() );
     		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
     	}
+    	assertEquals( testConfiguration.getExpectedOutput(), output );
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
     }
     
