@@ -18,19 +18,20 @@
  * under the License.    
 -->
 <!-- An example of a composite which has a single service and
-     a single reference   -->
+     a single reference, but where the reference has a binding
+     applied to it, with a target service identified   -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TestComposite4">
+           name="TestComposite10">
            
-	<service name="Service1" promote="Composite4Component1/Service1">
+	<service name="Service1" promote="Composite10Component1/Service1">
 		<interface.java interface="test.Service1"/>
 	</service>
 
     <property name="serviceName" type="string"/>
  
-    <component name="Composite4Component1">
+    <component name="Composite10Component1">
 		<implementation.java class="test.service1Impl2"/>
         <service name="Service1">
         	<interface.java interface="test.Service1"/>
@@ -38,8 +39,9 @@
         <property name="serviceName" source="$serviceName"/>
     </component>
     
-    <reference name="Reference1" promote="Composite4Component1/reference1">
+    <reference name="Reference1" promote="Composite10Component1/reference1">
         <interface.java interface="test.Service1"/>
+        <binding.sca uri="TestComponent2/Service1"/>
     </reference>
     
 </composite>
