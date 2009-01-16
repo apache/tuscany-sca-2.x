@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.equinox.junit.plugin;
 
+import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
+import static org.osgi.framework.Constants.BUNDLE_NAME;
+import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.BUNDLE_VERSION;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +34,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -38,6 +44,8 @@ import junit.framework.Assert;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.AbstractMojo;
@@ -47,6 +55,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  * @version $Rev$ $Date$
@@ -129,7 +139,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
 
         return artifact;
     }
-    
+
     /**
      * Returns a string representation of the given bundle.
      * 
@@ -166,13 +176,84 @@ public class OSGiJUnitMojo extends AbstractMojo {
         }
         return sb.toString();
     }
-    
+
     private void generateJar(File root, File jar, Manifest mf) throws IOException {
         getLog().info("Generating " + jar.toString());
         FileOutputStream fos = new FileOutputStream(jar);
         JarOutputStream jos = mf != null ? new JarOutputStream(fos, mf) : new JarOutputStream(fos);
         addDir(jos, root, root);
         jos.close();
+    }
+
+    /**
+     * Convert the maven version into OSGi version 
+     * @param mavenVersion
+     * @return
+     */
+    static String osgiVersion(String mavenVersion) {
+        ArtifactVersion ver = new DefaultArtifactVersion(mavenVersion);
+        String qualifer = ver.getQualifier();
+        if (qualifer != null) {
+            StringBuffer buf = new StringBuffer(qualifer);
+            for (int i = 0; i < buf.length(); i++) {
+                char c = buf.charAt(i);
+                if (Character.isLetterOrDigit(c) || c == '-' || c == '_') {
+                    // Keep as-is
+                } else {
+                    buf.setCharAt(i, '_');
+                }
+            }
+            qualifer = buf.toString();
+        }
+        Version osgiVersion =
+            new Version(ver.getMajorVersion(), ver.getMinorVersion(), ver.getIncrementalVersion(), qualifer);
+        String version = osgiVersion.toString();
+        return version;
+    }
+
+    private Manifest createMainBundle() throws IOException {
+        File mf = new File(project.getBasedir(), "META-INF/MANIFEST.MF");
+        Manifest manifest = null;
+        if (mf.isFile()) {
+            manifest = new Manifest(new FileInputStream(mf));
+            String bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+            if (bundleName != null) {
+                return manifest;
+            }
+        }
+        if (manifest == null) {
+            manifest = new Manifest();
+        }
+        Attributes attributes = manifest.getMainAttributes();
+        attributes.putValue("Manifest-Version", "1.0");
+        attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
+        attributes.putValue(BUNDLE_SYMBOLICNAME, project.getGroupId() + "." + project.getArtifactId());
+        attributes.putValue(BUNDLE_NAME, project.getDescription());
+        attributes.putValue(BUNDLE_VERSION, osgiVersion(project.getVersion()));
+        attributes.putValue(Constants.DYNAMICIMPORT_PACKAGE, "*");
+        return manifest;
+    }
+
+    private Manifest createTestFragment(Manifest mf) {
+        // Create a manifest
+        Manifest manifest = new Manifest();
+        Attributes attributes = manifest.getMainAttributes();
+        attributes.putValue("Manifest-Version", "1.0");
+        attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
+        String host = mf.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+        int sc = host.indexOf(';');
+        if (sc != -1) {
+            host = host.substring(0, sc);
+        }
+        attributes.putValue(BUNDLE_SYMBOLICNAME, host + ".tests");
+        attributes.putValue(BUNDLE_NAME, mf.getMainAttributes().getValue(BUNDLE_NAME) + " Tests");
+        attributes.putValue(BUNDLE_VERSION, mf.getMainAttributes().getValue(BUNDLE_VERSION));
+        attributes.putValue(Constants.FRAGMENT_HOST, host + ";bundle-version=\""
+            + mf.getMainAttributes().getValue(BUNDLE_VERSION)
+            + "\"");
+        // The main bundle may not have the dependency on JUNIT
+        attributes.putValue(Constants.DYNAMICIMPORT_PACKAGE, "*");
+        return manifest;
     }
 
     private void addDir(JarOutputStream jos, File root, File dir) throws IOException, FileNotFoundException {
@@ -182,6 +263,9 @@ public class OSGiJUnitMojo extends AbstractMojo {
             } else if (file.isFile()) {
                 // getLog().info(file.toString());
                 String uri = root.toURI().relativize(file.toURI()).toString();
+                if ("META-INF/MANIFEST.MF".equals(uri)) {
+                    continue;
+                }
                 ZipEntry entry = new ZipEntry(uri);
                 jos.putNextEntry(entry);
                 byte[] buf = new byte[4096];
@@ -199,7 +283,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
             }
         }
     }
-    
+
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
             return;
@@ -237,18 +321,27 @@ public class OSGiJUnitMojo extends AbstractMojo {
         } catch (MalformedURLException e) {
             getLog().error(e);
         }
-        
-        File mainJar = new File(project.getBuild().getDirectory(), project.getArtifactId()+"-osgi.jar");
-        File testJar = new File(project.getBuild().getDirectory(), project.getArtifactId()+"-test-osgi.jar");
+
+        String name = project.getBuild().getFinalName();
+        String mainBundleName = null;
+        File mainJar = new File(project.getBuild().getDirectory(), name + "-osgi.jar");
+        File testJar = new File(project.getBuild().getDirectory(), name + "-osgi-tests.jar");
         try {
-            generateJar(new File(project.getBuild().getOutputDirectory()), mainJar, null);
-            generateJar(new File(project.getBuild().getTestOutputDirectory()), testJar, null);
+            Manifest manifest = createMainBundle();
+            mainBundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+            int sc = mainBundleName.indexOf(';');
+            if (sc != -1) {
+                mainBundleName = mainBundleName.substring(0, sc);
+            }
+            generateJar(new File(project.getBuild().getOutputDirectory()), mainJar, manifest);
+            Manifest testManifest = createTestFragment(manifest);
+            generateJar(new File(project.getBuild().getTestOutputDirectory()), testJar, testManifest);
             jarFiles.add(mainJar.toURI().toURL());
             jarFiles.add(testJar.toURI().toURL());
         } catch (IOException e) {
             getLog().error(e);
         }
-        
+
         if (log.isDebugEnabled()) {
             for (URL url : jarFiles) {
                 getLog().debug(url.toString());
@@ -265,16 +358,18 @@ public class OSGiJUnitMojo extends AbstractMojo {
                 }
             }
             Bundle testBundle = null;
-            String libraryBundleName = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
-            for(Bundle bundle: context.getBundles()) {
-                if(libraryBundleName.equals(bundle.getSymbolicName())) {
+            for (Bundle bundle : context.getBundles()) {
+                // Fragement bundle cannot be used to load class, use the main bundle
+                if (mainBundleName.equals(bundle.getSymbolicName())) {
                     testBundle = bundle;
                     break;
                 }
             }
 
             try {
-                runAllTestsFromDirs(testBundle, project.getBuild().getTestOutputDirectory());
+                if (testBundle != null) {
+                    runAllTestsFromDirs(testBundle, project.getBuild().getTestOutputDirectory());
+                }
             } finally {
                 host.stop();
             }
