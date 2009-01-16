@@ -261,21 +261,66 @@ final class NodeLauncherUtil {
      */
     private static void addPackages(String jarFile, Set<String> packages) throws IOException {
         String version = ";version=" + jarVersion(jarFile);
-        ZipInputStream is = new ZipInputStream(new FileInputStream(file(new URL(jarFile))));
-        ZipEntry entry;
-        while ((entry = is.getNextEntry()) != null) {
-            String entryName = entry.getName();
-            if (!entry.isDirectory() && entryName != null
-                && entryName.length() > 0
-                && !entryName.startsWith(".")
-                && entryName.endsWith(".class") // Exclude resources from Export-Package
-                && entryName.lastIndexOf("/") > 0) {
-                String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
+        File file = file(new URL(jarFile));
+        if (file.isDirectory()) {
+            List<String> classFiles = listClassFiles(file);
+            for (String cls : classFiles) {
+                int index = cls.lastIndexOf('/');
+                String pkg = cls.substring(0, index);
+                pkg = pkg.replace('/', '.') + version;
                 packages.add(pkg);
             }
+        } else if (file.isFile()) {
+            ZipInputStream is = new ZipInputStream(new FileInputStream(file));
+            ZipEntry entry;
+            while ((entry = is.getNextEntry()) != null) {
+                String entryName = entry.getName();
+                if (!entry.isDirectory() && entryName != null
+                    && entryName.length() > 0
+                    && !entryName.startsWith(".")
+                    && entryName.endsWith(".class") // Exclude resources from Export-Package
+                    && entryName.lastIndexOf("/") > 0) {
+                    String pkg = entryName.substring(0, entryName.lastIndexOf("/")).replace('/', '.') + version;
+                    packages.add(pkg);
+                }
+            }
+            is.close();
         }
-        is.close();
     }
+    
+    private static List<String> listClassFiles(File directory) {
+        List<String> artifacts = new ArrayList<String>();
+        traverse(artifacts, directory, directory);
+        return artifacts;
+    }
+
+    /**
+     * Recursively traverse a root directory
+     * 
+     * @param fileList
+     * @param file
+     * @param root
+     * @throws IOException
+     */
+    private static void traverse(List<String> fileList, File file, File root) {
+        if (file.isFile() && file.getName().endsWith(".class")) {
+            fileList.add(root.toURI().relativize(file.toURI()).toString());
+        } else if (file.isDirectory()) {
+            String uri = root.toURI().relativize(file.toURI()).toString();
+            if (uri.endsWith("/")) {
+                uri = uri.substring(0, uri.length() - 1);
+            }
+            fileList.add(uri);
+            
+            File[] files = file.listFiles();
+            for (File f: files) {
+                if (!f.getName().startsWith(".")) {
+                    traverse(fileList, f, root);
+                }
+            }
+        }
+    }
+
 
     /**
      * Generate a manifest from a list of third-party JAR files.
@@ -362,7 +407,11 @@ final class NodeLauncherUtil {
         if (url == null) {
             throw new FileNotFoundException(resource);
         }
-        URI uri = url.toURI();
+        String str = url.toString();
+        if (str.contains(" ")) {
+            str = str.replace(" ", "%20");
+        }
+        URI uri = URI.create(str);
 
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
@@ -506,7 +555,9 @@ final class NodeLauncherUtil {
         } else {
             JarFile jar = new JarFile(file, false);
             Manifest manifest = jar.getManifest();
-            bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+            if (manifest != null) {
+                bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+            }
             jar.close();
         }
         if (bundleName == null) {

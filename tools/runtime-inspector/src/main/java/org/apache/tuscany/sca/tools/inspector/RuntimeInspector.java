@@ -35,9 +35,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.w3c.dom.Node;
 
 
 /**
@@ -56,7 +55,7 @@ public class RuntimeInspector {
         }
     }    
 
-    public String runtimeAsString(SCANode node) {
+    public String runtimeAsString(Node node) {
         StringBuffer assemblyString = new StringBuffer();
         this.out = new PrintWriter(new OutputStreamWriter(System.out), true);
         

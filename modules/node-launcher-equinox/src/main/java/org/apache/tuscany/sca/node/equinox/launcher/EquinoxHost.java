@@ -30,7 +30,10 @@ import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thir
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thisBundleLocation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,12 +58,14 @@ public class EquinoxHost {
     private BundleContext bundleContext;
     private Bundle launcherBundle;
     private boolean startedEclipse;
+    private Set<URL> dependencies;
     private List<String> bundleFiles =  new ArrayList<String>();
     private List<String> bundleNames =  new ArrayList<String>();
     private List<String> jarFiles = new ArrayList<String>();
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
+    /*
     private final static String systemPackages =
             "org.osgi.framework; version=1.3.0,"
             + "org.osgi.service.packageadmin; version=1.2.0, "
@@ -113,6 +118,15 @@ public class EquinoxHost {
             + "org.omg.PortableInterceptor, "
             + "org.omg.stub.java.rmi, "
             + "javax.rmi.CORBA";
+    */
+    public EquinoxHost() {
+        super();
+    }
+    
+    public EquinoxHost(Set<URL> dependencies) {
+        super();
+        this.dependencies = dependencies;
+    }
     
     /**
      * Start the Equinox host.
@@ -167,17 +181,7 @@ public class EquinoxHost {
             
             // Determine the runtime classpath entries
             Set<URL> urls;
-            if (!startedEclipse) {
-                
-                // Use classpath entries from a distribution if there is one and the modules
-                // directories available in a dev environment for example
-                urls = runtimeClasspathEntries(true, false, true);
-            } else {
-                
-                // Use classpath entries from a distribution if there is one and the classpath
-                // entries on the current application's classloader
-                urls = runtimeClasspathEntries(true, true, false);
-            }
+            urls = findDependencies();
 
             // Sort out which are bundles (and not already installed) and which are just
             // regular JARs
@@ -323,6 +327,23 @@ public class EquinoxHost {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Set<URL> findDependencies() throws FileNotFoundException, URISyntaxException, MalformedURLException {
+        if (dependencies == null) {
+            if (!startedEclipse) {
+
+                // Use classpath entries from a distribution if there is one and the modules
+                // directories available in a dev environment for example
+                dependencies = runtimeClasspathEntries(true, false, true);
+            } else {
+
+                // Use classpath entries from a distribution if there is one and the classpath
+                // entries on the current application's classloader
+                dependencies = runtimeClasspathEntries(true, true, false);
+            }
+        }
+        return dependencies;
     }
 
     /**

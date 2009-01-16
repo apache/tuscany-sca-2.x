@@ -115,6 +115,21 @@
                     </archive>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-osgi-junit</artifactId>
+                <executions>
+                    <execution>
+                        <id>osgi-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <configuration></configuration>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
