@@ -17,29 +17,25 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!-- An example of a composite which has a single service and
-     a single reference   -->
+<!-- Composite that provides a single service with the extended
+     Service1Superset interface -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TestComposite4">
+           name="TestComposite9">
            
-	<service name="Service1" promote="Composite4Component1/Service1">
-		<interface.java interface="test.Service1"/>
+	<service name="Service1" promote="Composite9Component1/Service1Superset">
+		<interface.java interface="test.Service1Superset"></interface.java>
 	</service>
 
     <property name="serviceName" type="string"/>
  
-    <component name="Composite4Component1">
-		<implementation.java class="test.service1Impl2"/>
-        <service name="Service1">
-        	<interface.java interface="test.Service1"/>
+    <component name="Composite9Component1">
+		<implementation.java class="test.service1SupersetImpl"/>
+        <service name="Service1Superset">
+        	<interface.java interface="test.Service1Superset"></interface.java>
         </service>
         <property name="serviceName" source="$serviceName"/>
     </component>
-    
-    <reference name="Reference1" promote="Composite4Component1/reference1">
-        <interface.java interface="test.Service1"/>
-    </reference>
-    
+
 </composite>
