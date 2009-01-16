@@ -209,6 +209,10 @@ public class OSGiJUnitMojo extends AbstractMojo {
         Set<URL> jarFiles = new HashSet<URL>();
         for (Object o : project.getArtifacts()) {
             Artifact a = (Artifact)o;
+            if ("pom".equals(a.getType())) {
+                // Skip pom projects
+                continue;
+            }
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("Adding: " + a);
