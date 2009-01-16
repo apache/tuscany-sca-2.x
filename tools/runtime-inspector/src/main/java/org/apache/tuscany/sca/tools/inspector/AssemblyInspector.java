@@ -22,11 +22,11 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 
@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class AssemblyInspector {
     
 
-    public String assemblyAsString(SCANode node) {
+    public String assemblyAsString(Node node) {
         StringBuffer assemblyString = new StringBuffer();
         
         // get at the node internals
@@ -44,7 +44,7 @@ public class AssemblyInspector {
         ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
         
         // Get the output factory 
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         StAXArtifactProcessor<Composite> compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);

@@ -16,16 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.tools.sca.osgi.junit.plugin;
+package org.apache.tuscany.sca.equinox.junit.plugin;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import junit.framework.Assert;
 
@@ -45,7 +51,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @version $Rev$ $Date$
  * @goal test
- * @phase integration-test
+ * @phase test
  * @requiresDependencyResolution test
  * @description Run the unit test with OSGi
  */
@@ -102,11 +108,6 @@ public class OSGiJUnitMojo extends AbstractMojo {
      * @required
      */
     protected java.util.List remoteRepos;
-
-    /**
-     * @parameter
-     */
-    protected String osgiRuntime;
 
     protected Artifact getArtifact(String groupId, String artifactId) throws MojoExecutionException {
         Artifact artifact;
@@ -165,15 +166,47 @@ public class OSGiJUnitMojo extends AbstractMojo {
         }
         return sb.toString();
     }
+    
+    private void generateJar(File root, File jar, Manifest mf) throws IOException {
+        getLog().info("Generating " + jar.toString());
+        FileOutputStream fos = new FileOutputStream(jar);
+        JarOutputStream jos = mf != null ? new JarOutputStream(fos, mf) : new JarOutputStream(fos);
+        addDir(jos, root, root);
+        jos.close();
+    }
 
-
+    private void addDir(JarOutputStream jos, File root, File dir) throws IOException, FileNotFoundException {
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                addDir(jos, root, file);
+            } else if (file.isFile()) {
+                // getLog().info(file.toString());
+                String uri = root.toURI().relativize(file.toURI()).toString();
+                ZipEntry entry = new ZipEntry(uri);
+                jos.putNextEntry(entry);
+                byte[] buf = new byte[4096];
+                FileInputStream in = new FileInputStream(file);
+                for (;;) {
+                    int len = in.read(buf);
+                    if (len > 0) {
+                        jos.write(buf, 0, len);
+                    } else {
+                        break;
+                    }
+                }
+                in.close();
+                jos.closeEntry();
+            }
+        }
+    }
+    
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
             return;
         }
 
         Log log = getLog();
-        List<URL> jarFiles = new ArrayList<URL>();
+        Set<URL> jarFiles = new HashSet<URL>();
         for (Object o : project.getArtifacts()) {
             Artifact a = (Artifact)o;
             try {
@@ -189,53 +222,61 @@ public class OSGiJUnitMojo extends AbstractMojo {
         /*
          * Add org.apache.tuscany.sca:tuscany-extensibility-osgi module
          */
-        String aid = "equinox".equals(osgiRuntime) ? "tuscany-extensibility-equinox" : "tuscany-extensibility-osgi";
+        String aid = "tuscany-extensibility-equinox";
         Artifact ext = getArtifact("org.apache.tuscany.sca", aid);
         try {
             URL url = ext.getFile().toURI().toURL();
-            if (!jarFiles.contains(url)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Adding: " + ext);
-                }
-                jarFiles.add(url);
+            if (log.isDebugEnabled()) {
+                log.debug("Adding: " + ext);
             }
+            jarFiles.add(url);
         } catch (MalformedURLException e) {
             getLog().error(e);
         }
-
-        //        String home = new File(basedir, "target/tuscany").toString();
-        //        System.setProperty("TUSCANY_HOME", home);
-        //        getLog().info(home);
+        
+        File mainJar = new File(project.getBuild().getDirectory(), project.getArtifactId()+"-osgi.jar");
+        File testJar = new File(project.getBuild().getDirectory(), project.getArtifactId()+"-test-osgi.jar");
         try {
-            EquinoxHost host = new EquinoxHost();
+            generateJar(new File(project.getBuild().getOutputDirectory()), mainJar, null);
+            generateJar(new File(project.getBuild().getTestOutputDirectory()), testJar, null);
+            jarFiles.add(mainJar.toURI().toURL());
+            jarFiles.add(testJar.toURI().toURL());
+        } catch (IOException e) {
+            getLog().error(e);
+        }
+        
+        if (log.isDebugEnabled()) {
+            for (URL url : jarFiles) {
+                getLog().debug(url.toString());
+            }
+        }
+
+        try {
+            EquinoxHost host = new EquinoxHost(jarFiles);
             BundleContext context = host.start();
 
-            for (Bundle b : context.getBundles()) {
-                if (getLog().isDebugEnabled()) {
+            if (getLog().isDebugEnabled()) {
+                for (Bundle b : context.getBundles()) {
                     getLog().debug(string(b, false));
                 }
             }
-
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            URL[] urls =
-                new URL[] {new File(project.getBuild().getOutputDirectory()).toURI().toURL(),
-                           new File(project.getBuild().getTestOutputDirectory()).toURI().toURL()};
-
-            URLClassLoader cl = new URLClassLoader(urls, tccl);
-            Thread.currentThread().setContextClassLoader(cl);
-            try {
-                runAllTestsFromDirs(cl, project.getBuild().getTestOutputDirectory());
-            } finally {
-                Thread.currentThread().setContextClassLoader(tccl);
+            Bundle testBundle = null;
+            String libraryBundleName = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
+            for(Bundle bundle: context.getBundles()) {
+                if(libraryBundleName.equals(bundle.getSymbolicName())) {
+                    testBundle = bundle;
+                    break;
+                }
             }
-            host.stop();
+
+            try {
+                runAllTestsFromDirs(testBundle, project.getBuild().getTestOutputDirectory());
+            } finally {
+                host.stop();
+            }
         } catch (Throwable e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
-        //        finally {
-        //            System.clearProperty("TUSCANY_HOME");
-        //        }
-
     }
 
     public void getTestCases(File dir, String prefix, HashSet<String> testCaseSet) {
@@ -254,14 +295,14 @@ public class OSGiJUnitMojo extends AbstractMojo {
         }
     }
 
-    public void runAllTestsFromDirs(ClassLoader testClassLoader, String testDir) throws Exception {
+    public void runAllTestsFromDirs(Bundle testBundle, String testDir) throws Exception {
 
         int failures = 0;
         HashSet<String> testCaseSet = new HashSet<String>();
         getTestCases(new File(testDir), null, testCaseSet);
         for (String className : testCaseSet) {
-            Class testClass = testClassLoader.loadClass(className);
-            failures += runTestCase(testClassLoader, testClass);
+            Class testClass = testBundle.loadClass(className);
+            failures += runTestCase(testBundle, testClass);
         }
 
         Assert.assertEquals(0, failures);
@@ -270,18 +311,18 @@ public class OSGiJUnitMojo extends AbstractMojo {
 
     /**
      * Use java reflection to call JUNIT as the JUNIT might be in the bundles
-     * @param testClassLoader
+     * @param testBundle
      * @param testClass
      * @return
      * @throws Exception
      */
-    public int runTestCase(ClassLoader testClassLoader, Class testClass) throws Exception {
+    public int runTestCase(Bundle testBundle, Class testClass) throws Exception {
 
         if (testClass.getName().endsWith("TestCase")) {
             getLog().info("Running: " + testClass.getName());
-            Class coreClass = Class.forName("org.junit.runner.JUnitCore", true, testClassLoader);
+            Class coreClass = testBundle.loadClass("org.junit.runner.JUnitCore");
             Object core = coreClass.newInstance();
-            Class reqClass = Class.forName("org.junit.runner.Request", true, testClassLoader);
+            Class reqClass = testBundle.loadClass("org.junit.runner.Request");
             Method aClass = reqClass.getMethod("aClass", Class.class);
             Object req = aClass.invoke(null, testClass);
             Method run = coreClass.getMethod("run", reqClass);
@@ -291,7 +332,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
             List failureList = (List)result.getClass().getMethod("getFailures").invoke(result);
 
             int failures = 0, errors = 0;
-            Class errorClass = Class.forName("junit.framework.AssertionFailedError", true, testClassLoader);
+            Class errorClass = testBundle.loadClass("junit.framework.AssertionFailedError");
             for (Object f : failureList) {
                 Object ex = f.getClass().getMethod("getException").invoke(f);
                 if (errorClass.isInstance(ex)) {
