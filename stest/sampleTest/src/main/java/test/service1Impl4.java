@@ -38,12 +38,13 @@ public class service1Impl4 implements Service1 {
 	public Service1[] reference1 = null;
 
 	public String operation1(String input) {
-		String result = "";
+		String result = serviceName + " operation1 invoked";
 		// Call each of the references in the array, concatenating the results
 		for( int i=0 ; i < reference1.length; i++ ) {
+			result = result.concat(" ");
 			result = result.concat( reference1[i].operation1(input) );
 		} // end for
-		return serviceName + " operation1 invoked" + " " + result;
+		return result;
 	}
 
 }
