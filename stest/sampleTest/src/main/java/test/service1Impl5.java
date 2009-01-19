@@ -18,22 +18,27 @@
  */
 package test;
 
-// TODO: Need to change *ALL* annotations to org.oasisopen.xxxx
-import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.*;
 
 /**
- * A test service interface
+ * Java component implementation for business interface Service1
+ * - no references
+ * - 3 properties
  * @author MikeEdwards
  *
  */
-@Remotable
-public interface Service1 {
+@Service(Service1.class)
+public class service1Impl5 implements Service1 {
 	
-	/**
-	 * Method for invoking testcase service
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 */
-	public String operation1( String input );
+	@Property
+	public String serviceName = "service1";
+	@Property
+	public String serviceData1;
+	@Property
+	public String serviceData2;
+
+	public String operation1(String input) {
+		return serviceName + " operation1 invoked" + serviceData1 + serviceData2;
+	}
 
 }

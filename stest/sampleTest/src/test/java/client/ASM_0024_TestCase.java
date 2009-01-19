@@ -16,24 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test;
+package client;
 
-// TODO: Need to change *ALL* annotations to org.oasisopen.xxxx
-import org.osoa.sca.annotations.Remotable;
+
+import test.ASM_0002_Client;
+import testClient.TestInvocation;
 
 /**
- * A test service interface
- * @author MikeEdwards
- *
+ * Client for ASM_0024_TestCase, which tests that where a <component/> 
+ * <reference/> has @target set to some service, that the reference 
+ * can have no child <binding/> elements   
  */
-@Remotable
-public interface Service1 {
-	
-	/**
-	 * Method for invoking testcase service
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 */
-	public String operation1( String input );
+public class ASM_0024_TestCase extends BaseJAXWSTestCase {
 
-}
+ 
+    protected TestConfiguration getTestConfiguration() {
+    	TestConfiguration config = new TestConfiguration();
+    	config.testName 		= "ASM_0024";
+    	config.input 			= "request";
+    	config.output 			= "exception";
+    	config.composite 		= "Test_ASM_0024.composite";
+    	config.testServiceName 	= "TestClient";
+    	config.testClass 		= ASM_0002_Client.class;
+    	config.serviceInterface = TestInvocation.class;
+    	return config;
+    }
+    
+} // end class Test_ASM_0003

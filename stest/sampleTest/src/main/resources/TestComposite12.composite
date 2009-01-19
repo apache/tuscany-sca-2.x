@@ -17,24 +17,29 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!-- A simple composite which provides a single service and no references -->
+<!-- A simple composite which provides a single service and no references
+     plus a property with a complex type -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
-           xmlns:sample="http://oasis/tests"
-           name="TestComposite1">
+           xmlns:test="http://oasis/tests"
+           name="TestComposite12">
            
 	<service name="Service1" promote="TestComponent1/Service1">
 		<interface.java interface="test.Service1"></interface.java>
 	</service>
 
     <property name="serviceName" type="string"/>
+    
+    <property name="complexType" type="test:ComplexType1"/>
  
     <component name="TestComponent1">
-		<implementation.java class="test.service1Impl"/>
+		<implementation.java class="test.service1Impl5"/>
         <service name="Service1">
-        	<interface.java interface="test.Service1"></interface.java>
+        	<interface.java interface="test.Service1"/>
         </service>
         <property name="serviceName" source="$serviceName"/>
+        <property name="serviceData1" source="$complexType/firstData"/>
+        <property name="serviceData2" source="$complexType/secondData"/>
     </component>
 
 </composite>
