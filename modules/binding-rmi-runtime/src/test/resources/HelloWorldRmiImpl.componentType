@@ -24,7 +24,4 @@
 	<reference name="extService">
 		<interface.java interface="helloworld.HelloWorldService"/>
 	</reference>
-	<reference name="extConversationalService">
-		<interface.java interface="helloworld.HelloWorldConversationalService"/>
-	</reference>
 </componentType>

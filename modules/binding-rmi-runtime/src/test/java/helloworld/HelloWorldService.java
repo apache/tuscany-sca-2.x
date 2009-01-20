@@ -20,13 +20,12 @@ package helloworld;
 
 /**
  * This is the business interface of the HelloWorld greetings service.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface HelloWorldService {
 
-	String sayHello(String name);
-
-	String sayHi(String name, String greeter) throws HelloException;
+    String sayHello(String name);
+    String sayHi(String name, String greeter) throws HelloException;
 
 }

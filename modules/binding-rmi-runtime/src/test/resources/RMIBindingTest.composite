@@ -20,37 +20,24 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="HelloWorldRmiComposite">
-           
-	<!-- 				PROVIDER			 -->
+
 	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">
         <interface.java interface="helloworld.HelloWorldService"/>
         <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
     </service>
+      
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl"/>
     </component>   
   
-    <service name="HelloWorldRmiConversationalService" promote="HelloWorldConversationalServiceComponent">
-        <interface.java interface="helloworld.HelloWorldConversationalService"/>
-        <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteConversationalService"/>
-    </service>
-    <component name="HelloWorldConversationalServiceComponent">
-        <implementation.java class="helloworld.HelloWorldConversationalImpl"/>
-    </component>  
-    
-    <!--				CONSUMER			-->    
    <component name="HelloWorldRmiServiceComponent">
         <implementation.java class="helloworld.HelloWorldRmiImpl"/>
         <reference name="extService"></reference>
-        <reference name="extConversationalService"></reference>
     </component>        
            
   	<reference name="HelloWorldRmiReference" promote="HelloWorldRmiServiceComponent/extService">
         <interface.java interface="helloworld.HelloWorldService"/>
         <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
     </reference>
-	<reference name="HelloWorldRmiConversationalReference" promote="HelloWorldRmiServiceComponent/extConversationalService">
-        <interface.java interface="helloworld.HelloWorldConversationalService"/>
-        <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteConversationalService"   />
-    </reference>
+
 </composite>

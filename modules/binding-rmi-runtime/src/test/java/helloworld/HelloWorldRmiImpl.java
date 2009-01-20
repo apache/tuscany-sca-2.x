@@ -19,70 +19,32 @@
 package helloworld;
 
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
- * This class implements the HelloWorld service. The Scope is CONVERSATION to
- * test the RMI Conversational Service and Conversational in interface and
- * Scope("CONVERSATION") in Implementation keep the same instance of the
- * references. But only references conversational are Stateful.
- * HelloWorldService is stateless is keep stateless.
- * HelloWorldConversationalService is stateful.
- * 
- * When BindingTestCase take a instance of HelloWorldRmiImpl it is use the same
- * instance of the HelloWorldRmiImpl to all method invocation, how
- * extConversationService is conversational (stateful) too, your state is keep
- * between call, differently of the extService that is stateless.
- * 
+ * This class implements the HelloWorld service.
+ *
  * @version $Rev$ $Date$
  */
 @Service(HelloWorldRmiService.class)
-@Scope("CONVERSATION")
 public class HelloWorldRmiImpl implements HelloWorldRmiService {
-	private HelloWorldService extService;
-	private HelloWorldConversationalService extConversationalService;
-	private static final String COMPLEMENT = " thro the RMI Reference";
+    private HelloWorldService extService;
 
-	public HelloWorldService getExtService() {
-		return extService;
-	}
+    public HelloWorldService getExtService() {
+        return extService;
+    }
 
-	@Reference
-	public void setExtService(HelloWorldService extService) {
-		this.extService = extService;
-	}
+    @Reference
+    public void setExtService(HelloWorldService extService) {
+        this.extService = extService;
+    }
 
-	@Reference
-	public void setExtConversationalService(
-			HelloWorldConversationalService extConversationalService) {
-		this.extConversationalService = extConversationalService;
-	}
-
-	public String sayRmiHello(String name) {
-		return extService.sayHello(name) + COMPLEMENT;
-	}
-
-	public String sayRmiHi(String name, String greeter) throws HelloException {
-		return extService.sayHi(name, greeter) + COMPLEMENT;
-	}
-
-	public String getConversationalHello() {
-		return extConversationalService.getHello() + COMPLEMENT;
-	}
-
-	public String getConversationalHi() {
-		return extConversationalService.getHi() + COMPLEMENT;
-	}
-
-	public void sayRmiConversationalHello(String name) {
-		extConversationalService.sayHello(name);
-
-	}
-
-	public void sayRmiConversationalHi(String name, String greeter)
-			throws HelloException {
-		extConversationalService.sayHi(name, greeter);
-	}
+    public String sayRmiHello(String name) {
+        return extService.sayHello(name) + " thro the RMI Reference";
+    }
+    
+    public String sayRmiHi(String name, String greeter) throws HelloException {
+        return extService.sayHi(name, greeter) + " thro the RMI Reference";
+    }
 
 }
