@@ -228,7 +228,7 @@ public class OSGiJUnitMojo extends AbstractMojo {
         attributes.putValue("Manifest-Version", "1.0");
         attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
         attributes.putValue(BUNDLE_SYMBOLICNAME, project.getGroupId() + "." + project.getArtifactId());
-        attributes.putValue(BUNDLE_NAME, project.getDescription());
+        attributes.putValue(BUNDLE_NAME, project.getName());
         attributes.putValue(BUNDLE_VERSION, osgiVersion(project.getVersion()));
         attributes.putValue(Constants.DYNAMICIMPORT_PACKAGE, "*");
         return manifest;
