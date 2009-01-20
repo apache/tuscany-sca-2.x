@@ -39,8 +39,26 @@ public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
     private static Node node;
 
+    @BeforeClass
+    public static void init() throws Exception {
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(BindingTestCase.class);
+            node = NodeFactory.newInstance().createNode("RMIBindingTest.composite", new Contribution("test", contribution));
+            node.start();
+            helloWorldRmiService = node.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterClass
+    public static void destroy() throws Exception {
+        node.stop();
+        node.destroy();
+    }
+
     @Test
-    public void testRmiService() {
+    public void performRmiNormalService() {
         String msg = helloWorldRmiService.sayRmiHello("Tuscany World!");
         System.out.println(msg);
         Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference", msg);
@@ -60,22 +78,28 @@ public class BindingTestCase {
         }
     }
 
-    @BeforeClass
-    public static void init() throws Exception {
+    @Test
+    public void performRmiConversationalService() {
+        helloWorldRmiService.sayRmiConversationalHello("Tuscany World!");
+        String msg = helloWorldRmiService.getConversationalHello();
+        System.out.println(msg);
+        Assert.assertEquals("Hello from the RMI Service to - Tuscany World! thro the RMI Reference", msg);
+
         try {
-            String contribution = ContributionLocationHelper.getContributionLocation(BindingTestCase.class);
-            node = NodeFactory.newInstance().createNode("RMIBindingTest.composite", new Contribution("test", contribution));
-            node.start();
-            helloWorldRmiService = node.getService(HelloWorldRmiService.class, "HelloWorldRmiServiceComponent");
-        } catch (Exception e) {
-            e.printStackTrace();
+            helloWorldRmiService.sayRmiConversationalHi("Tuscany World!", "Apache World");
+            msg = helloWorldRmiService.getConversationalHi();
+            System.out.println(msg);
+            Assert.assertEquals("Hi from Apache World in RMI Service to - Tuscany World! thro the RMI Reference", msg);
+        } catch (HelloException e) {
+            Assert.fail(e.getMessage());
+        }
+        try {
+            helloWorldRmiService.sayRmiConversationalHi(null, "Apache World");
+            Assert.fail("HelloException should have been thrown");
+        } catch (HelloException e) {
+            System.out.println("Expected exception :" + e.getClass().getName());
         }
     }
 
-    @AfterClass
-    public static void destroy() throws Exception {
-        node.stop();
-        node.destroy();
-    }
 
 }
