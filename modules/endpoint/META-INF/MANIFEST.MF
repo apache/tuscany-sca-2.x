@@ -1,29 +1,29 @@
 Manifest-Version: 1.0
-Private-Package: org.apache.tuscany.sca.binding.sca;version="1.4",org.
- apache.tuscany.sca.endpoint.impl;version="1.4"
+Private-Package: org.apache.tuscany.sca.binding.sca;version="2.0.0",org.
+ apache.tuscany.sca.endpoint.impl;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Default Endpoint Implementation
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397237968
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Default Endpoint Implementation
 Import-Package: javax.xml.stream;resolution:=optional,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.assembly.builder;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.contribution;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.contribution.processor;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.contribution.resolver;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.core.assembly;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.definitions;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.endpointresolver;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.monitor;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.policy;version="1.4";resolution:=optional,
- org.osoa.sca.annotations;version="1.4";resolution:=optional
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.assembly;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.definitions;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.endpointresolver;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="2.0.0";resolution:=optional,
+ org.osoa.sca.annotations;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.endpoint
 Bundle-DocURL: http://www.apache.org/
 

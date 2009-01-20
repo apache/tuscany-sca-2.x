@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Private-Package: com.example.ipo.sdo;version="1.4",com.example.ipo.sdo
- .impl;version="1.4",com.example.stock.sdo;version="1.4",com.example.s
- tock.sdo.impl;version="1.4",org.apache.tuscany.sca.databinding.sdo2om
- ;version="1.4"
+Private-Package: com.example.ipo.sdo;version="2.0.0",com.example.ipo.sdo
+ .impl;version="2.0.0",com.example.stock.sdo;version="2.0.0",com.example.s
+ tock.sdo.impl;version="2.0.0",org.apache.tuscany.sca.databinding.sdo2om
+ ;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Data Binding for SDO/AXIOM
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397381546
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -21,12 +21,12 @@ Import-Package: commonj.sdo;version="2.1",
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
  org.apache.axiom.om.impl.serialize,
- org.apache.tuscany.sca.databinding;version="1.4",
- org.apache.tuscany.sca.databinding.impl;version="1.4",
- org.apache.tuscany.sca.databinding.sdo;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.impl;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.sdo;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
  org.apache.tuscany.sdo.api,
  org.apache.tuscany.sdo.helper,
  org.apache.tuscany.sdo.impl,

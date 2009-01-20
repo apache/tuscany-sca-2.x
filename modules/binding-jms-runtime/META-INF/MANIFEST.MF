@@ -8,12 +8,12 @@ Export-Package: org.apache.tuscany.sca.binding.jms.provider;uses:="org
  ,org.apache.axiom.om.impl.builder,org.apache.tuscany.sca.interfacedef
  .java,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.interface
  def,org.apache.tuscany.sca.invocation,org.apache.tuscany.sca.binding.
- ws,org.apache.tuscany.sca.work";version="1.4"
+ ws,org.apache.tuscany.sca.work";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA JMS Binding Runtime
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397307750
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -23,25 +23,25 @@ Import-Package: javax.jms,
  javax.xml.stream,
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.binding.jms;version="1.4",
- org.apache.tuscany.sca.binding.jms.provider;version="1.4",
- org.apache.tuscany.sca.binding.jms.xml;version="1.4.0",
- org.apache.tuscany.sca.binding.ws;version="1.4",
- org.apache.tuscany.sca.binding.ws.wsdlgen;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.core.assembly;version="1.4",
- org.apache.tuscany.sca.core.invocation;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.java;version="1.4",
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.monitor;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4.0",
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
- org.apache.tuscany.sca.work;version="1.4",
- org.osoa.sca;version="1.4",
- org.osoa.sca.annotations;version="1.4";resolution:=optional
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.provider;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core.invocation;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0",
+ org.osoa.sca;version="2.0.0",
+ org.osoa.sca.annotations;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jms.runtime
 Bundle-DocURL: http://www.apache.org/
 

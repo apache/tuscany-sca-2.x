@@ -1,18 +1,18 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.host.webapp.junit;uses:="org.ju
  nit.runner.notification,javax.servlet,junit.framework,org.junit.runne
- r,javax.servlet.http";version="1.4"
+ r,javax.servlet.http";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Webapp JUnit Host
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397431421
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Webapp JUnit Host
 Import-Package: javax.servlet,javax.servlet.http,junit.framework,org.a
- pache.tuscany.sca.host.webapp.junit;version="1.4",org.junit.runner,or
+ pache.tuscany.sca.host.webapp.junit;version="2.0.0",org.junit.runner,or
  g.junit.runner.notification
 Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp.junit
 Bundle-DocURL: http://www.apache.org/

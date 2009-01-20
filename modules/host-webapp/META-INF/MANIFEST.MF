@@ -5,12 +5,12 @@ Export-Package: org.apache.tuscany.sca.host.webapp.jsp;uses:="javax.se
  sion="1.4",org.apache.tuscany.sca.host.webapp;uses:="javax.naming,org
  .apache.tuscany.sca.host.embedded.impl,org.apache.tuscany.sca.host.em
  bedded,org.apache.tuscany.sca.core,javax.servlet,org.apache.tuscany.s
- ca.host.http,javax.servlet.http";version="1.4"
+ ca.host.http,javax.servlet.http";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Webapp Host
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1222833658000
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -20,12 +20,12 @@ Import-Package: javax.naming,
  javax.servlet.http,
  javax.servlet.jsp,
  javax.servlet.jsp.tagext,
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.host.http;version="1.4",
- org.apache.tuscany.sca.host.webapp;version="1.4",
- org.apache.tuscany.sca.host.webapp.jsp;version="1.4",
- org.apache.tuscany.sca.node;version="1.4.0",
- org.osoa.sca;version="1.4"
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.host.webapp;version="2.0.0",
+ org.apache.tuscany.sca.host.webapp.jsp;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
+ org.osoa.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
 Bundle-DocURL: http://www.apache.org/
 

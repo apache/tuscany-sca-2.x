@@ -3,7 +3,7 @@ Export-Package: org.apache.tuscany.sca.binding.corba.provider.service;
  uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.binding.
  corba.provider.exceptions,org.omg.CORBA,org.omg.CORBA.portable,org.ap
  ache.tuscany.sca.interfacedef,org.apache.tuscany.sca.binding.corba.pr
- ovider.types";version="1.4",org.apache.tuscany.sca.binding.corba.prov
+ ovider.types";version="2.0.0",org.apache.tuscany.sca.binding.corba.prov
  ider;uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.ass
  embly,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.binding.
  corba.provider.exceptions,org.omg.CORBA,org.apache.tuscany.sca.core,o
@@ -11,23 +11,23 @@ Export-Package: org.apache.tuscany.sca.binding.corba.provider.service;
  g.corba,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.bi
  nding.corba.provider.reference,org.apache.tuscany.sca.invocation,org.
  apache.tuscany.sca.binding.corba.provider.service,org.apache.tuscany.
- sca.host.corba,org.osoa.sca";version="1.4",org.apache.tuscany.sca.bin
- ding.corba.provider.exceptions;version="1.4",org.apache.tuscany.sca.b
+ sca.host.corba,org.osoa.sca";version="2.0.0",org.apache.tuscany.sca.bin
+ ding.corba.provider.exceptions;version="2.0.0",org.apache.tuscany.sca.b
  inding.corba.provider.types;uses:="org.apache.tuscany.sca.binding.cor
- ba.provider.exceptions";version="1.4",org.apache.tuscany.sca.binding.
+ ba.provider.exceptions";version="2.0.0",org.apache.tuscany.sca.binding.
  corba.provider.reference;uses:="net.sf.cglib.proxy,org.apache.tuscany
  .sca.binding.corba.provider.exceptions,org.omg.CORBA,org.apache.tusca
  ny.sca.binding.corba.provider.types,org.omg.CORBA.portable";version="
  1.4"
 Private-Package: org.apache.tuscany.sca.binding.corba.provider.meta;ve
  rsion="1.4",org.apache.tuscany.sca.binding.corba.provider.types.util;
- version="1.4",org.apache.tuscany.sca.binding.corba.provider.util;vers
+ version="2.0.0",org.apache.tuscany.sca.binding.corba.provider.util;vers
  ion="1.4"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA CORBA Binding Runtime
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397143078
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -35,30 +35,30 @@ Bundle-Description: Apache Tuscany SCA CORBA Binding Runtime
 Import-Package: javax.xml.namespace;resolution:=optional,
  
  net.sf.cglib.proxy,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.binding.corba;version="1.4",
- org.apache.tuscany.sca.binding.corba.provider;version="1.4",
- org.apache.tuscany.sca.binding.corba.provider.exceptions;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba.provider;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba.provider.exceptions;version="2.0.0",
  org.apache.tuscany.sca.binding.corba.provider.meta;resolution:=optional,
- org.apache.tuscany.sca.binding.corba.provider.reference;version="1.4",
- org.apache.tuscany.sca.binding.corba.provider.service;version="1.4",
- org.apache.tuscany.sca.binding.corba.provider.types;version="1.4",
+ org.apache.tuscany.sca.binding.corba.provider.reference;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba.provider.service;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba.provider.types;version="2.0.0",
  org.apache.tuscany.sca.binding.corba.provider.types.util;resolution:=optional,
  org.apache.tuscany.sca.binding.corba.provider.util;resolution:=optional,
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.host.corba;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.java;version="1.4",
- org.apache.tuscany.sca.interfacedef.util;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.corba;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
  
  org.omg.CORBA,
  org.omg.CORBA.portable,
  org.omg.CosNaming;resolution:=optional,
- org.osoa.sca;version="1.4"
+ org.osoa.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.corba.runtime
 Bundle-DocURL: http://www.apache.org/
 

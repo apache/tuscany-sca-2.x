@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.gdata.collection;uses:=
  "org.osoa.sca.annotations,com.google.gdata.client,com.google.gdata.da
- ta";version="1.4"
+ ta";version="2.0.0"
 Private-Package: org.apache.tuscany.sca.binding.gdata.provider;version
  ="1.4"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Gdata Binding Extension Runtime GSOC
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397270375
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -26,23 +26,23 @@ Import-Package: com.google.gdata.client,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.binding.gdata;version="1.4",
- org.apache.tuscany.sca.binding.gdata.collection;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.data.collection;version="1.4",
- org.apache.tuscany.sca.databinding;version="1.4",
- org.apache.tuscany.sca.databinding.impl;version="1.4",
- org.apache.tuscany.sca.host.http;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.impl;version="1.4",
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4.0",
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
- org.osoa.sca;version="1.4",
- org.osoa.sca.annotations;version="1.4"
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.gdata;version="2.0.0",
+ org.apache.tuscany.sca.binding.gdata.collection;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.data.collection;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.osoa.sca;version="2.0.0",
+ org.osoa.sca.annotations;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.gdata.runtime
 Bundle-DocURL: http://www.apache.org/
 

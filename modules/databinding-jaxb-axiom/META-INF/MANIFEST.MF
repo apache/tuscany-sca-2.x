@@ -6,7 +6,7 @@ Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Data Binding for JAXB-AXIOM
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397336953
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -24,14 +24,14 @@ Import-Package: javax.xml.bind,
  org.apache.axiom.om.impl,
  org.apache.axiom.om.impl.builder,
  org.apache.axiom.om.util,
- org.apache.tuscany.sca.databinding;version="1.4",
- org.apache.tuscany.sca.databinding.impl;version="1.4",
- org.apache.tuscany.sca.databinding.jaxb;version="1.4",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.jaxb;version="2.0.0",
  org.apache.tuscany.sca.databinding.jaxb.axiom;resolution:=optional,
- org.apache.tuscany.sca.databinding.xml;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.impl;version="1.4";resolution:=optional,
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
  org.w3c.dom;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb.axiom
 Bundle-DocURL: http://www.apache.org/
