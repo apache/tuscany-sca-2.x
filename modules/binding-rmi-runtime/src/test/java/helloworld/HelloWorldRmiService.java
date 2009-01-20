@@ -18,14 +18,36 @@
  */
 package helloworld;
 
+import org.osoa.sca.annotations.Conversational;
+
 /**
- * This is the business interface of the HelloWorld greetings service.
- *
+ * This is the business interface of the HelloWorld greetings service. This
+ * interface is Conversational to test the RMI Conversational Service and
+ * Conversational in interface and Scope("CONVERSATION") in Implementation keep
+ * the same instance of the references. But only references conversational are
+ * Stateful. HelloWorldService is stateless is keep stateless.
+ * HelloWorldConversationalService is stateful.
+ * 
+ * When BindingTestCase take a instance of HelloWorldRmiImpl it is use the same
+ * instance of the HelloWorldRmiImpl in all method invocation, how
+ * extConversationService is conversational (stateful) too, your state is keep
+ * between call, differently of the extService that is stateless.
+ * 
  * @version $Rev$ $Date$
  */
+@Conversational
 public interface HelloWorldRmiService {
 
-    String sayRmiHello(String name);
-    String sayRmiHi(String name, String greeter) throws HelloException;
+	String sayRmiHello(String name);
 
+	String sayRmiHi(String name, String greeter) throws HelloException;
+
+	void sayRmiConversationalHello(String name);
+
+	void sayRmiConversationalHi(String name, String greeter)
+			throws HelloException;
+
+	String getConversationalHello();
+
+	String getConversationalHi();
 }

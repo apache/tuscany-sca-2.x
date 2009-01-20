@@ -19,14 +19,11 @@
 
 package org.apache.tuscany.sca.binding.rmi.provider;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -39,43 +36,37 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private RuntimeComponentReference reference;
-    private RMIBinding binding;
-    private RMIHost rmiHost;
-    
-    public RMIReferenceBindingProvider(RuntimeComponent component,
-                                           RuntimeComponentReference reference,
-                                           RMIBinding binding,
-                                           RMIHost rmiHost) {
-           this.reference = reference;
-           this.binding = binding;
-           this.rmiHost = rmiHost;
-    }
+	private RuntimeComponentReference reference;
+	private RMIBinding binding;
+	private RMIHost rmiHost;
 
-    public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
-    }
-    
-    public Invoker createInvoker(Operation operation) {
-        Class<?> iface = ((JavaInterface)reference.getInterfaceContract().getInterface()).getJavaClass();
-        Method remoteMethod;
-        try {
-            remoteMethod = JavaInterfaceUtil.findMethod(iface, operation);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-        }
+	public RMIReferenceBindingProvider(RuntimeComponent component,
+			RuntimeComponentReference reference, RMIBinding binding,
+			RMIHost rmiHost) {
+		this.reference = reference;
+		this.binding = binding;
+		this.rmiHost = rmiHost;
+	}
 
-        return new RMIBindingInvoker(rmiHost, binding.getURI(), remoteMethod);
-    }
+	public InterfaceContract getBindingInterfaceContract() {
+		return reference.getInterfaceContract();
+	}
 
-    public void start() {
-    }
+	public Invoker createInvoker(Operation operation) {
+		Class<?> serviceInterface = ((JavaInterface) reference
+				.getInterfaceContract().getInterface()).getJavaClass();
+		return new RMIBindingInvoker(rmiHost, binding.getURI(),
+				serviceInterface, operation);
+	}
 
-    public void stop() {
-    }
+	public void start() {
+	}
 
-    public boolean supportsOneWayInvocation() {
-        return false;
-    }
+	public void stop() {
+	}
+
+	public boolean supportsOneWayInvocation() {
+		return false;
+	}
 
 }
