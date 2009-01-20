@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
@@ -120,6 +122,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private boolean generateConfig;
+    
+    /**
+     * Generete startup/-manifest.jar
+     * @parameter
+     */
+    private boolean generateManifestJar;
 
     /**
      * @parameter
@@ -166,7 +174,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Process all the dependency artifacts
             Set<String> bundleSymbolicNames = new HashSet<String>();
-            Set<String> fileNames = new HashSet<String>();
+            Set<String> bundleLocations = new HashSet<String>();
+            Set<String> jarNames = new HashSet<String>();
             for (Object o : project.getArtifacts()) {
                 Artifact artifact = (Artifact)o;
 
@@ -226,7 +235,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
                     bundleSymbolicNames.add(bundleName);
-                    fileNames.add(artifactFile.getName());
+                    bundleLocations.add(artifactFile.getName());
+                    jarNames.add(artifactFile.getName());
 
                 } else if ("war".equals(artifact.getType())) {
 
@@ -286,7 +296,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     fos.close();
                     copyFile(artifactFile, dir);
                     bundleSymbolicNames.add(symbolicName);
-                    fileNames.add(dir.getName());
+                    bundleLocations.add(dir.getName());
+                    jarNames.add(dirName + "/" + artifactFile.getName());
                 }
             }
 
@@ -304,7 +315,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                         log.info("Aggragating JAR artifact: " + a);
                         jarFiles.add(a.getFile());
                         copyFile(a.getFile(), dir);
-                    }
+                        jarNames.add(symbolicName + "-" + version + "/" + a.getFile().getName());
+                      }
                     Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
@@ -314,7 +326,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     write(mf, fos);
                     fos.close();
                     bundleSymbolicNames.add(symbolicName);
-                    fileNames.add(dir.getName());
+                    bundleLocations.add(dir.getName());
                 }
             }
 
@@ -346,13 +358,38 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 FileOutputStream fos = new FileOutputStream(ini); 
                 PrintStream ps = new PrintStream(fos);
                 ps.print("osgi.bundles=");
-                for(String f: fileNames) {
+                for(String f: bundleLocations) {
                     ps.print(f);
                     ps.print("@:start,");
                 }
                 ps.println();
                 ps.println("eclipse.ignoreApp=true");
                 ps.close();
+            }
+            
+            if (generateManifestJar) {
+                File startup = new File(new File(project.getBuild().getDirectory()), "startup");
+                startup.mkdir();
+                File mfJar = new File(startup, project.getArtifactId() + "-manifest.jar");
+                log.info("Generating manifest jar: " + mfJar);
+                FileOutputStream fos = new FileOutputStream(mfJar);
+                Manifest mf = new Manifest();
+                StringBuffer cp = new StringBuffer();
+                for (String jar : jarNames) {
+                    cp.append(jar).append(',');
+                }
+                if (cp.length() > 0) {
+                    cp.deleteCharAt(cp.length() - 1);
+                }
+                Attributes attrs = mf.getMainAttributes();
+                attrs.putValue("Manifest-Version", "1.0");
+                attrs.putValue("Implementation-Title", project.getName());
+                attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
+                attrs.putValue("Implementation-Vendor-Id", "org.apache");
+                attrs.putValue("Implementation-Version", project.getVersion());
+                attrs.putValue("Class-Path", cp.toString());
+                JarOutputStream jos = new JarOutputStream(fos, mf);
+                jos.close();
             }
 
         } catch (Exception e) {
