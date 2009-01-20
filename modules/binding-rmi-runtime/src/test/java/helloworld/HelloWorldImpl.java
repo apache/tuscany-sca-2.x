@@ -20,23 +20,23 @@ package helloworld;
 
 import org.osoa.sca.annotations.Service;
 
+
 /**
  * This class implements the HelloWorld service.
- * 
+ *
  * @version $Rev$ $Date$
  */
 @Service(HelloWorldService.class)
 public class HelloWorldImpl implements HelloWorldService {
 
-	public String sayHello(String name) {
-		return "Hello from the RMI Service to - " + name;
-	}
-
-	public String sayHi(String name, String greeter) throws HelloException {
-		if (name == null || greeter == null) {
-			throw new HelloException("Invalid name or greeter: name=" + name
-					+ " greeter=" + greeter);
-		}
-		return "Hi from " + greeter + " in RMI Service to - " + name;
-	}
+    public String sayHello(String name) {
+        return "Hello from the RMI Service to - " + name;
+    }
+    
+    public String sayHi(String name, String greeter) throws HelloException {
+        if (name == null || greeter == null) {
+            throw new HelloException("Invalid name or greeter: name=" + name + " greeter=" + greeter);
+        }
+        return "Hi from " + greeter + " in RMI Service to - " + name;
+    }
 }
