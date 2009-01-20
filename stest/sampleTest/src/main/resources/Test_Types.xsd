@@ -24,9 +24,14 @@
     xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
     elementFormDefault="qualified">
 
+
+    <!-- A complex type -->
     <complexType name="ComplexType1">
 	    <element name="firstData" type="string" />
         <element name="secondData" type="string" />
     </complexType>
+    
+    <!-- A global element with a complex type -->
+    <element name="globalElement1" type="test:ComplexType1"/>
        
 </schema>
