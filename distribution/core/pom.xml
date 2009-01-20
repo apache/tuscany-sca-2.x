@@ -278,6 +278,7 @@
                                 </goals>
                                 <configuration>
                                     <targetDirectory>target/modules</targetDirectory>
+                                    <generateManifestJar>true</generateManifestJar>
                                 </configuration>
                             </execution>
                         </executions>
