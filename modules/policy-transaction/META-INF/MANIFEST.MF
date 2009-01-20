@@ -13,7 +13,7 @@ Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Transaction Policy Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397486843
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -26,19 +26,19 @@ Import-Package: javax.resource.spi,
  
  org.apache.geronimo.transaction.log,
  org.apache.geronimo.transaction.manager,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.contribution.processor;version="1.4",
- org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.definitions;version="1.4",
- org.apache.tuscany.sca.definitions.util;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.monitor;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4",
- org.apache.tuscany.sca.policy.transaction;version="1.4",
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.definitions.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.policy.transaction;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
  org.objectweb.howl.log;version="1.0.1"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.transaction
 Bundle-DocURL: http://www.apache.org/

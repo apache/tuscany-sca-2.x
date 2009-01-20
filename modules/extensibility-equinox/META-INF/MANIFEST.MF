@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.extensibility.equinox;version=
- "1.4"
+ "2.0.0"
 Bundle-ActivationPolicy: lazy
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Extensibility for Eclipse Equinox
@@ -8,7 +8,7 @@ Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 DynamicImport-Package: *
 Eclipse-LazyStart: true
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397425625
 Bundle-Activator: org.apache.tuscany.sca.extensibility.equinox.Equinox
  ServiceDiscoveryActivator
@@ -16,7 +16,7 @@ Bundle-ManifestVersion: 2
 Bundle-Description: Apache Tuscany SCA Extensibility for Eclipse Equin
  ox
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.apache.tuscany.sca.extensibility;version="1.4",
+Import-Package: org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.eclipse.core.runtime.adaptor;resolution:=optional,
  org.osgi.framework;version="1.4"
 Bundle-SymbolicName: org.apache.tuscany.sca.extensibility.equinox

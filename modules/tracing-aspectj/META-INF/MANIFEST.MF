@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Private-Package: org.apache.tuscany.sca.aspectj;version="1.4"
+Private-Package: org.apache.tuscany.sca.aspectj;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany AOP-based Logging and Tracing
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397489546
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

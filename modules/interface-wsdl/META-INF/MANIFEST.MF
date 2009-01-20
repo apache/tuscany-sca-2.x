@@ -3,14 +3,14 @@ Export-Package: org.apache.tuscany.sca.interfacedef.wsdl;uses:="org.ap
  ache.ws.commons.schema,org.apache.tuscany.sca.assembly,org.apache.tus
  cany.sca.contribution.resolver,javax.wsdl.extensions,org.apache.tusca
  ny.sca.core,org.apache.tuscany.sca.interfacedef,javax.wsdl,javax.xml.
- namespace";version="1.4"
+ namespace";version="2.0.0"
 Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.impl;version
- ="1.4"
+ ="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA WSDL Interface Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397282593
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -18,18 +18,18 @@ Bundle-Description: Apache Tuscany SCA WSDL Interface Model
 Import-Package: javax.wsdl,
  javax.wsdl.extensions,
  javax.xml.namespace,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.contribution;version="1.4.0";resolution:=optional,
- org.apache.tuscany.sca.contribution.processor;version="1.4.0";resolution:=optional,
- org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.impl;version="1.4",
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
- org.apache.tuscany.sca.interfacedef.wsdl;version="1.4",
- org.apache.tuscany.sca.monitor;version="1.4.0";resolution:=optional,
- org.apache.tuscany.sca.policy;version="1.4",
- org.apache.tuscany.sca.xsd;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
  org.apache.ws.commons.schema
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl
 Bundle-DocURL: http://www.apache.org/

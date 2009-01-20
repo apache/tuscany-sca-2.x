@@ -9,12 +9,12 @@ Export-Package: org.apache.tuscany.sca.databinding.jaxb;uses:="org.apa
  .dom,javax.xml.datatype,javax.activation,javax.xml.bind.attachment,ja
  vax.xml.transform,javax.xml.bind.annotation,javax.xml.transform.strea
  m,org.apache.tuscany.sca.interfacedef.impl,org.apache.tuscany.sca.xsd
- ,javax.xml.bind";version="1.4"
+ ,javax.xml.bind";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Data Binding for JAXB
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397221390
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -31,19 +31,19 @@ Import-Package: javax.activation,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.transform.stream,
- org.apache.tuscany.sca.assembly;version="1.4.0",
- org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.databinding;version="1.4",
- org.apache.tuscany.sca.databinding.impl;version="1.4",
- org.apache.tuscany.sca.databinding.jaxb;version="1.4",
- org.apache.tuscany.sca.databinding.util;version="1.4",
- org.apache.tuscany.sca.databinding.xml;version="1.4",
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.impl;version="1.4",
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
- org.apache.tuscany.sca.policy;version="1.4.0",
- org.apache.tuscany.sca.xsd;version="1.4",
- org.osoa.sca;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.jaxb;version="2.0.0",
+ org.apache.tuscany.sca.databinding.util;version="2.0.0",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.osoa.sca;version="2.0.0",
  org.w3c.dom,
  org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb

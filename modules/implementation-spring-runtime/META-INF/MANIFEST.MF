@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.implementation.spring.xml;vers
- ion="1.4",org.springframework.sca.xml;version="1.4"
+ ion="1.4",org.springframework.sca.xml;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Spring Framework Implementation Extens
  ion
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 1.4
+Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397466437
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,32 +15,32 @@ Bundle-Description: Apache Tuscany SCA Spring Framework Implementation
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
  junit.framework;resolution:=optional,
- org.apache.tuscany.sca.assembly;version="1.4",
- org.apache.tuscany.sca.assembly.impl;version="1.4",
- org.apache.tuscany.sca.assembly.xml;version="1.4",
- org.apache.tuscany.sca.contribution.processor;version="1.4",
- org.apache.tuscany.sca.contribution.resolver;version="1.4",
- org.apache.tuscany.sca.core;version="1.4",
- org.apache.tuscany.sca.core.factory;version="1.4",
- org.apache.tuscany.sca.core.invocation;version="1.4",
- org.apache.tuscany.sca.databinding;version="1.4",
- org.apache.tuscany.sca.databinding.impl;version="1.4",
- org.apache.tuscany.sca.implementation.java;version="1.4",
- org.apache.tuscany.sca.implementation.java.injection;version="1.4",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.factory;version="2.0.0",
+ org.apache.tuscany.sca.core.invocation;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java;version="2.0.0",
+ org.apache.tuscany.sca.implementation.java.injection;version="2.0.0",
  org.apache.tuscany.sca.implementation.spring,
  org.apache.tuscany.sca.implementation.spring.xml,
- org.apache.tuscany.sca.interfacedef;version="1.4",
- org.apache.tuscany.sca.interfacedef.java;version="1.4",
- org.apache.tuscany.sca.interfacedef.java.impl;version="1.4",
- org.apache.tuscany.sca.interfacedef.util;version="1.4",
- org.apache.tuscany.sca.invocation;version="1.4",
- org.apache.tuscany.sca.monitor;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.node;resolution:=optional,
- org.apache.tuscany.sca.policy;version="1.4",
- org.apache.tuscany.sca.provider;version="1.4",
- org.apache.tuscany.sca.runtime;version="1.4",
- org.osoa.sca;version="1.4.0",
- org.osoa.sca.annotations;version="1.4";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.osoa.sca;version="2.0.0",
+ org.osoa.sca.annotations;version="2.0.0";resolution:=optional,
  org.springframework.beans,
  org.springframework.beans.factory,
  org.springframework.beans.factory.config,
