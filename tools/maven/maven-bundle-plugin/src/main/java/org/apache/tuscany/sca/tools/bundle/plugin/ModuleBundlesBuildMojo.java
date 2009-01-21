@@ -377,7 +377,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 StringBuffer cp = new StringBuffer();
                 String path = "../" + root.getName();
                 for (String jar : jarNames) {
-                    cp.append(path).append('/').append(jar).append(',');
+                    cp.append(path).append('/').append(jar).append(' ');
                 }
                 if (cp.length() > 0) {
                     cp.deleteCharAt(cp.length() - 1);
