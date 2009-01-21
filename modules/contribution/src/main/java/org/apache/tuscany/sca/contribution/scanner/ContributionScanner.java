@@ -47,7 +47,7 @@ public interface ContributionScanner {
      * 
      * @param contributionURL Contribution URL
      * @return List of artifact URIs
-     * @throws ContributionException
+     * @throws ContributionReadException
      * @throws IOException
      */
     List<String> getArtifacts(URL contributionURL) throws ContributionReadException;
@@ -60,6 +60,7 @@ public interface ContributionScanner {
      * 
      * @param contributionURL Contribution URL
      * @param artifact The relative URI for the artifact
+     * @throws ContributionReadException
      * @return The artifact URL
      */
     URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException;
