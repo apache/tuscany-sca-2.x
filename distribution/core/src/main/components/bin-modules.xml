@@ -28,8 +28,8 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/startup</directory>
-            <outputDirectory>startup</outputDirectory>
+            <directory>target/${pom.artifactId}</directory>
+            <outputDirectory>${pom.artifactId}</outputDirectory>
             <includes>
                 <include>**/*</include>
             </includes>
