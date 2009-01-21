@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-ws-service" default="compile">
-    <property name="test.class" value="helloworld.HelloWorldServer" />
-	<property name="test.jar"   value="sample-helloworld-ws-service.jar" />
+<project name="holder-ws-service" default="compile">
+    <property name="test.class" value="org.example.orderservice.OrderServiceTestCase" />
+	<property name="test.jar"   value="sample-holder-ws-service.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>

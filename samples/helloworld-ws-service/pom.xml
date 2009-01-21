@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.5-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-helloworld-ws-service</artifactId>
-    <name>Apache Tuscany SCA HelloWorld Web Service Sample</name>
+    <artifactId>sample-holder-ws-service</artifactId>
+    <name>Apache Tuscany SCA Holder Input/Output Web Service Sample</name>
 
     <repositories>
        <repository>
@@ -39,28 +39,28 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT</version>
             <scope>compile</scope>            
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>    
 
