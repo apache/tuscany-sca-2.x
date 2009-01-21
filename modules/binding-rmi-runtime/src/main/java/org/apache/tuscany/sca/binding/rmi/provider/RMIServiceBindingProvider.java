@@ -130,13 +130,9 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
                 }
             }
         });
-        Class targetJavaInterface = getTargetJavaClass(serviceInterface);
-        if (!Remote.class.isAssignableFrom(targetJavaInterface)) {
-            RMIServiceClassLoader classloader = new RMIServiceClassLoader(targetJavaInterface.getClassLoader());
-            final byte[] byteCode = generateRemoteInterface(targetJavaInterface);
-            targetJavaInterface = classloader.defineClass(targetJavaInterface.getName(), byteCode);
-            enhancer.setClassLoader(classloader);
-        }
+        Class<?> targetJavaInterface = getTargetJavaClass(serviceInterface);
+        targetJavaInterface = RemoteInterfaceGenerator.generate(targetJavaInterface);
+        enhancer.setClassLoader(targetJavaInterface.getClassLoader());
         enhancer.setInterfaces(new Class[] {targetJavaInterface});
         return (Remote)enhancer.create();
     }
@@ -145,59 +141,12 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         return wire.invoke(op, args);
     }
 
-    /**
-     * if the interface of the component whose serviceBindings must be exposed as RMI Service, does not
-     * implement java.rmi.Remote, then generate such an interface. This method will stop with just 
-     * generating the bytecode. Defining the class from the byte code must be the responsibility of the 
-     * caller of this method, since it requires a ClassLoader to be created to define and load this interface.
-     */
-    private byte[] generateRemoteInterface(Class serviceInterface) {
-        String interfazeName = serviceInterface.getName();
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-
-        String simpleName = serviceInterface.getSimpleName();
-        cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE, interfazeName
-            .replace('.', '/'), null, "java/lang/Object", new String[] {"java/rmi/Remote"});
-
-        StringBuffer argsAndReturn = null;
-        Method[] methods = serviceInterface.getMethods();
-        for (Method method : methods) {
-            argsAndReturn = new StringBuffer("(");
-            Class[] paramTypes = method.getParameterTypes();
-            Class returnType = method.getReturnType();
-
-            for (Class paramType : paramTypes) {
-                argsAndReturn.append(Type.getType(paramType));
-            }
-            argsAndReturn.append(")");
-            argsAndReturn.append(Type.getType(returnType));
-
-            cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT,
-                           method.getName(),
-                           argsAndReturn.toString(),
-                           null,
-                           new String[] {"java/rmi/RemoteException"});
-        }
-        cw.visitEnd();
-        return cw.toByteArray();
-    }
-
     private Class<?> getTargetJavaClass(Interface targetInterface) {
         // TODO: right now assume that the target is always a Java
         // Implementation. Need to figure out
         // how to generate Java Interface in cases where the target is not a
         // Java Implementation
         return ((JavaInterface)targetInterface).getJavaClass();
-    }
-
-    protected class RMIServiceClassLoader extends ClassLoader {
-        public RMIServiceClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-
-        public Class defineClass(String name, byte[] byteArray) {
-            return defineClass(name, byteArray, 0, byteArray.length);
-        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
