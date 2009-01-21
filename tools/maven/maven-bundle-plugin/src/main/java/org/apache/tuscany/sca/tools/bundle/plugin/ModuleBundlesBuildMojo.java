@@ -61,7 +61,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     /**
      * Target directory.
      * 
-     *  @parameter
+     *  @parameter expression="${project.build.directory}/plugins"
      */
     private File targetDirectory;
 
@@ -91,7 +91,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * 
      *  @parameter
      */
-    private boolean generateTargetPlatform;
+    private boolean generateTargetPlatform = true;
     
     /**
      * OSGi execution environment
@@ -121,13 +121,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * Generate a configuration/config.ini for equinox
      * @parameter
      */
-    private boolean generateConfig;
+    private boolean generateConfig = true;
     
     /**
      * Generete startup/-manifest.jar
      * @parameter
      */
-    private boolean generateManifestJar;
+    private boolean generateManifestJar = true;
 
     /**
      * @parameter
@@ -332,7 +332,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Generate a PDE target
             if (generateTargetPlatform) {
-                File target = new File(project.getBuild().getDirectory(), project.getArtifactId() + ".target");
+                File feature = new File(root, "../" + project.getArtifactId());
+                feature.mkdir();
+                File target = new File(feature, "tuscany.target");
                 log.info("Generating target definition: " + target);
                 FileOutputStream targetFile = new FileOutputStream(target);
                 if (!bundleSymbolicNames.contains("org.eclipse.osgi")) {
@@ -351,8 +353,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             
             if(generateConfig) {
-                File config = new File(root, "configuration");
-                config.mkdir();
+                File feature = new File(root, "../" + project.getArtifactId());
+                File config = new File(feature, "configuration");
+                config.mkdirs();
                 File ini = new File(config, "config.ini");
                 log.info("Generating configuation: " + ini);
                 FileOutputStream fos = new FileOutputStream(ini); 
@@ -368,9 +371,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             
             if (generateManifestJar) {
-                File startup = new File(root, "../startup");
-                startup.mkdir();
-                File mfJar = new File(startup, project.getArtifactId() + "-manifest.jar");
+                File feature = new File(root, "../" + project.getArtifactId());
+                feature.mkdir();
+                File mfJar = new File(feature, "manifest.jar");
                 log.info("Generating manifest jar: " + mfJar);
                 FileOutputStream fos = new FileOutputStream(mfJar);
                 Manifest mf = new Manifest();
@@ -389,6 +392,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 attrs.putValue("Implementation-Vendor-Id", "org.apache");
                 attrs.putValue("Implementation-Version", project.getVersion());
                 attrs.putValue("Class-Path", cp.toString());
+                attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
                 JarOutputStream jos = new JarOutputStream(fos, mf);
                 jos.close();
             }
