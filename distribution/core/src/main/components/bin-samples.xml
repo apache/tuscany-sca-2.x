@@ -26,8 +26,11 @@
             <includes>
                 <include>README</include>
                 <include>logging.properties</include>
+                <include>calculator/**/*</include>
                 <include>calculator-equinox/**/*</include>
-                <!--include>calculator/**/*</include>
+                <include>calculator-osgi/**/*</include>
+<!--
+                <include>calculator/**/*</include>
                 <include>calculator-lean/**/*</include>
                 <include>binding-echo/**/*</include>
                 <include>binding-echo-extension/**/*</include>
@@ -39,7 +42,8 @@
                 <include>loanapplication/**/*</include>
                 <include>simple-bigbank/**/*</include>
                 <include>simple-callback/**/*</include>
-                <include>supplychain/**/*</include-->
+                <include>supplychain/**/*</include>
+-->
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
