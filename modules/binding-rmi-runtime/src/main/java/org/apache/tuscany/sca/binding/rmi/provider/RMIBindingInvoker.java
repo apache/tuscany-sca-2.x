@@ -21,11 +21,13 @@ package org.apache.tuscany.sca.binding.rmi.provider;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.host.rmi.RMIHost;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * Invoker for RMI References.
@@ -51,7 +53,7 @@ public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
             Object[] args = msg.getBody();
             Object resp = invokeTarget(args);
             msg.setBody(resp);
-    
+
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
         } catch (Throwable e) {
@@ -61,9 +63,30 @@ public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
         return msg;
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
+    public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException,
+        NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
         if (proxy == null) {
-            proxy = rmiHost.findService(uri);
+            final Class<?> remote = remoteMethod.getDeclaringClass();
+            final ClassLoader stubClassLoader = remote.getClassLoader();
+            // The generated remote interface is not available for the service lookup
+            final ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(stubClassLoader);
+                    return tccl;
+                }
+            });
+            try {
+                proxy = rmiHost.findService(uri);
+            } finally {
+                AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        ClassLoader current = Thread.currentThread().getContextClassLoader();
+                        Thread.currentThread().setContextClassLoader(tccl);
+                        return current;
+                    }
+                });
+            }
         }
 
         remoteMethod = proxy.getClass().getMethod(remoteMethod.getName(), remoteMethod.getParameterTypes());
