@@ -21,7 +21,7 @@
 
         <!-- Add module sources to the modules directory -->
         <fileSet>
-            <directory>../../../modules</directory>
+            <directory>../../modules</directory>
             <outputDirectory>modules</outputDirectory>
             <includes>
                 <include>assembly/**/*</include>
