@@ -368,15 +368,16 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             
             if (generateManifestJar) {
-                File startup = new File(new File(project.getBuild().getDirectory()), "startup");
+                File startup = new File(root, "../startup");
                 startup.mkdir();
                 File mfJar = new File(startup, project.getArtifactId() + "-manifest.jar");
                 log.info("Generating manifest jar: " + mfJar);
                 FileOutputStream fos = new FileOutputStream(mfJar);
                 Manifest mf = new Manifest();
                 StringBuffer cp = new StringBuffer();
+                String path = "../" + root.getName();
                 for (String jar : jarNames) {
-                    cp.append(jar).append(',');
+                    cp.append(path).append('/').append(jar).append(',');
                 }
                 if (cp.length() > 0) {
                     cp.deleteCharAt(cp.length() - 1);
