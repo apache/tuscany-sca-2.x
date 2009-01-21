@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.ws;uses:="org.apache.tu
- scany.sca.assembly,org.apache.tuscany.sca.interfacedef.wsdl,org.apach
- e.tuscany.sca.assembly.builder,org.apache.tuscany.sca.interfacedef,or
- g.w3c.dom,javax.wsdl,javax.xml.namespace";version="2.0.0",org.apache.tu
- scany.sca.binding.ws.addressing;uses:="javax.xml.namespace";version="
- 1.4"
+Export-Package: org.apache.tuscany.sca.binding.ws;version="2.0.0";
+  uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.interfacedef.wsdl,
+   org.apache.tuscany.sca.assembly.builder,
+   org.apache.tuscany.sca.interfacedef,
+   org.w3c.dom,
+   javax.wsdl,
+   javax.xml.namespace",
+ org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0";uses:="javax.xml.namespace"
 Private-Package: org.apache.tuscany.sca.binding.ws.impl;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA WS Binding Model
@@ -15,12 +18,16 @@ Bnd-LastModified: 1225397286828
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA WS Binding Model
-Import-Package: javax.wsdl,javax.xml.namespace,org.apache.tuscany.sca.
- assembly;version="2.0.0",org.apache.tuscany.sca.assembly.builder;versio
- n="1.4",org.apache.tuscany.sca.binding.ws;version="2.0.0",org.apache.tu
- scany.sca.binding.ws.addressing;version="2.0.0",org.apache.tuscany.sca.
- interfacedef;version="2.0.0",org.apache.tuscany.sca.interfacedef.wsdl;v
- ersion="1.4",org.apache.tuscany.sca.policy;version="2.0.0",org.w3c.dom
+Import-Package: javax.wsdl,
+ javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws
 Bundle-DocURL: http://www.apache.org/
 
