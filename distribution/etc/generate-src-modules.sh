@@ -41,7 +41,7 @@ echo "    <fileSets>"
 echo ""
 echo "        <!-- Add module sources to the modules directory -->"
 echo "        <fileSet>"
-echo "            <directory>../../../modules</directory>"
+echo "            <directory>../../modules</directory>"
 echo "            <outputDirectory>modules</outputDirectory>"
 echo "            <includes>"
 
