@@ -21,25 +21,21 @@
 
         <!-- Add module sources to the modules directory -->
         <fileSet>
-            <directory>../../modules</directory>
+            <directory>../../../modules</directory>
             <outputDirectory>modules</outputDirectory>
             <includes>
                 <include>assembly/**/*</include>
                 <include>assembly-xml/**/*</include>
                 <include>assembly-xsd/**/*</include>
-                <include>binding-corba/**/*</include>
-                <include>binding-corba-runtime/**/*</include>
                 <include>binding-sca/**/*</include>
                 <include>binding-sca-xml/**/*</include>
                 <include>contribution/**/*</include>
-                <include>contribution-impl/**/*</include>
                 <include>contribution-java/**/*</include>
                 <include>contribution-namespace/**/*</include>
                 <include>contribution-xml/**/*</include>
                 <include>core/**/*</include>
                 <include>core-databinding/**/*</include>
                 <include>core-spi/**/*</include>
-                <include>data-api/**/*</include>
                 <include>databinding/**/*</include>
                 <include>databinding-jaxb/**/*</include>
                 <include>definitions/**/*</include>
@@ -47,8 +43,6 @@
                 <include>endpoint/**/*</include>
                 <include>extensibility/**/*</include>
                 <include>extensibility-equinox/**/*</include>
-                <include>host-corba/**/*</include>
-                <include>host-corba-jse/**/*</include>
                 <include>host-http/**/*</include>
                 <include>implementation-java/**/*</include>
                 <include>implementation-java-runtime/**/*</include>
@@ -66,10 +60,8 @@
                 <include>node-impl/**/*</include>
                 <include>node-launcher/**/*</include>
                 <include>node-launcher-equinox/**/*</include>
-                <include>node-launcher-webapp/**/*</include>
                 <include>policy/**/*</include>
                 <include>policy-security/**/*</include>
-                <include>policy-security-jsr250/**/*</include>
                 <include>policy-xml/**/*</include>
                 <include>sca-api/**/*</include>
                 <include>workspace/**/*</include>
