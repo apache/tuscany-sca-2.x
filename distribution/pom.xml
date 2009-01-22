@@ -31,16 +31,19 @@
     <name>Apache Tuscany SCA Distributions</name>
 
     <modules>
-        <!--module>all</module-->
+        <module>all</module>
+        <module>api</module>
         <module>api</module>
         <module>core</module>
-        <!--module>ejava</module>
-        <module>manager</module-->
+        <module>ejava</module>
         <module>pdetarget</module>
-        <!--module>process</module>
+<!--
+        <module>manager</module>
+        <module>process</module>
         <module>repository</module>
         <module>web20</module>
-        <module>webservice</module-->
+        <module>webservice</module>
+-->
     </modules>
 
 </project>

@@ -19,14 +19,12 @@
 -->
 <assembly>
     <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id></id>
+    <id>bin</id>
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>tuscany-sca-2.0-SNAPSHOT</baseDirectory>
     <formats>
-        <!--
         <format>dir</format>
         <format>tar.gz</format>
-        -->
         <format>zip</format>
     </formats>
 

@@ -23,10 +23,8 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>tuscany-sca-2.0-SNAPSHOT-src</baseDirectory>
     <formats>
-        <!--
         <format>dir</format>
         <format>tar.gz</format>
-        -->
         <format>zip</format>
     </formats>
 
@@ -34,9 +32,11 @@
         <componentDescriptor>../core/src/main/components/src-common.xml</componentDescriptor>
         <componentDescriptor>../core/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../ejava/src/main/components/src-modules.xml</componentDescriptor>
+<!--
         <componentDescriptor>../manager/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../process/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../web20/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../webservice/src/main/components/src-modules.xml</componentDescriptor>
+-->
     </componentDescriptors>
 </assembly>

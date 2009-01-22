@@ -21,12 +21,16 @@
 
         <!-- Add samples to the samples directory -->
         <fileSet>
-            <directory>../../../samples</directory>
+            <directory>../../samples</directory>
             <outputDirectory>samples</outputDirectory>
             <includes>
+                <include>calculator-rmi-reference/**/*</include>
+                <include>calculator-rmi-service/**/*</include>
+<!--
                 <include>helloworld-reference-jms/**/*</include>
                 <include>helloworld-service-jms/**/*</include>
                 <include>simple-bigbank-spring/**/*</include>
+-->
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->

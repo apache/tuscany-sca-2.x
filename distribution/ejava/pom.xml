@@ -46,6 +46,7 @@
             <artifactId>tuscany-binding-rmi-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb-runtime</artifactId>
@@ -56,6 +57,7 @@
             <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+-->
 
         <!-- Hosts -->
         <dependency>
@@ -63,13 +65,16 @@
             <artifactId>tuscany-host-rmi</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-corba-jee</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+-->
 
         <!-- Implementations -->
+<!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-ejb</artifactId>
@@ -80,13 +85,16 @@
             <artifactId>tuscany-implementation-spring</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+-->
 
         <!-- Policies -->
+<!--
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-transaction</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+-->
     </dependencies>
 
     <profiles>
@@ -145,73 +153,54 @@
         <profile>
             <id>modules</id>
             <modules>
-                <module>../../../modules/assembly</module>
-                <module>../../../modules/assembly-xml</module>
-                <module>../../../modules/assembly-xsd</module>
-                <module>../../../modules/binding-corba</module>
-                <module>../../../modules/binding-corba-runtime</module>
-                <module>../../../modules/binding-ejb</module>
-                <module>../../../modules/binding-ejb-runtime</module>
-                <module>../../../modules/binding-jms</module>
-                <module>../../../modules/binding-jms-runtime</module>
-                <module>../../../modules/binding-rmi</module>
-                <module>../../../modules/binding-rmi-runtime</module>
-                <module>../../../modules/binding-sca</module>
-                <module>../../../modules/binding-sca-xml</module>
-                <module>../../../modules/binding-ws</module>
-                <module>../../../modules/binding-ws-wsdlgen</module>
-                <module>../../../modules/contribution</module>
-                <module>../../../modules/contribution-java</module>
-                <module>../../../modules/contribution-namespace</module>
-                <module>../../../modules/contribution-xml</module>
-                <module>../../../modules/core</module>
-                <module>../../../modules/core-databinding</module>
-                <module>../../../modules/core-spi</module>
-                <module>../../../modules/data-api</module>
-                <module>../../../modules/databinding</module>
-                <module>../../../modules/databinding-axiom</module>
-                <module>../../../modules/databinding-jaxb</module>
-                <module>../../../modules/definitions</module>
-                <module>../../../modules/definitions-xml</module>
-                <module>../../../modules/endpoint</module>
-                <module>../../../modules/extensibility</module>
-                <module>../../../modules/extensibility-equinox</module>
-                <module>../../../modules/host-corba</module>
-                <module>../../../modules/host-corba-jee</module>
-                <module>../../../modules/host-corba-jse</module>
-                <module>../../../modules/host-http</module>
-                <module>../../../modules/host-rmi</module>
-                <module>../../../modules/implementation-ejb</module>
-                <module>../../../modules/implementation-java</module>
-                <module>../../../modules/implementation-java-runtime</module>
-                <module>../../../modules/implementation-java-xml</module>
-                <module>../../../modules/implementation-node</module>
-                <module>../../../modules/implementation-node-runtime</module>
-                <module>../../../modules/implementation-spring</module>
-                <module>../../../modules/interface</module>
-                <module>../../../modules/interface-java</module>
-                <module>../../../modules/interface-java-jaxws</module>
-                <module>../../../modules/interface-java-xml</module>
-                <module>../../../modules/interface-wsdl</module>
-                <module>../../../modules/interface-wsdl-xml</module>
-                <module>../../../modules/monitor</module>
-                <module>../../../modules/node-api</module>
-                <module>../../../modules/node-impl</module>
-                <module>../../../modules/node-launcher</module>
-                <module>../../../modules/node-launcher-equinox</module>
-                <module>../../../modules/node-launcher-webapp</module>
-                <module>../../../modules/policy</module>
-                <module>../../../modules/policy-security</module>
-                <module>../../../modules/policy-security-jsr250</module>
-                <module>../../../modules/policy-security-ws</module>
-                <module>../../../modules/policy-transaction</module>
-                <module>../../../modules/policy-xml</module>
-                <module>../../../modules/sca-api</module>
-                <module>../../../modules/workspace</module>
-                <module>../../../modules/workspace-impl</module>
-                <module>../../../modules/workspace-xml</module>
-                <module>../../../modules/xsd</module>
-                <module>../../../modules/xsd-xml</module>
+                <module>../../modules/assembly</module>
+                <module>../../modules/assembly-xml</module>
+                <module>../../modules/assembly-xsd</module>
+                <module>../../modules/binding-rmi</module>
+                <module>../../modules/binding-rmi-runtime</module>
+                <module>../../modules/binding-sca</module>
+                <module>../../modules/binding-sca-xml</module>
+                <module>../../modules/contribution</module>
+                <module>../../modules/contribution-java</module>
+                <module>../../modules/contribution-namespace</module>
+                <module>../../modules/contribution-xml</module>
+                <module>../../modules/core</module>
+                <module>../../modules/core-databinding</module>
+                <module>../../modules/core-spi</module>
+                <module>../../modules/databinding</module>
+                <module>../../modules/databinding-jaxb</module>
+                <module>../../modules/definitions</module>
+                <module>../../modules/definitions-xml</module>
+                <module>../../modules/endpoint</module>
+                <module>../../modules/extensibility</module>
+                <module>../../modules/extensibility-equinox</module>
+                <module>../../modules/host-http</module>
+                <module>../../modules/host-rmi</module>
+                <module>../../modules/implementation-java</module>
+                <module>../../modules/implementation-java-runtime</module>
+                <module>../../modules/implementation-java-xml</module>
+                <module>../../modules/implementation-node</module>
+                <module>../../modules/implementation-node-runtime</module>
+                <module>../../modules/interface</module>
+                <module>../../modules/interface-java</module>
+                <module>../../modules/interface-java-jaxws</module>
+                <module>../../modules/interface-java-xml</module>
+                <module>../../modules/interface-wsdl</module>
+                <module>../../modules/interface-wsdl-xml</module>
+                <module>../../modules/monitor</module>
+                <module>../../modules/node-api</module>
+                <module>../../modules/node-impl</module>
+                <module>../../modules/node-launcher</module>
+                <module>../../modules/node-launcher-equinox</module>
+                <module>../../modules/policy</module>
+                <module>../../modules/policy-security</module>
+                <module>../../modules/policy-xml</module>
+                <module>../../modules/sca-api</module>
+                <module>../../modules/workspace</module>
+                <module>../../modules/workspace-impl</module>
+                <module>../../modules/workspace-xml</module>
+                <module>../../modules/xsd</module>
+                <module>../../modules/xsd-xml</module>
             </modules>
         </profile>
     </profiles>
