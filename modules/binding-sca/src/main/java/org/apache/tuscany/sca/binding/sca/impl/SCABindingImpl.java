@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
@@ -42,6 +43,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Extension> attributeExtensions = new ArrayList<Extension>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
@@ -106,14 +108,14 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
         this.uri = uri;
     }
     
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * 
-     * @return a list of extension objects container in this model object
-     */
     public List<Object> getExtensions() {
         return extensions;
     }
+    
+    public List<Extension> getAttributeExtensions() {
+        return attributeExtensions;
+    }
+    
     
     /**
      * Returns true if the model element is unresolved.

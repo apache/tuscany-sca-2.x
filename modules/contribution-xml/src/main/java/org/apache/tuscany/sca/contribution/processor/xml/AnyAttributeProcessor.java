@@ -23,6 +23,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Extension;
+import org.apache.tuscany.sca.assembly.ExtensionFactory;
+import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -37,32 +40,37 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements StAXAttributeProcessor<String> {
-	private static final QName ANY_ATTRIBUTE = new QName("http://www.w3.org/2001/XMLSchema", "anyAttribute");
-	
-	public AnyAttributeProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-		
-	}
+public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements StAXAttributeProcessor<Extension> {
+    private static final QName ANY_ATTRIBUTE = new QName(Constants.XMLSCHEMA_NS, "anyAttribute");
+    
+    private ExtensionFactory extensionFactory;
+
+    public AnyAttributeProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.extensionFactory = modelFactories.getFactory(ExtensionFactory.class);
+    }
 	
     public QName getArtifactType() {
         return ANY_ATTRIBUTE;
     }
 
-    public Class<String> getModelType() {
-        return String.class;
+    public Class<Extension> getModelType() {
+        return Extension.class;
     }
 
-    public String read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        return reader.getAttributeValue(attributeName.getNamespaceURI(), attributeName.getLocalPart());
+    public Extension read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        String attributeValue = reader.getAttributeValue(attributeName.getNamespaceURI(), attributeName.getLocalPart());
+        return extensionFactory.createExtension(attributeName, attributeValue, true);
     }
 
-    public void write(String value, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
-    	writer.setPrefix(ANY_ATTRIBUTE.getPrefix(), ANY_ATTRIBUTE.getNamespaceURI());
-    	writer.writeAttribute(ANY_ATTRIBUTE.getLocalPart(), value);
+    public void write(Extension attributeExtension, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    	writer.writeAttribute(attributeExtension.getQName().getPrefix(), 
+    	                      attributeExtension.getQName().getNamespaceURI(), 
+    	                      attributeExtension.getQName().getLocalPart(), 
+    	                      attributeExtension.getValue().toString());  //for extended attributes, we can assume values 
+    	                                                                  // are just the string representation fo the attribute
     } 
 
-
-    public void resolve(String arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Extension arg0, ModelResolver arg1) throws ContributionResolveException {
     	
     }
 }
