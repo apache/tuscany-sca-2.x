@@ -142,17 +142,6 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
             } else {
             	return null;
             }
-            
-            
-            //FIXME Re-enable feature after complete merge is done
-            /*
-            StAXArtifactProcessor<?> anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
-            if (anyElementProcessor != null) {
-                return anyElementProcessor.read(source);
-            } else {
-                return null;
-            }
-            */
         }
         return processor.read(source);
     }

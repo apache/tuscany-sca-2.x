@@ -1,5 +1,3 @@
-package org.apache.tuscany.sca.contribution.processor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,9 @@ package org.apache.tuscany.sca.contribution.processor;
  * specific language governing permissions and limitations
  * under the License.    
  */
+
+package org.apache.tuscany.sca.contribution.processor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -29,7 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
 
 /*
- * Custom implementation of the XMLStreamReader to keep track of the namespace context for each element
+ * Custom implementaion of the XMLStreamReader to keep track of the namespace context for each element
  */
 public class TuscanyXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
 

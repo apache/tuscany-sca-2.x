@@ -37,16 +37,16 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class XMLDocumentStreamReader implements XMLStreamReader {
     private static final int STATE_COMPLETE_AT_NEXT = 2; // The wrapper
-    // will produce
-    // END_DOCUMENT
+													     // will produce
+													     // END_DOCUMENT
 
-    private static final int STATE_COMPLETED = 3; // Done
+    private static final int STATE_COMPLETED = 3;        // Done
 
-    private static final int STATE_INIT = 0; // The wrapper will produce
-    // START_DOCUMENT
+    private static final int STATE_INIT = 0;             // The wrapper will produce
+    										             // START_DOCUMENT
 
-    private static final int STATE_SWITCHED = 1; // The real reader will
-    // produce events
+    private static final int STATE_SWITCHED = 1;         // The real reader will
+    											         // produce events
 
     private XMLStreamReader realReader;
     private boolean fragment;
