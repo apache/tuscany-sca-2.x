@@ -35,12 +35,15 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,8 +62,8 @@ public class EquinoxHost {
     private Bundle launcherBundle;
     private boolean startedEclipse;
     private Set<URL> dependencies;
-    private List<String> bundleFiles =  new ArrayList<String>();
-    private List<String> bundleNames =  new ArrayList<String>();
+    private List<String> bundleFiles = new ArrayList<String>();
+    private List<String> bundleNames = new ArrayList<String>();
     private List<String> jarFiles = new ArrayList<String>();
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
@@ -122,12 +125,20 @@ public class EquinoxHost {
     public EquinoxHost() {
         super();
     }
-    
+
     public EquinoxHost(Set<URL> dependencies) {
         super();
         this.dependencies = dependencies;
     }
     
+    private static String getSystemProperty(final String name) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty(name);
+            }
+        });
+    }
+
     /**
      * Start the Equinox host.
      * 
@@ -137,7 +148,7 @@ public class EquinoxHost {
         try {
             if (!EclipseStarter.isRunning()) {
 
-                String version = System.getProperty("java.specification.version");
+                String version = getSystemProperty("java.specification.version");
                 String profile = "J2SE-1.5.profile";
                 if (version.startsWith("1.6")) {
                     profile = "JavaSE-1.6.profile";
@@ -149,36 +160,49 @@ public class EquinoxHost {
                     is.close();
                 }
                 // Configure Eclipse properties
-                
+
                 // Use the boot classloader as the parent classloader
                 props.put("osgi.contextClassLoaderParent", "boot");
-                
+
                 // Set startup properties
                 props.put(EclipseStarter.PROP_CLEAN, "true");
-                
+
                 if (logger.isLoggable(Level.FINE)) {
                     props.put("osgi.console", "8085");
                 }
-                
+
                 // Set location properties
                 // FIXME Use proper locations
-                props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
-                props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse/install").toURI().toString());
-                props.put(LocationManager.PROP_CONFIG_AREA, new File("target/eclipse/config").toURI().toString());
-                props.put(LocationManager.PROP_USER_AREA, new File("target/eclipse/user").toURI().toString());
-                
+                String tmpDir = getSystemProperty("java.io.tmpdir");
+                File root = new File(tmpDir, ".tuscany/equinox/" + UUID.randomUUID().toString());
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Equinox location: " + root);
+                }
+                if (!props.contains(LocationManager.PROP_INSTANCE_AREA)) {
+                    props.put(LocationManager.PROP_INSTANCE_AREA, new File(root, "workspace").toURI().toString());
+                }
+                if (!props.contains(LocationManager.PROP_INSTALL_AREA)) {
+                    props.put(LocationManager.PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
+                }
+                if (!props.contains(LocationManager.PROP_CONFIG_AREA)) {
+                    props.put(LocationManager.PROP_CONFIG_AREA, new File(root, "config").toURI().toString());
+                }
+                if (!props.contains(LocationManager.PROP_USER_AREA)) {
+                    props.put(LocationManager.PROP_USER_AREA, new File(root, "user").toURI().toString());
+                }
+
                 EclipseStarter.setInitialProperties(props);
-                
+
                 // Start Eclipse
-                bundleContext = EclipseStarter.startup(new String[]{}, null);
+                bundleContext = EclipseStarter.startup(new String[] {}, null);
                 startedEclipse = true;
-                
+
             } else {
-                
+
                 // Get bundle context from the running Eclipse instance 
                 bundleContext = EclipseStarter.getSystemBundleContext();
             }
-            
+
             // Determine the runtime classpath entries
             Set<URL> urls;
             urls = findDependencies();
@@ -199,7 +223,7 @@ public class EquinoxHost {
             }
 
             // Get the already installed bundles
-            for (Bundle bundle: bundleContext.getBundles()) {
+            for (Bundle bundle : bundleContext.getBundles()) {
                 allBundles.put(bundle.getSymbolicName(), bundle);
             }
 
@@ -209,16 +233,20 @@ public class EquinoxHost {
             launcherBundle = allBundles.get(launcherBundleName);
             if (launcherBundle == null) {
                 launcherBundleLocation = thisBundleLocation();
-                logger.info("Installing launcher bundle: " + launcherBundleLocation);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Installing launcher bundle: " + launcherBundleLocation);
+                }
                 fixupBundle(launcherBundleLocation);
                 launcherBundle = bundleContext.installBundle(launcherBundleLocation);
                 allBundles.put(launcherBundleName, launcherBundle);
                 installedBundles.add(launcherBundle);
             } else {
-                logger.info("Launcher bundle is already installed: " + string(launcherBundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Launcher bundle is already installed: " + string(launcherBundle, false));
+                }
                 launcherBundleLocation = thisBundleLocation(launcherBundle);
             }
-            
+
             // Install the Tuscany bundles
             long start = currentTimeMillis();
 
@@ -229,30 +257,42 @@ public class EquinoxHost {
             String libraryBundleName = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
             Bundle libraryBundle = allBundles.get(libraryBundleName);
             if (libraryBundle == null) {
-                logger.info("Generating third-party library bundle.");
-                for (String jarFile: jarFiles) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Generating third-party library bundle.");
+                }
+                for (String jarFile : jarFiles) {
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Adding third-party jar: " + jarFile);
                     }
                 }
                 long libraryStart = currentTimeMillis();
                 InputStream library = thirdPartyLibraryBundle(jarFiles);
-                logger.info("Third-party library bundle generated in " + (currentTimeMillis() - libraryStart) + " ms.");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Third-party library bundle generated in " + (currentTimeMillis() - libraryStart)
+                        + " ms.");
+                }
                 libraryStart = currentTimeMillis();
-                libraryBundle = bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", library);
+                libraryBundle =
+                    bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", library);
                 allBundles.put(libraryBundleName, libraryBundle);
                 installedBundles.add(libraryBundle);
-                logger.info("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart) + " ms: " + string(libraryBundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart)
+                        + " ms: "
+                        + string(libraryBundle, false));
+                }
             } else {
-                logger.info("Third-party library bundle is already installed: " + string(libraryBundle, false));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Third-party library bundle is already installed: " + string(libraryBundle, false));
+                }
             }
-            
+
             // Install all the other bundles that are not already installed
-            for (int i =0, n = bundleFiles.size(); i < n; i++) {
+            for (int i = 0, n = bundleFiles.size(); i < n; i++) {
                 String bundleFile = bundleFiles.get(i);
                 fixupBundle(bundleFile);
             }
-            for (int i =0, n = bundleFiles.size(); i < n; i++) {
+            for (int i = 0, n = bundleFiles.size(); i < n; i++) {
                 String bundleFile = bundleFiles.get(i);
                 String bundleName = bundleNames.get(i);
                 if (bundleName.contains("org.eclipse.jdt.junit")) {
@@ -270,17 +310,20 @@ public class EquinoxHost {
                     }
                     bundle = bundleContext.installBundle(location);
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
+                        logger.fine("Bundle installed in " + (currentTimeMillis() - installStart)
+                            + " ms: "
+                            + string(bundle, false));
                     }
-                    logger.info("Bundle installed in " + (currentTimeMillis() - installStart) + " ms: " + string(bundle, false));
                     allBundles.put(bundleName, bundle);
                     installedBundles.add(bundle);
                 }
             }
 
             long end = currentTimeMillis();
-            logger.info("Tuscany bundles are installed in " + (end - start) + " ms.");
-            
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Tuscany bundles are installed in " + (end - start) + " ms.");
+            }
+
             // Start the extensiblity and launcher bundles
             long activateStart = System.currentTimeMillis();
             String extensibilityBundleName = "org.apache.tuscany.sca.extensibility.equinox";
@@ -303,27 +346,27 @@ public class EquinoxHost {
             }
 
             // Start all our bundles for now to help diagnose any class loading issues
-//            for (Bundle bundle: bundleContext.getBundles()) {
-//                if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
-//                    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
-//                        if (logger.isLoggable(Level.FINE)) {
-//                            logger.fine("Starting bundle: " + string(bundle, false));
-//                        }
-//                        try {
-//                            //bundle.start();
-//                        } catch (Exception e) {
-//                            logger.log(Level.SEVERE, e.getMessage(), e);
-//                            // throw e;
-//                        }
-//                        if (logger.isLoggable(Level.FINE)) {
-//                            logger.fine("Bundle: " + string(bundle, false));
-//                        }
-//                    }
-//                }
-//            }
-//            logger.info("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
+            //            for (Bundle bundle: bundleContext.getBundles()) {
+            //                if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
+            //                    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
+            //                        if (logger.isLoggable(Level.FINE)) {
+            //                            logger.fine("Starting bundle: " + string(bundle, false));
+            //                        }
+            //                        try {
+            //                            //bundle.start();
+            //                        } catch (Exception e) {
+            //                            logger.log(Level.SEVERE, e.getMessage(), e);
+            //                            // throw e;
+            //                        }
+            //                        if (logger.isLoggable(Level.FINE)) {
+            //                            logger.fine("Bundle: " + string(bundle, false));
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            logger.fine("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
             return bundleContext;
-            
+
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -351,9 +394,9 @@ public class EquinoxHost {
      */
     public void stop() {
         try {
-            
+
             // Uninstall all the bundles we've installed
-            for (int i = installedBundles.size() -1; i >= 0; i--) {
+            for (int i = installedBundles.size() - 1; i >= 0; i--) {
                 Bundle bundle = installedBundles.get(i);
                 try {
                     if (logger.isLoggable(Level.FINE)) {
@@ -365,13 +408,13 @@ public class EquinoxHost {
                 }
             }
             installedBundles.clear();
-            
+
             // Shutdown Eclipse if we started it ourselves
             if (startedEclipse) {
                 startedEclipse = false;
                 EclipseStarter.shutdown();
             }
-            
+
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
