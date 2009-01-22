@@ -20,9 +20,11 @@ package org.apache.tuscany.sca.contribution.processor.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+
+import java.util.Iterator;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -39,12 +41,14 @@ public class XMLEventsStreamReader implements XMLStreamReader {
 
 	@SuppressWarnings("unused")
 	private ArrayList<XMLEvent> events = null;
+	@SuppressWarnings("unchecked")
 	private HashMap<String, NamespaceContext> eventContext = null;
 
 	private int state;
 	private java.util.Iterator<XMLEvent> iterator;
 	private XMLEvent current;
 
+	@SuppressWarnings("unchecked")
 	public XMLEventsStreamReader(List<XMLEvent> events,Map<String, NamespaceContext> map) {
 		this.events = (ArrayList<XMLEvent>) events;
 		this.eventContext = (HashMap<String, NamespaceContext>) map;
