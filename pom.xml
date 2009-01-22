@@ -182,8 +182,11 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
-                <!--module>vtest</module-->
-                <!--module>tutorials</module-->
+<!--
+                <module>stest</module>
+                <module>vtest</module>
+                <module>tutorials</module>
+-->
             </modules>
         </profile>
 
@@ -267,7 +270,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
-                <module>calculator</module>
+               <module>samples</module>
             </modules>
             <properties>
                 <maven.test.skip.exec>true</maven.test.skip.exec>
@@ -281,7 +284,7 @@
                     <executions>
                         <execution>
                             <id>osgi-test</id>
-                            <phase>integration-test</phase>
+                            <phase>test</phase>
                             <goals>
                                 <goal>test</goal>
                             </goals>
