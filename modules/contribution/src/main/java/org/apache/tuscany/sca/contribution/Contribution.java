@@ -42,12 +42,6 @@ public interface Contribution extends Artifact {
     String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
     
     /**
-     * Default location of deployable composites in an SCA contribution.
-     */
-    String SCA_CONTRIBUTION_DEPLOYABLES = "META-INF/sca-deployables/";
-
-    
-    /**
      * Returns a list of exports based on the contribution metadata.
      * 
      * @return The list of exports in this contribution
