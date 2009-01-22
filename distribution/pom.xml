@@ -32,6 +32,7 @@
 
     <modules>
         <!--module>all</module-->
+        <module>api</module>
         <module>core</module>
         <!--module>ejava</module>
         <module>manager</module-->

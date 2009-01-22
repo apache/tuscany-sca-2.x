@@ -182,6 +182,7 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
+                <module>distribution</module>
 <!--
                 <module>stest</module>
                 <module>vtest</module>
