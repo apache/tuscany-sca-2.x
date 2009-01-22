@@ -18,27 +18,48 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
 /**
- * Base interface for extensible assembly model objects.
+ * Base interface for storing contents of extensible assembly model objects.
  * 
  * @version $Rev$ $Date$
  */
-public interface Extensible {
+public interface Extension {
 
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * 
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
-    
-    /**
-     * Returns a list of attribute extensions contained in this model object
-     * 
-     * @return a list of attribute extensions contained in this model object
-     */
-    List<Extension> getAttributeExtensions();
-
+	/**
+	 * Return QName for the extension
+	 * @return the extension QName
+	 */
+	QName getQName();
+	
+	/**
+	 * Set QName for the extension
+	 * @param qName the extension QName
+	 */
+	void setQName(QName qName);
+	
+	/**
+	 * Return the original extension value
+	 * @return the extension value
+	 */
+	Object getValue();
+	
+	/**
+	 * Set the original extension value
+	 * @param value the extension value
+	 */
+	void setValue(Object value);
+	
+	/**
+	 * Return whether or not the extension is an attribute
+	 * @return 
+	 */
+	boolean isAttribute();
+	
+	/**
+	 * Set whether or not the extension is an attribute
+	 * @param value
+	 */
+	void setIsAttribute(boolean isAttribute);
 }

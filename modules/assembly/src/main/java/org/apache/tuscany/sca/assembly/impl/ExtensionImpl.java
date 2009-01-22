@@ -16,29 +16,48 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.assembly;
+package org.apache.tuscany.sca.assembly.impl;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
-/**
- * Base interface for extensible assembly model objects.
- * 
- * @version $Rev$ $Date$
- */
-public interface Extensible {
+import org.apache.tuscany.sca.assembly.Extension;
 
-    /**
-     * Returns a list of extension objects contained in this model object.
-     * 
-     * @return a list of extension objects container in this model object
-     */
-    List<Object> getExtensions();
-    
-    /**
-     * Returns a list of attribute extensions contained in this model object
-     * 
-     * @return a list of attribute extensions contained in this model object
-     */
-    List<Extension> getAttributeExtensions();
+public class ExtensionImpl implements Extension {
+	private QName qName;
+	private Object value;
+	boolean isAttribute = false;
 
+	public ExtensionImpl() {
+		
+	}
+	
+	public ExtensionImpl(QName qName, Object value, boolean isAttribute) {
+		this.qName = qName;
+		this.value = value;
+		this.isAttribute = isAttribute;
+	}
+	
+	public QName getQName() {
+		return qName;
+	}
+
+	public void setQName(QName qName) {
+		this.qName = qName;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	public boolean isAttribute() {
+		return isAttribute;
+	}
+
+	public void setIsAttribute(boolean isAttribute) {
+		this.isAttribute = isAttribute;
+	}
 }

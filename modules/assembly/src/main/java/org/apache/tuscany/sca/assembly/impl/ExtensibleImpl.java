@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 
 /**
  * Convenience base class for extensible assembly model objects.
@@ -30,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Extensible;
  */
 public abstract class ExtensibleImpl extends BaseImpl implements Extensible {
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Extension> attributeExtensions = new ArrayList<Extension>();
 
     /**
      * Constructs a new base model object.
@@ -40,5 +42,8 @@ public abstract class ExtensibleImpl extends BaseImpl implements Extensible {
     public List<Object> getExtensions() {
         return extensions;
     }
-
+    
+    public List<Extension> getAttributeExtensions() {
+        return attributeExtensions;
+    }
 }

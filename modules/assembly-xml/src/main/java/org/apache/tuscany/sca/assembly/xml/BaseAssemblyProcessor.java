@@ -62,6 +62,8 @@ import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
+import org.apache.tuscany.sca.assembly.ExtensionFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -101,6 +103,7 @@ import org.w3c.dom.NodeList;
 abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     protected AssemblyFactory assemblyFactory;
+    protected ExtensionFactory extensionFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicyAttachPointProcessor policyProcessor;
@@ -109,16 +112,18 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     /**
      * Constructs a new BaseArtifactProcessor.
-     * @param factory
+     * @param assemblyFactory
      * @param policyFactory
      */
     @SuppressWarnings("unchecked")
-    protected BaseAssemblyProcessor(AssemblyFactory factory,
-                                 PolicyFactory policyFactory,
-                                 DocumentBuilderFactory documentBuilderFactory,
-                                 StAXArtifactProcessor extensionProcessor,
-                                 Monitor monitor) {
-        this.assemblyFactory = factory;
+    protected BaseAssemblyProcessor(AssemblyFactory assemblyFactory,
+    		                        ExtensionFactory extensionFactory,
+                                    PolicyFactory policyFactory,
+                                    DocumentBuilderFactory documentBuilderFactory,
+                                    StAXArtifactProcessor extensionProcessor,
+                                    Monitor monitor) {
+        this.assemblyFactory = assemblyFactory;
+        this.extensionFactory = extensionFactory;
         this.policyFactory = policyFactory;
         this.documentBuilderFactory = documentBuilderFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
@@ -135,6 +140,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                                     StAXArtifactProcessor staxProcessor,
                                     Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.extensionFactory = modelFactories.getFactory(ExtensionFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
@@ -868,15 +874,21 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void readExtendedAttributes(XMLStreamReader reader, QName elementName, Extensible estensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionReadException, XMLStreamException {
-    	 for (int a = 0; a < reader.getAttributeCount(); a++) {
-         	QName attributeName = reader.getAttributeName(a);
-         	if( attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
-             	if( ! elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
-             		String attributeExtension = (String) extensionAttributeProcessor.read(attributeName, reader);
-             		estensibleElement.getExtensions().add(attributeExtension);
-             	}
-         	}
-         }
+        for (int a = 0; a < reader.getAttributeCount(); a++) {
+            QName attributeName = reader.getAttributeName(a);
+            if( attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+                if( ! elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
+                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader);
+                    Extension attributeExtension;
+                    if (attributeValue instanceof Extension) {
+                        attributeExtension = (Extension) attributeValue;
+                    } else {
+                        attributeExtension = extensionFactory.createExtension(attributeName, attributeValue, true);
+                    }
+                    estensibleElement.getAttributeExtensions().add(attributeExtension);
+                }
+            }
+        }
     }
     
 
@@ -890,11 +902,10 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeExtendedAttributes(XMLStreamWriter writer, Extensible extensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionWriteException, XMLStreamException {
-        for(Object o : extensibleElement.getExtensions()) {
-        	//FIXME How to identify it's a extended attribute ? 
-        	if(o instanceof String) {
-        		extensionAttributeProcessor.write(o, writer);
-        	}
+        for(Extension extension : extensibleElement.getAttributeExtensions()) {
+            if(extension.isAttribute()) {
+                extensionAttributeProcessor.write(extension, writer);
+            }
         }
     }
     
