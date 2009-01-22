@@ -40,7 +40,7 @@ public class CalculatorRMIServerTestCase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String uri = ContributionLocationHelper.getContributionLocation("CalculatorRMIServer.composite");
+        String uri = ContributionLocationHelper.getContributionLocation(CalculatorService.class);
         Contribution contribution = new Contribution("c1", uri);
         node = NodeFactory.newInstance().createNode("CalculatorRMIServer.composite", contribution);
         node.start();

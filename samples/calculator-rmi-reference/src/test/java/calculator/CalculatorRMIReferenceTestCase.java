@@ -46,7 +46,7 @@ public class CalculatorRMIReferenceTestCase {
         Registry rmiRegistry = LocateRegistry.createRegistry(8099);
         rmiRegistry.bind("CalculatorRMIService", rmiCalculatorImpl);
         
-        String uri = ContributionLocationHelper.getContributionLocation("CalculatorRMIReference.composite");
+        String uri = ContributionLocationHelper.getContributionLocation(CalculatorService.class);
         Contribution contribution = new Contribution("c1", uri);
         node = NodeFactory.newInstance().createNode("CalculatorRMIReference.composite", contribution);
         node.start();
