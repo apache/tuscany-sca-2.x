@@ -45,6 +45,9 @@
             <modules>
                 <module>calculator</module>
                 <module>calculator-equinox</module>
+                <module>calculator-osgi</module>
+                <module>calculator-rmi-reference</module>
+                <module>calculator-rmi-service</module>
             </modules>
         </profile>
 
