@@ -27,6 +27,7 @@
     
     <include schemaLocation="tuscany-sca-binding-atom.xsd"/>
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
+    <include schemaLocation="tuscany-sca-binding-gdata.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
     <include schemaLocation="tuscany-sca-binding-jsonrpc.xsd"/>
     <include schemaLocation="tuscany-sca-binding-jms.xsd"/>
