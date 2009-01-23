@@ -26,6 +26,7 @@
     <import namespace="http://data.tuscany.apache.org/xmlns/sca/1.0" schemaLocation="tuscany-sca-data-helper.xsd"/>
     
     <include schemaLocation="tuscany-sca-binding-atom.xsd"/>
+    <include schemaLocation="tuscany-sca-binding-corba.xsd"/>
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-binding-gdata.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
