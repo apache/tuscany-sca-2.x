@@ -26,17 +26,26 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
 
 /**
  * A maven plugin that generates a modules directory containing OSGi bundles for all the project's module dependencies.
@@ -57,6 +66,56 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
+
+    /**
+     * Project builder -- builds a model from a pom.xml
+     * 
+     * @component role="org.apache.maven.project.MavenProjectBuilder"
+     * @required
+     * @readonly
+     */
+    private MavenProjectBuilder mavenProjectBuilder;
+    /**
+     * Used to look up Artifacts in the remote repository.
+     *
+     * @component
+     */
+    private org.apache.maven.artifact.factory.ArtifactFactory factory;
+
+    /**
+     * Used to look up Artifacts in the remote repository.
+     *
+     * @component
+     */
+    private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+
+    /**
+     * @component role="org.apache.maven.artifact.metadata.ArtifactMetadataSource"
+     *            hint="maven"
+     * @required
+     * @readonly
+     */
+    private ArtifactMetadataSource artifactMetadataSource;
+
+    /**
+     * Location of the local repository.
+     *
+     * @parameter expression="${localRepository}"
+     * @readonly
+     * @required
+     */
+    private org.apache.maven.artifact.repository.ArtifactRepository local;
+
+    /**
+     * List of Remote Repositories used by the resolver
+     *
+     * @parameter expression="${project.remoteArtifactRepositories}"
+     * @readonly
+     * @required
+     */
+    private java.util.List remoteRepos;
+
+    
 
     /**
      * Target directory.
@@ -133,6 +192,43 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private ArtifactAggregation[] artifactAggregations;
+    
+    /**
+     * Group the artifacts by distribution poms
+     */
+    private class ProjectSet {
+        // Distribution projects
+        private Map<String, MavenProject> projects;
+        // Key: the pom artifact id
+        // Value: the names for the artifacts
+        private Map<String, Set<String>> nameMap = new HashMap<String, Set<String>>();
+
+        public ProjectSet(List<MavenProject> projects) {
+            super();
+            this.projects = new HashMap<String, MavenProject>();
+            for(MavenProject p: projects) {
+                this.projects.put(p.getArtifactId(), p);
+            }
+        }
+        
+        private MavenProject getProject(String artifactId) {
+            return projects.get(artifactId);
+        }
+
+        private void add(Artifact artifact, String name) {
+            for (MavenProject p : projects.values()) {
+                Artifact a = (Artifact)p.getArtifactMap().get(ArtifactUtils.versionlessKey(artifact));
+                if (a != null) {
+                    Set<String> names = nameMap.get(p.getArtifactId());
+                    if (names == null) {
+                        names = new HashSet<String>();
+                        nameMap.put(p.getArtifactId(), names);
+                    }
+                    names.add(name);
+                }
+            }
+        }
+    }
 
     public void execute() throws MojoExecutionException {
         Log log = getLog();
@@ -171,11 +267,39 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     excludedGroupIds.add(g);
                 }
             }
+            
+            // Find all the distribution poms 
+            List<MavenProject> poms = new ArrayList<MavenProject>();
+            poms.add(project);
+            for (Object o : project.getArtifacts()) {
+                Artifact artifact = (Artifact)o;
+                if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
+                    && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
+                    log.info("Sub-distribution: " + artifact);
+                    MavenProject pomProject =
+                        mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
+                    if (pomProject.getDependencyArtifacts() == null) {
+                        pomProject
+                            .setDependencyArtifacts(project
+                                .createArtifacts(factory,
+                                                 Artifact.SCOPE_TEST,
+                                                 new ScopeArtifactFilter(Artifact.SCOPE_TEST)));
+                    }
+                    ArtifactResolutionResult result =
+                        resolver.resolveTransitively(pomProject.getDependencyArtifacts(),
+                                                     pomProject.getArtifact(),
+                                                     remoteRepos,
+                                                     local,
+                                                     artifactMetadataSource);
+                    pomProject.setArtifacts(result.getArtifacts());
+                    poms.add(pomProject);
+                }
+            }
 
             // Process all the dependency artifacts
-            Set<String> bundleSymbolicNames = new HashSet<String>();
-            Set<String> bundleLocations = new HashSet<String>();
-            Set<String> jarNames = new HashSet<String>();
+            ProjectSet bundleSymbolicNames = new ProjectSet(poms);
+            ProjectSet bundleLocations = new ProjectSet(poms);
+            ProjectSet jarNames = new ProjectSet(poms);
             for (Object o : project.getArtifacts()) {
                 Artifact artifact = (Artifact)o;
 
@@ -234,9 +358,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     // Copy an OSGi bundle as is 
                     log.info("Adding OSGi bundle artifact: " + artifact);
                     copyFile(artifactFile, root);
-                    bundleSymbolicNames.add(bundleName);
-                    bundleLocations.add(artifactFile.getName());
-                    jarNames.add(artifactFile.getName());
+                    bundleSymbolicNames.add(artifact, bundleName);
+                    bundleLocations.add(artifact, artifactFile.getName());
+                    jarNames.add(artifact, artifactFile.getName());
 
                 } else if ("war".equals(artifact.getType())) {
 
@@ -295,9 +419,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     write(mf, fos);
                     fos.close();
                     copyFile(artifactFile, dir);
-                    bundleSymbolicNames.add(symbolicName);
-                    bundleLocations.add(dir.getName());
-                    jarNames.add(dirName + "/" + artifactFile.getName());
+                    bundleSymbolicNames.add(artifact, symbolicName);
+                    bundleLocations.add(artifact, dir.getName());
+                    jarNames.add(artifact, dirName + "/" + artifactFile.getName());
                 }
             }
 
@@ -311,11 +435,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     File dir = new File(root, symbolicName + "-" + version);
                     dir.mkdir();
                     Set<File> jarFiles = new HashSet<File>();
+                    Artifact artifact = null;
                     for (Artifact a : group.getArtifacts()) {
                         log.info("Aggragating JAR artifact: " + a);
+                        artifact = a;
                         jarFiles.add(a.getFile());
                         copyFile(a.getFile(), dir);
-                        jarNames.add(symbolicName + "-" + version + "/" + a.getFile().getName());
+                        jarNames.add(a, symbolicName + "-" + version + "/" + a.getFile().getName());
                       }
                     Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
                     File file = new File(dir, "META-INF");
@@ -325,23 +451,26 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     FileOutputStream fos = new FileOutputStream(file);
                     write(mf, fos);
                     fos.close();
-                    bundleSymbolicNames.add(symbolicName);
-                    bundleLocations.add(dir.getName());
+                    bundleSymbolicNames.add(artifact, symbolicName);
+                    bundleLocations.add(artifact, dir.getName());
                 }
             }
 
             // Generate a PDE target
             if (generateTargetPlatform) {
-                File feature = new File(root, "../" + project.getArtifactId());
-                feature.mkdir();
-                File target = new File(feature, "tuscany.target");
-                log.info("Generating target definition: " + target);
-                FileOutputStream targetFile = new FileOutputStream(target);
-                if (!bundleSymbolicNames.contains("org.eclipse.osgi")) {
-                    bundleSymbolicNames.add("org.eclipse.osgi");
+                for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
+                    Set<String> bundles = e.getValue();
+                    File feature = new File(root, "../" + e.getKey());
+                    feature.mkdir();
+                    File target = new File(feature, "tuscany.target");
+                    log.info("Generating target definition: " + target);
+                    FileOutputStream targetFile = new FileOutputStream(target);
+                    if (!bundles.contains("org.eclipse.osgi")) {
+                        bundles.add("org.eclipse.osgi");
+                    }
+                    writeTarget(new PrintStream(targetFile), e.getKey(), bundles, eclipseFeatures);
+                    targetFile.close();
                 }
-                writeTarget(new PrintStream(targetFile), bundleSymbolicNames, eclipseFeatures);
-                targetFile.close();
             }
 
             // Generate a plugin.xml referencing the PDE target
@@ -352,49 +481,56 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 pluginXMLFile.close();
             }
             
-            if(generateConfig) {
-                File feature = new File(root, "../" + project.getArtifactId());
-                File config = new File(feature, "configuration");
-                config.mkdirs();
-                File ini = new File(config, "config.ini");
-                log.info("Generating configuation: " + ini);
-                FileOutputStream fos = new FileOutputStream(ini); 
-                PrintStream ps = new PrintStream(fos);
-                ps.print("osgi.bundles=");
-                for(String f: bundleLocations) {
-                    ps.print(f);
-                    ps.print("@:start,");
+            if (generateConfig) {
+                for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
+                    Set<String> locations = e.getValue();
+                    File feature = new File(root, "../" + e.getKey());
+                    File config = new File(feature, "configuration");
+                    config.mkdirs();
+                    File ini = new File(config, "config.ini");
+                    log.info("Generating configuation: " + ini);
+                    FileOutputStream fos = new FileOutputStream(ini);
+                    PrintStream ps = new PrintStream(fos);
+                    ps.print("osgi.bundles=");
+                    for (String f : locations) {
+                        ps.print(f);
+                        ps.print("@:start,");
+                    }
+                    ps.println();
+                    ps.println("eclipse.ignoreApp=true");
+                    ps.close();
                 }
-                ps.println();
-                ps.println("eclipse.ignoreApp=true");
-                ps.close();
             }
             
             if (generateManifestJar) {
-                File feature = new File(root, "../" + project.getArtifactId());
-                feature.mkdir();
-                File mfJar = new File(feature, "manifest.jar");
-                log.info("Generating manifest jar: " + mfJar);
-                FileOutputStream fos = new FileOutputStream(mfJar);
-                Manifest mf = new Manifest();
-                StringBuffer cp = new StringBuffer();
-                String path = "../" + root.getName();
-                for (String jar : jarNames) {
-                    cp.append(path).append('/').append(jar).append(' ');
+                for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
+                    MavenProject pom = jarNames.getProject(e.getKey());
+                    Set<String> jars = e.getValue();
+                    File feature = new File(root, "../" + e.getKey());
+                    feature.mkdir();
+                    File mfJar = new File(feature, "manifest.jar");
+                    log.info("Generating manifest jar: " + mfJar);
+                    FileOutputStream fos = new FileOutputStream(mfJar);
+                    Manifest mf = new Manifest();
+                    StringBuffer cp = new StringBuffer();
+                    String path = "../" + root.getName();
+                    for (String jar : jars) {
+                        cp.append(path).append('/').append(jar).append(' ');
+                    }
+                    if (cp.length() > 0) {
+                        cp.deleteCharAt(cp.length() - 1);
+                    }
+                    Attributes attrs = mf.getMainAttributes();
+                    attrs.putValue("Manifest-Version", "1.0");
+                    attrs.putValue("Implementation-Title", pom.getName());
+                    attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
+                    attrs.putValue("Implementation-Vendor-Id", "org.apache");
+                    attrs.putValue("Implementation-Version", pom.getVersion());
+                    attrs.putValue("Class-Path", cp.toString());
+                    attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
+                    JarOutputStream jos = new JarOutputStream(fos, mf);
+                    jos.close();
                 }
-                if (cp.length() > 0) {
-                    cp.deleteCharAt(cp.length() - 1);
-                }
-                Attributes attrs = mf.getMainAttributes();
-                attrs.putValue("Manifest-Version", "1.0");
-                attrs.putValue("Implementation-Title", project.getName());
-                attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
-                attrs.putValue("Implementation-Vendor-Id", "org.apache");
-                attrs.putValue("Implementation-Version", project.getVersion());
-                attrs.putValue("Class-Path", cp.toString());
-                attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
-                JarOutputStream jos = new JarOutputStream(fos, mf);
-                jos.close();
             }
 
         } catch (Exception e) {
@@ -420,11 +556,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         out.close();
     }
 
-    private void writeTarget(PrintStream ps, Set<String> ids, String[] features) {
+    private void writeTarget(PrintStream ps, String pom, Set<String> ids, String[] features) {
         ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         ps.println("<?pde version=\"3.2\"?>");
 
-        ps.println("<target name=\"Eclipse Target - " + project.getArtifactId() + "\">");
+        ps.println("<target name=\"Eclipse Target - " + pom + "\">");
 
         if (executionEnvironment != null) {
             ps.println("  <targetJRE>");
