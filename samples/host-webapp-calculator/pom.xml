@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-sca</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>sample-host-webapp-calculator</artifactId>
+    <packaging>war</packaging>
+    <name>Apache Tuscany SCA Host Webapp Calculator Sample</name>
+
+    <repositories>
+       <repository>
+          <id>apache.incubator</id>
+          <url>http://people.apache.org/repo/m2-incubating-repository</url>
+       </repository>
+    </repositories>
+
+    <dependencies>
+    
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distribution-api</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distribution-core</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distribution-webservice</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distribution-webapp</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+       <finalName>${artifactId}</finalName>
+       <plugins>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <configuration>
+                   <skip>true</skip>
+               </configuration>
+           </plugin>
+           
+	       <plugin>
+	           <groupId>org.apache.maven.plugins</groupId>
+	           <artifactId>maven-antrun-plugin</artifactId>
+	           <version>1.1</version>
+	
+	           <dependencies>
+	               <dependency>
+	                   <groupId>ant</groupId>
+	                   <artifactId>ant-trax</artifactId>
+	                   <version>1.6.5</version>
+	               </dependency>
+	           </dependencies>
+	
+	           <executions>
+	               <execution>
+	                   <id>test-ant-scripts</id>
+	                   <phase>package</phase>
+	                   <goals>
+	                       <goal>run</goal>
+	                   </goals>
+	                   <configuration>
+	                       <tasks>
+	                           <ant antfile="./build.xml" target="compile"/>
+	                       </tasks>
+	                   </configuration>
+	               </execution>
+	           </executions>
+	       </plugin>
+	       
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.0-beta-2</version>
+                <executions>
+                    <execution>
+                        <id>start-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-container</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <container>
+                        <containerId>jetty6x</containerId>
+                        <type>embedded</type>  
+                        <systemProperties>
+                            <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+                        </systemProperties>
+                    </container>
+                    <wait>true</wait>
+                    <configuration>
+                        <properties>
+                            <cargo.servlet.port>8085</cargo.servlet.port>
+                        </properties>
+                        <deployables>
+                            <deployable>
+                                <location>
+                                    ${project.build.directory}/${project.build.finalName}.${project.packaging}
+                                </location>
+                                <pingURL>http://localhost:8085/sample-calculator-ws-webapp</pingURL>
+                                <type>war</type>
+                            </deployable>
+                        </deployables>
+                        <home>${project.build.directory}/cargo-jetty</home>
+                    </configuration>
+                </configuration>                
+            </plugin>	       
+       </plugins>       
+    </build>
+</project>
