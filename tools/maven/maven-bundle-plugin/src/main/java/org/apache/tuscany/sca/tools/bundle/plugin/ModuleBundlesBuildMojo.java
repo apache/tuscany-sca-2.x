@@ -275,12 +275,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 Artifact artifact = (Artifact)o;
                 if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
                     && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
-                    log.info("Sub-distribution: " + artifact);
+                    log.info("Dependent distribution: " + artifact);
                     MavenProject pomProject =
                         mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
                     if (pomProject.getDependencyArtifacts() == null) {
                         pomProject
-                            .setDependencyArtifacts(project
+                            .setDependencyArtifacts(pomProject
                                 .createArtifacts(factory,
                                                  Artifact.SCOPE_TEST,
                                                  new ScopeArtifactFilter(Artifact.SCOPE_TEST)));
@@ -293,6 +293,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                                                      artifactMetadataSource);
                     pomProject.setArtifacts(result.getArtifacts());
                     poms.add(pomProject);
+                    // log.info(pomProject.getArtifactMap().toString());
                 }
             }
 
