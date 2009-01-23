@@ -1,0 +1,73 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<project name="sample-host-webapp-calculator" default="compile">
+    <property name="sample.name" value="${ant.project.name}"/>
+	<property name="sample.root" value="."/>
+    <property name="sample.war" value="${sample.root}/target/${sample.name}.war" />
+	<available file="../../distribution/pom.xml" property="running.in.development"/>
+	
+	<target name="set-development" if="running.in.development">
+		<property name="distro.root" value="../../distribution/all/target"/>
+	</target>
+	
+	<target name="set-distribution" unless="running.in.development">
+		<property name="distro.root" value="../.."/>
+	</target>
+			
+    <target name="init" depends="set-development, set-distribution" >
+    	
+        <mkdir dir="${sample.root}/target/classes"/>
+    </target>
+	
+    <target name="compile" depends="init">
+        <javac srcdir="${sample.root}/src/main/java"
+               destdir="${sample.root}/target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<!--pathelement location="${distro.root}/tuscany-distribution-all/manifest.jar"/-->
+                <fileset dir="${distro.root}/modules">
+                    <include name="*.jar" />
+                    <include name="*/*.jar" />
+                </fileset>
+            </classpath>
+        </javac> 
+        <copy todir="${sample.root}/target/classes">
+            <fileset dir="${sample.root}/src/main/resources"/>
+        </copy>
+        <fileset id="tuscany.jars" dir="${distro.root}/modules">
+            <include name="*.jar" />
+            <include name="*/*.jar" />
+        </fileset>    	
+        <war destfile="${sample.war}" webxml="${sample.root}/src/main/webapp/WEB-INF/web.xml">
+            <fileset dir="${sample.root}/src/main/webapp"/>
+        	<lib refid="tuscany.jars"/>
+            <classes dir="${sample.root}/target/classes"/>
+        </war>    	
+    </target>	
+
+    <target name="clean">
+        <delete includeemptydirs="true">
+            <fileset dir="target"/>
+        </delete>
+    </target>
+
+</project>
