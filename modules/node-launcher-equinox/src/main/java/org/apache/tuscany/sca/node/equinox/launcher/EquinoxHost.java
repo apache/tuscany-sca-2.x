@@ -57,6 +57,12 @@ import org.osgi.framework.BundleContext;
  */
 public class EquinoxHost {
     private static Logger logger = Logger.getLogger(EquinoxHost.class.getName());
+    
+    static {
+        if (getSystemProperty("osgi.debug") != null) {
+            logger.setLevel(Level.FINE);
+        }
+    }
 
     private BundleContext bundleContext;
     private Bundle launcherBundle;
