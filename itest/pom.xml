@@ -60,7 +60,7 @@
                 <module>callback-set-conversation</module>
                 <module>component-type</module>
                 <module>conversations</module>
-                <module>definitions-multiple</module>
+                <!--module>definitions-multiple</module-->
                 <module>exceptions</module>
                 <module>interfaces</module>
                 <module>operation-overloading</module>
