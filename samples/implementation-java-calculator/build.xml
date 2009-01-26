@@ -17,61 +17,18 @@
  * under the License.    
 -->
 	
-<project name="implementation-java-calculator" default="run-jse"> <!-- could dertmine the same name autmatically -->
+<project name="implementation-java-calculator" default="run"> <!-- could dertmine the same name autmatically -->
 	<import file="../build-common.xml"/>
 	
     <property name="sample.name" value="${ant.project.name}"/>
 	<property name="sample.root" value="."/>
     <property name="sample.jar" value="${sample.root}/target/sample-${sample.name}.jar" />
+	<property name="sample.composite" value="Calculator.composite"/>
 	
-    <target name="compile" depends="common-init">
-        <javac srcdir="${sample.root}/src/main/java"
-               destdir="${sample.root}/target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-            <classpath>
-            	<!--pathelement location="${distro.root}/tuscany-distribution-core/manifest.jar"/-->
-                <fileset dir="${distro.root}/modules">
-                    <include name="*.jar" />
-                    <include name="*/*.jar" />
-                </fileset>
-            </classpath>
-        </javac> 
-        <copy todir="${sample.root}/target/classes">
-            <fileset dir="${sample.root}/src/main/resources"/>
-        </copy>
-        <jar destfile="${sample.jar}" basedir="${sample.root}/target/classes">
-        </jar>    	
-    </target>	
+    <target name="compile" depends="common-jar-compile"/>	
 	
-    <target name="run-jse" depends="compile">
-        <java jar="${distro.root}/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"
-              fork="true"
-        	  inputstring="q">
-            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
-            <arg value="Calculator.composite"/> 
-        	 <!-- would be good to have the node launcher run the first deployable 
-        	      composite if this is not specified so I don't have to put it here -->
-            <arg value="${sample.jar}"/>
-        </java>    	
-    </target>
+    <target name="run" depends="common-run-equinox"/>
 	
-    <target name="run-equinox" depends="compile">
-        <java jar="${distro.root}/modules/tuscany-node-launcher-equinox-2.0-SNAPSHOT.jar"
-              fork="true"
-        	  inputstring="q">
-            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
-            <arg value="Calculator.composite"/> 
-        	 <!-- would be good to have the node launcher run the first deplyable 
-        	      composite if this is not specified so I don't have to put it here -->
-            <arg value="${sample.jar}"/>
-        </java>    	
-    </target>
-	
-    <target name="clean">
-        <delete quiet="true" includeemptydirs="true">
-            <fileset dir="target"/>
-        </delete>
-    </target>
+    <target name="clean" depends="common-clean"/>
+
 </project>
