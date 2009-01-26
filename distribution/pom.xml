@@ -36,12 +36,13 @@
         <module>core</module>
         <module>ejava</module>
         <module>pdetarget</module>
+        <module>host-webapp</module>
+        <module>webservice</module>
 <!--
         <module>manager</module>
         <module>process</module>
         <module>repository</module>
         <module>web20</module>
-        <module>webservice</module>
 -->
     </modules>
 

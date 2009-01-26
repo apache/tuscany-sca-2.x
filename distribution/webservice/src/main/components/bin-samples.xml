@@ -21,10 +21,11 @@
 
         <!-- Add samples to the samples directory -->
         <fileSet>
-            <directory>../../../samples</directory>
+            <directory>../../samples</directory>
             <outputDirectory>samples</outputDirectory>
             <includes>
-                <include>callback-ws-client/**/*</include>
+                <include>binding-ws-calculator/**/*</include>
+                <!--include>callback-ws-client/**/*</include>
                 <include>callback-ws-service/**/*</include>
                 <include>helloworld-ws-reference/**/*</include>
                 <include>helloworld-ws-service/**/*</include>
@@ -32,7 +33,7 @@
                 <include>helloworld-ws-service-secure/**/*</include>
                 <include>helloworld-ws-service-webapp/**/*</include>
                 <include>simple-callback-ws/**/*</include>
-                <include>zipcode-jaxws/**/*</include>
+                <include>zipcode-jaxws/**/*</include-->
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
