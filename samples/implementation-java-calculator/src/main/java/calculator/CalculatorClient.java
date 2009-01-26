@@ -19,6 +19,7 @@
 
 package calculator;
 
+import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
