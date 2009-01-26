@@ -84,7 +84,7 @@
 	                   </goals>
 	                   <configuration>
 	                       <tasks>
-	                           <ant antfile="./build.xml" target="run-jse"/>
+	                           <ant antfile="./build.xml" target="run"/>
 	                       </tasks>
 	                   </configuration>
 	               </execution>
