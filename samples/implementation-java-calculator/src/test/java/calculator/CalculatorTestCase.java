@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +33,8 @@ import org.junit.Test;
 public class CalculatorTestCase {
 
     private static NodeLauncher launcher;
-    private static Node node;   
+    private static Node node;  
+    private static String status = "Sample Success";
     
     public static void main(String[] args) throws Exception {
     	setUpBeforeClass();
@@ -44,8 +46,13 @@ public class CalculatorTestCase {
         launcher = NodeLauncher.newInstance();
         String location = ContributionLocationHelper.getContributionLocation(CalculatorClient.class);
         node = launcher.createNode("Calculator.composite", new Contribution("test", location));
-        System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
-        node.start();
+        
+        try {
+            node.start();
+        } catch (Exception ex) {
+            status = ex.toString();
+            System.out.println(status);
+        }
     }
 
     @AfterClass
@@ -60,6 +67,7 @@ public class CalculatorTestCase {
     }
 
     @Test
-    public void testDummy() throws Exception {
+    public void testSample() throws Exception {
+        Assert.assertEquals("Sample Success", status);
     }
 }
