@@ -48,6 +48,10 @@
                 <module>calculator-osgi</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
+
+                <module>implementation-java-calculator</module>
+                <module>binding-ws-calculator</module>
+                <module>host-webapp-calculator</module>
             </modules>
         </profile>
 
