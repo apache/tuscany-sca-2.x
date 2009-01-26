@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -53,6 +54,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private String uri;
     private boolean unresolved;
     private List<Object> extensions = new ArrayList<Object>();
+    private List<Extension> attributeExtensions = new ArrayList<Extension>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
@@ -109,6 +111,10 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     public List<Object> getExtensions() {
         return extensions;
     }
+    
+    public List<Extension> getAttributeExtensions() {
+        return attributeExtensions;
+    }    
     
     public String getLocation() {
         return location;
