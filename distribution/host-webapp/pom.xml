@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-distribution</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>tuscany-extension-host-webapp</artifactId>
+    <name>Apache Tuscany SCA Webapp Distribution</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+
+        <!-- Core distribution -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-distribution-core</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- host support -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-webapp</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <profiles>
+
+        <!-- Build profile that can be used to build the distro packages -->
+        <profile>
+            <id>distribution</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>distribution-modules</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>generate-modules</goal>
+                                </goals>
+                                <configuration>
+                                    <targetDirectory>target/modules</targetDirectory>
+                                    <generateManifestJar>true</generateManifestJar>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>distribution-package</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/bin.xml</descriptor>
+                                        <descriptor>src/main/assembly/src.xml</descriptor>
+                                    </descriptors>
+                                    <tarLongFileMode>gnu</tarLongFileMode>
+                                    <finalName>apache-tuscany-sca-host-webapp-2.0-SNAPSHOT</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile that can be used to build the modules included in the distro -->
+        <profile>
+            <id>modules</id>
+            <modules>
+                <module>../../../modules/host-webapp</module>
+            </modules>
+        </profile>
+    </profiles>
+
+</project>
