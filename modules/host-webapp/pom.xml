@@ -74,14 +74,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jsp_2.1_spec</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
