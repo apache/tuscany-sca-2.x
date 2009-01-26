@@ -31,4 +31,83 @@
     <target name="common-init" depends="common-set-development, common-set-distribution" >
         <mkdir dir="${sample.root}/target/classes"/>
     </target>
+
+    <target name="common-jar-compile" depends="common-init">
+        <javac srcdir="${sample.root}/src/main/java"
+               destdir="${sample.root}/target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<!--pathelement location="${distro.root}/tuscany-distribution-core/manifest.jar"/-->
+                <fileset dir="${distro.root}/modules">
+                    <include name="*.jar" />
+                    <include name="*/*.jar" />
+                </fileset>
+            </classpath>
+        </javac> 
+        <copy todir="${sample.root}/target/classes">
+            <fileset dir="${sample.root}/src/main/resources"/>
+        </copy>
+        <jar destfile="${sample.jar}" basedir="${sample.root}/target/classes">
+        </jar>    	
+    </target>
+
+    <target name="common-war-compile" depends="common-init">
+        <javac srcdir="${sample.root}/src/main/java"
+               destdir="${sample.root}/target/classes"
+               debug="on"
+               source="1.5"
+               target="1.5">
+            <classpath>
+            	<!--pathelement location="${distro.root}/tuscany-distribution-all/manifest.jar"/-->
+                <fileset dir="${distro.root}/modules">
+                    <include name="*.jar" />
+                    <include name="*/*.jar" />
+                </fileset>
+            </classpath>
+        </javac> 
+        <copy todir="${sample.root}/target/classes">
+            <fileset dir="${sample.root}/src/main/resources"/>
+        </copy>
+        <fileset id="tuscany.jars" dir="${distro.root}/modules">
+            <include name="*.jar" />
+            <include name="*/*.jar" />
+        </fileset>    	
+        <war destfile="${sample.war}" webxml="${sample.root}/src/main/webapp/WEB-INF/web.xml">
+            <fileset dir="${sample.root}/src/main/webapp"/>
+        	<lib refid="tuscany.jars"/>
+            <classes dir="${sample.root}/target/classes"/>
+        </war>    	
+    </target>	
+	
+    <target name="common-run-jse" depends="compile">
+        <java jar="${distro.root}/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"
+              fork="true"
+        	  inputstring="q">
+            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
+            <arg value="${sample.composite}"/> 
+        	 <!-- would be good to have the node launcher run the first deployable 
+        	      composite if this is not specified so I don't have to put it here -->
+            <arg value="${sample.jar}"/>
+        </java>    	
+    </target>
+	
+    <target name="common-run-equinox" depends="compile">
+        <java jar="${distro.root}/modules/tuscany-node-launcher-equinox-2.0-SNAPSHOT.jar"
+              fork="true"
+        	  inputstring="q">
+            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
+            <arg value="${sample.composite}"/> 
+        	 <!-- would be good to have the node launcher run the first deplyable 
+        	      composite if this is not specified so I don't have to put it here -->
+            <arg value="${sample.jar}"/>
+        </java>    	
+    </target>
+	
+    <target name="common-clean">
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="target"/>
+        </delete>
+    </target>
 </project>
