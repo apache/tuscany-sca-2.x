@@ -55,6 +55,7 @@
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
         <module>host-http</module>
+        <module>host-webapp</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
