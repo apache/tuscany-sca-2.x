@@ -62,6 +62,7 @@
         <module>interface-java-xml</module>
         <module>interface-wsdl</module>
         <module>interface-wsdl-xml</module>
+        <module>launcher</module>
         <module>monitor</module>
         <module>node-api</module>
         <module>node-impl</module>
