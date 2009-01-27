@@ -24,4 +24,4 @@ Tool: Bnd-0.0.255
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.tuscany.sca.launcher;version="2.0"
 Export-Package: org.apache.tuscany.sca.launcher;version="2.0"
-Main-Class: org.apache.tuscany.launcher.sca.LauncherMain
+Main-Class: org.apache.tuscany.sca.launcher.LauncherMain
