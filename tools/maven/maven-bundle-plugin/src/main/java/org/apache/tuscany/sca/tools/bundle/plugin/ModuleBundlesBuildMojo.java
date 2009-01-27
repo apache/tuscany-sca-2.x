@@ -115,8 +115,6 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      */
     private java.util.List remoteRepos;
 
-    
-
     /**
      * Target directory.
      * 
@@ -146,12 +144,19 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     private String[] includeGroupIds;
 
     /**
+     * Set to true to generate configurations under a folder named as the distro 
+     * 
+     * @parameter default-value="true"
+     */
+    private boolean useDistributionName = true;
+
+    /**
      * Set to true to generate a PDE target platform configuration.
      * 
      *  @parameter
      */
     private boolean generateTargetPlatform = true;
-    
+
     /**
      * OSGi execution environment
      */
@@ -162,7 +167,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private String[] eclipseFeatures;
-    
+
     /**
      * If we use the running eclipse as the default location for the target 
      * @parameter
@@ -175,13 +180,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      *  @parameter
      */
     private boolean generatePlugin;
-    
+
     /**
      * Generate a configuration/config.ini for equinox
      * @parameter
      */
     private boolean generateConfig = true;
-    
+
     /**
      * Generete startup/-manifest.jar
      * @parameter
@@ -192,7 +197,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private ArtifactAggregation[] artifactAggregations;
-    
+
     /**
      * Group the artifacts by distribution poms
      */
@@ -206,11 +211,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         public ProjectSet(List<MavenProject> projects) {
             super();
             this.projects = new HashMap<String, MavenProject>();
-            for(MavenProject p: projects) {
+            for (MavenProject p : projects) {
                 this.projects.put(p.getArtifactId(), p);
             }
         }
-        
+
         private MavenProject getProject(String artifactId) {
             return projects.get(artifactId);
         }
@@ -267,33 +272,34 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     excludedGroupIds.add(g);
                 }
             }
-            
+
             // Find all the distribution poms 
             List<MavenProject> poms = new ArrayList<MavenProject>();
             poms.add(project);
-            for (Object o : project.getArtifacts()) {
-                Artifact artifact = (Artifact)o;
-                if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
-                    && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
-                    log.info("Dependent distribution: " + artifact);
-                    MavenProject pomProject =
-                        mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
-                    if (pomProject.getDependencyArtifacts() == null) {
-                        pomProject
-                            .setDependencyArtifacts(pomProject
+            if (useDistributionName) {
+                for (Object o : project.getArtifacts()) {
+                    Artifact artifact = (Artifact)o;
+                    if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
+                        && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
+                        log.info("Dependent distribution: " + artifact);
+                        MavenProject pomProject =
+                            mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
+                        if (pomProject.getDependencyArtifacts() == null) {
+                            pomProject.setDependencyArtifacts(pomProject
                                 .createArtifacts(factory,
                                                  Artifact.SCOPE_TEST,
                                                  new ScopeArtifactFilter(Artifact.SCOPE_TEST)));
+                        }
+                        ArtifactResolutionResult result =
+                            resolver.resolveTransitively(pomProject.getDependencyArtifacts(),
+                                                         pomProject.getArtifact(),
+                                                         remoteRepos,
+                                                         local,
+                                                         artifactMetadataSource);
+                        pomProject.setArtifacts(result.getArtifacts());
+                        poms.add(pomProject);
+                        // log.info(pomProject.getArtifactMap().toString());
                     }
-                    ArtifactResolutionResult result =
-                        resolver.resolveTransitively(pomProject.getDependencyArtifacts(),
-                                                     pomProject.getArtifact(),
-                                                     remoteRepos,
-                                                     local,
-                                                     artifactMetadataSource);
-                    pomProject.setArtifacts(result.getArtifacts());
-                    poms.add(pomProject);
-                    // log.info(pomProject.getArtifactMap().toString());
                 }
             }
 
@@ -377,10 +383,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
                 } else {
 
-//                    String version = BundleUtil.osgiVersion(artifact.getVersion());
-//                    String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId());
-//                    String dirName = symbolicName + "_" + version;
-                    
+                    //                    String version = BundleUtil.osgiVersion(artifact.getVersion());
+                    //                    String symbolicName = (artifact.getGroupId() + "." + artifact.getArtifactId());
+                    //                    String dirName = symbolicName + "_" + version;
+
                     String dirName = artifactFile.getName().substring(0, artifactFile.getName().length() - 4);
                     File dir = new File(root, dirName);
 
@@ -443,7 +449,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                         jarFiles.add(a.getFile());
                         copyFile(a.getFile(), dir);
                         jarNames.add(a, symbolicName + "-" + version + "/" + a.getFile().getName());
-                      }
+                    }
                     Manifest mf = BundleUtil.libraryManifest(jarFiles, symbolicName, symbolicName, version, null);
                     File file = new File(dir, "META-INF");
                     file.mkdirs();
@@ -461,7 +467,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateTargetPlatform) {
                 for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
                     Set<String> bundles = e.getValue();
-                    File feature = new File(root, "../" + e.getKey());
+                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
                     feature.mkdir();
                     File target = new File(feature, "tuscany.target");
                     log.info("Generating target definition: " + target);
@@ -481,11 +487,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 writePluginXML(new PrintStream(pluginXMLFile));
                 pluginXMLFile.close();
             }
-            
+
             if (generateConfig) {
                 for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
                     Set<String> locations = e.getValue();
-                    File feature = new File(root, "../" + e.getKey());
+                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
                     File config = new File(feature, "configuration");
                     config.mkdirs();
                     File ini = new File(config, "config.ini");
@@ -502,12 +508,12 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     ps.close();
                 }
             }
-            
+
             if (generateManifestJar) {
                 for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
                     MavenProject pom = jarNames.getProject(e.getKey());
                     Set<String> jars = e.getValue();
-                    File feature = new File(root, "../" + e.getKey());
+                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
                     feature.mkdir();
                     File mfJar = new File(feature, "manifest.jar");
                     log.info("Generating manifest jar: " + mfJar);
@@ -569,7 +575,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             ps.println("  </targetJRE>");
         }
 
-        if(useDefaultLocation) {
+        if (useDefaultLocation) {
             ps.println("  <location useDefault=\"true\"/>");
         } else {
             ps.println("  <location path=\"" + targetDirectory + "\"/>");
