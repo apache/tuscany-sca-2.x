@@ -194,6 +194,11 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     private boolean generateManifestJar = true;
 
     /**
+     * @parameter default-value="true"
+     */
+    private boolean generateAntScript = true;
+    
+    /**
      * @parameter
      */
     private ArtifactAggregation[] artifactAggregations;
@@ -467,7 +472,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateTargetPlatform) {
                 for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
                     Set<String> bundles = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
+                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
                     feature.mkdir();
                     File target = new File(feature, "tuscany.target");
                     log.info("Generating target definition: " + target);
@@ -475,7 +480,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     if (!bundles.contains("org.eclipse.osgi")) {
                         bundles.add("org.eclipse.osgi");
                     }
-                    writeTarget(new PrintStream(targetFile), e.getKey(), bundles, eclipseFeatures);
+                    writeTarget(new PrintStream(targetFile), trim(e.getKey()), bundles, eclipseFeatures);
                     targetFile.close();
                 }
             }
@@ -491,7 +496,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateConfig) {
                 for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
                     Set<String> locations = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
+                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
                     File config = new File(feature, "configuration");
                     config.mkdirs();
                     File ini = new File(config, "config.ini");
@@ -513,7 +518,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
                     MavenProject pom = jarNames.getProject(e.getKey());
                     Set<String> jars = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? e.getKey() : ""));
+                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
                     feature.mkdir();
                     File mfJar = new File(feature, "manifest.jar");
                     log.info("Generating manifest jar: " + mfJar);
@@ -539,11 +544,47 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     jos.close();
                 }
             }
+            
+            if (generateAntScript) {
+                for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
+                    Set<String> jars = e.getValue();
+                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
+                    feature.mkdir();
+                    File antPath = new File(feature, "build-path.xml");
+                    log.info("Generating ANT build path: " + antPath);
+                    FileOutputStream fos = new FileOutputStream(antPath);
+                    PrintStream ps = new PrintStream(fos);
+                    ps.println("<property name=\"tuscany.distro\" value=\"" + trim(e.getKey()) + "\"/>");
+                    ps.println("<property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.mf")
+                        + "\"/>");
+                    ps.println("<path id=\"" + "tuscany.path" + "\">");
+                    ps.println("  <fileset dir=\"" + root + "\">");
+                    for (String jar : jars) {
+                        ps.println("    <include name=\"" + jar + "\"/>");
+                    }
+                    ps.println("  </fileset>");
+                    ps.println("</path>");
+                    ps.println("<classpath id=\"tuscany.classpath\" refid=\"tuscany.path\"/>");
+                }
+            }
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
 
+    }
+    
+    /**
+     * Convert tuscany-distribution-xyz to feature-xyz
+     * @param artifactId
+     * @return
+     */
+    private String trim(String artifactId) {
+        if (artifactId.startsWith("tuscany-distribution-")) {
+            return "feature-" + artifactId.substring("tuscany-distribution-".length());
+        } else {
+            return artifactId;
+        }
     }
 
     private static void copyFile(File jar, File dir) throws FileNotFoundException, IOException {
