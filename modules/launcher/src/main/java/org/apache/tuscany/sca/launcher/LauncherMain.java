@@ -188,9 +188,13 @@ public class LauncherMain {
 
         String fileName;
         if (args.length > 0) {
-            File f = new File(getLauncherFolder(), args[0] + ".config");
+            File f = new File(args[0]);
+            if (!f.exists()) {
+                f = new File(getLauncherFolder(), args[0] + ".config");
+            }
+//            File f = new File(getLauncherFolder(), args[0] + ".config");
             if (f.exists()) {
-                fileName = f.getName();
+                fileName = f.toString();
                 String[] args2 = new String[args.length-1];
                 System.arraycopy(args, 1, args2, 0, args.length-1);
                 args = args2;
