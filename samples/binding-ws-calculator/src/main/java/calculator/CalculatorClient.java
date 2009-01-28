@@ -40,17 +40,24 @@ public class CalculatorClient {
     
     @Init
     public void calculate() {
-
-        // Calculate
-        try {
-            System.out.println("SCA API ClassLoader: " + print(Reference.class.getClassLoader()));
-            System.out.println("3 + 2=" + calculatorService.add(3, 2));
-            System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
-            System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
-            System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        // The calls cannot be done in the same thread as the services are starting
+        // Fork a new thread
+        Thread thread = new Thread() {
+            public void run() {
+                // Calculate
+                try {
+                    Thread.sleep(3000);
+                    System.out.println("SCA API ClassLoader: " + print(Reference.class.getClassLoader()));
+                    System.out.println("3 + 2=" + calculatorService.add(3, 2));
+                    System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
+                    System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
+                    System.out.println("3 / 2=" + calculatorService.divide(3, 2));
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
     }
     
     private static String print(ClassLoader cl) {

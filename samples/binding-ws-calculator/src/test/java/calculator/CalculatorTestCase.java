@@ -57,6 +57,7 @@ public class CalculatorTestCase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        Thread.sleep(30000);
         if (node != null) {
             node.stop();
             node.destroy();
