@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.contribution.updater.impl;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(GreetService.class)
 public class HelloComponent implements GreetService {

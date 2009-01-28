@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.implementation.node.manager;use
- s:="javax.servlet,org.osoa.sca.annotations,org.apache.tuscany.sca.dat
+ s:="javax.servlet,org.oasisopen.sca.annotation,org.apache.tuscany.sca.dat
  a.collection,org.apache.tuscany.sca.node.launcher,javax.xml.parsers,o
  rg.osoa.sca,javax.servlet.http";version="2.0.0"
 Tool: Bnd-0.0.255
@@ -15,7 +15,7 @@ Bundle-Description: Apache Tuscany SCA Node Manager Application
 Import-Package: javax.servlet,javax.servlet.http,javax.xml.parsers,org
  .apache.tuscany.sca.data.collection;version="2.0.0",org.apache.tuscany.
  sca.implementation.node.manager;version="2.0.0",org.apache.tuscany.sca.
- node.launcher;version="2.0.0",org.osoa.sca;version="2.0.0",org.osoa.sca.a
+ node.launcher;version="2.0.0",org.oasisopen.sca;version="2.0.0",org.oasisopen.sca.a
  nnotations;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.node.manager
 Bundle-DocURL: http://www.apache.org/

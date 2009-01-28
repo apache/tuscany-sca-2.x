@@ -23,8 +23,8 @@ import java.rmi.RemoteException;
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
 
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.ServiceUnavailableException;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 final class EJBStubHelper {
 

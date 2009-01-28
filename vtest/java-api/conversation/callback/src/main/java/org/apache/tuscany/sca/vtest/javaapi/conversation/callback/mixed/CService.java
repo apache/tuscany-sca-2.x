@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed;
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BServiceCallback;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Conversational;
 
 /**
  * Simple Service

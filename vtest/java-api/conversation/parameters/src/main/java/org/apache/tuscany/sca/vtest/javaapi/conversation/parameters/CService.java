@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.parameters;
 
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Simple Local Service

@@ -22,8 +22,8 @@ package $template.getJavaPackage();
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
 
 import ${template.getJavaPackage()}.GreeterService;
 

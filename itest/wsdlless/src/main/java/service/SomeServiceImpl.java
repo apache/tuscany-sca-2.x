@@ -18,7 +18,7 @@
  */
 package service;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(SomeService.class)
 public class SomeServiceImpl implements SomeService {

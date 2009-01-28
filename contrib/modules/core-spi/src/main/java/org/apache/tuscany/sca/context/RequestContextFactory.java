@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.context;
 
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.RequestContext;
 
 /**
  * Interface implemented by the provider of the RequestContext.

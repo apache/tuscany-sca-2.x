@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation.BService;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.ConversationAttributes;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")

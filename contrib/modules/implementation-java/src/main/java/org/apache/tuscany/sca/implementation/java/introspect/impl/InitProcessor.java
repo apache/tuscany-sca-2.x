@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 
 /**
  * Processes the {@link @Init} annotation on a component implementation and

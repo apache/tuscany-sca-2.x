@@ -24,11 +24,11 @@ import java.util.TimerTask;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.KService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.JService;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Scope;
 
 @Service(JService.class)
 @Scope("COMPOSITE")

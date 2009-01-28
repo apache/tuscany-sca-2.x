@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.demos.aggregator;
 
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Retrieve and manage alerts

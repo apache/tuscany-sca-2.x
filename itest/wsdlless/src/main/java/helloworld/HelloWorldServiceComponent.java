@@ -18,7 +18,7 @@
  */
 package helloworld;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * This client program shows how to create an SCA runtime, start it,

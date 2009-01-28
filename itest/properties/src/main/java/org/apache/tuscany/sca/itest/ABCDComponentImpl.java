@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.itest;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * This class Implements the interface ABCDComponent and gives implementation for all methods which are declared in that

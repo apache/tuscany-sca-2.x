@@ -18,7 +18,7 @@
  */
 package test;
 
-import org.osoa.sca.annotations.*;
+import org.oasisopen.sca.annotation.*;
 
 /**
  * Enhanced Java component implementation for business interface Service1,

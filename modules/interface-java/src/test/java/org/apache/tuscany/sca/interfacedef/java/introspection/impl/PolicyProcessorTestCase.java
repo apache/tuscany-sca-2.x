@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.PolicySets;
-import org.osoa.sca.annotations.Requires;
+import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Requires;
 
 /**
  * @version $Rev$ $Date$

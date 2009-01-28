@@ -32,7 +32,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef.java.introspect;version="2.0",
  org.apache.tuscany.sca.interfacedef.util;version="2.0",
  org.apache.tuscany.sca.policy;version="2.0",
- org.osoa.sca.annotations;version="2.0"
+ org.oasisopen.sca.annotation;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java
 Bundle-DocURL: http://www.apache.org/
 

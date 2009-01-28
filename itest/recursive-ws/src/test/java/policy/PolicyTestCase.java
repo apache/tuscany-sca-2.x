@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.EndsConversation;
+import org.oasisopen.sca.annotation.EndsConversation;
 
 public class PolicyTestCase{
 

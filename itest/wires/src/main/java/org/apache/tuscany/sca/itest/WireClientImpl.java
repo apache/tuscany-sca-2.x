@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.itest;
 
 import org.junit.Assert;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This is the client implementation for the wires tests 

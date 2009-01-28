@@ -20,14 +20,14 @@ package org.apache.tuscany.sca.itest.servicereference;
 
 import org.apache.tuscany.sca.itest.servicereference.utils.ServiceReferenceUtils;
 import org.junit.Assert;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Simple conversational Service implementation

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.B1Service;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(B1Service.class)
 public class B1ServiceImpl implements B1Service {

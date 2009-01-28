@@ -39,14 +39,14 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates
+ * Processes an {@link org.oasisopen.sca.annotation.Service} annotation and updates
  * the component type with corresponding {@link Service}s. Also processes
- * related {@link org.osoa.sca.annotations.Callback} annotations.
+ * related {@link org.oasisopen.sca.annotation.Callback} annotations.
  * 
  * @version $Rev$ $Date$
  */
@@ -61,7 +61,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
-        org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
+        org.oasisopen.sca.annotation.Service annotation = clazz.getAnnotation(org.oasisopen.sca.annotation.Service.class);
         if (annotation == null) {
             // scan interfaces for remotable
             Set<Class> interfaces = getAllInterfaces(clazz);

@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * An implementation of StandardTypesService.

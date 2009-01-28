@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.vtest.assembly.ctypefile.impl;
 
 import org.apache.tuscany.sca.vtest.assembly.ctypefile.AService;
 import org.apache.tuscany.sca.vtest.assembly.ctypefile.BService;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class AServiceImpl implements AService {
 

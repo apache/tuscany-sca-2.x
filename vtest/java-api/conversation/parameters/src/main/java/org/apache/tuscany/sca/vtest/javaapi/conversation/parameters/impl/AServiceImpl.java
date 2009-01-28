@@ -24,9 +24,9 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.parameters.AService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.parameters.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.parameters.CService;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

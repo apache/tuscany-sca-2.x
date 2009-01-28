@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.itest.references;
 import java.util.Collection;
 import java.util.List;
 
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class AComponentImpl implements AComponent {
 

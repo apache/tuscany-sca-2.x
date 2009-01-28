@@ -28,11 +28,11 @@ import java.util.logging.Logger;
 import javax.sql.XAConnection;
 
 import org.apache.derby.jdbc.EmbeddedXADataSource;
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

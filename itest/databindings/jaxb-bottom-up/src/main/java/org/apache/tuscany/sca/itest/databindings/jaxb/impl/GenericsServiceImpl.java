@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.itest.databindings.jaxb.Bean2;
 import org.apache.tuscany.sca.itest.databindings.jaxb.Bean3;
 import org.apache.tuscany.sca.itest.databindings.jaxb.GenericsLocalService;
 import org.apache.tuscany.sca.itest.databindings.jaxb.GenericsService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * An implementation of GenericsService.

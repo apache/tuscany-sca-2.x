@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.impl.RequestContextImpl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.RequestContext;
 
 /**
  * Default implementation of RequestContextFactory

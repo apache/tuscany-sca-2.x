@@ -24,8 +24,8 @@ import java.rmi.RemoteException;
 import org.apache.tuscany.sca.test.exceptions.sdohandgen.InvalidSymbolSDOException;
 import org.apache.tuscany.sca.test.exceptions.sdohandgen.MarketClosedSDOException;
 import org.apache.tuscany.sca.test.exceptions.sdohandgen.StockExceptionTest;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import stockexceptiontestservice.scatesttool.ScatesttoolFactory;
 import stockexceptiontestservice.scatesttool.StockOffer;

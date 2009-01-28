@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * An implementation of HelloService.

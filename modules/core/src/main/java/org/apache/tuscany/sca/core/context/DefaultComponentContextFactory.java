@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.impl.ComponentContextImpl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.ComponentContext;
+import org.oasisopen.sca.ComponentContext;
 
 /**
  * @version $Rev$ $Date$

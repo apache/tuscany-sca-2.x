@@ -23,7 +23,7 @@ import java.lang.reflect.Member;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Denotes an illegal signature for a method decorated with {@link org.osoa.sca.annotations.Destroy}
+ * Denotes an illegal signature for a method decorated with {@link org.oasisopen.sca.annotation.Destroy}
  *
  * @version $Rev$ $Date$
  */

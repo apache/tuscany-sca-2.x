@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.BService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.CService;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CService.class)
 public class CServiceImpl5 implements CService {

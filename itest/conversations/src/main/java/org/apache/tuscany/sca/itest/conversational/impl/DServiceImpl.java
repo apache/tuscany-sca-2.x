@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.itest.conversational.impl;
 
 import org.apache.tuscany.sca.itest.conversational.DService;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Simple conversational Service

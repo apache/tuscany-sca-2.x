@@ -3,7 +3,7 @@ Export-Package: org.apache.tuscany.sca.binding.ws.wsdlgen;uses:="org.a
  pache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacedef.uti
  l,org.apache.tuscany.sca.core,org.apache.tuscany.sca.policy,javax.wsd
  l.extensions.schema,javax.xml.namespace,javax.wsdl.xml,javax.wsdl.ext
- ensions,org.apache.tuscany.sca.contribution.resolver,org.osoa.sca,org
+ ensions,org.apache.tuscany.sca.contribution.resolver,org.oasisopen.sca,org
  .apache.ws.commons.schema,javax.wsdl.factory,org.apache.tuscany.sca.a
  ssembly,javax.wsdl.extensions.soap,javax.xml.parsers,org.apache.tusca
  ny.sca.monitor,org.apache.tuscany.sca.interfacedef.java,org.apache.tu
@@ -52,8 +52,8 @@ Import-Package: javax.jws;resolution:=optional,
  org.apache.tuscany.sca.xsd.xml;version="2.0.0";resolution:=optional,
  org.apache.ws.commons.schema,
  org.apache.ws.commons.schema.utils,
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional,
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.wsdlgen
 Bundle-DocURL: http://www.apache.org/

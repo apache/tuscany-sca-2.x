@@ -85,9 +85,9 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Represents an SCA runtime node.

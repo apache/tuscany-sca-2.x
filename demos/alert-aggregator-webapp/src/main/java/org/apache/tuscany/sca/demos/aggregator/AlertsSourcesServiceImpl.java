@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
 import org.apache.tuscany.sca.demos.aggregator.types.TypesFactory;
 import org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;

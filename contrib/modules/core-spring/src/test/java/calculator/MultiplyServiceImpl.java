@@ -18,7 +18,7 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * An implementation of the Multiply service.

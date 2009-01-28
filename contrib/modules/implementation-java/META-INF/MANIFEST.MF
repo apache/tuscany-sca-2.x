@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.implementation.java.introspect;
  uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.impleme
- ntation.java,org.osoa.sca";version="2.0",org.apache.tuscany.sca.imple
+ ntation.java,org.oasisopen.sca";version="2.0",org.apache.tuscany.sca.imple
  mentation.java;uses:="org.apache.tuscany.sca.assembly,org.apache.tusc
  any.sca.implementation.java.introspect,org.apache.tuscany.sca.core,or
  g.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef.java"
@@ -32,8 +32,8 @@ Import-Package: javax.jws,
  org.apache.tuscany.sca.interfacedef.util;version="2.0",
  org.apache.tuscany.sca.policy;version="2.0",
  org.apache.tuscany.sca.policy.util;version="2.0.0",
- org.osoa.sca;version="2.0",
- org.osoa.sca.annotations;version="2.0"
+ org.oasisopen.sca;version="2.0",
+ org.oasisopen.sca.annotation;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.java
 Bundle-DocURL: http://www.apache.org/
 

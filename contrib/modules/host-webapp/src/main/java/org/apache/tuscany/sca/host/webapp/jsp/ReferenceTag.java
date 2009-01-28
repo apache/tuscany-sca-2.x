@@ -27,7 +27,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
-import org.osoa.sca.ComponentContext;
+import org.oasisopen.sca.ComponentContext;
 
 /**
  * Tag to handle SCA references
@@ -57,7 +57,7 @@ public class ReferenceTag extends TagSupport {
         }
  
         ServletContext servletContext = pageContext.getServletContext();
-        ComponentContext componentContext = (ComponentContext)servletContext.getAttribute("org.osoa.sca.ComponentContext");
+        ComponentContext componentContext = (ComponentContext)servletContext.getAttribute("org.oasisopen.sca.ComponentContext");
         SCADomain scaDomain = null;
         if (componentContext == null) {
             scaDomain = (SCADomain)servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);

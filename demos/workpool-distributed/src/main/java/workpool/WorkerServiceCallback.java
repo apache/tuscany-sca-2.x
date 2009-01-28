@@ -19,7 +19,7 @@
 package workpool;
 
 import org.apache.tuscany.sca.databinding.job.Job;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface WorkerServiceCallback {

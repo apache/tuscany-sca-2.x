@@ -46,8 +46,8 @@ import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * A default SCA domain facade implementation.

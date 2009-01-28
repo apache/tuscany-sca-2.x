@@ -31,11 +31,11 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.osoa.sca.annotations.PolicySets;
-import org.osoa.sca.annotations.Requires;
+import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Requires;
 
 /**
- * Processes an {@link org.osoa.sca.annotations.Requires} annotation
+ * Processes an {@link org.oasisopen.sca.annotation.Requires} annotation
  *
  * @version $Rev$ $Date$
  */

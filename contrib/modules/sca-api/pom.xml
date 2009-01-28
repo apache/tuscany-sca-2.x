@@ -43,7 +43,7 @@
                         <Bundle-Version>1.4</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.api</Bundle-SymbolicName>
                         <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Export-Package>org.osoa.sca*</Export-Package>
+                        <Export-Package>org.oasisopen.sca*</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

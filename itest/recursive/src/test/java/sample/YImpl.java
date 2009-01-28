@@ -18,7 +18,7 @@
  */
 package sample;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Implementation of a Simple Service

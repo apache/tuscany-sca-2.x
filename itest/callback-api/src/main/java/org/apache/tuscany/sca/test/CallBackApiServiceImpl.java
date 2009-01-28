@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CallBackApiService.class)
 public class CallBackApiServiceImpl implements CallBackApiService {

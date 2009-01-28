@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.demos.aggregator;
 
 import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Retrieve and manage alert sources

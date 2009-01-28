@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.test.opoverload.impl;
 import java.util.ArrayList;
 
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class Implements the interface OverloadASourceTarget, and gives implementation for all methods which are

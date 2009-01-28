@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.BService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.CService;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CService.class)
 public class CServiceImpl implements CService {

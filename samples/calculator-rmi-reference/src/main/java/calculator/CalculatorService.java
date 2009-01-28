@@ -21,7 +21,7 @@ package calculator;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The Calculator service interface.

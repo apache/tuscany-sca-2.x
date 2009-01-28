@@ -39,8 +39,8 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.work;version="2.0.0",
  org.apache.tuscany.sca.workspace;version="2.0.0",
  org.apache.tuscany.sca.workspace.builder;version="2.0.0",
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.node.impl
 Bundle-DocURL: http://www.apache.org/
 

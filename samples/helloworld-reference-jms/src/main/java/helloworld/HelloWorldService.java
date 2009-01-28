@@ -18,7 +18,7 @@
  */
 package helloworld;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The interface for the helloworld service

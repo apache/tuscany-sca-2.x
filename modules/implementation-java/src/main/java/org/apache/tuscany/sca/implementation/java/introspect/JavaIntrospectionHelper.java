@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 /**
  * Implements various reflection-related operations
@@ -68,7 +68,7 @@ public final class JavaIntrospectionHelper {
 
     private static void checkInvalidAnnotations(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
-            if (a.annotationType().getName().startsWith("org.osoa.sca.annotations.")) {
+            if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation.")) {
                 logger.warning("Invalid annotation " + a + " is found on " + element);
             }
         }

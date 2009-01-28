@@ -22,7 +22,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Init;
 
 public class VegetablesCatalogImpl implements Catalog {
     private List<Item> catalog = new ArrayList<Item>();

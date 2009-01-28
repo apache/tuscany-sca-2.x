@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.services;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BComponent.class)
 public class BComponentImpl implements BComponent {

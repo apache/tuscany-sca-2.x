@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.spring;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Interface for the "hello world" service - predictably simple with a single operation

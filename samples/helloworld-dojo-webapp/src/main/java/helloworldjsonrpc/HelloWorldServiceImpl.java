@@ -20,7 +20,7 @@ package helloworldjsonrpc;
 
 import java.util.Date;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements the HelloWorld service component.

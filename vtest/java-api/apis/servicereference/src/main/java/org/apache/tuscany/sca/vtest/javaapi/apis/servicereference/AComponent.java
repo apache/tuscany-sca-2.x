@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.servicereference;
 
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.annotation.Conversational;
 
 /**
  * Simple Service A.

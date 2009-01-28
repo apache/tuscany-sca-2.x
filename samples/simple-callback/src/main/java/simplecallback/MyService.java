@@ -18,8 +18,8 @@
  */
 package simplecallback;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  * This service that will be invoked in a non-blocking fashion

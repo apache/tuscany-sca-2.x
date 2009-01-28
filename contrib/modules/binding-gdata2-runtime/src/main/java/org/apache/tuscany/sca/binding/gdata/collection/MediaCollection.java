@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.gdata.collection;
 import com.google.gdata.data.BaseEntry;
 import java.io.InputStream;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 

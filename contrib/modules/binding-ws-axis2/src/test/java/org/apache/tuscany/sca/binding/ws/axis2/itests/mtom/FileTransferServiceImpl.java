@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2.itests.mtom;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 import javax.activation.DataHandler;
 import java.io.File;
 import java.io.FileOutputStream;

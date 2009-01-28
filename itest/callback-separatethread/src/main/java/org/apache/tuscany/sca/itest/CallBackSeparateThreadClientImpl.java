@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.itest;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This is the client implementation for the call backs in a separate thread tests 

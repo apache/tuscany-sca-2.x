@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Property;
 
 import test.jaxb.props.ReturnCodeProperties;
 

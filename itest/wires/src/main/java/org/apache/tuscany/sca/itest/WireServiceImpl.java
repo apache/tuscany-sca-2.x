@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Sample WireService Implementation 

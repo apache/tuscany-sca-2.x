@@ -18,7 +18,7 @@
  */
 package foo;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(I.class)
 public class A implements I {

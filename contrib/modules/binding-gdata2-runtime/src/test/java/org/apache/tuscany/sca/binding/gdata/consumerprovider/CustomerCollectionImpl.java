@@ -32,7 +32,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {

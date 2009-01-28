@@ -21,8 +21,8 @@ package bigbank.account.feed;
 import org.apache.tuscany.sca.data.collection.Collection;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.NotFoundException;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import bigbank.account.AccountService;
 import bigbank.account.AccountReport;

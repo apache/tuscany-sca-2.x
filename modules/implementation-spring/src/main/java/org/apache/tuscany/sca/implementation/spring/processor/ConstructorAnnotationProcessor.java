@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostProcessorAdapter {
 
     private Class<? extends Annotation> constructorAnnotationType 
-                                            = org.osoa.sca.annotations.Constructor.class;
+                                            = org.oasisopen.sca.annotation.Constructor.class;
     
     private Class<? extends Annotation> autowiredAnnotationType = Autowired.class;
     

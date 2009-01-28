@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation.BService;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 import org.junit.Assert;
 
 @Service(AService.class)

@@ -18,7 +18,7 @@
  */
 package supplychain;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  * This is the business interface of the Customer service component.

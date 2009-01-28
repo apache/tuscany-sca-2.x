@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.gdata.collection;uses:=
- "org.osoa.sca.annotations,com.google.gdata.client,com.google.gdata.da
+ "org.oasisopen.sca.annotation,com.google.gdata.client,com.google.gdata.da
  ta";version="2.0.0"
 Private-Package: org.apache.tuscany.sca.binding.gdata.provider;version
  ="1.4"
@@ -41,8 +41,8 @@ Import-Package: com.google.gdata.client,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.gdata.runtime
 Bundle-DocURL: http://www.apache.org/
 

@@ -55,9 +55,9 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.Conversation;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.Conversation;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Base class for implementations of service and callback references.

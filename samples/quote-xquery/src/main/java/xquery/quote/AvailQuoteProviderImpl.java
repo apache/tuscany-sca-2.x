@@ -19,7 +19,7 @@
 package xquery.quote;
 
 import org.example.avail.AvailQuote;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AvailQuoteProviderService.class)
 public class AvailQuoteProviderImpl implements AvailQuoteProviderService {

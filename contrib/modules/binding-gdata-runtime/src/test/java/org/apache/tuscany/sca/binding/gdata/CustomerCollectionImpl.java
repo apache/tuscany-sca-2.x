@@ -32,7 +32,7 @@ import com.google.gdata.data.Link;
 import com.google.gdata.data.PlainTextConstruct;
 
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {

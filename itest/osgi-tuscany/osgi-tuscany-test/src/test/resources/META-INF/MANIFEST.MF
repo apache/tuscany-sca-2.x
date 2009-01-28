@@ -8,7 +8,7 @@ Import-Package: org.osgi.framework,
   junit.framework, 
   org.junit,
   org.apache.tuscany.sca.host.embedded,
-  org.osoa.sca,
-  org.osoa.sca.annotations,
+  org.oasisopen.sca,
+  org.oasisopen.sca.annotation,
   org.apache.tuscany.sca.databinding.annotation
 DynamicImport-Package: *

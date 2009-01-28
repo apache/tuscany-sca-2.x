@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.test.extended.impl;
 
 import org.apache.tuscany.sca.test.extended.MathService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(MathService.class)
 public class MathServiceImpl implements MathService {

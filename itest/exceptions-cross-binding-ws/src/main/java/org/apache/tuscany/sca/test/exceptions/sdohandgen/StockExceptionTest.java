@@ -24,7 +24,7 @@
  */
 package org.apache.tuscany.sca.test.exceptions.sdohandgen;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import stockexceptiontestservice.scatesttool.StockOffer;
 

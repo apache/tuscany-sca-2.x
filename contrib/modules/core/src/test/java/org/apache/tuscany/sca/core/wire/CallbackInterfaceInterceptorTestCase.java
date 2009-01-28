@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
 import org.easymock.EasyMock;
-import org.osoa.sca.NoRegisteredCallbackException;
+import org.oasisopen.sca.NoRegisteredCallbackException;
 
 /**
  * @version $Rev$ $Date$

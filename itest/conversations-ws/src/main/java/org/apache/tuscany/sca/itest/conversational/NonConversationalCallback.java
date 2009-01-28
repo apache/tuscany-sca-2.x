@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 
 /**

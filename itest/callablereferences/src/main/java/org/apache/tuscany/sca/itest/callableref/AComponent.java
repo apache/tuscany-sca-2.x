@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface AComponent {

@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.node;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A factory for SCA processing nodes. An SCA processing node can be loaded

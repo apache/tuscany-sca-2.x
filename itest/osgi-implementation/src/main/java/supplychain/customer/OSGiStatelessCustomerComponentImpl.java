@@ -18,7 +18,7 @@
  */
 package supplychain.customer;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 
 /**

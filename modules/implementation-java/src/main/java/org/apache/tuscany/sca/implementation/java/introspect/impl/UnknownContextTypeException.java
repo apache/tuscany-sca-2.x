@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 /**
- * Thrown when a method or field marked with {@link org.osoa.sca.annotations.Context} takes an unknown type
+ * Thrown when a method or field marked with {@link org.oasisopen.sca.annotation.Context} takes an unknown type
  *
  * @version $Rev$ $Date$
  */

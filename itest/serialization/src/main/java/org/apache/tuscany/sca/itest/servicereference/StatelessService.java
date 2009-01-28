@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.servicereference;
 
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
 
 
 /**

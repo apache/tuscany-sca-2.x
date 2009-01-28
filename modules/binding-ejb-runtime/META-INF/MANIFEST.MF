@@ -35,8 +35,8 @@ Import-Package: javax.ejb,
  org.omg.IOP,
  org.omg.PortableInterceptor,
  org.omg.stub.java.rmi,
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ejb.runtime
 Bundle-DocURL: http://www.apache.org/
 

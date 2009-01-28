@@ -43,8 +43,8 @@
      */
     package <xsl:value-of select="$package"/>;
 
-    import org.osoa.sca.annotations.Remotable;
-    import org.osoa.sca.annotations.Service;
+    import org.oasisopen.sca.annotation.Remotable;
+    import org.oasisopen.sca.annotation.Service;
     
     /*
      *  <xsl:value-of select="@name"/> java interface

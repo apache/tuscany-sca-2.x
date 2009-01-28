@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.scope;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 
 /**

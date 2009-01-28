@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.impl;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.B1Service;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.B2Service;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

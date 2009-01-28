@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.exception.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DException;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(DComponent.class)
 public class DComponentImpl implements DComponent {

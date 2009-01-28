@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 
 import org.apache.tuscany.sca.itest.conversational.CService;
 import org.apache.tuscany.sca.itest.conversational.DService;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Simple conversational Service that uses another Conversational Service

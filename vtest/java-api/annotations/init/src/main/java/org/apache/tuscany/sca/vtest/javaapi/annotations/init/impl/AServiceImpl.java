@@ -19,10 +19,10 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.init.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.init.AService;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService.

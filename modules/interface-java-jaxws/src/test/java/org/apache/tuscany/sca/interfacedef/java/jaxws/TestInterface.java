@@ -29,7 +29,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.xml.ws.Holder;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

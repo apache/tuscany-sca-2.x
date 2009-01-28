@@ -19,7 +19,7 @@
 package amazon.cart;
 
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import com.cart.amazon.CartAdd;
 import com.cart.amazon.CartAddResponse;

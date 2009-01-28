@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ServiceUnavailableException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 public class SimpleTestCase {
     

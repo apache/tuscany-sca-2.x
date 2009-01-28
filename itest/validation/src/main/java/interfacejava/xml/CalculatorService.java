@@ -18,7 +18,7 @@
  */
 package interfacejava.xml;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 /**
  * The Calculator service interface.
  */

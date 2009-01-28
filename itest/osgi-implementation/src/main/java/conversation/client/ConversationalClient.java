@@ -18,7 +18,7 @@
  */
 package conversation.client;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The client for the conversational itest. Is implemented by clients

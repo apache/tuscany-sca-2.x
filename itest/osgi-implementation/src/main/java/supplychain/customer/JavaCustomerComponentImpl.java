@@ -20,9 +20,9 @@ package supplychain.customer;
 
 import java.util.ArrayList;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import supplychain.retailer.Retailer;
 

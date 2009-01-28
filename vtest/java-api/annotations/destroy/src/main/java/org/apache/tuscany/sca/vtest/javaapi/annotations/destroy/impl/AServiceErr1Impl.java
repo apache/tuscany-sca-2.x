@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.destroy.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.destroy.AService;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService. The implementation has an error since it annotates a protected

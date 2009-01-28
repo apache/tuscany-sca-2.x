@@ -60,7 +60,7 @@ public class XSDValidationTestCase extends TestCase {
 
     public void testCalculator() throws Exception {
         
-        assertEquals("org.osoa.sca.ServiceRuntimeException: Unexpected <binding> element found. It should appear inside a <service> or <reference> element.", startUpException.getMessage());
+        assertEquals("org.oasisopen.sca.ServiceRuntimeException: Unexpected <binding> element found. It should appear inside a <service> or <reference> element.", startUpException.getMessage());
    
     }
  

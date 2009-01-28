@@ -18,8 +18,8 @@
  */
 package voidtest;
 
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * This is the business interface of the HelloWorld greetings service.

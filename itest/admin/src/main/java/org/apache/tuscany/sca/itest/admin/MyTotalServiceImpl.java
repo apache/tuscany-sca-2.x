@@ -3,9 +3,9 @@ package org.apache.tuscany.sca.itest.admin;
 import java.util.Date;
 
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.ComponentName;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.ComponentName;
 import org.apache.tuscany.sca.itest.admin.MyListService;
 import org.apache.tuscany.sca.itest.admin.MyListServiceByYear;
 import org.apache.tuscany.sca.itest.admin.MyService;

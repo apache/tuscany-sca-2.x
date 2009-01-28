@@ -3,7 +3,7 @@ Export-Package: org.apache.tuscany.sca.interfacedef.java.jaxws;uses:="
  org.apache.tuscany.sca.databinding,org.apache.tuscany.sca.interfacede
  f.util,org.objectweb.asm,javax.jws,javax.xml.namespace,javax.jws.soap
  ,org.apache.tuscany.sca.interfacedef.java.impl,org.apache.tuscany.sca
- .databinding.annotation,org.osoa.sca,javax.xml.bind.annotation.adapte
+ .databinding.annotation,org.oasisopen.sca,javax.xml.bind.annotation.adapte
  rs,org.apache.tuscany.sca.interfacedef.java,org.apache.tuscany.sca.in
  terfacedef,org.apache.tuscany.sca.interfacedef.java.introspect,javax.
  xml.bind.annotation,org.apache.tuscany.sca.databinding.jaxb,org.apach
@@ -43,8 +43,8 @@ Import-Package: javax.jws,
  
  org.objectweb.asm;version="3.1",
  org.objectweb.asm.util;version="3.1";resolution:=optional,
- org.osoa.sca;version="2.0",
- org.osoa.sca.annotations;version="2.0";resolution:=optional
+ org.oasisopen.sca;version="2.0",
+ org.oasisopen.sca.annotation;version="2.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.jaxws
 Bundle-DocURL: http://www.apache.org/
 

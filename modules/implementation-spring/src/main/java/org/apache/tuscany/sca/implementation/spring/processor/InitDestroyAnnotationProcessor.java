@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.implementation.spring.processor;
 
 import java.lang.annotation.Annotation;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Destroy;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.util.Assert;
 

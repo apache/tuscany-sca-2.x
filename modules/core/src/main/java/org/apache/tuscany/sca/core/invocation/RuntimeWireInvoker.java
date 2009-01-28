@@ -41,8 +41,8 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.ConversationEndedException;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ConversationEndedException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$

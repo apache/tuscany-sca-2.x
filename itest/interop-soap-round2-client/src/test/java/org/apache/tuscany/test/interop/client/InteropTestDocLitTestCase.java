@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tuscany.test.SCATestCase;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
+import org.oasisopen.sca.CompositeContext;
+import org.oasisopen.sca.CurrentCompositeContext;
 import org.soapinterop.wsdl.interop.test.doc.lit.WSDLInteropTestDocLitPortType;
 import org.soapinterop.xsd.ArrayOfstring_literal;
 import org.soapinterop.xsd.SOAPStruct;

@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Denotes an invalid constructor definition, e.g. when the number of injection names specified in {@link
- * org.osoa.sca.annotations.Constructor} do not match the number of actual constructor parameters
+ * org.oasisopen.sca.annotation.Constructor} do not match the number of actual constructor parameters
  *
  * @version $Rev$ $Date$
  */

@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceLocal;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote2;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(interfaces={HelloWorldServiceRemote.class, HelloWorldServiceRemote2.class, HelloWorldServiceLocal.class} )
 public class HelloWorldServiceMultipleServicesImpl implements HelloWorldServiceLocal, HelloWorldServiceRemote, HelloWorldServiceRemote2  {

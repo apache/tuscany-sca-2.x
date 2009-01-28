@@ -21,7 +21,7 @@ package bigbank.account.stock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * 

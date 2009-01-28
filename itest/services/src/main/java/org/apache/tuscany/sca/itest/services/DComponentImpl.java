@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.services;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(interfaces = {DComponent.class, D1Component.class})
 public class DComponentImpl implements DComponent, D1Component {

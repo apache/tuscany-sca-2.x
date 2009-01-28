@@ -22,8 +22,8 @@ package services.market;
 
 import java.util.Vector;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import services.Catalog;
 import services.CurrencyConverter;

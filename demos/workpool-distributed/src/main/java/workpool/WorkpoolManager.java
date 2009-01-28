@@ -18,9 +18,9 @@
  */
 package workpool;
 
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface WorkpoolManager {

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.builder;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Interface for Service3 in ComponentD.

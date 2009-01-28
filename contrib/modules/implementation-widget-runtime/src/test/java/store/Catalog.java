@@ -19,7 +19,7 @@
 
 package store;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Interface for the Catalog Service.

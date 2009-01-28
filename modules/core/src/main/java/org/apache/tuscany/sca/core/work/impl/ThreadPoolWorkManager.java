@@ -28,7 +28,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
 import org.apache.tuscany.sca.work.WorkSchedulerException;
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  * A thread-pool based implementation for the JSR-237 work manager.

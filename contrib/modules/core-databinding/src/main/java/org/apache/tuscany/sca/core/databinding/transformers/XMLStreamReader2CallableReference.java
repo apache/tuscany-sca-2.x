@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 @SuppressWarnings("unchecked")
 public class XMLStreamReader2CallableReference extends BaseTransformer<XMLStreamReader, CallableReference>

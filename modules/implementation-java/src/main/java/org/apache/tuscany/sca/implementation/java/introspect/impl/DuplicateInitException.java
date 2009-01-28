@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Thrown when an implementation is annotated multiple times with {@link @org.osoa.sca.annotations.Init}
+ * Thrown when an implementation is annotated multiple times with {@link @org.oasisopen.sca.annotation.Init}
  *
  * @version $Rev$ $Date$
  */

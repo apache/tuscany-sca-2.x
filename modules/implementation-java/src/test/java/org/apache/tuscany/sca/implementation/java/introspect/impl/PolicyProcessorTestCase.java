@@ -40,8 +40,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.Requires;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Requires;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

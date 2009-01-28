@@ -33,7 +33,7 @@ import org.omg.CORBA.portable.ApplicationException;
 import org.omg.CORBA.portable.ObjectImpl;
 import org.omg.CORBA.portable.RemarshalException;
 import org.omg.stub.java.rmi._Remote_Stub;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Factor class that is used to create EJB Proxies.

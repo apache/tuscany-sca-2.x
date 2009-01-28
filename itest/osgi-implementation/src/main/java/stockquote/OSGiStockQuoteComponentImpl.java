@@ -21,7 +21,7 @@ package stockquote;
 import java.util.Dictionary;
 
 import org.osgi.service.component.ComponentContext;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Declarative Stock quote with configurable properties.

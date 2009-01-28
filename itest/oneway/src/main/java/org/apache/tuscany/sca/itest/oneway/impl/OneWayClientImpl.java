@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.itest.oneway.impl;
 import org.apache.tuscany.sca.itest.oneway.OneWayClient;
 import org.apache.tuscany.sca.itest.oneway.OneWayService;
 import org.junit.Assert;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The client for the oneway itest.

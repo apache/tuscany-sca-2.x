@@ -19,8 +19,8 @@
 
 package weather;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.example.weather.WeatherForecastSoap;
 import com.example.weather.WeatherForecasts;

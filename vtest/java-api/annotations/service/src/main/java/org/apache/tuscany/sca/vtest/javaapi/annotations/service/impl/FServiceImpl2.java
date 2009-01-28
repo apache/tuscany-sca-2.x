@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(FServiceImpl2.class)
 public class FServiceImpl2 extends FServiceImpl  {

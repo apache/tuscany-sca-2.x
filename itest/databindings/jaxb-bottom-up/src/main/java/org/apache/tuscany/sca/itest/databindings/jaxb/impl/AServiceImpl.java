@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.AService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService.

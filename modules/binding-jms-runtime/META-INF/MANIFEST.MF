@@ -3,7 +3,7 @@ Export-Package: org.apache.tuscany.sca.binding.jms.provider;uses:="org
  .apache.tuscany.sca.runtime,javax.jms,org.apache.tuscany.sca.provider
  ,org.apache.tuscany.sca.core,org.apache.axiom.om,javax.xml.stream,org
  .apache.tuscany.sca.binding.jms,org.apache.tuscany.sca.core.assembly,
- org.osoa.sca,org.apache.tuscany.sca.core.invocation,javax.naming,org.
+ org.oasisopen.sca,org.apache.tuscany.sca.core.invocation,javax.naming,org.
  apache.tuscany.sca.assembly,org.apache.tuscany.sca.binding.ws.wsdlgen
  ,org.apache.axiom.om.impl.builder,org.apache.tuscany.sca.interfacedef
  .java,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.interface
@@ -40,8 +40,8 @@ Import-Package: javax.jms,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.work;version="2.0.0",
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jms.runtime
 Bundle-DocURL: http://www.apache.org/
 

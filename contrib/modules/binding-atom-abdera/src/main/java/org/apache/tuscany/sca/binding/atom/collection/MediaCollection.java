@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.binding.atom.collection;
 
 import java.io.InputStream;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import org.apache.abdera.model.Entry;
 

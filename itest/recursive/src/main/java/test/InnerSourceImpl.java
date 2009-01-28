@@ -19,7 +19,7 @@
 
 package test;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

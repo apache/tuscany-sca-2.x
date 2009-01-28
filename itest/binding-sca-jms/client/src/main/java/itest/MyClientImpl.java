@@ -19,7 +19,7 @@
 
 package itest;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class MyClientImpl implements MyService {
 

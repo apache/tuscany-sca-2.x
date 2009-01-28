@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.test;
 
 import org.junit.Assert;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CallBackCTypeClient.class)
 public class CallBackCTypeClientImpl implements CallBackCTypeClient, CallBackCTypeCallBack {

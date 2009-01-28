@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The client that calls into an existing conversation by accepting

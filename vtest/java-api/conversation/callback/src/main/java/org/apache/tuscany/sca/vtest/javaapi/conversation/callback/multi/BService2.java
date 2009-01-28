@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Simple Service

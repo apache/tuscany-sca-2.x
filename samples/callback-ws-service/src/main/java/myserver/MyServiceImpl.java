@@ -18,9 +18,9 @@
  */
 package myserver;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements MyService and uses a callback.

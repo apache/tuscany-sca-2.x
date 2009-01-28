@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class BComponentWrongTargetImpl implements BComponent {
 

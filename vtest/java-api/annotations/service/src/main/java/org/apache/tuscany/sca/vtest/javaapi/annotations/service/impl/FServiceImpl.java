@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService.class)
 public class FServiceImpl implements FService {

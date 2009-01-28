@@ -19,7 +19,7 @@
 package test;
 
 // TODO: Need to change *ALL* annotations to org.oasisopen.xxxx
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * A test service interface

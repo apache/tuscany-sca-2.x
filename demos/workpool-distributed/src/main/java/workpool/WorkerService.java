@@ -18,10 +18,10 @@
  */
 package workpool;
 
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Remotable;
+import org.oasisopen.sca.annotation.OneWay;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.databinding.job.Job;

@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
  * Thrown when more than one component implementation constructor is annotated with {@link
- * org.osoa.sca.annotations.Constructor}
+ * org.oasisopen.sca.annotation.Constructor}
  *
  * @version $Rev$ $Date$
  */

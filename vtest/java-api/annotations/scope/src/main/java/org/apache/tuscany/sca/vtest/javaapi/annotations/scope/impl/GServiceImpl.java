@@ -20,12 +20,12 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.GService;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.EagerInit;
 
 @Scope("COMPOSITE")
 @EagerInit

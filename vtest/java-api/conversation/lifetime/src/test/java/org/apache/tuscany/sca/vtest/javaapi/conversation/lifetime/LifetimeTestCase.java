@@ -24,7 +24,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osoa.sca.ConversationEndedException;
+import org.oasisopen.sca.ConversationEndedException;
 
 /**
  * 

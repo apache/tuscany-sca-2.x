@@ -18,8 +18,8 @@
  */
 package mysca.test.myservice.impl;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class Implements the interface MyService and gives implementation for all methods which are declared in that

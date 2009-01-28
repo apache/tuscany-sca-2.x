@@ -18,9 +18,9 @@
  */
 package loanapplication;
 
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("CONVERSATION")
 @AllowsPassByReference

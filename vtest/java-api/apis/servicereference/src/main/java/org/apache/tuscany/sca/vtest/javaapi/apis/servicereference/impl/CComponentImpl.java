@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.servicereference.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.servicereference.CComponent;
 import org.junit.Assert;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CComponent.class)
 public class CComponentImpl implements CComponent {

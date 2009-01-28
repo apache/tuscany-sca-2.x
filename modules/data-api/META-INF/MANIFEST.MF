@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.data.collection;uses:="org.osoa
+Export-Package: org.apache.tuscany.sca.data.collection;uses:="org.oasisopen
  .sca.annotations";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Data API

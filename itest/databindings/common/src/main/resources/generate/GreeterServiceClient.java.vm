@@ -26,7 +26,7 @@ import $file.getJavaPackage().$typeInstance.getTypeName();
 #end
 #end
 
-import org.osoa.sca.annotations.AllowsPassByReference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
 
 /**
  * GreeterServiceClient

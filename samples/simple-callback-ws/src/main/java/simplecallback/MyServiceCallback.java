@@ -18,7 +18,7 @@
  */
 package simplecallback;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The callback interface for {@link MyService}.

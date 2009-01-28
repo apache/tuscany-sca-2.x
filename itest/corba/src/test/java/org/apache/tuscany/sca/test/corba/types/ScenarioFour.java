@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.test.corba.types;
 
 import org.apache.tuscany.sca.test.corba.scenariofour.ScenarioFourSdo;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

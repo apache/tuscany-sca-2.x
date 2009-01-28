@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 import org.w3c.dom.Element;
 
 /**

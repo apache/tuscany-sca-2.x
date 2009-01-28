@@ -18,7 +18,7 @@
  */
 package mortgage;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(InterestRateQuote.class)
 public class InterestRateQuoteImpl implements InterestRateQuote {

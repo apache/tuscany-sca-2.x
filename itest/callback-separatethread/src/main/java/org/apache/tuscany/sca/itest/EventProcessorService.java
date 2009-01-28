@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.itest;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Sample Event Processor Service 

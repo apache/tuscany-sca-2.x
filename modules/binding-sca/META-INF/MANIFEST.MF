@@ -25,7 +25,7 @@ Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca
 Bundle-DocURL: http://www.apache.org/
 

@@ -18,7 +18,7 @@
  */
 package mortgage;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * CreditCheck interface

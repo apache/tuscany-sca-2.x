@@ -29,8 +29,8 @@ import com.google.gdata.data.Source;
 import com.google.gdata.data.extensions.EventEntry;
 import com.google.gdata.data.extensions.When;
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class CustomerClientImpl implements CustomerClient {

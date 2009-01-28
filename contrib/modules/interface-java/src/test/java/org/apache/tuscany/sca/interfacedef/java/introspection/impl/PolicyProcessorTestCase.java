@@ -25,8 +25,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.osoa.sca.annotations.PolicySets;
-import org.osoa.sca.annotations.Requires;
+import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Requires;
 
 /**
  * @version $Rev$ $Date$

@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldCallbackRemote;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceCallbackOnewayRemote;
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
 
 
 public class HelloWorldServiceCallbackOnewayRemoteImpl implements HelloWorldServiceCallbackOnewayRemote {

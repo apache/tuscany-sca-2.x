@@ -19,7 +19,7 @@
 
 package catalog.ebay;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 import org.w3c.dom.Node;
 
 /**

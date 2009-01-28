@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -111,22 +111,22 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Reference(name = "myRef", required = true)String prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Reference(name = "myRef1")String prop1, @Reference(name = "myRef2")String prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myRef")
+        @org.oasisopen.sca.annotation.Constructor("myRef")
         public Foo(@Reference Integer prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Reference List prop) {
 
         }
@@ -134,7 +134,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
     private static class NoNameFoo {
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public NoNameFoo(@Reference String prop) {
 
         }
@@ -142,22 +142,22 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public BadFoo(@Reference(name = "myRef")String prop1, @Reference(name = "myRef")String prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public BadFoo(@Reference String prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myRef")
+        @org.oasisopen.sca.annotation.Constructor("myRef")
         public BadFoo(@Reference Integer ref, @Reference Integer ref2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
+        @org.oasisopen.sca.annotation.Constructor({"myRef", "myRef2"})
         public BadFoo(@Reference List ref, @Reference(name = "myOtherRef")List ref2) {
 
         }

@@ -2,7 +2,7 @@ package org.apache.tuscany.sca.itest.admin;
 
 import java.util.Date;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface MyServiceByDate {

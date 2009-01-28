@@ -34,8 +34,8 @@ import org.apache.abdera.model.Person;
 import org.apache.abdera.parser.Parser;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;

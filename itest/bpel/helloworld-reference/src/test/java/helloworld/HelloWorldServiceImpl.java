@@ -20,7 +20,7 @@ package helloworld;
 
 import greetings.GreetingsService;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * The HelloWorld service implementation

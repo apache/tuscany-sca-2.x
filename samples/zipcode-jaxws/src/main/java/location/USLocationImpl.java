@@ -19,9 +19,9 @@
 
 package location;
 
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.example.uszip.USZipSoap;
 import com.example.uszip.GetInfoByAreaCodeResponse.GetInfoByAreaCodeResult;

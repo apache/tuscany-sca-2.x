@@ -37,8 +37,8 @@ import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.osoa.sca.annotations.Requires;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Requires;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

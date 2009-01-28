@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extension.helper.utils.AbstractStAXArtifactProcessor;
 import org.apache.tuscany.sca.extension.helper.utils.DynamicImplementation;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * An SCDL ArtifactProcessor which uses the Implementation class getters/setters

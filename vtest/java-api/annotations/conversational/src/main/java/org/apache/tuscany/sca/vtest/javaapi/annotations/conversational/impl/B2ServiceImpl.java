@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.B2Service;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(B2Service.class)
 @Scope("COMPOSITE")

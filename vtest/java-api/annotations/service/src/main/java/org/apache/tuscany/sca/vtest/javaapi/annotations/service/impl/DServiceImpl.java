@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService1;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService2;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService3;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(interfaces = {DService1.class, DService2.class})
 public class DServiceImpl implements DService1, DService2, DService3 {

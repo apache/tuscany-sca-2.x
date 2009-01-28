@@ -21,8 +21,8 @@ package services.mediation;
 
 import java.rmi.RemoteException;
 
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Reference;
 
 import services.Catalog;
 import services.Item;

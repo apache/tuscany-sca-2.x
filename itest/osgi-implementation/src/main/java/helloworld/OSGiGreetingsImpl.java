@@ -27,7 +27,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.BundleActivator;
-import org.osoa.sca.annotations.AllowsPassByReference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
 
 
 public class OSGiGreetingsImpl implements Greetings, ServiceListener, BundleActivator {

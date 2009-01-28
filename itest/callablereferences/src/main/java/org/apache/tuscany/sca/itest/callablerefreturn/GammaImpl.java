@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.callablerefreturn;
 
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("CONVERSATION")
 public class GammaImpl implements Gamma

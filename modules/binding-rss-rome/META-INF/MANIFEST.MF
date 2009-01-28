@@ -33,7 +33,7 @@ Import-Package: com.sun.syndication.feed.atom,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.jdom;version="1.0.0",
- org.osoa.sca.annotations;version="2.0.0"
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rss.rome
 Bundle-DocURL: http://www.apache.org/
 

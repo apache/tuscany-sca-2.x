@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.osoa.sca.annotations.ConversationID;
+import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * Test the ConversationIDProcessor

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.ws.axis2.itests;
 
 import org.apache.axiom.om.OMElement;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class HelloWorldOMComponent implements HelloWorldOM {
 

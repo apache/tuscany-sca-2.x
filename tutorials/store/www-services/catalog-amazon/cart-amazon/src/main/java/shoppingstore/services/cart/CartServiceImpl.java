@@ -2,7 +2,7 @@ package shoppingstore.services.cart;
 
 import java.util.HashMap;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 import com.amazon.webservices.awsecommerceservice._2007_05_14.Cart;
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartAdd;

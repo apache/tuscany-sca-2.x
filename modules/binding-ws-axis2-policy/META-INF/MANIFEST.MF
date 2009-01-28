@@ -17,7 +17,7 @@ Export-Package: org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.to
    org.apache.tuscany.sca.contribution.resolver,
    org.apache.tuscany.sca.policy.util,
    org.apache.tuscany.sca.contribution.processor,
-   org.osoa.sca",
+   org.oasisopen.sca",
  org.apache.tuscany.sca.binding.ws.axis2.policy.header;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany Policy Model for Axis2 WS binding
@@ -52,7 +52,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy.util;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.axis2.policy
 Bundle-DocURL: http://www.apache.org/
 

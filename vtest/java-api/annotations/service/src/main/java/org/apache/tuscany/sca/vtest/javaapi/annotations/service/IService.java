@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Simple Remotable Service

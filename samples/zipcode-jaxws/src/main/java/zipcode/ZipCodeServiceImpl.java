@@ -24,10 +24,10 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.example.uszip.GetInfoByZIPResponse;
 import com.example.uszip.USZipSoap;

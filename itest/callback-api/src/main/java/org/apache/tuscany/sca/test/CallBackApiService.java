@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 @Callback(CallBackApiCallBack.class)

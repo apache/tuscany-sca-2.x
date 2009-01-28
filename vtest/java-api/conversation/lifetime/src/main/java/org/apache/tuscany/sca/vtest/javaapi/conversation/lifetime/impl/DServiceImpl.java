@@ -26,9 +26,9 @@ import java.io.ObjectInputStream;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.DService;
 import org.junit.Assert;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(DService.class)
 @Scope("CONVERSATION")

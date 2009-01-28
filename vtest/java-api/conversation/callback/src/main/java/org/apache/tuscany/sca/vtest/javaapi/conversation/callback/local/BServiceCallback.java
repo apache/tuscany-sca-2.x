@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local;
 
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.annotation.Conversational;
 
 /**
  * Simple Service

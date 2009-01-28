@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * This is the business interface of the HelloWorld greetings service.

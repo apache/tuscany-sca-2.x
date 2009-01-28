@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.exception;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Simple Remote Service D.

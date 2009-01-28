@@ -22,7 +22,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.policy.authentication.basic;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.http.runtime
 Bundle-DocURL: http://www.apache.org/
 

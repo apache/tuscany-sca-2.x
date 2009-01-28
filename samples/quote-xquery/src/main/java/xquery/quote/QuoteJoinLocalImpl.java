@@ -21,7 +21,7 @@ package xquery.quote;
 import org.example.avail.AvailQuote;
 import org.example.price.PriceQuote;
 import org.example.quote.Quote;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class QuoteJoinLocalImpl implements QuoteJoinLocal {
     private QuoteJoin quoteJoin;

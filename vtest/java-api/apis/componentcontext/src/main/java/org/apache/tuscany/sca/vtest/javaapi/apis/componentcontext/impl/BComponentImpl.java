@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BService;
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.CService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(interfaces={BService.class, CService.class})
 public class BComponentImpl implements BService, CService {

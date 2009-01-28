@@ -22,10 +22,10 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.osoa.sca.annotations.EagerInit;
+import org.oasisopen.sca.annotation.EagerInit;
 
 /**
- * Handles processing of {@link org.osoa.sca.annotations.EagerInit}
+ * Handles processing of {@link org.oasisopen.sca.annotation.EagerInit}
  *
  * @version $Rev$ $Date$
  */

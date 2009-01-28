@@ -18,7 +18,7 @@
  */
 package org.example.orderservice;
 
-// import org.osoa.sca.annotations.Service;
+// import org.oasisopen.sca.annotation.Service;
 import java.util.Random;
 
 import javax.jws.WebMethod;

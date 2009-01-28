@@ -19,7 +19,7 @@
 
 package mortgage;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * A pojo implementation of RiskAssessment service

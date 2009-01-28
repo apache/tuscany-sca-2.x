@@ -1,6 +1,6 @@
 package shoppingstore.services.cart;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartAdd;
 import com.amazon.webservices.awsecommerceservice._2007_05_14.CartAddResponse;

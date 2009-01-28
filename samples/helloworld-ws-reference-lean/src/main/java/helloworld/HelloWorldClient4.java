@@ -19,10 +19,10 @@
 package helloworld;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * The HelloWorld client implementation

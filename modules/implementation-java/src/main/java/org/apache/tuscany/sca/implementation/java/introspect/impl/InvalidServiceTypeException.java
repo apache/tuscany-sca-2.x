@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Thrown when a service type specified by an {@link org.osoa.sca.annotations.Service} annotation is invalid, e.g. it is
+ * Thrown when a service type specified by an {@link org.oasisopen.sca.annotation.Service} annotation is invalid, e.g. it is
  * not an interface
  *
  * @version $Rev$ $Date$

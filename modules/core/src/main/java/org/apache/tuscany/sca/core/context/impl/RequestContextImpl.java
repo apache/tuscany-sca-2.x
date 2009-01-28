@@ -37,8 +37,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.RequestContext;
 
 /**
  * @version $Rev$ $Date$

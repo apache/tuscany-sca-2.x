@@ -18,7 +18,7 @@
  */
 package xquery.quote;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface QuoteCalculator {

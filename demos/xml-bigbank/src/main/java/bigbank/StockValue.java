@@ -21,7 +21,7 @@ package bigbank;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

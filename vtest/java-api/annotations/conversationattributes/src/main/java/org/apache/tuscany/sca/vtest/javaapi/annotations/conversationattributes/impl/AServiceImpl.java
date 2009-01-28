@@ -23,10 +23,10 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.A
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.B2Service;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.BService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.CService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

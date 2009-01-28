@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.test;
 import java.io.File;
 
 import org.junit.Assert;
-import org.osoa.sca.NoRegisteredCallbackException;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.NoRegisteredCallbackException;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CallBackSetCallbackClient.class)
 public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient {

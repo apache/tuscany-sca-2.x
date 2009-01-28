@@ -18,8 +18,8 @@
  */
 package com.example;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 public class ExampleServiceImpl implements ExampleService {
 

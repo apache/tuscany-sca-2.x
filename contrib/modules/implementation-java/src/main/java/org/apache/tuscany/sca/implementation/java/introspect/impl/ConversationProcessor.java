@@ -24,9 +24,9 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.ConversationAttributes;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * @version $Rev$ $Date$

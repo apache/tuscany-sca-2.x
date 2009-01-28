@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation;
 
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.EndsConversation;
 
 /**
  * Simple Local Service
