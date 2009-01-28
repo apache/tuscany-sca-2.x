@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscoverer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 
 /**
  * A ServiceDiscoverer that find META-INF/services/... in installed bundles
@@ -200,8 +201,9 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         serviceName = "META-INF/services/" + serviceName;
 
         for (Bundle bundle : context.getBundles()) {
-            if (bundle.getBundleId() == 0) {
+            if (bundle.getBundleId() == 0 || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
                 // Skip system bundle as it has access to the application classloader
+                // Skip bundle fragments too
                 continue;
             }
             Enumeration<URL> urls = null;
