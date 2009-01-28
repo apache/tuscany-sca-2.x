@@ -35,6 +35,8 @@
         <componentDescriptor>../ejava/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../host-webapp/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../webservice/src/main/components/bin-samples.xml</componentDescriptor>
+        <componentDescriptor>../all/src/main/components/bin-launcher.xml</componentDescriptor>
+
 <!--
         <componentDescriptor>../manager/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../process/src/main/components/bin-samples.xml</componentDescriptor>
