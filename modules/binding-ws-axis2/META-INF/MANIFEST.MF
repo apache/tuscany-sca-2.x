@@ -148,4 +148,5 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.w3c.dom,
  org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.axis2
+Fragment-Host: org.apache.axis2.kernel
 Bundle-DocURL: http://www.apache.org/
