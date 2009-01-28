@@ -11,7 +11,7 @@ Export-Package: org.apache.tuscany.sca.binding.corba.provider.service;
  g.corba,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.bi
  nding.corba.provider.reference,org.apache.tuscany.sca.invocation,org.
  apache.tuscany.sca.binding.corba.provider.service,org.apache.tuscany.
- sca.host.corba,org.osoa.sca";version="2.0.0",org.apache.tuscany.sca.bin
+ sca.host.corba,org.oasisopen.sca";version="2.0.0",org.apache.tuscany.sca.bin
  ding.corba.provider.exceptions;version="2.0.0",org.apache.tuscany.sca.b
  inding.corba.provider.types;uses:="org.apache.tuscany.sca.binding.cor
  ba.provider.exceptions";version="2.0.0",org.apache.tuscany.sca.binding.
@@ -58,7 +58,7 @@ Import-Package: javax.xml.namespace;resolution:=optional,
  org.omg.CORBA,
  org.omg.CORBA.portable,
  org.omg.CosNaming;resolution:=optional,
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.corba.runtime
 Bundle-DocURL: http://www.apache.org/
 

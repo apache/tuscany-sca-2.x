@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.service.impl;
 import org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.service.BService;
 import org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.service.CService;
 import org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.service.DService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements DService.

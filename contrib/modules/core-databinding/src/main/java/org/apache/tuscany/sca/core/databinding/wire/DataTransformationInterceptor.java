@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * An interceptor to transform data across databindings on the wire

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface HelloWorldCallbackRemote {

@@ -27,9 +27,9 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.ConversationAttributes;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * @version $Rev$ $Date$

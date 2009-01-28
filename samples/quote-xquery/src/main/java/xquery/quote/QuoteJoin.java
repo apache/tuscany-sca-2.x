@@ -24,7 +24,7 @@ import javax.xml.ws.ResponseWrapper;
 import org.example.avail.AvailQuote;
 import org.example.price.PriceQuote;
 import org.example.quote.Quote;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface QuoteJoin {

@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.Test;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * This test class tests the "@Destroy" annotation described in section 1.8.8.

@@ -18,7 +18,7 @@
  */
 package test;
 
-import org.osoa.sca.annotations.*;
+import org.oasisopen.sca.annotation.*;
 
 /**
  * Simple Java component implementation for business interface Service1Superset

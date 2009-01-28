@@ -18,7 +18,7 @@
  */
 package calculator.warning;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * An implementation of the Property service

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.oneway;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  * Simple Remotable Service

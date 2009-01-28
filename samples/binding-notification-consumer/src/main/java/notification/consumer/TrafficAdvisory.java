@@ -18,7 +18,7 @@
  */
 package notification.consumer;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

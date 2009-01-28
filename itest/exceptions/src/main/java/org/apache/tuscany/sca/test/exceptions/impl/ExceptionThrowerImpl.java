@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.test.exceptions.impl;
 
 import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * 

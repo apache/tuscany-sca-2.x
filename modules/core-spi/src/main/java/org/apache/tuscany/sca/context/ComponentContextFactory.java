@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.context;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.ComponentContext;
+import org.oasisopen.sca.ComponentContext;
 
 /**
  * Interface implemented by the provider of the ComponentContext.

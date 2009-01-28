@@ -19,8 +19,8 @@
 
 package mysca.test.myservice;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(MySimpleTotalService.class)
 public class MySimpleTotalServiceImpl implements MySimpleTotalService {

@@ -49,8 +49,8 @@ Import-Package: com.sun.script.jruby,
  org.jruby.runtime.load,
  org.jruby.util,
  org.jruby.util.io,
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional,
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.script.runt
  ime

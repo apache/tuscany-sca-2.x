@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.NService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.OService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Scope;
 
 @Service(NService.class)
 @Scope("STATELESS")

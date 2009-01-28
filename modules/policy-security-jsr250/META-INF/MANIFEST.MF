@@ -17,7 +17,7 @@ Import-Package: javax.annotation.security,javax.xml.namespace,org.apac
  g.apache.tuscany.sca.policy;version="2.0.0",org.apache.tuscany.sca.poli
  cy.authorization;version="2.0.0",org.apache.tuscany.sca.policy.identity
  ;version="2.0.0",org.apache.tuscany.sca.implementation.java.introspect.
- impl;resolution:=optional,org.osoa.sca.annotations;version="2.0.0";reso
+ impl;resolution:=optional,org.oasisopen.sca.annotation;version="2.0.0";reso
  lution:=optional,org.apache.tuscany.sca.interfacedef.java;version="1.
  4";resolution:=optional,org.apache.tuscany.sca.interfacedef;version="
  1.4";resolution:=optional,org.ap

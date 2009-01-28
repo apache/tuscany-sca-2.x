@@ -39,8 +39,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with

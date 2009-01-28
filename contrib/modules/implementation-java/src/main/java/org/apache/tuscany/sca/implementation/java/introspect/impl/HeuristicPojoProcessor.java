@@ -53,11 +53,11 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine
@@ -250,7 +250,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         Constructor constructor;
         boolean explict = false;
         if (definition != null && definition.getConstructor()
-            .isAnnotationPresent(org.osoa.sca.annotations.Constructor.class)) {
+            .isAnnotationPresent(org.oasisopen.sca.annotation.Constructor.class)) {
             // the constructor was already defined explicitly
             return;
         } else if (definition != null) {

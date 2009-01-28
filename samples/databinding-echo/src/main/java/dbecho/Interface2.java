@@ -21,7 +21,7 @@ package dbecho;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 import org.w3c.dom.Node;
 
 /**

@@ -18,7 +18,7 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * An implementation of the Add service

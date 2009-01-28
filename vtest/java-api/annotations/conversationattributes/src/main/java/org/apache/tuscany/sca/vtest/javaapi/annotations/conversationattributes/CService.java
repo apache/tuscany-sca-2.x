@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes;
 
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Simple Service

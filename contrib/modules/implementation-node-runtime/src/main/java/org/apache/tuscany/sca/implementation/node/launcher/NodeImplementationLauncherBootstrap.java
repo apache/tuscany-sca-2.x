@@ -23,8 +23,8 @@ import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Bootstrap class for standalone SCA nodes.

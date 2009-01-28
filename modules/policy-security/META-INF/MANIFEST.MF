@@ -10,8 +10,8 @@ Export-Package: org.apache.tuscany.sca.policy.authorization;uses:="jav
  nitor,org.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfaced
  ef,javax.xml.namespace,org.apache.tuscany.sca.invocation,javax.xml.st
  ream,org.apache.tuscany.sca.contribution.resolver,org.apache.tuscany.
- sca.policy.util,org.apache.tuscany.sca.contribution.processor,org.oso
- a.sca";version="2.0.0",org.apache.tuscany.sca.policy.authentication.bas
+ sca.policy.util,org.apache.tuscany.sca.contribution.processor,org.oasisopen
+ .sca";version="2.0.0",org.apache.tuscany.sca.policy.authentication.bas
  ic;uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assem
  bly,org.apache.tuscany.sca.provider,org.apache.tuscany.sca.core,org.a
  pache.tuscany.sca.policy,org.apache.tuscany.sca.monitor,org.apache.tu
@@ -58,7 +58,7 @@ Import-Package: javax.security.auth.callback,
  org.apache.tuscany.sca.policy.util;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.security
 Bundle-DocURL: http://www.apache.org/
 

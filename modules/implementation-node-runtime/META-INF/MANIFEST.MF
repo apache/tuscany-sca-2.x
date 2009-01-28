@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.implementation.node.launcher;us
- es:="org.apache.tuscany.sca.node,org.osoa.sca";version="2.0.0",org.apac
+ es:="org.apache.tuscany.sca.node,org.oasisopen.sca";version="2.0.0",org.apac
  he.tuscany.sca.implementation.node.webapp;uses:="org.apache.tuscany.s
  ca.implementation.node.launcher,org.apache.tuscany.sca.node,org.apach
  e.tuscany.sca.core,javax.servlet,org.apache.tuscany.sca.host.http,jav
@@ -29,7 +29,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.node.runtim
  e
 Bundle-DocURL: http://www.apache.org/

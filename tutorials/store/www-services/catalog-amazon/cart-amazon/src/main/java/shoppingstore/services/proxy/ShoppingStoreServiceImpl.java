@@ -1,7 +1,7 @@
 package shoppingstore.services.proxy;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
 import shoppingstore.services.cart.CartService;
 

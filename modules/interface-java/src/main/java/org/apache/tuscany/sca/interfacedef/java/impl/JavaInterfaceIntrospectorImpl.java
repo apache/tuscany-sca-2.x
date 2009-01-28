@@ -48,10 +48,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.EndsConversation;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Default implementation of a Java interface introspector.
@@ -100,7 +100,7 @@ public class JavaInterfaceIntrospectorImpl {
         javaInterface.setConversational(conversational);
 
         Class<?> callbackClass = null;
-        org.osoa.sca.annotations.Callback callback = clazz.getAnnotation(org.osoa.sca.annotations.Callback.class);
+        org.oasisopen.sca.annotation.Callback callback = clazz.getAnnotation(org.oasisopen.sca.annotation.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
             if (remotable && !callbackClass.isAnnotationPresent(Remotable.class)) {

@@ -20,7 +20,7 @@ package test;
 
 import javax.jws.WebService;
 import javax.jws.WebMethod;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Basic interface to invoke testcases

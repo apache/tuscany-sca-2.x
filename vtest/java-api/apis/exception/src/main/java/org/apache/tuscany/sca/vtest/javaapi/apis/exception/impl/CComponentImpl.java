@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.exception.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.CComponent;
 import org.junit.Assert;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.ConversationAttributes;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CComponent.class)
 @Scope("CONVERSATION")

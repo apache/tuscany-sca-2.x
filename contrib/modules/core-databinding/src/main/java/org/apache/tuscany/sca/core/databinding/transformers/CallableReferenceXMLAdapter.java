@@ -31,7 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 /**
  * @version $Rev$ $Date$

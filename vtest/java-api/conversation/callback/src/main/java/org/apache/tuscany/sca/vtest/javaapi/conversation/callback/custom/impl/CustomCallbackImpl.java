@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.CustomCallback;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("CONVERSATION")
 public class CustomCallbackImpl implements CustomCallback, AServiceCallback {

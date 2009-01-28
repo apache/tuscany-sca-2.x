@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.test.corba.types;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

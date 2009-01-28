@@ -20,7 +20,7 @@ package bigbank.account.services.accountdata;
 
 import java.rmi.RemoteException;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import com.bigbank.account.AccountFactory;
 import com.bigbank.account.AccountLog;

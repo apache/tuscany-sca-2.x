@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.itest.callablerefconversational.ConversationalServ
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Simple test case that creates a ServiceReference to a Conversational Component

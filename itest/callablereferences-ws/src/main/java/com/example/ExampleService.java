@@ -18,9 +18,9 @@
  */
 package com.example;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface ExampleService {

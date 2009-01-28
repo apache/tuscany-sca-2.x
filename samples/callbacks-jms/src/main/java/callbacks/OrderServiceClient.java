@@ -19,8 +19,8 @@
 
 package callbacks;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(OrderServiceClient.class)
 public class OrderServiceClient implements OrderCallback {

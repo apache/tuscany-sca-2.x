@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.test.exceptions.impl.jaxb.ObjectFactory;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockExceptionTest;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockOffer;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.TestNotDeclaredAtSourceFault;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * JAXB version of StockExceptionTest impl

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.interfaces;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 
 /*
  * itest for interface: local,method-overloading

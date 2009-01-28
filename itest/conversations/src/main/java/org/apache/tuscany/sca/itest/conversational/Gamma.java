@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.itest.conversational;
 
 import org.apache.tuscany.sca.itest.Record;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.EndsConversation;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $Rev$ $Date$

@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.omg.CORBA.Object;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class CorbaSCAInvoker implements Invoker {
 

@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.binding.ws.axis2.itests.mtom;
 
 import javax.activation.DataHandler;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This client program shows how to create an SCA runtime, start it,

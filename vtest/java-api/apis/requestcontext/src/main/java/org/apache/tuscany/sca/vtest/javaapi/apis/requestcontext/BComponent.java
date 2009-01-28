@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext;
 
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
 
 /**
  * Simple Service B.

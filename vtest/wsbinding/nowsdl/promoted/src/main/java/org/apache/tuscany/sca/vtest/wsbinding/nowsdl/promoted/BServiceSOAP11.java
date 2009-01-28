@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Simple Service used by another service

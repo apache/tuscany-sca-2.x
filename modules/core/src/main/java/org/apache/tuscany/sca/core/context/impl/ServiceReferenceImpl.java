@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Default implementation of a ServiceReference.

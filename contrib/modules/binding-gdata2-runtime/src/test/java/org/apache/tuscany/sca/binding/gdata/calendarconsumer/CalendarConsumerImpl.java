@@ -22,7 +22,7 @@ import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.BaseFeed;
 
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class CalendarConsumerImpl {
 

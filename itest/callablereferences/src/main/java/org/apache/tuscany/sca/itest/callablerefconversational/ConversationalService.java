@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.callablerefconversational;
 
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Conversational;
 
 /**
  * Simple conversational Service that is used to testing the method

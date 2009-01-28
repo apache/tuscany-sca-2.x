@@ -31,7 +31,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class ReferenceAnnotationProcessor implements BeanPostProcessor {

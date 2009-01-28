@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.itest;
 
 import helloworld.HelloWorldService;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class Component2bImpl implements HelloWorldService {
 

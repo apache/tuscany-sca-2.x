@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this

@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.junit.Assert;
 import org.junit.Test;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * This test case will test that a Component that has multiple Remotable interfaces

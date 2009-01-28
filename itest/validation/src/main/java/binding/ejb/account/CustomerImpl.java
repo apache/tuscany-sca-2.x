@@ -18,9 +18,9 @@
  */
 package binding.ejb.account;
 
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import binding.ejb.calculator.AddService;
 

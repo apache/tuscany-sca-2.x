@@ -84,7 +84,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceClient {
 

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.callablerefreturn;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface Beta

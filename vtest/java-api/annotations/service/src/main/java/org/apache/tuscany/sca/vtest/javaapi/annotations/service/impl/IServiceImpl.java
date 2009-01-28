@@ -20,13 +20,13 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.IService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(IService.class)
 @Scope("REQUEST")

@@ -12,7 +12,7 @@ Export-Package: org.apache.tuscany.sca.host.webapp;version="2.0.0";
    org.apache.tuscany.sca.host.embedded,
    javax.servlet.jsp.tagext,
    org.apache.tuscany.sca.host.webapp,
-   org.osoa.sca,
+   org.oasisopen.sca,
    javax.servlet.jsp"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Webapp Host
@@ -33,7 +33,7 @@ Import-Package: javax.naming,
  org.apache.tuscany.sca.host.webapp;version="2.0.0",
  org.apache.tuscany.sca.host.webapp.jsp;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
- org.osoa.sca;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
 Bundle-DocURL: http://www.apache.org/
 

@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.test.exceptions.impl;
 
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockExceptionTest;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * 

@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.RequestContext;
 
 /**
  * Creates instances of RequestContext for injection on component implementation instances

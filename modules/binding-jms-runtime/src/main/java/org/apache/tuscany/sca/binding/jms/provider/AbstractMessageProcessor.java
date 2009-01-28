@@ -26,7 +26,7 @@ import javax.jms.Session;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.xml.JMSBindingConstants;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Base MessageProcessor for the JMSBinding.

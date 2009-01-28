@@ -21,7 +21,7 @@ package impl.java;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * An implementation of the Add service

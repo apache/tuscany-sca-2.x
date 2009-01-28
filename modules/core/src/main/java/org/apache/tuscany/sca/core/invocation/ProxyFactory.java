@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires

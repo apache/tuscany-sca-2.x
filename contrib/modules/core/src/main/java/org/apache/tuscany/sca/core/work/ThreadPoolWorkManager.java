@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 import commonj.work.Work;
 import commonj.work.WorkEvent;

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * This is the client interface for the wires tests 

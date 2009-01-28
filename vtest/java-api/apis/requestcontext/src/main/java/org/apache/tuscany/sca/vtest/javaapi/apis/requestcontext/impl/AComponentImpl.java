@@ -24,12 +24,12 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.AComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.BCallback;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.BComponent;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AComponent.class)
 public class AComponentImpl implements AComponent, BCallback {

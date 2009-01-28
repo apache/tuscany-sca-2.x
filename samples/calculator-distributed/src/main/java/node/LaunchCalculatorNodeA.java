@@ -22,7 +22,7 @@ package node;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 import calculator.CalculatorService;
 

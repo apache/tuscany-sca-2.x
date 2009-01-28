@@ -21,7 +21,7 @@ package supplychain.customer;
 
 import java.util.ArrayList;
 
-import org.osoa.sca.annotations.AllowsPassByReference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
 
 import supplychain.OSGiBundleImpl;
 import supplychain.retailer.Retailer;

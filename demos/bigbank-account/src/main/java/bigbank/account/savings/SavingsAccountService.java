@@ -18,7 +18,7 @@
  */
 package bigbank.account.savings;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * @version $$Rev$$ $$Date$$

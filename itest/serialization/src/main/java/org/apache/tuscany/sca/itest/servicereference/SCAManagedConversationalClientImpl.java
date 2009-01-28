@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.itest.servicereference;
 
 import org.apache.tuscany.sca.itest.servicereference.utils.ServiceReferenceUtils;
 import org.junit.Assert;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This is a test client that is used to test Serializing and Deserializing

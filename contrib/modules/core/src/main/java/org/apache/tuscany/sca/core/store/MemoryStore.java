@@ -32,11 +32,11 @@ import org.apache.tuscany.sca.store.Store;
 import org.apache.tuscany.sca.store.StoreExpirationEvent;
 import org.apache.tuscany.sca.store.StoreMonitor;
 import org.apache.tuscany.sca.store.StoreWriteException;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Implements a non-durable, non-transactional store using a simple in-memory map

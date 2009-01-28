@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.test.corba.generated.ScenarioOne;
 import org.apache.tuscany.sca.test.corba.generated.ScenarioOneOperations;
 import org.apache.tuscany.sca.test.corba.generated.UnexpectedException;
 import org.apache.tuscany.sca.test.corba.generated.WrongColor;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$

@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  * Processes the {@link @Destroy} annotation on a component implementation and

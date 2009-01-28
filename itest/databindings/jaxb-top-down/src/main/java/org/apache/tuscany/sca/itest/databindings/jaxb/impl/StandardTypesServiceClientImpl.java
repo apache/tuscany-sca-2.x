@@ -35,8 +35,8 @@ import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService;
 import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesServiceClient;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * An implementation of StandardTypesServiceClient.

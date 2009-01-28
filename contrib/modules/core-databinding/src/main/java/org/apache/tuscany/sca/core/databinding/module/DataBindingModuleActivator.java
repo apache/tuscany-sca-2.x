@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 /**
  * @version $Rev$ $Date$

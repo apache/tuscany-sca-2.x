@@ -18,7 +18,7 @@
  */
 package interfacejava.xml;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import calculator.warning.AddService;
 import calculator.warning.DivideService;

@@ -18,8 +18,8 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * An implementation of the Add service

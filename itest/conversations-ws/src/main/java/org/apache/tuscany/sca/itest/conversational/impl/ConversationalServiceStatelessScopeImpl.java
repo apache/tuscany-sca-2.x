@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(ConversationalService.class)
 public class ConversationalServiceStatelessScopeImpl implements ConversationalService {

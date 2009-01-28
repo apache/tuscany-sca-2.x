@@ -26,7 +26,7 @@ import com.google.gdata.data.PlainTextConstruct;
 
 import org.apache.tuscany.sca.binding.gdata.collection.Collection;
 import org.apache.tuscany.sca.binding.gdata.collection.NotFoundException;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class CustomerClientImpl implements CustomerClient {
 

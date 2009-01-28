@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.junit.Test;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * @version $Rev$ $Date$
@@ -121,22 +121,22 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Property(name = "myProp", required = true)String prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myProp")
+        @org.oasisopen.sca.annotation.Constructor("myProp")
         public Foo(@Property Integer prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Property(name = "myProp1")String prop1, @Property(name = "myProp2")String prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public Foo(@Property List prop) {
 
         }
@@ -144,22 +144,22 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public BadFoo(@Property(name = "myProp")String prop1, @Property(name = "myProp")String prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.oasisopen.sca.annotation.Constructor()
         public BadFoo(@Property String prop) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myProp")
+        @org.oasisopen.sca.annotation.Constructor("myProp")
         public BadFoo(@Property Integer prop, @Property Integer prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
+        @org.oasisopen.sca.annotation.Constructor({"myRef", "myRef2"})
         public BadFoo(@Property List ref, @Property(name = "myOtherRef")List ref2) {
 
         }

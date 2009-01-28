@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.conversation;
 
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.EndsConversation;
 
 /**
  * Simple Service B.

@@ -24,9 +24,9 @@ import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.AService
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService2;
 import org.junit.Assert;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(interfaces= {BService.class,BService2.class})
 @Scope("CONVERSATION")

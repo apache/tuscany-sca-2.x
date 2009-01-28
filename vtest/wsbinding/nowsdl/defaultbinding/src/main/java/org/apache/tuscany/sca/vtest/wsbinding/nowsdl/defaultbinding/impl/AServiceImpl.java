@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.AService;
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.BService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService.

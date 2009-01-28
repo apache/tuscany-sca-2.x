@@ -21,11 +21,11 @@ package mysca.test.myservice.impl;
 
 import java.util.logging.Logger;
 
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class Implements the interface MyService and gives implementation for all methods which are declared in that

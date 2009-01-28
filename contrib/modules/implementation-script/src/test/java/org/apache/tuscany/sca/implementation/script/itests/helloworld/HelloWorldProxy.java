@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  *

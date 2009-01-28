@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.itest.scopes;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * Test request scope

@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.CallableReference;
 
 public class CallableReferenceDataBinding extends BaseDataBinding {
     

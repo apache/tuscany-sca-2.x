@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisito
 
 /**
  * Handles processing of a constructor decorated with
- * {@link org.osoa.sca.annotations.Constructor}
+ * {@link org.oasisopen.sca.annotation.Constructor}
  * 
  * @version $Rev$ $Date$
  */
@@ -47,7 +47,7 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
         for (Constructor constructor : ctors) {
             JavaConstructorImpl<?> definition = new JavaConstructorImpl(constructor);
             type.getConstructors().put(constructor, definition);
-            if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
+            if (constructor.getAnnotation(org.oasisopen.sca.annotation.Constructor.class) != null) {
                 if (found) {
                     throw new DuplicateConstructorException("Multiple constructors marked with @Constructor", constructor);
                 }
@@ -60,8 +60,8 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
     @Override
     public <T> void visitConstructor(Constructor<T> constructor, JavaImplementation type)
         throws IntrospectionException {
-        org.osoa.sca.annotations.Constructor annotation = constructor
-            .getAnnotation(org.osoa.sca.annotations.Constructor.class);
+        org.oasisopen.sca.annotation.Constructor annotation = constructor
+            .getAnnotation(org.oasisopen.sca.annotation.Constructor.class);
         if (annotation == null) {
             return;
         }

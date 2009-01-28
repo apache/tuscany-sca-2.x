@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.servicereference;
 
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.annotation.Conversational;
 
 /**
  * This is the callback for the ConversationalService.

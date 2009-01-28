@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.itest.interfaces;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(RemoteServiceComponent.class)
 public class RemoteServiceComponentImpl implements RemoteServiceComponent {

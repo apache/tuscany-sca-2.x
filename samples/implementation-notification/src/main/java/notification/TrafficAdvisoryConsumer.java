@@ -18,9 +18,9 @@
  */
 package notification;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

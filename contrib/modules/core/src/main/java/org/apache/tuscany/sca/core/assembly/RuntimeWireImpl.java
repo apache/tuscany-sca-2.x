@@ -57,7 +57,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$

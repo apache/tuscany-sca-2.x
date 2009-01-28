@@ -29,7 +29,7 @@ import org.apache.AnnotationProcessor;
 import org.apache.catalina.core.StandardContext;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * A Tuscany specific Tomcat annotation processor for processing SCA annotations

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.tools.java2wsdl.generate;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 
 public interface ExampleService {
 

@@ -62,8 +62,8 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.ConversationID;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -116,7 +116,7 @@ public class JavaComponentContextProvider {
                     /*
                     if(Modifier.isPublic(field.getModifiers())) {
                         instanceFactoryProvider.getInjectionSites().add(element);
-                    } else if(field.getAnnotation(org.osoa.sca.annotations.Property.class) != null) {
+                    } else if(field.getAnnotation(org.oasisopen.sca.annotation.Property.class) != null) {
                         instanceFactoryProvider.getInjectionSites().add(element);
                     }
                     */
@@ -189,7 +189,7 @@ public class JavaComponentContextProvider {
                         Field field = (Field)element.getAnchor();
                         if(Modifier.isPublic(field.getModifiers())) {
                             instanceFactoryProvider.getInjectionSites().add(element);
-                        } else if(field.getAnnotation(org.osoa.sca.annotations.Reference.class) != null) {
+                        } else if(field.getAnnotation(org.oasisopen.sca.annotation.Reference.class) != null) {
                             instanceFactoryProvider.getInjectionSites().add(element);
                         }
                     } else {

@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with

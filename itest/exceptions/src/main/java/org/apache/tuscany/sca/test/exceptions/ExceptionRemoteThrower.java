@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.test.exceptions;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Remote exception thrower

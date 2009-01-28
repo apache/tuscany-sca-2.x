@@ -23,12 +23,12 @@ import java.util.HashMap;
 import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 
 /**

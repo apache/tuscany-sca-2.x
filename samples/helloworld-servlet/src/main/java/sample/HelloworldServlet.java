@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  */
@@ -43,7 +43,7 @@ public class HelloworldServlet extends HttpServlet {
             // The helloworldService reference will only be injected from the @Reference 
             // annotation in containers supporting SCA "deep" integration. In other 
             // environments in can be looked up from the ComponentContext.
-            ComponentContext cc = (ComponentContext)config.getServletContext().getAttribute("org.osoa.sca.ComponentContext");
+            ComponentContext cc = (ComponentContext)config.getServletContext().getAttribute("org.oasisopen.sca.ComponentContext");
             service = cc.getService(HelloworldService.class, "service");
         }
     }

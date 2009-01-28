@@ -104,22 +104,22 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public Foo(@Resource(name = "myResource") String resource) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myResource")
+        @org.oasisopen.sca.annotation.Constructor("myResource")
         public Foo(@Resource Integer resource) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public Foo(@Resource(name = "myResource1") String res1, @Resource(name = "myResource2") String res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public Foo(@Resource List res) {
 
         }
@@ -127,22 +127,22 @@ public class ConstructorResourceTestCase extends AbstractProcessorTest {
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public BadFoo(@Resource(name = "myResource") String res1, @Resource(name = "myResource") String res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public BadFoo(@Resource String res) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor("myProp")
+        @org.oasisopen.sca.annotation.Constructor("myProp")
         public BadFoo(@Resource Integer res, @Resource Integer res2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor({"myRes", "myRes2"})
+        @org.oasisopen.sca.annotation.Constructor({"myRes", "myRes2"})
         public BadFoo(@Resource List res, @Resource(name = "myOtherRes") List res2) {
 
         }

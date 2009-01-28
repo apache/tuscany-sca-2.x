@@ -39,11 +39,11 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.osoa.sca.annotations.PolicySets;
-import org.osoa.sca.annotations.Requires;
+import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Requires;
 
 /**
- * Processes an {@link org.osoa.sca.annotations.Requires} annotation
+ * Processes an {@link org.oasisopen.sca.annotation.Requires} annotation
  *
  * @version $Rev$ $Date$
  */
@@ -224,8 +224,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     private Reference getReference(Method method, JavaImplementation type) {
         //since the ReferenceProcessor is called ahead of the PolicyProcessor the type should have
         //picked up the reference setter method
-        org.osoa.sca.annotations.Reference annotation = 
-                                        method.getAnnotation(org.osoa.sca.annotations.Reference.class);
+        org.oasisopen.sca.annotation.Reference annotation = 
+                                        method.getAnnotation(org.oasisopen.sca.annotation.Reference.class);
         if (annotation != null) {
             if (JavaIntrospectionHelper.isSetter(method)) {
                 String name = annotation.name();
@@ -249,8 +249,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     
     @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
-        org.osoa.sca.annotations.Reference annotation = 
-            field.getAnnotation( org.osoa.sca.annotations.Reference.class);
+        org.oasisopen.sca.annotation.Reference annotation = 
+            field.getAnnotation( org.oasisopen.sca.annotation.Reference.class);
         if (annotation == null) {
             return;
         }

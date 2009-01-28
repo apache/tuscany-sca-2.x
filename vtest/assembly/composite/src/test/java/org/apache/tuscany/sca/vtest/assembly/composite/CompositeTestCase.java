@@ -24,7 +24,7 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  *

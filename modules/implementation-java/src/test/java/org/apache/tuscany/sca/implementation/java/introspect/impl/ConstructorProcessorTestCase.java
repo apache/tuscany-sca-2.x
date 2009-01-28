@@ -41,8 +41,8 @@ import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.junit.Test;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -114,19 +114,19 @@ public class ConstructorProcessorTestCase {
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor("foo")
+        @org.oasisopen.sca.annotation.Constructor("foo")
         public BadFoo(String foo) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor( {"foo", "bar"})
+        @org.oasisopen.sca.annotation.Constructor( {"foo", "bar"})
         public BadFoo(String foo, String bar) {
 
         }
     }
 
     private static class Foo {
-        @org.osoa.sca.annotations.Constructor("foo")
+        @org.oasisopen.sca.annotation.Constructor("foo")
         public Foo(String foo) {
 
         }
@@ -138,13 +138,13 @@ public class ConstructorProcessorTestCase {
     }
 
     private static class BadAnnotation {
-        @org.osoa.sca.annotations.Constructor("foo")
+        @org.oasisopen.sca.annotation.Constructor("foo")
         public BadAnnotation(String foo, Foo ref) {
         }
     }
 
     public static final class Mixed {
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public Mixed(@Reference
         String param1, @Property(name = "foo")
         String param2, @Reference(name = "bar")
@@ -153,7 +153,7 @@ public class ConstructorProcessorTestCase {
     }
 
     public static final class Multiple {
-        @org.osoa.sca.annotations.Constructor
+        @org.oasisopen.sca.annotation.Constructor
         public Multiple(@Reference
         Collection<String> param1, @Property(name = "foo")
         String[] param2, @Reference(name = "bar", required = true)

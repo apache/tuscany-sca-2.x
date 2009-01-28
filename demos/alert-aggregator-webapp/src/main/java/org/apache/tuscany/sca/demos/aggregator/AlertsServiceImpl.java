@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
 import org.apache.tuscany.sca.demos.aggregator.types.ConfigType;
 import org.apache.tuscany.sca.demos.aggregator.types.SourceType;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Read all new alerts from the specified sources

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.scopes;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * Test Composite scope

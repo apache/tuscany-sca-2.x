@@ -18,7 +18,7 @@
  */
 package supplychain.warehouse;
 
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 import supplychain.shipper.Shipper;
 

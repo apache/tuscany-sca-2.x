@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.AService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Denotes an illegal use of the {@link @org.osoa.sca.annotations.Service} annotation
+ * Denotes an illegal use of the {@link @org.oasisopen.sca.annotation.Service} annotation
  *
  * @version $Rev$ $Date$
  */

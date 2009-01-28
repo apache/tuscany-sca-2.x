@@ -18,9 +18,9 @@
  */
 package conversation.referenceclient;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.Service;
 
 import conversation.service.ConversationalService;
 

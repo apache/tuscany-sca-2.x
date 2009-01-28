@@ -20,7 +20,7 @@ package helloworld;
 
 import java.util.List;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(HelloWorld.class)
 public class HelloWorldImpl implements HelloWorld {

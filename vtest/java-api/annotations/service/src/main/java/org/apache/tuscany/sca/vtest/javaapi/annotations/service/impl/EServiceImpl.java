@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.EService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service()
 public class EServiceImpl implements EService {

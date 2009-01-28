@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
-import org.osoa.sca.NoRegisteredCallbackException;
+import org.oasisopen.sca.NoRegisteredCallbackException;
 
 /**
  * An interceptor applied to the forward direction of a wire that ensures the callback target implements the required

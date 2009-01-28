@@ -27,10 +27,10 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Context;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Context;
 
 /**
  * @version $Rev$ $Date$

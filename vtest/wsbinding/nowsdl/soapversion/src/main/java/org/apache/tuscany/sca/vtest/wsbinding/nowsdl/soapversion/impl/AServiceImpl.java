@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.AService;
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService.

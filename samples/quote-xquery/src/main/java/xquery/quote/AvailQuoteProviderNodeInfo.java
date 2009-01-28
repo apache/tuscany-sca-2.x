@@ -20,7 +20,7 @@ package xquery.quote;
 
 import net.sf.saxon.om.NodeInfo;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface AvailQuoteProviderNodeInfo {

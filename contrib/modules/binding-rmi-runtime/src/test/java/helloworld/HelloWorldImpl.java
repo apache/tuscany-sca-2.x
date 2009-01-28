@@ -18,7 +18,7 @@
  */
 package helloworld;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 
 /**

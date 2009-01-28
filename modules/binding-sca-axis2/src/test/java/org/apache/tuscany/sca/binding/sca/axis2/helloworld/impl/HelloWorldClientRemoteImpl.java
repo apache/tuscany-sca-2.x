@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl;
 
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 public class HelloWorldClientRemoteImpl implements HelloWorldClient {
 

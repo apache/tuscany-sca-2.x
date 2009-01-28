@@ -19,8 +19,8 @@
 
 package mysca.test.myservice;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(MyService.class)
 public class MyServiceImpl implements MyService {

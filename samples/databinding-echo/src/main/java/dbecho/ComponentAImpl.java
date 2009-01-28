@@ -18,9 +18,9 @@
  */
 package dbecho;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$

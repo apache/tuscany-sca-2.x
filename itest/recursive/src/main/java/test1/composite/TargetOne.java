@@ -18,7 +18,7 @@
  */
 package test1.composite;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(Target.class)
 public class TargetOne implements Target {

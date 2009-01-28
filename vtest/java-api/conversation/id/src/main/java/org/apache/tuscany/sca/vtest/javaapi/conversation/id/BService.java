@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.id;
 
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Simple Local Service

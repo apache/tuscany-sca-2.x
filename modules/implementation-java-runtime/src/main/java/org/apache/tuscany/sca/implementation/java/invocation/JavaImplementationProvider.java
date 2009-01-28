@@ -45,8 +45,8 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
 
 /**
  * @version $Rev$ $Date$

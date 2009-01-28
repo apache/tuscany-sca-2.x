@@ -18,9 +18,9 @@
  */
 package test;
 
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Property;
 
 import test.TestInvocation;
 

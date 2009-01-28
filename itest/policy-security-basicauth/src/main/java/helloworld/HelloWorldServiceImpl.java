@@ -20,9 +20,9 @@ package helloworld;
 
 import javax.security.auth.Subject;
 
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements the HelloWorld service.

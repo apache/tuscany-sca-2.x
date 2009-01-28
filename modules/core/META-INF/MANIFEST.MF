@@ -16,9 +16,9 @@ Export-Package: org.apache.tuscany.sca.core.assembly;version="2.0.0";
    org.apache.tuscany.sca.interfacedef,
    javax.xml.stream,
    org.apache.tuscany.sca.core.assembly,
-   org.osoa.sca,
+   org.oasisopen.sca,
    org.apache.tuscany.sca.core.invocation",
- org.apache.tuscany.sca.core.conversation;version="2.0.0";uses:="org.apache.tuscany.sca.runtime,org.osoa.sca",
+ org.apache.tuscany.sca.core.conversation;version="2.0.0";uses:="org.apache.tuscany.sca.runtime,org.oasisopen.sca",
  org.apache.tuscany.sca.core.factory;version="2.0.0",
  org.apache.tuscany.sca.core.invocation;version="2.0.0";
   uses:="org.apache.tuscany.sca.runtime,
@@ -30,7 +30,7 @@ Export-Package: org.apache.tuscany.sca.core.assembly;version="2.0.0";
    org.apache.tuscany.sca.core.invocation.impl,
    org.apache.tuscany.sca.work,
    org.apache.tuscany.sca.core.factory,
-   org.osoa.sca",
+   org.oasisopen.sca",
  org.apache.tuscany.sca.core.scope;version="2.0.0";
   uses:="org.apache.tuscany.sca.runtime,
    org.apache.tuscany.sca.provider,
@@ -76,8 +76,8 @@ Import-Package: javax.naming,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.work;version="2.0.0",
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.core
 Bundle-DocURL: http://www.apache.org/
 

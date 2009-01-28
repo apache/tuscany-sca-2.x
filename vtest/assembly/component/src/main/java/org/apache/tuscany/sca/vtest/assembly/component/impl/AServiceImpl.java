@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.vtest.assembly.component.impl;
 
 import org.apache.tuscany.sca.vtest.assembly.component.AService;
 import org.apache.tuscany.sca.vtest.assembly.component.BService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

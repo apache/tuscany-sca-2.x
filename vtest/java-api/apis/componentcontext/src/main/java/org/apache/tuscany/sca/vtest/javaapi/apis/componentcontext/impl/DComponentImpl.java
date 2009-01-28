@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.DComponent;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(DComponent.class)
 public class DComponentImpl implements DComponent {

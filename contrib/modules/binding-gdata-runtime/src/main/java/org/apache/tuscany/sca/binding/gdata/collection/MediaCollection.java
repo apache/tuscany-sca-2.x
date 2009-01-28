@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.binding.gdata.collection;
 
 import java.io.InputStream;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import com.google.gdata.data.Entry;
 

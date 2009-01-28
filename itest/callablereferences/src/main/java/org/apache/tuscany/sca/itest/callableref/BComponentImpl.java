@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BComponent.class)
 public class BComponentImpl implements BComponent {

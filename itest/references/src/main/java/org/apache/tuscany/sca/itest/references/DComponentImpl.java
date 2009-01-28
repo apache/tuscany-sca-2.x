@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
-import org.osoa.sca.annotations.ComponentName;
+import org.oasisopen.sca.annotation.ComponentName;
 
 public class DComponentImpl implements DComponent {
     @ComponentName

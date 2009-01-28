@@ -38,8 +38,8 @@ Import-Package: javax.xml.bind.annotation.adapters,
  org.apache.tuscany.sca.runtime;version="2.0",
  org.apache.tuscany.sca.xsd;version="2.0",
  
- org.osoa.sca;version="2.0",
- org.osoa.sca.annotations;version="2.0",
+ org.oasisopen.sca;version="2.0",
+ org.oasisopen.sca.annotation;version="2.0",
  org.w3c.dom;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.core.databinding
 Bundle-DocURL: http://www.apache.org/

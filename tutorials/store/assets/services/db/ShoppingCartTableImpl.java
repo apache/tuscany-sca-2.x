@@ -30,10 +30,10 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.NotFoundException;
-import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
 
 import services.Cart;
 import services.Item;

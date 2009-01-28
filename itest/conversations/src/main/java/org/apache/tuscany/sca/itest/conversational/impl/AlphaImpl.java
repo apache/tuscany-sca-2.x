@@ -23,12 +23,12 @@ import org.apache.tuscany.sca.itest.TestResult;
 import org.apache.tuscany.sca.itest.conversational.Alpha;
 import org.apache.tuscany.sca.itest.conversational.Beta;
 import org.apache.tuscany.sca.itest.conversational.Gamma;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

@@ -80,7 +80,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
      * annotation processors is called. <p/> For example, given:
      * 
      * <pre>
-     *  Foo(@Bar String prop, @org.osoa.sca.annotations.Property(name = &quot;foo&quot;) String prop2)
+     *  Foo(@Bar String prop, @org.oasisopen.sca.annotation.Property(name = &quot;foo&quot;) String prop2)
      * </pre>
      * 
      * <p/> Heuristic evaluation of
@@ -138,15 +138,15 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
 
     public static class Foo {
         public Foo(@Bar
-        String prop, @org.osoa.sca.annotations.Property(name = "foo")
+        String prop, @org.oasisopen.sca.annotation.Property(name = "foo")
         String prop2) {
         }
     }
 
     public static class Foo2 {
-        public Foo2(@org.osoa.sca.annotations.Reference(name = "baz")
+        public Foo2(@org.oasisopen.sca.annotation.Reference(name = "baz")
         String prop1, @Bar
-        String prop2, @org.osoa.sca.annotations.Property(name = "foo")
+        String prop2, @org.oasisopen.sca.annotation.Property(name = "foo")
         String prop3) {
         }
     }

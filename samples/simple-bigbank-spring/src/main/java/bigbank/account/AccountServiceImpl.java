@@ -21,7 +21,7 @@ package bigbank.account;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import bigbank.account.checking.CheckingAccountDetails;
 import bigbank.account.checking.CheckingAccountService;

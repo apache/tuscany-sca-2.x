@@ -5,7 +5,7 @@ Export-Package: org.apache.tuscany.sca.binding.jsonrpc.provider;uses:=
  pache.tuscany.sca.interfacedef.java,org.apache.tuscany.sca.interfaced
  ef,javax.servlet,org.apache.tuscany.sca.invocation,com.metaparadigm.j
  sonrpc,org.apache.tuscany.sca.binding.jsonrpc,org.apache.tuscany.sca.
- host.http,org.osoa.sca,javax.servlet.http";version="2.0.0"
+ host.http,org.oasisopen.sca,javax.servlet.http";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA JSON-RPC Binding Runtime
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
@@ -34,8 +34,8 @@ Import-Package: com.metaparadigm.jsonrpc,
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.json,
  
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0";resolution:=optional
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime
 Bundle-DocURL: http://www.apache.org/
 

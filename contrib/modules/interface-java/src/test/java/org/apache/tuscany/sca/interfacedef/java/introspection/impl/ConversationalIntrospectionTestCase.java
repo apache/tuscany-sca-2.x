@@ -26,8 +26,8 @@ import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
+import org.oasisopen.sca.annotation.Conversational;
+import org.oasisopen.sca.annotation.EndsConversation;
 
 /**
  * @version $Rev$ $Date$

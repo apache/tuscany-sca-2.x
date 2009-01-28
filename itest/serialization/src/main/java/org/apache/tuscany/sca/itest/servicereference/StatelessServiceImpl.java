@@ -23,9 +23,9 @@ import java.util.Date;
 
 import org.apache.tuscany.sca.itest.servicereference.utils.ServiceReferenceUtils;
 import org.junit.Assert;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Simple Stateless Service implementation

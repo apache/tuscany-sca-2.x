@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.GService1;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.GService2;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.RequestContext;
 
 @Service(interfaces = {GService1.class, GService2.class})
 public class GServiceImpl implements GService1 {

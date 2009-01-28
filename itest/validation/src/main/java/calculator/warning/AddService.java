@@ -18,7 +18,7 @@
  */
 package calculator.warning;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The Add service interface

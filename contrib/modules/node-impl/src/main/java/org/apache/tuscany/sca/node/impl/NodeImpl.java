@@ -74,9 +74,9 @@ import org.apache.tuscany.sca.node.SCAContribution;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A local representation of the SCADomain running on a single node

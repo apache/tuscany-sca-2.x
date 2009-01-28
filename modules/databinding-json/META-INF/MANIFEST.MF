@@ -27,7 +27,7 @@ Import-Package: com.metaparadigm.jsonrpc,
  org.codehaus.jettison.mapped,
  org.json,
  
- org.osoa.sca.annotations;version="2.0.0"
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
 Bundle-DocURL: http://www.apache.org/
 Export-Package: org.apache.tuscany.sca.databinding.json;version="2.0.0"

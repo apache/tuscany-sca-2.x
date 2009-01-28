@@ -18,8 +18,8 @@
  */
 package callback.service;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Service;
 
 import callback.client.CallbackCallback;
 

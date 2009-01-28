@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.defaultbinding.CService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CService.class)
 public class CServiceImpl implements CService {

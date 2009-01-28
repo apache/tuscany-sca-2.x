@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.xmlbeans.XmlObject;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 import org.w3c.dom.Node;
 
 /**

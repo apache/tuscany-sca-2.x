@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.wsdlelement.port.BService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BService.class)
 public class BServiceImpl implements BService {

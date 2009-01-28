@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core.context;
 
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Extended ServiceReference

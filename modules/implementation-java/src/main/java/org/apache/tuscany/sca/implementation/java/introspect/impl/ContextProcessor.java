@@ -28,9 +28,9 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
 
 /**
  * Processes {@link @Context} annotations on a component implementation and adds

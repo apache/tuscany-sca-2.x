@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.test;
 
 import java.io.File;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CallBackSetCallbackCallback.class)
 public class CallBackSetCallbackCallbackImpl implements CallBackSetCallbackCallback {

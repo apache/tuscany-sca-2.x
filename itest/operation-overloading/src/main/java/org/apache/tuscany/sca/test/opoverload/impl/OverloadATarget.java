@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.test.opoverload.impl;
 
 import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class Implements the interface OverloadASourceTarget, and gives implementation for all methods which are

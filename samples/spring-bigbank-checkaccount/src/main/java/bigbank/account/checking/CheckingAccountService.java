@@ -18,8 +18,8 @@
  */
 package bigbank.account.checking;
 
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Remotable;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $$Rev: 636465 $$ $$Date: 2008-03-13 00:49:26 +0530 (Thu, 13 Mar 2008) $$

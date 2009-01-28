@@ -29,8 +29,8 @@ import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertType;
 import org.apache.tuscany.sca.demos.aggregator.types.AlertsType;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Read all new alerts from the specified sources

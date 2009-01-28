@@ -29,8 +29,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
 
 public class CustomerServiceImpl implements CustomerService {
     EntityManagerFactory emf = null;

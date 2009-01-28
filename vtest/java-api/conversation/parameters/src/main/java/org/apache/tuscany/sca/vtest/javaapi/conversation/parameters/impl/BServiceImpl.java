@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.conversation.parameters.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.parameters.BService;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")

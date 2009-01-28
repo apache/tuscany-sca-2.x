@@ -19,7 +19,7 @@
 
 package bigbank.account.services.accountdata;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.bigbank.account.AccountLog;
 import com.bigbank.account.AccountReport;

@@ -24,8 +24,8 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.service.BService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.CService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.HService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.IService;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Reference;
 
 @Service(BService.class)
 public class BServiceImpl implements BService {

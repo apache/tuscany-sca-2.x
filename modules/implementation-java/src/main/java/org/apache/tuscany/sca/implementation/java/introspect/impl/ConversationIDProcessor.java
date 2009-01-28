@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.osoa.sca.annotations.ConversationID;
+import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * Processes {@link @ConversationID} annotations on a component implementation and adds

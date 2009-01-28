@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * This class Implements the interface CDComponent and gives implementation for all methods which are declared in that

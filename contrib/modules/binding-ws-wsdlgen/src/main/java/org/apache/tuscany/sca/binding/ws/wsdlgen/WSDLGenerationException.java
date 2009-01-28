@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 import org.apache.tuscany.sca.monitor.Problem;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class WSDLGenerationException extends ServiceRuntimeException {
     private static final long serialVersionUID = 1L;

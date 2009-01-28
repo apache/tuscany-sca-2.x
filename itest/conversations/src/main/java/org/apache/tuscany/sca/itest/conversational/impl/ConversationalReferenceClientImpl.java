@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * A client component that accepts a reference to an ongoing conversation

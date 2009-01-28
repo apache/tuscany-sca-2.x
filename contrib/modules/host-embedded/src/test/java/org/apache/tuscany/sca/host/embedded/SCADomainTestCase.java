@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.host.embedded;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.test.extension.TestService;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.ServiceReference;
 
 
 

@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.reference.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.reference.BService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(AService.class)
 public class AUnannotatedServiceImpl implements AService {

@@ -32,9 +32,9 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Remotable;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

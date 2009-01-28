@@ -22,7 +22,7 @@ import com.google.gdata.data.BaseEntry;
 import com.google.gdata.data.BaseFeed;
 
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Provides access to a collection of resources using Atom.

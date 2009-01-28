@@ -19,7 +19,7 @@
 package xquery.quote;
 
 import org.example.quote.Quote;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface ExternalReferencesQuoteJoin {

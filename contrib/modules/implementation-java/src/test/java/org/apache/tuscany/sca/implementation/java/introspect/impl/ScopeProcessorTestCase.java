@@ -87,23 +87,23 @@ public class ScopeProcessorTestCase extends TestCase {
         parent = EasyMock.createNiceMock(Component.class);
     }
 
-    @org.osoa.sca.annotations.Scope("COMPOSITE")
+    @org.oasisopen.sca.annotation.Scope("COMPOSITE")
     private class Composite {
     }
 
-    @org.osoa.sca.annotations.Scope("SESSION")
+    @org.oasisopen.sca.annotation.Scope("SESSION")
     private class Session {
     }
 
-    @org.osoa.sca.annotations.Scope("CONVERSATION")
+    @org.oasisopen.sca.annotation.Scope("CONVERSATION")
     private class Conversation {
     }
 
-    @org.osoa.sca.annotations.Scope("REQUEST")
+    @org.oasisopen.sca.annotation.Scope("REQUEST")
     private class Request {
     }
 
-    @org.osoa.sca.annotations.Scope("STATELESS")
+    @org.oasisopen.sca.annotation.Scope("STATELESS")
     private class Stateless {
     }
 

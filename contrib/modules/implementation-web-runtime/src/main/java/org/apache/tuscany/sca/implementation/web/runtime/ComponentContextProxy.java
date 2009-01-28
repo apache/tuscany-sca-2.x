@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.implementation.web.runtime;
 import java.util.Collection;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Proxy ComponentContext wrappering a RuntimeComponent as the

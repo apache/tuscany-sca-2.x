@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.itest.cdi;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(Bar.class)
 public class Foo2 implements Bar {

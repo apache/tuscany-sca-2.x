@@ -81,7 +81,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceClient {
 

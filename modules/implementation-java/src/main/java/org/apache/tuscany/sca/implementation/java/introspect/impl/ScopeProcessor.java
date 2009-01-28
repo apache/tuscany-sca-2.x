@@ -39,7 +39,7 @@ public class ScopeProcessor extends BaseJavaClassVisitor {
     public <T> void visitClass(Class<T> clazz,
                                JavaImplementation type)
         throws IntrospectionException {
-        org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
+        org.oasisopen.sca.annotation.Scope annotation = clazz.getAnnotation(org.oasisopen.sca.annotation.Scope.class);
         if (annotation == null) {
             type.setJavaScope(JavaScopeImpl.STATELESS);
             return;

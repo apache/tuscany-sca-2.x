@@ -67,10 +67,10 @@ import org.apache.tuscany.sca.data.collection.NotFoundException;
 import org.apache.tuscany.sca.domain.manager.impl.CompositeGeneratorServiceImpl.Cache.ContributionCache;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Implementation of a service that generates a composite from a composite model. 

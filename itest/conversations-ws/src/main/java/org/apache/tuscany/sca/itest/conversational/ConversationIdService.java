@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.osoa.sca.annotations.Conversational;
+import org.oasisopen.sca.annotation.Conversational;
 
 @Conversational
 public interface ConversationIdService {

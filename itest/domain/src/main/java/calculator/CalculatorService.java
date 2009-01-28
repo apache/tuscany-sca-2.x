@@ -18,7 +18,7 @@
  */
 package calculator;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 
 /**

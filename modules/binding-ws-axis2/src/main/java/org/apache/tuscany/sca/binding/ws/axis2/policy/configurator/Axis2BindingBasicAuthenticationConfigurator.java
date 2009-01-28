@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.security.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Policy handler to handle PolicySet that contain Axis2ConfigParamPolicy instances

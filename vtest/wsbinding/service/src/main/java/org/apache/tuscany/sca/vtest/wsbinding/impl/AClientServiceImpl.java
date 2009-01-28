@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.vtest.wsbinding.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.AClientService;
 import org.apache.tuscany.sca.vtest.wsbinding.AService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService.

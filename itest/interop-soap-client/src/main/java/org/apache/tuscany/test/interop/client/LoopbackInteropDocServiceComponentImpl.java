@@ -20,7 +20,7 @@ package org.apache.tuscany.test.interop.client;
 
 import java.rmi.RemoteException;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 import org.soapinterop.ComplexDocument;
 import org.soapinterop.DocTestPortType;
 import org.soapinterop.SimpleDocument1;

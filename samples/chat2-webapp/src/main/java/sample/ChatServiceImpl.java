@@ -19,7 +19,7 @@
 
 package sample;
 
-import org.osoa.sca.annotations.Callback;
+import org.oasisopen.sca.annotation.Callback;
 
 public class ChatServiceImpl implements ChatService {
 

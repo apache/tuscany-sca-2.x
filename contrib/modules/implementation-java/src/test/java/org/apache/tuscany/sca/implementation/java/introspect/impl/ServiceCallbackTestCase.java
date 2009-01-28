@@ -32,9 +32,9 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$

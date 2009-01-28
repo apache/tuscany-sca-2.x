@@ -21,13 +21,13 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.conversation.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.conversation.BComponent;
 import org.junit.Assert;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.ConversationID;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BComponent.class)
 @Scope("CONVERSATION")

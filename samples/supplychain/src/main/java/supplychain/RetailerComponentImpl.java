@@ -18,7 +18,7 @@
  */
 package supplychain;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This class implements the Customer service component.

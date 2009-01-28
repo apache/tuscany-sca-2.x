@@ -17,8 +17,8 @@
  * under the License.    
  */
 package workpool;
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.CallableReference;
+import org.oasisopen.sca.annotation.Remotable;
+import org.oasisopen.sca.CallableReference;
 @Remotable
 public interface WorkerManager {
     CallableReference<WorkerService> addWorker();

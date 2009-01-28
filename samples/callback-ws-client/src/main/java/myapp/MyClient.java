@@ -18,7 +18,7 @@
  */
 package myapp;
 
-import org.osoa.sca.annotations.OneWay;
+import org.oasisopen.sca.annotation.OneWay;
 
 /**
  * The client interface

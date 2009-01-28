@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.junit.Test;
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  * @version $Rev$ $Date$

@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.core.conversation;
 
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.Conversation;
+import org.oasisopen.sca.Conversation;
 
 /**
- * An extended interface over org.osoa.Conversation
+ * An extended interface over org.oasisopen.Conversation
  * 
  * @version $Rev$ $Date$
  */

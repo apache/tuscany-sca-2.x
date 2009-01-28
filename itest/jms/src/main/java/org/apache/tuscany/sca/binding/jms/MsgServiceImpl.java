@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.jms;
 
 import javax.jms.Message;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(MsgService.class)
 public class MsgServiceImpl implements MsgService {

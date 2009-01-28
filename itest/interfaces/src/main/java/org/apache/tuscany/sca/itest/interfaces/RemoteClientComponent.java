@@ -37,7 +37,7 @@
 
 package org.apache.tuscany.sca.itest.interfaces;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /*  
  * different signatures  

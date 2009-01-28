@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.annotations.ConversationID;
+import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * Test the ConversationIDProcessor

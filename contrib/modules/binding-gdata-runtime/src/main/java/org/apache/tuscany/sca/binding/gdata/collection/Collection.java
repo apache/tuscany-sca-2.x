@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.gdata.collection;
 import com.google.gdata.client.Query;
 import com.google.gdata.data.Entry;
 import com.google.gdata.data.Feed;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Provides access to a collection of resources using Gdata.

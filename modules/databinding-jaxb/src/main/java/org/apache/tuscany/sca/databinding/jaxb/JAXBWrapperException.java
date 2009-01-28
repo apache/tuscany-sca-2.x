@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class JAXBWrapperException extends ServiceRuntimeException {
     private static final long serialVersionUID = 1L;

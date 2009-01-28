@@ -22,8 +22,8 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl;
 import java.util.List;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AService;
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Property;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {

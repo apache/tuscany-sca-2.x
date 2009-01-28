@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(CComponent.class)
 public class CComponentImpl implements CComponent {

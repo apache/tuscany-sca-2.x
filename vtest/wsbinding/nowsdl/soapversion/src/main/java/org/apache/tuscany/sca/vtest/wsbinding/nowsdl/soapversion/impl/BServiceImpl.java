@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.impl;
 
 import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.BService;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BService.class)
 public class BServiceImpl implements BService {

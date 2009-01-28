@@ -20,9 +20,9 @@ package dbecho;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Node;
 
 /**

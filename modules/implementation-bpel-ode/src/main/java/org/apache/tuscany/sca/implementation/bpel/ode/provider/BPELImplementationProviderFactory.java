@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.implementation.bpel.ode.GeronimoTxFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.annotations.Destroy;
+import org.oasisopen.sca.annotation.Destroy;
 
 /**
  * BPEL Implementation provider factory

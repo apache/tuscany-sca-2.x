@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.NoRegisteredCallbackException;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.NoRegisteredCallbackException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Responsible for dispatching to a callback through a wire. <p/> TODO cache

@@ -24,10 +24,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(DComponent.class)
 public class DComponentImpl implements DComponent {

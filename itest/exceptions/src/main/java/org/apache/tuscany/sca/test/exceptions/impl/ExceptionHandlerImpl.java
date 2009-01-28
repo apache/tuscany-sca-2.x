@@ -23,8 +23,8 @@ import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionHandler;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
 import org.apache.tuscany.sca.test.exceptions.UnChecked;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class ExceptionHandlerImpl implements ExceptionHandler {

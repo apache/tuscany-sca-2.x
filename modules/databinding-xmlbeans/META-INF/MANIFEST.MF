@@ -19,8 +19,8 @@ Import-Package: javax.xml.namespace,
  org.apache.xmlbeans,
  org.apache.xmlbeans.impl.values;resolution:=optional,
  org.apache.xmlbeans.xml.stream;resolution:=optional,
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.xmlbeans
 Bundle-DocURL: http://www.apache.org/

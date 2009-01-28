@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class LaunchClient {
     public static void main(String[] args) throws Exception {

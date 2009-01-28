@@ -25,11 +25,11 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Sample Event Processor Service Implementation 

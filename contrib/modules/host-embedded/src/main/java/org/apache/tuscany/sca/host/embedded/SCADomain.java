@@ -23,9 +23,9 @@ import java.lang.reflect.Constructor;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A handle to an SCA domain.

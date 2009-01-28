@@ -4,7 +4,7 @@ Bundle-Name: ConversationTest
 Bundle-SymbolicName: conversation.ConversationalService
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Import-Package: org.osgi.framework, org.osoa.sca, org.osoa.sca.annotations,
+Import-Package: org.osgi.framework, org.oasisopen.sca, org.oasisopen.sca.annotation,
                 conversation.client
 Export-Package: conversation.service
 Bundle-Activator: conversation.service.ConversationalServiceActivator

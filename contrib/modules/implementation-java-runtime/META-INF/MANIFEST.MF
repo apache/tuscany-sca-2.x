@@ -12,7 +12,7 @@ Export-Package: org.apache.tuscany.sca.implementation.java.context;use
  rg.apache.tuscany.sca.implementation.java,org.apache.tuscany.sca.inte
  rfacedef,org.w3c.dom,javax.xml.namespace,org.apache.tuscany.sca.invoc
  ation,org.apache.tuscany.sca.core.factory,org.apache.tuscany.sca.inte
- rfacedef.impl,org.osoa.sca,org.apache.tuscany.sca.core.invocation";ve
+ rfacedef.impl,org.oasisopen.sca,org.apache.tuscany.sca.core.invocation";ve
  rsion="2.0"
 Private-Package: org.apache.tuscany.sca.implementation.java.invocation
  ;version="2.0",org.apache.tuscany.sca.implementation.java.module;vers
@@ -52,8 +52,8 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy.util;version="2.0",
  org.apache.tuscany.sca.provider;version="2.0",
  org.apache.tuscany.sca.runtime;version="2.0",
- org.osoa.sca;version="2.0",
- org.osoa.sca.annotations;version="2.0",
+ org.oasisopen.sca;version="2.0",
+ org.oasisopen.sca.annotation;version="2.0",
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.java.runtim
  e

@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
-import org.osoa.sca.annotations.ComponentName;
+import org.oasisopen.sca.annotation.ComponentName;
 
 /**
  * Processes {@link @ComponentName} annotations on a component implementation and adds

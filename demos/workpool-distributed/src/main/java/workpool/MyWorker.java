@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.databinding.job.Job;
 import org.apache.tuscany.sca.databinding.job.JobDataMap;
 import org.apache.tuscany.sca.databinding.job.JobExecutionContext;
 import org.apache.tuscany.sca.databinding.job.RemoteJob;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class MyWorker extends WorkerServiceImpl<Object, Double> {

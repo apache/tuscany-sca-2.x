@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.accessing.imp
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.accessing.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.accessing.BService;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")

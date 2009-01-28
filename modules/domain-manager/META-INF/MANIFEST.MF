@@ -6,8 +6,8 @@ Export-Package: org.apache.tuscany.sca.domain.manager.impl;uses:="org.
  ,org.apache.tuscany.sca.core,javax.xml.namespace,javax.servlet,javax.
  xml.stream,org.apache.tuscany.sca.core.assembly,org.apache.tuscany.sc
  a.contribution.resolver,org.apache.tuscany.sca.workspace,org.apache.t
- uscany.sca.core.invocation,org.osoa.sca,org.apache.tuscany.sca.assemb
- ly.builder,org.apache.tuscany.sca.implementation.node,org.osoa.sca.an
+ uscany.sca.core.invocation,org.oasisopen.sca,org.apache.tuscany.sca.assemb
+ ly.builder,org.apache.tuscany.sca.implementation.node,org.oasisopen.sca.an
  notations,org.apache.tuscany.sca.assembly,org.apache.commons.fileuplo
  ad,org.apache.commons.fileupload.servlet,org.apache.tuscany.sca.works
  pace.builder,javax.xml.parsers,org.apache.tuscany.sca.contribution,or
@@ -16,7 +16,7 @@ Export-Package: org.apache.tuscany.sca.domain.manager.impl;uses:="org.
  lize,org.apache.tuscany.sca.contribution.processor,javax.servlet.http
  ";version="2.0.0",org.apache.tuscany.sca.domain.manager.launcher;uses:=
  "org.apache.tuscany.sca.domain.manager.impl,org.apache.tuscany.sca.no
- de,org.osoa.sca";version="2.0.0"
+ de,org.oasisopen.sca";version="2.0.0"
 Private-Package: icons;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Domain Manager Application
@@ -61,8 +61,8 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.workspace;version="2.0.0",
  org.apache.tuscany.sca.workspace.builder;version="2.0.0",
  org.apache.xml.serialize,
- org.osoa.sca;version="2.0.0",
- org.osoa.sca.annotations;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.manager
 Bundle-DocURL: http://www.apache.org/

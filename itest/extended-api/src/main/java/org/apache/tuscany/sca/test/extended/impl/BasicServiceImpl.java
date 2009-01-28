@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.test.extended.impl;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.extended.BasicService;
 import org.apache.tuscany.sca.test.extended.MathService;
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(BasicService.class)
 public class BasicServiceImpl implements BasicService {

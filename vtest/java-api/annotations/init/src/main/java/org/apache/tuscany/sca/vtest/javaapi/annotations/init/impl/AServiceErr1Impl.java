@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.init.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.init.AService;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements AService. The implementation has an error since it annotates a protected

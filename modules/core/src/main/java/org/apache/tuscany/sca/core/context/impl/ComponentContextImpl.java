@@ -54,10 +54,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Implementation of ComponentContext that delegates to a ComponentContextProvider.

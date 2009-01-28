@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Denotes an invalid usage of {@link org.osoa.sca.annotations.Property}
+ * Denotes an invalid usage of {@link org.oasisopen.sca.annotation.Property}
  *
  * @version $Rev$ $Date$
  */

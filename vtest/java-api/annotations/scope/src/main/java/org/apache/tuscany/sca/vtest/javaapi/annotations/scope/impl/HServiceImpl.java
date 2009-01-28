@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.IService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.HService;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(HService.class)
 public class HServiceImpl implements HService {

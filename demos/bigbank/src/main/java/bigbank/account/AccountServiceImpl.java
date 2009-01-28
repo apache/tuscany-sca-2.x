@@ -18,9 +18,9 @@
  */
 package bigbank.account;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import stockquote.StockQuoteService;
 import bigbank.account.checking.CheckingAccountDetails;

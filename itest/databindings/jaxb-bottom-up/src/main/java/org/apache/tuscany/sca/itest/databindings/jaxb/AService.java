@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 
 import javax.jws.soap.SOAPBinding;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The interface for AService.

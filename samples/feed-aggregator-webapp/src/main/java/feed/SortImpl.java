@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.abdera.model.Entry;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Implementation of a Feed Sort service component.
