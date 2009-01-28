@@ -74,60 +74,6 @@ public class EquinoxHost {
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
-    /*
-    private final static String systemPackages =
-            "org.osgi.framework; version=1.3.0,"
-            + "org.osgi.service.packageadmin; version=1.2.0, "
-            + "org.osgi.service.startlevel; version=1.0.0, "
-            + "org.osgi.service.url; version=1.0.0, "
-            + "org.osgi.util.tracker; version=1.3.2, "
-            + "javax.xml, "
-            + "javax.xml.datatype, "
-            + "javax.xml.namespace, "
-            + "javax.xml.parsers, "
-            + "javax.xml.transform, "
-            + "javax.xml.transform.dom, "
-            + "javax.xml.transform.sax, "
-            + "javax.xml.transform.stream, "
-            + "javax.xml.validation, "
-            + "javax.xml.xpath, "
-            // Force the classes to be imported from the system bundle
-            + "javax.xml.stream, "
-            + "javax.xml.stream.util, "
-            + "javax.sql,"
-            + "org.w3c.dom, "
-            + "org.xml.sax, "
-            + "org.xml.sax.ext, "
-            + "org.xml.sax.helpers, "
-            + "javax.security.auth, "
-            + "javax.security.cert, "
-            + "javax.security.auth.login, "
-            + "javax.security.auth.callback, "
-            + "javax.naming, "
-            + "javax.naming.spi, "
-            + "javax.naming.directory, "
-            + "javax.management, "
-            + "javax.imageio, "
-            + "sun.misc, "
-            + "javax.net, "
-            + "javax.net.ssl, "
-            + "javax.crypto, "
-            + "javax.rmi, "
-            //+ "javax.transaction, "
-            //+ "javax.transaction.xa, "
-            + "org.omg.CosNaming, "
-            + "org.omg.CORBA, "
-            + "org.omg.CORBA.portable, "
-            + "org.omg.PortableServer, "
-            + "org.omg.CosNaming, "
-            + "org.omg.CosNaming.NamingContextExtPackage, "
-            + "org.omg.CosNaming.NamingContextPackage, "
-            + "org.omg.CORBA_2_3.portable, "
-            + "org.omg.IOP, "
-            + "org.omg.PortableInterceptor, "
-            + "org.omg.stub.java.rmi, "
-            + "javax.rmi.CORBA";
-    */
     public EquinoxHost() {
         super();
     }
@@ -168,14 +114,10 @@ public class EquinoxHost {
                 // Configure Eclipse properties
 
                 // Use the boot classloader as the parent classloader
-                props.put("osgi.contextClassLoaderParent", "boot");
+                props.put("osgi.contextClassLoaderParent", "app");
 
                 // Set startup properties
                 props.put(EclipseStarter.PROP_CLEAN, "true");
-
-                if (logger.isLoggable(Level.FINE)) {
-                    props.put("osgi.console", "8085");
-                }
 
                 // Set location properties
                 // FIXME Use proper locations

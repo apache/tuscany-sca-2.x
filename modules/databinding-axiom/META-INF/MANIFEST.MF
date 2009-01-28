@@ -14,14 +14,19 @@ Bnd-LastModified: 1225397285015
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for Axiom
-Import-Package: javax.xml.namespace,javax.xml.stream,org
- .apache.axiom.om,org.apache.axiom.om.impl.builder,org.apache.tuscany.
- sca.databinding;version="2.0.0",org.apache.tuscany.sca.databinding.axio
- m;version="2.0.0",org.apache.tuscany.sca.databinding.impl;version="2.0.0"
- ,org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",org.apach
- e.tuscany.sca.interfacedef;version="2.0.0",org.apache.tuscany.sca.inter
- facedef.impl;version="2.0.0",org.apache.tuscany.sca.interfacedef.util;v
- ersion="1.4"
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.axiom.om,
+ org.apache.axiom.om.impl.builder,
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.axiom;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="1.4",
+ org.apache.axiom.soap.impl.llom.soap11;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.axiom
+Fragment-Host: org.apache.ws.commons.axiom.axiom-api
 Bundle-DocURL: http://www.apache.org/
 
