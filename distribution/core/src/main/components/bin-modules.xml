@@ -24,7 +24,7 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>modules/**/*</include>
-                <include>tuscany-distribution-*/**/*</include>
+                <include>features/**/*</include>
             </includes>
         </fileSet>
 
