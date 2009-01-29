@@ -202,6 +202,27 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter
      */
     private ArtifactAggregation[] artifactAggregations;
+    
+    private static final String XML_PI = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static final String ASL_HEADER =
+            "<!--"
+            + "\n * Licensed to the Apache Software Foundation (ASF) under one"
+            + "\n * or more contributor license agreements.  See the NOTICE file"
+            + "\n * distributed with this work for additional information"
+            + "\n * regarding copyright ownership.  The ASF licenses this file"
+            + "\n * to you under the Apache License, Version 2.0 (the"
+            + "\n * \"License\"); you may not use this file except in compliance"
+            + "\n * with the License.  You may obtain a copy of the License at"
+            + "\n * "
+            + "\n *   http://www.apache.org/licenses/LICENSE-2.0"
+            + "\n * "
+            + "\n * Unless required by applicable law or agreed to in writing,"
+            + "\n * software distributed under the License is distributed on an"
+            + "\n * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY"
+            + "\n * KIND, either express or implied.  See the License for the"
+            + "\n * specific language governing permissions and limitations"
+            + "\n * under the License."
+            + "\n-->";    
 
     /**
      * Group the artifacts by distribution poms
@@ -472,15 +493,16 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateTargetPlatform) {
                 for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
                     Set<String> bundles = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
-                    feature.mkdir();
+                    String name = trim(e.getKey());
+                    File feature = new File(root, "../features/" + (useDistributionName ? name : ""));
+                    feature.mkdirs();
                     File target = new File(feature, "tuscany.target");
                     log.info("Generating target definition: " + target);
                     FileOutputStream targetFile = new FileOutputStream(target);
                     if (!bundles.contains("org.eclipse.osgi")) {
                         bundles.add("org.eclipse.osgi");
                     }
-                    writeTarget(new PrintStream(targetFile), trim(e.getKey()), bundles, eclipseFeatures);
+                    writeTarget(new PrintStream(targetFile), name, bundles, eclipseFeatures);
                     targetFile.close();
                 }
             }
@@ -496,7 +518,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateConfig) {
                 for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
                     Set<String> locations = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
+                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
                     File config = new File(feature, "configuration");
                     config.mkdirs();
                     File ini = new File(config, "config.ini");
@@ -518,14 +540,14 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
                     MavenProject pom = jarNames.getProject(e.getKey());
                     Set<String> jars = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
-                    feature.mkdir();
+                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+                    feature.mkdirs();
                     File mfJar = new File(feature, "manifest.jar");
                     log.info("Generating manifest jar: " + mfJar);
                     FileOutputStream fos = new FileOutputStream(mfJar);
                     Manifest mf = new Manifest();
                     StringBuffer cp = new StringBuffer();
-                    String path = "../" + root.getName();
+                    String path = (useDistributionName ? "../../" : "../") + root.getName();
                     for (String jar : jars) {
                         cp.append(path).append('/').append(jar).append(' ');
                     }
@@ -548,23 +570,27 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             if (generateAntScript) {
                 for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
                     Set<String> jars = e.getValue();
-                    File feature = new File(root, "../" + (useDistributionName ? trim(e.getKey()) : ""));
-                    feature.mkdir();
+                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+                    feature.mkdirs();
                     File antPath = new File(feature, "build-path.xml");
                     log.info("Generating ANT build path: " + antPath);
                     FileOutputStream fos = new FileOutputStream(antPath);
                     PrintStream ps = new PrintStream(fos);
-                    ps.println("<property name=\"tuscany.distro\" value=\"" + trim(e.getKey()) + "\"/>");
-                    ps.println("<property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.mf")
+                    // ps.println(XML_PI);
+                    ps.println(ASL_HEADER);
+                    String name = trim(e.getKey());
+                    ps.println("<project name=\"tuscany."+name+"\">");
+                    ps.println("  <property name=\"tuscany.distro\" value=\"" + name + "\"/>");
+                    ps.println("  <property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.jar").getCanonicalPath()
                         + "\"/>");
-                    ps.println("<path id=\"" + "tuscany.path" + "\">");
-                    ps.println("  <fileset dir=\"" + root + "\">");
+                    ps.println("  <path id=\"" + "tuscany.path" + "\">");
+                    ps.println("    <fileset dir=\"" + root.getCanonicalPath() + "\">");
                     for (String jar : jars) {
-                        ps.println("    <include name=\"" + jar + "\"/>");
+                        ps.println("      <include name=\"" + jar + "\"/>");
                     }
-                    ps.println("  </fileset>");
-                    ps.println("</path>");
-                    ps.println("<classpath id=\"tuscany.classpath\" refid=\"tuscany.path\"/>");
+                    ps.println("    </fileset>");
+                    ps.println("  </path>");
+                    ps.println("</project>");
                 }
             }
 
@@ -581,7 +607,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      */
     private String trim(String artifactId) {
         if (artifactId.startsWith("tuscany-distribution-")) {
-            return "feature-" + artifactId.substring("tuscany-distribution-".length());
+            return artifactId.substring("tuscany-distribution-".length());
         } else {
             return artifactId;
         }
@@ -605,8 +631,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     }
 
     private void writeTarget(PrintStream ps, String pom, Set<String> ids, String[] features) {
-        ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        ps.println(XML_PI);
         ps.println("<?pde version=\"3.2\"?>");
+        ps.println(ASL_HEADER);
 
         ps.println("<target name=\"Eclipse Target - " + pom + "\">");
 
@@ -649,8 +676,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     }
 
     private static void writePluginXML(PrintStream ps) {
-        ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        ps.println(XML_PI);
         ps.println("<?pde version=\"3.2\"?>");
+        ps.println(ASL_HEADER);
         ps.println("<plugin>");
         ps.println("<extension point = \"org.eclipse.pde.core.targets\">");
         ps.println("<target");
