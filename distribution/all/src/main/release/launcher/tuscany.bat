@@ -1,5 +1,7 @@
 @echo off
 
+if "%1"=="/?" goto help
+
 if not "%TUSCANY_HOME%"=="" goto gotHome
 SET TUSCANY_HOME=%~dp0\..
 if not "%TUSCANY_HOME%"=="" goto gotHome
@@ -16,6 +18,11 @@ set _XDEBUG=-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=
 shift
 :skipDebug
 
+set _FORK=
+if not %1==fork goto skipFork
+set _FORK=start
+shift
+:skipFORK
 
 set _CMD_LINE_ARGS=
 :argsLoop
@@ -27,10 +34,20 @@ goto argsLoop
 
 :doneInit
 
-java %_XDEBUG% -jar %TUSCANY_HOME%/bin/launcher.jar %_CMD_LINE_ARGS%
+%_FORK% java %_XDEBUG% -jar %TUSCANY_HOME%/bin/launcher.jar %_CMD_LINE_ARGS%
 
 goto end
 
+:help
+
+echo Apache Tuscany SCA runtime launcher
+echo TUSCANY [debug] [fork] contributions
+echo     debug          enable Java remote debugging
+echo     fork           start a new command prompt window to run the contributions
+echo     contributions  list of SCA contribution file names seperated by spaces. All
+echo                    deployable composites found in the contributions will be run.
+
+goto end
 
 :error
 set ERROR_CODE=1
