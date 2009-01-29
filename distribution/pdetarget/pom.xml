@@ -81,6 +81,8 @@
                                     <targetDirectory>target/modules</targetDirectory>
                                     <generateTargetPlatform>true</generateTargetPlatform>
                                     <generateConfig>true</generateConfig>
+                                    <generateManifestJar>false</generateManifestJar>
+                                    <useDistributionName>false</useDistributionName>
                                     <useDefaultLocation>true</useDefaultLocation>
                                     <excludeGroupIds>
                                         <excludeGroupId>org.apache.tuscany.sca</excludeGroupId>
