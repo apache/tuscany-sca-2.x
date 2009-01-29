@@ -83,7 +83,7 @@ public class DomainManagerLauncher {
         try {
 
             // Start the OSGi host 
-            equinox = new EquinoxHost();
+            equinox = new EquinoxHost(args);
             equinox.start();
 
             // Start the domain manager

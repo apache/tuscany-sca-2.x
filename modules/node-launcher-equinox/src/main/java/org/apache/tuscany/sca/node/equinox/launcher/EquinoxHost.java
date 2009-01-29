@@ -67,21 +67,30 @@ public class EquinoxHost {
     private BundleContext bundleContext;
     private Bundle launcherBundle;
     private boolean startedEclipse;
-    private Set<URL> dependencies;
     private List<String> bundleFiles = new ArrayList<String>();
     private List<String> bundleNames = new ArrayList<String>();
     private List<String> jarFiles = new ArrayList<String>();
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
+    private Set<URL> bundleLocations;
+    private String[] arguments = {};
+
     public EquinoxHost() {
         super();
     }
 
-    public EquinoxHost(Set<URL> dependencies) {
+    public EquinoxHost(Set<URL> urls) {
         super();
-        this.dependencies = dependencies;
+        this.bundleLocations = urls;
     }
+    
+    public EquinoxHost(String[] args) {
+        super();
+        if (args != null) {
+            this.arguments = args;
+        }
+    }    
     
     private static String getSystemProperty(final String name) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -142,7 +151,7 @@ public class EquinoxHost {
                 EclipseStarter.setInitialProperties(props);
 
                 // Start Eclipse
-                bundleContext = EclipseStarter.startup(new String[] {}, null);
+                bundleContext = EclipseStarter.startup(arguments, null);
                 startedEclipse = true;
 
             } else {
@@ -153,7 +162,7 @@ public class EquinoxHost {
 
             // Determine the runtime classpath entries
             Set<URL> urls;
-            urls = findDependencies();
+            urls = findBundleLocations();
 
             // Sort out which are bundles (and not already installed) and which are just
             // regular JARs
@@ -320,21 +329,21 @@ public class EquinoxHost {
         }
     }
 
-    private Set<URL> findDependencies() throws FileNotFoundException, URISyntaxException, MalformedURLException {
-        if (dependencies == null) {
+    private Set<URL> findBundleLocations() throws FileNotFoundException, URISyntaxException, MalformedURLException {
+        if (bundleLocations == null) {
             if (!startedEclipse) {
 
                 // Use classpath entries from a distribution if there is one and the modules
                 // directories available in a dev environment for example
-                dependencies = runtimeClasspathEntries(true, false, true);
+                bundleLocations = runtimeClasspathEntries(true, false, true);
             } else {
 
                 // Use classpath entries from a distribution if there is one and the classpath
                 // entries on the current application's classloader
-                dependencies = runtimeClasspathEntries(true, true, false);
+                bundleLocations = runtimeClasspathEntries(true, true, false);
             }
         }
-        return dependencies;
+        return bundleLocations;
     }
 
     /**
@@ -366,6 +375,14 @@ public class EquinoxHost {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public void setBundleLocations(Set<URL> bundleLocations) {
+        this.bundleLocations = bundleLocations;
+    }
+
+    public void setArguments(String[] arguments) {
+        this.arguments = arguments;
     }
 
 }
