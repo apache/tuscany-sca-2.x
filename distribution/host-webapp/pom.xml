@@ -56,7 +56,7 @@
         <profile>
             <id>distribution</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -95,7 +95,7 @@
                                         <descriptor>src/main/assembly/src.xml</descriptor>
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>apache-tuscany-sca-host-webapp-2.0-SNAPSHOT</finalName>
+                                    <finalName>apache-tuscany-sca-webapp-2.0-SNAPSHOT</finalName>
                                 </configuration>
                             </execution>
                         </executions>
