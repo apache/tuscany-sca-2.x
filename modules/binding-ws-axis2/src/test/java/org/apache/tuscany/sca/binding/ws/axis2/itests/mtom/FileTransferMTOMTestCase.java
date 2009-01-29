@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.binding.ws.axis2.itests.mtom;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.sca.binding.ws.axis2.itests.mtom.FileTransferService;
-// Added imports to new Node / Launcher framework
+
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
 import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
@@ -53,13 +53,12 @@ public class FileTransferMTOMTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         // domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/mtom/filetransferservice.composite");
-    	// Tuscany specific code which starts the contribution holding the test
-        launcher = NodeLauncher.newInstance();
-        node = launcher.createNode( "filetransferservice.composite", // testConfiguration.getComposite(), 
-        		                   new Contribution("FileTransferMTOMTestCase", 
-        		                		            getContributionURI()));
+        // Tuscany specific code which starts the contribution holding the test
+        launcher = NodeLauncher.newInstance(null);
+        node = launcher.createNode("filetransferservice.composite", // testConfiguration.getComposite(), 
+                                   new Contribution("FileTransferMTOMTestCase", getContributionURI()));
     }
-   
+
     @Override
     protected void tearDown() throws Exception {
         //domain.close();
@@ -71,12 +70,12 @@ public class FileTransferMTOMTestCase extends TestCase {
             launcher.destroy();
         }
     }
-    
+
     protected String getContributionURI() {
-    	Class<?> clazz = getClass();
-    	String location = ContributionLocationHelper.getContributionLocation(clazz);
-    	return location;
-    	
+        Class<?> clazz = getClass();
+        String location = ContributionLocationHelper.getContributionLocation(clazz);
+        return location;
+
     } // end getContributionURI()
 
 }
