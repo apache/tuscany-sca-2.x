@@ -41,8 +41,8 @@ public class NodeLauncher {
     /**
      * Constructs a new node launcher.
      */
-    private NodeLauncher() {
-        equinoxHost = new EquinoxHost();
+    private NodeLauncher(String args[]) {
+        equinoxHost = new EquinoxHost(args);
         bundleContext = equinoxHost.start();
     }
 
@@ -51,8 +51,8 @@ public class NodeLauncher {
      *  
      * @return a new launcher instance
      */
-    public static NodeLauncher newInstance() {
-        return new NodeLauncher();
+    public static NodeLauncher newInstance(String[] args) {
+        return new NodeLauncher(args);
     }
 
     /**
@@ -101,7 +101,7 @@ public class NodeLauncher {
         logger.info("Apache Tuscany SCA Node is starting...");
 
         // Create a node launcher
-        NodeLauncher launcher = newInstance();
+        NodeLauncher launcher = newInstance(args);
 
         EquinoxHost equinox = launcher.equinoxHost;
         Object node = null;
