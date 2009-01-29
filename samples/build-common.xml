@@ -18,17 +18,19 @@
 -->
 
 <project name="common">
-    <available file="../../distribution/pom.xml" property="running.in.development"/>
-	
-    <target name="common-set-development" if="running.in.development">
-        <property name="distro.root" value="../../distribution/all/target"/>
-    </target>
-	
-    <target name="common-set-distribution" unless="running.in.development">
-        <property name="distro.root" value="../.."/>
-    </target>
+    <!-- Set the distro path based on the existence of the pom.xml -->
+    <condition property="distro.path" value="../../distribution/all/target" else="../..">
+        <available file="../../distribution/pom.xml"/> 
+    </condition>
 
-    <target name="common-init" depends="common-set-development, common-set-distribution" >
+    <!-- Convert the path to an absolute location -->
+    <property name="distro.root" location="${distro.path}"/> 
+    <echo>Distribution: ${distro.root}</echo>
+
+    <!-- @file is relative to the enclosing file -->
+    <import file="${distro.root}/features/build-path.xml"/>
+
+    <target name="common-init">
         <mkdir dir="${sample.root}/target/classes"/>
     </target>
 
@@ -38,13 +40,7 @@
                debug="on"
                source="1.5"
                target="1.5">
-            <classpath>
-            	<!--pathelement location="${distro.root}/tuscany-distribution-core/manifest.jar"/-->
-                <fileset dir="${distro.root}/modules">
-                    <include name="*.jar" />
-                    <include name="*/*.jar" />
-                </fileset>
-            </classpath>
+            <classpath refid="tuscany.path"/>
         </javac> 
         <copy todir="${sample.root}/target/classes">
             <fileset dir="${sample.root}/src/main/resources"/>
@@ -59,24 +55,14 @@
                debug="on"
                source="1.5"
                target="1.5">
-            <classpath>
-            	<!--pathelement location="${distro.root}/tuscany-distribution-all/manifest.jar"/-->
-                <fileset dir="${distro.root}/modules">
-                    <include name="*.jar" />
-                    <include name="*/*.jar" />
-                </fileset>
-            </classpath>
+            <classpath refid="tuscany.path"/>
         </javac> 
         <copy todir="${sample.root}/target/classes">
             <fileset dir="${sample.root}/src/main/resources"/>
         </copy>
-        <fileset id="tuscany.jars" dir="${distro.root}/modules">
-            <include name="*.jar" />
-            <include name="*/*.jar" />
-        </fileset>    	
         <war destfile="${sample.war}" webxml="${sample.root}/src/main/webapp/WEB-INF/web.xml">
             <fileset dir="${sample.root}/src/main/webapp"/>
-        	<lib refid="tuscany.jars"/>
+        	<lib refid="tuscany.path"/>
             <classes dir="${sample.root}/target/classes"/>
         </war>    	
     </target>	
