@@ -55,6 +55,9 @@ public class NodeLauncher {
         return new NodeLauncher(args);
     }
 
+    public static NodeLauncher newInstance() {
+        return new NodeLauncher(null);
+    }    
     /**
      * Creates a new SCA node from the configuration URL
      * 
