@@ -41,8 +41,21 @@
 
                 <!-- Sample specific files/folders to exclude -->
                 <exclude>pom.xml</exclude>
-                <exclude>**/target</exclude>
-                <exclude>**/target/**/*</exclude>
+                <!-- exclude>**/target</exclude -->
+                <!-- exclude>**/target/**/*</exclude -->
+                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
+                <exclude>*/target/.felix</exclude>
+                <exclude>*/target/.felix/**/*</exclude>
+                <exclude>*/target/maven-archiver</exclude>
+                <exclude>*/target/maven-archiver/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
