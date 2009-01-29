@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.launcher;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +41,7 @@ public class LauncherMain {
     
     private static final String DEFAULT_PROPERTY_FILENAME = "default.config";
 
-    public static void main(String[] args) throws SecurityException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException {
+    public static void main(String[] args) throws SecurityException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, FileNotFoundException {
 
         Properties launcherProperties = getLauncherProperties(args);
         
@@ -99,7 +100,7 @@ public class LauncherMain {
         }
     }
 
-    private static ClassLoader getClassLoader(Properties launcherProperties) {
+    private static ClassLoader getClassLoader(Properties launcherProperties) throws URISyntaxException {
         Set<URL> jarURLs = new HashSet<URL>(); 
         for (Enumeration<?> e = launcherProperties.propertyNames(); e.hasMoreElements();) {
             String pn = (String) e.nextElement();
@@ -118,18 +119,29 @@ public class LauncherMain {
      * Gets the jars matching a config classpath property
      * property values may be an explicit jar name or use an asterix wildcard for
      * all jars in a folder, or a double asterix '**' for all jars in a folder and its subfolders
+     * @throws URISyntaxException 
      */
-    private static Set<URL> getJARs(String classpathValue) {
-        Set<URL> jarURLs = new HashSet<URL>(); 
+    private static Set<URL> getJARs(String classpathValue) throws URISyntaxException {
+        Set<URL> jarURLs = new HashSet<URL>();
+        
         if (classpathValue.endsWith("**")) {
             File folder = new File(classpathValue.substring(0, classpathValue.length()-2));
+            if (!folder.isAbsolute()) {
+                folder = new File(getLauncherFolder().getParent(), folder.getName());
+            }
             jarURLs.addAll(getFolderJars(folder));
             jarURLs.addAll(getSubFolderJars(folder));
         } else if (classpathValue.endsWith("*")) {
             File folder = new File(classpathValue.substring(0, classpathValue.length()-1));
+            if (!folder.isAbsolute()) {
+                folder = new File(getLauncherFolder(), folder.getName());
+            }
             jarURLs.addAll(getFolderJars(folder));
         } else {
             File f = new File(classpathValue);
+            if (!f.isAbsolute()) {
+                f = new File(getLauncherFolder(), classpathValue);
+            }
             try {
                 jarURLs.add(f.toURI().toURL());
             } catch (MalformedURLException e) {
@@ -182,32 +194,26 @@ public class LauncherMain {
      * Read the config properties for this launcher invocation
      * (Either default.config or the 1st cmd line argument suffixed with ".config" if that file exists 
      */
-    private static Properties getLauncherProperties(String[] args) throws URISyntaxException {
+    private static Properties getLauncherProperties(String[] args) throws URISyntaxException, FileNotFoundException {
 
         Properties properties = new Properties();
-
-        String fileName;
+        
+        File f;
         if (args.length > 0) {
-            File f = new File(args[0]);
-            if (!f.exists()) {
-                f = new File(getLauncherFolder(), args[0] + ".config");
-            }
-//            File f = new File(getLauncherFolder(), args[0] + ".config");
+            f = new File(getLauncherFolder(), args[0] + ".config");
             if (f.exists()) {
-                fileName = f.toString();
                 String[] args2 = new String[args.length-1];
                 System.arraycopy(args, 1, args2, 0, args.length-1);
                 args = args2;
             } else {
-                fileName = DEFAULT_PROPERTY_FILENAME;
+                f = new File(getLauncherFolder(), DEFAULT_PROPERTY_FILENAME);
             }
         } else {
-            fileName = DEFAULT_PROPERTY_FILENAME;
+            f = new File(getLauncherFolder(), DEFAULT_PROPERTY_FILENAME);
         }
         
-        File f = new File(fileName);
-        if (!f.isAbsolute()) {
-            f = new File(getLauncherFolder(), fileName);
+        if (!f.exists()) {
+            throw new FileNotFoundException(f.getName());
         }
 
         try {
