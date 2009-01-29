@@ -12,8 +12,8 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Calculator OSGi Sample
 Import-Package: org.apache.tuscany.sca.node;version="2.0.0",
- org.osgi.framework;version="1.4",
- org.oasisopen.sca.annotations;version="2.0.0"
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.osgi.framework;version="1.4"
 Bundle-SymbolicName: sample-calculator-osgi
 Bundle-DocURL: http://www.apache.org/
 
