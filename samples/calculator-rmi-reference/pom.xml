@@ -63,6 +63,20 @@
 
     <build>
        <finalName>${artifactId}</finalName>
+       <plugins>
+          <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-jar-plugin</artifactId>
+             <version>2.2</version>
+             <configuration>
+                <archive>
+                   <manifest>
+                      <mainClass>calculator.CalculatorClient</mainClass>
+                   </manifest>
+                </archive>
+             </configuration>
+          </plugin>
+       </plugins>
     </build>
 
 </project>
