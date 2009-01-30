@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,8 @@ import java.util.jar.Manifest;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
@@ -46,6 +49,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
 /**
  * A maven plugin that generates a modules directory containing OSGi bundles for all the project's module dependencies.
@@ -153,7 +158,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     /**
      * Set to true to generate a PDE target platform configuration.
      * 
-     *  @parameter
+     *  @parameter default-value="true"
      */
     private boolean generateTargetPlatform = true;
 
@@ -170,26 +175,31 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
     /**
      * If we use the running eclipse as the default location for the target 
-     * @parameter
+     * @parameter default-value="true"
      */
     private boolean useDefaultLocation = true;
 
     /**
      * Set to true to generate a plugin.xml.
      * 
-     *  @parameter
+     *  @parameter default-value="false"
      */
     private boolean generatePlugin;
 
     /**
      * Generate a configuration/config.ini for equinox
-     * @parameter
+     * @parameter default-value="true"
      */
     private boolean generateConfig = true;
+    
+    /**
+     * @parameter default-value="true"
+     */
+    private boolean generateBundleStart = true;
 
     /**
-     * Generete startup/-manifest.jar
-     * @parameter
+     * Generete manifest.jar
+     * @parameter default-value="true"
      */
     private boolean generateManifestJar = true;
 
@@ -233,6 +243,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         // Key: the pom artifact id
         // Value: the names for the artifacts
         private Map<String, Set<String>> nameMap = new HashMap<String, Set<String>>();
+        
+        private Map<String, String> artifactToNameMap = new HashMap<String, String>();
 
         public ProjectSet(List<MavenProject> projects) {
             super();
@@ -247,8 +259,9 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         }
 
         private void add(Artifact artifact, String name) {
+            String key = ArtifactUtils.versionlessKey(artifact);
             for (MavenProject p : projects.values()) {
-                Artifact a = (Artifact)p.getArtifactMap().get(ArtifactUtils.versionlessKey(artifact));
+                Artifact a = (Artifact)p.getArtifactMap().get(key);
                 if (a != null) {
                     Set<String> names = nameMap.get(p.getArtifactId());
                     if (names == null) {
@@ -258,6 +271,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     names.add(name);
                 }
             }
+            artifactToNameMap.put(key, name);
         }
     }
 
@@ -308,21 +322,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                     if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
                         && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
                         log.info("Dependent distribution: " + artifact);
-                        MavenProject pomProject =
-                            mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
-                        if (pomProject.getDependencyArtifacts() == null) {
-                            pomProject.setDependencyArtifacts(pomProject
-                                .createArtifacts(factory,
-                                                 Artifact.SCOPE_TEST,
-                                                 new ScopeArtifactFilter(Artifact.SCOPE_TEST)));
-                        }
-                        ArtifactResolutionResult result =
-                            resolver.resolveTransitively(pomProject.getDependencyArtifacts(),
-                                                         pomProject.getArtifact(),
-                                                         remoteRepos,
-                                                         local,
-                                                         artifactMetadataSource);
-                        pomProject.setArtifacts(result.getArtifacts());
+                        MavenProject pomProject = buildProject(artifact);
                         poms.add(pomProject);
                         // log.info(pomProject.getArtifactMap().toString());
                     }
@@ -491,20 +491,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
 
             // Generate a PDE target
             if (generateTargetPlatform) {
-                for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
-                    Set<String> bundles = e.getValue();
-                    String name = trim(e.getKey());
-                    File feature = new File(root, "../features/" + (useDistributionName ? name : ""));
-                    feature.mkdirs();
-                    File target = new File(feature, "tuscany.target");
-                    log.info("Generating target definition: " + target);
-                    FileOutputStream targetFile = new FileOutputStream(target);
-                    if (!bundles.contains("org.eclipse.osgi")) {
-                        bundles.add("org.eclipse.osgi");
-                    }
-                    writeTarget(new PrintStream(targetFile), name, bundles, eclipseFeatures);
-                    targetFile.close();
-                }
+                generatePDETarget(bundleSymbolicNames, root, log);
             }
 
             // Generate a plugin.xml referencing the PDE target
@@ -516,88 +503,196 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
 
             if (generateConfig) {
-                for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
-                    Set<String> locations = e.getValue();
-                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
-                    File config = new File(feature, "configuration");
-                    config.mkdirs();
-                    File ini = new File(config, "config.ini");
-                    log.info("Generating configuation: " + ini);
-                    FileOutputStream fos = new FileOutputStream(ini);
-                    PrintStream ps = new PrintStream(fos);
-                    ps.print("osgi.bundles=");
-                    for (String f : locations) {
-                        ps.print(f);
-                        ps.print("@:start,");
-                    }
-                    ps.println();
-                    ps.println("eclipse.ignoreApp=true");
-                    ps.close();
-                }
+                generateEquinoxConfig(bundleLocations, root, log);
             }
 
             if (generateManifestJar) {
-                for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
-                    MavenProject pom = jarNames.getProject(e.getKey());
-                    Set<String> jars = e.getValue();
-                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
-                    feature.mkdirs();
-                    File mfJar = new File(feature, "manifest.jar");
-                    log.info("Generating manifest jar: " + mfJar);
-                    FileOutputStream fos = new FileOutputStream(mfJar);
-                    Manifest mf = new Manifest();
-                    StringBuffer cp = new StringBuffer();
-                    String path = (useDistributionName ? "../../" : "../") + root.getName();
-                    for (String jar : jars) {
-                        cp.append(path).append('/').append(jar).append(' ');
-                    }
-                    if (cp.length() > 0) {
-                        cp.deleteCharAt(cp.length() - 1);
-                    }
-                    Attributes attrs = mf.getMainAttributes();
-                    attrs.putValue("Manifest-Version", "1.0");
-                    attrs.putValue("Implementation-Title", pom.getName());
-                    attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
-                    attrs.putValue("Implementation-Vendor-Id", "org.apache");
-                    attrs.putValue("Implementation-Version", pom.getVersion());
-                    attrs.putValue("Class-Path", cp.toString());
-                    attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
-                    JarOutputStream jos = new JarOutputStream(fos, mf);
-                    jos.close();
-                }
+                generateManifestJar(jarNames, root, log);
+                generateEquinoxLauncherManifestJar(jarNames, root, log);
             }
             
             if (generateAntScript) {
-                for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
-                    Set<String> jars = e.getValue();
-                    File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
-                    feature.mkdirs();
-                    File antPath = new File(feature, "build-path.xml");
-                    log.info("Generating ANT build path: " + antPath);
-                    FileOutputStream fos = new FileOutputStream(antPath);
-                    PrintStream ps = new PrintStream(fos);
-                    // ps.println(XML_PI);
-                    ps.println(ASL_HEADER);
-                    String name = trim(e.getKey());
-                    ps.println("<project name=\"tuscany."+name+"\">");
-                    ps.println("  <property name=\"tuscany.distro\" value=\"" + name + "\"/>");
-                    ps.println("  <property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.jar").getCanonicalPath()
-                        + "\"/>");
-                    ps.println("  <path id=\"" + "tuscany.path" + "\">");
-                    ps.println("    <fileset dir=\"" + root.getCanonicalPath() + "\">");
-                    for (String jar : jars) {
-                        ps.println("      <include name=\"" + jar + "\"/>");
-                    }
-                    ps.println("    </fileset>");
-                    ps.println("  </path>");
-                    ps.println("</project>");
-                }
+                generateANTPath(jarNames, root, log);
             }
 
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
 
+    }
+
+    private void generateANTPath(ProjectSet jarNames, File root, Log log) throws FileNotFoundException, IOException {
+        for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
+            Set<String> jars = e.getValue();
+            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            feature.mkdirs();
+            File antPath = new File(feature, "build-path.xml");
+            log.info("Generating ANT build path: " + antPath);
+            FileOutputStream fos = new FileOutputStream(antPath);
+            PrintStream ps = new PrintStream(fos);
+            // ps.println(XML_PI);
+            ps.println(ASL_HEADER);
+            String name = trim(e.getKey());
+            ps.println("<project name=\"tuscany."+name+"\">");
+            ps.println("  <property name=\"tuscany.distro\" value=\"" + name + "\"/>");
+            ps.println("  <property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.jar").getCanonicalPath()
+                + "\"/>");
+            ps.println("  <path id=\"" + "tuscany.path" + "\">");
+            ps.println("    <fileset dir=\"" + root.getCanonicalPath() + "\">");
+            for (String jar : jars) {
+                ps.println("      <include name=\"" + jar + "\"/>");
+            }
+            ps.println("    </fileset>");
+            ps.println("  </path>");
+            ps.println("</project>");
+        }
+    }
+
+    private void generateManifestJar(ProjectSet jarNames, File root, Log log) throws FileNotFoundException, IOException {
+        for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
+            MavenProject pom = jarNames.getProject(e.getKey());
+            Set<String> jars = e.getValue();
+            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            feature.mkdirs();
+            File mfJar = new File(feature, "manifest.jar");
+            log.info("Generating manifest jar: " + mfJar);
+            FileOutputStream fos = new FileOutputStream(mfJar);
+            Manifest mf = new Manifest();
+            StringBuffer cp = new StringBuffer();
+            String path = (useDistributionName ? "../../" : "../") + root.getName();
+            for (String jar : jars) {
+                cp.append(path).append('/').append(jar).append(' ');
+            }
+            if (cp.length() > 0) {
+                cp.deleteCharAt(cp.length() - 1);
+            }
+            Attributes attrs = mf.getMainAttributes();
+            attrs.putValue("Manifest-Version", "1.0");
+            attrs.putValue("Implementation-Title", pom.getName());
+            attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
+            attrs.putValue("Implementation-Vendor-Id", "org.apache");
+            attrs.putValue("Implementation-Version", pom.getVersion());
+            attrs.putValue("Class-Path", cp.toString());
+            attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
+            JarOutputStream jos = new JarOutputStream(fos, mf);
+            jos.close();
+        }
+    }
+
+    private void generateEquinoxLauncherManifestJar(ProjectSet jarNames, File root, Log log) throws Exception {
+        String equinoxLauncher = "org.apache.tuscany.sca:tuscany-node-launcher-equinox";
+        Artifact artifact = (Artifact)project.getArtifactMap().get(equinoxLauncher);
+        if (artifact == null) {
+            return;
+        }
+        Set artifacts = resolveTransitively(artifact).getArtifacts();
+        File feature = new File(root, "../features/");
+        feature.mkdirs();
+        File mfJar = new File(feature, "equinox-manifest.jar");
+        log.info("Generating manifest jar: " + mfJar);
+        FileOutputStream fos = new FileOutputStream(mfJar);
+        Manifest mf = new Manifest();
+        StringBuffer cp = new StringBuffer();
+        String path = "../" + root.getName();
+
+        for (Object o : artifacts) {
+            Artifact a = (Artifact)o;
+            if (!Artifact.SCOPE_TEST.equals(a.getScope())) {
+                String id = ArtifactUtils.versionlessKey(a);
+                String jar = jarNames.artifactToNameMap.get(id);
+                if (jar != null) {
+                    cp.append(path).append('/').append(jar).append(' ');
+                }
+            }
+        }
+        if (cp.length() > 0) {
+            cp.deleteCharAt(cp.length() - 1);
+        }
+        Attributes attrs = mf.getMainAttributes();
+        attrs.putValue("Manifest-Version", "1.0");
+        attrs.putValue("Implementation-Title", artifact.getId());
+        attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
+        attrs.putValue("Implementation-Vendor-Id", "org.apache");
+        attrs.putValue("Implementation-Version", artifact.getVersion());
+        attrs.putValue("Class-Path", cp.toString());
+        attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.equinox.launcher.NodeMain");
+        JarOutputStream jos = new JarOutputStream(fos, mf);
+        jos.close();
+    }
+
+    private void generateEquinoxConfig(ProjectSet bundleLocations, File root, Log log) throws FileNotFoundException {
+        for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
+            Set<String> locations = e.getValue();
+            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            File config = new File(feature, "configuration");
+            config.mkdirs();
+            File ini = new File(config, "config.ini");
+            log.info("Generating configuation: " + ini);
+            FileOutputStream fos = new FileOutputStream(ini);
+            PrintStream ps = new PrintStream(fos);
+            ps.print("osgi.bundles=");
+            for (String f : locations) {
+                ps.print(f);
+                if (generateBundleStart) {
+                    ps.print("@:start,");
+                } else {
+                    ps.println(",");
+                }
+            }
+            ps.println();
+            ps.println("eclipse.ignoreApp=true");
+            ps.println("osgi.noShutdown=true");
+            ps.close();
+        }
+    }
+
+    private void generatePDETarget(ProjectSet bundleSymbolicNames, File root, Log log) throws FileNotFoundException,
+        IOException {
+        for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
+            Set<String> bundles = e.getValue();
+            String name = trim(e.getKey());
+            File feature = new File(root, "../features/" + (useDistributionName ? name : ""));
+            feature.mkdirs();
+            File target = new File(feature, "tuscany.target");
+            log.info("Generating target definition: " + target);
+            FileOutputStream targetFile = new FileOutputStream(target);
+            if (!bundles.contains("org.eclipse.osgi")) {
+                bundles.add("org.eclipse.osgi");
+            }
+            writeTarget(new PrintStream(targetFile), name, bundles, eclipseFeatures);
+            targetFile.close();
+        }
+    }
+
+    private MavenProject buildProject(Artifact artifact) throws ProjectBuildingException,
+        InvalidDependencyVersionException, ArtifactResolutionException, ArtifactNotFoundException {
+        MavenProject pomProject =
+            mavenProjectBuilder.buildFromRepository(artifact, this.remoteRepos, this.local);
+        if (pomProject.getDependencyArtifacts() == null) {
+            pomProject.setDependencyArtifacts(pomProject
+                .createArtifacts(factory,
+                                 null, // Artifact.SCOPE_TEST,
+                                 new ScopeArtifactFilter(Artifact.SCOPE_TEST)));
+        }
+        ArtifactResolutionResult result =
+            resolver.resolveTransitively(pomProject.getDependencyArtifacts(),
+                                         pomProject.getArtifact(),
+                                         remoteRepos,
+                                         local,
+                                         artifactMetadataSource);
+        pomProject.setArtifacts(result.getArtifacts());
+        return pomProject;
+    }
+    
+    private ArtifactResolutionResult resolveTransitively(Artifact artifact) throws ArtifactResolutionException, ArtifactNotFoundException {
+        Artifact originatingArtifact = factory.createBuildArtifact("dummy", "dummy", "1.0", "jar");
+
+        return resolver.resolveTransitively(Collections.singleton(artifact),
+                                            originatingArtifact,
+                                            local,
+                                            remoteRepos,
+                                            artifactMetadataSource,
+                                            null);
     }
     
     /**
