@@ -16,57 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="calculator-rmi-service-server" default="compile">
-    <property name="test.class" value="calculator.CalculatorServer" />
-	<property name="test.jar"   value="sample-calculator-rmi-service.jar" />
-	
-    <target name="init">
-        <mkdir dir="target/classes"/>
-    </target>
-	
-    <target name="compile" depends="init">
-        <javac srcdir="src/main/java"
-               destdir="target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-            <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </javac> 
-        <copy todir="target/classes">
-            <fileset dir="src/main/resources"/>
-        </copy>
-        <jar destfile="target/${test.jar}" basedir="target/classes">
-            <manifest>
-                <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
-        </jar>     	
-    </target>	
-	
-    <target name="run-classes">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>
-    </target>
-	
-    <target name="run">
-        <java classname="${test.class}"
-              fork="true">
-            <classpath>
-                <pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        </java>    	
-    </target>
-	
-    <target name="clean">
-        <delete quiet="true" includeemptydirs="true">
-            <fileset dir="target"/>
-        </delete>
-    </target>
-</project>
+
+<project name="calculator" default="compile">
+
+   <property name="jar.name"   value="sample-calculator-rmi-service.jar" />
+   <property name="main.class" value="calculator.CalculatorClient" />
+
+   <target name="compile" depends="init">
+      <javac srcdir="src/main/java" destdir="target/classes" debug="on" source="1.5" target="1.5"> 
+         <classpath> 
+            <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+         </classpath> 
+      </javac> 
+      <copy todir="target/classes"> 
+         <fileset dir="src/main/resources"/> 
+      </copy> 
+      <jar destfile="target/${jar.name}" basedir="target/classes"> 
+         <manifest>
+            <attribute name="Main-Class" value="${main.class}" /> 
+         </manifest>
+      </jar>    	
+   </target>
+
+   <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+   </target>
+
+</project> 
+
+
