@@ -30,6 +30,7 @@ import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thir
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thisBundleLocation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -154,20 +155,28 @@ public class EquinoxHost {
                     logger.fine("Equinox location: " + root);
                 }
 
-                put(props, LocationManager.PROP_INSTANCE_AREA, new File(root, "workspace").toURI().toString());
+                put(props, LocationManager.PROP_INSTANCE_AREA_DEFAULT, new File(root, "workspace").toURI().toString());
                 put(props, LocationManager.PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
-                put(props, LocationManager.PROP_CONFIG_AREA, new File(root, "config").toURI().toString());
-                put(props, LocationManager.PROP_USER_AREA, new File(root, "user").toURI().toString());
+                put(props, LocationManager.PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
+                put(props, LocationManager.PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
 
                 EclipseStarter.setInitialProperties(props);
                 
                 // Test if the configuration/config.ini or osgi.bundles has been set
                 // If yes, try to avoid discovery of bundles
                 if (bundleLocations == null) {
-                    String config = props.getProperty(LocationManager.PROP_CONFIG_AREA);
-                    File ini = new File(config, "config.ini");
-                    if (ini.isFile() || props.getProperty("osgi.bundles") != null) {
+                    if (props.getProperty("osgi.bundles") != null) {
                         bundleLocations = Collections.emptySet();
+                    } else {
+                        String config = props.getProperty(LocationManager.PROP_CONFIG_AREA);
+                        File ini = new File(config, "config.ini");
+                        if (ini.isFile()) {
+                            Properties iniProps = new Properties();
+                            iniProps.load(new FileInputStream(ini));
+                            if (iniProps.getProperty("osgi.bundles") != null) {
+                                bundleLocations = Collections.emptySet();
+                            }
+                        }
                     }
                 }
                 

@@ -33,6 +33,7 @@ public class NodeLauncherTestCase {
 
     @BeforeClass
     public static void setUp() {
+        System.setProperty("osgi.configuration.area", "target/equinox/configuration");
         try {
             launcher = NodeLauncher.newInstance();
         } catch (Exception e) {
@@ -42,6 +43,7 @@ public class NodeLauncherTestCase {
 
     @AfterClass
     public static void tearDown() {
+        System.clearProperty("osgi.configuration.area");
         if (launcher != null) {
             launcher.destroy();
         }
