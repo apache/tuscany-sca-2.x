@@ -63,7 +63,6 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-stax-api_1.0_spec</artifactId>
             <version>1.0.1</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
