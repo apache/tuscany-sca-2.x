@@ -36,10 +36,10 @@
         <module>binding-sca</module>
         <module>binding-sca-xml</module>
         <module>binding-ws</module>
-<!-- 
+
         <module>binding-ws-axis2</module>
-        <module>binding-ws-axis2-policy</module>
--->
+        <!--module>binding-ws-axis2-policy</module-->
+
         <module>binding-ws-wsdlgen</module>
         <module>binding-ws-xml</module>
         <module>contribution</module>
@@ -65,6 +65,7 @@
         <module>implementation-node-runtime</module>
         <module>host-http</module>
         <module>host-webapp</module>
+        <module>host-jetty</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
