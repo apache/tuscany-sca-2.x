@@ -36,27 +36,26 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarFile;
 
 public class LauncherMain {
     
     private static final String DEFAULT_PROPERTY_FILENAME = "default.config";
+    private static final String CONFIG_CLASSPATH = "classpath";
+    private static final String CONFIG_MAIN_CLASS = "mainClass";
+    private static final String CONFIG_ARG_JAR_MAIN = "[firstArgJarManifestMainClass]";
+    private static final String LAUNCHER_ARGS = "launcherArgs";
 
-    public static void main(String[] args) throws SecurityException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, FileNotFoundException {
-
+    public static void main(String[] args) throws SecurityException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, IOException {
         Properties launcherProperties = getLauncherProperties(args);
-        
         ClassLoader classLoader = getClassLoader(launcherProperties);
-
         String mainClassName = getMainClass(launcherProperties, classLoader);
-
         String[] mainArgs = getMainArgs(launcherProperties);
-
         invokeMainMethod(mainClassName, classLoader, mainArgs);
-        
     }
 
     private static String[] getMainArgs(Properties launcherProperties) {
-        String[] mainArgs = (String[])launcherProperties.get("launcherArgs");
+        String[] mainArgs = (String[])launcherProperties.get(LAUNCHER_ARGS);
         if (mainArgs == null) {
             mainArgs = new String[0];
         }
@@ -64,7 +63,6 @@ public class LauncherMain {
     }
 
     private static String getMainClass(Properties launcherProperties, ClassLoader classLoader) {
-        
         String mainClassName;
         String[] args = getMainArgs(launcherProperties);
         if (args.length > 0) {
@@ -73,12 +71,12 @@ public class LauncherMain {
                 mainClassName = args[0];
                 String[] args2 = new String[args.length-1];
                 System.arraycopy(args, 1, args2, 0, args.length-1);
-                launcherProperties.put("launcherArgs", args2);
+                launcherProperties.put(LAUNCHER_ARGS, args2);
             } catch (ClassNotFoundException e) {
-                mainClassName = launcherProperties.getProperty("mainClass");
+                mainClassName = launcherProperties.getProperty(CONFIG_MAIN_CLASS);
             }
         } else {
-            mainClassName = launcherProperties.getProperty("mainClass");
+            mainClassName = launcherProperties.getProperty(CONFIG_MAIN_CLASS);
         }
         
         return mainClassName;
@@ -89,10 +87,9 @@ public class LauncherMain {
         try {
 
             Thread.currentThread().setContextClassLoader(classLoader);
-
             Class mainClass = Class.forName(className, true, classLoader);
-
             Method m = mainClass.getMethod("main", new Class[]{ args.getClass() });
+
             m.invoke(null, new Object[]{args});
             
         } finally {
@@ -100,12 +97,14 @@ public class LauncherMain {
         }
     }
 
-    private static ClassLoader getClassLoader(Properties launcherProperties) throws URISyntaxException {
+    private static ClassLoader getClassLoader(Properties launcherProperties) throws URISyntaxException, IOException {
         Set<URL> jarURLs = new HashSet<URL>(); 
         for (Enumeration<?> e = launcherProperties.propertyNames(); e.hasMoreElements();) {
             String pn = (String) e.nextElement();
-            if (pn.startsWith("classpath")) {
-                jarURLs.addAll(getJARs(launcherProperties.getProperty(pn)));
+            if (pn.startsWith(CONFIG_CLASSPATH)) {
+                jarURLs.addAll(getJARs(launcherProperties.getProperty(pn), launcherProperties));
+            } else if (pn.equals(CONFIG_MAIN_CLASS) && launcherProperties.getProperty(pn).equals(CONFIG_ARG_JAR_MAIN)) {
+                jarURLs.add(firstArgJarManifestMainClass(launcherProperties));
             }
         }
         ClassLoader parentCL = Thread.currentThread().getContextClassLoader();
@@ -115,13 +114,32 @@ public class LauncherMain {
         return new URLClassLoader(jarURLs.toArray(new URL[]{}), parentCL);
     }
 
+    private static URL firstArgJarManifestMainClass(Properties launcherProperties) throws IOException {
+        String[] args = (String[])launcherProperties.get(LAUNCHER_ARGS);
+        if (args.length < 1) {
+            throw new IllegalArgumentException("must specifiy a jar file");
+        }
+        File f = new File(args[0]);
+        if (!f.exists()) {
+            throw new FileNotFoundException(args[0]);
+        }
+        JarFile jar = new JarFile(f);
+        String mfc = jar.getManifest().getMainAttributes().getValue("Main-Class");
+        if (mfc == null || mfc.length() < 1) {
+            throw new IllegalArgumentException("first jar file missing manifest Main-Class attribute");
+        }
+        launcherProperties.setProperty(CONFIG_MAIN_CLASS, mfc);
+        
+        return f.toURL();
+    }
+
     /**
      * Gets the jars matching a config classpath property
      * property values may be an explicit jar name or use an asterix wildcard for
      * all jars in a folder, or a double asterix '**' for all jars in a folder and its subfolders
      * @throws URISyntaxException 
      */
-    private static Set<URL> getJARs(String classpathValue) throws URISyntaxException {
+    private static Set<URL> getJARs(String classpathValue, Properties launcherProperties) throws URISyntaxException {
         Set<URL> jarURLs = new HashSet<URL>();
         
         if (classpathValue.endsWith("**")) {
@@ -224,7 +242,7 @@ public class LauncherMain {
             throw new RuntimeException(e);
         }
         
-        properties.put("launcherArgs", args);
+        properties.put(LAUNCHER_ARGS, args);
         
         return properties;
     }
