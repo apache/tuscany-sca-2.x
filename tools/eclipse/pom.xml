@@ -34,6 +34,7 @@
         <profile>
             <id>distribution</id>
             <modules>
+<!-- 
                 <module>features/core</module>
                 <module>features/ejava</module>
                 <module>features/manager</module>
@@ -47,6 +48,7 @@
                 <module>plugins/web20</module>
                 <module>plugins/webservice</module>
                 <module>site/updatesite</module>
+-->
             </modules>
         </profile>
 
