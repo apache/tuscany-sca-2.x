@@ -28,13 +28,6 @@
     <artifactId>sample-calculator</artifactId>
     <name>Apache Tuscany SCA Calculator Sample</name>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -67,5 +60,19 @@
 
     <build>
        <finalName>${artifactId}</finalName>
-    </build>
+       <plugins>
+          <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-jar-plugin</artifactId>
+             <version>2.2</version>
+             <configuration>
+                <archive>
+                   <manifest>
+                      <mainClass>calculator.CalculatorClient</mainClass>
+                   </manifest>
+                </archive>
+             </configuration>
+          </plugin>
+       </plugins>
+   </build>
 </project>
