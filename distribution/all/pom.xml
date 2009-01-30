@@ -28,7 +28,7 @@
 
     <artifactId>tuscany-distribution-all</artifactId>
     <name>Apache Tuscany SCA All-in-one Distribution</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <dependencies>
 
@@ -148,7 +148,7 @@
 
         <!-- Build profile that can be used to build and eclipse project to make -->
         <!-- it easy to import the pde target into the workspace                 -->
-        <profile>
+        <!--profile>
             <id>eclipse</id>
             <build>
                <plugins>
@@ -171,7 +171,7 @@
                    </plugin>
                </plugins>
             </build>
-        </profile>
+        </profile-->
     
         <!-- Build profile that can be used to build the distro packages -->
         <profile>
