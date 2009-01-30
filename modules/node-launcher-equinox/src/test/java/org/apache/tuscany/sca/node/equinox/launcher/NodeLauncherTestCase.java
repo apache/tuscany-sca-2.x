@@ -34,7 +34,7 @@ public class NodeLauncherTestCase {
     @BeforeClass
     public static void setUp() {
         try {
-            launcher = NodeLauncher.newInstance(null);
+            launcher = NodeLauncher.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }

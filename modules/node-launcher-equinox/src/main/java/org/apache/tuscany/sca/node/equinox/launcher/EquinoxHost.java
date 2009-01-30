@@ -38,6 +38,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +75,6 @@ public class EquinoxHost {
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
     private Set<URL> bundleLocations;
-    private String[] arguments = {};
-
     public EquinoxHost() {
         super();
     }
@@ -85,19 +84,35 @@ public class EquinoxHost {
         this.bundleLocations = urls;
     }
     
-    public EquinoxHost(String[] args) {
-        super();
-        if (args != null) {
-            this.arguments = args;
-        }
-    }    
-    
     private static String getSystemProperty(final String name) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty(name);
             }
         });
+    }
+    
+    private static Properties getSystemProperties() {
+        return AccessController.doPrivileged(new PrivilegedAction<Properties>() {
+            public Properties run() {
+                Properties props = new Properties();
+                for (Map.Entry<Object, Object> e : System.getProperties().entrySet()) {
+                    if (e.getKey() instanceof String) {
+                        String prop = (String)e.getKey();
+                        if (prop.startsWith("osgi.") || prop.startsWith("eclipse.")) {
+                            props.put(prop, e.getValue());
+                        }
+                    }
+                }
+                return props;
+            }
+        });
+    } 
+    
+    private static void put(Properties props, String key, String value) {
+        if (!props.contains(key)) {
+            props.put(key, value);
+        }
     }
 
     /**
@@ -120,13 +135,16 @@ public class EquinoxHost {
                     props.load(is);
                     is.close();
                 }
+                
+                props.putAll(getSystemProperties());
+                
                 // Configure Eclipse properties
 
                 // Use the boot classloader as the parent classloader
-                props.put("osgi.contextClassLoaderParent", "app");
+                put(props, "osgi.contextClassLoaderParent", "app");
 
                 // Set startup properties
-                props.put(EclipseStarter.PROP_CLEAN, "true");
+                put(props, EclipseStarter.PROP_CLEAN, "true");
 
                 // Set location properties
                 // FIXME Use proper locations
@@ -135,23 +153,27 @@ public class EquinoxHost {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Equinox location: " + root);
                 }
-                if (!props.contains(LocationManager.PROP_INSTANCE_AREA)) {
-                    props.put(LocationManager.PROP_INSTANCE_AREA, new File(root, "workspace").toURI().toString());
-                }
-                if (!props.contains(LocationManager.PROP_INSTALL_AREA)) {
-                    props.put(LocationManager.PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
-                }
-                if (!props.contains(LocationManager.PROP_CONFIG_AREA)) {
-                    props.put(LocationManager.PROP_CONFIG_AREA, new File(root, "config").toURI().toString());
-                }
-                if (!props.contains(LocationManager.PROP_USER_AREA)) {
-                    props.put(LocationManager.PROP_USER_AREA, new File(root, "user").toURI().toString());
-                }
+
+                put(props, LocationManager.PROP_INSTANCE_AREA, new File(root, "workspace").toURI().toString());
+                put(props, LocationManager.PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
+                put(props, LocationManager.PROP_CONFIG_AREA, new File(root, "config").toURI().toString());
+                put(props, LocationManager.PROP_USER_AREA, new File(root, "user").toURI().toString());
 
                 EclipseStarter.setInitialProperties(props);
+                
+                // Test if the configuration/config.ini or osgi.bundles has been set
+                // If yes, try to avoid discovery of bundles
+                if (bundleLocations == null) {
+                    String config = props.getProperty(LocationManager.PROP_CONFIG_AREA);
+                    File ini = new File(config, "config.ini");
+                    if (ini.isFile() || props.getProperty("osgi.bundles") != null) {
+                        bundleLocations = Collections.emptySet();
+                    }
+                }
+                
 
                 // Start Eclipse
-                bundleContext = EclipseStarter.startup(arguments, null);
+                bundleContext = EclipseStarter.startup(new String[] {}, null);
                 startedEclipse = true;
 
             } else {
@@ -379,10 +401,6 @@ public class EquinoxHost {
 
     public void setBundleLocations(Set<URL> bundleLocations) {
         this.bundleLocations = bundleLocations;
-    }
-
-    public void setArguments(String[] arguments) {
-        this.arguments = arguments;
     }
 
 }

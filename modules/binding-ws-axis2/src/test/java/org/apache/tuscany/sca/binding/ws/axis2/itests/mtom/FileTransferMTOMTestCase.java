@@ -54,7 +54,7 @@ public class FileTransferMTOMTestCase extends TestCase {
     protected void setUp() throws Exception {
         // domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/ws/axis2/itests/mtom/filetransferservice.composite");
         // Tuscany specific code which starts the contribution holding the test
-        launcher = NodeLauncher.newInstance(null);
+        launcher = NodeLauncher.newInstance();
         node = launcher.createNode("filetransferservice.composite", // testConfiguration.getComposite(), 
                                    new Contribution("FileTransferMTOMTestCase", getContributionURI()));
     }

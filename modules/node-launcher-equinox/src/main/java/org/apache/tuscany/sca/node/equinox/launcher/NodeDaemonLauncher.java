@@ -72,7 +72,7 @@ public class NodeDaemonLauncher {
         try {
 
             // Start the OSGi host 
-            equinox = new EquinoxHost(args);
+            equinox = new EquinoxHost();
             equinox.start();
 
             // Start the node
