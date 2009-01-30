@@ -35,7 +35,6 @@
         <module>api</module>
         <module>core</module>
         <module>ejava</module>
-        <module>pdetarget</module>
         <module>host-webapp</module>
         <module>webservice</module>
 <!--
