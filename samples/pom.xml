@@ -50,8 +50,8 @@
                 <module>calculator-rmi-service</module>
 
                 <module>implementation-java-calculator</module>
-                <module>binding-ws-calculator</module>
-                <module>host-webapp-calculator</module>
+                <!-- module>binding-ws-calculator</module -->
+                <!-- module>host-webapp-calculator</module -->
             </modules>
         </profile>
 
