@@ -205,9 +205,11 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
+<!-- 
                 <module>vtest</module>
                 <module>tutorials</module>
                 <module>demos</module>
+-->
                 <module>distribution</module>
             </modules>
         </profile>
