@@ -36,8 +36,8 @@
         <module>core</module>
         <module>ejava</module>
         <module>host-webapp</module>
-        <module>webservice</module>
 <!--
+        <module>webservice</module>
         <module>manager</module>
         <module>process</module>
         <module>repository</module>
