@@ -35,6 +35,13 @@
         <module>assembly-xsd</module>
         <module>binding-sca</module>
         <module>binding-sca-xml</module>
+        <module>binding-ws</module>
+<!-- 
+        <module>binding-ws-axis2</module>
+        <module>binding-ws-axis2-policy</module>
+-->
+        <module>binding-ws-wsdlgen</module>
+        <module>binding-ws-xml</module>
         <module>contribution</module>
         <module>contribution-java</module>
         <module>contribution-namespace</module>
@@ -43,7 +50,9 @@
         <module>core-databinding</module>
         <module>core-spi</module>
         <module>databinding</module>
+        <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
+        <module>databinding-jaxb-axiom</module>
         <module>definitions</module>
         <module>definitions-xml</module>
         <module>endpoint</module>
@@ -76,6 +85,7 @@
         <module>policy</module>
         <module>policy-security</module>
         <module>policy-xml</module>
+        <module>policy-xml-ws</module>
         <module>sca-api</module>
         <module>workspace</module>
         <module>workspace-impl</module>
