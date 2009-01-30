@@ -23,7 +23,6 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>tuscany-sca-2.0-SNAPSHOT-src</baseDirectory>
     <formats>
-        <format>dir</format>
         <format>tar.gz</format>
         <format>zip</format>
     </formats>
