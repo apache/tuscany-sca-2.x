@@ -33,13 +33,13 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
+        <module>binding-rmi</module>
+        <module>binding-rmi-runtime</module>
         <module>binding-sca</module>
         <module>binding-sca-xml</module>
         <module>binding-ws</module>
-
         <module>binding-ws-axis2</module>
         <!--module>binding-ws-axis2-policy</module-->
-
         <module>binding-ws-wsdlgen</module>
         <module>binding-ws-xml</module>
         <module>contribution</module>
@@ -58,14 +58,15 @@
         <module>endpoint</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
+        <module>host-http</module>
+        <module>host-jetty</module>
+        <module>host-rmi</module>
+        <module>host-webapp</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
         <module>implementation-java-xml</module>
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
-        <module>host-http</module>
-        <module>host-webapp</module>
-        <module>host-jetty</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
@@ -78,11 +79,6 @@
         <module>node-impl</module>
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
-
-        <module>host-rmi</module>
-        <module>binding-rmi</module>
-        <module>binding-rmi-runtime</module>
-
         <module>policy</module>
         <module>policy-security</module>
         <module>policy-xml</module>
@@ -93,7 +89,6 @@
         <module>workspace-xml</module>
         <module>xsd</module>
         <module>xsd-xml</module>
-
     </modules>
 
     <profiles>
