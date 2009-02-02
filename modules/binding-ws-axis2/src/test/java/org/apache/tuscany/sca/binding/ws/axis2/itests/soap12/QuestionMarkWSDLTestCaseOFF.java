@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
  *
  * @version $Rev$ $Date$
  */
-public class QuestionMarkWSDLTestCase extends TestCase {
+public class QuestionMarkWSDLTestCaseOFF extends TestCase {
 
     private static boolean newGenerator = true;
     private Node node;

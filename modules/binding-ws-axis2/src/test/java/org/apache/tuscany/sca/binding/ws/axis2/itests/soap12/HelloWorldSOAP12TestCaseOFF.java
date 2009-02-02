@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
-public class HelloWorldSOAP12TestCase extends TestCase {
+public class HelloWorldSOAP12TestCaseOFF extends TestCase {
 
     private Node node;
 

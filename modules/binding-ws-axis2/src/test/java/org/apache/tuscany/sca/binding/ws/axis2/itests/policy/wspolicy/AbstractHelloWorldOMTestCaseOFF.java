@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.configparams;
+package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.wspolicy;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
-public abstract class AbstractHelloWorldOMTestCase extends TestCase {
+public abstract class AbstractHelloWorldOMTestCaseOFF extends TestCase {
 
     private Node node;
     private HelloWorldOM helloWorld;
