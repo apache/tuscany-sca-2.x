@@ -22,6 +22,11 @@ package org.apache.tuscany.sca.contribution.resolver;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.DefaultImport;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A default implementation of a model resolver based on a map.
@@ -30,10 +35,15 @@ import java.util.Map;
  */
 public class DefaultModelResolver implements ModelResolver {
     
+    private Contribution contribution;
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
     public DefaultModelResolver() {
     }
+    
+    public DefaultModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+        this.contribution = contribution;
+    }    
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
@@ -43,6 +53,19 @@ public class DefaultModelResolver implements ModelResolver {
             return modelClass.cast(resolved);
             
         } else {
+            
+            // by default try and resolve through a default import
+            // if there is one. 
+            if (contribution != null){
+                for (Import _import : contribution.getImports()){
+                    if (_import instanceof DefaultImport){
+                        resolved = _import.getModelResolver().resolveModel(modelClass, unresolved);
+                        if (resolved != unresolved){
+                            return modelClass.cast(resolved);
+                        }
+                    }
+                }
+            }
             
             // Return the unresolved object
             return unresolved;
