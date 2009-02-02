@@ -21,4 +21,11 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy.xml;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.xml.ws
 Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.policy.xml.ws;version="2.0.0";
+  uses:="javax.xml.stream,
+   junit.framework,
+   org.apache.tuscany.sca.contribution.resolver,
+   org.apache.tuscany.sca.contribution.processor,
+   org.apache.tuscany.sca.policy,
+   javax.xml.namespace"
 

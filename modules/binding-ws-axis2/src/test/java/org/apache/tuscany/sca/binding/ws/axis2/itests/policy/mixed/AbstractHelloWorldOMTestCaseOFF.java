@@ -37,7 +37,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractHelloWorldOMTestCase {
+public abstract class AbstractHelloWorldOMTestCaseOFF {
 
     private Node node;
     private HelloWorldOM helloWorld;

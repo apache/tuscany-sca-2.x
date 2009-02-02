@@ -22,6 +22,6 @@ package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.mixed;
 import org.junit.Ignore;
 
 @Ignore("Temporarily ignore rampart module validation failure")
-public class WSSecurityMixedTestCase extends AbstractHelloWorldOMTestCase {
+public class WSSecurityMixedTestCase extends AbstractHelloWorldOMTestCaseOFF {
     // super class does it all getting composite based on this class name
 }

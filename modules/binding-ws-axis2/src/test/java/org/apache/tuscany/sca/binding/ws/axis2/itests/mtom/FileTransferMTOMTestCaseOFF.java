@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
  * Modified by Mike Edwards, 4th Dec 2008, to adjust to new interfaces in the 2.0 stream.
  *
  */
-public class FileTransferMTOMTestCase extends TestCase {
+public class FileTransferMTOMTestCaseOFF extends TestCase {
 
     // private SCADomain domain;
     protected NodeLauncher launcher;

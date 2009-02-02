@@ -51,6 +51,7 @@ public class HelloWorldWSDLMergedTestCase extends TestCase {
     protected void setUp() throws Exception {
         String contribution = ContributionLocationHelper.getContributionLocation(getClass());
         node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/helloworld-om-merged.composite", new Contribution("test", contribution));
+        node.start();
         helloWorld = node.getService(HelloWorldOM.class, "HelloWorldWSDLMergedComponent");
     }
     
