@@ -44,6 +44,8 @@ import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -127,7 +129,7 @@ public final class BundleUtil {
             Set<File> jars = new HashSet<File>();
             jars.add(file);
             String name = file.getName().substring(0, file.getName().lastIndexOf(".jar"));
-            manifest = libraryManifest(jars, name, name, "0.0.0", null);
+            manifest = libraryManifest(jars, name, name, jarVersion(name), null);
         }
         return manifest;
     }
@@ -405,6 +407,25 @@ public final class BundleUtil {
             if (existingPackages == null || existingPackages.contains(packageName(export))) {
                 packages.add(stripExport(export));
             }
+        }
+    }
+    
+    private static Pattern pattern = Pattern.compile("-([0-9.]+)");
+
+    /**
+     * Returns the version number to use for the given JAR file.
+     *   
+     * @param jarFile
+     * @return
+     */
+    private static String jarVersion(String jarFile) {
+        Matcher matcher = pattern.matcher(jarFile);
+        String version = "0.0.0";
+        if (matcher.find()) {
+            version = matcher.group().substring(1); // Remove -
+            return osgiVersion(version);
+        } else {
+            return version;
         }
     }
 
