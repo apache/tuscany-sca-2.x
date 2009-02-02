@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -69,6 +70,8 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.definitions.DefinitionsFactory;
+import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -78,6 +81,9 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.provider.DefinitionsProvider;
+import org.apache.tuscany.sca.provider.DefinitionsProviderException;
+import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -121,6 +127,7 @@ public class NodeImpl implements Node, Client {
     private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
     private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
+    private Contribution systemContribution;
     private Definitions systemDefinitions;
 
     /** 
@@ -305,7 +312,6 @@ public class NodeImpl implements Node, Client {
         assemblyFactory = new RuntimeAssemblyFactory();
         modelFactories.addFactory(assemblyFactory);
         
-        
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
@@ -359,23 +365,43 @@ public class NodeImpl implements Node, Client {
         compositeActivator = utilities.getUtility(CompositeActivator.class);
 
         workScheduler = utilities.getUtility(WorkScheduler.class);
-
-        // This is not right, the aggregate algorithm is not right, adding policies to
-        // a resolver like that is not correct as these policies won't be seen by the resolvers
-        // used by the contributions, and we shouldn't have to use the doc processor to do
-        // the resolution, so commenting out for now as it's not critical to get working in
-        // the Equinox environment initially
         
-//        // Load the system definitions.xml
-//        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
-//        systemDefinitions = new DefinitionsImpl();
-//        try {
-//            for (DefinitionsProvider definitionsProvider : definitionsProviders.getDefinitionsProviders()) {
-//                aggregateDefinitions(definitionsProvider.getSCADefinition(), systemDefinitions);
-//            }
-//        } catch (DefinitionsProviderException e) {
-//            throw new IllegalStateException(e);
-//        }
+        // Load the system definitions.xml from all of the loaded extension points
+        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
+        DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
+        systemDefinitions = definitionsFactory.createDefinitions();
+
+        // aggregate all the definitions into a single definitions model
+        try {
+            for (DefinitionsProvider definitionsProvider : definitionsProviders.getDefinitionsProviders()) {
+                DefinitionsUtil.aggregate(definitionsProvider.getDefinitions(), systemDefinitions);
+            }
+        } catch (DefinitionsProviderException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // create a system contribution to hold the definitions. The contribution
+        // will be extended later with definitions from application contributions
+        systemContribution = contributionFactory.createContribution();
+        systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
+        systemContribution.setLocation("Derived");
+        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
+        systemContribution.setModelResolver(modelResolver);
+        systemContribution.setUnresolved(true);
+        
+        // create an artifact to represent the system defintions and
+        // add it to the contribution
+        List<Artifact> artifacts = systemContribution.getArtifacts();
+        Artifact artifact = contributionFactory.createArtifact();
+        artifact.setURI("http://tuscany.apache.org/SystemContribution/Definitions");
+        artifact.setLocation("Derived");
+        artifact.setModel(systemDefinitions);
+        artifacts.add(artifact);
+
+        // don't resolve the system contribution until all the application 
+        // level definitions have been added 
+            
+        
 //
 //        // Configure a resolver for the system definitions
 //        ModelResolver definitionsResolver = new DefaultModelResolver();
@@ -429,6 +455,39 @@ public class NodeImpl implements Node, Client {
             workspace.getContributions().add(contribution);
             analyzeProblems();
         }
+        
+        // Build an aggregated SCA definitions model. Must be done before we try and
+        // resolve any contributions or composites as they may depend on the full
+        // definitions.xml picture
+        
+        // get all definitions.xml artifacts from contributions and aggregate 
+        // into the system contribution. In turn add a default import into
+        // each contribution so that for unresolved items the resolution 
+        // processing will look in the system contribution 
+        for (Contribution contribution: workspace.getContributions()) {
+            // aggregate definitions
+            for (Artifact artifact : contribution.getArtifacts()) {
+                Object model = artifact.getModel();
+                if (model instanceof Definitions) {
+                    DefinitionsUtil.aggregate((Definitions)model, systemDefinitions);
+                }
+            }
+            
+            // create a default import and wire it up to the system contribution
+            // model resolver. This is the trick that makes the resolution processing
+            // skip over to the system contribution if resolution is unsuccessful 
+            // in the current contribution
+            DefaultImport defaultImport = contributionFactory.createDefaultImport();
+            defaultImport.setModelResolver(systemContribution.getModelResolver());
+            contribution.getImports().add(defaultImport);
+        }
+        
+        // now resolve the system contribution and add the contribution 
+        // to the workspace
+        contributionProcessor.resolve(systemContribution, workspace.getModelResolver());
+        workspace.getContributions().add(systemContribution);
+        
+        // TODO - Now we can calculate applicable policy sets for each composite 
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
@@ -457,6 +516,9 @@ public class NodeImpl implements Node, Client {
         compositeFile.setURI(composite.getURI());
         for (Contribution contribution: workspace.getContributions()) {
             ModelResolver resolver = contribution.getModelResolver();
+            for (Artifact artifact : contribution.getArtifacts()){
+                logger.log(Level.INFO,"artifact - " + artifact.getURI());
+            }
             Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
             if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
                 
@@ -479,16 +541,9 @@ public class NodeImpl implements Node, Client {
         if (!found) {
             throw new IllegalArgumentException("Composite not found: " + composite.getURI());
         }
-
-        // Build an aggregated SCA definitions model
-        Definitions definitions = systemDefinitions;
-        //definitions = new DefinitionsImpl();
-        //for (Definitions definition : ((List<Definitions>)policyDefinitions)) {
-        //    DefinitionsUtil.aggregateDefinitions(definition, definitions);
-        //}
         
         // Build the composite and wire the components included in it
-        compositeBuilder.build(composite, definitions, monitor);
+        compositeBuilder.build(composite, systemDefinitions, monitor);
         analyzeProblems();
         
         // Create a top level composite to host our composite

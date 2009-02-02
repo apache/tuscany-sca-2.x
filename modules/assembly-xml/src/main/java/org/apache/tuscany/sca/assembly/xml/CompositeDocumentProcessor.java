@@ -90,9 +90,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
 
     public Composite read(URI uri, InputStream scdlStream) throws ContributionReadException {
         try {
+/*            
             if (scaDefnSink != null ) {
                 fillDomainPolicySets(scaDefnSink);
             }
+*/            
             
             Composite composite = null;
             
@@ -172,6 +174,10 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         return Composite.class;
     }
     
+    /* 
+     * TODO - remove - definitions information is now aggregated in the 
+     *        systems definitions contribution and we need to add 
+     *        applicable policy sets once all composites have been read
     private void fillDomainPolicySets(List scaDefnsSink) {
         Map<QName, PolicySet> domainPolicySetMap = null;
         if ( scaDefnsSink.size() > scaDefnsCount ) {
@@ -196,4 +202,5 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             scaDefnsCount = scaDefnsSink.size();
         }
     }
+    */
 }
