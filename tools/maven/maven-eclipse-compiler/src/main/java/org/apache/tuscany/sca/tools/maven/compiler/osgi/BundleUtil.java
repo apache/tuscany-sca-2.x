@@ -128,7 +128,7 @@ public final class BundleUtil {
         if (file.isFile()) {
             Set<File> jars = new HashSet<File>();
             jars.add(file);
-            String name = file.getName().substring(0, file.getName().lastIndexOf(".jar"));
+            String name = file.getName();
             manifest = libraryManifest(jars, name, name, jarVersion(name), null);
         }
         return manifest;
@@ -410,23 +410,33 @@ public final class BundleUtil {
         }
     }
     
-    private static Pattern pattern = Pattern.compile("-([0-9.]+)");
+    /**
+     * starting with -, then some digits, then . or - or _, then some digits again
+     * 
+     */
+    private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+)*");
 
     /**
      * Returns the version number to use for the given JAR file.
      *   
-     * @param jarFile
+     * @param fileName
      * @return
      */
-    private static String jarVersion(String jarFile) {
-        Matcher matcher = pattern.matcher(jarFile);
+    static String jarVersion(String fileName) {
+        String name = fileName;
+        int index = name.lastIndexOf('.');
+        if (index != -1) {
+            // Trim the extension
+            name = name.substring(0, index);
+        }
+        
+        Matcher matcher = pattern.matcher(name);
         String version = "0.0.0";
         if (matcher.find()) {
-            version = matcher.group().substring(1); // Remove -
-            return osgiVersion(version);
-        } else {
-            return version;
+            version = matcher.group();
+            version = version.substring(1);
         }
+        return version;
     }
 
     /**
