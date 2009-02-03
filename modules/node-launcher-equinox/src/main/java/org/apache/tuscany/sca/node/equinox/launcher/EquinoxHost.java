@@ -21,9 +21,12 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setProperty;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.LAUNCHER_EQUINOX_LIBRARIES;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.artifactId;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.bundleName;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.file;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.fixupBundle;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.jarVersion;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.runtimeClasspathEntries;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.string;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thirdPartyLibraryBundle;
@@ -32,6 +35,7 @@ import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.this
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -39,6 +43,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -53,13 +58,14 @@ import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * Wraps the Equinox runtime.
  */
 public class EquinoxHost {
     private static Logger logger = Logger.getLogger(EquinoxHost.class.getName());
-    
+
     static {
         if (getSystemProperty("osgi.debug") != null) {
             logger.setLevel(Level.FINE);
@@ -76,6 +82,8 @@ public class EquinoxHost {
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
     private Set<URL> bundleLocations;
+    private boolean aggregateThirdPartyJars = false;
+
     public EquinoxHost() {
         super();
     }
@@ -84,7 +92,7 @@ public class EquinoxHost {
         super();
         this.bundleLocations = urls;
     }
-    
+
     private static String getSystemProperty(final String name) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
@@ -92,7 +100,7 @@ public class EquinoxHost {
             }
         });
     }
-    
+
     private static Properties getSystemProperties() {
         return AccessController.doPrivileged(new PrivilegedAction<Properties>() {
             public Properties run() {
@@ -108,8 +116,8 @@ public class EquinoxHost {
                 return props;
             }
         });
-    } 
-    
+    }
+
     private static void put(Properties props, String key, String value) {
         if (!props.contains(key)) {
             props.put(key, value);
@@ -136,9 +144,9 @@ public class EquinoxHost {
                     props.load(is);
                     is.close();
                 }
-                
+
                 props.putAll(getSystemProperties());
-                
+
                 // Configure Eclipse properties
 
                 // Use the boot classloader as the parent classloader
@@ -161,7 +169,7 @@ public class EquinoxHost {
                 put(props, LocationManager.PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
 
                 EclipseStarter.setInitialProperties(props);
-                
+
                 // Test if the configuration/config.ini or osgi.bundles has been set
                 // If yes, try to avoid discovery of bundles
                 if (bundleLocations == null) {
@@ -179,7 +187,6 @@ public class EquinoxHost {
                         }
                     }
                 }
-                
 
                 // Start Eclipse
                 bundleContext = EclipseStarter.startup(new String[] {}, null);
@@ -235,44 +242,26 @@ public class EquinoxHost {
                 launcherBundleLocation = thisBundleLocation(launcherBundle);
             }
 
-            // Install the Tuscany bundles
-            long start = currentTimeMillis();
-
             // FIXME: SDO bundles dont have the correct dependencies
             setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
 
-            // Install a single 'library' bundle for the third-party JAR files
-            String libraryBundleName = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
-            Bundle libraryBundle = allBundles.get(libraryBundleName);
-            if (libraryBundle == null) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Generating third-party library bundle.");
-                }
+            // Install the Tuscany bundles
+            long start = currentTimeMillis();
+
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Generating third-party library bundle.");
+            }
+            long libraryStart = currentTimeMillis();
+            if (!aggregateThirdPartyJars) {
                 for (String jarFile : jarFiles) {
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("Adding third-party jar: " + jarFile);
-                    }
-                }
-                long libraryStart = currentTimeMillis();
-                InputStream library = thirdPartyLibraryBundle(jarFiles);
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Third-party library bundle generated in " + (currentTimeMillis() - libraryStart)
-                        + " ms.");
-                }
-                libraryStart = currentTimeMillis();
-                libraryBundle =
-                    bundleContext.installBundle("org.apache.tuscany.sca.node.launcher.equinox.libraries", library);
-                allBundles.put(libraryBundleName, libraryBundle);
-                installedBundles.add(libraryBundle);
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart)
-                        + " ms: "
-                        + string(libraryBundle, false));
+                    installAsBundle(jarFile, null);
                 }
             } else {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Third-party library bundle is already installed: " + string(libraryBundle, false));
-                }
+                installAsBundle(jarFiles, LAUNCHER_EQUINOX_LIBRARIES);
+            }
+            if (logger.isLoggable(Level.FINE)) {
+                logger
+                    .fine("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart) + " ms: ");
             }
 
             // Install all the other bundles that are not already installed
@@ -286,25 +275,7 @@ public class EquinoxHost {
                 if (bundleName.contains("org.eclipse.jdt.junit")) {
                     continue;
                 }
-                Bundle bundle = allBundles.get(bundleName);
-                if (bundle == null) {
-                    long installStart = currentTimeMillis();
-                    String location = bundleFile;
-                    if (bundleFile.startsWith("file:")) {
-                        File target = file(new URL(bundleFile));
-                        // Use a special "reference" scheme to install the bundle as a reference
-                        // instead of copying the bundle 
-                        location = "reference:file:/" + target.getPath();
-                    }
-                    bundle = bundleContext.installBundle(location);
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("Bundle installed in " + (currentTimeMillis() - installStart)
-                            + " ms: "
-                            + string(bundle, false));
-                    }
-                    allBundles.put(bundleName, bundle);
-                    installedBundles.add(bundle);
-                }
+                installBundle(bundleFile, bundleName);
             }
 
             long end = currentTimeMillis();
@@ -313,7 +284,6 @@ public class EquinoxHost {
             }
 
             // Start the extensiblity and launcher bundles
-            long activateStart = System.currentTimeMillis();
             String extensibilityBundleName = "org.apache.tuscany.sca.extensibility.equinox";
             Bundle extensibilityBundle = allBundles.get(extensibilityBundleName);
             if ((extensibilityBundle.getState() & Bundle.ACTIVE) == 0) {
@@ -358,6 +328,63 @@ public class EquinoxHost {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public Bundle installAsBundle(Collection<String> jarFiles, String libraryBundleName) throws IOException,
+        BundleException {
+        // Install a single 'library' bundle for the third-party JAR files
+        Bundle libraryBundle = allBundles.get(libraryBundleName);
+        if (libraryBundle == null) {
+            InputStream library = thirdPartyLibraryBundle(jarFiles, libraryBundleName, null);
+            libraryBundle = bundleContext.installBundle(libraryBundleName, library);
+            allBundles.put(libraryBundleName, libraryBundle);
+            installedBundles.add(libraryBundle);
+        } else {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Third-party library bundle is already installed: " + string(libraryBundle, false));
+            }
+        }
+        return libraryBundle;
+    }
+
+    public void installBundle(String bundleFile, String bundleName) throws MalformedURLException, BundleException {
+        Bundle bundle = allBundles.get(bundleName);
+        if (bundle == null) {
+            long installStart = currentTimeMillis();
+            String location = bundleFile;
+            if (bundleFile.startsWith("file:")) {
+                File target = file(new URL(bundleFile));
+                // Use a special "reference" scheme to install the bundle as a reference
+                // instead of copying the bundle 
+                location = "reference:file:/" + target.getPath();
+            }
+            bundle = bundleContext.installBundle(location);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Bundle installed in " + (currentTimeMillis() - installStart)
+                    + " ms: "
+                    + string(bundle, false));
+            }
+            allBundles.put(bundleName, bundle);
+            installedBundles.add(bundle);
+        }
+    }
+
+    public Bundle installAsBundle(String jarFile, String symbolicName) throws IOException, BundleException {
+        if (symbolicName == null) {
+            symbolicName = LAUNCHER_EQUINOX_LIBRARIES + "." + artifactId(jarFile);
+        }
+        Bundle bundle = allBundles.get(symbolicName);
+        if (bundle == null) {
+            String version = jarVersion(jarFile);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Installing third-party jar as bundle: " + jarFile);
+            }
+            InputStream is = thirdPartyLibraryBundle(Collections.singleton(jarFile), symbolicName, version);
+            bundle = bundleContext.installBundle(symbolicName, is);
+            allBundles.put(symbolicName, bundle);
+            installedBundles.add(bundle);
+        }
+        return bundle;
     }
 
     private Set<URL> findBundleLocations() throws FileNotFoundException, URISyntaxException, MalformedURLException {
