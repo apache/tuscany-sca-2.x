@@ -8,14 +8,6 @@ This product includes/uses XmlSchema developed at
 The Apache Software Foundation (http://ws.apache.org/commons/XmlSchema)
  Portions Copyright 2006 International Business Machines Corp.
 
-This product includes/uses ode-bpel-api-1.1 developed at
-The Apache Software Foundation (http://ode.apache.org)
- - Copyright 1999-2006 Intalio - This product includes software developed by Intalio (http://www.intalio.com)
- - Copyright 2006 Sybase - This product includes software developed by Sybase.(http://www.sybase.com)
-
-"This product includes software developed by the Spring Framework
- Project (http://www.springframework.org)."
-
 This product includes/uses the Jetty Servlet Engine (http://jetty.mortbay.org),
 developed by Mort Bay Consulting  (http://www.mortbay.com)
 
@@ -47,18 +39,10 @@ This product includes/uses the Eclipse Modeling Framework project (http://www.ec
 
 This product includes/uses the Mozilla Rhino project (http://www.mozilla.org/rhino/)
 
-This product includes/uses the Sourceforge wsdl4j project (http://sourceforge.net/projects/wsdl4j/)i
-
-This product includes/uses the Codehaus JRuby project (http://jruby.codehaus.org/)
+This product includes/uses the Sourceforge wsdl4j project (http://sourceforge.net/projects/wsdl4j/)
 
 This product includes/uses JDOM (http://www.jdom.org/)
  Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin. All rights reserved.
- 
-This product includes/uses DWR (http://getahead.org/dwr)
- Copyright 2005 Joe Walker. All rights reserved.
- 
-This product includes/uses dojotoolkit (http://dojotoolkit.org/)
- Copyright (c) 2005, The Dojo Foundation. All rights reserved.
 
 This product includes/uses Howl (http://howl.objectweb.org/)
  Copyright (c) 2004, Bull S.A.
@@ -68,6 +52,12 @@ This product includes/uses axion (http://axion.tigris.org/)
 
 This product includes/uses javacc (https://javacc.dev.java.net/)
  Copyright (c) 2003 Sun Microsystems, Inc. All  Rights Reserved.
+
+This product includes/uses ASM (http://asm.objectweb.org)
+   Copyright (c) 2000-2005 INRIA, France Telecom. All rights reserved.
+
+This product includes/uses Jaxen (http://jaxen.codehaus.org/)
+   Copyright 2003-2006 The Werken Company. All Rights Reserved.
 
 The Program includes all or portions of the following software: "The 
 Saxon XSLT and XQuery Processor from Saxonica Limited" distributed under
@@ -80,6 +70,13 @@ This product includes/uses Serp (http://serp.sourceforge.net/) under the BSD lic
 This product also includes software under the BSD license
 with the following copyright:
  Copyright (c) 2006, Sun Microsystems, Inc. All rights reserved.
+
+This product also includes "OSGi Materials."
+ Copyright (c) 2000, 2006
+ OSGi Alliance Bishop Ranch 6
+ 2400 Camino Ramon, Suite 375
+ San Ramon, CA 94583 USA
+ All Rights Reserved. 
 
 This product includes software under the Service Component Architecture JavaDoc, 
 Interface Definition files and XSD files license.

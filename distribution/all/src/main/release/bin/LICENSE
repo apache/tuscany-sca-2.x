@@ -226,32 +226,33 @@ The following components come under Apache Software License 2.0
  activeio-2.0-r118.jar
  activeio-core-3.0.0-incubator.jar
  apache-activemq-4.1.1.jar
+ app-1.0.0-v20070606.jar
  addressing-1.3.mar
  annogen-0.1.0.jar
  annotations-api-6.0.14.jar
  aopalliance-1.0.jar
- axiom-api-1.2.5.jar
- axiom-dom-1.2.5.jar
- axiom-impl-1.2.5.jar
- axis2-adb-1.3.jar
- axis2-codegen-1.3.jar
- axis2-java2wsdl-1.3.jar
- axis2-kernel-1.3.jar
- axis2-mtompolicy-1.3.jar
- bsf-all-3.0-beta2.jar
+ axiom-api-1.2.7.jar
+ axiom-dom-1.2.7.jar
+ axiom-impl-1.2.7.jar
+ axis2-adb-1.4.1.jar
+ axis2-codegen-1.4.1.jar
+ axis2-kernel-1.4.1.jar
+ axis2-java2wsdl-1.4.1.jar
+ axis2-mtompolicy-1.4.1.jar
+ axis-ant-1.4.jar
  catalina-6.0.14.jar
- cglib-nodep-2.1_3.jar
+ cglib-nodep-2.2.jar
  commons-collections-3.1.jar
- commons-codec-1.3.jar
- commons-fileupload-1.1.1.jar
- commons-httpclient-3.0.1.jar
- commons-io-1.2.jar
+ commons-codec-1.2.jar
+ commons-fileupload-1.2.jar
+ commons-httpclient-3.1.jar
+ commons-io-1.4
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
- commons-logging-1.1.jar
+ commons-logging-1.1.1.jar
  coyote-6.0.14.jar
  derby-10.1.3.1.jar
- geronimo-activation_1.1_spec-1.0-M1.jar
+ geronimo-activation_1.1_spec-1.0.1.jar
  geronimo-common-1.2-beta.jar
  geronimo-commonj_1.1_spec-1.0.jar
  geronimo-connector-1.2-beta.jar
@@ -263,9 +264,10 @@ The following components come under Apache Software License 2.0
  geronimo-j2ee-connector_1.5_spec-1.1.jar
  geronimo-j2ee-jacc_1.0_spec-1.1.jar
  geronimo-j2ee-management_1.0_spec-1.1.jar
- geronimo-javamail_1.4_spec-1.0-M1.jar
+ geronimo-javamail_1.4_spec-1.2.jar
  geronimo-jms_1.1_spec-1.1.jar
  geronimo-jpa_3.0_spec-1.0.jar
+ geronimo-jsp_2.1_spec-1.0.jar
  geronimo-jta_1.0.1B_spec-1.0.jar
  geronimo-kernel-1.2-beta.jar
  geronimo-management-1.2-beta.jar
@@ -273,64 +275,45 @@ The following components come under Apache Software License 2.0
  geronimo-security-1.2-beta.jar
  geronimo-spec-j2ee-connector-1.5-rc4.jar
  geronimo-spec-jta-1.0.1B-rc4.jar
+ geronimo-stax-api_1.0_spec-1.0.1.jar
  geronimo-system-1.2-beta.jar
  geronimo-transaction-1.2-beta.jar
  geronimo-util-1.2-beta.jar
- httpcore-4.0-alpha5.jar
- httpcore-nio-4.0-alpha5.jar
+ httpcore-4.0-beta1.jar
+ httpcore-nio-4.0-beta1.jar
  httpcore-niossl-4.0-alpha5.jar
  jettison-1.0-RC2.jar
  jetty-6.1.7.jar
  jetty-util-6.1.7.jar
  json-rpc-1.0.jar
  juli-6.0.14.jar
- log4j-1.2.12.jar
+ log4j-1.2.15.jar
+ mex-1.41-impl.jar
  logkit-1.0.1.jar
- neethi-2.0.2.jar
- ode-bpel-api-1.1.jar
- ode-bpel-compiler-1.1.jar
- ode-bpel-dao-1.1.jar
- ode-bpel-epr-1.1.jar
- ode-bpel-obj-1.1.jar
- ode-bpel-runtime-1.1.jar
- ode-bpel-schemas-1.1.jar
- ode-bpel-store-1.1.jar
- ode-dao-jpa-1.1.jar
- ode-dao-jpa-ojpa-derby-1.1.zip
- ode-jacob-1.1.jar
- ode-jacob-ap-1.1.jar
- ode-scheduler-simple-1.1.jar
- ode-utils-1.1.jar
- openjpa-all-0.9.7-incubating.jar
- openjpa-persistence-0.9.7-incubating.jar
+ neethi-2.0.4.jar
  org.apache.felix.bundlerepository-1.0.2.jar
  org.apache.felix.framework-1.0.3.jar
  org.apache.felix.main-1.0.3.jar
  org.apache.felix.shell-1.0.0.jar
  org.apache.felix.shell.tui-1.0.0.jar
- rampart-core-1.3.jar
- rampart-policy-1.3.jar
- rampart-trust-1.3.jar
+ rampart-core-1.4.jar
+ rampart-policy-1.4.jar
+ rampart-trust-1.4.jar
  regexp-1.3.jar
- spring-beans-2.0.6.jar
- spring-context-2.0.6.jar
- spring-core-2.0.6.jar
  tranql-connector-1.1.jar
- tuscany-sdo-api-r2.1-1.0-incubating.jar
- tuscany-sdo-impl-1.0-incubating.jar
- tuscany-sdo-lib-1.0-incubating.jar
- tuscany-sdo-tools-1.0-incubating.jar
- woden-1.0-incubating-M7b.jar
- wss4j-1.5.3.jar
- wstx-asl-3.2.1.jar
+ woden-api-1.0M8.jar
+ woden-impl-dom-1.0M8.jar
+ wss4j-1.5.4.jar
+ wstx-asl-3.2.4.jar
  xalan-2.7.0.jar
  xbean-naming-2.7.jar
  xercesImpl-2.8.1.jar
  xml-apis-1.3.03.jar
  xmlbeans-2.3.0.jar
+ xmlParserAPIs-2.6.0.jar
  xml-resolver-1.1.jar
- xmlsec-1.4.0.jar
- XmlSchema-1.3.2.jar
+ xmlsec-1.4.2.jar
+ XmlSchema-1.4.2.jar
 
 ===============================================================================
 axion-1.0-M3-dev.jar 
@@ -438,9 +421,15 @@ The EMF jars;
    codegen-2.2.3.jar 
    codegen-ecore-2.2.3.jar
    common-2.2.3.jar
+   common-3.3.0-v20070426.jar
+   contenttype-3.2.100-v20070319.jar
    ecore-2.2.3.jar
    ecore-change-2.2.3.jar
    ecore-xmi-2.2.3.jar
+   jobs-3.3.0-v20070423.jar
+   osgi-3.3.0-v20070530.jar
+   registry-3.3.0-v20070522.jar
+   runtime-3.3.100-v20070530.jar
    xsd-2.2.3.jar
 
 Eclipse Public License - v 1.0
@@ -1485,12 +1474,12 @@ JPython version 1.1.x
 The jars; 
 activation-1.1.jar, 
 jaxb-api-2.1.jar, 
-jaxb-impl-2.1.6.jar, 
+jaxb-impl-2.1.9.jar, 
 jaxb-xjc-2.1.4.jar, 
 jaxb2-reflection-2.1.4.jar,
+jaxws-api-2.1.jar, 
 jsr181-api-1.0-MR1.jar, 
 jsr250-api-1.0.jar, 
-jaxws-api-2.1-1.jar, 
 mail-1.4.jar, 
 saaj-api-1.3.jar, 
 servlet-api-2.5.jar, 
@@ -1974,7 +1963,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
 ===============================================================================
 
-backport-util-concurrent-2.2.jar:
+backport-util-concurrent-3.1.jar :
 
 The software comprising backport-util-concurrent is based in large
 part on the code from JSR166, and the package dl.util.concurrent.
@@ -2255,6 +2244,74 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
 
+The jaxen-1.1.1.jar:
+
+ $Id: LICENSE.txt,v 1.5 2006/02/05 21:49:04 elharo Exp $
+
+ Copyright 2003-2006 The Werken Company. All Rights Reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  * Neither the name of the Jaxen Project nor the names of its
+    contributors may be used to endorse or promote products derived 
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+================================================================================
+The asm-all-3.1.jar are distributed under the license:
+
+Copyright (c) 2000-2005 INRIA, France Telecom
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holders nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+================================================================================
+
 The tuscany-assembly-xsd jar includes XSD files under the following SCA Collaboration license:
 
 License for the Service Component Architecture JavaDoc, Interface 
@@ -2297,70 +2354,4 @@ and XSD Files will at all times remain with the Authors.
 No other rights are granted by implication, estoppel or otherwise.
 
 Revision level 1.1, last updated on 2007/11/19
-
-================================================================================
-License for the Service Data Objects JavaDoc and Interface Definition files. (tuscany-sdo-api-r2.1-1.0-incubating.jar)
-
-These files being ...
-commonj/sdo/ChangeSummary$Setting.class
-commonj/sdo/ChangeSummary.class
-commonj/sdo/DataGraph.class
-commonj/sdo/DataObject.class
-commonj/sdo/helper/CopyHelper.class
-commonj/sdo/helper/DataFactory.class
-commonj/sdo/helper/DataHelper.class
-commonj/sdo/helper/EqualityHelper.class
-commonj/sdo/helper/HelperContext.class
-commonj/sdo/helper/TypeHelper.class
-commonj/sdo/helper/XMLDocument.class
-commonj/sdo/helper/XMLHelper.class
-commonj/sdo/helper/XSDHelper.class
-commonj/sdo/impl/ExternalizableDelegator$Resolvable.class
-commonj/sdo/impl/ExternalizableDelegator.class
-commonj/sdo/Property.class
-commonj/sdo/Sequence.class
-commonj/sdo/Type.class
-xml/datagraph.xsd
-xml/sdoJava.xml
-xml/sdoJava.xsd
-xml/sdoModel.xml
-xml/sdoModel.xsd
-xml/sdoXML.xml
-xml/sdoXML.xsd
-
-
-License for the Service Data Objects JavaDoc and Interface Definition files.
-
-The Service Data Objects Specification is being provided by the copyright holders under the following 
-license. By using and/or copying this work, you agree that you have read, understood and will comply with 
-the following terms and conditions:
-
-Permission to copy, display and distribute the Service Data Objects Specification and/or portions thereof, without 
-modification, in any medium without fee or royalty is hereby granted, provided that you include the 
-following on ALL copies of the Service Data Objects Specification, or portions thereof, that you make:
-
-1. A link or URL to the Service Data Objects Specification at this location:
-http://www.osoa.org/display/Main/Service+Data+Objects+Specifications
-
-2. The full text of this copyright notice as shown in the Service Data Objects Specification.
-
-BEA, IBM, Oracle, Primeton Technologies, Rogue Wave Software, SAP, Software AG, Sun Microsystems, Xcalia, 
-Zend Technologies (collectively, the “Authors”) agree to grant you a royalty-free license, under reasonable, 
-non-discriminatory terms and conditions to patents that they deem necessary to implement the Service Data 
-Objects Specification. 
-
-THE Service Data Objects SPECIFICATION IS PROVIDED "AS IS," AND THE AUTHORS MAKE NO REPRESENTATIONS OR 
-WARRANTIES, EXPRESS OR IMPLIED, REGARDING THIS SPECIFICATION AND THE IMPLEMENTATION OF ITS CONTENTS, 
-INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
-NON-INFRINGEMENT OR TITLE. THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL 
-OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THE SERVICE DATA OBJECTS 
-SPECIFICATION.
-
-The name and trademarks of the Authors may NOT be used in any manner, including advertising or publicity 
-pertaining to the Service Data Objects Specification or its contents without specific, written prior 
-permission. Title to copyright in the Service Data Objects Specification will at all times remain with the 
-Authors.
-
-No other rights are granted by implication, estoppel or otherwise.
-================================================================================
 
