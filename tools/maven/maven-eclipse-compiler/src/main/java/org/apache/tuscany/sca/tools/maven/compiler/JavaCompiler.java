@@ -162,15 +162,19 @@ public class JavaCompiler extends AbstractCompiler {
         // getLogger().info(configuration.getCustomCompilerArguments().toString());
         boolean osgi = "true".equals(configuration.getCustomCompilerArguments().get("-osgi"));
         File proj = new File(configuration.getOutputLocation());
+
         String symbol = null;
         try {
-            symbol = BundleUtil.getBundleSymbolicName(proj);
+            // Don't trigger the resolution for test-compile
+            if (!"test-classes".equals(proj.getName())) {
+                symbol = BundleUtil.getBundleSymbolicName(proj);
+            }
         } catch (IOException e1) {
             symbol = null;
         }
 
         if (osgi && symbol != null) {
-            getLogger().info("Resolving OSGi bundles");
+            getLogger().info("Resolving OSGi bundle: "+symbol);
             for (String entry : (List<String>)configuration.getClasspathEntries()) {
                 try {
                     File cp = new File(entry);
