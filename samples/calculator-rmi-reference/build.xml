@@ -27,6 +27,8 @@
          <classpath> 
             <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
             <pathelement location="../../modules/tuscany-node-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/node-api/target/tuscany-node-api-2.0-SNAPSHOT.jar"/>
          </classpath> 
       </javac> 
       <copy todir="target/classes"> 
