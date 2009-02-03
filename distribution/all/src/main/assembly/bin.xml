@@ -32,7 +32,7 @@
         <componentDescriptor>../core/src/main/components/bin-modules.xml</componentDescriptor>
         <componentDescriptor>../core/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../ejava/src/main/components/bin-samples.xml</componentDescriptor>
-        <componentDescriptor>../host-webapp/src/main/components/bin-samples.xml</componentDescriptor>
+        <componentDescriptor>../webapp/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../webservice/src/main/components/bin-samples.xml</componentDescriptor>
         <componentDescriptor>../all/src/main/components/bin-launcher.xml</componentDescriptor>
 

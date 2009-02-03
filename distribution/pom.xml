@@ -32,12 +32,11 @@
 
     <modules>
         <module>all</module>
-        <module>api</module>
         <module>core</module>
         <module>ejava</module>
-        <module>host-webapp</module>
         <module>webservice</module>
 <!--
+        <module>webapp</module>
         <module>webservice</module>
         <module>manager</module>
         <module>process</module>
