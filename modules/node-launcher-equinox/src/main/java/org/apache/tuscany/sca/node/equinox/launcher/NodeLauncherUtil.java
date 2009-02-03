@@ -45,6 +45,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,7 @@ import java.util.zip.ZipInputStream;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 
 /**
  * Common functions and constants used by the admin components.
@@ -72,7 +74,7 @@ import org.osgi.framework.BundleException;
 final class NodeLauncherUtil {
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
 
-    private static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
+    static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
 
     private static final String NODE_FACTORY = "org.apache.tuscany.sca.node.NodeFactory";
 
@@ -230,7 +232,11 @@ final class NodeLauncherUtil {
         }
     }
 
-    private static Pattern pattern = Pattern.compile("-([0-9.]+)");
+    /**
+     * starting with -, then some digits, then . or - or _, then some digits again
+     * 
+     */
+    private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+)*");
 
     /**
      * Returns the version number to use for the given JAR file.
@@ -238,18 +244,47 @@ final class NodeLauncherUtil {
      * @param jarFile
      * @return
      */
-    private static String jarVersion(String jarFile) {
-        Matcher matcher = pattern.matcher(jarFile);
-        String version = "1.0.0";
+    static String jarVersion(String jarFile) {
+        String name = jarFile;
+        int index = name.lastIndexOf('/');
+        if (index != -1) {
+            // Find the last segment
+            name = name.substring(index + 1);
+        }
+        index = name.lastIndexOf('.');
+        if (index != -1) {
+            // Trim the extension
+            name = name.substring(0, index);
+        }
+        
+        Matcher matcher = pattern.matcher(name);
+        String version = "0.0.0";
         if (matcher.find()) {
             version = matcher.group();
-            if (version.endsWith(".")) {
-                version = version.substring(1, version.length() - 1);
-            } else {
-                version = version.substring(1);
-            }
+            version = version.substring(1);
         }
         return version;
+    }
+    
+    static String artifactId(String jarFile) {
+        String name = jarFile;
+        int index = name.lastIndexOf('/');
+        if (index != -1) {
+            // Find the last segment
+            name = name.substring(index + 1);
+        }
+        index = name.lastIndexOf('.');
+        if (index != -1) {
+            // Trim the extension
+            name = name.substring(0, index);
+        }
+        
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) {
+            return name.substring(0, matcher.start());
+        } else {
+            return name;
+        }
     }
 
     /**
@@ -259,8 +294,12 @@ final class NodeLauncherUtil {
      * @param packages
      * @throws IOException
      */
-    private static void addPackages(String jarFile, Set<String> packages) throws IOException {
-        String version = ";version=" + jarVersion(jarFile);
+    private static void addPackages(String jarFile, Set<String> packages, String version) throws IOException {
+        if (version == null) {
+            version = ";version=" + jarVersion(jarFile);
+        } else {
+            version = ";version=" + version;
+        }
         File file = file(new URL(jarFile));
         if (file.isDirectory()) {
             List<String> classFiles = listClassFiles(file);
@@ -326,10 +365,12 @@ final class NodeLauncherUtil {
      * Generate a manifest from a list of third-party JAR files.
      * 
      * @param jarFiles
+     * @param bundleSymbolicName The Bundle-SymbolicName
+     * @param bundleVersion The Bundle-Version
      * @return
      * @throws IllegalStateException
      */
-    static private Manifest thirdPartyLibraryBundleManifest(List<String> jarFiles) throws IllegalStateException {
+    static private Manifest thirdPartyLibraryBundleManifest(Collection<String> jarFiles, String bundleSymbolicName, String bundleVersion) throws IllegalStateException {
         try {
 
             // List exported packages and bundle classpath entries
@@ -338,7 +379,7 @@ final class NodeLauncherUtil {
             StringBuffer imports = new StringBuffer();
             Set<String> packages = new HashSet<String>();
             for (String jarFile : jarFiles) {
-                addPackages(jarFile, packages);
+                addPackages(jarFile, packages, bundleVersion);
                 classpath.append("\"external:");
                 classpath.append(file(new URL(jarFile)).getPath().replace(File.separatorChar, '/'));
                 classpath.append("\",");
@@ -368,7 +409,15 @@ final class NodeLauncherUtil {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            attributes.putValue(BUNDLE_SYMBOLICNAME, LAUNCHER_EQUINOX_LIBRARIES);
+            
+            if (bundleVersion == null) {
+                bundleVersion = "0.0.0";
+            }
+            attributes.putValue(Constants.BUNDLE_VERSION, bundleVersion);
+            if (bundleSymbolicName == null) {
+                bundleSymbolicName = LAUNCHER_EQUINOX_LIBRARIES;
+            }
+            attributes.putValue(BUNDLE_SYMBOLICNAME, bundleSymbolicName);
             attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
             attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
             attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
@@ -384,12 +433,14 @@ final class NodeLauncherUtil {
      * Generates a library bundle from a list of third-party JARs.
      * 
      * @param jarFiles
+     * @param bundleSymbolicName The Bundle-SymbolicName
+     * @param bundleVersion The Bundle-Version
      * @return
      * @throws IOException
      */
-    static InputStream thirdPartyLibraryBundle(List<String> jarFiles) throws IOException {
+    static InputStream thirdPartyLibraryBundle(Collection<String> jarFiles, String bundleSymbolicName, String bundleVersion) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Manifest mf = thirdPartyLibraryBundleManifest(jarFiles);
+        Manifest mf = thirdPartyLibraryBundleManifest(jarFiles, bundleSymbolicName, bundleVersion);
         JarOutputStream jos = new JarOutputStream(bos, mf);
         jos.close();
         return new ByteArrayInputStream(bos.toByteArray());
