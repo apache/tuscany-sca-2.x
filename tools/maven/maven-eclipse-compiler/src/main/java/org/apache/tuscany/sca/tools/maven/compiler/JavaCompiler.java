@@ -189,7 +189,8 @@ public class JavaCompiler extends AbstractCompiler {
                     stateController.assertResolved(b);
                     getLogger().info("OSGi bundle is resolved: " + b.getSymbolicName());
                 } catch (BundleException e) {
-                    getLogger().error(stateController.getAllErrors().toString());
+                    // getLogger().error(stateController.getAllErrors().toString());
+                    getLogger().error(e.getMessage());
                     // FIXME: For now, only a warning is reported
                     // throw new CompilerException(e.getMessage(), e);
                 }

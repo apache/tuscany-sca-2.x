@@ -357,12 +357,21 @@ public class BundleResolver {
     public void assertResolved(BundleDescription desc) throws BundleException {
         if (!desc.isResolved()) {
             StringBuffer msg = new StringBuffer();
-            msg.append("Bundle ").append(desc.getSymbolicName()).append(" cannot be resolved\n");
-            msg.append("Resolution errors:\n");
-            ResolverError[] errors = getResolverErrors(desc);
-            for (int i = 0; i < errors.length; i++) {
-                ResolverError error = errors[i];
-                msg.append(error).append("\n");
+            msg.append("Bundle ").append(desc.getSymbolicName()).append(" cannot be resolved: \n");
+            BundleDescription[] bundles = state.getBundles();
+            int index = 0;
+            for (BundleDescription b : bundles) {
+                if (b.isResolved()) {
+                    continue;
+                }
+                ResolverError[] errors = state.getResolverErrors(b);
+                if (errors.length > 0) {
+                    msg.append("[").append(index++).append("] ").append(b.getSymbolicName()).append("\n");
+                }
+                for (int i = 0; i < errors.length; i++) {
+                    ResolverError error = errors[i];
+                    msg.append(error).append("\n");
+                }
             }
 
             throw new BundleException(msg.toString());
