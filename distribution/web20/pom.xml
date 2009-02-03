@@ -32,73 +32,13 @@
 
     <dependencies>
 
-        <!-- Core distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-core</artifactId>
+            <artifactId>tuscany-distribution-web20</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Bindings -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-atom-abdera</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rss-rome</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Contribution model -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-resource</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Databindings -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-json</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Hosts -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Implementation types -->
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-resource-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-script-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-widget-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <profiles>
