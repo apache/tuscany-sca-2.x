@@ -516,9 +516,9 @@ public class NodeImpl implements Node, Client {
         compositeFile.setURI(composite.getURI());
         for (Contribution contribution: workspace.getContributions()) {
             ModelResolver resolver = contribution.getModelResolver();
-            for (Artifact artifact : contribution.getArtifacts()){
-                logger.log(Level.INFO,"artifact - " + artifact.getURI());
-            }
+//            for (Artifact artifact : contribution.getArtifacts()){
+//                logger.log(Level.INFO,"artifact - " + artifact.getURI());
+//            }
             Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
             if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
                 
