@@ -320,7 +320,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
                 for (Object o : project.getArtifacts()) {
                     Artifact artifact = (Artifact)o;
                     if ("pom".equals(artifact.getType()) && artifact.getGroupId().equals(project.getGroupId())
-                        && artifact.getArtifactId().startsWith("tuscany-distribution-")) {
+                        && artifact.getArtifactId().startsWith("tuscany-feature-")) {
                         log.info("Dependent distribution: " + artifact);
                         MavenProject pomProject = buildProject(artifact);
                         poms.add(pomProject);
@@ -696,13 +696,13 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     }
     
     /**
-     * Convert tuscany-distribution-xyz to feature-xyz
+     * Convert tuscany-feature-xyz to feature-xyz
      * @param artifactId
      * @return
      */
     private String trim(String artifactId) {
-        if (artifactId.startsWith("tuscany-distribution-")) {
-            return artifactId.substring("tuscany-distribution-".length());
+        if (artifactId.startsWith("tuscany-feature-")) {
+            return artifactId.substring("tuscany-feature-".length());
         } else {
             return artifactId;
         }
