@@ -21,9 +21,20 @@ package org.apache.tuscany.sca.node.launcher;
 
 import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.node;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
 
 /**
  * A launcher for SCA nodes.
@@ -108,32 +119,70 @@ public class NodeLauncher {
         return (T)node(null, compositeURI, null, null, classLoader);
     }
     
+    static Options getCommandLineOptions() {
+        Options options = new Options();
+        Option opt1 = new Option("c", "composite", true, "URI for the composite");
+        opt1.setArgName("compositeURI");
+        options.addOption(opt1);
+        Option opt2 = new Option("n", "node", true, "URI for the node configuration");
+        opt2.setArgName("nodeConfigurationURI");
+        options.addOption(opt2);
+        return options;
+    }
+
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node is starting...");
-
-        // Create a node launcher
-        NodeLauncher launcher = newInstance();
-
+        CommandLineParser parser = new PosixParser();
+        Options options = getCommandLineOptions();
+        CommandLine cli = parser.parse(options, args);
+        
         Object node = null;
         ShutdownThread shutdown = null;
         try {
             while (true) {
-                if (args.length ==1) {
+                if (cli.hasOption("node")) {
                     
                     // Create a node from a configuration URI
-                    String configurationURI = args[0];
+                    String configurationURI = cli.getOptionValue("node");
                     logger.info("SCA Node configuration: " + configurationURI);
+                    // Create a node launcher
+                    NodeLauncher launcher = newInstance();
                     node = launcher.createNodeFromURL(configurationURI);
                 } else {
                     
                     // Create a node from a composite URI and a contribution location
-                    String compositeURI = args[0];
-                    String contributionLocation = args[1];
+                    String compositeURI = cli.getOptionValue("composite");
+                    List<String> contribs = cli.getArgList();
+                    Contribution[] contributions = null;
+                    if (!contribs.isEmpty()) {
+                        contributions = new Contribution[contribs.size()];
+                        int index = 0;
+                        for (String contrib : contribs) {
+                            logger.info("SCA contribution: " + contrib);
+                            URL url = null;
+                            try {
+                                url = new URL(contrib);
+                            } catch(MalformedURLException e) {
+                                url = new File(contrib).toURI().toURL();
+                            }
+                            contributions[index] = new Contribution("contribution-" + index, url.toString());
+                            index++;
+                        }
+                    } else {
+                        HelpFormatter formatter = new HelpFormatter();
+                        formatter.setSyntaxPrefix("Usage: ");
+                        formatter.printHelp("java " + NodeLauncher.class.getName()
+                            + " [-c <compositeURI>] contribution1 ... contributionN", options);
+                        return;
+                    }
+                    // Create a node launcher
                     logger.info("SCA composite: " + compositeURI);
-                    logger.info("SCA contribution: " + contributionLocation);
-                    node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+                    NodeLauncher launcher = newInstance();
+                    
+                    node = launcher.createNode(compositeURI, contributions);
                 }
                 
+                logger.info("Apache Tuscany SCA Node is starting...");
+
                 // Start the node
                 try {
                     node.getClass().getMethod("start").invoke(node);

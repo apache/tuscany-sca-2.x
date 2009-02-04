@@ -11,7 +11,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Launcher
 Import-Package: javax.servlet,org.apache.tuscany.sca.node.launcher;ver
- sion="2.0.0"
+ sion="2.0.0",org.apache.commons.cli;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.node.launcher
 Bundle-DocURL: http://www.apache.org/
 
