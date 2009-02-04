@@ -21,10 +21,20 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.node;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -98,32 +108,72 @@ public class NodeLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Node is starting...");
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        Option opt1 = new Option("c", "composite", true, "URI for the composite");
+        opt1.setArgName("compositeURI");
+        options.addOption(opt1);
+        Option opt2 = new Option("n", "node", true, "URI for the node configuration");
+        opt2.setArgName("nodeConfigurationURI");
+        options.addOption(opt2);
+        Option opt3 = new Option("config", "configuration", true, "Configuration");
+        opt3.setArgName("equinoxConfiguration");
+        options.addOption(opt3);
+        CommandLine cli = parser.parse(options, args);
 
-        // Create a node launcher
-        NodeLauncher launcher = newInstance();
-
-        EquinoxHost equinox = launcher.equinoxHost;
         Object node = null;
         ShutdownThread shutdown = null;
+        EquinoxHost equinox = null;
         try {
 
-            if (args.length ==1) {
-                
+            if (cli.hasOption("config")) {
+                System.setProperty("osgi.configuration.area", cli.getOptionValue("config"));
+            }
+            if (cli.hasOption("node")) {
                 // Create a node from a configuration URI
-                String configurationURI = args[0];
+                String configurationURI = cli.getOptionValue("node");
                 logger.info("SCA Node configuration: " + configurationURI);
+
+                // Create a node launcher
+                NodeLauncher launcher = newInstance();
+                equinox = launcher.equinoxHost;
+
                 node = launcher.createNode(configurationURI);
             } else {
-                
                 // Create a node from a composite URI and a contribution location
-                String compositeURI = args[0];
-                String contributionLocation = args[1];
+                String compositeURI = cli.getOptionValue("composite");
+                List<String> contribs = cli.getArgList();
+                Contribution[] contributions = null;
+                if (!contribs.isEmpty()) {
+                    contributions = new Contribution[contribs.size()];
+                    int index = 0;
+                    for (String contrib : contribs) {
+                        logger.info("SCA contribution: " + contrib);
+                        URL url = null;
+                        try {
+                            url = new URL(contrib);
+                        } catch(MalformedURLException e) {
+                            url = new File(contrib).toURI().toURL();
+                        }
+                        contributions[index] = new Contribution("contribution-" + index, url.toString());
+                        index++;
+                    }
+                } else {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.setSyntaxPrefix("Usage: ");
+                    formatter.printHelp("java " + NodeLauncher.class.getName()
+                        + " -c <compositeURI> contributionURL1 ... contributionURLN", options);
+                    return;
+                }
+                // Create a node launcher
                 logger.info("SCA composite: " + compositeURI);
-                logger.info("SCA contribution: " + contributionLocation);
-                node = launcher.createNode(compositeURI, new Contribution("default", contributionLocation));
+                NodeLauncher launcher = newInstance();
+                equinox = launcher.equinoxHost;
+                node = launcher.createNode(compositeURI, contributions);
             }
-            
+
+            logger.info("Apache Tuscany SCA Node is starting...");
+
             // Start the node
             try {
                 node.getClass().getMethod("start").invoke(node);
@@ -132,19 +182,19 @@ public class NodeLauncher {
                 throw e;
             }
             logger.info("SCA Node is now started.");
-            
+
             // Install a shutdown hook
             shutdown = new ShutdownThread(node, equinox);
             Runtime.getRuntime().addShutdownHook(shutdown);
-            
+
             logger.info("Press enter to shutdown.");
             try {
                 System.in.read();
             } catch (IOException e) {
-                
+
                 // Wait forever
                 Object lock = new Object();
-                synchronized(lock) {
+                synchronized (lock) {
                     lock.wait();
                 }
             }
@@ -154,7 +204,7 @@ public class NodeLauncher {
             if (shutdown != null) {
                 Runtime.getRuntime().removeShutdownHook(shutdown);
             }
-            
+
             // Stop the node
             if (node != null) {
                 destroyNode(node);
@@ -164,7 +214,7 @@ public class NodeLauncher {
             }
         }
     }
-    
+
     public void destroy() {
         if (equinoxHost != null) {
             equinoxHost.stop();
@@ -188,7 +238,7 @@ public class NodeLauncher {
             throw e;
         }
     }
-    
+
     private static class ShutdownThread extends Thread {
         private Object node;
         private EquinoxHost equinox;
