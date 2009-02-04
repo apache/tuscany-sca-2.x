@@ -418,9 +418,15 @@ final class NodeLauncherUtil {
                 bundleSymbolicName = LAUNCHER_EQUINOX_LIBRARIES;
             }
             attributes.putValue(BUNDLE_SYMBOLICNAME, bundleSymbolicName);
-            attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
-            attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
-            attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+            if (exports.length() > 0) {
+                attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
+            }
+            if (imports.length() > 0) {
+                attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
+            }
+            if (classpath.length() > 0) {
+                attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+            }
             attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
 
             return manifest;
