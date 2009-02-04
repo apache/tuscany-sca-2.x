@@ -17,15 +17,30 @@
  * under the License.    
 -->
 
-<project name="calculator" default="compile">
+<project name="binding-rmi-calculator-service" default="run">
 
    <property name="jar.name"   value="sample-calculator-rmi-service.jar" />
    <property name="main.class" value="calculator.CalculatorClient" />
 
+   <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+   </target>
+	
    <target name="compile" depends="init">
-      <javac srcdir="src/main/java" destdir="target/classes" debug="on" source="1.5" target="1.5"> 
+      <javac srcdir="src/main/java" 
+      	     destdir="target/classes" 
+      	     debug="on" 
+      	     source="1.5" 
+      	     target="1.5"
+      	     failonerror="true"> 
          <classpath> 
             <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/tuscany-node-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/node-api/target/tuscany-node-api-2.0-SNAPSHOT.jar"/>
          </classpath> 
       </javac> 
       <copy todir="target/classes"> 
@@ -37,13 +52,38 @@
          </manifest>
       </jar>    	
    </target>
-
-   <target name="init"> 
-      <delete quiet="true" includeemptydirs="true"> 
-         <fileset dir="target"/> 
-      </delete> 
-      <mkdir dir="target/classes"/> 
-   </target>
+	
+   <!--target name="run" depends="compile">
+        <java classname="org.apache.tuscany.sca.launcher.LauncherMain"
+              fork="true"
+        	  inputstring="\n"
+        	  failonerror="true">
+            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
+            <classpath> 
+               <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT/tuscany-sca-2.0-SNAPSHOT/bin/launcher.jar"/>
+               <pathelement location="../../bin/launcher.jar"/>
+            </classpath> 
+        	<arg value="target/${jar.name}"/> 
+        </java>    	
+    </target-->	
+	
+   <target name="run" depends="compile">
+        <java classname="org.apache.tuscany.sca.node.launcher.NodeLauncher"
+              fork="true"
+        	  timeout="6000"
+        	  failonerror="true">
+            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
+            <classpath> 
+            	<pathelement location="../../modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
+                <pathelement location="../../modules/commons-cli-1.1/commons-cli-1.1.jar"/>
+                <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT/tuscany-sca-2.0-SNAPSHOT/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
+            	<pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT/tuscany-sca-2.0-SNAPSHOT/modules/commons-cli-1.1/commons-cli-1.1.jar"/>
+            </classpath> 
+        	<arg value="target/${jar.name}"/> 
+        	<arg value="-t"/> 
+        	<arg value="5000"/> 
+        </java>    	
+    </target>	
 
 </project> 
 
