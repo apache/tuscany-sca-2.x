@@ -39,6 +39,11 @@ import org.osgi.framework.BundleContext;
 
 /**
  * A launcher for SCA nodes.
+ * 
+ * Agruments:
+ * [-config <equinoxConfiguration>]: The configuration folder for Equinox 
+ * [-c <compositeURI>]: The composite URI
+ * contribution1 ... contributionN: A list of contribution files or URLs
  *  
  * @version $Rev$ $Date$
  */
@@ -109,16 +114,7 @@ public class NodeLauncher {
 
     public static void main(String[] args) throws Exception {
         CommandLineParser parser = new PosixParser();
-        Options options = new Options();
-        Option opt1 = new Option("c", "composite", true, "URI for the composite");
-        opt1.setArgName("compositeURI");
-        options.addOption(opt1);
-        Option opt2 = new Option("n", "node", true, "URI for the node configuration");
-        opt2.setArgName("nodeConfigurationURI");
-        options.addOption(opt2);
-        Option opt3 = new Option("config", "configuration", true, "Configuration");
-        opt3.setArgName("equinoxConfiguration");
-        options.addOption(opt3);
+        Options options = getCommandLineOptions();
         CommandLine cli = parser.parse(options, args);
 
         Object node = null;
@@ -162,7 +158,7 @@ public class NodeLauncher {
                     HelpFormatter formatter = new HelpFormatter();
                     formatter.setSyntaxPrefix("Usage: ");
                     formatter.printHelp("java " + NodeLauncher.class.getName()
-                        + " -c <compositeURI> contributionURL1 ... contributionURLN", options);
+                        + " [-config <equinoxConfiguration>] [-c <compositeURI>] contribution1 ... contributionN", options);
                     return;
                 }
                 // Create a node launcher
@@ -213,6 +209,20 @@ public class NodeLauncher {
                 equinox.stop();
             }
         }
+    }
+
+    static Options getCommandLineOptions() {
+        Options options = new Options();
+        Option opt1 = new Option("c", "composite", true, "URI for the composite");
+        opt1.setArgName("compositeURI");
+        options.addOption(opt1);
+        Option opt2 = new Option("n", "node", true, "URI for the node configuration");
+        opt2.setArgName("nodeConfigurationURI");
+        options.addOption(opt2);
+        Option opt3 = new Option("config", "configuration", true, "Configuration");
+        opt3.setArgName("equinoxConfiguration");
+        options.addOption(opt3);
+        return options;
     }
 
     public void destroy() {
