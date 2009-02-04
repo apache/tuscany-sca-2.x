@@ -45,21 +45,21 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-core</artifactId>
+            <artifactId>tuscany-feature-core</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-webservice</artifactId>
+            <artifactId>tuscany-feature-webservice</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-ejava</artifactId>
+            <artifactId>tuscany-feature-ejava</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
