@@ -30,6 +30,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -45,6 +47,8 @@ import java.util.logging.Logger;
  * @version $Rev$ $Date$
  */
 final class NodeLauncherUtil {
+    private static final String NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap";
+
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
@@ -84,10 +88,17 @@ final class NodeLauncherUtil {
      * @return
      */
     private static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader, FilenameFilter filter) throws FileNotFoundException, URISyntaxException, MalformedURLException {
-        
+        // First try to see if the runtime classes are already on the classpath
+        // If yes, skip the discovery to avoid duplicate jars
+        try {
+            Class.forName(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP, false, parentClassLoader);
+            return parentClassLoader;
+        } catch (ClassNotFoundException e) {
+            // Ignore;
+        }
         // Build list of runtime JARs
         Set<URL> jarDirectoryURLs = new HashSet<URL>();
-        List<URL> jarURLs = new ArrayList<URL>();
+        Set<URL> jarURLs = new HashSet<URL>();
         
         // First determine the path to the launcher class
         String resource = NodeLauncherUtil.class.getName().replace('.', '/') + ".class"; 
@@ -150,6 +161,11 @@ final class NodeLauncherUtil {
     
         // Return the runtime class loader
         if (!jarURLs.isEmpty()) {
+            // Remove the URLs which are already in the parent classloader
+            if (parentClassLoader instanceof URLClassLoader) {
+                URLClassLoader cl = (URLClassLoader)parentClassLoader;
+                jarURLs.removeAll(Arrays.asList(cl.getURLs()));
+            }            
             
             // Return a ClassLoader configured with the runtime JARs
             ClassLoader classLoader = new RuntimeClassLoader(jarURLs.toArray(new URL[jarURLs.size()]), parentClassLoader);
@@ -169,7 +185,7 @@ final class NodeLauncherUtil {
      * @param filter
      * @throws MalformedURLException
      */
-    private static void collectJARFiles(String directory, Set<URL> jarDirectoryURLs, List<URL> jarURLs, FilenameFilter filter)
+    private static void collectJARFiles(String directory, Set<URL> jarDirectoryURLs, Collection<URL> jarURLs, FilenameFilter filter)
         throws MalformedURLException {
         File directoryFile = new File(directory);
         URL directoryURL = directoryFile.toURI().toURL(); 
@@ -205,7 +221,7 @@ final class NodeLauncherUtil {
      * @param recursive 
      * @throws MalformedURLException
      */
-    private static void collectJARFiles(File directory, List<URL> urls, FilenameFilter filter, boolean recursive) throws MalformedURLException {
+    private static void collectJARFiles(File directory, Collection<URL> urls, FilenameFilter filter, boolean recursive) throws MalformedURLException {
         File[] files = directory.listFiles(filter);
         if (files != null) {
             int count = 0;
@@ -240,6 +256,10 @@ final class NodeLauncherUtil {
                 return false;
             }
             if (name.startsWith("tuscany-sca-manifest")) {
+                return false;
+            }
+            
+            if ("features".equals(dir.getName()) && name.startsWith("equinox-manifest")) {
                 return false;
             }
             
@@ -309,7 +329,7 @@ final class NodeLauncherUtil {
     
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
-            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap";
+            String className = NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP;
             Class<?> bootstrapClass;
             if (runtimeClassLoader != null) {
                 bootstrapClass = Class.forName(className, true, runtimeClassLoader);

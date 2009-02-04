@@ -19,11 +19,18 @@
 
 package org.apache.tuscany.sca.node.launcher;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
+
 
 /**
  * Main class for this JAR.
- * With no arguments this class launches the SCA Node Daemon.
- * With a "domain" argument it launches the SCA domain admin node.
+ * With a "-nodeDaemon or -nd" this class launches the SCA Node Daemon.
+ * With a "-domainManager or -dm" argument it launches the SCA domain admin node.
  * With any other argument it launches an SCA Node. 
  *  
  * @version $Rev$ $Date$
@@ -31,14 +38,25 @@ package org.apache.tuscany.sca.node.launcher;
 public class NodeMain {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 0) {
-            if (args[0].equals("domain")) {
-                DomainManagerLauncher.main(args);
-            } else {
-                NodeLauncher.main(args);
-            }
-        } else {
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        OptionGroup group = new OptionGroup();
+        group.addOption(new Option("dm", "domainManager", false, "Domain Manager"));
+        group.addOption(new Option("nd", "nodeDaemon", false, "Node Domain"));
+        options.addOptionGroup(group);
+        
+        // Add options from NodeLauncher to avoid UnrecognizedOptionException
+        for (Object o : NodeLauncher.getCommandLineOptions().getOptions()) {
+            options.addOption((Option)o);
+        }
+        
+        CommandLine cli = parser.parse(options, args);
+        if (cli.hasOption("nd")) {
             NodeDaemonLauncher.main(args);
+        } else if (cli.hasOption("dm")) {
+            DomainManagerLauncher.main(args);
+        } else {
+            NodeLauncher.main(args);
         }
     }
 }
