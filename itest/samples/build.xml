@@ -32,7 +32,19 @@
     	     dir="../../samples/implementation-java-calculator"/>
     	
         <ant antfile="../../samples/binding-ws-calculator/build.xml"
-             dir="../../samples/binding-ws-calculator"/>    	
+             dir="../../samples/binding-ws-calculator"/> 
+    	
+    	<!--parallel>
+            <ant antfile="../../samples/calculator-rmi-service/build.xml"
+        	     dir="../../samples/calculator-rmi-service"/>
+    		<sequential>
+    		    <sleep seconds="2"/>
+                <ant antfile="../../samples/calculator-rmi-reference/build.xml"
+            	     dir="../../samples/calculator-rmi-reference"/>
+    			
+    		</sequential>
+    	</parallel-->
+    	
     </target>
 
 </project>
