@@ -86,7 +86,7 @@
                                 <configuration>
                                     <descriptors>
                                         <descriptor>src/main/assembly/bin.xml</descriptor>
-                                        <descriptor>src/main/assembly/src.xml</descriptor>
+                                        <!-- TUSCANY-2814 descriptor>src/main/assembly/src.xml</descriptor -->
                                     </descriptors>
                                     <tarLongFileMode>gnu</tarLongFileMode>
                                     <finalName>apache-tuscany-sca-all-2.0-SNAPSHOT</finalName>
