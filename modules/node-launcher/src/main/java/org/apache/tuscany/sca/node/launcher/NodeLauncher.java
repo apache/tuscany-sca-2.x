@@ -37,9 +37,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 
 /**
- * A launcher for SCA nodes.
- *  
- * @version $Rev$ $Date$
+ * A launcher for SCA nodes in JSE.
+ * 
+ * Agruments:
+ * [-c <compositeURI>]: The composite URI
+ * [-t <ttl>]: Time to live in milliseconds before the node is started
+ * contribution1 ... contributionN: A list of contribution files or URLs * @version $Rev$ $Date$
  */
 public class NodeLauncher {
 
@@ -127,6 +130,10 @@ public class NodeLauncher {
         Option opt2 = new Option("n", "node", true, "URI for the node configuration");
         opt2.setArgName("nodeConfigurationURI");
         options.addOption(opt2);
+        Option opt3 = new Option("t", "ttl", true, "Time to live");
+        opt3.setArgName("timeToLiveInMilliseconds");
+        // opt4.setType(long.class);
+        options.addOption(opt3);        
         return options;
     }
 
@@ -171,8 +178,9 @@ public class NodeLauncher {
                         HelpFormatter formatter = new HelpFormatter();
                         formatter.setSyntaxPrefix("Usage: ");
                         formatter.printHelp("java " + NodeLauncher.class.getName()
-                            + " [-c <compositeURI>] contribution1 ... contributionN", options);
-                        return;
+                                            + " [-c <compositeURI>]"
+                                            + " [-t <ttl>]"
+                                            + " contribution1 ... contributionN", options);                        return;
                     }
                     // Create a node launcher
                     logger.info("SCA composite: " + compositeURI);
@@ -195,6 +203,19 @@ public class NodeLauncher {
                 // Install a shutdown hook
                 shutdown = new ShutdownThread(node);
                 Runtime.getRuntime().addShutdownHook(shutdown);
+
+                long ttl = Long.parseLong(cli.getOptionValue("ttl", "-1"));
+                if (ttl >= 0) {
+                    logger.info("Waiting for " + ttl + " milliseconds ...");
+                    Thread.sleep(ttl);
+                    // Stop the node
+                    if (node != null) {
+                        Object n = node;
+                        node = null;
+                        stopNode(n);
+                    }
+                    break; // Exit
+                }
                 
                 logger.info("Press 'q' to quit, 'r' to restart.");
                 int k = 0;
