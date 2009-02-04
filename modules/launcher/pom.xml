@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-launcher</artifactId>
-    <name>Apache Tuscany Launcher</name>
+    <name>Apache Tuscany SCA Launcher</name>
 
     <dependencies>
     </dependencies>
