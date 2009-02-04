@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
+
 
 /**
  * Main class for this JAR.
@@ -31,14 +37,29 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 public class NodeMain {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 0) {
-            if (args[0].equals("domain")) {
-                DomainManagerLauncher.main(args);
-            } else {
-                NodeLauncher.main(args);
-            }
-        } else {
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("dm", "domainManager", false, "Domain Manager");
+        options.addOption("nd", "nodeDaemon", false, "Node Domain");
+        
+        // Add options from NodeLauncher to avoid UnrecognizedOptionException
+        Option opt1 = new Option("c", "composite", true, "URI for the composite");
+        opt1.setArgName("compositeURI");
+        options.addOption(opt1);
+        Option opt2 = new Option("n", "node", true, "URI for the node configuration");
+        opt2.setArgName("nodeConfigurationURI");
+        options.addOption(opt2);
+        Option opt3 = new Option("config", "configuration", true, "Configuration");
+        opt3.setArgName("equinoxConfiguration");
+        options.addOption(opt3);
+        
+        CommandLine cli = parser.parse(options, args, false);
+        if (cli.hasOption("nd")) {
             NodeDaemonLauncher.main(args);
+        } else if (cli.hasOption("dm")) {
+            DomainManagerLauncher.main(args);
+        } else {
+            NodeLauncher.main(args);
         }
     }
 }
