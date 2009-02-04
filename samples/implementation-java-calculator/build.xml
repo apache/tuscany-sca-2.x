@@ -18,17 +18,46 @@
 -->
 	
 <project name="implementation-java-calculator" default="run"> <!-- could dertmine the same name autmatically -->
-	<import file="../build-common.xml"/>
+    
+	<property name="jar.name"   value="implementation-java-calculator" />
+
+    <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+    </target>
 	
-    <property name="sample.name" value="${ant.project.name}"/>
-	<property name="sample.root" value="."/>
-    <property name="sample.jar" value="${sample.root}/target/sample-${sample.name}.jar" />
-	<property name="sample.composite" value="Calculator.composite"/>
-	
-    <target name="compile" depends="common-jar-compile"/>	
-	
-    <target name="run" depends="common-run-equinox"/>
-	
-    <target name="clean" depends="common-clean"/>
+    <target name="compile" depends="init">
+      <javac srcdir="src/main/java" 
+      	     destdir="target/classes" 
+      	     debug="on"
+             source="1.5"
+             target="1.5"
+      	     failonerror="true"> 
+         <classpath> 
+            <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
+         </classpath> 
+      </javac> 
+      <copy todir="target/classes"> 
+         <fileset dir="src/main/resources"/> 
+      </copy> 
+      <jar destfile="target/${jar.name}" basedir="target/classes"/>   	
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="org.apache.tuscany.sca.launcher.LauncherMain"
+              fork="true"
+        	  inputstring="q"
+        	  failonerror="true">
+            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
+            <classpath> 
+               <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir.dir/tuscany-sca-2.0-SNAPSHOT/bin/launcher.jar"/>
+               <pathelement location="../../bin/launcher.jar"/>
+            </classpath> 
+        	<arg value="target/${jar.name}"/> 
+        </java>    	
+    </target>
 
 </project>

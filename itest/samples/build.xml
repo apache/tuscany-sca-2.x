@@ -23,7 +23,7 @@
 	    compile and run each sample as though the user were running
 	    samples from the binary distribution. Here we use ant targets
 	    in the first instance but for some tests we may want to run 
-	    jars directly and fire up webapp containers and deploy wars. In other cases
+	    jars directly or fire up webapp containers and deploy wars. In other cases
 	    we may need to run two samples together to provide reference and 
 	    service sides of the sample.
 	-->
