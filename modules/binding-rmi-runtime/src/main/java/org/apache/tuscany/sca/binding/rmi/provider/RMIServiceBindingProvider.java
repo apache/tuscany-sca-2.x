@@ -22,14 +22,12 @@ package org.apache.tuscany.sca.binding.rmi.provider;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
-import net.sf.cglib.asm.ClassWriter;
-import net.sf.cglib.asm.Type;
-import net.sf.cglib.core.Constants;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -60,6 +58,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     private RMIBinding binding;
     private RMIHost rmiHost;
     private RuntimeWire wire;
+    private Remote rmiProxy;
 
     public RMIServiceBindingProvider(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
         this.component = rc;
@@ -75,7 +74,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         wire = service.getRuntimeWire(binding);
         Interface serviceInterface = service.getInterfaceContract().getInterface();
 
-        Remote rmiProxy = createRmiService(serviceInterface);
+        rmiProxy = createRmiService(serviceInterface);
 
         try {
 
@@ -88,6 +87,11 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
 
     public void stop() {
         rmiHost.unregisterService(binding.getURI());
+        try {
+            UnicastRemoteObject.unexportObject(rmiProxy, false);
+        } catch (NoSuchObjectException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     private int getPort(String port) {
