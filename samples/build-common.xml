@@ -31,6 +31,9 @@
     <import file="${distro.root}/features/build-path.xml"/>
 
     <target name="common-init">
+        <delete quiet="true" includeemptydirs="true"> 
+            <fileset dir="target"/> 
+        </delete> 
         <mkdir dir="${sample.root}/target/classes"/>
     </target>
 

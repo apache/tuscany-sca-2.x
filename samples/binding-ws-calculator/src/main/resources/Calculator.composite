@@ -22,6 +22,11 @@
            xmlns:sample="http://sample"
            name="Calculator">
 
+    <component name="SampleClient">
+		<implementation.java class="calculator.CalculatorClientImpl"/>
+        <reference name="calculatorService" target="CalculatorServiceComponent" />
+    </component>
+
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" >   
@@ -49,11 +54,6 @@
 
     <component name="DivideServiceComponent">
         <implementation.java class="calculator.DivideServiceImpl"/>
-    </component>
-
-    <component name="CalculatorClient">
-		<implementation.java class="calculator.CalculatorClient"/>
-        <reference name="calculatorService" target="CalculatorServiceComponent" />
     </component>
 
 </composite>
