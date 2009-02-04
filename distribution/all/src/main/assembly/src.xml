@@ -30,11 +30,11 @@
     <componentDescriptors>
         <componentDescriptor>../all/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../all/src/main/components/src-samples.xml</componentDescriptor>
+<!--
         <componentDescriptor>../core/src/main/components/src-common.xml</componentDescriptor>
         <componentDescriptor>../core/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../ejava/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../webservice/src/main/components/src-modules.xml</componentDescriptor>
-<!--
         <componentDescriptor>../manager/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../process/src/main/components/src-modules.xml</componentDescriptor>
         <componentDescriptor>../web20/src/main/components/src-modules.xml</componentDescriptor>
