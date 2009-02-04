@@ -57,7 +57,7 @@
         	  inputstring="q">
             <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
             <classpath> 
-               <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir.dir/tuscany-sca-2.0-SNAPSHOT/bin/launcher.jar"/>
+               <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir/tuscany-sca-2.0-SNAPSHOT/bin/launcher.jar"/>
                <pathelement location="../../bin/launcher.jar"/>
             </classpath> 
             <arg value="unmanaged"/>
