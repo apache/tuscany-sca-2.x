@@ -43,6 +43,7 @@ import org.osgi.framework.BundleContext;
  * Agruments:
  * [-config <equinoxConfiguration>]: The configuration folder for Equinox 
  * [-c <compositeURI>]: The composite URI
+ * [-t <ttl>]: Time to live in milliseconds before the node is started
  * contribution1 ... contributionN: A list of contribution files or URLs
  *  
  * @version $Rev$ $Date$
@@ -125,74 +126,103 @@ public class NodeLauncher {
             if (cli.hasOption("config")) {
                 System.setProperty("osgi.configuration.area", cli.getOptionValue("config"));
             }
-            if (cli.hasOption("node")) {
-                // Create a node from a configuration URI
-                String configurationURI = cli.getOptionValue("node");
-                logger.info("SCA Node configuration: " + configurationURI);
+            while (true) {
+                if (cli.hasOption("node")) {
+                    // Create a node from a configuration URI
+                    String configurationURI = cli.getOptionValue("node");
+                    logger.info("SCA Node configuration: " + configurationURI);
 
-                // Create a node launcher
-                NodeLauncher launcher = newInstance();
-                equinox = launcher.equinoxHost;
+                    // Create a node launcher
+                    NodeLauncher launcher = newInstance();
+                    equinox = launcher.equinoxHost;
 
-                node = launcher.createNode(configurationURI);
-            } else {
-                // Create a node from a composite URI and a contribution location
-                String compositeURI = cli.getOptionValue("composite");
-                List<String> contribs = cli.getArgList();
-                Contribution[] contributions = null;
-                if (!contribs.isEmpty()) {
-                    contributions = new Contribution[contribs.size()];
-                    int index = 0;
-                    for (String contrib : contribs) {
-                        logger.info("SCA contribution: " + contrib);
-                        URL url = null;
-                        try {
-                            url = new URL(contrib);
-                        } catch(MalformedURLException e) {
-                            url = new File(contrib).toURI().toURL();
-                        }
-                        contributions[index] = new Contribution("contribution-" + index, url.toString());
-                        index++;
-                    }
+                    node = launcher.createNode(configurationURI);
                 } else {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.setSyntaxPrefix("Usage: ");
-                    formatter.printHelp("java " + NodeLauncher.class.getName()
-                        + " [-config <equinoxConfiguration>] [-c <compositeURI>] contribution1 ... contributionN", options);
-                    return;
+                    // Create a node from a composite URI and a contribution location
+                    String compositeURI = cli.getOptionValue("composite");
+                    List<String> contribs = cli.getArgList();
+                    Contribution[] contributions = null;
+                    if (!contribs.isEmpty()) {
+                        contributions = new Contribution[contribs.size()];
+                        int index = 0;
+                        for (String contrib : contribs) {
+                            logger.info("SCA contribution: " + contrib);
+                            URL url = null;
+                            try {
+                                url = new URL(contrib);
+                            } catch (MalformedURLException e) {
+                                url = new File(contrib).toURI().toURL();
+                            }
+                            contributions[index] = new Contribution("contribution-" + index, url.toString());
+                            index++;
+                        }
+                    } else {
+                        HelpFormatter formatter = new HelpFormatter();
+                        formatter.setSyntaxPrefix("Usage: ");
+                        formatter.printHelp("java " + NodeLauncher.class.getName()
+                            + " [-config <equinoxConfiguration>]"
+                            + " [-c <compositeURI>]"
+                            + " [-t <ttl>]"
+                            + " contribution1 ... contributionN", options);
+                        return;
+                    }
+                    // Create a node launcher
+                    logger.info("SCA composite: " + compositeURI);
+                    NodeLauncher launcher = newInstance();
+                    equinox = launcher.equinoxHost;
+                    node = launcher.createNode(compositeURI, contributions);
                 }
-                // Create a node launcher
-                logger.info("SCA composite: " + compositeURI);
-                NodeLauncher launcher = newInstance();
-                equinox = launcher.equinoxHost;
-                node = launcher.createNode(compositeURI, contributions);
-            }
 
-            logger.info("Apache Tuscany SCA Node is starting...");
+                logger.info("Apache Tuscany SCA Node is starting...");
 
-            // Start the node
-            try {
-                node.getClass().getMethod("start").invoke(node);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "SCA Node could not be started", e);
-                throw e;
-            }
-            logger.info("SCA Node is now started.");
-
-            // Install a shutdown hook
-            shutdown = new ShutdownThread(node, equinox);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-
-            logger.info("Press enter to shutdown.");
-            try {
-                System.in.read();
-            } catch (IOException e) {
-
-                // Wait forever
-                Object lock = new Object();
-                synchronized (lock) {
-                    lock.wait();
+                // Start the node
+                try {
+                    node.getClass().getMethod("start").invoke(node);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "SCA Node could not be started", e);
+                    throw e;
                 }
+                logger.info("SCA Node is now started.");
+
+                // Install a shutdown hook
+                shutdown = new ShutdownThread(node, equinox);
+                Runtime.getRuntime().addShutdownHook(shutdown);
+
+                long ttl = Long.parseLong(cli.getOptionValue("ttl", "-1"));
+                if (ttl >= 0) {
+                    logger.info("Waiting for " + ttl + " milliseconds ...");
+                    Thread.sleep(ttl);
+                    break; // Exit
+                }
+
+                // Wait until the "Enter" is pressed
+                logger.info("Press 'q' to quit, 'r' to restart.");
+                int k = 0;
+                try {
+                    while ((k != 'q') && (k != 'r')) {
+                        k = System.in.read();
+                    }
+                } catch (IOException e) {
+
+                    // Wait forever
+                    Object lock = new Object();
+                    synchronized (lock) {
+                        lock.wait();
+                    }
+                }
+
+                // Stop the node
+                if (node != null) {
+                    Object n = node;
+                    node = null;
+                    stopNode(n);
+                }
+
+                // Quit
+                if (k == 'q') {
+                    break;
+                }
+
             }
         } finally {
 
@@ -222,6 +252,11 @@ public class NodeLauncher {
         Option opt3 = new Option("config", "configuration", true, "Configuration");
         opt3.setArgName("equinoxConfiguration");
         options.addOption(opt3);
+        Option opt4 = new Option("t", "ttl", true, "Time to live");
+        opt4.setArgName("timeToLiveInMilliseconds");
+        // opt4.setType(long.class);
+        options.addOption(opt4);
+
         return options;
     }
 
@@ -271,6 +306,22 @@ public class NodeLauncher {
             } catch (Exception e) {
                 // Ignore
             }
+        }
+    }
+
+    /**
+     * Stop the given node.
+     * 
+     * @param node
+     * @throws Exception
+     */
+    private static void stopNode(Object node) throws Exception {
+        try {
+            node.getClass().getMethod("stop").invoke(node);
+            logger.info("SCA Node is now stopped.");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
+            throw e;
         }
     }
 }
