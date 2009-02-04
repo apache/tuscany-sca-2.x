@@ -48,13 +48,6 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webapp</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-feature-webservice</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
@@ -72,52 +65,6 @@
             <artifactId>tuscany-launcher</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-manager</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-process</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-web20</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-gdata-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-fastinfoset</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-xmlbeans</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-tracing-aspectj</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        -->
 
     </dependencies>
 
