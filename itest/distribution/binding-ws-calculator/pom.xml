@@ -21,17 +21,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest</artifactId>
+        <artifactId>itest-distribution</artifactId>
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-bin-distro-unzip</artifactId>
-    <name>Apache Tuscany SCA Bin Distro Unzip</name>
+    <artifactId>itest-distribution-binidng-ws-calculator</artifactId>
+    <name>Apache Tuscany SCA Distribution itest binding-ws-calculator</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-all</artifactId>
+            <artifactId>itest-bin-distro-unzip</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
@@ -69,7 +69,7 @@
                         </goals>
                         <configuration>
                             <tasks> 
-                                <ant antfile="./build.xml"/>
+                                <ant antfile="./build.xml" target="run"/>
                             </tasks>
                         </configuration>
                     </execution>
