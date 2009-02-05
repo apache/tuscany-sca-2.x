@@ -27,17 +27,37 @@
         <format>zip</format>
     </formats>
 
-    <componentDescriptors>
-        <componentDescriptor>../all/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../all/src/main/components/src-samples.xml</componentDescriptor>
-<!--
-        <componentDescriptor>../core/src/main/components/src-common.xml</componentDescriptor>
-        <componentDescriptor>../core/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../ejava/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../webservice/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../manager/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../process/src/main/components/src-modules.xml</componentDescriptor>
-        <componentDescriptor>../web20/src/main/components/src-modules.xml</componentDescriptor>
--->
-    </componentDescriptors>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>CHANGES</include>
+                <include>README</include>
+                <include>RELEASE_NOTES</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/release/src</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>BUILDING</include>
+                <include>LICENSE</include>
+                <include>NOTICE</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../..</directory>
+            <outputDirectory></outputDirectory>
+            <excludes>
+                <exclude>**/.*</exclude>
+                <exclude>**/.*/**</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/target</exclude>
+                <exclude>**/target/**/*</exclude>
+                <exclude>**/maven-eclipse.xml</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+
 </assembly>
