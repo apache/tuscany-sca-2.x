@@ -1,8 +1,0 @@
-Domain Management Sample Tasks
-==============================
-This sample implements the following sample domain management tasks:
-- list deployables in a contribution
-- list contribution dependencies
-- fuse includes in a composite
-- add deployables to a domain composite and wire them
-
