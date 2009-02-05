@@ -38,8 +38,6 @@
          <classpath> 
             <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
             <pathelement location="../../modules/tuscany-node-api-2.0-SNAPSHOT.jar"/>
-            <pathelement location="../../modules/sca-api/target/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
-            <pathelement location="../../modules/node-api/target/tuscany-node-api-2.0-SNAPSHOT.jar"/>
          </classpath> 
       </javac> 
       <copy todir="target/classes"> 
@@ -59,7 +57,6 @@
         	  failonerror="true">
             <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
             <classpath> 
-               <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir/tuscany-sca-2.0-SNAPSHOT/bin/launcher.jar"/>
                <pathelement location="../../bin/launcher.jar"/>
             </classpath> 
             <arg value="unmanaged"/>
