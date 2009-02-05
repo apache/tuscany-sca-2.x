@@ -21,6 +21,7 @@
 
    <property name="jar.name"   value="sample-calculator-rmi-service.jar" />
    <property name="main.class" value="calculator.CalculatorClient" />
+   <property name="time.to.live" value="0" />
 
    <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
@@ -70,18 +71,17 @@
    <target name="run" depends="compile">
         <java classname="org.apache.tuscany.sca.node.launcher.NodeLauncher"
               fork="true"
-        	  timeout="6000"
         	  failonerror="true">
             <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
             <classpath> 
             	<pathelement location="../../modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
                 <pathelement location="../../modules/commons-cli-1.1/commons-cli-1.1.jar"/>
-                <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT/tuscany-sca-2.0-SNAPSHOT/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
-            	<pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT/tuscany-sca-2.0-SNAPSHOT/modules/commons-cli-1.1/commons-cli-1.1.jar"/>
+                <pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir/tuscany-sca-2.0-SNAPSHOT/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
+            	<pathelement location="../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir/tuscany-sca-2.0-SNAPSHOT/modules/commons-cli-1.1/commons-cli-1.1.jar"/>
             </classpath> 
         	<arg value="target/${jar.name}"/> 
         	<arg value="-t"/> 
-        	<arg value="5000"/> 
+        	<arg value="${time.to.live}"/>
         </java>    	
     </target>	
 
