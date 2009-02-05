@@ -1,9 +1,0 @@
-package workpool
-import workpool.*;
-rule "WorkerAdder"
-	when 
-		$workerBean: WorkpoolBean(singleAction == false && (jobComputed > 500))
-	then
-		$workerBean.addWorkerToNode("nodeB");
-		$workerBean.setSingleAction();
-end
