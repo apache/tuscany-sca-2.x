@@ -69,6 +69,7 @@
                 -->
                 <module>recursive-multi-level</module>
                 <module>references</module>
+                <module>bin-distro-unzip</module>
                 <module>samples</module>
                 <module>scopes</module>
                 <module>services</module>

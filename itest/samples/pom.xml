@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-distribution-all</artifactId>
+            <artifactId>itest-bin-distro-unzip</artifactId>
             <type>pom</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
