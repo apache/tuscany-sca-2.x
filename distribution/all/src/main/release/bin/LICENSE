@@ -246,7 +246,7 @@ The following components come under Apache Software License 2.0
  commons-codec-1.2.jar
  commons-fileupload-1.2.jar
  commons-httpclient-3.1.jar
- commons-io-1.4
+ commons-io-1.4.jar
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
  commons-logging-1.1.1.jar
@@ -422,15 +422,19 @@ The EMF jars;
    codegen-ecore-2.2.3.jar
    common-2.2.3.jar
    common-3.3.0-v20070426.jar
-   contenttype-3.2.100-v20070319.jar
    ecore-2.2.3.jar
    ecore-change-2.2.3.jar
    ecore-xmi-2.2.3.jar
+   xsd-2.2.3.jar
+
+The Equinox OSGiRuntime;
+   contenttype-3.2.100-v20070319.jar
    jobs-3.3.0-v20070423.jar
    osgi-3.3.0-v20070530.jar
+   preferences-3.2.100-v20070522.jar
    registry-3.3.0-v20070522.jar
    runtime-3.3.100-v20070530.jar
-   xsd-2.2.3.jar
+
 
 Eclipse Public License - v 1.0
 
