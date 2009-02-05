@@ -19,7 +19,7 @@
 -->
 <assembly>
     <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id>bin</id>
+    <id></id>
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>tuscany-sca-2.0-SNAPSHOT</baseDirectory>
     <formats>
