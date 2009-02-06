@@ -55,7 +55,6 @@
         <java classname="org.apache.tuscany.sca.launcher.LauncherMain"
               fork="true"
         	  failonerror="true">
-            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
             <classpath> 
                <pathelement location="../../bin/launcher.jar"/>
             </classpath> 
