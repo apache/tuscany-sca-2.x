@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.sca.tools.maven.compiler.osgi;
 
+import static org.eclipse.osgi.service.resolver.ResolverError.IMPORT_PACKAGE_USES_CONFLICT;
+import static org.eclipse.osgi.service.resolver.ResolverError.MISSING_FRAGMENT_HOST;
+import static org.eclipse.osgi.service.resolver.ResolverError.MISSING_IMPORT_PACKAGE;
+import static org.eclipse.osgi.service.resolver.ResolverError.MISSING_REQUIRE_BUNDLE;
+import static org.eclipse.osgi.service.resolver.ResolverError.REQUIRE_BUNDLE_USES_CONFLICT;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -202,13 +209,14 @@ public class BundleResolver {
             StringBuilder sb = new StringBuilder("Resolved OSGi state\n");
             for (BundleDescription bundle : state.getBundles()) {
                 if (!bundle.isResolved()) {
-                    sb.append("NOT ");
+                    sb.append("[X] ");
+                } else {
+                    sb.append("[V] ");
                 }
-                sb.append("RESOLVED ");
-                sb.append(bundle.toString()).append(" : ").append(bundle.getLocation());
-                sb.append('\n');
+                sb.append(bundle).append(": (").append(bundle.getLocation());
+                sb.append(")\n");
                 for (ResolverError error : state.getResolverErrors(bundle)) {
-                    sb.append('\t').append(error.toString()).append('\n');
+                    sb.append("    ").append(error.toString()).append('\n');
                 }
             }
             logger.debug(sb.toString());
@@ -243,6 +251,74 @@ public class BundleResolver {
                 }
             }
         }
+    }
+
+    private void logError(BundleDescription bundle, int level, Object object) {
+        StringBuffer msg = new StringBuffer();
+        for (int i = 0; i < level; i++) {
+            msg.append("--");
+        }
+        msg.append("> [").append(bundle.getSymbolicName()).append("] ");
+        msg.append(object);
+        logger.error(msg.toString());
+    }
+
+    public void analyzeErrors(BundleDescription bundle) {
+        analyzeErrors(bundle, new HashSet<BundleDescription>(), 1);
+    }
+
+    private void analyzeErrors(BundleDescription bundle, Set<BundleDescription> bundles, int level) {
+        if (bundles.contains(bundle)) {
+            return;
+        }
+        bundles.add(bundle);
+        ResolverError[] errors = state.getResolverErrors(bundle);
+        for (ResolverError error : errors) {
+            logError(bundle, level, error);
+            VersionConstraint constraint = error.getUnsatisfiedConstraint();
+            switch (error.getType()) {
+                case MISSING_IMPORT_PACKAGE:
+                    ImportPackageSpecification pkgSpec = (ImportPackageSpecification)constraint;
+                    for (BundleDescription b : getBundles()) {
+                        for (ExportPackageDescription pkg : b.getExportPackages()) {
+                            if (pkg.getName().equals(pkgSpec.getName())) {
+                                if (pkgSpec.getVersionRange().isIncluded(pkg.getVersion())) {
+                                    if (!pkg.getExporter().isResolved()) {
+                                        logError(b, level, "Bundle unresolved: " + pkg);
+                                        analyzeErrors(pkg.getExporter(), bundles, level + 1);
+                                    }
+                                } else {
+                                    logError(b, level, "Version mismatch: " + pkgSpec + " " + pkg);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case MISSING_REQUIRE_BUNDLE:
+                case MISSING_FRAGMENT_HOST:
+                    // BundleSpecification bundleSpec = (BundleSpecification)constraint;
+                    for (BundleDescription b : getBundles()) {
+                        if (b == bundle) {
+                            continue;
+                        }
+                        if (b.getSymbolicName().equals(constraint.getName())) {
+                            if (constraint.getVersionRange().isIncluded(b.getVersion())) {
+                                // There must be something wrong in the bundle
+                                analyzeErrors(b, bundles, level);
+                            } else {
+                                logError(bundle, level, "Version mismatch: " + constraint + " " + b);
+                            }
+                        }
+                    }
+                    break;
+                case IMPORT_PACKAGE_USES_CONFLICT:
+                case REQUIRE_BUNDLE_USES_CONFLICT:
+                default: 
+                    logger.error(reportErrors(bundle));
+                    break;
+            }
+        }
+
     }
 
     public Set<ResolverError> getAllErrors() {
@@ -356,26 +432,29 @@ public class BundleResolver {
 
     public void assertResolved(BundleDescription desc) throws BundleException {
         if (!desc.isResolved()) {
-            StringBuffer msg = new StringBuffer();
-            msg.append("Bundle ").append(desc.getSymbolicName()).append(" cannot be resolved: \n");
-            BundleDescription[] bundles = state.getBundles();
-            int index = 0;
-            for (BundleDescription b : bundles) {
-                if (b.isResolved()) {
-                    continue;
-                }
-                ResolverError[] errors = state.getResolverErrors(b);
-                if (errors.length > 0) {
-                    msg.append("[").append(index++).append("] ").append(b.getSymbolicName()).append("\n");
-                }
-                for (int i = 0; i < errors.length; i++) {
-                    ResolverError error = errors[i];
-                    msg.append(error).append("\n");
-                }
-            }
-
-            throw new BundleException(msg.toString());
+            throw new BundleException("Bundle cannot be resolved: " + desc);
         }
+    }
+
+    public String reportErrors(BundleDescription desc) {
+        StringBuffer msg = new StringBuffer();
+        msg.append("Bundle ").append(desc.getSymbolicName()).append(" cannot be resolved: \n");
+        BundleDescription[] bundles = state.getBundles();
+        int index = 0;
+        for (BundleDescription b : bundles) {
+            if (b.isResolved()) {
+                continue;
+            }
+            ResolverError[] errors = state.getResolverErrors(b);
+            if (errors.length > 0) {
+                msg.append("  ").append("[").append(index++).append("] ").append(b.getSymbolicName()).append("\n");
+            }
+            for (int i = 0; i < errors.length; i++) {
+                ResolverError error = errors[i];
+                msg.append("  -->").append(error).append("\n");
+            }
+        }
+        return msg.toString();
     }
 
     public String getManifestAttribute(BundleDescription desc, String attr) {
