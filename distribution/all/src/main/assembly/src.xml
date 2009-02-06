@@ -38,15 +38,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>src/main/release/src</directory>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>BUILDING</include>
-                <include>LICENSE</include>
-                <include>NOTICE</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>../..</directory>
             <outputDirectory></outputDirectory>
             <excludes>
