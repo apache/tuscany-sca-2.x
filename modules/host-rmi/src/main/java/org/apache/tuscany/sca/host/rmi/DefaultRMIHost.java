@@ -55,10 +55,12 @@ public class DefaultRMIHost implements RMIHost {
             if (registry == null) {
                 try {
                     registry = LocateRegistry.getRegistry(rmiURI.port);
-                    registry.list();
+                    registry.lookup(rmiURI.serviceName);
                 } catch (RemoteException e) {
                     registry = LocateRegistry.createRegistry(rmiURI.port);
-                }
+                } catch (NotBoundException e) {
+                    // Ignore
+                } 
                 rmiRegistries.put(Integer.toString(rmiURI.port), registry);
             }
             registry.bind(rmiURI.serviceName, serviceObject);
