@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -75,9 +76,9 @@ public class EquinoxHost {
     private BundleContext bundleContext;
     private Bundle launcherBundle;
     private boolean startedEclipse;
-    private List<String> bundleFiles = new ArrayList<String>();
+    private List<URL> bundleFiles = new ArrayList<URL>();
     private List<String> bundleNames = new ArrayList<String>();
-    private List<String> jarFiles = new ArrayList<String>();
+    private Collection<URL> jarFiles = new HashSet<URL>();
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
@@ -208,11 +209,11 @@ public class EquinoxHost {
                 File file = file(url);
                 String bundleName = bundleName(file);
                 if (bundleName != null) {
-                    bundleFiles.add(url.toString());
+                    bundleFiles.add(url);
                     bundleNames.add(bundleName);
                 } else {
                     if (file.isFile()) {
-                        jarFiles.add(url.toString());
+                        jarFiles.add(url);
                     }
                 }
             }
@@ -239,7 +240,7 @@ public class EquinoxHost {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Launcher bundle is already installed: " + string(launcherBundle, false));
                 }
-                launcherBundleLocation = thisBundleLocation(launcherBundle);
+                // launcherBundleLocation = thisBundleLocation(launcherBundle);
             }
 
             // FIXME: SDO bundles dont have the correct dependencies
@@ -253,7 +254,7 @@ public class EquinoxHost {
             }
             long libraryStart = currentTimeMillis();
             if (!aggregateThirdPartyJars) {
-                for (String jarFile : jarFiles) {
+                for (URL jarFile : jarFiles) {
                     installAsBundle(jarFile, null);
                 }
             } else {
@@ -265,12 +266,11 @@ public class EquinoxHost {
             }
 
             // Install all the other bundles that are not already installed
-            for (int i = 0, n = bundleFiles.size(); i < n; i++) {
-                String bundleFile = bundleFiles.get(i);
-                fixupBundle(bundleFile);
+            for (URL bundleFile: bundleFiles) {
+                fixupBundle(bundleFile.toString());
             }
             for (int i = 0, n = bundleFiles.size(); i < n; i++) {
-                String bundleFile = bundleFiles.get(i);
+                URL bundleFile = bundleFiles.get(i);
                 String bundleName = bundleNames.get(i);
                 if (bundleName.contains("org.eclipse.jdt.junit")) {
                     continue;
@@ -330,7 +330,7 @@ public class EquinoxHost {
         }
     }
 
-    public Bundle installAsBundle(Collection<String> jarFiles, String libraryBundleName) throws IOException,
+    public Bundle installAsBundle(Collection<URL> jarFiles, String libraryBundleName) throws IOException,
         BundleException {
         // Install a single 'library' bundle for the third-party JAR files
         Bundle libraryBundle = allBundles.get(libraryBundleName);
@@ -346,14 +346,18 @@ public class EquinoxHost {
         }
         return libraryBundle;
     }
+    
+    public Collection<String> collectJarsFromManifestClassPath() {
+        return null;
+    }
 
-    public void installBundle(String bundleFile, String bundleName) throws MalformedURLException, BundleException {
+    public void installBundle(URL bundleFile, String bundleName) throws MalformedURLException, BundleException {
         Bundle bundle = allBundles.get(bundleName);
         if (bundle == null) {
             long installStart = currentTimeMillis();
-            String location = bundleFile;
-            if (bundleFile.startsWith("file:")) {
-                File target = file(new URL(bundleFile));
+            String location = bundleFile.toString();
+            if ("file".equals(bundleFile.getProtocol())) {
+                File target = file(bundleFile);
                 // Use a special "reference" scheme to install the bundle as a reference
                 // instead of copying the bundle 
                 location = "reference:file:/" + target.getPath();
@@ -369,7 +373,7 @@ public class EquinoxHost {
         }
     }
 
-    public Bundle installAsBundle(String jarFile, String symbolicName) throws IOException, BundleException {
+    public Bundle installAsBundle(URL jarFile, String symbolicName) throws IOException, BundleException {
         if (symbolicName == null) {
             symbolicName = LAUNCHER_EQUINOX_LIBRARIES + "." + artifactId(jarFile);
         }

@@ -52,6 +52,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
@@ -107,7 +108,7 @@ final class NodeLauncherUtil {
                        Contribution[] contributions,
                        BundleContext bundleContext) throws LauncherException {
         try {
-            
+
             // Get the node runtime bundle.
             Bundle bundle = null;
             for (Bundle b : bundleContext.getBundles()) {
@@ -117,9 +118,10 @@ final class NodeLauncherUtil {
                 }
             }
             if (bundle == null) {
-                throw new IllegalStateException("Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
+                throw new IllegalStateException(
+                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
             }
-            
+
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
             Class<?> bootstrapClass = bundle.loadClass(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
@@ -134,7 +136,8 @@ final class NodeLauncherUtil {
 
                 // Construct the node with a composite URI, the composite content and
                 // the URIs and locations of a list of contributions
-                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, String.class, String[].class, String[].class);
+                Constructor<?> constructor =
+                    bootstrapClass.getConstructor(String.class, String.class, String[].class, String[].class);
                 String[] uris = new String[contributions.length];
                 String[] locations = new String[contributions.length];
                 for (int i = 0; i < contributions.length; i++) {
@@ -147,7 +150,8 @@ final class NodeLauncherUtil {
 
                 // Construct the node with a composite URI and the URIs and
                 // locations of a list of contributions
-                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, String[].class, String[].class);
+                Constructor<?> constructor =
+                    bootstrapClass.getConstructor(String.class, String[].class, String[].class);
                 String[] uris = new String[contributions.length];
                 String[] locations = new String[contributions.length];
                 for (int i = 0; i < contributions.length; i++) {
@@ -244,8 +248,8 @@ final class NodeLauncherUtil {
      * @param jarFile
      * @return
      */
-    static String jarVersion(String jarFile) {
-        String name = jarFile;
+    static String jarVersion(URL jarFile) {
+        String name = jarFile.getFile();
         int index = name.lastIndexOf('/');
         if (index != -1) {
             // Find the last segment
@@ -256,7 +260,7 @@ final class NodeLauncherUtil {
             // Trim the extension
             name = name.substring(0, index);
         }
-        
+
         Matcher matcher = pattern.matcher(name);
         String version = "0.0.0";
         if (matcher.find()) {
@@ -265,9 +269,9 @@ final class NodeLauncherUtil {
         }
         return version;
     }
-    
-    static String artifactId(String jarFile) {
-        String name = jarFile;
+
+    static String artifactId(URL jarFile) {
+        String name = jarFile.getFile();
         int index = name.lastIndexOf('/');
         if (index != -1) {
             // Find the last segment
@@ -278,7 +282,7 @@ final class NodeLauncherUtil {
             // Trim the extension
             name = name.substring(0, index);
         }
-        
+
         Matcher matcher = pattern.matcher(name);
         if (matcher.find()) {
             return name.substring(0, matcher.start());
@@ -294,17 +298,21 @@ final class NodeLauncherUtil {
      * @param packages
      * @throws IOException
      */
-    private static void addPackages(String jarFile, Set<String> packages, String version) throws IOException {
+    private static void addPackages(URL jarFile, Set<String> packages, String version) throws IOException {
         if (version == null) {
             version = ";version=" + jarVersion(jarFile);
         } else {
             version = ";version=" + version;
         }
-        File file = file(new URL(jarFile));
+        File file = file(jarFile);
         if (file.isDirectory()) {
             List<String> classFiles = listClassFiles(file);
             for (String cls : classFiles) {
                 int index = cls.lastIndexOf('/');
+                if (index == -1) {
+                    // Default package cannot be exported
+                    continue;
+                }
                 String pkg = cls.substring(0, index);
                 pkg = pkg.replace('/', '.') + version;
                 packages.add(pkg);
@@ -326,7 +334,7 @@ final class NodeLauncherUtil {
             is.close();
         }
     }
-    
+
     private static List<String> listClassFiles(File directory) {
         List<String> artifacts = new ArrayList<String>();
         traverse(artifacts, directory, directory);
@@ -350,16 +358,15 @@ final class NodeLauncherUtil {
                 uri = uri.substring(0, uri.length() - 1);
             }
             fileList.add(uri);
-            
+
             File[] files = file.listFiles();
-            for (File f: files) {
+            for (File f : files) {
                 if (!f.getName().startsWith(".")) {
                     traverse(fileList, f, root);
                 }
             }
         }
     }
-
 
     /**
      * Generate a manifest from a list of third-party JAR files.
@@ -370,7 +377,9 @@ final class NodeLauncherUtil {
      * @return
      * @throws IllegalStateException
      */
-    static private Manifest thirdPartyLibraryBundleManifest(Collection<String> jarFiles, String bundleSymbolicName, String bundleVersion) throws IllegalStateException {
+    static private Manifest thirdPartyLibraryBundleManifest(Collection<URL> jarFiles,
+                                                            String bundleSymbolicName,
+                                                            String bundleVersion) throws IllegalStateException {
         try {
 
             // List exported packages and bundle classpath entries
@@ -378,10 +387,11 @@ final class NodeLauncherUtil {
             StringBuffer exports = new StringBuffer();
             StringBuffer imports = new StringBuffer();
             Set<String> packages = new HashSet<String>();
-            for (String jarFile : jarFiles) {
+            
+            for (URL jarFile : jarFiles) {
                 addPackages(jarFile, packages, bundleVersion);
                 classpath.append("\"external:");
-                classpath.append(file(new URL(jarFile)).getPath().replace(File.separatorChar, '/'));
+                classpath.append(file(jarFile).getPath().replace(File.separatorChar, '/'));
                 classpath.append("\",");
             }
 
@@ -409,7 +419,7 @@ final class NodeLauncherUtil {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue("Manifest-Version", "1.0");
             attributes.putValue(BUNDLE_MANIFESTVERSION, "2");
-            
+
             if (bundleVersion == null) {
                 bundleVersion = "0.0.0";
             }
@@ -444,7 +454,9 @@ final class NodeLauncherUtil {
      * @return
      * @throws IOException
      */
-    static InputStream thirdPartyLibraryBundle(Collection<String> jarFiles, String bundleSymbolicName, String bundleVersion) throws IOException {
+    static InputStream thirdPartyLibraryBundle(Collection<URL> jarFiles,
+                                               String bundleSymbolicName,
+                                               String bundleVersion) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Manifest mf = thirdPartyLibraryBundleManifest(jarFiles, bundleSymbolicName, bundleVersion);
         JarOutputStream jos = new JarOutputStream(bos, mf);
@@ -464,11 +476,7 @@ final class NodeLauncherUtil {
         if (url == null) {
             throw new FileNotFoundException(resource);
         }
-        String str = url.toString();
-        if (str.contains(" ")) {
-            str = str.replace(" ", "%20");
-        }
-        URI uri = URI.create(str);
+        URI uri = toURI(url);
 
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
@@ -482,7 +490,20 @@ final class NodeLauncherUtil {
             return path;
         }
     }
-    
+
+    static URI toURI(URL url) {
+        File file = file(url);
+        if (file != null) {
+            return file.toURI();
+        } else {
+            try {
+                return url.toURI();
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+
     /**
      * Returns the location of this bundle.
      * 
@@ -497,7 +518,7 @@ final class NodeLauncherUtil {
         if (url == null) {
             throw new FileNotFoundException(resource);
         }
-        URI uri = url.toURI();
+        URI uri = toURI(url);
 
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
@@ -523,7 +544,7 @@ final class NodeLauncherUtil {
     static void fixupBundle(String location) throws BundleException, IOException {
         File target = file(new URL(location));
         location = target.toURI().toString();
-        
+
         // For development mode, copy the MANIFEST.MF file to the bundle location as it's
         // initially outside of target/classes, at the root of the project.
         if (location.endsWith("/target/classes/")) {
@@ -635,20 +656,25 @@ final class NodeLauncherUtil {
      * @param filter
      * @throws MalformedURLException
      */
-    private static void collectClasspathEntries(File directory, Set<URL> urls, FilenameFilter filter, boolean recursive) throws MalformedURLException {
+    private static void collectClasspathEntries(File directory, Set<URL> urls, FilenameFilter filter, boolean recursive)
+        throws MalformedURLException {
         File[] files = directory.listFiles(filter);
         if (files != null) {
             int count = 0;
-            for (File file: files) {
+            for (File file : files) {
                 if (recursive && file.isDirectory()) {
-                	collectClasspathEntries(file, urls, filter, recursive);
+                    collectClasspathEntries(file, urls, filter, recursive);
                 } else {
-	                urls.add(file.toURI().toURL());
-	                count++;
+                    urls.add(file.toURI().toURL());
+                    count++;
                 }
             }
             if (count != 0) {
-                logger.info("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
+                logger.info("Runtime classpath: " + count
+                    + " JAR"
+                    + (count > 1 ? "s" : "")
+                    + " from "
+                    + directory.toString());
             }
         }
     }
@@ -661,17 +687,18 @@ final class NodeLauncherUtil {
      * @param filter
      * @throws MalformedURLException
      */
-    private static void collectTargetClassesClasspathEntries(File directory, Set<URL> urls, FilenameFilter filter) throws MalformedURLException {
+    private static void collectTargetClassesClasspathEntries(File directory, Set<URL> urls, FilenameFilter filter)
+        throws MalformedURLException {
         File[] files = directory.listFiles();
         if (files != null) {
             int count = 0;
-            for (File file: files) {
+            for (File file : files) {
                 if (!file.isDirectory()) {
                     continue;
                 }
                 File target = new File(file, "target");
                 if (!target.isDirectory()) {
-                    continue; 
+                    continue;
                 }
                 File classes = new File(target, "classes");
                 if (classes.isDirectory() && filter.accept(target, "classes")) {
@@ -680,7 +707,11 @@ final class NodeLauncherUtil {
                 }
             }
             if (count != 0) {
-                logger.info("Runtime classpath: "+ count + " classes folder" + (count > 1? "s":"")+ " from " + directory.toString());
+                logger.info("Runtime classpath: " + count
+                    + " classes folder"
+                    + (count > 1 ? "s" : "")
+                    + " from "
+                    + directory.toString());
             }
         }
     }
@@ -694,19 +725,21 @@ final class NodeLauncherUtil {
      * @param filter
      * @throws MalformedURLException
      */
-    private static void collectDistributionClasspathEntries(String directory, Set<URL> jarDirectoryURLs, Set<URL> jarURLs, FilenameFilter filter)
-        throws MalformedURLException {
+    private static void collectDistributionClasspathEntries(String directory,
+                                                            Set<URL> jarDirectoryURLs,
+                                                            Set<URL> jarURLs,
+                                                            FilenameFilter filter) throws MalformedURLException {
         File directoryFile = new File(directory);
-        URL directoryURL = directoryFile.toURI().toURL(); 
+        URL directoryURL = directoryFile.toURI().toURL();
         if (!jarDirectoryURLs.contains(directoryURL) && directoryFile.exists()) {
-            
+
             // Collect files under the given directory
             jarDirectoryURLs.add(directoryURL);
             collectClasspathEntries(directoryFile, jarURLs, filter, false);
-            
+
             // Collect files under <directory>/modules
             File modulesDirectory = new File(directoryFile, "modules");
-            URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
+            URL modulesDirectoryURL = modulesDirectory.toURI().toURL();
             if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
                 jarDirectoryURLs.add(modulesDirectoryURL);
                 collectClasspathEntries(modulesDirectory, jarURLs, filter, true);
@@ -714,7 +747,7 @@ final class NodeLauncherUtil {
 
             // Collect files under <directory>/lib
             File libDirectory = new File(directoryFile, "lib");
-            URL libDirectoryURL = libDirectory.toURI().toURL(); 
+            URL libDirectoryURL = libDirectory.toURI().toURL();
             if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
                 jarDirectoryURLs.add(libDirectoryURL);
                 collectClasspathEntries(libDirectory, jarURLs, filter, true);
@@ -730,48 +763,52 @@ final class NodeLauncherUtil {
      * @param useModulesDirectory
      * @return
      */
-    static Set<URL> runtimeClasspathEntries(boolean useDistribution, boolean useAppClasspath, boolean useModulesDirectory) throws FileNotFoundException,
+    static Set<URL> runtimeClasspathEntries(boolean useDistribution,
+                                            boolean useAppClasspath,
+                                            boolean useModulesDirectory) throws FileNotFoundException,
         URISyntaxException, MalformedURLException {
-        
+
         // Build list of runtime JARs
         Set<URL> jarDirectoryURLs = new HashSet<URL>();
         Set<URL> jarURLs = new HashSet<URL>();
-    
+
         // Determine the path to the launcher class
         URI uri;
         try {
-        	uri = URI.create(codeLocation(NodeLauncherUtil.class));
+            uri = codeLocation(NodeLauncherUtil.class);
         } catch (Exception e) {
-        	// FIXME
-        	uri = URI.create("");
+            uri = URI.create("");
         }
-    
+
         // If the launcher class is in a JAR, add all runtime JARs from directory containing
         // that JAR (e.g. the Tuscany modules directory) as well as the ../modules and
         // ../lib directories
         if (uri.getPath().endsWith(".jar")) {
             if (useDistribution) {
-        
+
                 File file = new File(uri);
                 if (file.exists()) {
                     File jarDirectory = file.getParentFile();
                     if (jarDirectory != null && jarDirectory.exists()) {
-        
+
                         // Collect JAR files from the directory containing the input JAR
                         // (e.g. the Tuscany modules directory)
                         URL jarDirectoryURL = jarDirectory.toURI().toURL();
                         jarDirectoryURLs.add(jarDirectoryURL);
                         collectClasspathEntries(jarDirectory, jarURLs, new StandAloneJARFileNameFilter(), true);
-        
+
                         File homeDirectory = jarDirectory.getParentFile();
                         if (homeDirectory != null && homeDirectory.exists()) {
-                            collectDistributionClasspathEntries(homeDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+                            collectDistributionClasspathEntries(homeDirectory.getAbsolutePath(),
+                                                                jarDirectoryURLs,
+                                                                jarURLs,
+                                                                new StandAloneJARFileNameFilter());
                         }
                     }
                 }
             }
         } else if (uri.getPath().endsWith("/target/classes/")) {
-                
+
             // Development mode, we're running off classes in a workspace
             // and not from Maven surefire, collect all bundles in the workspace
             if (useModulesDirectory) {
@@ -782,15 +819,19 @@ final class NodeLauncherUtil {
                         File moduleDirectory = file.getParentFile().getParentFile();
                         if (moduleDirectory != null) {
                             File modulesDirectory = moduleDirectory.getParentFile();
-                            if (modulesDirectory != null && modulesDirectory.exists() && modulesDirectory.getName().equals("modules")) {
-                                collectDevelopmentClasspathEntries(modulesDirectory.getAbsolutePath(), jarDirectoryURLs, jarURLs, new StandAloneDevelopmentClassesFileNameFilter());
+                            if (modulesDirectory != null && modulesDirectory.exists()
+                                && modulesDirectory.getName().equals("modules")) {
+                                collectDevelopmentClasspathEntries(modulesDirectory.getAbsolutePath(),
+                                                                   jarDirectoryURLs,
+                                                                   jarURLs,
+                                                                   new StandAloneDevelopmentClassesFileNameFilter());
                             }
                         }
                     }
                 }
             }
         }
-    
+
         // Look for a TUSCANY_HOME system property or environment variable
         // Add all the JARs found under $TUSCANY_HOME, $TUSCANY_HOME/modules
         // and $TUSCANY_HOME/lib
@@ -800,7 +841,7 @@ final class NodeLauncherUtil {
                 logger.info(TUSCANY_HOME + ": " + home);
                 collectDistributionClasspathEntries(home, jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
             }
-        
+
             // Look for a TUSCANY_PATH system property or environment variable
             // Add all the JARs found under $TUSCANY_PATH, $TUSCANY_PATH/modules
             // and $TUSCANY_PATH/lib
@@ -809,18 +850,21 @@ final class NodeLauncherUtil {
                 logger.info(TUSCANY_PATH + ": " + ext);
                 String separator = getProperty("path.separator");
                 for (StringTokenizer tokens = new StringTokenizer(ext, separator); tokens.hasMoreTokens();) {
-                    collectDistributionClasspathEntries(tokens.nextToken(), jarDirectoryURLs, jarURLs, new StandAloneJARFileNameFilter());
+                    collectDistributionClasspathEntries(tokens.nextToken(),
+                                                        jarDirectoryURLs,
+                                                        jarURLs,
+                                                        new StandAloneJARFileNameFilter());
                 }
             }
         }
-        
+
         // Add the classpath entries from the current classloader
         if (useAppClasspath) {
             collectClassLoaderClasspathEntries(jarURLs, NodeLauncherUtil.class.getClassLoader());
         }
-    
+
         return jarURLs;
-    
+
     }
 
     /**
@@ -858,41 +902,70 @@ final class NodeLauncherUtil {
         if (cl == null) {
             return;
         }
-    
+
+        int count = urls.size();
         // Collect JARs from the URLClassLoader's classpath
         if (cl instanceof URLClassLoader) {
             URL[] jarURLs = ((URLClassLoader)cl).getURLs();
             if (jarURLs != null) {
                 for (URL jarURL : jarURLs) {
                     urls.add(jarURL);
+                    try {
+                        urls.addAll(manifestClassPath(jarURL));
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                    }
                 }
-                int count = jarURLs.length;
+                count = urls.size() - count;
+                
                 if (count != 0) {
-                    logger.info("Runtime classpath: " + count + " JAR" + (count > 1? "s":"")+ " from application classpath.");
+                    logger.info("Runtime classpath: " + count
+                        + " JAR"
+                        + (count > 1 ? "s" : "")
+                        + " from application classpath.");
                 }
             }
         }
     }
 
+    static Set<URL> manifestClassPath(URL jarFile) throws Exception {
+        Set<URL> urls = new HashSet<URL>();
+        if (jarFile != null) {
+            JarInputStream jar = new JarInputStream(jarFile.openStream());
+            Manifest mf = jar.getManifest();
+            jar.close();
+            if (mf != null) {
+                String cp = mf.getMainAttributes().getValue("Class-Path");
+                if (cp != null) {
+                    StringTokenizer st = new StringTokenizer(cp);
+                    while (st.hasMoreTokens()) {
+                        URL entry = new URL(jarFile.toURI().toURL(), st.nextToken()).toURI().toURL();
+                        urls.add(entry);
+                    }
+                }
+            }
+        }
+        return urls;
+    }    
+
     /**
      * A file name filter used to filter JAR files.
      */
     private static class StandAloneJARFileNameFilter implements FilenameFilter {
-        
+
         public boolean accept(File dir, String name) {
-            name = name.toLowerCase(); 
-            
-            if(new File(dir, name).isDirectory()) {
+            name = name.toLowerCase();
+
+            if (new File(dir, name).isDirectory()) {
                 return true;
             }
-            
+
             // Filter out the Tomcat and Webapp hosts
-            if (name.startsWith("tuscany-host-tomcat") ||
-                name.startsWith("tuscany-host-webapp")) {
+            if (name.startsWith("tuscany-host-tomcat") || name.startsWith("tuscany-host-webapp")) {
                 //FIXME This is temporary
                 return false;
             }
-            
+
             // Include JAR and MAR files
             if (name.endsWith(".jar")) {
                 return true;
@@ -908,28 +981,26 @@ final class NodeLauncherUtil {
      * A file name filter used to filter target/classes directories.
      */
     private static class StandAloneDevelopmentClassesFileNameFilter implements FilenameFilter {
-        
+
         public boolean accept(File dir, String name) {
             name = name.toLowerCase();
             if (dir.getName().equals("target") && name.equals("classes")) {
 
                 // Filter out the Tomcat and Webapp hosts
-                String dirPath = dir.getAbsolutePath(); 
-                if (dirPath.endsWith("host-tomcat/target") ||
-                    dirPath.endsWith("host-webapp/target")) {
+                String dirPath = dir.getAbsolutePath();
+                if (dirPath.endsWith("host-tomcat/target") || dirPath.endsWith("host-webapp/target")) {
                     //FIXME This is temporary
                     return false;
                 }
                 return true;
             }
-            
+
             // Filter out the Tomcat and Webapp hosts
-            if (name.startsWith("tuscany-host-tomcat") ||
-                name.startsWith("tuscany-host-webapp")) {
+            if (name.startsWith("tuscany-host-tomcat") || name.startsWith("tuscany-host-webapp")) {
                 //FIXME This is temporary
                 return false;
             }
-            
+
             // Include JAR and MAR files
             if (name.endsWith(".jar")) {
                 return true;
@@ -945,25 +1016,25 @@ final class NodeLauncherUtil {
      * A file name filter used to filter JAR files.
      */
     private static class WebAppJARFileNameFilter extends StandAloneJARFileNameFilter {
-    
+
         @Override
         public boolean accept(File dir, String name) {
             if (!super.accept(dir, name)) {
                 return false;
             }
-            name = name.toLowerCase(); 
-            
+            name = name.toLowerCase();
+
             // Exclude servlet-api JARs
             if (name.startsWith("servlet-api")) {
                 return false;
             }
-            
+
             // Exclude the Tomcat and Jetty hosts 
             if (name.startsWith("tuscany-host-tomcat") || name.startsWith("tuscany-host-jetty")) {
                 //FIXME This is temporary
                 return false;
             }
-            
+
             return true;
         }
     }
@@ -990,24 +1061,16 @@ final class NodeLauncherUtil {
             return new File(filename);
         }
     }
-    
+
     /**
      * Returns the location of the classpath entry, JAR, WAR etc. containing the given class.
      *  
      * @param clazz
      * @return
      */
-    static private String codeLocation(Class<?> clazz) {
-        String filename = clazz.getProtectionDomain().getCodeSource().getLocation().toString();      
-        int pos = 0;
-        while ((pos = filename.indexOf('%', pos)) >= 0) {
-            if (pos + 2 < filename.length()) {
-                String hexStr = filename.substring(pos + 1, pos + 3);
-                char ch = (char)Integer.parseInt(hexStr, 16);
-                filename = filename.substring(0, pos) + ch + filename.substring(pos + 3);
-            }
-        }
-        return filename;
+    static private URI codeLocation(Class<?> clazz) {
+        URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
+        return toURI(url);
     }
 
     /**
@@ -1019,23 +1082,18 @@ final class NodeLauncherUtil {
      * @param filter
      * @throws MalformedURLException
      */
-    private static void collectDevelopmentClasspathEntries(String directory, Set<URL> jarDirectoryURLs, Set<URL> jarURLs, FilenameFilter filter)
-        throws MalformedURLException {
+    private static void collectDevelopmentClasspathEntries(String directory,
+                                                           Set<URL> jarDirectoryURLs,
+                                                           Set<URL> jarURLs,
+                                                           FilenameFilter filter) throws MalformedURLException {
         File directoryFile = new File(directory);
-        URL directoryURL = directoryFile.toURI().toURL(); 
+        URL directoryURL = directoryFile.toURI().toURL();
         if (!jarDirectoryURLs.contains(directoryURL) && directoryFile.exists()) {
-            
+
             // Collect files under the given directory
             jarDirectoryURLs.add(directoryURL);
             collectTargetClassesClasspathEntries(directoryFile, jarURLs, filter);
-            
-            // Collect files under <directory>/thirdparty-library/lib
-            File libDirectory = new File(directoryFile, "thirdparty-library/lib");
-            URL libDirectoryURL = libDirectory.toURI().toURL(); 
-            if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
-                jarDirectoryURLs.add(libDirectoryURL);
-                collectClasspathEntries(libDirectory, jarURLs, filter, false);
-            }
+
         }
     }
 
