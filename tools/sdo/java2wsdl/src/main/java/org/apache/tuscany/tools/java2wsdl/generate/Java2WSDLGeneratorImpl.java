@@ -25,13 +25,11 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axis2.util.XMLPrettyPrinter;
 import org.apache.ws.java2wsdl.Java2WSDL;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOption;
 import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOptionParser;
 import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -111,23 +109,8 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 
         // transform the OMElement
         OMElement om = java2WsdlBuilder.getWsdlDocument();
-        javax.xml.stream.XMLStreamReader stream = om.getXMLStreamReader();
-
-        org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node xform =
-            new org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node();
-
-        Node node = xform.transform(stream, null);
-
-        Document doc = node.getOwnerDocument();
-
-        // pretty-print WSDL document
-        OutputFormat format = new OutputFormat(doc);
-        format.setLineWidth(65);
-        format.setIndenting(true);
-        format.setIndent(2);
-        XMLSerializer serializer = new XMLSerializer(getOutputStream(), format);
-        serializer.serialize(doc);
-
+        XMLPrettyPrinter.prettify(om, getOutputStream());        
+        
         return isComplete;
 
     }
