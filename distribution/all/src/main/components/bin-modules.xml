@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
     * Licensed to the Apache Software Foundation (ASF) under one
     * or more contributor license agreements.  See the NOTICE file
@@ -17,20 +16,18 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<assembly>
-    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id></id>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>tuscany-sca-2.0-SNAPSHOT</baseDirectory>
-    <formats>
-        <format>tar.gz</format>
-        <format>zip</format>
-    </formats>
+<component>
+    <fileSets>
 
-    <componentDescriptors>
-        <componentDescriptor>src/main/components/bin-common.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-modules.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-samples.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-launcher.xml</componentDescriptor>
-    </componentDescriptors>
-</assembly>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>modules/**/*</include>
+                <include>features/**/*</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</component>
