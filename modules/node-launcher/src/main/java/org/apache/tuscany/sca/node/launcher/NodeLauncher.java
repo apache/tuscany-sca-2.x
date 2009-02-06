@@ -205,7 +205,7 @@ public class NodeLauncher {
                 Runtime.getRuntime().addShutdownHook(shutdown);
 
                 long ttl = Long.parseLong(cli.getOptionValue("ttl", "-1"));
-                if (ttl > 0) {
+                if (ttl >= 0) {
                     logger.info("Waiting for " + ttl + " milliseconds ...");
                     Thread.sleep(ttl);
                     // Stop the node
