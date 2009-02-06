@@ -63,7 +63,9 @@
                 <!--module>definitions-multiple</module-->
                 <module>exceptions</module>
                 <module>interfaces</module>
+<!--
                 <module>operation-overloading</module>
+-->
                 <!-- wait until databinding-sdo is in
                 <module>properties</module>
                 -->
