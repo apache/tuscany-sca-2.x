@@ -53,7 +53,6 @@
     <target name="run" depends="compile">
         <java classname="org.apache.tuscany.sca.launcher.LauncherMain"
               fork="true"
-        	  inputstring="q"
         	  failonerror="true">
             <classpath> 
                <pathelement location="../../bin/launcher.jar"/>
