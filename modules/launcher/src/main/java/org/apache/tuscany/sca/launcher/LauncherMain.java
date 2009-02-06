@@ -48,10 +48,20 @@ public class LauncherMain {
 
     public static void main(String[] args) throws SecurityException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, IOException {
         Properties launcherProperties = getLauncherProperties(args);
+        setSystemProperties(launcherProperties);
         ClassLoader classLoader = getClassLoader(launcherProperties);
         String mainClassName = getMainClass(launcherProperties, classLoader);
         String[] mainArgs = getMainArgs(launcherProperties);
         invokeMainMethod(mainClassName, classLoader, mainArgs);
+    }
+
+    private static void setSystemProperties(Properties launcherProperties) {
+        for (Enumeration<?> e = launcherProperties.propertyNames(); e.hasMoreElements();) {
+            String pn = (String) e.nextElement();
+            if (pn.startsWith("-D")) {
+                System.setProperty(pn.substring(2), launcherProperties.getProperty(pn));
+            }
+        }
     }
 
     private static String[] getMainArgs(Properties launcherProperties) {
