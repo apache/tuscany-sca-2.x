@@ -21,7 +21,6 @@
 
    <property name="jar.name"   value="sample-calculator-rmi-service.jar" />
    <property name="main.class" value="calculator.CalculatorClient" />
-   <property name="time.to.live" value="0" />
 
    <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
@@ -52,33 +51,17 @@
       </jar>    	
    </target>
 	
-   <!--target name="run" depends="compile">
+   <target name="run" depends="compile">
         <java classname="org.apache.tuscany.sca.launcher.LauncherMain"
               fork="true"
-        	  inputstring="\n"
         	  failonerror="true">
             <classpath> 
                <pathelement location="../../bin/launcher.jar"/>
             </classpath> 
         	<arg value="target/${jar.name}"/> 
         </java>    	
-    </target-->	
-	
-   <target name="run" depends="compile">
-        <java classname="org.apache.tuscany.sca.node.launcher.NodeLauncher"
-              fork="true"
-        	  failonerror="true">
-            <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
-            <classpath> 
-            	<pathelement location="../../modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"/>
-                <pathelement location="../../modules/commons-cli-1.1/commons-cli-1.1.jar"/>
-            </classpath> 
-        	<arg value="target/${jar.name}"/> 
-        	<arg value="-t"/> 
-        	<arg value="${time.to.live}"/>
-        </java>    	
     </target>	
-
+	
 </project> 
 
 

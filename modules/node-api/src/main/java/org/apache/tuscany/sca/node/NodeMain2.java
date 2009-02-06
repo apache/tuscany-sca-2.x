@@ -43,7 +43,13 @@ public class NodeMain2 {
         node.start();
         
         System.out.println("Hit enter to stop node...");
-        System.in.read();
+        if (System.in.read() == -1) {
+            // no sysin so wait for ever letting caller do the terminate
+            Object lock = new Object();
+            synchronized(lock) {
+                lock.wait();
+            }
+        }
 
         node.stop();
     }

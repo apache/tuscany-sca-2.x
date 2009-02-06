@@ -18,7 +18,6 @@
 -->
 <project name="itest-samples" default="run"> 
 	
-	<echo>${JAVA_HOME}</echo>
 	<!-- 
 	    compile and run each sample as though the user were running
 	    samples from the binary distribution. Here we use ant targets
@@ -32,16 +31,19 @@
 
     <target name="run"> 
     	
-       <property name="time.to.live" id="ttl" value="4000" />
-
        <parallel>
-            <ant antfile="build.xml" 
-                 dir="${distro.root}/samples/calculator-rmi-service"/>
+
+            <daemons>
+               <ant antfile="build.xml" 
+                    dir="${distro.root}/samples/calculator-rmi-service"/>
+            </daemons>
+
             <sequential>
                 <sleep seconds="2"/>
                 <ant antfile="build.xml"
                      dir="${distro.root}/samples/calculator-rmi-reference"/>
             </sequential>
+
        </parallel>    	
 
     </target>
