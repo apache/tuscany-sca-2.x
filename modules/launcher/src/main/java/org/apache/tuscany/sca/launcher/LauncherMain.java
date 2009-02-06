@@ -55,13 +55,20 @@ public class LauncherMain {
         invokeMainMethod(mainClassName, classLoader, mainArgs);
     }
 
-    private static void setSystemProperties(Properties launcherProperties) {
+    private static void setSystemProperties(Properties launcherProperties) throws URISyntaxException {
         for (Enumeration<?> e = launcherProperties.propertyNames(); e.hasMoreElements();) {
             String pn = (String) e.nextElement();
             if (pn.startsWith("-D")) {
-                System.setProperty(pn.substring(2), launcherProperties.getProperty(pn));
+                System.setProperty(pn.substring(2), keywordExpand(launcherProperties.getProperty(pn)));
             }
         }
+    }
+
+    private static String keywordExpand(String property) throws URISyntaxException {
+        if (property.contains("{TUSCANY_HOME}")) {
+            property = property.replace("{TUSCANY_HOME}", getLauncherFolder().getParentFile().getAbsolutePath());
+        }
+        return property;
     }
 
     private static String[] getMainArgs(Properties launcherProperties) {
