@@ -123,9 +123,14 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     /**
      * Target directory.
      * 
-     *  @parameter expression="${project.build.directory}/plugins"
+     *  @parameter expression="${project.build.directory}/modules"
      */
     private File targetDirectory;
+
+    /**
+     * @parameter default-value="features"
+     */
+    private String featuresName = "features";
 
     /**
      * Directories containing artifacts to exclude.
@@ -202,6 +207,17 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
      * @parameter default-value="true"
      */
     private boolean generateManifestJar = true;
+    
+    /**
+     * @parameter default-value="tuscany-sca-manifest.jar"
+     */
+    private String manifestJarName = "tuscany-sca-manifest.jar";
+
+    /**
+     * @parameter default-value="tuscany-sca-equinox-manifest.jar"
+     */
+    private String equinoxManifestJarName = "tuscany-sca-equinox-manifest.jar";
+    
 
     /**
      * @parameter default-value="true"
@@ -524,10 +540,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
     private void generateANTPath(ProjectSet jarNames, File root, Log log) throws FileNotFoundException, IOException {
         for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
             Set<String> jars = e.getValue();
-            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            File feature = new File(root, "../" + featuresName + "/" + (useDistributionName ? trim(e.getKey()) : ""));
             feature.mkdirs();
             File antPath = new File(feature, "build-path.xml");
-            log.info("Generating ANT build path: " + antPath);
+            log.info("Generating ANT build path: " + antPath.getCanonicalPath());
             FileOutputStream fos = new FileOutputStream(antPath);
             PrintStream ps = new PrintStream(fos);
             // ps.println(XML_PI);
@@ -535,7 +551,7 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             String name = trim(e.getKey());
             ps.println("<project name=\"tuscany."+name+"\">");
             ps.println("  <property name=\"tuscany.distro\" value=\"" + name + "\"/>");
-            ps.println("  <property name=\"tuscany.manifest\" value=\"" + new File(feature, "manifest.jar").getCanonicalPath()
+            ps.println("  <property name=\"tuscany.manifest\" value=\"" + new File(feature, manifestJarName).getCanonicalPath()
                 + "\"/>");
             ps.println("  <path id=\"" + "tuscany.path" + "\">");
             ps.println("    <fileset dir=\"" + root.getCanonicalPath() + "\">");
@@ -552,10 +568,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         for (Map.Entry<String, Set<String>> e : jarNames.nameMap.entrySet()) {
             MavenProject pom = jarNames.getProject(e.getKey());
             Set<String> jars = e.getValue();
-            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            File feature = new File(root, "../" + featuresName + "/" + (useDistributionName ? trim(e.getKey()) : ""));
             feature.mkdirs();
-            File mfJar = new File(feature, "manifest.jar");
-            log.info("Generating manifest jar: " + mfJar);
+            File mfJar = new File(feature, manifestJarName);
+            log.info("Generating manifest jar: " + mfJar.getCanonicalPath());
             FileOutputStream fos = new FileOutputStream(mfJar);
             Manifest mf = new Manifest();
             StringBuffer cp = new StringBuffer();
@@ -586,10 +602,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             return;
         }
         Set artifacts = resolveTransitively(artifact).getArtifacts();
-        File feature = new File(root, "../features/");
+        File feature = new File(root, "../" + featuresName + "/");
         feature.mkdirs();
-        File mfJar = new File(feature, "equinox-manifest.jar");
-        log.info("Generating manifest jar: " + mfJar);
+        File mfJar = new File(feature, equinoxManifestJarName);
+        log.info("Generating equinox manifest jar: " + mfJar.getCanonicalPath());
         FileOutputStream fos = new FileOutputStream(mfJar);
         Manifest mf = new Manifest();
         StringBuffer cp = new StringBuffer();
@@ -620,14 +636,14 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         jos.close();
     }
 
-    private void generateEquinoxConfig(ProjectSet bundleLocations, File root, Log log) throws FileNotFoundException {
+    private void generateEquinoxConfig(ProjectSet bundleLocations, File root, Log log) throws IOException {
         for (Map.Entry<String, Set<String>> e : bundleLocations.nameMap.entrySet()) {
             Set<String> locations = e.getValue();
-            File feature = new File(root, "../features/" + (useDistributionName ? trim(e.getKey()) : ""));
+            File feature = new File(root, "../" + featuresName + "/" + (useDistributionName ? trim(e.getKey()) : ""));
             File config = new File(feature, "configuration");
             config.mkdirs();
             File ini = new File(config, "config.ini");
-            log.info("Generating configuation: " + ini);
+            log.info("Generating configuation: " + ini.getCanonicalPath());
             FileOutputStream fos = new FileOutputStream(ini);
             PrintStream ps = new PrintStream(fos);
             ps.print("osgi.bundles=");
@@ -651,10 +667,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         for (Map.Entry<String, Set<String>> e : bundleSymbolicNames.nameMap.entrySet()) {
             Set<String> bundles = e.getValue();
             String name = trim(e.getKey());
-            File feature = new File(root, "../features/" + (useDistributionName ? name : ""));
+            File feature = new File(root, "../" + featuresName + "/" + (useDistributionName ? name : ""));
             feature.mkdirs();
             File target = new File(feature, "tuscany.target");
-            log.info("Generating target definition: " + target);
+            log.info("Generating target definition: " + target.getCanonicalPath());
             FileOutputStream targetFile = new FileOutputStream(target);
             if (!bundles.contains("org.eclipse.osgi")) {
                 bundles.add("org.eclipse.osgi");
