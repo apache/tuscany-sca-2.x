@@ -42,7 +42,9 @@ import org.apache.commons.cli.PosixParser;
  * Agruments:
  * [-c <compositeURI>]: The composite URI
  * [-t <ttl>]: Time to live in milliseconds before the node is started
- * contribution1 ... contributionN: A list of contribution files or URLs * @version $Rev$ $Date$
+ * contribution1 ... contributionN: A list of contribution files or URLs 
+ *
+ * @version $Rev$ $Date$
  */
 public class NodeLauncher {
 
