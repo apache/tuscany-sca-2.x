@@ -29,7 +29,8 @@ Building
 1) Change to the top level directory of Apache Tuscany source distribution.
 2) Run
 
-	$> mvn
+	$> mvn -Psetup
+        $> mvn
 
    This will compile Apache Tuscany and run all of the tests in the source
    distribution. 
