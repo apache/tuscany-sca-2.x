@@ -241,7 +241,6 @@ The following components come under Apache Software License 2.0
  geronimo-activation_1.1_spec-1.0.1.jar
  geronimo-javamail_1.4_spec-1.2.jar
  geronimo-jms_1.1_spec-1.1.jar
- geronimo-jsp_2.1_spec-1.0.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
  httpcore-4.0-beta1.jar
  httpcore-nio-4.0-beta1.jar
