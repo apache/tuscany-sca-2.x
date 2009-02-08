@@ -19,7 +19,6 @@
 
 package sample;
 
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -29,8 +28,8 @@ import org.apache.tuscany.sca.node.NodeFactory;
  */
 public class SampleClientImpl {
     public static void main(String[] args) throws Exception {
-        Node node = NodeFactory.newInstance().createNode("Calculator.composite", 
-                                                         new Contribution("c1", "target/classes"));
+        Node node = NodeFactory.newInstance().createNode();
+        
         node.start();
 
         SampleClient sampleClient = node.getService(SampleClient.class, "SampleClient");
