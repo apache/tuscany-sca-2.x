@@ -1315,6 +1315,7 @@ public class EclipsePlugin
         {
 
             File sourceRootFile = new File( (String) it.next() );
+            getLog().debug( "Processing source dir: " + sourceRootFile );
 
             if ( sourceRootFile.isDirectory() )
             {
