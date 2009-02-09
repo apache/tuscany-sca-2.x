@@ -39,14 +39,12 @@ public class XMLEventsStreamReader implements XMLStreamReader {
 
 	@SuppressWarnings("unused")
 	private ArrayList<XMLEvent> events = null;
-	@SuppressWarnings("unchecked")
 	private HashMap<String, NamespaceContext> eventContext = null;
 
 	private int state;
 	private java.util.Iterator<XMLEvent> iterator;
 	private XMLEvent current;
 
-	@SuppressWarnings("unchecked")
 	public XMLEventsStreamReader(List<XMLEvent> events,Map<String, NamespaceContext> map) {
 		this.events = (ArrayList<XMLEvent>) events;
 		this.eventContext = (HashMap<String, NamespaceContext>) map;
