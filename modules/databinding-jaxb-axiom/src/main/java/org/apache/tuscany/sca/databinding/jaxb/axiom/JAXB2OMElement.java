@@ -45,7 +45,6 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
         return JAXBDataBinding.NAME;
     }
 
-    @SuppressWarnings("unchecked")
     public OMElement transform(Object source, TransformationContext context) throws TransformationException {
         JAXBContext jaxbContext;
         try {

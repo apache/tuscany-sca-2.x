@@ -46,7 +46,6 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
         return org.apache.axiom.om.OMElement.class.getName();
     }
 
-    @SuppressWarnings("unchecked")
     public Object transform(final OMElement source, final TransformationContext context) throws TransformationException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
