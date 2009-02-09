@@ -25,9 +25,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.sf.cglib.asm.ClassWriter;
-import net.sf.cglib.asm.Type;
 import net.sf.cglib.core.Constants;
+
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 
 /**
  * 
