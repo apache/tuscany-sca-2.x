@@ -79,7 +79,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * @author <a href="mailto:fgiust@apache.org">Fabrizio Giustina</a>
  * @version $Id: EclipsePlugin.java 641616 2008-03-26 22:42:42Z aheritier $
  * @goal eclipse
- * @phase generate-resources
+ * @execute phase="generate-resources"
  */
 public class EclipsePlugin
     extends AbstractIdeSupportMojo
@@ -852,6 +852,11 @@ public class EclipsePlugin
         if ( "eclipse-plugin".equals( packaging ) )
         {
             pde = true;
+        }
+        
+        // [rfeng] Set PDE to false if the project is not a bundle
+        if(!isOSGiBundle()) {
+            pde = false;
         }
 
         if ( eclipseProjectDir == null )
