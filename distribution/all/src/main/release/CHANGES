@@ -1,12 +1,20 @@
 Changes With Apache Tuscany SCA 2.0-M1 February 2009
-===========================================================
+====================================================
+
+  The first milestone release for the 2.0 codebase 
 
   Features and/or Enhancements
 
+  * SCA Specification support
+    - The change over from OSOA SCA specification support to OASIS SCA 
+      specification support is now in progress. As such we don't claim to 
+      support either the OSOA or OASIS SCA specifications in the 
+      2.0 codebase yet. 
+
   * Core
     - Enable Tuscany to run inside an OSGi runtime
-    - Updated SCA API packages based on OASIS Open CSA specification drafts
-
+    - Updated SCA API package names. 
+     
   * Other Extensions
     - Binding RMI
 	- RMI Binding
