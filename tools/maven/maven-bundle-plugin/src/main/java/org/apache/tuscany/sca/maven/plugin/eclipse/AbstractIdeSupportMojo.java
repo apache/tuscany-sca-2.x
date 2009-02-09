@@ -1111,4 +1111,26 @@ public abstract class AbstractIdeSupportMojo
     {
         return getUseProjectReferences() && isAvailableAsAReactorProject( art );
     }
+    
+    protected boolean isOSGiBundle() {
+        File base = project.getBasedir();
+        File mf = new File(base, "META-INF/MANIFEST.MF");
+        if (mf.isFile()) {
+            Manifest manifest = null;
+            try {
+                InputStream is = new FileInputStream(mf);
+                manifest = new Manifest(is);
+                is.close();
+            } catch (IOException e) {
+                // Ignore
+            }
+            if (manifest != null) {
+                String bundleName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
+                if (bundleName != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
