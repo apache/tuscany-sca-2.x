@@ -36,17 +36,26 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>eclipse</module>
                 <module>sdo</module>
                 <module>maven</module>
-                <!--module>runtime-inspector</module-->
+<!--
+                <module>eclipse</module>
+                <module>runtime-inspector</module>
+-->
             </modules>
         </profile>
         <profile>
             <id>eclipse</id>
             <activation>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>sdo</module>
+                <module>maven</module>
+<!--
+                <module>eclipse</module>
+                <module>runtime-inspector</module>
+-->
             </modules>
         </profile>
     </profiles>
