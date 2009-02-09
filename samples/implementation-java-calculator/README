@@ -13,10 +13,10 @@ ant run
 
 OR if you don't have ant, on Windows do
 
-java -jar ..\..\features\tuscany-sca-equinox-manifest.jar -composite Calculator.composite -config ..\..\features\configuration\ -ttl 0 target\implementation-java-calculator.jar
+java -jar ..\..\features\tuscany-sca-equinox-manifest.jar -composite Calculator.composite -config ..\..\features\configuration\ -ttl 0 target\sample-implementation-java-calculator.jar
 and on *nix do
 
-java -jar ../../features/tuscany-sca-equinox-manifest.jar -composite Calculator.composite -config ../../features/configuration/ -ttl 0 target/implementation-java-calculator.jar
+java -jar ../../features/tuscany-sca-equinox-manifest.jar -composite Calculator.composite -config ../../features/configuration/ -ttl 0 target/sample-implementation-java-calculator.jar
 
 Sample Overview
 ---------------
