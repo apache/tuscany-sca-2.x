@@ -10,7 +10,7 @@ Bnd-LastModified: 1225397324375
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA RMI Binding Extension
-Import-Package: net.sf.cglib.asm,
+Import-Package: org.objectweb.asm,
  net.sf.cglib.core,
  net.sf.cglib.proxy,
  org.apache.tuscany.sca.assembly;version="2.0.0",
