@@ -63,7 +63,7 @@
                 <executions>
                     <execution>
                         <id>run-samples</id>
-                        <phase>validate</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
