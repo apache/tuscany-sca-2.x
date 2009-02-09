@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.contribution.resolver;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;

@@ -24,15 +24,14 @@ import java.security.Principal;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyUtil;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeader;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.security.SecurityUtil;
 import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
+import org.apache.tuscany.sca.policy.security.SecurityUtil;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName

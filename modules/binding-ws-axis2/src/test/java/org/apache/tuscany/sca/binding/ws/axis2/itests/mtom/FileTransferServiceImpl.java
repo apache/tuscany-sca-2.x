@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2.itests.mtom;
 
-import org.oasisopen.sca.annotation.Service;
 import javax.activation.DataHandler;
-import java.io.File;
-import java.io.FileOutputStream;
+
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements the HelloWorld service.
