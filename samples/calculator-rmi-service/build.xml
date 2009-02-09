@@ -61,6 +61,16 @@
         	<arg value="target/${jar.name}"/> 
         </java>    	
     </target>	
+
+    <target name="run-equinox" depends="compile">
+        <java jar="../../features/tuscany-sca-equinox-manifest.jar" fork="true">
+            <jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
+            <arg value="-config"/>
+            <arg value="../../features/configuration"/>
+            <arg value="target/${jar.name}"/>
+        </java>
+    </target>
+	
 	
 </project> 
 
