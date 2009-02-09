@@ -25,7 +25,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -591,6 +594,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             attrs.putValue("Class-Path", cp.toString());
             attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.launcher.NodeMain");
             JarOutputStream jos = new JarOutputStream(fos, mf);
+            addFileToJar(jos, "META-INF/LICENSE", getClass().getResource("LICENSE.txt"));
+            addFileToJar(jos, "META-INF/NOTICE", getClass().getResource("NOTICE.txt"));
             jos.close();
         }
     }
@@ -633,6 +638,8 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         attrs.putValue("Class-Path", cp.toString());
         attrs.putValue("Main-Class", "org.apache.tuscany.sca.node.equinox.launcher.NodeMain");
         JarOutputStream jos = new JarOutputStream(fos, mf);
+        addFileToJar(jos, "META-INF/LICENSE", getClass().getResource("LICENSE.txt"));
+        addFileToJar(jos, "META-INF/NOTICE", getClass().getResource("NOTICE.txt"));
         jos.close();
     }
 
@@ -740,6 +747,22 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
         in.close();
         out.close();
     }
+    
+    private static void addFileToJar(JarOutputStream out, String entryName, URL file) throws FileNotFoundException, IOException {
+        byte[] buf = new byte[4096];
+        InputStream in = file.openStream();
+        out.putNextEntry(new ZipEntry(entryName));
+        for (;;) {
+            int len = in.read(buf);
+            if (len > 0) {
+                out.write(buf, 0, len);
+            } else {
+                break;
+            }
+        }
+        in.close();
+        out.closeEntry();
+    }    
 
     private void writeTarget(PrintStream ps, String pom, Set<String> ids, String[] features) {
         ps.println(XML_PI);
