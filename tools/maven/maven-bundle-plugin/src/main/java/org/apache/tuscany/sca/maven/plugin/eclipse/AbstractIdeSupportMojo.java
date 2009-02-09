@@ -112,7 +112,7 @@ public abstract class AbstractIdeSupportMojo
     /**
      * The currently executed project (can be a reactor project).
      * 
-     * @parameter expression="${project}"
+     * @parameter expression="${executedProject}"
      * @readonly
      */
     protected MavenProject executedProject;
