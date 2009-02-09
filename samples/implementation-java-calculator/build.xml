@@ -19,7 +19,7 @@
 	
 <project name="implementation-java-calculator" default="run"> <!-- could dertmine the same name autmatically -->
     
-	<property name="jar.name"   value="implementation-java-calculator.jar" />
+	<property name="jar.name"   value="sample-implementation-java-calculator.jar" />
 
     <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
