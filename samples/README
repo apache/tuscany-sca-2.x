@@ -118,15 +118,15 @@ this is:
 
 on Windows
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\<sample jar file> <sample runnable class>
+java -cp ..\..\features\tuscany-sca-manifest.jar;target\<sample jar file> <sample runnable class>
 
-for example : java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
+for example : java -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
 
 on *nix 
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/<sample jar file> <sample runnable class>
+java -cp ../../features/tuscany-sca-manifest.jar:target/<sample jar file> <sample runnable class>
 
-for example : java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
+for example : java -cp ../../features/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
 
 
 You can use the compiled classes directly using
@@ -137,15 +137,15 @@ The command line version of this is:
 
 on Windows
 
-java -cp ..\..\lib\tuscany-sca-manifest.jar;target\classes <sample runnable class>
+java -cp ..\..\features\tuscany-sca-manifest.jar;target\classes <sample runnable class>
 
-for example : java -cp ..\..\lib\tuscany-sca-manifest.jar;target\classes calculator.CalculatorClient
+for example : java -cp ..\..\features\tuscany-sca-manifest.jar;target\classes calculator.CalculatorClient
 
 on *nix 
 
-java -cp ../../lib/tuscany-sca-manifest.jar:target/classes <sample runnable class>
+java -cp ../../features/tuscany-sca-manifest.jar:target/classes <sample runnable class>
 
-for example : java -cp ../../lib/tuscany-sca-manifest.jar:target/classes calculator.CalculatorClient
+for example : java -cp ../../features/tuscany-sca-manifest.jar:target/classes calculator.CalculatorClient
 
 The class specified on the command of course depends on which sample you want to 
 run. In the examples we have used we are running the CalculatorClient from the calculator sample. 
@@ -218,8 +218,8 @@ In a new or existing workspace
         src/main/resources
     Configure the output folder to be
         calculator/target
-    Configure the build path to include all of the jars provided in
-        lib
+    Configure the build path to include the manifest jar tuscany-sca-manifiest.jar provided in
+        features
      If you select calculator.CalculatorClient.java and run as "Java Application" you should see
         3 + 2=5.0
         3 - 2=1.0
