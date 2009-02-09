@@ -20,11 +20,9 @@ package org.apache.tuscany.sca.contribution.processor.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-
-import java.util.Iterator;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;

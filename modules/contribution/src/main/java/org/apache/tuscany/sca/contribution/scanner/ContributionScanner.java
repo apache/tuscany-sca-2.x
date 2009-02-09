@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.sca.contribution.processor.ContributionException;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 
 /**
