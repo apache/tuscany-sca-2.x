@@ -95,6 +95,10 @@ public class LauncherMain {
         } else {
             mainClassName = launcherProperties.getProperty(CONFIG_MAIN_CLASS);
         }
+
+        if (mainClassName.startsWith(CONFIG_ARG_JAR_MAIN + "|")) {
+            mainClassName = mainClassName.substring(CONFIG_ARG_JAR_MAIN.length()+1);
+        }
         
         return mainClassName;
     }
@@ -120,8 +124,10 @@ public class LauncherMain {
             String pn = (String) e.nextElement();
             if (pn.startsWith(CONFIG_CLASSPATH)) {
                 jarURLs.addAll(getJARs(launcherProperties.getProperty(pn), launcherProperties));
-            } else if (pn.equals(CONFIG_MAIN_CLASS) && launcherProperties.getProperty(pn).equals(CONFIG_ARG_JAR_MAIN)) {
-                jarURLs.add(firstArgJarManifestMainClass(launcherProperties));
+            } else if (pn.equals(CONFIG_MAIN_CLASS) && launcherProperties.getProperty(pn).startsWith(CONFIG_ARG_JAR_MAIN)) {
+                if (firstArgJarHasManifestMainClass(launcherProperties)) {
+                    jarURLs.add(firstArgJarManifestMainClass(launcherProperties));
+                }
             }
         }
         ClassLoader parentCL = Thread.currentThread().getContextClassLoader();
@@ -150,6 +156,19 @@ public class LauncherMain {
         return f.toURL();
     }
 
+    private static boolean firstArgJarHasManifestMainClass(Properties launcherProperties) throws IOException {
+        String[] args = (String[])launcherProperties.get(LAUNCHER_ARGS);
+        if (args.length < 1) {
+            return false;
+        }
+        File f = new File(args[0]);
+        if (!f.exists()) {
+            return false;
+        }
+        JarFile jar = new JarFile(f);
+        String mfc = jar.getManifest().getMainAttributes().getValue("Main-Class");
+        return mfc != null && mfc.length() > 0;
+    }
     /**
      * Gets the jars matching a config classpath property
      * property values may be an explicit jar name or use an asterix wildcard for
