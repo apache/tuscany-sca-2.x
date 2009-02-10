@@ -109,6 +109,7 @@
         <profile>
             <id>eclipse</id>
             <build>
+<!--
                <plugins>
                    <plugin> 
                        <groupId>org.apache.tuscany.sca</groupId> 
@@ -128,6 +129,7 @@
                        </executions>
                    </plugin>
                </plugins>
+-->
 
                 <defaultGoal>org.apache.tuscany.sca:tuscany-maven-bundle-plugin:eclipse</defaultGoal>
 
