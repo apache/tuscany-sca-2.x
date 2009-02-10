@@ -231,7 +231,8 @@ The following components come under Apache Software License 2.0
  axis2-java2wsdl-1.4.1.jar
  axis2-mtompolicy-1.4.1.jar
  axis-ant-1.4.jar
- cglib-nodep-2.2.jar
+ cglib-2.2.jar
+ commons-cli-1.1.jar
  commons-collections-3.1.jar
  commons-codec-1.2.jar
  commons-fileupload-1.2.jar
@@ -1176,7 +1177,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
-The asm-all-3.1.jar are distributed under the license:
+The asm-3.1.jar are distributed under the license:
 
 Copyright (c) 2000-2005 INRIA, France Telecom
 All rights reserved.
