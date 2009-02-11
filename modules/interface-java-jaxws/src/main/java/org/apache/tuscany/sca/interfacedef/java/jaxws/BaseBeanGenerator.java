@@ -249,9 +249,9 @@ public abstract class BaseBeanGenerator implements Opcodes {
                 mime.visit("value", ((XmlMimeType)ann).value());
                 mime.visitEnd();
             } else if (ann instanceof XmlJavaTypeAdapter) {
-                AnnotationVisitor ada = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlJavaTypeAdapter;", true);
-                ada.visit("value", ((XmlJavaTypeAdapter)ann).value());
-                ada.visit("type", ((XmlJavaTypeAdapter)ann).type());
+                AnnotationVisitor ada = fv.visitAnnotation("Ljavax/xml/bind/annotation/adapters/XmlJavaTypeAdapter;", true);
+                ada.visit("value", org.objectweb.asm.Type.getType(((XmlJavaTypeAdapter)ann).value()));
+                ada.visit("type", org.objectweb.asm.Type.getType(((XmlJavaTypeAdapter)ann).type()));
                 ada.visitEnd();
             } else if (ann instanceof XmlAttachmentRef) {
                 AnnotationVisitor att = fv.visitAnnotation("Ljavax/xml/bind/annotation/XmlAttachmentRef;", true);
