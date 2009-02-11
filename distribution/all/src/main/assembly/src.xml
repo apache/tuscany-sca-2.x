@@ -29,15 +29,6 @@
 
     <fileSets>
         <fileSet>
-            <directory>src/main/release</directory>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>CHANGES</include>
-                <include>README</include>
-                <include>RELEASE_NOTES</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>../..</directory>
             <outputDirectory></outputDirectory>
             <excludes>
