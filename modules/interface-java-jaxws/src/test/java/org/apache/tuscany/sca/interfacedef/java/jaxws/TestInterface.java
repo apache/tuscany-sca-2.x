@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.ws.Holder;
 
 import org.oasisopen.sca.annotation.Remotable;
@@ -60,7 +61,10 @@ public interface TestInterface {
     
     @WebMethod
     @WebResult(name = "output")
-    String webMethod(@WebParam(name = "input", mode = WebParam.Mode.IN)
-    String in, @WebParam(name = "holder", mode = WebParam.Mode.INOUT)
-    Holder<String> holder);
+    String webMethod(@WebParam(name = "input", mode = WebParam.Mode.IN) String in,
+                     @WebParam(name = "holder", mode = WebParam.Mode.INOUT) Holder<String> holder);
+    
+    @XmlJavaTypeAdapter(type = BeanInterface.class, value = TestAdapter.class)
+    BeanInterface beanMethod(@XmlJavaTypeAdapter(type = BeanInterface.class, value = TestAdapter.class) BeanInterface in,
+                             String str);
 }
