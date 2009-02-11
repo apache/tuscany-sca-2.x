@@ -16,30 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test;
+package client;
+
+
+import test.ASM_0002_Client;
+import testClient.TestInvocation;
 
 /**
- * A superset of the basic test service interface
- * @author MikeEdwards
- *
+ * Client for ASM_6002_TestCase, which tests that where a <composite/> has 
+ * multiple <service/>  subelements that the @name attributes are unique 
+ * across those subelements
  */
-import org.oasisopen.sca.annotation.Remotable;
+public class ASM_6002_TestCase extends BaseJAXWSTestCase {
 
-@Remotable
-public interface Service1Superset {
-	
-	/**
-	 * Method for invoking testcase service
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 */
-	public String operation1( String input );
-	
-	/**
-	 * A second method for invoking a testcase service
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 */
-	public String operation2( String input );
-
-}
+ 
+    protected TestConfiguration getTestConfiguration() {
+    	TestConfiguration config = new TestConfiguration();
+    	config.testName 		= "ASM_6002";
+    	config.input 			= "request";
+    	config.output 			= "exception";
+    	config.composite 		= "Test_ASM_6002.composite";
+    	config.testServiceName 	= "TestClient";
+    	config.testClass 		= ASM_0002_Client.class;
+    	config.serviceInterface = TestInvocation.class;
+    	return config;
+    }
+    
+} // end class Test_ASM_6002

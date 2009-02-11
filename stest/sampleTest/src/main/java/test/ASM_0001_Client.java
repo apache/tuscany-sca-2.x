@@ -18,7 +18,7 @@
  */
 package test;
 
-import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotations.Service;
 
 import test.TestInvocation;
 

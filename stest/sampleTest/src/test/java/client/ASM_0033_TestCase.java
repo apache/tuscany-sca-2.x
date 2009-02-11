@@ -23,23 +23,24 @@ import test.ASM_0002_Client;
 import testClient.TestInvocation;
 
 /**
- * Client for ASM_0028_TestCase, which tests a <component/> <property/> @name 
- * attribute matches the @name attribute of one of the <property/> elements of 
- * the <componentType/> of the <implementation/> of the <component/> 
+ * Client for ASM_0033_TestCase, which tests that where a <component/> <service/> 
+ * has no <binding/> subelements and the corresponding <service/> element of the 
+ * <componentType/> of the <component/> <implementation/> has no <binding/> subelements, 
+ * the <component/> <service/> is made available with binding.sca
  */
-public class ASM_0028_TestCase extends BaseJAXWSTestCase {
+public class ASM_0033_TestCase extends BaseJAXWSTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {
     	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0028";
+    	config.testName 		= "ASM_0033";
     	config.input 			= "request";
-    	config.output 			= "exception";
-    	config.composite 		= "Test_ASM_0028.composite";
+    	config.output 			= "ASM_0033 request service1 operation1 invoked service2 operation1 invokedservice2 operation1 invoked";
+    	config.composite 		= "Test_ASM_0033.composite";
     	config.testServiceName 	= "TestClient";
     	config.testClass 		= ASM_0002_Client.class;
     	config.serviceInterface = TestInvocation.class;
     	return config;
     }
     
-} // end class Test_ASM_0028
+} // end class Test_ASM_0032
