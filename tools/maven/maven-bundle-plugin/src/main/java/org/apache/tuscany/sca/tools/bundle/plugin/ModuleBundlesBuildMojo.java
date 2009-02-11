@@ -664,7 +664,10 @@ public class ModuleBundlesBuildMojo extends AbstractMojo {
             }
             ps.println();
             ps.println("eclipse.ignoreApp=true");
+            // Do not shutdown
             ps.println("osgi.noShutdown=true");
+            // Start a default console
+            ps.println("osgi.console=");
             ps.close();
         }
     }
