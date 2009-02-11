@@ -21,11 +21,10 @@
 
         <!-- Add the text files to the top-level directroy -->
         <fileSet>
-            <directory>src/main/release</directory>
+            <directory>../..</directory>
             <outputDirectory></outputDirectory>
             <includes>
                 <include>CHANGES</include>
-                <include>DISCLAIMER</include>
                 <include>README</include>
                 <include>RELEASE_NOTES</include>
             </includes>
