@@ -83,19 +83,20 @@ public class BaseJAXWSTestCase {
     	// System.out.println("Test " + testName + " starting");
     	String output = null;
     	try {
-    		// Just requires input to proceed
-    		// System.in.read();
-    		//
 	    	output = invokeTest( testConfiguration.getInput() );
 
     	} catch ( TestException_Exception e ) {
     		TestException exceptionContent = e.getFaultInfo();
     		System.out.println("Service fault received - detail: " + exceptionContent.getMessage() );
     		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
+    		System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
+    		return;
     	} catch (Throwable e) {
     		e.printStackTrace();
    			System.out.println( "Exception received - detail: " + e.getMessage() );
     		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
+    		System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
+    		return;
     	}
     	assertEquals( testConfiguration.getExpectedOutput(), output );
     	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");

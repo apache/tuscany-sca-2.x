@@ -23,23 +23,23 @@ import test.ASM_0002_Client;
 import testClient.TestInvocation;
 
 /**
- * Client for ASM_0028_TestCase, which tests a <component/> <property/> @name 
- * attribute matches the @name attribute of one of the <property/> elements of 
- * the <componentType/> of the <implementation/> of the <component/> 
+ * Client for ASM_6003_TestCase, which tests that where a <composite/> has a 
+ * <service/> subelement that the @promote attribute identifies a <service/> 
+ * of a <component/> in the <composite/>
  */
-public class ASM_0028_TestCase extends BaseJAXWSTestCase {
+public class ASM_6003_TestCase extends BaseJAXWSTestCase {
 
  
     protected TestConfiguration getTestConfiguration() {
     	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0028";
+    	config.testName 		= "ASM_6003";
     	config.input 			= "request";
     	config.output 			= "exception";
-    	config.composite 		= "Test_ASM_0028.composite";
+    	config.composite 		= "Test_ASM_6003.composite";
     	config.testServiceName 	= "TestClient";
     	config.testClass 		= ASM_0002_Client.class;
     	config.serviceInterface = TestInvocation.class;
     	return config;
     }
     
-} // end class Test_ASM_0028
+} // end class Test_ASM_6003
