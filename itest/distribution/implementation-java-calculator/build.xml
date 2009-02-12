@@ -28,7 +28,7 @@
 	    service sides of the sample.
 	-->
 
-    <property name="distro.root" value="../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir/tuscany-sca-2.0-SNAPSHOT" />
+    <property name="distro.root" value="../../../distribution/all/target/apache-tuscany-sca-all-2.0-M1-dir/tuscany-sca-2.0-M1" />
 
     <target name="run"> 
     	

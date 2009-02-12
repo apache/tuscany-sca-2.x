@@ -18,7 +18,7 @@
 -->
 <project name="itest-unzip" default="unzip"> 
     <target name="unzip"> 
-        <unzip src="../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.zip" 
-               dest="../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT-dir"/>
+        <unzip src="../../../distribution/all/target/apache-tuscany-sca-all-2.0-M1.zip" 
+               dest="../../../distribution/all/target/apache-tuscany-sca-all-2.0-M1-dir"/>
     </target>
 </project>

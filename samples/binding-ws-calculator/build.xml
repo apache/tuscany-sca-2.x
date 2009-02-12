@@ -36,8 +36,8 @@
              target="1.5"
       	     failonerror="true"> 
          <classpath> 
-            <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
-            <pathelement location="../../modules/tuscany-node-api-2.0-SNAPSHOT.jar"/>
+            <pathelement location="../../modules/tuscany-sca-api-2.0-M1.jar"/>
+            <pathelement location="../../modules/tuscany-node-api-2.0-M1.jar"/>
          </classpath> 
       </javac> 
       <copy todir="target/classes"> 
