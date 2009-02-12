@@ -37,8 +37,6 @@
                 <exclude>**/*.log</exclude>
                 <exclude>**/target</exclude>
                 <exclude>**/target/**/*</exclude>
-                <exclude>**/binding-dwr-runtime</exclude>
-                <exclude>**/binding-dwr-runtime/**/*</exclude>
                 <exclude>**/maven-eclipse.xml</exclude>
             </excludes>
         </fileSet>
