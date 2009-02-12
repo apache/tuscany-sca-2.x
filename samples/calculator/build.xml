@@ -17,7 +17,7 @@
  * under the License.    
 -->
 
-<project name="calculator" default="compile">
+<project name="calculator" default="run">
 
 	<property name="jar.name"   value="sample-calculator.jar" />
 	<property name="main.class" value="calculator.CalculatorClient" />
