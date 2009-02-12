@@ -108,9 +108,34 @@ public class JAXBContextCache {
         defaultContext = getDefaultJAXBContext();
     }
     
+    private static JAXBContext newJAXBContext(final Class<?>... classesToBeBound) throws JAXBException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                public JAXBContext run() throws JAXBException {
+                    return JAXBContext.newInstance(classesToBeBound);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (JAXBException)e.getException();
+        }
+    }
+
+    private static JAXBContext newJAXBContext(final String contextPath, final ClassLoader classLoader)
+        throws JAXBException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                public JAXBContext run() throws JAXBException {
+                    return JAXBContext.newInstance(contextPath, classLoader);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (JAXBException)e.getException();
+        }
+    }    
+    
     public static JAXBContext getDefaultJAXBContext() {
         try {
-            return JAXBContext.newInstance();
+            return newJAXBContext();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -239,10 +264,10 @@ public class JAXBContextCache {
             }
 
             if (pkg != null && checkPackage(pkg.getName(), cls.getClassLoader())) {
-                context = JAXBContext.newInstance(pkg.getName(), cls.getClassLoader());
+                context = newJAXBContext(pkg.getName(), cls.getClassLoader());
                 cache.put(pkg, context);
             } else {
-                context = JAXBContext.newInstance(cls);
+                context = newJAXBContext(cls);
                 cache.put(cls, context);
             }
             return context;
@@ -288,7 +313,7 @@ public class JAXBContextCache {
             if (context != null) {
                 return context;
             }
-            context = JAXBContext.newInstance(classSet.toArray(new Class<?>[classSet.size()]));
+            context = newJAXBContext(classSet.toArray(new Class<?>[classSet.size()]));
             cache.put(classSet, context);
             return context;
         }
