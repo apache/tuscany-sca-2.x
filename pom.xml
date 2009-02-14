@@ -195,7 +195,6 @@
         <profile>
             <id>setup</id>
             <modules>
-                <module>tools/maven/maven-eclipse-compiler</module>
                 <!--module>tools/maven/maven-bundle-plugin</module-->
             </modules>
         </profile>
