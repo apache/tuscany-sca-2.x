@@ -102,6 +102,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class NodeImpl implements Node, Client {
 
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
     // The node configuration name, used for logging
@@ -549,8 +551,8 @@ public class NodeImpl implements Node, Client {
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         Composite tempComposite = assemblyFactory.createComposite();
-        tempComposite.setName(new QName("http://tempuri.org", "temp"));
-        tempComposite.setURI("http://tempuri.org");
+        tempComposite.setName(new QName(SCA10_TUSCANY_NS, "_tempComposite"));
+        tempComposite.setURI(SCA10_TUSCANY_NS);
 
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
