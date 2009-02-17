@@ -36,7 +36,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>sdo</module>
                 <module>maven</module>
 <!--
                 <module>eclipse</module>
@@ -50,7 +49,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>sdo</module>
                 <module>maven</module>
 <!--
                 <module>eclipse</module>
