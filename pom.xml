@@ -269,7 +269,7 @@
                 <module>distribution</module>
             </modules>
            <build>
-                <defaultGoal>org.apache.tuscany.sca:tuscany-maven-bundle-plugin:eclipse</defaultGoal>
+                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
                 <pluginManagement>
                 <plugins>
                    <plugin> 
