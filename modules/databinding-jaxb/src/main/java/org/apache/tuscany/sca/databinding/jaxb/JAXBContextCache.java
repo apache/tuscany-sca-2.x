@@ -42,7 +42,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.util.LRUCache;
@@ -195,6 +194,9 @@ public class JAXBContextCache {
             // Ignore
         }
 
+        // [rfeng] If no ObjectFactory or jaxb.index is present, JAXBContext.newInstance(contextPath, classloader)
+        // will fail
+        /*
         try {
             Class<?> cls = forName(p + ".package-info", false, cl);
             if (cls != null) {
@@ -205,6 +207,7 @@ public class JAXBContextCache {
         } catch (Throwable e) {
             // Ignore
         }
+        */
 
         return false;
     }
