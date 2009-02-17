@@ -33,6 +33,9 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
+        <module>binding-dwr</module>
+        <module>binding-jsonp</module>
+        <module>binding-jsonrpc</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-sca</module>
@@ -67,6 +70,7 @@
         <module>implementation-java-xml</module>
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
+        <module>implementation-web</module>
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
