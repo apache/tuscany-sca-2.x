@@ -176,7 +176,6 @@
             </activation>
             <modules>
                 <module>modules</module>
-                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
@@ -200,7 +199,6 @@
             <id>distribution</id>
             <modules>
                 <module>modules</module>
-                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
 <!-- 
@@ -217,7 +215,6 @@
             <id>sources</id>
             <modules>
                 <module>modules</module>
-                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
@@ -256,7 +253,6 @@
 -->
             <modules>
                 <module>modules</module>
-                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
                 <!--module>vtest</module-->
