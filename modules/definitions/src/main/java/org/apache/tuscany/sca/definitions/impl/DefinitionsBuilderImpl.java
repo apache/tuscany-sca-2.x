@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.definitions.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +26,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.definitions.DefinitionsBuilder;
+import org.apache.tuscany.sca.definitions.DefinitionsBuilderException;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
