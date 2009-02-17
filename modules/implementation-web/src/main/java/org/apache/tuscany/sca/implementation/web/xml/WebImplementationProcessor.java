@@ -28,17 +28,17 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.implementation.web.WebImplementationFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-
+import org.apache.tuscany.sca.implementation.web.impl.WebImplementationFactoryImpl;
 
 /**
  * Implements a StAX artifact processor for Web implementations.
@@ -48,12 +48,11 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
     
     private AssemblyFactory assemblyFactory;
     private WebImplementationFactory implementationFactory;
-    private Monitor monitor;
     
-    public WebImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WebImplementationProcessor(ExtensionPointRegistry extensionPoints) {
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        this.implementationFactory = modelFactories.getFactory(WebImplementationFactory.class);
-        this.monitor = monitor;
+        this.implementationFactory = new WebImplementationFactoryImpl();
     }
 
     public QName getArtifactType() {
