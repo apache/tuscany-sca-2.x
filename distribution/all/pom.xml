@@ -42,8 +42,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
-                <artifactId>tuscany-maven-bundle-plugin</artifactId>
+                <groupId>org.apache.tuscany.maven.plugins</groupId> 
+                <artifactId>maven-bundle-plugin</artifactId> 
                 <executions>
                     <execution>
                         <id>distribution-modules</id>
