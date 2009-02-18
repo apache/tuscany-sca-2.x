@@ -28,9 +28,9 @@ import net.sourceforge.stripes.util.Log;
 
 
 /**
- * <p>An {@link Interceptor} that uses a Spring context to inject Spring beans into newly created
- * ActionBeans immediately following ActionBeanResolution.  For more information on how the injection
- * is performed see {@link TuscanyHelper#injectBeans(Object,
+ * <p>An {@link Interceptor} that uses the implementation.web ComponentContext to inject reference 
+ * proxies into newly created ActionBeans immediately following ActionBeanResolution.  For more 
+ * information on how the injection is performed see {@link TuscanyHelper#injectBeans(Object,
  *  net.sourceforge.stripes.action.ActionBeanContext)}.</p>
  *
  * <p>To configure the TuscanyInterceptor for use you will need to add the following to your
@@ -57,15 +57,15 @@ public class TuscanyInterceptor implements Interceptor {
 
     /**
      * Allows ActionBean resolution to proceed and then once the ActionBean has been
-     * located invokes the {@link TuscanyHelper} to perform Spring based dependency injection.
+     * located invokes the {@link TuscanyHelper} to perform SCA reference injection.
      *
      * @param context the current execution context
      * @return the Resolution produced by calling context.proceed()
-     * @throws Exception if the Spring binding process produced unrecoverable errors
+     * @throws Exception if the Tuscany injection process produced unrecoverable errors
      */
     public Resolution intercept(ExecutionContext context) throws Exception {
         Resolution resolution = context.proceed();
-        log.debug("Running Spring dependency injection for instance of ",
+        log.debug("Running Tuscany dependency injection for instance of ",
                   context.getActionBean().getClass().getSimpleName());
         TuscanyHelper.injectBeans(context.getActionBean(), context.getActionBeanContext());
         return resolution;
