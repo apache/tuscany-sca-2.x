@@ -6,8 +6,7 @@ Export-Package: org.apache.tuscany.sca.host.webapp;version="2.0.0";
    org.apache.tuscany.sca.core,
    javax.servlet,
    org.apache.tuscany.sca.host.http,
-   javax.servlet.http",
- org.apache.tuscany.sca.host.webapp.jsp;version="2.0.0";
+   javax.servlet.http";
   uses:="javax.servlet,
    org.apache.tuscany.sca.host.embedded,
    javax.servlet.jsp.tagext,
@@ -29,7 +28,6 @@ Import-Package: javax.naming,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.host.webapp;version="2.0.0",
- org.apache.tuscany.sca.host.webapp.jsp;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
