@@ -7,8 +7,6 @@ AG., Software AG., Sun Microsystems, Inc., Sybase Inc., TIBCO Software Inc., 200
 see http://www.osoa.org/display/Main/Service+Component+Architecture+Specifications
  -->
 
-
-
 <taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
 
   <tlib-version>1.0</tlib-version>
@@ -20,8 +18,8 @@ see http://www.osoa.org/display/Main/Service+Component+Architecture+Specificatio
 
     <name>reference</name>
 
-    <tag-class>org.apache.tuscany.sca.implementation.web.taglib.ReferenceTag</tag-class>
-    <tei-class>org.apache.tuscany.sca.implementation.web.taglib.ReferenceTEI</tei-class>
+    <tag-class>org.apache.tuscany.sca.implementation.web.runtime.jsp.ReferenceTag</tag-class>
+    <tei-class>org.apache.tuscany.sca.implementation.web.runtime.jsp.ReferenceTEI</tei-class>
     
     <attribute>
       <name>name</name>
