@@ -26,54 +26,37 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-feature-all</artifactId>
-    <name>Apache Tuscany SCA All-in-one Feature</name>
+    <artifactId>tuscany-feature-webapp</artifactId>
+    <name>Apache Tuscany SCA WebApp Feature</name>
     <packaging>pom</packaging>
 
     <dependencies>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-api</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-feature-core</artifactId>
-            <type>pom</type>
             <version>2.0-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webservice</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-implementation-web-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Explicitly list the servlet/jsp apis as "provided" dependencies are not transitive -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-ejava</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.1_spec</artifactId>
+            <version>1.0.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webapp</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-launcher</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
 
     </dependencies>
 
