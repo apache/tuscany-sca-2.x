@@ -29,7 +29,9 @@ import javax.servlet.ServletContext;
  * <p>Base class for developing Interceptors with dependencies on SCA component references. <b>Not</b>
  * to be confused with {@link TuscanyInterceptor} which injects SCA reference proxies into
  * ActionBeans.  For example, you may wish to subclass this class in order to write an
- * interceptor with access to Spring managed DAOs or security information.</p>
+ * interceptor with access to Tuscany ???.</p>
+ * 
+ * TODO: does Tuscany really need this?
  *
  * <p>Since Interceptors are long-lived objects that are instantiated at application startup
  * time, and not per-request, the Tuscany wiring takes place in the init() method and happens
