@@ -24,7 +24,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.ServiceReference;
 
@@ -52,27 +51,19 @@ public class ReferenceTag extends TagSupport {
         ServletContext servletContext = pageContext.getServletContext();
         RuntimeComponent component = (RuntimeComponent)servletContext.getAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent");
         
-        Class typeClass;
+        Class<?> typeClass;
         try {
             typeClass = Class.forName(type, true, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             throw new JspException("Reference '" + name + "' type class not found: " + type);
         }
         
-        Object o = null;
-        for (ComponentReference ref : component.getReferences()) {
-            if (name.equals(ref.getName())) {
-                ServiceReference sr = component.getComponentContext().getServiceReference(typeClass, name);
-                o = sr.getService();
-                break;
-            }
-        }
-        
-        if (o == null) {
-            throw new JspException("Reference '" + name + "' not found");
+        ServiceReference<?> sr = component.getComponentContext().getServiceReference(typeClass, name);
+        if (sr == null) {
+            throw new JspException("Reference '" + name + "' undefined");
         }
 
-        pageContext.setAttribute(name, o, scope);
+        pageContext.setAttribute(name, sr.getService(), scope);
 
         return EVAL_PAGE;
     }
