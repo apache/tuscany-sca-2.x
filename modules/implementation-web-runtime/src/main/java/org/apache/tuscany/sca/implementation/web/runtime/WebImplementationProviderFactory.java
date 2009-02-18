@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.web.runtime;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -29,12 +33,25 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class WebImplementationProviderFactory implements ImplementationProviderFactory<WebImplementation> {
 
+    private ServletHost servletHost;
+    private InitServlet servlet;
+
     public WebImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
+        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        if (!hosts.isEmpty()) {
+            this.servletHost = hosts.get(0);
+        }
+
+        servlet = new InitServlet();
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
+        servletHost.addServletMapping("org.apache.tuscany.sca.implementation.web.dummy", servlet);
+        servlet.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
 
         return new ImplementationProvider() {
+            
             public Invoker createInvoker(RuntimeComponentService arg0, Operation arg1) {
                 throw new UnsupportedOperationException("Components using implementation.web have no services");
             }

@@ -20,14 +20,13 @@
 package org.apache.tuscany.sca.implementation.web.runtime.jsp;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
-import org.apache.tuscany.sca.node.Node;
-import org.oasisopen.sca.ComponentContext;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Tag to handle SCA references
@@ -50,39 +49,25 @@ public class ReferenceTag extends TagSupport {
     @Override
     public int doEndTag() throws JspException {
 
-        try {
-            WebAppServletHost.getInstance().init(pageContext.getServletConfig());
-        } catch (ServletException e) {
-            throw new JspException("Exception initializing Tuscany webapp: " + e, e);
-        }
- 
         ServletContext servletContext = pageContext.getServletContext();
-        ComponentContext componentContext = (ComponentContext)servletContext.getAttribute("org.oasisopen.sca.ComponentContext");
-        Node scaDomain = null;
-        if (componentContext == null) {
-            scaDomain = (Node)servletContext.getAttribute(WebAppServletHost.SCA_NODE_ATTRIBUTE);
-            if (scaDomain == null) {
-                throw new JspException("SCADomain is null. Check Tuscany configuration in web.xml");
-            }
-        }
-
-        Class<?> typeClass;
+        RuntimeComponent component = (RuntimeComponent)servletContext.getAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent");
+        
+        Class typeClass;
         try {
             typeClass = Class.forName(type, true, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException e) {
             throw new JspException("Reference '" + name + "' type class not found: " + type);
         }
-
-        Object o;
-        try {
-            if (componentContext != null) {
-                o = componentContext.getService(typeClass, name);
-            } else {
-                o = scaDomain.getService(typeClass, name);
+        
+        Object o = null;
+        for (ComponentReference ref : component.getReferences()) {
+            if (name.equals(ref.getName())) {
+                ServiceReference sr = component.getComponentContext().getServiceReference(typeClass, name);
+                o = sr.getService();
+                break;
             }
-        } catch (Exception e) {
-            throw new JspException("Exception getting service for reference'" + name + "': " + e, e);
         }
+        
         if (o == null) {
             throw new JspException("Reference '" + name + "' not found");
         }
