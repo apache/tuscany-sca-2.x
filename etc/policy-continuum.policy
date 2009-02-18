@@ -1,7 +1,0 @@
-grant codeBase "file:/home/continuum/data/working-directory/277/-" {
-  permission java.security.AllPermission;
-};
-
-grant codeBase "file:~/.m2/-" {
- permission java.security.AllPermission;
-};
