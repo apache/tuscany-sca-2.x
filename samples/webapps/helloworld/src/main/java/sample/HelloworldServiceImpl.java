@@ -20,15 +20,15 @@ package sample;
 
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Service;
+import org.oasisopen.sca.annotation.Scope;
 
 @EagerInit
-@Service(HelloworldService.class)
+@Scope("COMPOSITE")
 public class HelloworldServiceImpl implements HelloworldService {
 
-	public String sayHello(String name) {
-		return "Hello " + name;
-	}
+    public String sayHello(String name) {
+        return "Hello " + name;
+    }
 
     @Init
     public void init() {
