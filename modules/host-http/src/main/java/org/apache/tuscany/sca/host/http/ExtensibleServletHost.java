@@ -120,4 +120,8 @@ public class ExtensibleServletHost implements ServletHost {
     public void setContextPath(String path) {
         getDefaultServletHost().setContextPath(path);
     }
+
+    public void setAttribute(String name, Object value) {
+        getDefaultServletHost().setAttribute(name, value);
+    }
 }

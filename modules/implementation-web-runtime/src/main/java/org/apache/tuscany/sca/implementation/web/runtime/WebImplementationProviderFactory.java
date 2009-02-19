@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class WebImplementationProviderFactory implements ImplementationProviderFactory<WebImplementation> {
 
     private ServletHost servletHost;
-    private InitServlet servlet;
 
     public WebImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
@@ -42,13 +41,10 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
         if (!hosts.isEmpty()) {
             this.servletHost = hosts.get(0);
         }
-
-        servlet = new InitServlet();
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
-        servletHost.addServletMapping("org.apache.tuscany.sca.implementation.web.dummy", servlet);
-        servlet.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
+        servletHost.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
 
         return new ImplementationProvider() {
             
