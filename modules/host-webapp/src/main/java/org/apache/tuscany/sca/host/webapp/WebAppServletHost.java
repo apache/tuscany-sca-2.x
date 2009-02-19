@@ -67,6 +67,7 @@ public class WebAppServletHost implements ServletHost {
     private String contributionRoot;
 
     private ServletContext servletContext;
+    private Map<String, Object> tempAttributes = new HashMap<String, Object>();
 
     WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
@@ -213,6 +214,11 @@ public class WebAppServletHost implements ServletHost {
     public void init(ServletConfig config) throws ServletException {
 
         servletContext = config.getServletContext();
+        
+        for (String name : tempAttributes.keySet()) {
+            servletContext.setAttribute(name, tempAttributes.get(name));
+        }
+
         if (servletContext.getAttribute(SCA_NODE_ATTRIBUTE) == null) {
             initContextPath(config);
             contributionRoot = getContributionRoot(servletContext);
@@ -331,6 +337,10 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public void setAttribute(String name, Object value) {
-        servletContext.setAttribute(name, value);
+        if (servletContext != null) {
+            servletContext.setAttribute(name, value);
+        } else {
+            tempAttributes.put(name, value);
+        }
     }
 }

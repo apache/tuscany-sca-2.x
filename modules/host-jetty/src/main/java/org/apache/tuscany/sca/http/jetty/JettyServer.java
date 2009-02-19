@@ -483,4 +483,8 @@ public class JettyServer implements ServletHost {
         }
     }
 
+    public void setAttribute(String name, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -389,4 +389,8 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         };
         return servletConfig;
     }
+
+    public void setAttribute(String name, Object value) {
+        // TODO Auto-generated method stub
+    }
 }

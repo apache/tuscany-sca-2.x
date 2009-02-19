@@ -108,4 +108,11 @@ public interface ServletHost {
      * @return the URL mapped to the specified URI
      */
     URL getURLMapping(String uri);
+
+    /**
+     * Set an attribute in the application ServletContext 
+     * @param name the name of the attribute
+     * @param value the attribute value
+     */
+    void setAttribute(String name, Object value);
 }
