@@ -37,8 +37,8 @@ public class NodeImplTestCase {
         "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"" + " xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\""
             + " targetNamespace=\"http://sample/composite\""
             + " xmlns:sc=\"http://sample/composite\""
-            + " name=\"HelloWorld\">"
-            + " <component name=\"HelloWorld\">"
+            + " name=\"HelloWorld2\">"
+            + " <component name=\"HelloWorld2\">"
             + " <implementation.java class=\"hello.HelloWorldImpl\"/>"
             + " </component>"
             + " </composite>";
@@ -49,28 +49,34 @@ public class NodeImplTestCase {
         Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
         String compositeURI = "HelloWorld.composite";
         Node node = factory.createNode(compositeURI, composite, contribution);
-        testNode(node);
+        testNode2(node);
     }
     
-    @Test
-    public void testNodeWithRelativeCompositeURI() {
-        NodeFactory factory = new NodeFactoryImpl();
-        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
-        String compositeURI = "HelloWorld.composite";
-        Node node = factory.createNode(compositeURI, contribution);
-        testNode(node);
-    }
-
-    @Test
-    public void testDefaultNode() {
-        testNode(new NodeFactoryImpl().createNode());
-    }
-    
-    private void testNode(Node node) {
+//    @Test
+//    public void testNodeWithRelativeCompositeURI() {
+//        NodeFactory factory = new NodeFactoryImpl();
+//        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
+//        String compositeURI = "HelloWorld.composite";
+//        Node node = factory.createNode(compositeURI, contribution);
+//        testNode(node);
+//    }
+//
+//    @Test
+//    public void testDefaultNode() {
+//        testNode(new NodeFactoryImpl().createNode());
+//    }
+//    
+//    private void testNode(Node node) {
+//        node.start();
+//        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
+//        Assert.assertEquals("Hello, Node", hw.hello("Node"));
+//        node.stop();
+//    }
+        
+    private void testNode2(Node node) {
         node.start();
-        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
+        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld2");
         Assert.assertEquals("Hello, Node", hw.hello("Node"));
         node.stop();
     }
-        
 }

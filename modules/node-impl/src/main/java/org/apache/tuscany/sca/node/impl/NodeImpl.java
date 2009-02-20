@@ -282,7 +282,7 @@ public class NodeImpl implements Node, Client {
             
             // Read the composite model
             composite = (Composite)compositeProcessor.read(reader);
-            if (composite != null) {
+            if (composite != null && compositeURI != null) {
                 composite.setURI(compositeURI);
             }
             analyzeProblems();
@@ -522,7 +522,7 @@ public class NodeImpl implements Node, Client {
 //                logger.log(Level.INFO,"artifact - " + artifact.getURI());
 //            }
             Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
-            if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
+//            if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
                 
                 if (!composite.isUnresolved()) {
                     
@@ -537,13 +537,13 @@ public class NodeImpl implements Node, Client {
                     composite = (Composite)resolvedArtifact.getModel();
                 }
                 found = true;
-                break;
-            }
+    //            break;
+  //          }
         }
-        if (!found) {
-            throw new IllegalArgumentException("Composite not found: " + composite.getURI());
-        }
-        
+//        if (!found) {
+//            throw new IllegalArgumentException("Composite not found: " + composite.getURI());
+//        }
+
         // Build the composite and wire the components included in it
         compositeBuilder.build(composite, systemDefinitions, monitor);
         analyzeProblems();
