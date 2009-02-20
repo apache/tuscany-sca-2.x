@@ -25,14 +25,14 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents an operation on a service interface.
  *
  * @version $Rev$ $Date$
  */
-public interface Operation extends Cloneable, PolicySetAttachPoint {
+public interface Operation extends Cloneable, PolicySubject {
     /**
      * Returns the name of the operation.
      * 

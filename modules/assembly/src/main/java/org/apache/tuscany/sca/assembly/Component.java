@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a component. A component is a configured instance of an
@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Component extends Base, Extensible, PolicySetAttachPoint, Cloneable {
+public interface Component extends Base, Extensible, PolicySubject, Cloneable {
     
     /**
      * Returns the URI of the component.

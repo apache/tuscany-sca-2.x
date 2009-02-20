@@ -144,12 +144,7 @@ public interface AssemblyFactory {
      * @return a new wire
      */
     Wire createWire();
-
-    /** 
-     * Create a new configured operation.
-     * 
-     * @return a new ConfiguredOperation 
-     */
-    ConfiguredOperation createConfiguredOperation();
+    
+    // Extension createExtension();
     
 }

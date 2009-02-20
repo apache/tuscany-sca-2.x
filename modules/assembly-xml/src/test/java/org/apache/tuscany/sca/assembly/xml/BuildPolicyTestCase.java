@@ -31,7 +31,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
@@ -50,8 +49,9 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -115,35 +115,29 @@ public class BuildPolicyTestCase {
     }
 
     @Test
+    @Ignore("The inheritance will be calculated differently in OASIS SCA")
     public void testPolicyIntentInheritance() throws Exception {
         String namespaceUri = "http://test";
         
-        IntentAttachPoint policiedComposite = (IntentAttachPoint)composite;
+        PolicySubject policiedComposite = (PolicySubject)composite;
         assertEquals(policiedComposite.getRequiredIntents().size(), 1);
         assertEquals(policiedComposite.getRequiredIntents().get(0).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
         
         //1 defined for composite, 2 defined for the service, 1 defined and 3 inherited for the promoted service (4)
         assertEquals(composite.getServices().get(0).getRequiredIntents().size(), 7);
         //1 from the operation defined in this service and 2 from the operation defined in the promoted service 
-        assertEquals(composite.getServices().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
         assertEquals(composite.getServices().get(0).getRequiredIntents().get(3).getName(), new QName(namespaceUri, "tuscanyIntent_3"));
         //bindings will have only 2 intents since duplications will be cut out
-        assertEquals(((IntentAttachPoint)composite.getServices().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
-        assertEquals(((OperationsConfigurator)composite.getServices().get(0).getBindings().get(0)).getConfiguredOperations().size(), 1);
-        assertEquals(((OperationsConfigurator)composite.getServices().get(0).getBindings().get(0)).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
+        assertEquals(((PolicySubject)composite.getServices().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
         
         assertEquals(composite.getReferences().get(0).getRequiredIntents().size(), 5);
-        assertEquals(composite.getReferences().get(0).getConfiguredOperations().size(), 1);
-        assertEquals(composite.getReferences().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 4);
         assertEquals(composite.getReferences().get(0).getRequiredIntents().get(1).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
-        assertEquals(((IntentAttachPoint)composite.getReferences().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
+        assertEquals(((PolicySubject)composite.getReferences().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
 
         assertEquals(composite.getComponents().get(0).getRequiredIntents().size(), 3);
         assertEquals(composite.getComponents().get(0).getRequiredIntents().get(2).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
         assertEquals(composite.getComponents().get(0).getServices().get(0).getRequiredIntents().size(), 4);
         assertEquals(composite.getComponents().get(0).getServices().get(0).getCallback().getRequiredIntents().size(), 4);
-        assertEquals(composite.getComponents().get(0).getServices().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
         assertEquals(composite.getComponents().get(0).getReferences().get(0).getRequiredIntents().size(), 5);
-        assertEquals(composite.getComponents().get(0).getReferences().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
     }
 }

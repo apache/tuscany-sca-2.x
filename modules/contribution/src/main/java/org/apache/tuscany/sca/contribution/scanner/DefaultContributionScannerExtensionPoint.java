@@ -57,7 +57,7 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
         return scanners.get(contentType);
     }
 
-    private void loadScanners() {
+    private synchronized void loadScanners() {
         if (loaded)
             return;
 

@@ -27,39 +27,39 @@ import javax.xml.namespace.QName;
  */
 public interface Extension {
 
-	/**
-	 * Return QName for the extension
-	 * @return the extension QName
-	 */
-	QName getQName();
-	
-	/**
-	 * Set QName for the extension
-	 * @param qName the extension QName
-	 */
-	void setQName(QName qName);
-	
-	/**
-	 * Return the original extension value
-	 * @return the extension value
-	 */
-	Object getValue();
-	
-	/**
-	 * Set the original extension value
-	 * @param value the extension value
-	 */
-	void setValue(Object value);
-	
-	/**
-	 * Return whether or not the extension is an attribute
-	 * @return 
-	 */
-	boolean isAttribute();
-	
-	/**
-	 * Set whether or not the extension is an attribute
-	 * @param value
-	 */
-	void setIsAttribute(boolean isAttribute);
+    /**
+     * Return QName for the extension
+     * @return the extension QName
+     */
+    QName getQName();
+
+    /**
+     * Set QName for the extension
+     * @param qName the extension QName
+     */
+    void setQName(QName qName);
+
+    /**
+     * Return the original extension value
+     * @return the extension value
+     */
+    <T> T getValue();
+
+    /**
+     * Set the original extension value
+     * @param value the extension value
+     */
+    <T> void setValue(T value);
+
+    /**
+     * Return whether or not the extension is an attribute
+     * @return 
+     */
+    boolean isAttribute();
+
+    /**
+     * Set whether or not the extension is an attribute
+     * @param value
+     */
+    void setIsAttribute(boolean isAttribute);
 }

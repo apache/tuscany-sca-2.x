@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -29,7 +28,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * @version $Rev$ $Date$
  */
-public interface PolicyProviderFactory<M extends Policy> extends ProviderFactory<M> {
+public interface PolicyProviderFactory<M> extends ProviderFactory<M> {
     /**
      * Create policy provider for a given reference binding
      * @param component

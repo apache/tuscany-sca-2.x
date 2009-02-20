@@ -26,8 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
-
 /**
  * Represents a Java implementation.
  *
@@ -180,15 +178,5 @@ public interface JavaImplementation extends BaseJavaImplementation {
      * @param maxIdleTime the maxIdleTime to set
      */
     void setMaxIdleTime(long maxIdleTime);
-
-    /**
-     * @return the map of a policy handler class names
-     */
-    List<PolicyHandlerTuple> getPolicyHandlerClassNames();
-
-    /**
-     * @param policyHandlerClassNames Map of policyhandler class names
-     */
-    void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames);
 
 }

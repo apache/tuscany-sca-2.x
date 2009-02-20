@@ -29,6 +29,9 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface Intent {
+    enum Type {
+        interaction, implementation
+    };
 
     /**
      * Returns the intent name.
@@ -45,31 +48,18 @@ public interface Intent {
     void setName(QName name);
 
     /**
-     * Get the intent domain (the root intent name before any qualifiers)
-     * @return the domain
-     */
-    String getDomain();
-
-    /**
-     * Get the intent qualifiers
-     * @return the domain
-     */
-    String[] getQualifiedNames();
-
-    /**
-     * Returns the list of operations that this intent applies to.
-     * 
-     * @return
-     */
-    //List<Operation> getOperations();
-
-    /**
      * Returns the list of SCA constructs that this intent is meant to
      * configure.
      * 
      * @return the list of SCA constructs that this intent is meant to configure
      */
-    List<QName> getConstrains();
+    List<ExtensionType> getConstrainedTypes();
+
+    /**
+     * Return a list of required intents
+     * @return The list of required intents
+     */
+    List<Intent> getRequiredIntents();
 
     /**
      * Returns the list of intents which are mutually exclusive with this intent.
@@ -79,11 +69,51 @@ public interface Intent {
     List<Intent> getExcludedIntents();
 
     /**
-     * Returns the list of children qualified intents.
+     * Returns the list of qualified intents.  
      * 
-     * @return the list of children qualified intents.
+     * @return the list of qualified intents.
      */
     List<Intent> getQualifiedIntents();
+
+    /**
+     * Get the default qualified intent
+     * 
+     * @return
+     */
+    Intent getDefaultQualifiedIntent();
+
+    /**
+     * Set the default qualified intent
+     * 
+     * @param qualifiedIntent
+     */
+    void setDefaultQualifiedIntent(Intent qualifiedIntent);
+
+    /**
+     * Get the intent type: Interaction or Implementation
+     * @return 
+     */
+    Type getType();
+
+    /**
+     * Set the intent type 
+     * @param type: Interaction or Implementation
+     */
+    void setType(Type type);
+
+    /**
+     * If this attribute is present and has a value of true it indicates that 
+     * the qualified intents defined for this intent are mutually exclusive
+     * 
+     * @return
+     */
+    boolean isMutuallyExclusive();
+
+    /**
+     * Set the value of mutuallyExclusive  
+     * @param mutuallyExclusive
+     */
+    void setMutuallyExclusive(boolean mutuallyExclusive);
 
     /**
      * Returns the intent description.
@@ -104,6 +134,20 @@ public interface Intent {
      * 
      * @return true if the model element is unresolved.
      */
+
+    /**
+     * Get the parent intent for a qualified intent. If an intent is not qualified,
+     * return null.
+     * @return The parent intent or null if this intent is not qualified
+     */
+    Intent getParent();
+
+    /**
+     * Set the parent intent for a qualified intent
+     * @param intent
+     */
+    void setParent(Intent intent);
+
     boolean isUnresolved();
 
     /**

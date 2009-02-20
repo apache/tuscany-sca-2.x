@@ -23,9 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -47,8 +45,11 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * Processor for handling XML models of PolicySet definitions
@@ -134,7 +135,6 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
 
         policySet = policyFactory.createPolicySet();
         policySet.setName(new QName(policySetName));
-        String alwaysAppliesTo = reader.getAttributeValue(TUSCANY_NS, ALWAYS_APPLIES_TO);
 
         //TODO: with 1.0 version of specs the applies to xpath is given related to the immediate
         //parent whereas the runtime evaluates the xpath aginst the composite element.  What the runtime
@@ -144,21 +144,13 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             appliesTo = "//" + appliesTo;
         }
 
-        if (alwaysAppliesTo != null && !alwaysAppliesTo.startsWith("/")) {
-            alwaysAppliesTo = "//" + alwaysAppliesTo;
-        }
-
         policySet.setAppliesTo(appliesTo);
-        policySet.setAlwaysAppliesTo(alwaysAppliesTo);
 
         XPath path = xpathFactory.newXPath();
         path.setNamespaceContext(reader.getNamespaceContext());
         try {
             if (appliesTo != null) {
                 policySet.setAppliesToXPathExpression(path.compile(appliesTo));
-            }
-            if (alwaysAppliesTo != null) {
-                policySet.setAlwaysAppliesToXPathExpression(path.compile(alwaysAppliesTo));
             }
         } catch (XPathExpressionException e) {
             ContributionReadException ce = new ContributionReadException(e);
@@ -200,13 +192,16 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             error("PolicySetReferenceNameMissing", reader, policySetName);
                         }
                     } /*else if ( WS_POLICY_QNAME.equals(name) )  {
-                                           OMElement policyElement = loadElement(reader);
-                                           org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
-                                           policySet.getPolicies().add(wsPolicy);
-                                       } */else {
+                                                                                                                                                                                OMElement policyElement = loadElement(reader);
+                                                                                                                                                                                org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
+                                                                                                                                                                                policySet.getPolicies().add(wsPolicy);
+                                                                                                                                                                            } */else {
                         Object extension = extensionProcessor.read(reader);
                         if (extension != null) {
-                            policySet.getPolicies().add(extension);
+                            PolicyExpression exp = policyFactory.createPolicyExpression();
+                            exp.setName(name);
+                            exp.setPolicy(extension);
+                            policySet.getPolicies().add(exp);
                         }
                     }
                     break;
@@ -229,15 +224,19 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     public void readIntentMap(XMLStreamReader reader, PolicySet policySet, Intent mappedIntent)
         throws ContributionReadException {
         QName name = reader.getName();
-        Map<Intent, List<Object>> mappedPolicies = policySet.getMappedPolicies();
         if (POLICY_INTENT_MAP_QNAME.equals(name)) {
-            //Intent mappedIntent = policyFactory.createIntent();
-            //mappedIntent.setName(getQName(reader, PROVIDES));
-            String defaultQualifier = getString(reader, DEFAULT);
+
+            IntentMap intentMap = policyFactory.createIntentMap();
+            QName intentName = getQName(reader, INTENT_MAP);
+            intentMap.setProvidedIntent(mappedIntent);
+
+            policySet.getIntentMaps().add(intentMap);
 
             String qualifierName = null;
             String qualfiedIntentName = null;
             Intent qualifiedIntent = null;
+
+            Qualifier qualifier = null;
 
             int event = reader.getEventType();
             try {
@@ -255,6 +254,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                     qualifiedIntent = policyFactory.createIntent();
                                     qualifiedIntent.setName(new QName(mappedIntent.getName().getNamespaceURI(),
                                                                       qualfiedIntentName));
+                                    qualifier = policyFactory.createQualifier();
+                                    qualifier.setIntent(qualifiedIntent);
+                                    intentMap.getQualifiers().add(qualifier);
+
                                 } else {
                                     error("QualifierNameMissing", reader, policySet.getName());
                                 }
@@ -272,55 +275,13 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                     //providedIntent + " does not match parent qualifier " + qualifierName +
                                     //" in policyset - " + policySet);
                                 }
-                            }/* else if ( WS_POLICY_QNAME.equals(name) )  {
-                                                            OMElement policyElement = loadElement(reader);
-                                                            Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
-                                                            policySet.getPolicies().add(wsPolicy);
-                                                            
-                                                            List<Object> policyList = mappedPolicies.get(qualifiedIntent);
-                                                            if ( policyList == null ) {
-                                                                policyList = new ArrayList<Object>();
-                                                                mappedPolicies.put(qualifiedIntent, policyList);
-                                                                
-                                                                if (qualifierName.equals(defaultQualifier)) {
-                                                                    mappedPolicies.put(mappedIntent, policyList);
-                                                                }
-                                                            }
-                                                            policyList.add((Policy)wsPolicy);
-                                                        }*/else {
+                            } else {
                                 Object extension = extensionProcessor.read(reader);
-                                if (extension != null && qualifiedIntent != null) {
-                                    List<Object> policyList = mappedPolicies.get(qualifiedIntent);
-                                    if (policyList == null) {
-                                        policyList = new ArrayList<Object>();
-                                        mappedPolicies.put(qualifiedIntent, policyList);
-
-                                        if (qualifierName.equals(defaultQualifier)) {
-                                            mappedPolicies.put(mappedIntent, policyList);
-                                        }
-                                    }
-                                    policyList.add(extension);
-                                }
-                            }
-                            break;
-                        }
-                        case END_ELEMENT: {
-                            if (POLICY_INTENT_MAP_QNAME.equals(reader.getName())) {
-                                if (defaultQualifier != null) {
-                                    String qualifiedIntentName =
-                                        mappedIntent.getName().getLocalPart() + QUALIFIER + defaultQualifier;
-                                    Intent defaultQualifiedIntent = policyFactory.createIntent();
-                                    defaultQualifiedIntent.setName(new QName(mappedIntent.getName().getNamespaceURI(),
-                                                                             qualifiedIntentName));
-                                    List<Object> policyList = mappedPolicies.get(defaultQualifiedIntent);
-                                    if (policyList != null) {
-                                        mappedPolicies.put(mappedIntent, policyList);
-                                    } else {
-                                        error("UnableToMapPolicies", mappedPolicies, mappedIntent, policySet);
-                                        //throw new ContributionReadException("Unable to map policies for default qualifier in IntentMap for - " +
-                                        //mappedIntent + " in policy set - " + policySet);
-                                    }
-                                    defaultQualifier = null;
+                                if (extension != null && qualifier != null) {
+                                    PolicyExpression exp = policyFactory.createPolicyExpression();
+                                    exp.setName(name);
+                                    exp.setPolicy(extension);
+                                    qualifier.getPolicies().add(exp);
                                 }
                             }
                             break;
@@ -346,11 +307,11 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         XMLStreamException {
 
         // Write an <sca:policySet>
-        writer.writeStartElement(SCA10_NS, POLICY_SET);
+        writer.writeStartElement(SCA11_NS, POLICY_SET);
         writer.writeNamespace(policySet.getName().getPrefix(), policySet.getName().getNamespaceURI());
         writer.writeAttribute(NAME, policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
         writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
-        writer.writeAttribute(TUSCANY_NS, ALWAYS_APPLIES_TO, policySet.getAlwaysAppliesTo());
+        writer.writeAttribute(ATTACH_TO, policySet.getAttachTo());
 
         writeProvidedIntents(policySet, writer);
 
@@ -371,13 +332,25 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     }
 
     private void writeProvidedIntents(PolicySet policySet, XMLStreamWriter writer) throws XMLStreamException {
-        if (policySet.getProvidedIntents() != null && policySet.getProvidedIntents().size() > 0) {
+        if (!policySet.getProvidedIntents().isEmpty()) {
             StringBuffer sb = new StringBuffer();
             for (Intent providedIntents : policySet.getProvidedIntents()) {
-                sb.append(providedIntents.getName());
+                sb.append(getQualifiedName(providedIntents.getName(), writer));
                 sb.append(" ");
             }
+            // Remove the last space
+            sb.deleteCharAt(sb.length() - 1);
             writer.writeAttribute(PolicyConstants.PROVIDES, sb.toString());
+        }
+    }
+
+    private String getQualifiedName(QName name, XMLStreamWriter writer) throws XMLStreamException {
+        String local = name.getLocalPart();
+        String prefix = writer.getPrefix(name.getNamespaceURI());
+        if (prefix != null && prefix.length() > 0) {
+            return prefix + ':' + local;
+        } else {
+            return local;
         }
     }
 
@@ -409,9 +382,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             List<Intent> providedIntents = new ArrayList<Intent>();
             for (Intent providedIntent : policySet.getProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
-                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
-                    if (!resolvedProvidedIntent.isUnresolved()) {
-                        providedIntents.add(resolvedProvidedIntent);
+                    Intent resolved = resolver.resolveModel(Intent.class, providedIntent);
+                    if (!resolved.isUnresolved() || resolved != providedIntent) {
+                        providedIntents.add(resolved);
                     } else {
                         error("ProvidedIntentNotFound", policySet, providedIntent, policySet);
                         return;
@@ -429,26 +402,38 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
 
     private void resolveIntentsInMappedPolicies(PolicySet policySet, ModelResolver resolver)
         throws ContributionResolveException {
-        Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
-        for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
-            Intent mappedIntent = entry.getKey();
-            if (mappedIntent.isUnresolved()) {
-                Intent resolvedMappedIntent = resolver.resolveModel(Intent.class, mappedIntent);
-                if (!resolvedMappedIntent.isUnresolved()) {
-                    mappedPolicies.put(resolvedMappedIntent, entry.getValue());
+        for (IntentMap intentMap : policySet.getIntentMaps()) {
+            Intent intent = intentMap.getProvidedIntent();
+            if (intent.isUnresolved()) {
+                Intent resolved = resolver.resolveModel(Intent.class, intent);
+                if (!resolved.isUnresolved() || resolved != intent) {
+                    intentMap.setProvidedIntent(resolved);
                 } else {
-                    error("MappedIntentNotFound", policySet, mappedIntent, policySet);
+                    error("MappedIntentNotFound", policySet, intent, policySet);
                     return;
                     //throw new ContributionResolveException("Mapped Intent - " + mappedIntent
                     //+ " not found for PolicySet " + policySet);    
                 }
-            } else {
-                mappedPolicies.put(mappedIntent, entry.getValue());
+            }
+            for (Qualifier qualifier : intentMap.getQualifiers()) {
+                intent = qualifier.getIntent();
+                if (intent.isUnresolved()) {
+                    Intent resolved = resolver.resolveModel(Intent.class, intent);
+                    if (!resolved.isUnresolved() || resolved != intent) {
+                        qualifier.setIntent(resolved);
+                    } else {
+                        error("MappedIntentNotFound", policySet, intent, policySet);
+                        return;
+                        //throw new ContributionResolveException("Mapped Intent - " + mappedIntent
+                        //+ " not found for PolicySet " + policySet);    
+                    }
+                }
+                for (PolicyExpression exp : qualifier.getPolicies()) {
+                    // FIXME: How to resolve the policies?
+                }
             }
         }
 
-        policySet.getMappedPolicies().clear();
-        policySet.getMappedPolicies().putAll(mappedPolicies);
     }
 
     private void resolveReferredPolicySets(PolicySet policySet, ModelResolver resolver)
@@ -457,9 +442,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
         for (PolicySet referredPolicySet : policySet.getReferencedPolicySets()) {
             if (referredPolicySet.isUnresolved()) {
-                PolicySet resolvedReferredPolicySet = resolver.resolveModel(PolicySet.class, referredPolicySet);
-                if (!resolvedReferredPolicySet.isUnresolved()) {
-                    referredPolicySets.add(resolvedReferredPolicySet);
+                PolicySet resolved = resolver.resolveModel(PolicySet.class, referredPolicySet);
+                if (!resolved.isUnresolved() || resolved != referredPolicySet) {
+                    referredPolicySets.add(resolved);
                 } else {
                     error("ReferredPolicySetNotFound", policySet, referredPolicySet, policySet);
                     return;
@@ -479,7 +464,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             includeReferredPolicySets(referredPolicySet, furtherReferredPolicySet);
         }
         policySet.getPolicies().addAll(referredPolicySet.getPolicies());
-        policySet.getMappedPolicies().putAll(referredPolicySet.getMappedPolicies());
+        policySet.getIntentMaps().addAll(referredPolicySet.getIntentMaps());
     }
 
     public void resolve(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {
@@ -499,5 +484,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                  resolver.addModel(policySet);
             }*/
         }
+
+        policySet.setUnresolved(false);
     }
 }

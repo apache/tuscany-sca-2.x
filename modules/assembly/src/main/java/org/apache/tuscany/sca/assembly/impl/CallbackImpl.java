@@ -24,9 +24,8 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -38,8 +37,6 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>(); 
 
     public List<PolicySet> getPolicySets() {
         return policySets;
@@ -56,27 +53,15 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
         return bindings;
     }
     
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return null;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
     }
     
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
     }
     
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
-
 }

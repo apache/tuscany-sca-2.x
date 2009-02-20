@@ -18,15 +18,14 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a wire.
  * 
  * @version $Rev$ $Date$
  */
-public interface Wire extends Base, Extensible, IntentAttachPoint, PolicySetAttachPoint, Cloneable {
+public interface Wire extends Base, Extensible, PolicySubject, Cloneable {
 
     /**
      * Returns the source of the wire.

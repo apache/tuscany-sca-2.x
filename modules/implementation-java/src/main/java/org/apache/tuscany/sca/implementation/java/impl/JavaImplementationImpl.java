@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 
 /**
  * A component type specialization for POJO implementations
@@ -55,7 +54,6 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
-    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
     
     protected JavaImplementationImpl() {
         super();
@@ -161,12 +159,4 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
         this.maxIdleTime = maxIdleTime;
     }
 
-    public List<PolicyHandlerTuple> getPolicyHandlerClassNames() {
-        return policyHandlerClassNames;
-    }
-
-    public void setPolicyHandlerClassNames(List<PolicyHandlerTuple> policyHandlerClassNames) {
-        this.policyHandlerClassNames = policyHandlerClassNames;
-    }
- 
 }

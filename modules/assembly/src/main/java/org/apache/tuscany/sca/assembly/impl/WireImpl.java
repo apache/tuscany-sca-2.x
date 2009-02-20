@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -79,11 +79,11 @@ public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
         return policySets;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return null;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
     }
     
     public void setPolicySets(List<PolicySet> policySets) {

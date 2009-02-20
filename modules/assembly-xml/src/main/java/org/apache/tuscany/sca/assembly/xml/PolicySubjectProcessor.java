@@ -19,10 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
-import static org.apache.tuscany.sca.assembly.xml.Constants.APPLICABLE_POLICY_SETS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.POLICY_SETS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REQUIRES;
-import static org.apache.tuscany.sca.assembly.xml.Constants.SCA10_TUSCANY_NS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,21 +35,20 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A Policy Attach Point processor.
  *
  * @version $Rev$ $Date$
  */
-public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
+public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     
     private PolicyFactory policyFactory;
     
-    public PolicyAttachPointProcessor(PolicyFactory policyFactory) {
+    public PolicySubjectProcessor(PolicyFactory policyFactory) {
         this.policyFactory = policyFactory;
     }
 
@@ -62,9 +59,9 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
      * @param reader
      */
     private void readIntents(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof IntentAttachPoint))
+        if (!(attachPoint instanceof PolicySubject))
             return;
-        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
+        PolicySubject intentAttachPoint = (PolicySubject)attachPoint;
         String value = reader.getAttributeValue(null, REQUIRES);
         if (value != null) {
             List<Intent> requiredIntents = intentAttachPoint.getRequiredIntents();
@@ -109,13 +106,13 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
      * @param reader
      */
     private void readPolicySets(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof PolicySetAttachPoint)) {
+        if (!(attachPoint instanceof PolicySubject)) {
             return;
         }
-        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
+        PolicySubject policySubject = (PolicySubject)attachPoint;
         String value = reader.getAttributeValue(null, POLICY_SETS);
         if (value != null) {
-            List<PolicySet> policySets = policySetAttachPoint.getPolicySets();
+            List<PolicySet> policySets = policySubject.getPolicySets();
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
                 QName qname = getQNameValue(reader, tokens.nextToken());
                 PolicySet policySet = policyFactory.createPolicySet();
@@ -126,22 +123,6 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
                     //policySet.getOperations().add(operation);
                 }
                 policySets.add(policySet);
-            }
-        }
-        
-        value = reader.getAttributeValue(SCA10_TUSCANY_NS, APPLICABLE_POLICY_SETS);
-        if (value != null) {
-            List<PolicySet> applicablePolicySets = policySetAttachPoint.getApplicablePolicySets();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                QName qname = getQNameValue(reader, tokens.nextToken());
-                PolicySet policySet = policyFactory.createPolicySet();
-                policySet.setName(qname);
-                if (operation != null) {
-                    //FIXME Don't we need to handle policySet specification
-                    // on an operation basis?
-                    //policySet.getOperations().add(operation);
-                }
-                applicablePolicySets.add(policySet);
             }
         }
     }
@@ -212,10 +193,10 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
      * @param operation
      */
     private XAttr writeIntents(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof IntentAttachPoint)) {
+        if (!(attachPoint instanceof PolicySubject)) {
             return null;
         }
-        IntentAttachPoint intentAttachPoint = (IntentAttachPoint)attachPoint;
+        PolicySubject intentAttachPoint = (PolicySubject)attachPoint;
         List<QName> qnames = new ArrayList<QName>();
         for (Intent intent: intentAttachPoint.getRequiredIntents()) {
             qnames.add(intent.getName());
@@ -229,10 +210,10 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
      * @param operation
      */
     private XAttr writePolicySets(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof PolicySetAttachPoint)) {
+        if (!(attachPoint instanceof PolicySubject)) {
             return null;
         }
-        PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
+        PolicySubject policySetAttachPoint = (PolicySubject)attachPoint;
         List<QName> qnames = new ArrayList<QName>();
         for (PolicySet policySet: policySetAttachPoint.getPolicySets()) {
             qnames.add(policySet.getName());
@@ -241,8 +222,8 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor {
     }
     
     public void resolvePolicies(Object attachPoint, ModelResolver resolver) {
-        if ( attachPoint instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policySetAttachPoint = (PolicySetAttachPoint)attachPoint;
+        if ( attachPoint instanceof PolicySubject ) {
+            PolicySubject policySetAttachPoint = (PolicySubject)attachPoint;
             
             List<Intent> requiredIntents = new ArrayList<Intent>();
             Intent resolvedIntent = null;

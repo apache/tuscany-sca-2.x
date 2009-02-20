@@ -20,11 +20,9 @@
 package org.apache.tuscany.sca.implementation.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.CLASS;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME;
-import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.OPERATION_QNAME;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.SCA10_NS;
 
 import java.lang.reflect.Field;
@@ -40,13 +38,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
-import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -64,7 +59,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -76,19 +70,17 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private JavaImplementationFactory javaFactory;
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
-    private PolicyAttachPointProcessor policyProcessor;
-    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
-    private ConfiguredOperationProcessor configuredOperationProcessor;
+    private PolicySubjectProcessor policyProcessor;
+    private PolicyFactory  intentAttachPointTypeFactory;
     private Monitor monitor;
 
     public JavaImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
-        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
-        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
         this.monitor = monitor;
-        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories, this.monitor);
     }
     
     /**
@@ -124,11 +116,11 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         // Read an <implementation.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
         
-        /*if ( javaImplementation instanceof PolicySetAttachPoint ) {
-            IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
+        /*if ( javaImplementation instanceof PolicySubject ) {
+            ExtensionType implType = intentAttachPointTypeFactory.createImplementationType();
             implType.setName(getArtifactType());
             implType.setUnresolved(true);
-            ((PolicySetAttachPoint)javaImplementation).setType(implType);
+            ((PolicySubject)javaImplementation).setType(implType);
         }*/
         
         javaImplementation.setUnresolved(true);
@@ -139,21 +131,8 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         // read operation elements if exists or skip unto end element
         int event;
-        ConfiguredOperation confOp = null;
         while (reader.hasNext()) {
             event = reader.next();
-            switch ( event ) {
-                case START_ELEMENT  : {
-                    if ( OPERATION_QNAME.equals(reader.getName()) ) {
-                        confOp = configuredOperationProcessor.read(reader);
-                        if ( confOp != null ) {
-                            ((OperationsConfigurator)javaImplementation).getConfiguredOperations().add(confOp);
-                        }
-                    }
-                }
-                break;
-            }
-
             if (event == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName())) {
                 break;
             }

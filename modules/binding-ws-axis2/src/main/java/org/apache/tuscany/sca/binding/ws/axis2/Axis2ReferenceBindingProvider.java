@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -28,7 +26,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -43,7 +40,6 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding,
                                          FactoryExtensionPoint modelFactories,
-                                         List<PolicyHandlerTuple> policyHandlerClassnames,
                                          DataBindingExtensionPoint dataBindings) {
 
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
@@ -60,7 +56,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
             contract.getInterface().resetDataBinding(OMElement.class.getName());
         }
 
-        axisClient = new Axis2ServiceClient(component, reference, wsBinding, messageFactory, policyHandlerClassnames);
+        axisClient = new Axis2ServiceClient(component, reference, wsBinding, messageFactory);
     }
 
     public void start() {

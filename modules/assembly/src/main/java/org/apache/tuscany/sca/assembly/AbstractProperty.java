@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-
 /**
  * A property allows for the configuration of an implementation with externally
  * set data values. An implementation can have zero or more properties. Each
@@ -30,7 +28,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  *
  * @version $Rev$ $Date$
  */
-public interface AbstractProperty extends Base, Extensible, IntentAttachPoint {
+public interface AbstractProperty extends Base, Extensible {
 
     /**
      * Returns the property name.

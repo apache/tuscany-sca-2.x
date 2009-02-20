@@ -18,73 +18,21 @@
  */
 package org.apache.tuscany.sca.policy.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.BindingType;
 
 /**
  * Concrete implementation for a BindingType
  *
  * @version $Rev$ $Date$
  */
-public class BindingTypeImpl implements IntentAttachPointType {
-
-    private List<Intent> alwaysProvides = new ArrayList<Intent>();
-    private List<Intent> mayProvides = new ArrayList<Intent>();
-    private QName typeName;
-    private boolean unResolved = true;
-    
-    public List<Intent> getAlwaysProvidedIntents() {
-        return alwaysProvides;
+public class BindingTypeImpl extends ExtensionTypeImpl implements BindingType {
+    protected BindingTypeImpl() {
+        super();
     }
 
-    public List<Intent> getMayProvideIntents() {
-        return mayProvides;
-    }
-
-    public QName getName() {
-        return typeName;
-    }
-
-    public void setName(QName type) {
-        this.typeName = type;
-    }
-    
-    public boolean isUnresolved() {
-        return unResolved;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        this.unResolved = unresolved;
-    }
-    
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof BindingTypeImpl ) {
-            if (getName() != null) {
-                return getName().equals(((BindingTypeImpl)obj).getName());
-            } else {
-                return ((BindingTypeImpl)obj).getName() == null;
-            }
-        } else {
-            return false;
-        }
-    }
-    
-    @Override
-    public String toString() {
-    	return ( this.typeName != null ) ? getName().toString() : "null";
+    public QName getBaseType() {
+        return BINDING_BASE;
     }
 }
-;

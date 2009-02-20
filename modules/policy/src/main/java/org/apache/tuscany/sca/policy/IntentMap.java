@@ -16,18 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.policy;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.policy.Intent;
+
+
 /**
- * Represents a policy intent map. See the Policy Framework specification for a
- * description of this element.
- *
- * @version $Rev$ $Date$
+ * Map policies to the qualified intents
  */
 public interface IntentMap {
-
     /**
      * Returns the intent realized by this intent map.
      * 
@@ -41,49 +41,11 @@ public interface IntentMap {
      * @param providedIntent the intent realized by this intent map
      */
     void setProvidedIntent(Intent providedIntent);
-
+    
     /**
-     * Returns the default qualified intent map.
+     * Get a list of qualifiers  
      * 
-     * @return the default qualified intent map
+     * @return A list of qualifiers
      */
-    IntentMap getDefaultQualifiedIntentMap();
-
-    /**
-     * Sets the default qualified intent map.
-     * 
-     * @param defaultQualifiedIntentMap the default qualified intent map
-     */
-    void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap);
-
-    /**
-     * Returns the list of children qualified intent maps.
-     * 
-     * @return
-     */
-    List<IntentMap> getQualifiedIntentMaps();
-
-    /**
-     * Returns the list of concrete policies, either WS-Policy policy
-     * attachments, policy references, or policies expressed in another policy
-     * language.
-     * 
-     * @return the list of concrete policies
-     */
-    List<Object> getPolicies();
-
-    /**
-     * Returns true if the model element is unresolved.
-     * 
-     * @return true if the model element is unresolved.
-     */
-    boolean isUnresolved();
-
-    /**
-     * Sets whether the model element is unresolved.
-     * 
-     * @param unresolved whether the model element is unresolved
-     */
-    void setUnresolved(boolean unresolved);
-
+    List<Qualifier> getQualifiers();
 }

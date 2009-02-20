@@ -17,117 +17,97 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<sca:definitions xmlns="http://test"
- 			targetNamespace="http://test"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+<sca:definitions xmlns="http://test" targetNamespace="http://test" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712">
 
-<!-- simple intent -->
- <sca:intent name="tuscanyIntent_1" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+    <!-- simple intent -->
+    <sca:intent name="tuscanyIntent_1" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_2" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+        <!-- qualified intents -->
+        <sca:qualifier name="qualified" default="true"/>
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_2" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_3" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+        <sca:qualifier name="qualified" default="true"/>
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_3" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_4" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_4" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
-<sca:intent name="tuscanyIntent_5" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_5" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_6" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_6" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_7" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+        <sca:qualifier name="qualified1" default="true"/>
+        <sca:qualifier name="qualified2" />
+
+
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_7" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="tuscanyIntent_8" 
- 			 constrains="sca:binding sca:implementation.java">
- 			 <sca:description>
- 			 Sample Intent
+    </sca:intent>
+
+    <sca:intent name="tuscanyIntent_8" constrains="sca:binding sca:implementation.java">
+        <sca:description>
+            Sample Intent
  			 </sca:description>
- </sca:intent>
- 
- <sca:policySet name="tuscanyPolicySet_1"
- 	provides="tuscanyIntent_1 tuscanyIntent_2 tuscanyIntent_3"
- 	appliesTo="/sca:composite/sca:component"
- 	xmlns="http://test"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
- </sca:policySet>
- 
- <sca:policySet name="tuscanyPolicySet_2"
- 	provides="tuscanyIntent_4 tuscanyIntent_5"
- 	appliesTo="/sca:composite/sca:component"
- 	xmlns="http://test"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
- </sca:policySet>
- 
- <sca:policySet name="tuscanyPolicySet_3"
- 	provides="tuscanyIntent_6"
- 	appliesTo="/sca:composite/sca:component"
- 	xmlns="http://test"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
- 	<sca:intentMap provides="tuscanyIntent_6" default="qualified1">
-        <sca:qualifier name="qualified1">
-            <wsp:Policy>
-                <!-- policy expression and policy subject for "qualified1" alternative -->
-            </wsp:Policy>
-        </sca:qualifier>
-        <sca:qualifier name="qualifed2">
-            <wsp:Policy>
-                <!-- policy expression and policy subject for "qualified2" alternative" -->
-            </wsp:Policy>
-        </sca:qualifier>
-    </sca:intentMap>
- </sca:policySet>
- 
- <sca:policySet name="tuscanyPolicySet_4"
- 	provides="tuscanyIntent_6"
- 	appliesTo="/sca:composite/sca:component"
- 	xmlns="http://test"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
- 	<sca:intentMap provides="tuscanyIntent_6" default="qualified2">
-        <sca:qualifier name="qualified2">
-            <wsp:Policy>
-                <!-- policy expression and policy subject for "qualified2" alternative" -->
-            </wsp:Policy>
-        </sca:qualifier>
-    </sca:intentMap>
- </sca:policySet>
- 
-  <!-- qualified intents -->
- <sca:intent name="tuscanyIntent_1.qualified" />
- <sca:intent name="tuscanyIntent_2.qualified" />
- <sca:intent name="tuscanyIntent_6.qualified1" />
- <sca:intent name="tuscanyIntent_6.qualified2" />
+    </sca:intent>
+
+    <sca:policySet name="tuscanyPolicySet_1" provides="tuscanyIntent_1 tuscanyIntent_2 tuscanyIntent_3"
+        appliesTo="/sca:composite/sca:component" xmlns="http://test" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    </sca:policySet>
+
+    <sca:policySet name="tuscanyPolicySet_2" provides="tuscanyIntent_4 tuscanyIntent_5" appliesTo="/sca:composite/sca:component"
+        xmlns="http://test" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    </sca:policySet>
+
+    <sca:policySet name="tuscanyPolicySet_3" provides="tuscanyIntent_6" appliesTo="/sca:composite/sca:component"
+        xmlns="http://test" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <sca:intentMap provides="tuscanyIntent_6" default="qualified1">
+            <sca:qualifier name="qualified1">
+                <wsp:Policy>
+                    <!-- policy expression and policy subject for "qualified1" alternative -->
+                </wsp:Policy>
+            </sca:qualifier>
+            <sca:qualifier name="qualifed2">
+                <wsp:Policy>
+                    <!-- policy expression and policy subject for "qualified2" alternative" -->
+                </wsp:Policy>
+            </sca:qualifier>
+        </sca:intentMap>
+    </sca:policySet>
+
+    <sca:policySet name="tuscanyPolicySet_4" provides="tuscanyIntent_6" appliesTo="/sca:composite/sca:component"
+        xmlns="http://test" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <sca:intentMap provides="tuscanyIntent_6" default="qualified2">
+            <sca:qualifier name="qualified2">
+                <wsp:Policy>
+                    <!-- policy expression and policy subject for "qualified2" alternative" -->
+                </wsp:Policy>
+            </sca:qualifier>
+        </sca:intentMap>
+    </sca:policySet>
+
 </sca:definitions>

@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -36,16 +37,16 @@ public class DefinitionsImpl implements Definitions {
     private String targetNamespace = null;
     private List<Intent> intents = new CopyOnWriteArrayList<Intent>();
     private List<PolicySet> policySets = new CopyOnWriteArrayList<PolicySet>();
-    private List<IntentAttachPointType> bindingTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
-    private List<IntentAttachPointType> implementationTypes = new CopyOnWriteArrayList<IntentAttachPointType>();
+    private List<BindingType> bindingTypes = new CopyOnWriteArrayList<BindingType>();
+    private List<ImplementationType> implementationTypes = new CopyOnWriteArrayList<ImplementationType>();
     private List<Object> bindings = new CopyOnWriteArrayList<Object>();
 
    
-    public List<IntentAttachPointType> getBindingTypes() {
+    public List<BindingType> getBindingTypes() {
         return bindingTypes;
     }
 
-    public List<IntentAttachPointType> getImplementationTypes() {
+    public List<ImplementationType> getImplementationTypes() {
         return implementationTypes;
     }
 

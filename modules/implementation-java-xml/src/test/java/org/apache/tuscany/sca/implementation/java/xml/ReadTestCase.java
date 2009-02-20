@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -45,7 +44,7 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -106,15 +105,15 @@ public class ReadTestCase {
         compositeBuilder.build(composite, null, null);
         
         //intents are computed and aggregate intents from ancestor elements
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getRequiredIntents().size(), 3);
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5)).getRequiredIntents().size(), 3);
+        assertEquals(((PolicySubject)composite.getComponents().get(0)).getRequiredIntents().size(), 3);
+        assertEquals(((PolicySubject)composite.getComponents().get(5)).getRequiredIntents().size(), 3);
         
         //assertEquals(((OperationsConfigurator)composite.getComponents().get(0)).getConfiguredOperations().isEmpty(), true);
         //assertEquals(((OperationsConfigurator)composite.getComponents().get(5)).getConfiguredOperations().isEmpty(), false);
         
         
         //test for proper aggregation of policy intents on implementation elements
-        for ( Intent intent : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents() ) {
+        for ( Intent intent : ((PolicySubject)composite.getComponents().get(0).getImplementation()).getRequiredIntents() ) {
             String intentName = intent.getName().getLocalPart();
             if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_2") ||
                 intentName.equals("tuscanyIntent_3")) ) {
@@ -122,7 +121,7 @@ public class ReadTestCase {
             }
         }
         
-        for ( Intent intent : ((PolicySetAttachPoint)composite.getComponents().get(5)).getRequiredIntents() ) {
+        for ( Intent intent : ((PolicySubject)composite.getComponents().get(5)).getRequiredIntents() ) {
             String intentName = intent.getName().getLocalPart();
             if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_4") ||
                 intentName.equals("tuscanyIntent_5")) ) {
@@ -130,6 +129,7 @@ public class ReadTestCase {
             }
         }
 
+        /*
         //test for proper aggregation of policy intents and policysets on operations of implementation
         OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5);
         assertEquals(opConf.getConfiguredOperations().get(0).getRequiredIntents().size(), 4);
@@ -150,6 +150,7 @@ public class ReadTestCase {
                 fail();
             }
         }
+        */
     }
     
     @Test
@@ -168,7 +169,7 @@ public class ReadTestCase {
         
         for ( Component component : composite.getComponents() ) {
             for ( PolicySet policySet : policyDefinitions.getPolicySets() ) {
-                component.getApplicablePolicySets().add(policySet);
+                component.getPolicySets().add(policySet);
             }
         }
         
@@ -178,22 +179,23 @@ public class ReadTestCase {
         compositeBuilder.build(composite, null, null);
         
         //test for determination of policysets for implementation
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getPolicySets().size(), 1);
-        for ( PolicySet policySet : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getPolicySets() ) {
+        assertEquals(((PolicySubject)composite.getComponents().get(0)).getPolicySets().size(), 1);
+        for ( PolicySet policySet : ((PolicySubject)composite.getComponents().get(0).getImplementation()).getPolicySets() ) {
             String policySetName = policySet.getName().getLocalPart();
             if ( !(policySetName.equals("tuscanyPolicySet_1")) ) {
                 fail();
             }
         }
         
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5)).getPolicySets().size(), 2);
-        for ( PolicySet policySet : ((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getPolicySets() ) {
+        assertEquals(((PolicySubject)composite.getComponents().get(5)).getPolicySets().size(), 2);
+        for ( PolicySet policySet : ((PolicySubject)composite.getComponents().get(5).getImplementation()).getPolicySets() ) {
             String policySetName = policySet.getName().getLocalPart();
             if ( !(policySetName.equals("tuscanyPolicySet_1") || policySetName.equals("tuscanyPolicySet_2")) ) {
                 fail();
             }
         }
 
+        /*
         //test for computation of policysets on operations of implementation
         OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5);
         assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
@@ -215,6 +217,8 @@ public class ReadTestCase {
                 fail();
             }
         }
+        */
+        
         //new PrintUtil(System.out).print(composite);
     }
 

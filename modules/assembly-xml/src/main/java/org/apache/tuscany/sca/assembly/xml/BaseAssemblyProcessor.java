@@ -58,7 +58,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Extensible;
@@ -66,7 +65,6 @@ import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.ExtensionFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -82,13 +80,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.util.PolicyValidationException;
-import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -106,7 +99,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
     protected ExtensionFactory extensionFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
-    protected PolicyAttachPointProcessor policyProcessor;
+    protected PolicySubjectProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
     private Monitor monitor;
 
@@ -117,7 +110,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     @SuppressWarnings("unchecked")
     protected BaseAssemblyProcessor(AssemblyFactory assemblyFactory,
-    		                        ExtensionFactory extensionFactory,
+                                    ExtensionFactory extensionFactory,
                                     PolicyFactory policyFactory,
                                     DocumentBuilderFactory documentBuilderFactory,
                                     StAXArtifactProcessor extensionProcessor,
@@ -127,10 +120,10 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         this.policyFactory = policyFactory;
         this.documentBuilderFactory = documentBuilderFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.monitor = monitor;
     }
-    
+
     /**
      * @param modelFactories
      * @param staxProcessor
@@ -144,10 +137,10 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
-        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.monitor = monitor;
     }
-    
+
     /**
      * Marshals warnings into the monitor
      * 
@@ -156,12 +149,18 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param messageParameters
      */
     protected void warning(String message, Object model, String... messageParameters) {
-        if (monitor != null){
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-xml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-xml-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
-    
+
     /**
      * Marshals errors into the monitor
      * 
@@ -170,12 +169,18 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param model
      */
     protected void error(String message, Object model, Object... messageParameters) {
-    	if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-	        monitor.problem(problem);
-    	}
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-xml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
-    
+
     /**
      * Marshals exceptions into the monitor
      * 
@@ -184,10 +189,16 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param model
      */
     protected void error(String message, Object model, Exception ex) {
-    	if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-xml-validation-messages", Severity.ERROR, model, message, ex);
-	        monitor.problem(problem);
-    	}
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-xml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
     }
 
     /**
@@ -261,7 +272,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             reference.setMultiplicity(Multiplicity.ONE_ONE);
         }
     }
-    
+
     protected XAttr writeMultiplicity(AbstractReference reference) {
         Multiplicity multiplicity = reference.getMultiplicity();
         if (multiplicity != null) {
@@ -323,7 +334,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws ContributionResolveException
      */
     protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver)
-        throws ContributionResolveException, PolicyValidationException {
+        throws ContributionResolveException {
         if (implementation != null) {
             if (implementation.isUnresolved()) {
                 implementation = resolver.resolveModel(Implementation.class, implementation);
@@ -332,71 +343,24 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                 if (implementation.isUnresolved()) {
                     extensionProcessor.resolve(implementation, resolver);
                     if (!implementation.isUnresolved()) {
-                        //resolve policies
-                        if ( implementation instanceof PolicySetAttachPoint ) {
-                            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-                            resolveIntents(policiedImpl.getRequiredIntents(), resolver);
-                            PolicyValidationUtils.validateIntents(policiedImpl, policiedImpl.getType());
-                            
-                            resolvePolicySets(policiedImpl.getPolicySets(), resolver);
-                            PolicyValidationUtils.validatePolicySets(policiedImpl);
-                            
-                            if ( implementation instanceof OperationsConfigurator ) {
-                                OperationsConfigurator opsConfigurator = (OperationsConfigurator)implementation;
-                                for ( ConfiguredOperation implOp : opsConfigurator.getConfiguredOperations() ) {
-                                    resolveIntents(implOp.getRequiredIntents(), resolver);
-                                    PolicyValidationUtils.validateIntents(implOp, policiedImpl.getType());
-                                    
-                                    resolvePolicySets(implOp.getPolicySets(), resolver);
-                                    PolicyValidationUtils.validatePolicySets(implOp, 
-                                                                             policiedImpl.getType(),
-                                                                             policiedImpl.getApplicablePolicySets());
-                                }
-                            }
-                            
-                            for ( Service service : implementation.getServices() ) {
-                                resolveIntents(service.getRequiredIntents(), resolver);
-                                resolvePolicySets(service.getPolicySets(), resolver);
-                                
-                                for ( ConfiguredOperation svcOp : service.getConfiguredOperations() ) {
-                                    resolveIntents(svcOp.getRequiredIntents(), resolver);
-                                    resolvePolicySets(svcOp.getPolicySets(), resolver);
-                                }
-                            }
-                            
-                            for ( Reference reference : implementation.getReferences() ) {
-                                resolveIntents(reference.getRequiredIntents(), resolver);
-                                resolvePolicySets(reference.getPolicySets(), resolver);
-                            }
-                        }
-                        
                         resolver.addModel(implementation);
                     }
                 }
             }
-            
-            if ( implementation instanceof IntentAttachPoint &&
-                ((IntentAttachPoint)implementation).getType() != null && 
-                ((IntentAttachPoint)implementation).getType().isUnresolved() ) {
-                ((IntentAttachPoint)implementation).setType(
-                               resolver.resolveModel(IntentAttachPointType.class, 
-                                                     ((IntentAttachPoint)implementation).getType()));
-            }
         }
         return implementation;
     }
-    
+
     /**
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
     protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver)
-    throws ContributionResolveException {
+        throws ContributionResolveException {
         resolveContracts(null, contracts, resolver);
     }
 
-    
     /**
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param parent element for the contracts
@@ -405,143 +369,32 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     protected <C extends Contract> void resolveContracts(Base parent, List<C> contracts, ModelResolver resolver)
         throws ContributionResolveException {
-        
-        String parentName = (parent instanceof Composite) ? ((Composite)parent).getName().toString() :
-            (parent instanceof Component) ? ((Component)parent).getName() : "UNKNOWN";
-        
+
+        String parentName =
+            (parent instanceof Composite) ? ((Composite)parent).getName().toString() : (parent instanceof Component)
+                ? ((Component)parent).getName() : "UNKNOWN";
+
         for (Contract contract : contracts) {
-            try {
-                //resolve the intents and policysets as they need to be copied over into the
-                //child binding elements
-                resolveIntents(contract.getRequiredIntents(), resolver);
-                resolvePolicySets(contract.getPolicySets(), resolver);
-                resolvePolicySets(contract.getApplicablePolicySets(), resolver);
-                
-                // Inherit the composite / component level applicable policy sets.
-                if ( parent != null && parent instanceof PolicySetAttachPoint )  {
-                    addInheritedPolicySets(((PolicySetAttachPoint)parent).getApplicablePolicySets(), contract.getApplicablePolicySets());
-                }
-                
-                for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
-                    resolveIntents(confOp.getRequiredIntents(), resolver);
-                    resolvePolicySets(confOp.getPolicySets(), resolver);
-                    resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
-                    
-                    //inherit applicable policy sets from parent contract
-                    addInheritedPolicySets(contract.getApplicablePolicySets(), confOp.getApplicablePolicySets());
-                }
-                                
-                // Resolve the interface contract
-                InterfaceContract interfaceContract = contract.getInterfaceContract();
-                if (interfaceContract != null) {
-                    extensionProcessor.resolve(interfaceContract, resolver);
-                }
-    
-                // Resolve bindings
-                for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
-                    Binding binding = contract.getBindings().get(i);
+            // Resolve the interface contract
+            InterfaceContract interfaceContract = contract.getInterfaceContract();
+            if (interfaceContract != null) {
+                extensionProcessor.resolve(interfaceContract, resolver);
+            }
+
+            // Resolve bindings
+            for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
+                Binding binding = contract.getBindings().get(i);
+                extensionProcessor.resolve(binding, resolver);
+
+            }
+
+            // Resolve callback bindings
+            if (contract.getCallback() != null) {
+
+                for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
+                    Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
-                    
-                    if (binding instanceof IntentAttachPoint) {
-                        IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                        
-                        if ( policiedBinding.getType() != null && policiedBinding.getType().isUnresolved() ) {
-                            IntentAttachPointType resolved = 
-                                resolver.resolveModel(IntentAttachPointType.class, 
-                                                      policiedBinding.getType());
-                            policiedBinding.setType(resolved);
-                        }
-                        
-                        resolveIntents(policiedBinding.getRequiredIntents(), resolver);
-                        PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
-                    }
-                    
-                    if (binding instanceof PolicySetAttachPoint) {
-                        PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
-                        resolvePolicySets(policiedBinding.getPolicySets(), resolver);
-                        //validate if attached policysets apply to the binding
-                        resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                        //inherit the applicable policysets from parent contract as whatever applies to that
-                        //applies to the binding as well
-                        addInheritedPolicySets(contract.getApplicablePolicySets(), policiedBinding.getApplicablePolicySets());
-                        PolicyValidationUtils.validatePolicySets(policiedBinding);
-                    }
-                    
-                    if (binding instanceof OperationsConfigurator) {
-                        OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
-                        for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
-                            resolveIntents(confOp.getRequiredIntents(), resolver);
-                            PolicyValidationUtils.validateIntents(confOp, ((PolicySetAttachPoint)binding).getType());
-                            
-                            resolvePolicySets(confOp.getPolicySets(), resolver);
-                            resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
-                            //inherit the applicable policysets from parent binding as whatever applies to that
-                            //applies to the binding as well
-                            addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
-                                                   confOp.getApplicablePolicySets());
-                            PolicyValidationUtils.validatePolicySets(confOp, ((PolicySetAttachPoint)binding).getType());
-                        }
-                    }
                 }
-    
-                // Resolve callback bindings
-                if (contract.getCallback() != null) {
-                    resolveIntents(contract.getCallback().getRequiredIntents(), resolver);
-                    resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
-                    resolvePolicySets(contract.getCallback().getApplicablePolicySets(), resolver);
-                    //inherit the contract's policy intents and policysets
-                    addInheritedPolicySets(contract.getApplicablePolicySets(), contract.getCallback().getApplicablePolicySets());
-                    
-                    for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
-                        Binding binding = contract.getCallback().getBindings().get(i);
-                        extensionProcessor.resolve(binding, resolver);
-    
-                        if (binding instanceof IntentAttachPoint) {
-                            IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                            
-                            if ( policiedBinding.getType().isUnresolved() ) {
-                                IntentAttachPointType resolved = 
-                                    resolver.resolveModel(IntentAttachPointType.class, 
-                                                          policiedBinding.getType());
-                                policiedBinding.setType(resolved);
-                            }
-                            
-                            resolveIntents(policiedBinding.getRequiredIntents(), resolver);
-                            PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
-                        }
-                        
-                        if (binding instanceof PolicySetAttachPoint) {
-                            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
-                            resolvePolicySets(policiedBinding.getPolicySets(), resolver);
-                            //validate if attached policysets apply to the binding
-                            resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                            //inherit the applicable policysets from parent contract as whatever applies to that
-                            //applies to the binding as well
-                            addInheritedPolicySets(contract.getApplicablePolicySets(), policiedBinding.getApplicablePolicySets());
-                            PolicyValidationUtils.validatePolicySets(policiedBinding);
-                        }
-                        
-                        if (binding instanceof OperationsConfigurator) {
-                            OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
-                            for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
-                                resolveIntents(confOp.getRequiredIntents(), resolver);
-                                PolicyValidationUtils.validateIntents(confOp, ((PolicySetAttachPoint)binding).getType());
-                                
-                                resolvePolicySets(confOp.getPolicySets(), resolver);
-                                resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
-                                //inherit the applicable policysets from parent binding as whatever applies to that
-                                //applies to the binding as well
-                                addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
-                                                       confOp.getApplicablePolicySets());
-                                PolicyValidationUtils.validatePolicySets(confOp, ((PolicySetAttachPoint)binding).getType());
-                            }
-                        }
-                    }
-                }
-            } catch ( PolicyValidationException e ) {
-            	error("PolicyServiceValidationException", contract, contract.getName(), parentName, e.getMessage());
-                //throw new ContributionResolveException("PolicyValidation exceptions when processing service/reference '" 
-                                                       //+ contract.getName() + "' in '" + parentName + "'");
             }
         }
     }
@@ -597,8 +450,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             }
             document = documentBuilderFactory.newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException e) {
-        	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", documentBuilderFactory, ce);
+            ContributionReadException ce = new ContributionReadException(e);
+            error("ContributionReadException", documentBuilderFactory, ce);
             throw ce;
         }
 
@@ -748,42 +601,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
     }
 
     /**
-     * Resolve policy intents attached to a specific SCA Artifact
-     * @param policyIntents list of policy intents
-     * @param resolver
-     */
-    protected void resolveIntents(List<Intent> policyIntents, ModelResolver resolver) {
-        List<Intent> requiredIntents = new ArrayList<Intent>();
-        Intent resolvedIntent = null;
-        for (Intent intent : policyIntents) {
-            resolvedIntent = resolver.resolveModel(Intent.class, intent);
-            requiredIntents.add(resolvedIntent);
-        }
-        policyIntents.clear();
-        policyIntents.addAll(requiredIntents);
-    }
-
-    /**
-     * Resolve policy sets attached to a specific SCA Construct
-     * @param policySets list of attached policy sets
-     * @param resolver
-     */
-    protected void resolvePolicySets(List<PolicySet> policySets, ModelResolver resolver) {
-        List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
-        PolicySet resolvedPolicySet = null;
-        for (PolicySet policySet : policySets) {
-            if (policySet.isUnresolved()) {
-                resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
-                resolvedPolicySets.add(resolvedPolicySet);
-            } else {
-                resolvedPolicySets.add(policySet);
-            }
-        }
-        policySets.clear();
-        policySets.addAll(resolvedPolicySets);
-    }
-
-    /**
      * Write the value of a property 
      * @param document
      * @param element
@@ -802,8 +619,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                 Node node = nodeList.item(item);
                 int nodeType = node.getNodeType();
                 if (nodeType == Node.ELEMENT_NODE) {
-                    XMLStreamReader reader =
-                        XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(node));
+                    XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(node));
 
                     while (reader.hasNext()) {
                         switch (reader.next()) {
@@ -851,19 +667,19 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             }
         }
     }
-    
+
     protected void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
         if (sourceList != null) {
             targetList.addAll(sourceList);
         }
     }
-    
-    protected  void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList) {
+
+    protected void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList) {
         if (sourceList != null) {
             targetList.addAll(sourceList);
         }
     }
-    
+
     /**
      * 
      * @param reader
@@ -873,15 +689,19 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws ContributionReadException
      * @throws XMLStreamException
      */
-    protected void readExtendedAttributes(XMLStreamReader reader, QName elementName, Extensible estensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionReadException, XMLStreamException {
+    protected void readExtendedAttributes(XMLStreamReader reader,
+                                          QName elementName,
+                                          Extensible estensibleElement,
+                                          StAXAttributeProcessor extensionAttributeProcessor)
+        throws ContributionReadException, XMLStreamException {
         for (int a = 0; a < reader.getAttributeCount(); a++) {
             QName attributeName = reader.getAttributeName(a);
-            if( attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
-                if( ! elementName.getNamespaceURI().equals(attributeName.getNamespaceURI()) ) {
+            if (attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+                if (!elementName.getNamespaceURI().equals(attributeName.getNamespaceURI())) {
                     Object attributeValue = extensionAttributeProcessor.read(attributeName, reader);
                     Extension attributeExtension;
                     if (attributeValue instanceof Extension) {
-                        attributeExtension = (Extension) attributeValue;
+                        attributeExtension = (Extension)attributeValue;
                     } else {
                         attributeExtension = extensionFactory.createExtension(attributeName, attributeValue, true);
                     }
@@ -890,7 +710,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             }
         }
     }
-    
 
     /**
      * 
@@ -901,26 +720,29 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws ContributionWriteException
      * @throws XMLStreamException
      */
-    protected void writeExtendedAttributes(XMLStreamWriter writer, Extensible extensibleElement, StAXAttributeProcessor extensionAttributeProcessor) throws ContributionWriteException, XMLStreamException {
-        for(Extension extension : extensibleElement.getAttributeExtensions()) {
-            if(extension.isAttribute()) {
+    protected void writeExtendedAttributes(XMLStreamWriter writer,
+                                           Extensible extensibleElement,
+                                           StAXAttributeProcessor extensionAttributeProcessor)
+        throws ContributionWriteException, XMLStreamException {
+        for (Extension extension : extensibleElement.getAttributeExtensions()) {
+            if (extension.isAttribute()) {
                 extensionAttributeProcessor.write(extension, writer);
             }
         }
     }
-    
-    /*protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint) 
+
+    /*protected void validatePolicySets(PolicySubject policySetAttachPoint) 
                                                             throws ContributionResolveException {
         validatePolicySets(policySetAttachPoint, policySetAttachPoint.getApplicablePolicySets());
     }
      
     
-    protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
+    protected void validatePolicySets(PolicySubject policySetAttachPoint,
                                       List<PolicySet> applicablePolicySets) throws ContributionResolveException {
         //Since the applicablePolicySets in a policySetAttachPoint will already have the 
         //list of policysets that might ever be applicable to this attachPoint, just check
         //if the defined policysets feature in the list of applicable policysets
-        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
+        ExtensionType attachPointType = policySetAttachPoint.getType();
         for ( PolicySet definedPolicySet : policySetAttachPoint.getPolicySets() ) {
             if ( !definedPolicySet.isUnresolved() ) {
                 if ( !applicablePolicySets.contains(definedPolicySet)) {

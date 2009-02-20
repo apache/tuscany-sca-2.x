@@ -63,8 +63,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
 
 /**
@@ -347,13 +346,13 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         // Write <implementation> elements if the componentType has
         // any intents or policySets
         boolean writeImplementation = false;
-        if (componentType instanceof IntentAttachPoint) {
-            if (!((IntentAttachPoint)componentType).getRequiredIntents().isEmpty()) {
+        if (componentType instanceof PolicySubject) {
+            if (!((PolicySubject)componentType).getRequiredIntents().isEmpty()) {
                 writeImplementation = true;
             }
         }
-        if (componentType instanceof PolicySetAttachPoint) {
-            if (!((PolicySetAttachPoint)componentType).getPolicySets().isEmpty()) {
+        if (componentType instanceof PolicySubject) {
+            if (!((PolicySubject)componentType).getPolicySets().isEmpty()) {
                 writeImplementation = true;
             }
         }
@@ -370,10 +369,6 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         // Resolve component type services and references
         resolveContracts(componentType.getServices(), resolver);
         resolveContracts(componentType.getReferences(), resolver);
-        if ( componentType instanceof PolicySetAttachPoint ) {
-            resolveIntents(((PolicySetAttachPoint)componentType).getRequiredIntents(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)componentType).getPolicySets(), resolver);
-        }
     }
     
     public QName getArtifactType() {

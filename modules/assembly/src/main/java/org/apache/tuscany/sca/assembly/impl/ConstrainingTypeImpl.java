@@ -27,8 +27,9 @@ import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a constraining type.
@@ -41,6 +42,7 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
     private List<AbstractReference> references = new ArrayList<AbstractReference>();
     private List<AbstractService> services = new ArrayList<AbstractService>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
     
     /**
      * Constructs a new ConstrainingType
@@ -71,6 +73,10 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
+    
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
 
     @Override
     public int hashCode() {
@@ -92,14 +98,11 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
         }
     }
     
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return null;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
     }
     
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
 }

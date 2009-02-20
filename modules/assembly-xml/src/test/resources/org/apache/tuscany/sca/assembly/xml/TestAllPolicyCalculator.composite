@@ -49,7 +49,6 @@
         <ext:testExtension/>
         <service name="CalculatorService" requires="cns:tuscanyIntent_3">
             <interface.java interface="calculator.CalculatorService" callbackInterface="calculator.CalculatorCallback" />
-            <operation name="add" requires="cns:tuscanyIntent_6 cns:tuscanyIntent_7"/>
             <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="cns:tuscanyIntent_4" uri="http://calc/callback/ws">
             </binding.ws>
             <callback>
@@ -60,7 +59,6 @@
             requires="cns:tuscanyIntent_3 cns:tuscanyIntent_2.qualified" wiredByImpl="false">
             <ext:testExtension/>
             <interface.java interface="calculator.AddService" callbackInterface="calculator.AddCallback" />
-            <operation name="add" requires="cns:tuscanyIntent_8 cns:tuscanyIntent_9"/>
             <binding.ws name="addServiceWSRef" policySets="" port="" requires="cns:tuscanyIntent_4" uri="http://calc/callback/ws">
             </binding.ws>
         </reference>
@@ -102,7 +100,6 @@
     <reference name="MultiplyService" promote="CalculatorServiceComponent/multiplyService" 
         requires="cns:tuscanyIntent_2">
         <interface.java interface="calculator.MultiplyService" callbackInterface="calculator.MultiplyCallback" />
-        <operation name="multiply" requires="cns:tuscanyIntent_6"/>
 
         <binding.ws name="MultiplyWS" port="" requires="cns:tuscanyIntent_3" uri="http://calc/ws">
         </binding.ws>

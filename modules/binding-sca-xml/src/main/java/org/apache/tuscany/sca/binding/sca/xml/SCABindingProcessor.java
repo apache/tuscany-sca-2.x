@@ -29,17 +29,16 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A processor to read the XML that describes the SCA binding.
@@ -51,8 +50,8 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     
     private PolicyFactory policyFactory;       
     private SCABindingFactory scaBindingFactory;
-    private PolicyAttachPointProcessor policyProcessor;
-    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private PolicySubjectProcessor policyProcessor;
+    private PolicyFactory  intentAttachPointTypeFactory;
 
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
@@ -60,8 +59,8 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     public SCABindingProcessor(FactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        policyProcessor = new PolicyAttachPointProcessor(policyFactory);
-        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        policyProcessor = new PolicySubjectProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
     }
 
     public QName getArtifactType() {
@@ -74,10 +73,10 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
 
     public SCABinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
-        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
-        bindingType.setName(getArtifactType());
+        ExtensionType bindingType = intentAttachPointTypeFactory.createBindingType();
+        bindingType.setType(getArtifactType());
         bindingType.setUnresolved(true);
-        ((PolicySetAttachPoint)scaBinding).setType(bindingType);
+        ((PolicySubject)scaBinding).setType(bindingType);
         
         // Read policies
         policyProcessor.readPolicies(scaBinding, reader);

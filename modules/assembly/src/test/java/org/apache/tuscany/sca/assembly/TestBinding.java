@@ -18,13 +18,15 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import org.apache.tuscany.sca.assembly.impl.BindingImpl;
+
 
 /**
  * A test interface model.
  * 
  * @version $Rev$ $Date$
  */
-public class TestBinding implements Binding {
+public class TestBinding extends BindingImpl implements Binding {
     public TestBinding(AssemblyFactory factory) {
     }
 
@@ -35,22 +37,9 @@ public class TestBinding implements Binding {
     public String getURI() {
         return "http://test";
     }
-
-    public void setName(String name) {
-    }
-
-    public void setURI(String uri) {
-    }
-
-    public void setUnresolved(boolean unresolved) {
-    }
     
     public boolean isUnresolved() {
         return false;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }     
 }

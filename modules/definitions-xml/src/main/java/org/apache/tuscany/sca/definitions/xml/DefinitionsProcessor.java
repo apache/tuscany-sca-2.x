@@ -39,14 +39,13 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.ProfileIntent;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 /**
  * Processor for SCA Definitions
@@ -59,17 +58,17 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     private DefinitionsFactory definitionsFactory;
     private Monitor monitor;
 
+    public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     public static final String BINDING = "binding";
     public static final String IMPLEMENTATION = "implementation";
-    public static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    public static final String SCA_DEFINITIONS = "definitions";
-    public static final QName SCA_DEFINITIONS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
+    public static final String DEFINITIONS = "definitions";
+    public static final QName DEFINITIONS_QNAME = new QName(SCA11_NS, DEFINITIONS);
     public static final String TARGET_NAMESPACE = "targetNamespace";
     public static final String NAME = "name";
 
     public DefinitionsProcessor(FactoryExtensionPoint factoryExtensionPoint,
-                                   StAXArtifactProcessor<Object> extensionProcessor,
-                                   Monitor monitor) {
+                                StAXArtifactProcessor<Object> extensionProcessor,
+                                Monitor monitor) {
         this.extensionProcessor = extensionProcessor;
         this.monitor = monitor;
         this.definitionsFactory = factoryExtensionPoint.getFactory(DefinitionsFactory.class);
@@ -85,7 +84,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
             switch (event) {
                 case START_ELEMENT: {
                     name = reader.getName();
-                    if (SCA_DEFINITIONS_QNAME.equals(name)) {
+                    if (DEFINITIONS_QNAME.equals(name)) {
                         definitions = definitionsFactory.createDefinitions();
                         targetNamespace = reader.getAttributeValue(null, TARGET_NAMESPACE);
                         definitions.setTargetNamespace(targetNamespace);
@@ -95,17 +94,10 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                             if (extension instanceof Intent) {
                                 Intent intent = (Intent)extension;
                                 intent.setName(new QName(targetNamespace, intent.getName().getLocalPart()));
-                                if (intent instanceof QualifiedIntent) {
-                                    QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                                    qualifiedIntent.getQualifiableIntent()
-                                        .setName(new QName(targetNamespace, qualifiedIntent.getQualifiableIntent()
-                                            .getName().getLocalPart()));
-                                }
-
-                                // FIXME: Workaround for TUSCANY-2499
-                                intent.setUnresolved(false);
-
                                 definitions.getIntents().add(intent);
+                                for (Intent i : intent.getQualifiedIntents()) {
+                                    i.setName(new QName(targetNamespace, i.getName().getLocalPart()));
+                                }
                             } else if (extension instanceof PolicySet) {
                                 PolicySet policySet = (PolicySet)extension;
                                 policySet.setName(new QName(targetNamespace, policySet.getName().getLocalPart()));
@@ -113,13 +105,10 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                             } else if (extension instanceof Binding) {
                                 Binding binding = (Binding)extension;
                                 definitions.getBindings().add(binding);
-                            } else if (extension instanceof IntentAttachPointType) {
-                                IntentAttachPointType type = (IntentAttachPointType)extension;
-                                if (type.getName().getLocalPart().startsWith(BINDING)) {
-                                    definitions.getBindingTypes().add((IntentAttachPointType)extension);
-                                } else if (type.getName().getLocalPart().startsWith(IMPLEMENTATION)) {
-                                    definitions.getImplementationTypes().add((IntentAttachPointType)extension);
-                                }
+                            } else if (extension instanceof BindingType) {
+                                definitions.getBindingTypes().add((BindingType)extension);
+                            } else if (extension instanceof ImplementationType) {
+                                definitions.getImplementationTypes().add((ImplementationType)extension);
                             }
                         }
                         break;
@@ -131,7 +120,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
 
                 case END_ELEMENT:
                     name = reader.getName();
-                    if (SCA_DEFINITIONS_QNAME.equals(name)) {
+                    if (DEFINITIONS_QNAME.equals(name)) {
                         return definitions;
                     }
                     break;
@@ -148,8 +137,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     public void write(Definitions definitions, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
 
-        writeStartDocument(writer, SCA10_NS, SCA_DEFINITIONS, new XAttr(TARGET_NAMESPACE, definitions
-            .getTargetNamespace()));
+        writeStartDocument(writer, SCA11_NS, DEFINITIONS, new XAttr(TARGET_NAMESPACE, definitions.getTargetNamespace()));
 
         for (Intent policyIntent : definitions.getIntents()) {
             extensionProcessor.write(policyIntent, writer);
@@ -159,11 +147,11 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
             extensionProcessor.write(policySet, writer);
         }
 
-        for (IntentAttachPointType bindingType : definitions.getBindingTypes()) {
+        for (BindingType bindingType : definitions.getBindingTypes()) {
             extensionProcessor.write(bindingType, writer);
         }
 
-        for (IntentAttachPointType implType : definitions.getImplementationTypes()) {
+        for (ImplementationType implType : definitions.getImplementationTypes()) {
             extensionProcessor.write(implType, writer);
         }
 
@@ -175,71 +163,60 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         // are many cross artifact references in a definitions file and we don't want
         // to be dependent on the order things appear
 
-        List<Intent> simpleIntents = new ArrayList<Intent>();
-        List<ProfileIntent> profileIntents = new ArrayList<ProfileIntent>();
-        List<QualifiedIntent> qualifiedIntents = new ArrayList<QualifiedIntent>();
-        List<PolicySet> simplePolicySets = new ArrayList<PolicySet>();
+        List<Intent> intents = new ArrayList<Intent>();
+        List<PolicySet> policySets = new ArrayList<PolicySet>();
         List<PolicySet> referredPolicySets = new ArrayList<PolicySet>();
 
-        for (Intent policyIntent : scaDefns.getIntents()) {
-            if (policyIntent instanceof ProfileIntent)
-                profileIntents.add((ProfileIntent)policyIntent);
-            else if (policyIntent instanceof QualifiedIntent)
-                qualifiedIntents.add((QualifiedIntent)policyIntent);
-            else
-                simpleIntents.add(policyIntent);
-
-            resolver.addModel(policyIntent);
+        for (Intent intent : scaDefns.getIntents()) {
+            intents.add(intent);
+            resolver.addModel(intent);
+            for (Intent i : intent.getQualifiedIntents()) {
+                intents.add(i);
+                resolver.addModel(i);
+            }
         }
 
         for (PolicySet policySet : scaDefns.getPolicySets()) {
-            if (policySet.getReferencedPolicySets().isEmpty())
-                simplePolicySets.add(policySet);
-            else
+            if (policySet.getReferencedPolicySets().isEmpty()) {
+                policySets.add(policySet);
+            } else {
                 referredPolicySets.add(policySet);
+            }
 
             resolver.addModel(policySet);
         }
 
-        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
             resolver.addModel(bindingType);
         }
 
-        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
+        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
             resolver.addModel(implType);
         }
 
         // now resolve everything to ensure that any references between
         // artifacts are satisfied
 
-        for (Intent policyIntent : simpleIntents)
+        for (Intent policyIntent : intents)
             extensionProcessor.resolve(policyIntent, resolver);
 
-        for (ProfileIntent policyIntent : profileIntents)
-            extensionProcessor.resolve(policyIntent, resolver);
-
-        for (QualifiedIntent policyIntent : qualifiedIntents)
-            extensionProcessor.resolve(policyIntent, resolver);
-
-        for (PolicySet policySet : simplePolicySets)
+        for (PolicySet policySet : policySets)
             extensionProcessor.resolve(policySet, resolver);
 
         for (PolicySet policySet : referredPolicySets)
             extensionProcessor.resolve(policySet, resolver);
 
-        for (int count = 0, size = scaDefns.getBindingTypes().size(); count < size; count++) {
-            IntentAttachPointType bindingType = scaDefns.getBindingTypes().get(count);
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
             extensionProcessor.resolve(bindingType, resolver);
         }
 
-        for (int count = 0, size = scaDefns.getImplementationTypes().size(); count < size; count++) {
-            IntentAttachPointType implType = scaDefns.getImplementationTypes().get(count);
-            extensionProcessor.resolve(implType, resolver);
+        for (ImplementationType implementationType : scaDefns.getImplementationTypes()) {
+            extensionProcessor.resolve(implementationType, resolver);
         }
     }
 
     public QName getArtifactType() {
-        return SCA_DEFINITIONS_QNAME;
+        return DEFINITIONS_QNAME;
     }
 
     public Class<Definitions> getModelType() {

@@ -23,7 +23,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.Parameter;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 
 /**
@@ -31,7 +30,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2ConfigParamPolicyHandler implements PolicyHandler {
+public class Axis2ConfigParamPolicyHandler {
     private PolicySet applicablePolicySet = null;
     
     public void setUp(Object... context) {

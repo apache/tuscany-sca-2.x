@@ -148,7 +148,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
     /**
      * Lazily load artifact processors registered in the extension point.
      */
-    private void loadArtifactProcessors() {
+    private synchronized void loadArtifactProcessors() {
         if (loaded)
             return;
 

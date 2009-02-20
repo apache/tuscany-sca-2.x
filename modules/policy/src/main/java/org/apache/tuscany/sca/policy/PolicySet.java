@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.policy;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpression;
@@ -47,12 +46,6 @@ public interface PolicySet {
     void setName(QName name);
 
     /**
-     * Returns the list of operations that this policy set applies to.
-     * 
-     * @return
-     */
-    //List<Operation> getOperations();
-    /**
      * Returns the list of
      * 
      * @return
@@ -73,7 +66,7 @@ public interface PolicySet {
      * 
      * @return the list of concrete policies
      */
-    List<Object> getPolicies();
+    List<PolicyExpression> getPolicies();
 
     /**
      * Returns true if the model element is unresolved.
@@ -91,7 +84,7 @@ public interface PolicySet {
 
     /**
      * Returns the XPath expression that is to be used to evaluate
-     * if this PolicySet applies to specific attachment point
+     * if this PolicySet applies to specific policy subject
      * 
      * @return the XPath expression
      */
@@ -99,35 +92,45 @@ public interface PolicySet {
 
     /**
      * Sets the XPath expression that is to be used to evaluate
-     * if this PolicySet applies to specific attachment point
+     * if this PolicySet applies to specific policy subject
      * 
      */
     void setAppliesTo(String xpath);
+    
+    /**
+     * A string which is an XPath 1.0 expression identifying one or more
+     * elements (policy subject) in the Domain. It is used to declare which 
+     * set of elements the policySet is actually attached to.
+     * 
+     * @return The attachTo XPath
+     */
+    String getAttachTo();
+    
+    /**
+     * Set the attachTo XPath
+     * @param xpath
+     */
+    void setAttachTo(String xpath);
+    
+    /**
+     * Get the resolved XPathExpression for attachTo
+     * @return
+     */
+    XPathExpression getAttachToXPathExpression();
+    
+    /**
+     * Set the resolved XPathExpression for attachTo
+     * @param expression
+     */
+    void setAttachToXPathExpression(XPathExpression expression);
 
     /**
      * Returns the policies / policy attachments provided thro intent maps
      * 
      * @return
      */
-    Map<Intent, List<Object>> getMappedPolicies();
-
-    /**
-     * Gets the XPath expression that is to be used to evaluate
-     * the SCA Artifacts that this policyset will always apply to
-     * immaterial of an intent declared on the SCA Artifact
-     * 
-     * @return the XPath expression
-     */
-    String getAlwaysAppliesTo();
-
-    /**
-     * Sets the XPath expression that is to be used to evaluate
-     * the SCA Artifacts that this policyset will always apply to
-     * immaterial of an intent declared on the SCA Artifact
-     * 
-     */
-    void setAlwaysAppliesTo(String xpath);
-
+    List<IntentMap> getIntentMaps();
+    
     /**
      * Get the XPath expression for the appliesTo attribute
      * @return the XPath expression for the appliesTo attribute
@@ -139,17 +142,5 @@ public interface PolicySet {
      * @param xpathExpression the XPath expression for the appliesTo attribute
      */
     void setAppliesToXPathExpression(XPathExpression xpathExpression);
-
-    /**
-     * Get the XPath expression for the alwaysAppliesTo attribute
-     * @return the XPath expression for the alwaysAppliesTo attribute
-     */
-    XPathExpression getAlwaysAppliesToXPathExpression();
-
-    /**
-     * Set the XPath expression for the alwaysAppliesTo attribute
-     * @param xpathExpression the XPath expression for the alwaysAppliesTo attribute
-     */
-    void setAlwaysAppliesToXPathExpression(XPathExpression xpathExpression);
 
 }

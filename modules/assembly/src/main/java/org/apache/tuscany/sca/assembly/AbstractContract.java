@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.assembly;
 
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Interface contracts define one or more business functions. These business
@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface AbstractContract extends Base, Extensible, IntentAttachPoint, OperationsConfigurator {
+public interface AbstractContract extends Base, Extensible, PolicySubject {
 
     /**
      * Returns the name of the contract.

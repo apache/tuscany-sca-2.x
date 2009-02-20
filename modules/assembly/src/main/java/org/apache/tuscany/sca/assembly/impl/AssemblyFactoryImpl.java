@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -113,9 +112,5 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
     public Wire createWire() {
         return new WireImpl();
     }
-
-    public ConfiguredOperation createConfiguredOperation() {
-        return new ConfiguredOperationImpl();
-    }
-    
+   
 }

@@ -25,12 +25,10 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -38,7 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable, OperationsConfigurator {
+public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable {
     private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;
@@ -49,9 +47,7 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Boolean autowire;
-    private IntentAttachPointType type;
-    private List<ConfiguredOperation>  configuredImplOperations = new ArrayList<ConfiguredOperation>();
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private ExtensionType type;
     /**
      * Constructs a new component.
      */
@@ -141,34 +137,12 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         return autowire;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return type;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
         this.type = type;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets;
-        
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-        
-    }
-    
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredImplOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredImplOperations = configuredOperations;
-    }
-    
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
     }
 
 }

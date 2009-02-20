@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A factory for the Endpoint model.
@@ -131,11 +131,11 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
     
     private boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
         boolean isCompatible = true;
-        if ( refBinding instanceof PolicySetAttachPoint && svcBinding instanceof PolicySetAttachPoint ) {
+        if ( refBinding instanceof PolicySubject && svcBinding instanceof PolicySubject ) {
             //TODO : need to add more compatibility checks at the policy attachment levels
-            for ( PolicySet svcPolicySet : ((PolicySetAttachPoint)svcBinding).getPolicySets() ) {
+            for ( PolicySet svcPolicySet : ((PolicySubject)svcBinding).getPolicySets() ) {
                 isCompatible = false;
-                for ( PolicySet refPolicySet : ((PolicySetAttachPoint)refBinding).getPolicySets() ) {
+                for ( PolicySet refPolicySet : ((PolicySubject)refBinding).getPolicySets() ) {
                     if ( svcPolicySet.equals(refPolicySet) ) {
                         isCompatible = true;
                         break;

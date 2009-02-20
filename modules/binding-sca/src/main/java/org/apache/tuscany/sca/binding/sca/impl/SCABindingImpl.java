@@ -30,23 +30,23 @@ import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * The assembly mode object for an SCA binding.
  * 
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPoint, OptimizableBinding, AutomaticBinding {
+public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, OptimizableBinding, AutomaticBinding {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
     private List<Extension> attributeExtensions = new ArrayList<Extension>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
+    private ExtensionType intentAttachPointType;
     
     private Component targetComponent;
     private ComponentService targetComponentService;
@@ -154,11 +154,11 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return intentAttachPointType;
     }
     
-    public void setType(IntentAttachPointType intentAttachPointType) {
+    public void setType(ExtensionType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
     }
     

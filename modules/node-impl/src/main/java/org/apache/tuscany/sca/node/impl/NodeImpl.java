@@ -413,10 +413,10 @@ public class NodeImpl implements Node, Client {
 //        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
 //            definitionsResolver.addModel(policySet);
 //        }
-//        for (IntentAttachPointType bindingType : systemDefinitions.getBindingTypes()) {
+//        for (ExtensionType bindingType : systemDefinitions.getBindingTypes()) {
 //            definitionsResolver.addModel(bindingType);
 //        }
-//        for (IntentAttachPointType implementationType : systemDefinitions.getImplementationTypes()) {
+//        for (ExtensionType implementationType : systemDefinitions.getImplementationTypes()) {
 //            definitionsResolver.addModel(implementationType);
 //        }
 //

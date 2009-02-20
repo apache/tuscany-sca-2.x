@@ -20,12 +20,14 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.policy.PolicySubject;
+
 /**
  * Describes an implementation and represents its configurable aspects.
  * 
  * @version $Rev$ $Date$
  */
-public interface ComponentType extends Base {
+public interface ComponentType extends Base, PolicySubject {
     
     /**
      * Returns the URI of this component type.

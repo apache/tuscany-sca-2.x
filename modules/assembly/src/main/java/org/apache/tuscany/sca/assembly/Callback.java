@@ -20,15 +20,14 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a callback object describing the bindings to use for callbacks.
  * 
  * @version $Rev$ $Date$
  */
-public interface Callback extends Base, Extensible, IntentAttachPoint, PolicySetAttachPoint, OperationsConfigurator {
+public interface Callback extends Base, Extensible, PolicySubject {
 
     /**
      * Returns the bindings supported for callbacks.

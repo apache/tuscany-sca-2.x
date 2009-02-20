@@ -23,41 +23,40 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Extension;
 
 public class ExtensionImpl implements Extension {
-	private QName qName;
-	private Object value;
-	boolean isAttribute = false;
+    private QName qName;
+    private Object value;
+    boolean isAttribute = false;
 
-	public ExtensionImpl() {
-		
-	}
-	
-	public ExtensionImpl(QName qName, Object value, boolean isAttribute) {
-		this.qName = qName;
-		this.value = value;
-		this.isAttribute = isAttribute;
-	}
-	
-	public QName getQName() {
-		return qName;
-	}
+    public ExtensionImpl() {
+    }
 
-	public void setQName(QName qName) {
-		this.qName = qName;
-	}
+    public ExtensionImpl(QName qName, Object value, boolean isAttribute) {
+        this.qName = qName;
+        this.value = value;
+        this.isAttribute = isAttribute;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public QName getQName() {
+        return qName;
+    }
 
-	public void setValue(Object value) {
-		this.value = value;
-	}
+    public void setQName(QName qName) {
+        this.qName = qName;
+    }
 
-	public boolean isAttribute() {
-		return isAttribute;
-	}
+    public <T> T getValue() {
+        return (T) value;
+    }
 
-	public void setIsAttribute(boolean isAttribute) {
-		this.isAttribute = isAttribute;
-	}
+    public <T> void setValue(T value) {
+        this.value = value;
+    }
+
+    public boolean isAttribute() {
+        return isAttribute;
+    }
+
+    public void setIsAttribute(boolean isAttribute) {
+        this.isAttribute = isAttribute;
+    }
 }

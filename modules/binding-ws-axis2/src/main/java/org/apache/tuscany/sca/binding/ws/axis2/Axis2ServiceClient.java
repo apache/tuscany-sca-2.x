@@ -27,7 +27,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +73,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
@@ -89,19 +85,15 @@ public class Axis2ServiceClient {
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
-    List<PolicyHandlerTuple> policyHandlerClassnames = null;
-    private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
                               WebServiceBinding wsBinding,
-                              MessageFactory messageFactory,
-                              List<PolicyHandlerTuple> policyHandlerClassnames) {
+                              MessageFactory messageFactory) {
 
         this.component = component;
         this.contract = contract;
         this.wsBinding = wsBinding;
-        this.policyHandlerClassnames = policyHandlerClassnames;
     }
 
     protected void start() {
@@ -156,7 +148,6 @@ public class Axis2ServiceClient {
             }
 
             createPolicyHandlers();
-            setupPolicyHandlers(policyHandlerList, configContext);
 
             Definition definition = wsBinding.getWSDLDocument();
             QName serviceQName = wsBinding.getService().getQName();
@@ -374,9 +365,9 @@ public class Axis2ServiceClient {
         }
         Axis2BindingInvoker invoker;
         if (operation.isNonBlocking()) {
-            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList, wsBinding);
+            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, wsBinding);
         } else {
-            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList, wsBinding);
+            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, wsBinding);
         }
         
         return invoker;
@@ -465,16 +456,7 @@ public class Axis2ServiceClient {
     }
 
     private void createPolicyHandlers() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (wsBinding instanceof PolicySetAttachPoint) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
-            PolicyHandler policyHandler = null;
-            for (PolicySet policySet : policiedBinding.getPolicySets()) {
-                policyHandler = PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
-                if (policyHandler != null) {
-                    policyHandler.setApplicablePolicySet(policySet);
-                    policyHandlerList.add(policyHandler);
-                }
-            }
+        if (wsBinding instanceof PolicySubject) {
             
             // code to create policy handlers using the new policy SPI based
             // on policy providers
@@ -491,10 +473,5 @@ public class Axis2ServiceClient {
         }
     }
 
-    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext) {
-        for (PolicyHandler aHandler : policyHandlers) {
-            aHandler.setUp(configContext);
-        }
-    }
 
 }

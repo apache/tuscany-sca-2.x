@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.sca.policy.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * Represents an intent map.
@@ -31,36 +33,10 @@ import org.apache.tuscany.sca.policy.IntentMap;
 public class IntentMapImpl implements IntentMap {
 
     private boolean unresolved;
-    private IntentMap defaultQualifiedIntentMap;
-    private List<Object> policies;
     private Intent providedIntent;
-    private List<IntentMap> qualifiedIntentMaps;
+    private List<Qualifier> qualifiers = new ArrayList<Qualifier>();
     
     protected IntentMapImpl() {
-    }
-
-    public IntentMap getDefaultQualifiedIntentMap() {
-        return defaultQualifiedIntentMap;
-    }
-
-    public List<Object> getPolicies() {
-        return policies;
-    }
-
-    public Intent getProvidedIntent() {
-        return providedIntent;
-    }
-
-    public List<IntentMap> getQualifiedIntentMaps() {
-        return qualifiedIntentMaps;
-    }
-
-    public void setDefaultQualifiedIntentMap(IntentMap defaultQualifiedIntentMap) {
-        this.defaultQualifiedIntentMap = defaultQualifiedIntentMap;
-    }
-
-    public void setProvidedIntent(Intent providedIntent) {
-        this.providedIntent = providedIntent;
     }
 
     public boolean isUnresolved() {
@@ -69,5 +45,17 @@ public class IntentMapImpl implements IntentMap {
 
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
+    }
+
+    public Intent getProvidedIntent() {
+        return providedIntent;
+    }
+
+    public void setProvidedIntent(Intent providedIntent) {
+        this.providedIntent = providedIntent;
+    }
+
+    public List<Qualifier> getQualifiers() {
+        return qualifiers;
     }
 }

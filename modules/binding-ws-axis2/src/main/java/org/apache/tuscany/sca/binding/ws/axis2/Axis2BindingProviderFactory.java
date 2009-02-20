@@ -26,15 +26,12 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Axis2BindingProviderFactory
@@ -46,7 +43,6 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
 
     private FactoryExtensionPoint modelFactories;
     private ServletHost servletHost;
-    private List<PolicyHandlerTuple> policyHandlerClassnames = null;
     private DataBindingExtensionPoint dataBindings;
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
@@ -56,7 +52,6 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
             this.servletHost = hosts.get(0);
         }
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        policyHandlerClassnames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
@@ -64,7 +59,7 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
                                                                    RuntimeComponentReference reference,
                                                                    WebServiceBinding binding) {
         return new Axis2ReferenceBindingProvider(component, reference, binding,
-                                                 modelFactories, policyHandlerClassnames, dataBindings);
+                                                 modelFactories, dataBindings);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
@@ -72,7 +67,7 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
                                                                WebServiceBinding binding) {
         return new Axis2ServiceBindingProvider(component, service, binding,
                                                servletHost, modelFactories,
-                                               policyHandlerClassnames, dataBindings);
+                                               dataBindings);
     }
     
     public Class<WebServiceBinding> getModelType() {

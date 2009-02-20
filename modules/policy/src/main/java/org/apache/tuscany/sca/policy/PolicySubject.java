@@ -16,37 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.policy;
 
 import java.util.List;
 
 /**
- * Base interface for all assembly model objects that can be have policy intents
- * attached to them.
- *
- * @version $Rev$ $Date$
+ * A policy subject is an entity in the assembly with which a policy can be 
+ * associated. 
+ * 
+ * For example, a policy subject can be one of the following:
+ * <ul>
+ * <li>composite
+ * <li>component
+ * <li>implementation
+ * <li>service
+ * <li>reference
+ * <li>binding
+ * <li>interface
+ * </ul> 
  */
-public interface IntentAttachPoint {
-
+public interface PolicySubject {
     /**
-     * Returns a list of policy intents. See the Policy Framework specification
-     * for a description of this attribute.
+     * Get a list of required intents
      * 
-     * @return a list of policy intents.
-     */
-    List<Intent> getRequiredIntents();
-    
-   
-    /**
-     * Returns the type of the attach point such as a BindingType or an ImplementationType and so on
      * @return
      */
-    IntentAttachPointType getType();
-    
+    List<Intent> getRequiredIntents();
+
     /**
+     * Get a list of attached policySets 
      * 
-     * Sets the type of the attach point such as a BindingType or an ImplementationType and so on
-     * @param type
+     * @return A list of policySets 
      */
-    void setType(IntentAttachPointType type);
+    List<PolicySet> getPolicySets();
+    
+    ExtensionType getType();
+    void setType(ExtensionType type);
 }

@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 public interface PolicyConstants {
     String WHITE_SPACE = " ";
     String COLON = ":";
-    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     String INTENT = "intent";
     String POLICY_SET = "policySet";
@@ -41,8 +41,10 @@ public interface PolicyConstants {
     String DESCRIPTION = "description";
     String PROVIDES = "provides";
     String APPLIES_TO = "appliesTo";
+    String ATTACH_TO = "attachTo";
     String ALWAYS_APPLIES_TO = "alwaysAppliesTo";
     String QUALIFIER = ".";
+    String INTENT_QUALIFIER = "qualifier";
     String INTENT_MAP_QUALIFIER = "qualifier";
     String REQUIRES = "requires";
     String EXCLUDES = "excludes";
@@ -50,21 +52,22 @@ public interface PolicyConstants {
 
     String ALWAYS_PROVIDES = "alwaysProvides";
     String MAY_PROVIDE = "mayProvide";
-    String TYPE = "type";
+    String INTENT_TYPE = "intentType";
     String IMPLEMENTATION_TYPE = "implementationType";
     String BINDING_TYPE = "bindingType";
-    QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_TYPE);
-    QName BINDING_TYPE_QNAME = new QName(SCA10_NS, BINDING_TYPE);
+    QName IMPLEMENTATION_TYPE_QNAME = new QName(SCA11_NS, IMPLEMENTATION_TYPE);
+    QName BINDING_TYPE_QNAME = new QName(SCA11_NS, BINDING_TYPE);
     String BINDING = "binding";
     String IMPLEMENTATION = "implementation";
 
-    QName POLICY_INTENT_QNAME = new QName(SCA10_NS, INTENT);
-    QName POLICY_SET_QNAME = new QName(SCA10_NS, POLICY_SET);
-    QName POLICY_INTENT_MAP_QNAME = new QName(SCA10_NS, INTENT_MAP);
-    QName SCA_DEFINITIONS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
-    QName DESCRIPTION_QNAME = new QName(SCA10_NS, DESCRIPTION);
-    QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA10_NS, INTENT_MAP_QUALIFIER);
-    QName POLICY_SET_REFERENCE_QNAME = new QName(SCA10_NS, POLICY_SET_REFERENCE);
+    QName POLICY_INTENT_QNAME = new QName(SCA11_NS, INTENT);
+    QName POLICY_SET_QNAME = new QName(SCA11_NS, POLICY_SET);
+    QName POLICY_INTENT_MAP_QNAME = new QName(SCA11_NS, INTENT_MAP);
+    QName SCA_DEFINITIONS_QNAME = new QName(SCA11_NS, SCA_DEFINITIONS);
+    QName DESCRIPTION_QNAME = new QName(SCA11_NS, DESCRIPTION);
+    QName POLICY_INTENT_MAP_QUALIFIER_QNAME = new QName(SCA11_NS, INTENT_MAP_QUALIFIER);
+    QName POLICY_SET_REFERENCE_QNAME = new QName(SCA11_NS, POLICY_SET_REFERENCE);
+    QName INTENT_QUALIFIER_QNAME = new QName(SCA11_NS, INTENT_QUALIFIER);
 
     String QUALIFIED_INTENT_CONSTRAINS_ERROR = " - Qualified Intents must not specify 'constrains' attribute";
 

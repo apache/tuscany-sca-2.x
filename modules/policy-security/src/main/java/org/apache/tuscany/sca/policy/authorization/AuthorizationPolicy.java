@@ -24,14 +24,12 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.Policy;
-
 /**
  * Models the SCA Implementation Security Policy Assertion for Authorization.
  * 
  * @version $Rev$ $Date$
  */
-public class AuthorizationPolicy implements Policy {
+public class AuthorizationPolicy {
     private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     // private final static String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     public static final QName NAME = new QName(SCA10_NS, "authorization");

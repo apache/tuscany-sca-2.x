@@ -931,9 +931,22 @@ final class NodeLauncherUtil {
     static Set<URL> manifestClassPath(URL jarFile) throws Exception {
         Set<URL> urls = new HashSet<URL>();
         if (jarFile != null) {
-            JarInputStream jar = new JarInputStream(jarFile.openStream());
-            Manifest mf = jar.getManifest();
-            jar.close();
+            Manifest mf = null;
+            if ("file".equals(jarFile.getProtocol())) {
+                File f = file(jarFile);
+                if (f.isDirectory()) {
+                    File mfFile = new File(f, "META-INF/MANIFEST.MF");
+                    if (mfFile.isFile()) {
+                        FileInputStream is = new FileInputStream(mfFile);
+                        mf = new Manifest(is);
+                        is.close();
+                    }
+                } else if (f.isFile()) {
+                    JarInputStream jar = new JarInputStream(jarFile.openStream());
+                    mf = jar.getManifest();
+                    jar.close();
+                }
+            }
             if (mf != null) {
                 String cp = mf.getMainAttributes().getValue("Class-Path");
                 if (cp != null) {
