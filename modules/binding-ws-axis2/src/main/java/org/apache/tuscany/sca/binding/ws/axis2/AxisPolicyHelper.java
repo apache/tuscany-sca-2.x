@@ -25,9 +25,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * @version $Rev$ $Date$
@@ -44,8 +44,8 @@ public class AxisPolicyHelper {
     public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
         PolicySet returnPolicySet = null;
 
-        if (wsBinding instanceof PolicySetAttachPoint) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+        if (wsBinding instanceof PolicySubject) {
+            PolicySubject policiedBinding = (PolicySubject)wsBinding;
             for (PolicySet policySet : policiedBinding.getPolicySets()) {
                 for (Intent intent : policySet.getProvidedIntents()) {
                     if (intent.getName().equals(intentName)) {
@@ -60,8 +60,8 @@ public class AxisPolicyHelper {
     }
 
     public static boolean isIntentRequired(Binding wsBinding, QName intent) {
-        if (wsBinding instanceof IntentAttachPoint) {
-            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+        if (wsBinding instanceof PolicySubject) {
+            List<Intent> intents = ((PolicySubject)wsBinding).getRequiredIntents();
             for (Intent i : intents) {
                 if (intent.equals(i.getName())) {
                     return true;

@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,21 +30,18 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     private static final Logger logger = Logger.getLogger(Axis2ServiceInOutSyncMessageReceiver.class.getName());
 	
     protected Operation operation;
-    private List<PolicyHandler> policyHandlerList = null;
 
     private Axis2ServiceProvider provider;
 
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation, List<PolicyHandler> policyHandlerList) {
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
         this.provider = provider;
         this.operation = operation;
-        this.policyHandlerList = policyHandlerList;
     }
 
     public Axis2ServiceInOutSyncMessageReceiver() {

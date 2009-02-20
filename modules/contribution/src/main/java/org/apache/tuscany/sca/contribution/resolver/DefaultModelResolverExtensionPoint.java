@@ -89,7 +89,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
     /**
      * Dynamically load model resolvers declared under META-INF/services
      */
-    private void loadModelResolvers() {
+    private synchronized void loadModelResolvers() {
         if (loadedResolvers != null)
             return;
         loadedResolvers = new HashMap<String, ServiceDeclaration>();

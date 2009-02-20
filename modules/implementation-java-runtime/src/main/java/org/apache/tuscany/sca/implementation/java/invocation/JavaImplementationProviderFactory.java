@@ -19,15 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,21 +38,18 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
     private ProxyFactory proxyService;
     private ComponentContextFactory componentContextFactory;
     private RequestContextFactory requestContextFactory;
-    private List<PolicyHandlerTuple> policyHandlerClassNames = null;
 
     public JavaImplementationProviderFactory(ProxyFactory proxyService,
                                              DataBindingExtensionPoint dataBindingRegistry,
                                              JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                              ComponentContextFactory componentContextFactory,
-                                             RequestContextFactory requestContextFactory,
-                                             List<PolicyHandlerTuple> policyHandlerClassNames) {
+                                             RequestContextFactory requestContextFactory) {
         super();
         this.proxyService = proxyService;
         this.dataBindingRegistry = dataBindingRegistry;
         this.propertyValueObjectFactory = propertyValueObjectFactory;
         this.componentContextFactory = componentContextFactory;
         this.requestContextFactory = requestContextFactory;
-        this.policyHandlerClassNames = policyHandlerClassNames;
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
@@ -66,8 +60,7 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
                                               dataBindingRegistry,
                                               propertyValueObjectFactory, 
                                               componentContextFactory, 
-                                              requestContextFactory,
-                                              policyHandlerClassNames);
+                                              requestContextFactory);
     }
 
     public Class<JavaImplementation> getModelType() {

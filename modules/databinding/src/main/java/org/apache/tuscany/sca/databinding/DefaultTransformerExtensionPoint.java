@@ -109,7 +109,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
      * 
      * @param transformerClass
      */
-    private void loadTransformers(Class<?> transformerClass) {
+    private synchronized void loadTransformers(Class<?> transformerClass) {
 
         // Get the transformer service declarations
         Set<ServiceDeclaration> transformerDeclarations;

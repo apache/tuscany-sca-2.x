@@ -21,9 +21,7 @@ package org.apache.tuscany.sca.policy.security.jaas;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -48,6 +46,7 @@ public class JaasAuthenticationImplementationPolicyProvider implements PolicyPro
 
     private List<JaasAuthenticationPolicy> findPolicies(Operation op) {
         List<JaasAuthenticationPolicy> polices = new ArrayList<JaasAuthenticationPolicy>();
+        /*
         // FIXME: How do we get a list of effective policySets for a given operation?
         if (implementation instanceof OperationsConfigurator) {
             OperationsConfigurator operationsConfigurator = (OperationsConfigurator)implementation;
@@ -63,6 +62,7 @@ public class JaasAuthenticationImplementationPolicyProvider implements PolicyPro
                 }
             }
         }
+        */
         
         List<PolicySet> policySets = component.getPolicySets();
         for (PolicySet ps : policySets) {

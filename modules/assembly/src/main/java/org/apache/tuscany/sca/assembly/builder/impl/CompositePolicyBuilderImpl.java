@@ -20,9 +20,6 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -30,10 +27,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -98,29 +93,9 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                      PolicyComputationUtils.addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
                      PolicyComputationUtils.addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
                      
-                     //reconcile intents and policysets for operations 
-                     boolean notFound;
-                     List<ConfiguredOperation> opsFromComponentType = new ArrayList<ConfiguredOperation>();
-                     for ( ConfiguredOperation ctsConfOp : service.getConfiguredOperations() ) {
-                         notFound = true;
-                         for ( ConfiguredOperation csConfOp : componentService.getConfiguredOperations() ) {
-                             if ( csConfOp.getName().equals(ctsConfOp.getName()) ) {
-                                 PolicyComputationUtils.addInheritedIntents(ctsConfOp.getRequiredIntents(), csConfOp.getRequiredIntents());
-                                 PolicyComputationUtils.addInheritedPolicySets(ctsConfOp.getPolicySets(), csConfOp.getPolicySets(), true);
-                                 notFound = false;
-                             } 
-                         }
-                         
-                         if ( notFound ) {
-                             opsFromComponentType.add(ctsConfOp);
-                         }
-                     }
-                     componentService.getConfiguredOperations().addAll(opsFromComponentType);
                 }
                 
                 try {
-                    //compute the intents for operations under service element
-                    PolicyConfigurationUtil.computeIntentsForOperations(componentService);
                     //compute intents and policyset for each binding
                     //addInheritedOpConfOnBindings(componentService);
                     PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentService);
@@ -142,8 +117,6 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 
                
                 try {
-                    //compute the intents for operations under reference element
-                    PolicyConfigurationUtil.computeIntentsForOperations(componentReference);
                     //compute intents and policyset for each binding
                     //addInheritedOpConfOnBindings(componentReference);
                     PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentReference);
@@ -171,8 +144,6 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         for (Service service : composite.getServices()) {
             addPoliciesFromPromotedService((CompositeService)service);
             try {
-                //compute the intents for operations under service element
-                PolicyConfigurationUtil.computeIntentsForOperations(service);
                 //add or merge service operations to the binding
                 //addInheritedOpConfOnBindings(service);
                 PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(service);
@@ -188,10 +159,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             CompositeReference compReference = (CompositeReference)reference;
             addPoliciesFromPromotedReference(compReference);
             try {
-                //compute the intents for operations under service element
-                PolicyConfigurationUtil.computeIntentsForOperations(reference);
-                //addInheritedOpConfOnBindings(reference);
-                
+               
                 if (compReference.getCallback() != null) {
                     PolicyComputationUtils.addInheritedIntents(compReference.getRequiredIntents(), 
                                         compReference.getCallback().getRequiredIntents());
@@ -215,7 +183,6 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                             compositeService.getRequiredIntents());
         PolicyComputationUtils.addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
                                compositeService.getPolicySets(), true);
-        addInheritedOperationConfigurations(compositeService.getPromotedService(), compositeService);
     }
     
     private void addPoliciesFromPromotedReference(CompositeReference compositeReference) {
@@ -225,38 +192,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
        
            PolicyComputationUtils.addInheritedPolicySets(promotedReference.getPolicySets(), 
                                   compositeReference.getPolicySets(), true);
-           addInheritedOperationConfigurations(promotedReference, compositeReference);
         }
     } 
     
-    private void addInheritedOperationConfigurations(
-            OperationsConfigurator source, OperationsConfigurator target) {
-        boolean found = false;
-
-        List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
-        for (ConfiguredOperation sourceConfOp : source
-                .getConfiguredOperations()) {
-            for (ConfiguredOperation targetConfOp : target
-                    .getConfiguredOperations()) {
-                if (sourceConfOp.getName().equals(targetConfOp.getName())) {
-                    PolicyComputationUtils.addInheritedIntents(sourceConfOp
-                            .getRequiredIntents(), targetConfOp
-                            .getRequiredIntents());
-                    PolicyComputationUtils.addInheritedPolicySets(sourceConfOp
-                            .getPolicySets(), targetConfOp.getPolicySets(),
-                            true);
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                additionalOperations.add(sourceConfOp);
-            }
-        }
-
-        if (!additionalOperations.isEmpty()) {
-            target.getConfiguredOperations().addAll(additionalOperations);
-        }
-    }    
 }

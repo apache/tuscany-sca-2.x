@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @version $Rev$ $Date$
  */
-public interface Extensible {
+public interface Extensible extends Base {
 
     /**
      * Returns a list of extension objects contained in this model object.

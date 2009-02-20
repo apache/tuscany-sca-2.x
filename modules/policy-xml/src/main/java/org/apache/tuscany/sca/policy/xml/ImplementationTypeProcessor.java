@@ -26,30 +26,27 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 /**
  * Processor for handling XML models of ImplementationType meta data definitions
  *
  * @version $Rev$ $Date$
  */
-public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor {
+public class ImplementationTypeProcessor extends ExtensionTypeProcessor {
 
     public ImplementationTypeProcessor(PolicyFactory policyFactory,
-                                       IntentAttachPointTypeFactory intentAttachPointTypeFactory,
                                        StAXArtifactProcessor<Object> extensionProcessor,
                                        Monitor monitor) {
-        super(policyFactory, intentAttachPointTypeFactory, extensionProcessor, monitor);
+        super(policyFactory, extensionProcessor, monitor);
     }
 
     public ImplementationTypeProcessor(FactoryExtensionPoint modelFactories,
                                        StAXArtifactProcessor<Object> extensionProcessor,
                                        Monitor monitor) {
-        super(modelFactories.getFactory(PolicyFactory.class), modelFactories
-            .getFactory(IntentAttachPointTypeFactory.class), extensionProcessor, monitor);
+        super(modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
     }
 
     public QName getArtifactType() {
@@ -57,11 +54,11 @@ public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor 
     }
 
     @Override
-    protected IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver)
+    protected ExtensionType resolveExtensionType(ExtensionType extnType, ModelResolver resolver)
         throws ContributionResolveException {
-        if (extnType instanceof ImplementationTypeImpl) {
-            ImplementationTypeImpl implType = (ImplementationTypeImpl)extnType;
-            return resolver.resolveModel(ImplementationTypeImpl.class, implType);
+        if (extnType instanceof ImplementationType) {
+            ImplementationType implType = (ImplementationType)extnType;
+            return resolver.resolveModel(ImplementationType.class, implType);
         } else {
             return extnType;
         }

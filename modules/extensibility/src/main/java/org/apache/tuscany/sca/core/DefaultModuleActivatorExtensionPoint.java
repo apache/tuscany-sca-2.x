@@ -58,7 +58,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
     /**
      * Dynamically load module activators declared under META-INF/services
      */
-    private void loadModuleActivators() {
+    private synchronized void loadModuleActivators() {
         if (loadedActivators)
             return;
 

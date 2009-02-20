@@ -18,31 +18,48 @@
  */
 package org.apache.tuscany.sca.policy;
 
-import java.util.List;
+import javax.xml.namespace.QName;
 
 /**
- * Base interface for all assembly model objects that can have policy sets
- * attached to them.
+ * Interface that will abstract various types of policy specifications
+ * and attachments for example WS-Policy
  *
  * @version $Rev$ $Date$
  */
-public interface PolicySetAttachPoint extends IntentAttachPoint {
+public interface PolicyExpression {
+    /**
+     * Get the QName of the policy expression
+     * @return the QName of the policy expression
+     */
+    QName getName();
 
     /**
-     * Returns a list of policy sets. See the Policy Framework specification for
-     * a description of this attribute.
-     * 
-     * @return a list of policy sets.
+     * Set the QName of the policy expression
+     * @param name
      */
-    List<PolicySet> getPolicySets();
-    
-    
+    void setName(QName name);
+
     /**
-     * Returns a list of policy sets defined in the domain, that are applicable to this
-     * PolicySetAttachPoint. An applicable PolicySet is one that include this PolicySetAttachPoint
-     * as part of its 'appliesTo' XPath attribute.
-     * 
-     * @return a list of policy sets applicable to this PolicySetAttachPoint
+     * Get the policy definition in the type of the specific domain
+     * @return
      */
-    List<PolicySet> getApplicablePolicySets();
+    <T> T getPolicy();
+
+    /**
+     * Set the policy definition
+     * @param expression
+     */
+    <T> void setPolicy(T policy);
+
+    /**
+     * 
+     * @param unresolved
+     */
+    void setUnresolved(boolean unresolved);
+
+    /**
+     * 
+     * @return
+     */
+    boolean isUnresolved();
 }

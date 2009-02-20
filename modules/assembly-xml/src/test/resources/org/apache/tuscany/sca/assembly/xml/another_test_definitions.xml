@@ -19,7 +19,7 @@
 -->
 <sca:definitions xmlns="http://test"
  			targetNamespace="http://test"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+ 			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712">
 
 <!-- simple intent -->
  <sca:intent name="tuscanyIntent_1" 
@@ -27,6 +27,7 @@
  			 <sca:description>
  			 Sample Intent
  			 </sca:description>
+             <sca:qualifier name="qualified" default="true"/>
  </sca:intent>
  
  <sca:intent name="tuscanyIntent_2" 
@@ -34,6 +35,7 @@
  			 <sca:description>
  			 Sample Intent
  			 </sca:description>
+             <sca:qualifier name="qualified" default="true"/>
  </sca:intent>
  
  <sca:intent name="tuscanyIntent_3" 
@@ -91,7 +93,4 @@
  			 Sample Intent
  			 </sca:description>
  </sca:intent>
-  <!-- qualified intents -->
- <sca:intent name="tuscanyIntent_1.qualified" />
- <sca:intent name="tuscanyIntent_2.qualified" />
 </sca:definitions>

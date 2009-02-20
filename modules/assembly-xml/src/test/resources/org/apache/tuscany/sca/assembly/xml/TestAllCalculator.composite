@@ -36,13 +36,11 @@
         <operation name="add" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
 
         <binding.ws name="CalculatorWS" policySets="sns:SecureReliablePolicy" port="" requires="cns:confidentiality" uri="http://calc/ws">
-            <operation name="add" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
         </binding.ws>
 
         <callback policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
 	        <ext:testExtension/>
             <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="" uri="http://calc/callback/ws">
-                <operation name="addCallback" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
             </binding.ws>
         </callback>
     </service>
@@ -97,16 +95,13 @@
     <reference name="MultiplyService" promote="CalculatorServiceComponent/multiplyService" policySets="sns:SecureReliablePolicy"
         requires="cns:confidentiality">
         <interface.java interface="calculator.MultiplyService" callbackInterface="calculator.MultiplyCallback" />
-        <operation name="multiply" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
 
         <binding.ws name="MultiplyWS" port="" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" uri="http://calc/ws">
-            <operation name="multiply" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
         </binding.ws>
 
         <callback policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
             <binding.ws name="MultiplyCallbackWS" port="" uri="http://calc/callback/ws" policySets="sns:SecureReliablePolicy"
                 requires="cns:confidentiality">
-                <operation name="multiplyCallback" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality" />
             </binding.ws>
         </callback>
     </reference> 

@@ -117,7 +117,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
     /**
      * Lazily load artifact processors registered in the extension point.
      */
-    private void loadProcessors() {
+    private synchronized void loadProcessors() {
         if (loaded)
             return;
 

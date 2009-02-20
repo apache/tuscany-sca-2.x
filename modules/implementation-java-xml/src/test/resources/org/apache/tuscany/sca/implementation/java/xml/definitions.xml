@@ -19,7 +19,7 @@
 -->
 <sca:definitions xmlns="http://test"
  			targetNamespace="http://test"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+ 			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712">
 
 <!-- simple intent -->
  <sca:intent name="tuscanyIntent_1" 

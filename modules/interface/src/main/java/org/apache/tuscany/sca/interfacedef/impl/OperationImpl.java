@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -58,7 +58,7 @@ public class OperationImpl implements Operation {
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private IntentAttachPointType type;
+    private ExtensionType type;
 
     /**
      * @param name
@@ -328,11 +328,11 @@ public class OperationImpl implements Operation {
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return type;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
         this.type = type;
     }
     

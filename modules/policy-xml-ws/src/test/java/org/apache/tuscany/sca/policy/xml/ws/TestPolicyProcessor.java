@@ -28,37 +28,36 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.policy.Policy;
 
 /**
  *
  * @version $Rev$ $Date$
  */
-public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
+public class TestPolicyProcessor implements StAXArtifactProcessor<Object> {
 
     public QName getArtifactType() {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
     }
 
-    public Policy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
+    public Object read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
         return new MockPolicyImplOne();
     }
 
-    public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
+    public void write(Object arg0, XMLStreamWriter arg1) throws ContributionWriteException,
                                                         XMLStreamException {
     }
 
-    public Class<Policy> getModelType() {
+    public Class<Object> getModelType() {
         // TODO Auto-generated method stub
-        return Policy.class;
+        return Object.class;
     }
 
-    public void resolve(Policy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Object arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
 
     
-    public class MockPolicyImplOne implements Policy {
+    public class MockPolicyImplOne {
         public QName getSchemaName() {
             return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
         }

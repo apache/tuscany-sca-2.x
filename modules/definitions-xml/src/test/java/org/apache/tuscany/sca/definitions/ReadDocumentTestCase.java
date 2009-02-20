@@ -38,11 +38,12 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.ProfileIntent;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.policy.Qualifier;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,16 +58,16 @@ public class ReadDocumentTestCase {
     private static Definitions definitions;
     private static Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     private static Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
-    private static Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    private static Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    public static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
+    private static Map<QName, BindingType> bindingTypesTable = new Hashtable<QName, BindingType>();
+    private static Map<QName, ImplementationType> implTypesTable = new Hashtable<QName, ImplementationType>();
+    public static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     public static final String namespace = "http://test";
-    
+
     private static final QName secureWsPolicy = new QName(namespace, "SecureWSPolicy");
     private static final QName confidentiality = new QName(namespace, "confidentiality");
     private static final QName integrity = new QName(namespace, "integrity");
     private static final QName messageProtection = new QName(namespace, "messageProtection");
-    private static final QName confidentiality_transport = new QName(namespace, "confidentiality.transport");   
+    private static final QName confidentiality_transport = new QName(namespace, "confidentiality.transport");
     private static final QName confidentiality_message = new QName(namespace, "confidentiality.message");
     private static final QName secureReliablePolicy = new QName(namespace, "SecureReliablePolicy");
     private static final QName secureMessagingPolicies = new QName(namespace, "SecureMessagingPolicies");
@@ -74,125 +75,152 @@ public class ReadDocumentTestCase {
     private static final QName basicAuthMsgProtSecurity = new QName(namespace, "BasicAuthMsgProtSecurity");
     private static final QName wsBinding = new QName(scaNamespace, "binding.ws");
     private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
-    
 
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        
+
         // Create StAX processors
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
-        
-        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class); 
-        
+
+        URLArtifactProcessorExtensionPoint documentProcessors =
+            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
+
         URL url = ReadDocumentTestCase.class.getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
         definitions = policyDefinitionsProcessor.read(null, uri, url);
-        
-        for ( Intent intent : definitions.getIntents() ) {
+
+        for (Intent intent : definitions.getIntents()) {
             intentTable.put(intent.getName(), intent);
+            for (Intent i : intent.getQualifiedIntents()) {
+                intentTable.put(i.getName(), i);
+            }
         }
-        
-        for ( PolicySet policySet : definitions.getPolicySets() ) {
+
+        for (PolicySet policySet : definitions.getPolicySets()) {
             policySetTable.put(policySet.getName(), policySet);
         }
-        
-        for ( IntentAttachPointType bindingType : definitions.getBindingTypes() ) {
-            bindingTypesTable.put(bindingType.getName(), bindingType);
+
+        for (BindingType bindingType : definitions.getBindingTypes()) {
+            bindingTypesTable.put(bindingType.getType(), bindingType);
         }
-        
-        for ( IntentAttachPointType implType : definitions.getImplementationTypes() ) {
-            implTypesTable.put(implType.getName(), implType);
+
+        for (ImplementationType implType : definitions.getImplementationTypes()) {
+            implTypesTable.put(implType.getType(), implType);
         }
     }
 
     @Test
     public void testReadSCADefinitions() throws Exception {
         assertNotNull(definitions);
-        
+
         assertNotNull(intentTable.get(confidentiality));
         assertNotNull(intentTable.get(messageProtection));
         assertNotNull(intentTable.get(confidentiality_transport));
-        assertTrue(intentTable.get(confidentiality).getDescription().length() > 0 );
-        
+        assertTrue(intentTable.get(confidentiality).getDescription().length() > 0);
+
         assertNotNull(policySetTable.get(secureReliablePolicy));
         assertTrue(policySetTable.get(secureReliablePolicy).getProvidedIntents().size() == 2);
         assertTrue(policySetTable.get(secureReliablePolicy).getPolicies().size() == 2);
-        
+
         assertNotNull(policySetTable.get(secureMessagingPolicies));
-        assertEquals(policySetTable.get(secureMessagingPolicies).getMappedPolicies().size(), 3);
+        assertEquals(2, policySetTable.get(secureMessagingPolicies).getIntentMaps().get(0).getQualifiers().size());
         //assertTrue(policySetTable.get(secureWsPolicy).getPolicies().get(0) instanceof org.apache.neethi.Policy);
-        
+
         assertEquals(bindingTypesTable.size(), 1);
         assertNotNull(bindingTypesTable.get(wsBinding));
         assertEquals(implTypesTable.size(), 1);
         assertNotNull(implTypesTable.get(javaImpl));
     }
+
+    private boolean isRealizedBy(PolicySet policySet, Intent intent) {
+        if (intent.getName().getLocalPart().indexOf('.') == -1) {
+            return policySet.getProvidedIntents().contains(intent);
+        }
+        for (IntentMap map : policySet.getIntentMaps()) {
+            for (Qualifier q : map.getQualifiers()) {
+                if (q.getIntent().equals(intent)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
+    private int getNumberOfQualifiedPolicies(PolicySet policySet) {
+        int count = 0;
+        for(IntentMap intentMap: policySet.getIntentMaps()) {
+            for(Qualifier q: intentMap.getQualifiers()) {
+                count += q.getPolicies().size();
+            }
+        }
+        return count;
+    }
+
     @Test
     public void testResolveSCADefinitions() throws Exception {
-        assertTrue(intentTable.get(messageProtection) instanceof ProfileIntent);
-        ProfileIntent profileIntent = (ProfileIntent)intentTable.get(new QName(namespace, "messageProtection"));
-        assertNull(profileIntent.getRequiredIntents().get(0).getDescription());
-        
-        QName confidentiality_transport = new QName(namespace, "confidentiality.transport"); 
-        assertTrue(intentTable.get(confidentiality_transport) instanceof QualifiedIntent);
-        QualifiedIntent qualifiedIntent = (QualifiedIntent)intentTable.get(new QName(namespace, "confidentiality.transport"));
-        assertNull(qualifiedIntent.getQualifiableIntent().getDescription());
-        
+        Intent i1 = intentTable.get(messageProtection);
+        assertTrue(!i1.getRequiredIntents().isEmpty());
+        assertNull(i1.getRequiredIntents().get(0).getDescription());
+
+        QName confidentiality_transport = new QName(namespace, "confidentiality.transport");
+        Intent i2 = intentTable.get(confidentiality_transport);
+        assertNotNull(i2.getParent());
+
         PolicySet secureReliablePolicySet = policySetTable.get(secureReliablePolicy);
         PolicySet secureMessagingPolicySet = policySetTable.get(secureMessagingPolicies);
         PolicySet securityPolicySet = policySetTable.get(securityPolicy);
-        
+
         assertEquals(secureReliablePolicySet.getProvidedIntents().get(1).getName(), integrity);
         assertNull(secureReliablePolicySet.getProvidedIntents().get(1).getDescription());
         assertTrue(secureMessagingPolicySet.isUnresolved());
-        assertEquals(securityPolicySet.getMappedPolicies().size(), 5);
-        
+        assertEquals(3, getNumberOfQualifiedPolicies(securityPolicySet));
+
         //testing to ensure that inclusion of referred policy sets has not happened
         PolicySet basicAuthMsgProtSecurityPolicySet = policySetTable.get(basicAuthMsgProtSecurity);
         assertTrue(basicAuthMsgProtSecurityPolicySet.getPolicies().isEmpty());
-        assertTrue(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().isEmpty());
-        
-        IntentAttachPointType wsBindingType = bindingTypesTable.get(wsBinding);
+        assertTrue(basicAuthMsgProtSecurityPolicySet.getIntentMaps().isEmpty());
+
+        BindingType wsBindingType = bindingTypesTable.get(wsBinding);
         assertNull(wsBindingType.getAlwaysProvidedIntents().get(0).getDescription());
-        assertNull(wsBindingType.getMayProvideIntents().get(0).getDescription());
-        
-        IntentAttachPointType javaImplType = implTypesTable.get(javaImpl);
+        assertNull(wsBindingType.getMayProvidedIntents().get(0).getDescription());
+
+        ImplementationType javaImplType = implTypesTable.get(javaImpl);
         assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
-        assertNull(javaImplType.getMayProvideIntents().get(0).getDescription());
-        
+        assertNull(javaImplType.getMayProvidedIntents().get(0).getDescription());
+
         ModelResolver resolver = new DefaultModelResolver();
         policyDefinitionsProcessor.resolve(definitions, resolver);
         //builder.build(scaDefinitions);
-        
+
         //testing if policy intents have been linked have property been linked up 
-        assertNotNull(profileIntent.getRequiredIntents().get(0).getDescription());
-        assertNotNull(qualifiedIntent.getQualifiableIntent().getDescription());
+        assertNotNull(i1.getRequiredIntents().get(0).getDescription());
+        // assertNotNull(i2.getQualifiableIntent().getDescription());
         assertEquals(secureReliablePolicySet.getProvidedIntents().get(1).getName(), integrity);
         assertNotNull(secureReliablePolicySet.getProvidedIntents().get(1).getDescription());
-        
+
         //testing if policysets have been properly linked up with intents
         assertFalse(secureMessagingPolicySet.isUnresolved());
-        assertNotNull(secureMessagingPolicySet.getMappedPolicies().get(intentTable.get(confidentiality)));
-        assertNotNull(secureMessagingPolicySet.getMappedPolicies().get(intentTable.get(confidentiality_transport)));
-        
+        assertTrue(isRealizedBy(secureMessagingPolicySet, intentTable.get(confidentiality)));
+        assertTrue(isRealizedBy(secureMessagingPolicySet, intentTable.get(confidentiality_transport)));
+
         //testing if intent maps have been properly mapped to policies
         assertFalse(securityPolicySet.isUnresolved());
-        assertNotNull(securityPolicySet.getMappedPolicies().get(intentTable.get(confidentiality)));
-        assertNotNull(securityPolicySet.getMappedPolicies().get(intentTable.get(confidentiality_message)));
-        
+        assertTrue(isRealizedBy(securityPolicySet, intentTable.get(confidentiality)));
+        assertTrue(isRealizedBy(securityPolicySet, intentTable.get(confidentiality_message)));
+
         //testing for inclusion of referred policysets
         assertFalse(basicAuthMsgProtSecurityPolicySet.getPolicies().isEmpty());
-        assertFalse(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().isEmpty());
-        assertNotNull(basicAuthMsgProtSecurityPolicySet.getMappedPolicies().get(intentTable.get(confidentiality_transport)));
-        
+        assertFalse(basicAuthMsgProtSecurityPolicySet.getIntentMaps().get(0).getQualifiers().isEmpty());
+        assertTrue(isRealizedBy(basicAuthMsgProtSecurityPolicySet, intentTable.get(confidentiality_transport)));
+
         assertNotNull(wsBindingType.getAlwaysProvidedIntents().get(0).getDescription());
-        assertNotNull(wsBindingType.getMayProvideIntents().get(0).getDescription());
-        
+        assertNotNull(wsBindingType.getMayProvidedIntents().get(0).getDescription());
+
         assertNotNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
-        assertNotNull(javaImplType.getMayProvideIntents().get(0).getDescription());
+        assertNotNull(javaImplType.getMayProvidedIntents().get(0).getDescription());
     }
 }

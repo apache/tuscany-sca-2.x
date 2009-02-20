@@ -20,15 +20,13 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.Policy;
-
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
  *
  * @version $Rev$ $Date$
  */
-public class Axis2HeaderPolicy implements Policy {
+public class Axis2HeaderPolicy {
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     public static final QName AXIS2_HEADER_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "axis2Header");
     public static final String AXIS2_HEADER_NAME = "headerName";

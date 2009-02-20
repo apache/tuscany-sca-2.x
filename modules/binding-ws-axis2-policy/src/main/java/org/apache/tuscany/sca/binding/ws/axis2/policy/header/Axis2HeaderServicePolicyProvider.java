@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -47,8 +47,8 @@ public class Axis2HeaderServicePolicyProvider implements PolicyProvider {
     }
 
     private PolicySet findPolicySet() {
-        if (binding instanceof PolicySetAttachPoint) {
-            List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
+        if (binding instanceof PolicySubject) {
+            List<PolicySet> policySets = ((PolicySubject)binding).getPolicySets();
             for (PolicySet ps : policySets) {
                 for (Object p : ps.getPolicies()) {
                     if (Axis2HeaderPolicy.class.isInstance(p)) {

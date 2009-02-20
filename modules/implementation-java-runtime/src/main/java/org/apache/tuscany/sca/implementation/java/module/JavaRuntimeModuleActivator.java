@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.java.module;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
@@ -42,8 +41,6 @@ import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationP
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -85,14 +82,11 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
-        List<PolicyHandlerTuple> policyHandlerClassNames = null;
-        policyHandlerClassNames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
-        
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactories);
         
         JavaImplementationProviderFactory javaImplementationProviderFactory =
             new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
-                                                  requestContextFactory, policyHandlerClassNames);
+                                                  requestContextFactory);
 
         ProviderFactoryExtensionPoint providerFactories =
             registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);

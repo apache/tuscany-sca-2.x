@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * A builder that handles the configuration of the components inside a composite
@@ -64,7 +64,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         this(factories.getFactory(AssemblyFactory.class),
                factories.getFactory(EndpointFactory.class),
                factories.getFactory(SCABindingFactory.class),
-               factories.getFactory(IntentAttachPointTypeFactory.class),
+               factories.getFactory(PolicyFactory.class),
                factories.getFactory(DocumentBuilderFactory.class),
                factories.getFactory(TransformerFactory.class),
                mapper);
@@ -85,7 +85,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 EndpointFactory endpointFactory,
                                 SCABindingFactory scaBindingFactory,
-                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                PolicyFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper) {
         this(assemblyFactory, endpointFactory, scaBindingFactory, intentAttachPointTypeFactory,
              null, null, interfaceContractMapper);
@@ -105,7 +105,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     @Deprecated
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
-                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                PolicyFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper) {
         this(assemblyFactory, null, scaBindingFactory, intentAttachPointTypeFactory,
              null, null, interfaceContractMapper);
@@ -124,7 +124,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
-                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                PolicyFactory  intentAttachPointTypeFactory,
                                 DocumentBuilderFactory documentBuilderFactory,
                                 TransformerFactory transformerFactory,
                                 InterfaceContractMapper interfaceContractMapper) {
@@ -146,7 +146,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 EndpointFactory endpointFactory,
                                 SCABindingFactory scaBindingFactory,
-                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                PolicyFactory  intentAttachPointTypeFactory,
                                 DocumentBuilderFactory documentBuilderFactory,
                                 TransformerFactory transformerFactory,
                                 InterfaceContractMapper interfaceContractMapper) {

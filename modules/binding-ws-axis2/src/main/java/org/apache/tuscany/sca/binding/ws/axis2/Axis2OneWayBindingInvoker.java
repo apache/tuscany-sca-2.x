@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.soap.SOAPFactory;
@@ -30,7 +28,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Axis2OneWayBindingInvoker uses an Axis2 OperationClient to invoke a OneWay remote web service.
@@ -43,10 +40,9 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
                                      QName wsdlOperationName,
                                      Options options,
                                      SOAPFactory soapFactory,
-                                     List<PolicyHandler> policyHandlerList,
                                      WebServiceBinding wsBinding) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory, policyHandlerList, wsBinding);
+        super(serviceClient, wsdlOperationName, options, soapFactory, wsBinding);
     }
 
     @Override

@@ -18,13 +18,15 @@
  */
 package org.apache.tuscany.sca.policy.impl;
 
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetReference;
-import org.apache.tuscany.sca.policy.ProfileIntent;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * A factory for the policy model.
@@ -37,10 +39,6 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
         return new IntentImpl();
     }
 
-    public PolicySetReference createPolicySetReference() {
-        return new PolicySetReferenceImpl();
-    }
-
     public PolicySet createPolicySet() {
         return new PolicySetImpl();
     }
@@ -49,12 +47,24 @@ public abstract class PolicyFactoryImpl implements PolicyFactory {
         return new IntentMapImpl();
     }
 
-    public ProfileIntent createProfileIntent() {
-        return new ProfileIntentImpl();
+    public Qualifier createQualifier() {
+        return new QualifierImpl();
     }
 
-    public QualifiedIntent createQualifiedIntent() {
-        return new QualifiedIntentImpl();
+    public PolicyExpression createPolicyExpression() {
+        return new PolicyExpressionImpl();
+    }
+    
+    public BindingType createBindingType() {
+        return new BindingTypeImpl();
+    }
+    
+    public ImplementationType createImplementationType() {
+        return new ImplementationTypeImpl();
+    }
+
+    public ExtensionType createExtensionType() {
+        return new ExtensionTypeImpl();
     }
 
 }

@@ -27,8 +27,8 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -48,8 +48,9 @@ import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -73,9 +74,9 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
      * @param staxProcessor
      */
     public DefinitionsDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor,
-                                           XMLInputFactory inputFactory,
-                                           DefinitionsFactory definitionsFactory,
-                                           Monitor monitor) {
+                                        XMLInputFactory inputFactory,
+                                        DefinitionsFactory definitionsFactory,
+                                        Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
         this.definitionsFactory = definitionsFactory;
@@ -89,8 +90,8 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
      * @param staxProcessor
      */
     public DefinitionsDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                           StAXArtifactProcessor<Object> staxProcessor,
-                                           Monitor monitor) {
+                                        StAXArtifactProcessor<Object> staxProcessor,
+                                        Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
@@ -198,36 +199,22 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
             }
         }
     }
-    
-    private static void stripDuplicates(Definitions scaDefns) {
-        Map<QName, Intent> definedIntents = new HashMap<QName, Intent>();
-        for (Intent intent : scaDefns.getIntents()) {
-            definedIntents.put(intent.getName(), intent);
-        }
 
-        Map<QName, PolicySet> definedPolicySets = new HashMap<QName, PolicySet>();
-        for (PolicySet policySet : scaDefns.getPolicySets()) {
-            definedPolicySets.put(policySet.getName(), policySet);
-        }
-        
-        Map<QName, IntentAttachPointType> definedBindingTypes = new HashMap<QName, IntentAttachPointType>();
-        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
-            definedBindingTypes.put(bindingType.getName(), bindingType);
-        }
-        
-        Map<QName, IntentAttachPointType> definedImplTypes = new HashMap<QName, IntentAttachPointType>();
-        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
-            definedImplTypes.put(implType.getName(), implType);
-        }
-        
+    private static void stripDuplicates(Definitions scaDefns) {
+        Set<Intent> definedIntents = new HashSet<Intent>(scaDefns.getIntents());
+        Set<PolicySet> definedPolicySets = new HashSet<PolicySet>(scaDefns.getPolicySets());
+
+        Set<BindingType> definedBindingTypes = new HashSet<BindingType>(scaDefns.getBindingTypes());
+        Set<ImplementationType> definedImplTypes = new HashSet<ImplementationType>(scaDefns.getImplementationTypes());
+
         scaDefns.getIntents().clear();
-        scaDefns.getIntents().addAll(definedIntents.values());
+        scaDefns.getIntents().addAll(definedIntents);
         scaDefns.getPolicySets().clear();
-        scaDefns.getPolicySets().addAll(definedPolicySets.values());
+        scaDefns.getPolicySets().addAll(definedPolicySets);
         scaDefns.getBindingTypes().clear();
-        scaDefns.getBindingTypes().addAll(definedBindingTypes.values());
+        scaDefns.getBindingTypes().addAll(definedBindingTypes);
         scaDefns.getImplementationTypes().clear();
-        scaDefns.getImplementationTypes().addAll(definedImplTypes.values());
+        scaDefns.getImplementationTypes().addAll(definedImplTypes);
     }
 
     public void resolve(Definitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
@@ -236,7 +223,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     }
 
     public String getArtifactType() {
-        return "definitions.xml";
+        return "META-INF/definitions.xml";
     }
 
     public Class<Definitions> getModelType() {

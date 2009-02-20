@@ -19,14 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AbstractProperty;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 /**
  * Represents an abstract property.
@@ -40,12 +35,6 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
     private QName xsdElement;
     private boolean many;
     private boolean mustSupply;
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    
-
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
 
     /**
      * Constructs a new abstract property.
@@ -101,14 +90,4 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
         this.xsdType = type;
     }
 
-    public IntentAttachPointType getType() {
-        return null;
-    }
-
-    public void setType(IntentAttachPointType type) {
-    }
-    
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
 }

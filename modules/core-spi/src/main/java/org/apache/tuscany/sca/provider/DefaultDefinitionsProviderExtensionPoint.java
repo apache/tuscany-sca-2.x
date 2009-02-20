@@ -38,6 +38,7 @@ public class DefaultDefinitionsProviderExtensionPoint implements
 
     private ExtensionPointRegistry extensionPointRegistry = null;
     
+    private boolean loaded;
     private List<DefinitionsProvider> scaDefnsProviders = new ArrayList<DefinitionsProvider>();
     
     public DefaultDefinitionsProviderExtensionPoint(ExtensionPointRegistry extnPtReg) {
@@ -53,13 +54,14 @@ public class DefaultDefinitionsProviderExtensionPoint implements
     }
 
     public List<DefinitionsProvider> getDefinitionsProviders() {
-        if (scaDefnsProviders.isEmpty()) {
-            loadProviders();
-        }
+        loadProviders();
         return scaDefnsProviders;
     }
 
-    private void loadProviders() {
+    private synchronized void loadProviders() {
+        if(loaded) {
+            return;
+        }
         // Get the provider service declarations
         Set<ServiceDeclaration> defnProviderDecls;
         DefinitionsProvider aProvider = null;
@@ -86,6 +88,6 @@ public class DefaultDefinitionsProviderExtensionPoint implements
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
+        loaded = true;
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Composite extends Implementation, Extensible, Cloneable, PolicySetAttachPoint {
+public interface Composite extends Implementation, Extensible, Cloneable, PolicySubject {
 
     /**
      * Returns the name of the composite.

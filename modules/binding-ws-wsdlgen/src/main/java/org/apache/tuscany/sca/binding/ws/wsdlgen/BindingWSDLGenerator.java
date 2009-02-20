@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
@@ -269,8 +269,8 @@ public class BindingWSDLGenerator {
     }
 
     protected static boolean requiresSOAP12(WebServiceBinding wsBinding) {
-        if (wsBinding instanceof IntentAttachPoint) {
-            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+        if (wsBinding instanceof PolicySubject) {
+            List<Intent> intents = ((PolicySubject)wsBinding).getRequiredIntents();
             for (Intent intent : intents) {
                 if (SOAP12_INTENT.equals(intent.getName())) {
                     return true;

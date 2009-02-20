@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.xml;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
@@ -31,7 +30,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -90,8 +88,6 @@ public class ReadTestCase {
 
         compositeBuilder.build(composite, null, null);
 
-        assertEquals(((OperationsConfigurator)composite.getServices().get(0).getBindings().get(0))
-            .getConfiguredOperations().get(0).getRequiredIntents().size(), 2);
     }
 
     /**

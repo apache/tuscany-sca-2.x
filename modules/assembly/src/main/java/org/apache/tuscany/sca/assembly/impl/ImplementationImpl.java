@@ -22,38 +22,24 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Base implementation class of Implementation model interface
  *
  * @version $Rev$ $Date$
  */
-public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySetAttachPoint,
-    OperationsConfigurator {
-
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-    private List<ConfiguredOperation> configuredOperations = new ArrayList<ConfiguredOperation>();
-    private IntentAttachPointType type;
+public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySubject {
+    private ExtensionType type;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
 
     protected ImplementationImpl() {
         super();
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
-
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
     }
 
     public List<PolicySet> getPolicySets() {
@@ -64,12 +50,11 @@ public abstract class ImplementationImpl extends ComponentTypeImpl implements Im
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return type;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
         this.type = type;
     }
-
 }

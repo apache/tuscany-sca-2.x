@@ -24,14 +24,13 @@ import javax.security.auth.login.LoginContext;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
  *
  * @version $Rev$ $Date$
  */
-public class JaasAuthenticationPolicyHandler implements PolicyHandler {
+public class JaasAuthenticationPolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, jaasPolicy);

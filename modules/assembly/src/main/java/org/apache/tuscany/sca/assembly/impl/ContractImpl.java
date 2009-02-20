@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Implementation of a Contract.
@@ -36,7 +36,7 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
     private InterfaceContract interfaceContract;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
     
     private boolean isCallback = false;
     
@@ -74,23 +74,15 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
         this.isCallback = isCallback;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return null;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
     }
-    
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-    
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredOperations = configuredOperations;
+   
+    public List<PolicySet> getPolicySets() {
+        return policySets;
     }
 
 }

@@ -20,8 +20,9 @@ package org.apache.tuscany.sca.definitions;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 
@@ -63,7 +64,7 @@ public interface Definitions {
      * 
      * @return a list of domain wide Binding Types 
      */
-    List<IntentAttachPointType> getBindingTypes();
+    List<BindingType> getBindingTypes();
     
     
     /**
@@ -71,7 +72,7 @@ public interface Definitions {
      * 
      * @return a list of domain wide Implementation Types 
      */
-    List<IntentAttachPointType> getImplementationTypes();
+    List<ImplementationType> getImplementationTypes();
 
     /**
      * Returns a list of domain wide binding definition objects

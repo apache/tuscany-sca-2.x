@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 
@@ -36,7 +37,7 @@ import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
  *
  * @version $Rev$ $Date$
  */
-class ConfiguredNodeImplementationImpl implements ConfiguredNodeImplementation {
+class ConfiguredNodeImplementationImpl extends ImplementationImpl implements ConfiguredNodeImplementation {
 
     private String uri;
     private boolean unresolved;

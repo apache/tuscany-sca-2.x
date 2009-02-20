@@ -28,20 +28,18 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Element;
 
 /**
@@ -49,7 +47,7 @@ import org.w3c.dom.Element;
  *
  * @version $Rev$ $Date$
  */
-class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, Extensible, OperationsConfigurator {
+class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensible {
     private String name;
     private String uri;
     private boolean unresolved;
@@ -57,9 +55,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private List<Extension> attributeExtensions = new ArrayList<Extension>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
-    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private ExtensionType intentAttachPointType;
     private String location;
     private Binding binding;
     private Service service;
@@ -268,11 +264,11 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return intentAttachPointType;
     }
     
-    public void setType(IntentAttachPointType intentAttachPointType) {
+    public void setType(ExtensionType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
     }
 
@@ -298,25 +294,5 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
 
     public void setBuilder(BindingBuilder builder) {
         this.builder = builder;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-    
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredOperations = configuredOperations;
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
     }
 }

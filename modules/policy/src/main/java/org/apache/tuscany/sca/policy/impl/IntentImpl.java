@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 
 /**
@@ -32,18 +33,17 @@ import org.apache.tuscany.sca.policy.Intent;
  */
 public class IntentImpl implements Intent {
 
-    private static final String QUALIFIED_SEPARATOR = ".";
-    private static final String DOMAIN_SEPARATOR = ".";
     private QName name;
-    //private List<Operation> operations = new ArrayList<Operation>();
-    private List<QName> constrains = new ArrayList<QName>();
+    private Type type;
+    private List<ExtensionType> constrainedTypes = new ArrayList<ExtensionType>();
     private String description;
     private List<Intent> qualifiedIntents = new ArrayList<Intent>();
-    // private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private Intent defaultQualifiedIntent;
+    private Intent parent;
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<Intent> excludedIntents = new ArrayList<Intent>();
+    private boolean mutuallyExclusive;
     private boolean unresolved = true;
-    private String domain;
-    private String[] qualifiedNames;
 
     protected IntentImpl() {
     }
@@ -54,33 +54,14 @@ public class IntentImpl implements Intent {
 
     public void setName(QName name) {
         this.name = name;
-        String iname = name.getLocalPart();
-        int domainIdx = iname.indexOf(DOMAIN_SEPARATOR);
-        if (domainIdx > -1) {
-            domain = iname.substring(0, domainIdx);
-            String qualifNamesStr = iname.substring(domainIdx + 1);
-            String pattern = "\\" + QUALIFIED_SEPARATOR;
-            qualifiedNames = qualifNamesStr.split(pattern);
-        } else
-            domain = iname;
     }
 
-    public String getDomain() {
-        return domain;
+    public List<ExtensionType> getConstrainedTypes() {
+        return constrainedTypes;
     }
 
-    public String[] getQualifiedNames() {
-        String[] results = new String[qualifiedNames.length];
-        System.arraycopy(qualifiedNames, 0, results, 0, qualifiedNames.length);
-        return results;
-    }
-
-    /*public List<Operation> getOperations() {
-        return operations;
-    }*/
-
-    public List<QName> getConstrains() {
-        return constrains;
+    public void setConstrainedTypes(List<ExtensionType> constrainedTypes) {
+        this.constrainedTypes = constrainedTypes;
     }
 
     public String getDescription() {
@@ -91,12 +72,36 @@ public class IntentImpl implements Intent {
         this.description = description;
     }
 
+    public Intent getParent() {
+        return parent;
+    }
+
+    public void setParent(Intent parent) {
+        this.parent = parent;
+    }
+
     public List<Intent> getQualifiedIntents() {
         return qualifiedIntents;
     }
 
+    public void setQualifiedIntents(List<Intent> qualifiedIntents) {
+        this.qualifiedIntents = qualifiedIntents;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public void setRequiredIntents(List<Intent> requiredIntents) {
+        this.requiredIntents = requiredIntents;
+    }
+
     public List<Intent> getExcludedIntents() {
         return excludedIntents;
+    }
+
+    public void setExcludedIntents(List<Intent> excludedIntents) {
+        this.excludedIntents = excludedIntents;
     }
 
     public boolean isUnresolved() {
@@ -107,45 +112,57 @@ public class IntentImpl implements Intent {
         this.unresolved = unresolved;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public boolean isMutuallyExclusive() {
+        return mutuallyExclusive;
+    }
+
+    public void setMutuallyExclusive(boolean mutuallyExclusive) {
+        this.mutuallyExclusive = mutuallyExclusive;
+    }
+
+    public Intent getDefaultQualifiedIntent() {
+        return defaultQualifiedIntent;
+    }
+
+    public void setDefaultQualifiedIntent(Intent defaultQualifiedIntent) {
+        this.defaultQualifiedIntent = defaultQualifiedIntent;
+    }
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        QName intentName = getName();
-        result = prime * result + ((intentName == null) ? 0 : intentName.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (!(obj instanceof IntentImpl)) {
+        if (getClass() != obj.getClass())
             return false;
-        }
-        final IntentImpl other = (IntentImpl)obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
+        IntentImpl other = (IntentImpl)obj;
+        if (name == null) {
+            if (other.name != null)
                 return false;
-            }
-        } else if (!getName().equals(other.getName())) {
+        } else if (!name.equals(other.name))
             return false;
-        }
         return true;
     }
-
-    @Override
+    
     public String toString() {
-        return String.valueOf(getName());
+        return String.valueOf(name);
     }
 }

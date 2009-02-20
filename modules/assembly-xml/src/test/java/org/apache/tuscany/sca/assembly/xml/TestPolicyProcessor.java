@@ -28,37 +28,46 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.policy.Policy;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 
 /**
- * A Policy Processor used for testing.
+ * A PolicyExpression Processor used for testing.
  *
  * @version $Rev$ $Date$
  */
-public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
+public class TestPolicyProcessor implements StAXArtifactProcessor<PolicyExpression> {
 
     public QName getArtifactType() {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
     }
 
-    public Policy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
+    public PolicyExpression read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
         return new MockPolicyImplOne();
     }
 
-    public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
-                                                        XMLStreamException {
-    } 
-
-    public Class<Policy> getModelType() {
-        return Policy.class;
+    public void write(PolicyExpression arg0, XMLStreamWriter arg1) throws ContributionWriteException,
+        XMLStreamException {
     }
 
-    public void resolve(Policy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public Class<PolicyExpression> getModelType() {
+        return PolicyExpression.class;
     }
 
-    
-    public class MockPolicyImplOne implements Policy {
-        public QName getSchemaName() {
+    public void resolve(PolicyExpression arg0, ModelResolver arg1) throws ContributionResolveException {
+    }
+
+    public class MockPolicyImplOne implements PolicyExpression {
+        public <T> T getPolicy() {
+            return null;
+        }
+
+        public void setName(QName name) {
+        }
+
+        public <T> void setPolicy(T policy) {
+        }
+
+        public QName getName() {
             return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
         }
 
@@ -68,6 +77,6 @@ public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
         public void setUnresolved(boolean unresolved) {
         }
-        
+
     }
 }

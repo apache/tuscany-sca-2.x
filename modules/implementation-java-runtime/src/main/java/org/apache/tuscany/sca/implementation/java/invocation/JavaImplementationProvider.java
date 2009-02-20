@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
@@ -42,7 +41,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.ComponentContext;
@@ -62,12 +60,10 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                       ComponentContextFactory componentContextFactory,
-                                      RequestContextFactory requestContextFactory,
-                                      List<PolicyHandlerTuple> policyHandlerClassNames) {
+                                      RequestContextFactory requestContextFactory) {
         super();
         this.implementation = implementation;
         this.requestContextFactory = requestContextFactory;
-        this.implementation.setPolicyHandlerClassNames(policyHandlerClassNames);
         
         try {
             JavaInstanceFactoryProvider configuration = new JavaInstanceFactoryProvider(implementation);

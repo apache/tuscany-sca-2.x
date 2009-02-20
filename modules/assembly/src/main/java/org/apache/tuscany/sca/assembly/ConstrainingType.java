@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A constrainingType provides the "shape" for a component and its
@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface ConstrainingType extends Base, Extensible, IntentAttachPoint {
+public interface ConstrainingType extends Base, Extensible, PolicySubject {
 
     /**
      * Returns the name of the constrainingType.

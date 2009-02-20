@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Default Model Processor for beans.
@@ -220,10 +220,10 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                         implementation.getProperties().addAll(componentType.getProperties());
                         implementation.setConstrainingType(componentType.getConstrainingType());
                         
-                        if (implementation instanceof PolicySetAttachPoint &&
-                                componentType instanceof PolicySetAttachPoint ) {
-                            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-                            PolicySetAttachPoint policiedCompType = (PolicySetAttachPoint)componentType;
+                        if (implementation instanceof PolicySubject &&
+                                componentType instanceof PolicySubject ) {
+                            PolicySubject policiedImpl = (PolicySubject)implementation;
+                            PolicySubject policiedCompType = (PolicySubject)componentType;
                             
                             if ( policiedImpl.getPolicySets() != null) {
                                 policiedImpl.getPolicySets().addAll(policiedCompType.getPolicySets());

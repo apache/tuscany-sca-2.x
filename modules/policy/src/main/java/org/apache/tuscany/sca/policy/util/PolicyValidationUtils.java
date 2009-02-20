@@ -21,27 +21,22 @@ package org.apache.tuscany.sca.policy.util;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * @version $Rev$ $Date$
  */
 public class PolicyValidationUtils {
 
-    public static boolean isConstrained(QName constrained, IntentAttachPointType attachPointType) {
-        return (attachPointType != null && attachPointType.getName().getNamespaceURI()
-            .equals(constrained.getNamespaceURI()) && attachPointType.getName().getLocalPart()
-            .startsWith(constrained.getLocalPart()));
+    public static boolean isConstrained(ExtensionType constrained, ExtensionType attachPointType) {
+        return (attachPointType != null 
+            && (attachPointType.equals(constrained)) || (attachPointType.getBaseType().equals(constrained)));
     }
 
-    public static void validateIntents(IntentAttachPoint attachPoint,
-                                       IntentAttachPointType attachPointType)
+    public static void validateIntents(PolicySubject attachPoint, ExtensionType attachPointType)
         throws PolicyValidationException {
         boolean found = false;
         if (attachPointType != null) {
@@ -50,7 +45,7 @@ public class PolicyValidationUtils {
             found = false;
             for (Intent intent : attachPoint.getRequiredIntents()) {
                 if (!intent.isUnresolved()) {
-                    for (QName constrained : intent.getConstrains()) {
+                    for (ExtensionType constrained : intent.getConstrainedTypes()) {
                         if (isConstrained(constrained, attachPointType)) {
                             found = true;
                             break;
@@ -60,7 +55,7 @@ public class PolicyValidationUtils {
                     if (!found) {
                         throw new PolicyValidationException("Policy Intent '" + intent.getName()
                             + "' does not constrain extension type  "
-                            + attachPointType.getName());
+                            + attachPointType.getType());
                     }
                 } else {
                     throw new PolicyValidationException("Policy Intent '" + intent.getName()
@@ -70,36 +65,28 @@ public class PolicyValidationUtils {
         }
     }
 
-    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint)
-        throws PolicyValidationException {
-        validatePolicySets(policySetAttachPoint, 
-                           policySetAttachPoint.getType(),
-                           policySetAttachPoint.getApplicablePolicySets());
-    }
-    
-    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
-                                          IntentAttachPointType attachPointType)
-        throws PolicyValidationException {
-        validatePolicySets(policySetAttachPoint,
-                           attachPointType,
-                           policySetAttachPoint.getApplicablePolicySets());
+    public static void validatePolicySets(PolicySubject subject) throws PolicyValidationException {
+        // validatePolicySets(subject, subject.getType(), subject.getAttachedPolicySets());
     }
 
-    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
-                                          IntentAttachPointType attachPointType,
-                                          List<PolicySet> applicablePolicySets)
+    public static void validatePolicySets(PolicySubject subject, ExtensionType attachPointType)
         throws PolicyValidationException {
-        // Since the applicablePolicySets in a policySetAttachPoint will already
+        validatePolicySets(subject, attachPointType, subject.getPolicySets());
+    }
+
+    public static void validatePolicySets(PolicySubject subject,
+                                          ExtensionType attachPointType,
+                                          List<PolicySet> applicablePolicySets) throws PolicyValidationException {
+        // Since the applicablePolicySets in a subject will already
         // have the list of policysets that might ever be applicable to this attachPoint,
         // just check if the defined policysets feature in the list of applicable
         // policysets
-        for (PolicySet definedPolicySet : policySetAttachPoint.getPolicySets()) {
+        for (PolicySet definedPolicySet : subject.getPolicySets()) {
             if (!definedPolicySet.isUnresolved()) {
                 if (!applicablePolicySets.contains(definedPolicySet)) {
-                    throw new PolicyValidationException("Policy Set '" + definedPolicySet
-                        .getName()
+                    throw new PolicyValidationException("Policy Set '" + definedPolicySet.getName()
                         + "' does not apply to extension type  "
-                        + attachPointType.getName());
+                        + attachPointType.getType());
                 }
             } else {
                 throw new PolicyValidationException("Policy Set '" + definedPolicySet.getName()

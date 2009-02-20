@@ -26,8 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
@@ -40,7 +38,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Requires;
 
@@ -85,11 +83,12 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
             readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
         } else {
+            /*
             if ( type instanceof OperationsConfigurator ) {
                 //Read the intents specified on the given implementation method
                 if ( (method.getAnnotation(Requires.class) != null || 
                         method.getAnnotation(PolicySets.class) != null ) && 
-                            (type instanceof PolicySetAttachPoint )) {
+                            (type instanceof PolicySubject )) {
                     ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
                     confOp.setName(method.getName());
                     ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
@@ -99,6 +98,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                     readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                 }
             }
+            */
         }
     }
 
@@ -106,10 +106,10 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         
         // Read intents on the Java implementation class
-        if ( type instanceof PolicySetAttachPoint ) {
+        if ( type instanceof PolicySubject ) {
             readIntentsAndPolicySets(clazz, 
-                                     ((PolicySetAttachPoint)type).getRequiredIntents(),
-                                     ((PolicySetAttachPoint)type).getPolicySets());
+                                     ((PolicySubject)type).getRequiredIntents(),
+                                     ((PolicySubject)type).getPolicySets());
         }
         
         // Process annotations on the service interfaces
@@ -127,6 +127,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                                                  service.getRequiredIntents(),
                                                  service.getPolicySets());
 
+                        /*
                         // Read intents on the service interface methods 
                         Method[] methods = javaInterface.getJavaClass().getMethods();
                         ConfiguredOperation confOp = null;
@@ -142,6 +143,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                                 readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                             }
                         }
+                        */
                     }
                     
                 }
@@ -159,6 +161,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                                                  callback.getRequiredIntents(),
                                                  callback.getPolicySets());
 
+                        /*
                         // Read intents on the callback interface methods 
                         Method[] methods = javaCallbackInterface.getJavaClass().getMethods();
                         ConfiguredOperation confOp = null;
@@ -169,6 +172,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                             readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
                             readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                         }
+                        */
                     }
                 }
             }

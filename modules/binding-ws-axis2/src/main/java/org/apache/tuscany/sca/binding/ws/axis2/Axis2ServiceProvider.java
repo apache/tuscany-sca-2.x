@@ -91,11 +91,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -128,8 +125,6 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
     private JMSSender jmsSender;
     private JMSListener jmsListener;
-    private List<PolicyHandlerTuple> policyHandlerClassnames = null;
-    private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
     private Map<String, Port> urlMap = new HashMap<String, Port>();
     
     private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
@@ -166,15 +161,13 @@ public class Axis2ServiceProvider {
                                 AbstractContract contract,
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
-                                MessageFactory messageFactory,
-                                List<PolicyHandlerTuple> policyHandlerClassnames) {
+                                MessageFactory messageFactory) {
 
         this.component = component; 
         this.contract = contract; 
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
-        this.policyHandlerClassnames = policyHandlerClassnames;
 
         final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
         try {
@@ -214,9 +207,10 @@ public class Axis2ServiceProvider {
             urlMap.put(endpointURI, (Port)port);
         }
         
+        /*
         // find out which policies are active
-        if (wsBinding instanceof PolicySetAttachPoint) {
-            List<PolicySet> policySets = ((PolicySetAttachPoint)wsBinding).getApplicablePolicySets();
+        if (wsBinding instanceof PolicySubject) {
+            List<PolicySet> policySets = ((PolicySubject)wsBinding).getApplicablePolicySets();
             for (PolicySet ps : policySets) {
                 for (Object p : ps.getPolicies()) {
                     if (BasicAuthenticationPolicy.class.isInstance(p)) {
@@ -230,7 +224,8 @@ public class Axis2ServiceProvider {
                     }
                 }
             }
-        }        
+        } 
+        */       
     }
 
     static String getPortAddress(Port port) {
@@ -319,7 +314,6 @@ public class Axis2ServiceProvider {
                 AxisService axisService = createAxisService(entry.getKey(), entry.getValue());
                 configContext.getAxisConfiguration().addService(axisService);
             }
-            setupPolicyHandlers(policyHandlerList, configContext);
           
             Axis2ServiceServlet servlet = null;
             for (String endpointURL : urlMap.keySet()) {
@@ -640,9 +634,9 @@ public class Axis2ServiceProvider {
 
                 MessageReceiver msgrec = null;
                 if (op.isNonBlocking()) {
-                    msgrec = new Axis2ServiceInMessageReceiver(this, op, policyHandlerList);
+                    msgrec = new Axis2ServiceInMessageReceiver(this, op);
                 } else {
-                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op, policyHandlerList);
+                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
                 }
                 axisOp.setMessageReceiver(msgrec);
             }
@@ -739,10 +733,6 @@ public class Axis2ServiceProvider {
             parameters.setConversationID(conversationID);
         }
 
-        for ( PolicyHandler policyHandler : policyHandlerList ) {
-            policyHandler.beforeInvoke(msg, inMC);
-        }
-                
         if (basicAuthenticationPolicy != null) {
             Axis2BindingBasicAuthenticationConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
         }
@@ -750,10 +740,6 @@ public class Axis2ServiceProvider {
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
         Object response =  wire.invoke(op, msg);
-        
-        for ( PolicyHandler policyHandler : policyHandlerList ) {
-            policyHandler.afterInvoke(response, inMC);
-        }        
         
         return response;
     }
@@ -772,28 +758,10 @@ public class Axis2ServiceProvider {
         return wsBinding;
     }
     
-    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext)  {
-        for ( PolicyHandler aHandler : policyHandlers ) {
-            aHandler.setUp(configContext);
-        }
-    }
-    
     private void createPolicyHandlers() throws IllegalAccessException,
                                                InstantiationException, 
                                                ClassNotFoundException {
-        if (wsBinding instanceof PolicySetAttachPoint) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
-            PolicyHandler policyHandler = null;
-            
-            for (PolicySet policySet : policiedBinding.getPolicySets()) {
-                policyHandler =
-                    PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
-                
-                if (policyHandler != null) {
-                    policyHandler.setApplicablePolicySet(policySet);
-                    policyHandlerList.add(policyHandler);
-                } 
-            }
+        if (wsBinding instanceof PolicySubject) {
             
             // code to create policy handlers using a policy SPI based
             // on policy providers

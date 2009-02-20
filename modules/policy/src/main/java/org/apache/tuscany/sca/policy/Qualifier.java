@@ -17,29 +17,28 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.xml;
+package org.apache.tuscany.sca.policy;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.ProfileIntent;
+import java.util.List;
 
 /**
- * Processor for handling XML models of PolicyIntent definitions that are ProfileIntents
- *
- * @version $Rev$ $Date$
+ * A qualifier provides a list of policies for a qualified intent within the IntentMap
  */
-public class ProfileIntentProcessor extends PolicyIntentProcessor<ProfileIntent> {
+public interface Qualifier {
+    /**
+     * Get the qualified intent for this qualifier
+     * @return The intent
+     */
+    Intent getIntent();
 
-    public ProfileIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
-        super(policyFactory, monitor);
-    }
+    /**
+     * Set the qualified intent for this qualifier
+     */
+    void setIntent(Intent intent);
 
-    public ProfileIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        super(modelFactories, monitor);
-    }
-
-    public Class<ProfileIntent> getModelType() {
-        return ProfileIntent.class;
-    }
+    /**
+     * Get the list of policies provided by this qualifier
+     * @return A list of policies
+     */
+    List<PolicyExpression> getPolicies();
 }

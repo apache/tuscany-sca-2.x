@@ -17,29 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.xml;
+package org.apache.tuscany.sca.policy;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
- * Processor for handling XML models of PolicyIntent definitions
- *
- * @version $Rev$ $Date$
+ * Definition of an implementation type which extends from sca:implementation
  */
-public class SimpleIntentProcessor extends PolicyIntentProcessor<Intent> {
-
-    public SimpleIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
-        super(policyFactory, monitor);
-    }
-
-    public SimpleIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        super(modelFactories, monitor);
-    }
-
-    public Class<Intent> getModelType() {
-        return Intent.class;
-    }
+public interface ImplementationType extends ExtensionType {
 }

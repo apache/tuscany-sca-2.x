@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.interfacedef;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a service interface. This interface will typically be extended to
@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  *
  * @version $Rev$ $Date$
  */
-public interface Interface extends Cloneable, PolicySetAttachPoint {
+public interface Interface extends Cloneable, PolicySubject {
 
     /**
      * Returns true if the interface is a remotable interface..

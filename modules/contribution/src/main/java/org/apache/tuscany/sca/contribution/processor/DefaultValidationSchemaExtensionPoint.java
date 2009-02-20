@@ -51,7 +51,7 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
      * Load schema declarations from META-INF/services/
      * org.apache.tuscany.sca.contribution.processor.ValidationSchema files
      */
-    private void loadSchemas() {
+    private synchronized void loadSchemas() {
         if (loaded)
             return;
 

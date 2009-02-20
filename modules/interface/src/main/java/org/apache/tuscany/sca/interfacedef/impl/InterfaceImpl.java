@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -43,7 +43,7 @@ public class InterfaceImpl implements Interface {
     private boolean unresolved;
 
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType type;
+    private ExtensionType type;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
 
@@ -234,11 +234,11 @@ public class InterfaceImpl implements Interface {
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         return type;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
         this.type = type;
     }
 

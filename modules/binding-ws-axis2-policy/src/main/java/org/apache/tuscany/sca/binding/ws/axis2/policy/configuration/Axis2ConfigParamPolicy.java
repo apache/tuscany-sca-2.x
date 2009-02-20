@@ -24,7 +24,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.policy.Policy;
 
 /**
  * Implementation for policies that could be injected as parameter
@@ -32,7 +31,7 @@ import org.apache.tuscany.sca.policy.Policy;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2ConfigParamPolicy implements Policy {
+public class Axis2ConfigParamPolicy {
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     public static final QName NAME = new QName(SCA10_TUSCANY_NS, "wsConfigParam");
     private Map<String, OMElement> paramElements = new Hashtable<String, OMElement>();

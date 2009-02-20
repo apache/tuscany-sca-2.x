@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly;
 
 
+
 /**
  * Represents a binding.
  * 

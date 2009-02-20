@@ -261,15 +261,6 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
         // Resolve component type services and references
         resolveAbstractContracts(constrainingType.getServices(), resolver);
         resolveAbstractContracts(constrainingType.getReferences(), resolver);
-        
-        resolveIntents(constrainingType.getRequiredIntents(), resolver);
-        for ( AbstractService service  : constrainingType.getServices() ) {
-            resolveIntents(service.getRequiredIntents(), resolver);
-        }
-        
-        for ( AbstractReference reference : constrainingType.getReferences() ) {
-            resolveIntents(reference.getRequiredIntents(), resolver);
-        }
     }
     
     public QName getArtifactType() {

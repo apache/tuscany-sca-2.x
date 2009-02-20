@@ -21,9 +21,7 @@ package org.apache.tuscany.sca.policy.identity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -46,6 +44,7 @@ public class SecurityIdentityImplementationPolicyProvider implements PolicyProvi
 
     private List<SecurityIdentityPolicy> findPolicies(Operation op) {
         List<SecurityIdentityPolicy> polices = new ArrayList<SecurityIdentityPolicy>();
+        /*
         // FIXME: How do we get a list of effective policySets for a given operation?
         if (implementation instanceof OperationsConfigurator) {
             OperationsConfigurator operationsConfigurator = (OperationsConfigurator)implementation;
@@ -61,6 +60,7 @@ public class SecurityIdentityImplementationPolicyProvider implements PolicyProvi
                 }
             }
         }
+        */
         
         List<PolicySet> policySets = component.getPolicySets();
         for (PolicySet ps : policySets) {

@@ -63,7 +63,7 @@ public class DefaultContributionBuilderExtensionPoint implements ContributionBui
     /**
      * Load builders declared under META-INF/services.
      */
-    private void loadBuilders() {
+    private synchronized void loadBuilders() {
         if (loaded)
             return;
         

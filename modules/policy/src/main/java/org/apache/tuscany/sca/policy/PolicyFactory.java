@@ -47,23 +47,20 @@ public interface PolicyFactory {
     IntentMap createIntentMap();
 
     /**
-     * create a new Profile Intent
+     * create a new Qualifier
      * 
-     * @return a ProfileIntent instance
+     * @return a Qualifier
      */
-    ProfileIntent createProfileIntent();
+    Qualifier createQualifier();
     
     /**
-     * create a new QualifiedIntent
-     * 
-     * @return a QualifiedIntent instance
+     * Create a new PolicyExpression
+     * @return
      */
-    QualifiedIntent createQualifiedIntent();
+    PolicyExpression createPolicyExpression();
     
-    /**
-     * create a new PolicySetReference
-     * 
-     * @return a PolicySetReference instance
-     */
-    PolicySetReference createPolicySetReference();
+    ExtensionType createExtensionType();
+    BindingType createBindingType();
+    ImplementationType createImplementationType();
+
 }

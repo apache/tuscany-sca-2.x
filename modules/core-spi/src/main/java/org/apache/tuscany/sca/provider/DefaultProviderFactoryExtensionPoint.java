@@ -106,7 +106,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
      * Load provider factories declared under META-INF/services.
      * @param registry
      */
-    private void loadProviderFactories() {
+    private synchronized void loadProviderFactories() {
         if (loaded)
             return;
 

@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -73,9 +73,9 @@ public class ReadAllTestCase {
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
         assertFalse(composite.getAutowire() == Boolean.TRUE);
-        assertEquals(((PolicySetAttachPoint)composite).getRequiredIntents().get(0).getName(), new QName("http://test",
+        assertEquals(((PolicySubject)composite).getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                 "confidentiality"));
-        assertEquals(((PolicySetAttachPoint)composite).getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
+        assertEquals(((PolicySubject)composite).getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));
 
         Composite include = composite.getIncludes().get(0);
         assertEquals(include.getName(), new QName("http://calc", "TestAllDivide"));

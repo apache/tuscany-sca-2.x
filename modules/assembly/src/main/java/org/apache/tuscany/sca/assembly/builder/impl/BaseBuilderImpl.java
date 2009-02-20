@@ -45,8 +45,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Base class for Builder implementations 
@@ -551,9 +551,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
         
         if ( definitions != null ) {
-            for ( IntentAttachPointType attachPointType : definitions.getBindingTypes() ) {
-                if ( attachPointType.getName().equals(BINDING_SCA_QNAME)) {
-                    ((IntentAttachPoint)scaBinding).setType(attachPointType);
+            for ( ExtensionType attachPointType : definitions.getBindingTypes() ) {
+                if ( attachPointType.getType().equals(BINDING_SCA_QNAME)) {
+                    ((PolicySubject)scaBinding).setType(attachPointType);
                 }
             }
         }

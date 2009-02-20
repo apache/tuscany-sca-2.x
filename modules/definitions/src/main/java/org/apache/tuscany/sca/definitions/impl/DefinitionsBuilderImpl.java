@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.definitions.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +28,13 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsBuilder;
 import org.apache.tuscany.sca.definitions.DefinitionsBuilderException;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.ProfileIntent;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * Provides a concrete implementation for a SCADefinitionsBuilder
@@ -52,64 +53,63 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
         for (PolicySet policySet : scaDefns.getPolicySets()) {
             definedPolicySets.put(policySet.getName(), policySet);
         }
-        
-        Map<QName, IntentAttachPointType> definedBindingTypes = new HashMap<QName, IntentAttachPointType>();
-        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
-            definedBindingTypes.put(bindingType.getName(), bindingType);
+
+        Map<QName, BindingType> definedBindingTypes = new HashMap<QName, BindingType>();
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
+            definedBindingTypes.put(bindingType.getType(), bindingType);
         }
-        
-        Map<QName, IntentAttachPointType> definedImplTypes = new HashMap<QName, IntentAttachPointType>();
-        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
-            definedImplTypes.put(implType.getName(), implType);
+
+        Map<QName, ImplementationType> definedImplTypes = new HashMap<QName, ImplementationType>();
+        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
+            definedImplTypes.put(implType.getType(), implType);
         }
-        
+
         //filling up the maps removes all duplicate entries... so fill this unique lists
         //into the scaDefns.
         scaDefns.getIntents().clear();
         scaDefns.getPolicySets().clear();
         scaDefns.getBindingTypes().clear();
         scaDefns.getImplementationTypes().clear();
-        
+
         scaDefns.getIntents().addAll(definedIntents.values());
         scaDefns.getPolicySets().addAll(definedPolicySets.values());
         scaDefns.getBindingTypes().addAll(definedBindingTypes.values());
         scaDefns.getImplementationTypes().addAll(definedImplTypes.values());
-        
+
         buildPolicyIntents(scaDefns, definedIntents);
         buildPolicySets(scaDefns, definedPolicySets, definedIntents);
         buildBindingTypes(scaDefns, definedBindingTypes, definedIntents);
         buildImplementationTypes(scaDefns, definedImplTypes, definedIntents);
     }
-    
-    private void buildBindingTypes(Definitions scaDefns, 
-                                   Map<QName, IntentAttachPointType> definedBindingTypes, 
+
+    private void buildBindingTypes(Definitions scaDefns,
+                                   Map<QName, BindingType> definedBindingTypes,
                                    Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
-        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
+        for (BindingType bindingType : scaDefns.getBindingTypes()) {
             buildAlwaysProvidedIntents(bindingType, definedIntents);
             buildMayProvideIntents(bindingType, definedIntents);
         }
 
     }
-    
-    private void buildImplementationTypes(Definitions scaDefns, 
-                                   Map<QName, IntentAttachPointType> definedImplTypes, 
-                                   Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
-        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
+
+    private void buildImplementationTypes(Definitions scaDefns,
+                                          Map<QName, ImplementationType> definedImplTypes,
+                                          Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
+        for (ImplementationType implType : scaDefns.getImplementationTypes()) {
             buildAlwaysProvidedIntents(implType, definedIntents);
             buildMayProvideIntents(implType, definedIntents);
         }
     }
-    
 
     private void buildPolicyIntents(Definitions scaDefns, Map<QName, Intent> definedIntents)
         throws DefinitionsBuilderException {
         for (Intent policyIntent : scaDefns.getIntents()) {
-            if (policyIntent instanceof ProfileIntent) {
-                buildProfileIntent((ProfileIntent)policyIntent, definedIntents);
+            if (!policyIntent.getRequiredIntents().isEmpty()) {
+                buildProfileIntent(policyIntent, definedIntents);
             }
 
-            if (policyIntent instanceof QualifiedIntent) {
-                buildQualifiedIntent((QualifiedIntent)policyIntent, definedIntents);
+            if (!policyIntent.getQualifiedIntents().isEmpty()) {
+                buildQualifiedIntent(policyIntent, definedIntents);
             }
         }
     }
@@ -130,8 +130,8 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
             }
         }
     }
-    
-    private void buildProfileIntent(ProfileIntent policyIntent, Map<QName, Intent> definedIntents)
+
+    private void buildProfileIntent(Intent policyIntent, Map<QName, Intent> definedIntents)
         throws DefinitionsBuilderException {
         //FIXME: Need to check for cyclic references first i.e an A requiring B and then B requiring A... 
         if (policyIntent != null) {
@@ -157,8 +157,9 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
         }
     }
 
-    private void buildQualifiedIntent(QualifiedIntent policyIntent, Map<QName, Intent> definedIntents)
+    private void buildQualifiedIntent(Intent policyIntent, Map<QName, Intent> definedIntents)
         throws DefinitionsBuilderException {
+        /*
         if (policyIntent != null) {
             //resolve the qualifiable intent
             Intent qualifiableIntent = policyIntent.getQualifiableIntent();
@@ -175,11 +176,11 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
 
             }
         }
+        */
     }
-    
-    
-    private void buildAlwaysProvidedIntents(IntentAttachPointType extensionType,
-                                            Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
+
+    private void buildAlwaysProvidedIntents(ExtensionType extensionType, Map<QName, Intent> definedIntents)
+        throws DefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> alwaysProvided = new ArrayList<Intent>();
@@ -189,10 +190,9 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
                     if (resolvedProvidedIntent != null) {
                         alwaysProvided.add(resolvedProvidedIntent);
                     } else {
-                        throw new DefinitionsBuilderException(
-                                                                 "Always Provided Intent - " + providedIntent
-                                                                     + " not found for ExtensionType "
-                                                                     + extensionType);
+                        throw new DefinitionsBuilderException("Always Provided Intent - " + providedIntent
+                            + " not found for ExtensionType "
+                            + extensionType);
 
                     }
                 } else {
@@ -203,30 +203,29 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
             extensionType.getAlwaysProvidedIntents().addAll(alwaysProvided);
         }
     }
-    
-    private void buildMayProvideIntents(IntentAttachPointType extensionType,
-                                            Map<QName, Intent> definedIntents) throws DefinitionsBuilderException {
+
+    private void buildMayProvideIntents(ExtensionType extensionType, Map<QName, Intent> definedIntents)
+        throws DefinitionsBuilderException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> mayProvide = new ArrayList<Intent>();
-            for (Intent providedIntent : extensionType.getMayProvideIntents()) {
+            for (Intent providedIntent : extensionType.getMayProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
                     Intent resolvedProvidedIntent = definedIntents.get(providedIntent.getName());
                     if (resolvedProvidedIntent != null) {
                         mayProvide.add(resolvedProvidedIntent);
                     } else {
-                        throw new DefinitionsBuilderException(
-                                                                 "May Provide Intent - " + providedIntent
-                                                                     + " not found for ExtensionType "
-                                                                     + extensionType);
+                        throw new DefinitionsBuilderException("May Provide Intent - " + providedIntent
+                            + " not found for ExtensionType "
+                            + extensionType);
 
                     }
                 } else {
                     mayProvide.add(providedIntent);
                 }
             }
-            extensionType.getMayProvideIntents().clear();
-            extensionType.getMayProvideIntents().addAll(mayProvide);
+            extensionType.getMayProvidedIntents().clear();
+            extensionType.getMayProvidedIntents().addAll(mayProvide);
         }
     }
 
@@ -257,27 +256,23 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
 
     private void buildIntentsInMappedPolicies(PolicySet policySet, Map<QName, Intent> definedIntents)
         throws DefinitionsBuilderException {
-        Map<Intent, List<Object>> mappedPolicies = new Hashtable<Intent, List<Object>>();
-        for (Map.Entry<Intent, List<Object>> entry : policySet.getMappedPolicies().entrySet()) {
-            Intent mappedIntent = entry.getKey();
-            if (mappedIntent.isUnresolved()) {
-                Intent resolvedMappedIntent = definedIntents.get(mappedIntent.getName());
+        for (IntentMap intentMap : policySet.getIntentMaps()) {
+            for (Qualifier qualifier : intentMap.getQualifiers()) {
+                Intent mappedIntent = qualifier.getIntent();
+                if (mappedIntent.isUnresolved()) {
+                    Intent resolvedMappedIntent = definedIntents.get(mappedIntent.getName());
 
-                if (resolvedMappedIntent != null) {
-                    mappedPolicies.put(resolvedMappedIntent, entry.getValue());
-                } else {
-                    throw new DefinitionsBuilderException("Mapped Intent - " + mappedIntent
-                        + " not found for PolicySet "
-                        + policySet);
+                    if (resolvedMappedIntent != null) {
+                        qualifier.setIntent(resolvedMappedIntent);
+                    } else {
+                        throw new DefinitionsBuilderException("Mapped Intent - " + mappedIntent
+                            + " not found for PolicySet "
+                            + policySet);
 
+                    }
                 }
-            } else {
-                mappedPolicies.put(mappedIntent, entry.getValue());
             }
         }
-
-        policySet.getMappedPolicies().clear();
-        policySet.getMappedPolicies().putAll(mappedPolicies);
     }
 
     private void buildReferredPolicySets(PolicySet policySet, Map<QName, PolicySet> definedPolicySets)
@@ -307,6 +302,6 @@ public class DefinitionsBuilderImpl implements DefinitionsBuilder {
             includeReferredPolicySets(referredPolicySet, furtherReferredPolicySet);
         }
         policySet.getPolicies().addAll(referredPolicySet.getPolicies());
-        policySet.getMappedPolicies().putAll(referredPolicySet.getMappedPolicies());
+        policySet.getIntentMaps().addAll(referredPolicySet.getIntentMaps());
     }
 }

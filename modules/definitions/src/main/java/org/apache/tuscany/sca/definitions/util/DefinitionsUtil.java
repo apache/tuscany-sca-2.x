@@ -28,8 +28,6 @@ import org.apache.tuscany.sca.definitions.Definitions;
  */
 public class DefinitionsUtil {
     
-
-    
     public static void aggregate(Definitions source, Definitions target) {
         target.getIntents().addAll(source.getIntents());
         target.getPolicySets().addAll(source.getPolicySets());

@@ -21,14 +21,14 @@ package org.apache.tuscany.sca.assembly;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a contract. A contract can be either a service or a reference.
  * 
  * @version $Rev$ $Date$
  */
-public interface Contract extends AbstractContract, PolicySetAttachPoint, Cloneable {
+public interface Contract extends AbstractContract, PolicySubject, Cloneable {
 
     /**
      * Returns the bindings supported by this contract.

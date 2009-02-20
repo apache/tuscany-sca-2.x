@@ -17,29 +17,32 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.xml;
+package org.apache.tuscany.sca.policy.impl;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Processor for handling XML models of PolicyIntent definitions that are QualifiedIntents
- *
- * @version $Rev$ $Date$
- */
-public class QualifiedIntentProcessor extends PolicyIntentProcessor<QualifiedIntent> {
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyExpression;
+import org.apache.tuscany.sca.policy.Qualifier;
 
-    public QualifiedIntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        super(modelFactories, monitor);
+public class QualifierImpl implements Qualifier {
+    private Intent intent;
+    private List<PolicyExpression> policies = new ArrayList<PolicyExpression>();
+
+    protected QualifierImpl() {
     }
 
-    public QualifiedIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
-        super(policyFactory, monitor);
+    public Intent getIntent() {
+        return intent;
     }
 
-    public Class<QualifiedIntent> getModelType() {
-        return QualifiedIntent.class;
+    public List<PolicyExpression> getPolicies() {
+        return policies;
     }
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
+    }
+
 }

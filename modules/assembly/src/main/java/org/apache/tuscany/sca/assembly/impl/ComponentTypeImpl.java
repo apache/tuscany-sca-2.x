@@ -26,6 +26,9 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /** 
  * Represents a component type.
@@ -38,6 +41,8 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();
     private List<Service> services = new ArrayList<Service>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
     /**
      * Constructs a new component type.
      */
@@ -111,5 +116,20 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
                 return false;
             }
         }
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public ExtensionType getType() {
+        return null;
+    }
+
+    public void setType(ExtensionType type) {
     }
 }

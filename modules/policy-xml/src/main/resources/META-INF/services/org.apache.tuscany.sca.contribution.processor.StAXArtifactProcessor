@@ -16,9 +16,7 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#bindingType,model=org.apache.tuscany.sca.policy.IntentAttachPointType
-org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#implementationType,model=org.apache.tuscany.sca.policy.IntentAttachPointType
-org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#intent,model=org.apache.tuscany.sca.policy.Intent
-org.apache.tuscany.sca.policy.xml.PolicySetProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#policySet,model=org.apache.tuscany.sca.policy.PolicySet
-org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#intent,model=org.apache.tuscany.sca.policy.ProfileIntent
-org.apache.tuscany.sca.policy.xml.QualifiedIntentProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#intent,model=org.apache.tuscany.sca.policy.QualifiedIntent
+org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200712#bindingType,model=org.apache.tuscany.sca.policy.BindingType
+org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200712#implementationType,model=org.apache.tuscany.sca.policy.ImplementationType
+org.apache.tuscany.sca.policy.xml.IntentProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200712#intent,model=org.apache.tuscany.sca.policy.Intent
+org.apache.tuscany.sca.policy.xml.PolicySetProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200712#policySet,model=org.apache.tuscany.sca.policy.PolicySet

@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -26,21 +27,19 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A test cheel for the SCA binding.
  * 
  * @version $Rev$ $Date$
  */
-public class TestSCABindingImpl implements SCABinding, OptimizableBinding, PolicySetAttachPoint, OperationsConfigurator {
+public class TestSCABindingImpl implements SCABinding, OptimizableBinding, PolicySubject {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
@@ -51,9 +50,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType bindingType = new TestSCABindingType();
-    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private ExtensionType bindingType = new TestSCABindingType();
 
     /**
      * Constructs a new SCA binding.
@@ -148,66 +145,42 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
         return requiredIntents;
     }
 
-    public IntentAttachPointType getType() {
+    public ExtensionType getType() {
         // TODO Auto-generated method stub
         return bindingType;
     }
 
-    public void setType(IntentAttachPointType type) {
+    public void setType(ExtensionType type) {
         this.bindingType = type;
     }
     
-    private class TestSCABindingType implements IntentAttachPointType {
+    private class TestSCABindingType implements ExtensionType {
         private QName name = new QName("http://www.osoa.org/xmlns/sca/1.0","binding");
-
-        public List<Intent> getAlwaysProvidedIntents() {
-            // TODO Auto-generated method stub
-            return null;
+        public QName getBaseType() {
+            return BINDING_BASE;
         }
 
-        public List<Intent> getMayProvideIntents() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public QName getName() {
+        public QName getType() {
             return name;
         }
 
+        public void setType(QName type) {
+        }
+
+        public List<Intent> getAlwaysProvidedIntents() {
+            return Collections.emptyList();
+        }
+
+        public List<Intent> getMayProvidedIntents() {
+            return Collections.emptyList();
+        }
+
         public boolean isUnresolved() {
-            // TODO Auto-generated method stub
             return false;
         }
 
-        public void setName(QName type) {
-            // TODO Auto-generated method stub
-            
-        }
-
         public void setUnresolved(boolean unresolved) {
-            // TODO Auto-generated method stub
-            
         }
-        
     }
     
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-    
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredOperations = configuredOperations;
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
 }

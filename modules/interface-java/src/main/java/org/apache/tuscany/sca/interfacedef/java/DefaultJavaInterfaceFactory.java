@@ -56,7 +56,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
      * Load visitors declared under META-INF/services
      */
     @SuppressWarnings("unchecked")
-    private void loadVisitors() {
+    private synchronized void loadVisitors() {
         if (loadedVisitors)
             return;
         

@@ -20,15 +20,13 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.policy.Policy;
-
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
  *
  * @version $Rev$ $Date$
  */
-public class BasicAuthenticationPolicy implements Policy {
+public class BasicAuthenticationPolicy {
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
 
     public static final QName BASIC_AUTHENTICATION_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "basicAuthentication");

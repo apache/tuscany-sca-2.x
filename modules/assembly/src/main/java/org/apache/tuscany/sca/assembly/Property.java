@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A property allows for the configuration of an implementation with externally
@@ -28,7 +27,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Property extends AbstractProperty, PolicySetAttachPoint, Cloneable {
+public interface Property extends AbstractProperty, Cloneable {
     
     /**
      * Returns a clone of the property.

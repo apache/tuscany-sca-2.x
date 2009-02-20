@@ -38,7 +38,6 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.LOCAL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
-import static org.apache.tuscany.sca.assembly.xml.Constants.OPERATION_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROMOTE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
@@ -57,7 +56,6 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.WIRED_BY_IMPL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE_QNAME;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -79,11 +77,9 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -103,14 +99,9 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
-import org.apache.tuscany.sca.policy.util.PolicyValidationException;
-import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
 
 /**
@@ -120,7 +111,7 @@ import org.w3c.dom.Document;
  */
 public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
     private XPathFactory xPathFactory;
-    private IntentAttachPointTypeFactory intentAttachPointTypeFactory;
+    private PolicyFactory intentAttachPointTypeFactory;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
     private ContributionFactory contributionFactory;
 
@@ -157,7 +148,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
              Monitor monitor) {
         
     	super(modelFactories, extensionProcessor, monitor);
-        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
         this.xPathFactory = modelFactories.getFactory(XPathFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionAttributeProcessor = extensionAttributeProcessor;
@@ -433,30 +424,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             
                             policyProcessor.readPolicies(callback, reader);
     
-                        } else if (OPERATION_QNAME.equals(name)) {
-    
-                            // Read an <operation>
-                            ConfiguredOperation operation = assemblyFactory.createConfiguredOperation();
-                            operation.setName(getString(reader, NAME));
-                            operation.setUnresolved(true);
-                            if (callback != null) {
-                                policyProcessor.readPolicies(operation, reader);
-                            } else {
-                                policyProcessor.readPolicies(operation, reader);
-                            }
-                            
-                            OperationsConfigurator opConfigurator = null;
-                            if ( compositeService != null ) {
-                                opConfigurator = compositeService;
-                            } else if ( componentService != null ) {
-                                opConfigurator = componentService;
-                            } else if ( compositeReference != null ) {
-                                opConfigurator = compositeReference;
-                            } else if ( componentReference != null ) {
-                                opConfigurator = componentReference;
-                            }
-                            
-                            opConfigurator.getConfiguredOperations().add(operation);
                         } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
     
                             // Read an implementation.composite
@@ -489,11 +456,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         }
                                     }
                                 } else if (extension instanceof Binding) {
-                                    if ( extension instanceof PolicySetAttachPoint ) {
-                                        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
-                                        bindingType.setName(name);
+                                    if ( extension instanceof PolicySubject ) {
+                                        ExtensionType bindingType = intentAttachPointTypeFactory.createBindingType();
+                                        bindingType.setType(name);
                                         bindingType.setUnresolved(true);
-                                        ((PolicySetAttachPoint)extension).setType(bindingType);
+                                        ((PolicySubject)extension).setType(bindingType);
                                     }
                                     // <service><binding> and
                                     // <reference><binding>
@@ -513,11 +480,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                     }
     
                                 } else if (extension instanceof Implementation) {
-                                    if ( extension instanceof PolicySetAttachPoint ) {
-                                        IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
-                                        implType.setName(name);
+                                    if ( extension instanceof PolicySubject ) {
+                                        ExtensionType implType = intentAttachPointTypeFactory.createImplementationType();
+                                        implType.setType(name);
                                         implType.setUnresolved(true);
-                                        ((PolicySetAttachPoint)extension).setType(implType);
+                                        ((PolicySubject)extension).setType(implType);
                                     }
                                     // <component><implementation>
                                     if (component != null) {
@@ -960,17 +927,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 extensionProcessor.resolve(extension, resolver);
             }
         }
-        
-        //resolve intents and policy sets
-        List<Intent> compositeIntents = null;
-        List<PolicySet> compositePolicySets = null;
-        List<PolicySet> compositeApplicablePolicySets = null;
-        resolveIntents(composite.getRequiredIntents(), resolver);
-        resolvePolicySets(composite.getPolicySets(), resolver);
-        resolvePolicySets(composite.getApplicablePolicySets(), resolver);
-        compositeIntents = composite.getRequiredIntents();
-        compositePolicySets = composite.getPolicySets();
-        compositeApplicablePolicySets = composite.getApplicablePolicySets();
 
         //Resolve composite services and references
         resolveContracts(composite, composite.getServices(), resolver);
@@ -984,19 +940,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 component.setConstrainingType(constrainingType);
             }
             
-            //resolve intents and policy sets
-            resolveIntents(component.getRequiredIntents(), resolver);
-            resolvePolicySets(component.getPolicySets(), resolver);
-            resolvePolicySets(component.getApplicablePolicySets(), resolver);
-            
-            //inherit composite intents and policysets
-            PolicyComputationUtils.addDefaultPolicies(compositeIntents,
-                                                      compositePolicySets,
-                                                      component.getRequiredIntents(),
-                                                      component.getPolicySets());
-
-            addInheritedPolicySets(compositeApplicablePolicySets, component.getApplicablePolicySets());
-
             //resolve component services and references 
             resolveContracts(component, component.getServices(), resolver);
             resolveContracts(component, component.getReferences(), resolver);
@@ -1015,35 +958,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //resolve component implementation
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
-                try {
-                    //resolve intents and policysets specified on this implementation
-                    //before copying them over to the component.  Before that, from the component
-                    //copy over the applicablePolicySets alone as it might have to be
-                    //used to validate the policysets specified on the implementation
-                    
-                    resolveImplIntentsAndPolicySets(implementation, 
-                                                    component.getApplicablePolicySets(), 
-                                                    resolver);
+                //now resolve the implementation so that even if there is a shared instance
+                //for this that is resolved, the specified intents and policysets are safe in the
+                //component and not lost
+                implementation = resolveImplementation(implementation, resolver);
 
-                    copyPoliciesToComponent(component, implementation, resolver, true);
-                    
-                    //now resolve the implementation so that even if there is a shared instance
-                    //for this that is resolved, the specified intents and policysets are safe in the
-                    //component and not lost
-                    implementation = resolveImplementation(implementation, resolver);
-                    
-                    //resolved implementation may contain intents and policysets specified at 
-                    //componentType (either in the componentType side file or in annotations if its a 
-                    //java implementation).  This has to be consolidated in to the component.
-                    copyPoliciesToComponent(component, implementation, resolver, false);
-                    
-                    component.setImplementation(implementation);
-                } catch ( PolicyValidationException e ) {
-                	error("PolicyImplValidationException", resolver, component.getName(), e.getMessage());
-                    //throw new ContributionResolveException("PolicyValidation exception when processing implementation of component '" 
-                                                           //+ component.getName() + "' due to " + e.getMessage(), e);
-                }
-            
+                component.setImplementation(implementation);
             }
 
             //add model resolver to component
@@ -1061,154 +981,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             }
         }
     }
-    
-    private void resolveImplIntentsAndPolicySets(Implementation implementation,
-                                                 List<PolicySet> inheritedApplicablePolicySets,
-                                                 ModelResolver resolver) throws ContributionResolveException,
-                                                                                 PolicyValidationException
-                                                        {
-        if ( implementation instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-            
-            policiedImpl.getApplicablePolicySets().addAll(inheritedApplicablePolicySets);
-            
-            resolveIntents(policiedImpl.getRequiredIntents(), resolver);
-            PolicyValidationUtils.validateIntents(policiedImpl, policiedImpl.getType());
-            
-            resolvePolicySets(policiedImpl.getPolicySets(), resolver);
-            resolvePolicySets(policiedImpl.getApplicablePolicySets(), resolver);
-            
-            PolicyValidationUtils.validatePolicySets(policiedImpl);
-            
-            if ( implementation instanceof OperationsConfigurator ) {
-                for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
-                    resolveIntents(implConfOp.getRequiredIntents(), resolver);
-                    PolicyValidationUtils.validateIntents(implConfOp, policiedImpl.getType());
-                    
-                    resolvePolicySets(implConfOp.getPolicySets(), resolver);
-                    resolvePolicySets(implConfOp.getApplicablePolicySets(), resolver);
-                    //add the inherited applicablePolicysets
-                    addInheritedPolicySets(policiedImpl.getApplicablePolicySets(), implConfOp.getApplicablePolicySets());
-                    
-                    PolicyValidationUtils.validatePolicySets(implConfOp, policiedImpl.getType());
-                    
-                    PolicyComputationUtils.addDefaultPolicies(
-                                            ((PolicySetAttachPoint)implementation).getRequiredIntents(),
-                                            ((PolicySetAttachPoint)implementation).getPolicySets(),
-                                            implConfOp.getRequiredIntents(),
-                                            implConfOp.getPolicySets());
-                }
-            }
-        }
-    }
-    
-    private void copyPoliciesToComponent(Component component, 
-                                         Implementation implementation, 
-                                         ModelResolver resolver,
-                                         boolean clearImplSettings) throws ContributionResolveException {
-        if (implementation instanceof PolicySetAttachPoint) {
-            // Add implementation policies into component, since implementation instances are 
-            // reused and it's likely that this implementation instance will not hold after its resolution.
-            // On the first call to this method (clearImplSettings=true), we are moving policies from the
-            // implementation XML element up to the component.  In this case if there are mutually exclusive
-            // policies we must clear the component policy so that the implementation policy "wins".
-            // On the second call to this method (clearImplSettings=false), we are moving policies from the
-            // componentType implementation up to the component.  In this case if there are mutually
-            // exclusive policies it is an error.  This error will be detected later in the PolicyComputer.
-            if (clearImplSettings) {
-                for (Intent intent : ((PolicySetAttachPoint)implementation).getRequiredIntents()) {
-                    for (Intent excluded : intent.getExcludedIntents()) {
-                        if (component.getRequiredIntents().contains(excluded)) {
-                            component.getRequiredIntents().remove(excluded);
-                        }
-                        for (Iterator<PolicySet> i = component.getPolicySets().iterator(); i.hasNext(); ) {
-                            PolicySet cmpPolicySet = i.next();
-                            if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
-                                i.remove();
-                            }
-                        }
-                    }
-                }
-                for (PolicySet policySet : ((PolicySetAttachPoint)implementation).getPolicySets()) {
-                    for (Intent intent : policySet.getProvidedIntents()) {
-                        for (Intent excluded : intent.getExcludedIntents()) {
-                            if (component.getRequiredIntents().contains(excluded)) {
-                                component.getRequiredIntents().remove(excluded);
-                            }
-                            for (Iterator<PolicySet> i = component.getPolicySets().iterator(); i.hasNext(); ) {
-                                PolicySet cmpPolicySet = i.next();
-                                if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
-                                    i.remove();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
-            component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
-            component.getApplicablePolicySets().addAll(((PolicySetAttachPoint)implementation).getApplicablePolicySets());
-            
-            if ( implementation instanceof OperationsConfigurator ) {
-                boolean notFound;
-                List<ConfiguredOperation> opsFromImplementation = new ArrayList<ConfiguredOperation>();
-                List<ConfiguredOperation> implConfOperations = 
-                    new ArrayList<ConfiguredOperation>(((OperationsConfigurator)implementation).getConfiguredOperations());
-                for ( ConfiguredOperation implConfOp : implConfOperations ) {
-                    notFound = true;
-                    for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
-                        if ( implConfOp.getName().equals(compConfOp.getName()) ) {
-                            notFound = false;
-
-                            if (clearImplSettings) {
-                                for (Intent intent : implConfOp.getRequiredIntents()) {
-                                    for (Intent excluded : intent.getExcludedIntents()) {
-                                        if (compConfOp.getRequiredIntents().contains(excluded)) {
-                                            compConfOp.getRequiredIntents().remove(excluded);
-                                        }
-                                    }
-                                }
-                                for (PolicySet policySet : implConfOp.getPolicySets()) {
-                                    for (Intent intent : policySet.getProvidedIntents()) {
-                                        for (Intent excluded : intent.getExcludedIntents()) {
-                                            if (compConfOp.getRequiredIntents().contains(excluded)) {
-                                                compConfOp.getRequiredIntents().remove(excluded);
-                                            }
-                                            for (Iterator<PolicySet> i = compConfOp.getPolicySets().iterator(); i.hasNext(); ) {
-                                                PolicySet cmpPolicySet = i.next();
-                                                if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
-                                                    i.remove();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            addInheritedIntents(implConfOp.getRequiredIntents(), compConfOp.getRequiredIntents());
-                            addInheritedPolicySets(implConfOp.getPolicySets(), compConfOp.getPolicySets());
-                            addInheritedPolicySets(implConfOp.getApplicablePolicySets(), compConfOp.getApplicablePolicySets());
-                        }
-                    }
-                    
-                    if ( notFound ) {
-                        opsFromImplementation.add(implConfOp);
-                    }
-                    
-                    if ( clearImplSettings ) {
-                        ((OperationsConfigurator)implementation).getConfiguredOperations().remove(implConfOp);
-                    }
-                }
-                ((OperationsConfigurator)component).getConfiguredOperations().addAll(opsFromImplementation);
-            }
-            
-            if ( clearImplSettings ) {
-                ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
-                ((PolicySetAttachPoint)implementation).getPolicySets().clear();
-            }
-        }
-    }
-    
     
     public QName getArtifactType() {
         return COMPOSITE_QNAME;

@@ -19,14 +19,14 @@
 package org.apache.tuscany.sca.policy.impl;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpression;
 
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -37,29 +37,17 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class PolicySetImpl implements PolicySet {
 
     private QName name;
-    //private List<Operation> operations = new ArrayList<Operation>();
-    //private List<QName> appliesTo;
     private String appliesTo;
+    private String attachTo;
     private List<Intent> providedIntents = new ArrayList<Intent>();
     private List<PolicySet> referencedPolicySets = new ArrayList<PolicySet>();
-    private List<Object> policies = new ArrayList<Object>();
-    Map<Intent, List<Object>>  mappedPolicies = new Hashtable<Intent, List<Object>>();
     private boolean unresolved = true;
-    private String alwaysAppliesTo;
-    
+
     private XPathExpression appliesToXPathExpression;
-    private XPathExpression alwaysAppliesToXPathExpression;
-    
-    public String getAlwaysAppliesTo() {
-        return alwaysAppliesTo;
-    }
+    private XPathExpression attachToXPathExpression;
 
-    public void setAlwaysAppliesTo(String alwaysAppliesTo) {
-        this.alwaysAppliesTo = alwaysAppliesTo;
-    }
-
-    protected PolicySetImpl() {
-    }
+    private List<IntentMap> intentMaps = new ArrayList<IntentMap>();
+    private List<PolicyExpression> policies = new ArrayList<PolicyExpression>();
 
     public QName getName() {
         return name;
@@ -69,10 +57,6 @@ public class PolicySetImpl implements PolicySet {
         this.name = name;
     }
 
-    /*public List<Operation> getOperations() {
-        return operations;
-    }*/
-
     public String getAppliesTo() {
         return appliesTo;
     }
@@ -81,16 +65,12 @@ public class PolicySetImpl implements PolicySet {
         this.appliesTo = appliesTo;
     }
 
-    public List<Intent> getProvidedIntents() {
-        return providedIntents;
+    public String getAttachTo() {
+        return attachTo;
     }
 
-    public List<PolicySet> getReferencedPolicySets() {
-        return referencedPolicySets;
-    }
-
-    public List<Object> getPolicies() {
-        return policies;
+    public void setAttachTo(String attachTo) {
+        this.attachTo = attachTo;
     }
 
     public boolean isUnresolved() {
@@ -101,35 +81,6 @@ public class PolicySetImpl implements PolicySet {
         this.unresolved = unresolved;
     }
 
-    public Map<Intent, List<Object>> getMappedPolicies() {
-        return mappedPolicies;
-    }
-    
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof PolicySet) {
-            if (getName() != null) {
-                return getName().equals(((PolicySet)obj).getName());
-            } else {
-                return ((PolicySet)obj).getName() == null;
-            }
-        } else {
-            return false;
-        }
-    }
-    
-    @Override
-    public String toString() {
-    	return ( this.name != null ) ? getName().toString() : "null";
-    }
-
     public XPathExpression getAppliesToXPathExpression() {
         return appliesToXPathExpression;
     }
@@ -138,12 +89,57 @@ public class PolicySetImpl implements PolicySet {
         this.appliesToXPathExpression = appliesToXPathExpression;
     }
 
-    public XPathExpression getAlwaysAppliesToXPathExpression() {
-        return alwaysAppliesToXPathExpression;
+    public XPathExpression getAttachToXPathExpression() {
+        return attachToXPathExpression;
     }
 
-    public void setAlwaysAppliesToXPathExpression(XPathExpression alwaysAppliesToXPathExpression) {
-        this.alwaysAppliesToXPathExpression = alwaysAppliesToXPathExpression;
+    public void setAttachToXPathExpression(XPathExpression attachToXPathExpression) {
+        this.attachToXPathExpression = attachToXPathExpression;
+    }
+
+    public List<IntentMap> getIntentMaps() {
+        return intentMaps;
+    }
+
+    public List<Intent> getProvidedIntents() {
+        return providedIntents;
+    }
+
+    public List<PolicySet> getReferencedPolicySets() {
+        return referencedPolicySets;
+    }
+
+    public List<PolicyExpression> getPolicies() {
+        return policies;
+    }
+    
+    public String toString() {
+        return String.valueOf(name);
+    }    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PolicySetImpl other = (PolicySetImpl)obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
     }
 
 }
