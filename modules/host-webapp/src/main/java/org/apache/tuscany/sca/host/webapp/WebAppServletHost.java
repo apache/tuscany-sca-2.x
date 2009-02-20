@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -223,7 +227,7 @@ public class WebAppServletHost implements ServletHost {
             initContextPath(config);
             contributionRoot = getContributionRoot(servletContext);
             NodeFactory factory = NodeFactory.newInstance();
-            node = factory.createNode("WEB-INF/web.composite", new Contribution(contributionRoot, contributionRoot));
+            node = factory.createNode(contextPath, getWebComposite(servletContext), new Contribution(contributionRoot, contributionRoot));
             node.start();
             servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
         }
@@ -233,6 +237,29 @@ public class WebAppServletHost implements ServletHost {
             servlet.init(config);
         }
         
+    }
+    
+    protected String getWebComposite(ServletContext servletContext) throws ServletException {
+        InputStream stream = servletContext.getResourceAsStream("/WEB-INF/web.composite");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        StringBuilder sb = new StringBuilder();
+        String s = null;
+        try {
+            while ((s = reader.readLine()) != null) {
+                sb.append(s + "\n");
+            }
+        } catch (IOException e) {
+            throw new ServletException(e);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                throw new ServletException(e);
+            }
+        }
+ 
+        return sb.toString();
     }
 
     protected String getContributionRoot(ServletContext servletContext) {
@@ -269,6 +296,7 @@ public class WebAppServletHost implements ServletHost {
             }
         }
 
+        logger.info("contributionRoot: " + contributionRoot);
         return contributionRoot;
     }
 
