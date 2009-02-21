@@ -168,7 +168,7 @@ public class ReadDocumentTestCase {
 
         QName confidentiality_transport = new QName(namespace, "confidentiality.transport");
         Intent i2 = intentTable.get(confidentiality_transport);
-        assertNotNull(i2.getParent());
+        assertNotNull(i2.getQualifiableIntent());
 
         PolicySet secureReliablePolicySet = policySetTable.get(secureReliablePolicy);
         PolicySet secureMessagingPolicySet = policySetTable.get(secureMessagingPolicies);

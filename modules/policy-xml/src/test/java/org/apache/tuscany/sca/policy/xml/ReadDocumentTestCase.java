@@ -203,7 +203,7 @@ public class ReadDocumentTestCase {
         assertTrue(intentTable.get(confidentiality_transport) instanceof Intent);
         Intent qualifiedIntent = (Intent)intentTable.get(new QName(namespace, "confidentiality.transport"));
         assertNull(qualifiedIntent.getDescription());
-        assertNotNull(qualifiedIntent.getParent().getDescription());
+        assertNotNull(qualifiedIntent.getQualifiableIntent().getDescription());
 
         PolicySet secureReliablePolicySet = policySetTable.get(secureReliablePolicy);
         PolicySet secureMessagingPolicySet = policySetTable.get(secureMessagingPolicies);
@@ -253,7 +253,7 @@ public class ReadDocumentTestCase {
 
         //testing if policy intents have been linked have property been linked up 
         assertNotNull(profileIntent.getRequiredIntents().get(0).getDescription());
-        assertNotNull(qualifiedIntent.getParent().getDescription());
+        assertNotNull(qualifiedIntent.getQualifiableIntent().getDescription());
         assertEquals(secureReliablePolicySet.getProvidedIntents().get(1).getName(), integrity);
         assertNotNull(secureReliablePolicySet.getProvidedIntents().get(1).getDescription());
 

@@ -72,11 +72,11 @@ public class IntentImpl implements Intent {
         this.description = description;
     }
 
-    public Intent getParent() {
+    public Intent getQualifiableIntent() {
         return parent;
     }
 
-    public void setParent(Intent parent) {
+    public void setQualifiableIntent(Intent parent) {
         this.parent = parent;
     }
 
