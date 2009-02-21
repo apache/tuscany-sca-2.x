@@ -21,9 +21,11 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -100,18 +102,15 @@ abstract class PolicyConfigurationUtil {
         return inheritablePolicySets;
     }
     
-    private static void normalizePolicySets(PolicySubject policySetAttachPoint ) {
+    private static void normalizePolicySets(PolicySubject subject ) {
         //get rid of duplicate entries
-        HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
-        for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-            policySetTable.put(policySet.getName(), policySet);
-        }
+        Set<PolicySet> policySetTable = new HashSet<PolicySet>(subject.getPolicySets());
         
-        policySetAttachPoint.getPolicySets().clear();
-        policySetAttachPoint.getPolicySets().addAll(policySetTable.values());
+        subject.getPolicySets().clear();
+        subject.getPolicySets().addAll(policySetTable);
             
         //expand profile intents
-        for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
+        for ( PolicySet policySet : subject.getPolicySets() ) {
             PolicyComputationUtils.expandProfileIntents(policySet.getProvidedIntents());
         }
     }
@@ -196,9 +195,9 @@ abstract class PolicyConfigurationUtil {
         Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
         //if qualified form of intent exists remove the unqualified form
         for ( Intent intent : intentsTableCopy.values() ) {
-            if ( intent.getParent()!=null ) {
-                if ( intentsTable.get(intent.getParent().getName()) != null ) {
-                    intentsTable.remove(intent.getParent().getName());
+            if ( intent.getQualifiableIntent()!=null ) {
+                if ( intentsTable.get(intent.getQualifiableIntent().getName()) != null ) {
+                    intentsTable.remove(intent.getQualifiableIntent().getName());
                 }
             }
         }

@@ -140,13 +140,13 @@ public interface Intent {
      * return null.
      * @return The parent intent or null if this intent is not qualified
      */
-    Intent getParent();
+    Intent getQualifiableIntent();
 
     /**
      * Set the parent intent for a qualified intent
      * @param intent
      */
-    void setParent(Intent intent);
+    void setQualifiableIntent(Intent intent);
 
     boolean isUnresolved();
 

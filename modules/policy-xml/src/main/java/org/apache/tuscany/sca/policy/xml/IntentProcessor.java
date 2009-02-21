@@ -149,7 +149,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                             intent.setDefaultQualifiedIntent(qualified);
                         }
                         intent.getQualifiedIntents().add(qualified);
-                        qualified.setParent(intent);
+                        qualified.setQualifiableIntent(intent);
                         current = qualified;
                     }
                     break;
@@ -170,6 +170,10 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
             if (reader.hasNext()) {
                 reader.next();
             }
+        }
+        // REVIEW: [rfeng] What's going to happen if there is only one qualified intent
+        if (intent.getQualifiedIntents().size() == 1) {
+            intent.setDefaultQualifiedIntent(intent.getQualifiedIntents().get(0));
         }
         return intent;
     }
@@ -277,7 +281,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
     private void resolveQualifiedIntent(Intent qualifed, ModelResolver resolver) throws ContributionResolveException {
         if (qualifed != null) {
             //resolve the qualifiable intent
-            Intent parent = qualifed.getParent();
+            Intent parent = qualifed.getQualifiableIntent();
             if (parent == null) {
                 return;
             }
@@ -288,7 +292,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 // Lets try to resolve them first.
 
                 if (!resolved.isUnresolved() || resolved != qualifed) {
-                    qualifed.setParent(resolved);
+                    qualifed.setQualifiableIntent(resolved);
                 } else {
                     error("QualifiableIntentNotFound", resolver, parent, qualifed);
                     //throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
