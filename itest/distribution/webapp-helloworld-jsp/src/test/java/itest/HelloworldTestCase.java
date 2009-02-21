@@ -38,7 +38,7 @@ public class HelloworldTestCase {
 
     @Test
     public void testA() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-        HtmlPage page = (HtmlPage)new WebClient().getPage("http://localhost:8085/helloworld-jsp-2.0-SNAPSHOT");
+        HtmlPage page = (HtmlPage)new WebClient().getPage("http://localhost:8085/helloworld-jsp");
         Iterator<?> ss = page.getAllHtmlChildElements();
         ss.next();
         ss.next();
