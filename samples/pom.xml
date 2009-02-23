@@ -52,6 +52,10 @@
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
                 <!-- module>host-webapp-calculator</module -->
+
+                <module>webapps/helloworld</module>
+                <module>webapps/helloworld-jsp</module>
+
             </modules>
         </profile>
     </profiles>    
