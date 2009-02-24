@@ -65,6 +65,8 @@
         <module>host-jetty</module>
         <module>host-rmi</module>
         <module>host-webapp</module>
+        <module>implementation-bpel</module>
+        <module>implementation-bpel-ode</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
         <module>implementation-java-xml</module>
