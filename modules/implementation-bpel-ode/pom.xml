@@ -180,8 +180,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-            <version>1.0</version>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.modules</groupId>
@@ -209,6 +209,10 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-ejb_2.1_spec</artifactId>
                 </exclusion>
                 <exclusion>
@@ -227,6 +231,10 @@
             <artifactId>geronimo-connector</artifactId>
             <version>1.2-beta</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>xmlbeans</groupId>
                     <artifactId>xbean</artifactId>
