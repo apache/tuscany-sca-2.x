@@ -99,26 +99,6 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     }
 
     /**
-     * Report a error.
-     * 
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "definitions-xml-validation-messages",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
      * Report a exception.
      * 
      * @param problems
@@ -200,21 +180,23 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
         }
     }
 
-    private static void stripDuplicates(Definitions scaDefns) {
-        Set<Intent> definedIntents = new HashSet<Intent>(scaDefns.getIntents());
-        Set<PolicySet> definedPolicySets = new HashSet<PolicySet>(scaDefns.getPolicySets());
+    // FIXME: [rfeng] We need to validate the definitions against the Conformance Items
+    // defined by the SCA Policy Framework Spec V1.1
+    private static void stripDuplicates(Definitions definitions) {
+        Set<Intent> intents = new HashSet<Intent>(definitions.getIntents());
+        Set<PolicySet> policySets = new HashSet<PolicySet>(definitions.getPolicySets());
 
-        Set<BindingType> definedBindingTypes = new HashSet<BindingType>(scaDefns.getBindingTypes());
-        Set<ImplementationType> definedImplTypes = new HashSet<ImplementationType>(scaDefns.getImplementationTypes());
+        Set<BindingType> bindingTypes = new HashSet<BindingType>(definitions.getBindingTypes());
+        Set<ImplementationType> implementationTypes = new HashSet<ImplementationType>(definitions.getImplementationTypes());
 
-        scaDefns.getIntents().clear();
-        scaDefns.getIntents().addAll(definedIntents);
-        scaDefns.getPolicySets().clear();
-        scaDefns.getPolicySets().addAll(definedPolicySets);
-        scaDefns.getBindingTypes().clear();
-        scaDefns.getBindingTypes().addAll(definedBindingTypes);
-        scaDefns.getImplementationTypes().clear();
-        scaDefns.getImplementationTypes().addAll(definedImplTypes);
+        definitions.getIntents().clear();
+        definitions.getIntents().addAll(intents);
+        definitions.getPolicySets().clear();
+        definitions.getPolicySets().addAll(policySets);
+        definitions.getBindingTypes().clear();
+        definitions.getBindingTypes().addAll(bindingTypes);
+        definitions.getImplementationTypes().clear();
+        definitions.getImplementationTypes().addAll(implementationTypes);
     }
 
     public void resolve(Definitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
