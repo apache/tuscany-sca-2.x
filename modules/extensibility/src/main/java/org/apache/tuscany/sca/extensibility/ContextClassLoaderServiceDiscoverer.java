@@ -141,8 +141,15 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         } else {
             int j = declaration.indexOf('=');
             if (j == -1) {
-                attributes.put("class", declaration.trim());
-                return attributes;
+                // TUSCANY-xxx: handle Saxon xpath jar funny
+                if (declaration.startsWith("http\\://")) {
+                    int k = declaration.lastIndexOf(':');
+                    attributes.put("class", declaration.substring(k+1).trim());
+                    return attributes;
+                } else {
+                    attributes.put("class", declaration.trim());
+                    return attributes;
+                }
             } else {
                 declaration = ";" + declaration;
             }
