@@ -59,6 +59,16 @@ public class ContextClassLoaderServiceDiscovererTestCase {
         descriptor = discover.getFirstServiceDeclaration("notthere");
         Assert.assertNull(descriptor);
     }
+    
+    @Test
+    public void testXPathFactory() {
+        Set<ServiceDeclaration> discriptors = discover.getServiceDeclarations("javax.xml.xpath.XPathFactory");
+        if (!discriptors.isEmpty()) {
+            ServiceDeclaration d = discriptors.iterator().next();
+            Assert.assertNotNull(d.getClassName());
+            Assert.assertTrue(d.getAttributes().containsKey("class"));
+        }
+    }
 
 
     /**

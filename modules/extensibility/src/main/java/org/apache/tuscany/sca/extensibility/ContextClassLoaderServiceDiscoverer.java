@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -141,15 +142,8 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         } else {
             int j = declaration.indexOf('=');
             if (j == -1) {
-                // TUSCANY-xxx: handle Saxon xpath jar funny
-                if (declaration.startsWith("http\\://")) {
-                    int k = declaration.lastIndexOf(':');
-                    attributes.put("class", declaration.substring(k+1).trim());
-                    return attributes;
-                } else {
-                    attributes.put("class", declaration.trim());
-                    return attributes;
-                }
+                attributes.put("class", declaration.trim());
+                return attributes;
             } else {
                 declaration = ";" + declaration;
             }
@@ -179,6 +173,8 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
     public Set<ServiceDeclaration> getServiceDeclarations(String serviceName) {
         Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
+        // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
+        boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
         String name = "META-INF/services/" + serviceName;
         boolean debug = logger.isLoggable(Level.FINE);
         try {
@@ -205,6 +201,30 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                     });
                 } catch (PrivilegedActionException e) {
                     throw (IOException)e.getException();
+                }
+                if (isPropertyFile) {
+                    // Load as a property file
+                    Properties props = new Properties();
+                    props.load(is);
+                    is.close();
+                    for (Map.Entry<Object, Object> e : props.entrySet()) {
+                        Map<String, String> attributes = new HashMap<String, String>();
+                        String key = (String)e.getKey();
+                        String value = (String)e.getValue();
+                        // Unfortunately, the xalan file only has the classname
+                        if ("".equals(value)) {
+                            value = key;
+                            key = "";
+                        }
+                        if (!"".equals(key)) {
+                            attributes.put(key, value);
+                            attributes.put("uri", key);
+                        }
+                        attributes.put("class", value);
+                        ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, value, attributes);
+                        descriptors.add(descriptor);
+                    }
+                    continue;
                 }
                 BufferedReader reader = null;
                 try {
