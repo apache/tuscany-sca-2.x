@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.implementation.bpel.ode;versio
+ n="1.4",org.apache.tuscany.sca.implementation.bpel.ode.provider;versi
+ on="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA BPEL ODE Implementation Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 1.4
+Bnd-LastModified: 1225397447609
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA BPEL ODE Implementation Extensi
+ on
+Import-Package: javax.resource.spi,
+ javax.sql,
+ javax.transaction;version="1.0.1",
+ javax.wsdl,
+ javax.xml.namespace,
+ 
+ org.apache.commons.logging,
+ org.apache.geronimo.transaction.manager,
+ org.apache.ode.bpel.compiler,
+ org.apache.ode.bpel.dao,
+ org.apache.ode.bpel.engine,
+ org.apache.ode.bpel.evt,
+ org.apache.ode.bpel.iapi,
+ org.apache.ode.bpel.memdao,
+ org.apache.ode.il.config,
+ org.apache.ode.il.dbutil,
+ org.apache.ode.scheduler.simple,
+ org.apache.ode.utils,
+ org.apache.tuscany.sca.assembly;version="1.4",
+ org.apache.tuscany.sca.core;version="1.4",
+ org.apache.tuscany.sca.databinding.xml;version="1.4",
+ org.apache.tuscany.sca.implementation.bpel;version="1.4",
+ org.apache.tuscany.sca.interfacedef;version="1.4",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="1.4",
+ org.apache.tuscany.sca.invocation;version="1.4",
+ org.apache.tuscany.sca.policy;version="1.4.0",
+ org.apache.tuscany.sca.provider;version="1.4",
+ org.apache.tuscany.sca.runtime;version="1.4",
+ org.osoa.sca.annotations;version="1.4",
+ org.w3c.dom
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel.ode
+Bundle-DocURL: http://www.apache.org/
+
