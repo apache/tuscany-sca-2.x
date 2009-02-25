@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

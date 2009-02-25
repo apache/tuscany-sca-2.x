@@ -17,10 +17,9 @@
  * under the License.
  */package org.apache.tuscany.sca.implementation.bpel.xml;
 
- import javax.xml.namespace.QName; 
- 
- import javax.wsdl.extensions.ExtensibilityElement;
  import javax.wsdl.PortType;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.xml.namespace.QName;
  
 /**
  * Represents a <partnerLinkType.../> element related to a BPEL process

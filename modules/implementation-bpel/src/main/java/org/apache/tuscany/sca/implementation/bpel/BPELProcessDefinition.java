@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.bpel;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 import javax.wsdl.PortType;

@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.xml;
 
-import javax.xml.namespace.QName;
-
 import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
 /**
  * Represents a <partnerLink.../> element in a BPEL process
