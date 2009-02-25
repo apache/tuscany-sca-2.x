@@ -39,28 +39,59 @@ import org.xml.sax.InputSource;
  * 
  */
 public class PolicyXPathFunctionResolverTestCase {
-    private static XPathFactory factory;
+    private static XPath xpath;
 
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        factory = XPathFactory.newInstance();
+        XPathFactory factory = XPathFactory.newInstance();
+        xpath = factory.newXPath();
+        xpath.setNamespaceContext(new NamespaceContextImpl());
+        xpath.setXPathFunctionResolver(new PolicyXPathFunctionResolver(xpath.getNamespaceContext()));
     }
 
     @Test
-    public void testXPath() throws Exception {
-        XPath xpath = factory.newXPath();
-        xpath.setNamespaceContext(new NamespaceContextImpl());
-        xpath.setXPathFunctionResolver(new PolicyXPathFunctionResolver(xpath.getNamespaceContext()));
+    public void testIntentsRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        XPathExpression exp = xpath.compile("//sca:composite//sca:component[sca:IntentRefs('sca:confidentiality')]");
+        XPathExpression exp = xpath.compile("//sca:composite/sca:component[sca:IntentRefs('sca:confidentiality')]");
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;
         // Assert.assertEquals(1, nodes.getLength());
     }
+    
+    @Test
+    public void testURIRef() throws Exception {
+        InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
+        XPathExpression exp = xpath.compile("sca:composite/sca:component[sca:URIRef('AddServiceComponent')]");
+        Object result = exp.evaluate(xml, XPathConstants.NODESET);
+        Assert.assertTrue(result instanceof NodeList);
+        NodeList nodes = (NodeList)result;
+        // Assert.assertEquals(1, nodes.getLength());
+    }
+    
+    @Test
+    public void testInterfaceRef() throws Exception {
+        InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
+        XPathExpression exp = xpath.compile("//sca:composite/sca:component/sca:service[sca:InterfaceRef('AddService')]");
+        Object result = exp.evaluate(xml, XPathConstants.NODESET);
+        Assert.assertTrue(result instanceof NodeList);
+        NodeList nodes = (NodeList)result;
+        // Assert.assertEquals(1, nodes.getLength());
+    }
+
+    @Test
+    public void testOperationRef() throws Exception {
+        InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
+        XPathExpression exp = xpath.compile("//sca:composite/sca:component/sca:reference[sca:OperationRef('AddService/add')]");
+        Object result = exp.evaluate(xml, XPathConstants.NODESET);
+        Assert.assertTrue(result instanceof NodeList);
+        NodeList nodes = (NodeList)result;
+        // Assert.assertEquals(1, nodes.getLength());
+    }
+
 
     /**
      * @throws java.lang.Exception
