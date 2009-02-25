@@ -60,7 +60,7 @@ public class PolicyXPathFunctionResolver implements XPathFunctionResolver {
             if (arity == 1) {
                 return new PolicyXPathFunction(namespaceContext, functionName);
             } else {
-                return null;
+                throw new IllegalArgumentException("Invalid number of arguments: " + arity);
             }
         }
         return null;

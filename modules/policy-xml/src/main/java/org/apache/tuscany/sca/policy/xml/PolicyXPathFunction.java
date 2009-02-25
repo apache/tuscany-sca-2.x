@@ -52,9 +52,55 @@ public class PolicyXPathFunction implements XPathFunction {
     }
 
     public Object evaluate(List args) throws XPathFunctionException {
+        System.out.println(functionName + "(" + args + ")");
         // FIXME: [rfeng] To be implemented
         String arg = (String)args.get(0);
-        System.out.println(functionName + "(" + arg + ")");
+        if (InterfaceRef.equals(functionName)) {
+            return evaluateInterface(arg);
+        } else if (OperationRef.equals(functionName)) {
+            String[] params = arg.split("/");
+            if (params.length != 2) {
+                throw new IllegalArgumentException("Invalid argument: " + arg);
+            }
+            String interfaceName = params[0];
+            String operationName = params[1];
+            return evaluateOperation(interfaceName, operationName);
+        } else if (MessageRef.equals(functionName)) {
+            String[] params = arg.split("/");
+            if (params.length != 3) {
+                throw new IllegalArgumentException("Invalid argument: " + arg);
+            }
+            String interfaceName = params[0];
+            String operationName = params[1];
+            String messageName = params[2];
+            return evaluateMessage(interfaceName, operationName, messageName);
+        } else if (URIRef.equals(functionName)) {
+            return evaluateURI(arg);
+        } else if (IntentRefs.equals(functionName)) {
+            String[] intents = arg.split("(\\s)+");
+            return evaluateIntents(intents);
+        } else {
+            return Boolean.FALSE;
+        }
+    }
+
+    private Boolean evaluateInterface(String interfaceName) {
+        return Boolean.FALSE;
+    }
+
+    private Boolean evaluateOperation(String interfaceName, String operationName) {
+        return Boolean.FALSE;
+    }
+
+    private Boolean evaluateMessage(String interfaceName, String operationName, String messageName) {
+        return Boolean.FALSE;
+    }
+
+    private Boolean evaluateURI(String uri) {
+        return Boolean.FALSE;
+    }
+
+    private Boolean evaluateIntents(String[] intents) {
         return Boolean.FALSE;
     }
 
