@@ -41,7 +41,7 @@ public class WebAppModuleActivator implements ModuleActivator {
         List<ServletHost> hosts = servletHosts.getServletHosts();
         ServletHost host = null;
         try {
-           host = TuscanyServletFilter.getServletHost();
+           host = ServletHostHelper.getServletHost();
         } catch (NoClassDefFoundError e) {
         	// ignore 
         }
