@@ -41,17 +41,12 @@ import org.apache.tuscany.sca.node.Node;
 /**
  * ServletHost implementation for use in a webapp environment.
  * 
- * FIXME: TUSCANY-2881: using a static singleton seems a big hack but how should it be shared?
- * Need some way for TuscanyServlet to pull it out.
- *
  * @version $Rev$ $Date$
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
-
-//    private static final WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
     private String contextPath = "/";
@@ -199,10 +194,6 @@ public class WebAppServletHost implements ServletHost {
         return null;
     }
 
-//    public static WebAppServletHost getInstance() {
-//        return instance;
-//    }
-
     public void init(ServletConfig config) throws ServletException {
 
         servletContext = config.getServletContext();
@@ -236,9 +227,6 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public void setContextPath(String path) {
-        //        if (!contextPath.equals(path)) {
-        //            throw new IllegalArgumentException("invalid context path for webapp, existing context path: " + contextPath + " new contextPath: " + path);
-        //        }
     }
 
     /**

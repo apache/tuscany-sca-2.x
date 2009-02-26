@@ -52,10 +52,6 @@ public class ServletHostHelper {
 
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
 
-//    public static ServletHost getServletHost() {
-//        return WebAppServletHost.getInstance();
-//    }
-
     public static void init(ServletConfig servletConfig) {
         init(servletConfig.getServletContext());
     }
