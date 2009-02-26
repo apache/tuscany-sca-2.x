@@ -34,7 +34,7 @@ import net.sourceforge.stripes.exception.StripesRuntimeException;
 import net.sourceforge.stripes.util.Log;
 import net.sourceforge.stripes.util.ReflectUtil;
 
-import org.apache.tuscany.sca.implementation.web.runtime.WebApplicationUtils;
+import org.apache.tuscany.sca.implementation.web.runtime.utils.ContextHelper;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -244,7 +244,7 @@ public class TuscanyHelper {
                                            Class<?> type,
                                            boolean allowFindByType) {
         // First try to lookup using the name provided
-            Object bean =  WebApplicationUtils.getReference(name, type, ctx);
+            Object bean =  ContextHelper.getReference(name, type, ctx);
             if (bean == null) {
                 throw new StripesRuntimeException("no reference defined:" + name);
             }
