@@ -91,6 +91,7 @@
         <module>policy-xml</module>
         <module>policy-xml-ws</module>
         <module>sca-api</module>
+        <module>stripes</module>
         <module>workspace</module>
         <module>workspace-impl</module>
         <module>workspace-xml</module>
