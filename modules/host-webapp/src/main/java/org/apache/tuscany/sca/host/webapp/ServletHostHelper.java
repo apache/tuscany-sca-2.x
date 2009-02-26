@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
@@ -37,10 +38,13 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class ServletHostHelper {
@@ -48,31 +52,30 @@ public class ServletHostHelper {
 
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
 
-    public static ServletHost getServletHost() {
-        return WebAppServletHost.getInstance();
-    }
+//    public static ServletHost getServletHost() {
+//        return WebAppServletHost.getInstance();
+//    }
 
     public static void init(ServletConfig servletConfig) {
         init(servletConfig.getServletContext());
     }
     
-    public static void init(final ServletContext servletContext) {
-        if (servletContext.getAttribute(SCA_NODE_ATTRIBUTE) == null) {
+    public static ServletHost init(final ServletContext servletContext) {
+        Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
+        if (node == null) {
             try {
-                servletContext.setAttribute(SCA_NODE_ATTRIBUTE, createNode(servletContext));
-                WebAppServletHost.getInstance().init(new ServletConfig() {
+                node = createNode(servletContext);
+                servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
+                getServletHost(node).init(new ServletConfig() {
                     public String getInitParameter(String name) {
                         return servletContext.getInitParameter(name);
                     }
-
                     public Enumeration<?> getInitParameterNames() {
                         return servletContext.getInitParameterNames();
                     }
-
                     public ServletContext getServletContext() {
                         return servletContext;
                     }
-
                     public String getServletName() {
                         return servletContext.getServletContextName();
                     }});
@@ -80,8 +83,24 @@ public class ServletHostHelper {
                 throw new RuntimeException(e);
             }
         }
+        return getServletHost(node);
     }
     
+    private static WebAppServletHost getServletHost(Node node) {
+        NodeImpl nodeImpl = (NodeImpl) node;
+        ExtensionPointRegistry eps = nodeImpl.getExtensionPoints();
+        ServletHostExtensionPoint servletHosts = eps.getExtensionPoint(ServletHostExtensionPoint.class);
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        if (hosts == null || hosts.size() < 1) {
+            throw new IllegalStateException("No ServletHost found");
+        }
+        ServletHost servletHost = hosts.get(0);
+        if (!(servletHost instanceof WebAppServletHost)) {
+            throw new IllegalStateException("unexpected ServletHost type: " + servletHost);
+        }
+        return (WebAppServletHost) servletHost;
+    }
+
     private static Node createNode(final ServletContext servletContext) throws ServletException {
         String contextPath = initContextPath(servletContext);
         String contributionRoot = getContributionRoot(servletContext);

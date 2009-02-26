@@ -30,6 +30,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tuscany.sca.host.http.ServletHost;
+
 
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
@@ -41,10 +43,11 @@ public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
     
     private transient ServletContext context;
+    private transient ServletHost servletHost;
 
     public void init(final FilterConfig config) throws ServletException {
         context = config.getServletContext();
-        ServletHostHelper.init(context);
+        servletHost = ServletHostHelper.init(context);
     }
 
     public void destroy() {
@@ -65,7 +68,7 @@ public class TuscanyServletFilter implements Filter {
         }
 
         // Get a request dispatcher for the Servlet mapped to that path
-        RequestDispatcher dispatcher = ServletHostHelper.getServletHost().getRequestDispatcher(path);
+        RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
         if (dispatcher != null) {
 
             // Let the dispatcher forward the request to the Servlet 
