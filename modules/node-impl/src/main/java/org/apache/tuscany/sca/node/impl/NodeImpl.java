@@ -712,4 +712,8 @@ public class NodeImpl implements Node, Client {
         }
         throw new ServiceRuntimeException("no deployable composite found");
     }
+
+    public ExtensionPointRegistry getExtensionPoints() {
+        return extensionPoints;
+    }
 }

@@ -39,15 +39,9 @@ public class WebAppModuleActivator implements ModuleActivator {
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
 
         List<ServletHost> hosts = servletHosts.getServletHosts();
-        ServletHost host = null;
-        try {
-           host = ServletHostHelper.getServletHost();
-        } catch (NoClassDefFoundError e) {
-        	// ignore 
-        }
-        if (host != null) {
-            hosts.clear();
-            hosts.add(host);
+        // Only add webapp host if no other host already registered (eg jetty in standalone)
+        if (hosts != null && hosts.size() < 1) {
+            hosts.add(new WebAppServletHost());
         }
     }
 

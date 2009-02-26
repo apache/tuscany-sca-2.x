@@ -51,7 +51,7 @@ public class WebAppServletHost implements ServletHost {
 
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
 
-    private static final WebAppServletHost instance = new WebAppServletHost();
+//    private static final WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
     private String contextPath = "/";
@@ -61,7 +61,7 @@ public class WebAppServletHost implements ServletHost {
     private ServletContext servletContext;
     private Map<String, Object> tempAttributes = new HashMap<String, Object>();
 
-    WebAppServletHost() {
+    public WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
     }
 
@@ -199,9 +199,9 @@ public class WebAppServletHost implements ServletHost {
         return null;
     }
 
-    public static WebAppServletHost getInstance() {
-        return instance;
-    }
+//    public static WebAppServletHost getInstance() {
+//        return instance;
+//    }
 
     public void init(ServletConfig config) throws ServletException {
 
