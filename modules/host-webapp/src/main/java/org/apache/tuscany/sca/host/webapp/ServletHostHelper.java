@@ -1,0 +1,187 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+package org.apache.tuscany.sca.host.webapp;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.logging.Logger;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+public class ServletHostHelper {
+    private static final Logger logger = Logger.getLogger(ServletHostHelper.class.getName());
+
+    public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
+
+    public static ServletHost getServletHost() {
+        return WebAppServletHost.getInstance();
+    }
+
+    public static void init(ServletConfig servletConfig) {
+        init(servletConfig.getServletContext());
+    }
+    
+    public static void init(final ServletContext servletContext) {
+        if (servletContext.getAttribute(SCA_NODE_ATTRIBUTE) == null) {
+            try {
+                servletContext.setAttribute(SCA_NODE_ATTRIBUTE, createNode(servletContext));
+                WebAppServletHost.getInstance().init(new ServletConfig() {
+                    public String getInitParameter(String name) {
+                        return servletContext.getInitParameter(name);
+                    }
+
+                    public Enumeration<?> getInitParameterNames() {
+                        return servletContext.getInitParameterNames();
+                    }
+
+                    public ServletContext getServletContext() {
+                        return servletContext;
+                    }
+
+                    public String getServletName() {
+                        return servletContext.getServletContextName();
+                    }});
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    
+    private static Node createNode(final ServletContext servletContext) throws ServletException {
+        String contextPath = initContextPath(servletContext);
+        String contributionRoot = getContributionRoot(servletContext);
+        NodeFactory factory = NodeFactory.newInstance();
+        String webComposite = getWebComposite(servletContext);
+        Node node = factory.createNode(contextPath, webComposite, new Contribution(contributionRoot, contributionRoot));
+        node.start();
+        return node;
+    }
+    
+    private static String getWebComposite(ServletContext servletContext) {
+        InputStream stream = servletContext.getResourceAsStream("/WEB-INF/web.composite");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        StringBuilder sb = new StringBuilder();
+        String s = null;
+        try {
+            while ((s = reader.readLine()) != null) {
+                sb.append(s + "\n");
+            }
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+ 
+        return sb.toString();
+    }
+
+    private static String getContributionRoot(ServletContext servletContext) {
+        String contributionRoot = null;
+        try {
+
+            InitialContext ic = new InitialContext();
+            URL repoURL = (URL)ic.lookup("java:comp/env/url/contributions");
+
+            contributionRoot = repoURL.toString();
+
+        } catch (NamingException e) {
+
+            // ignore exception and use default location
+
+            try {
+                
+                String root = servletContext.getInitParameter("contributionRoot");
+                if (root == null || root.length() < 1) {
+                    root = "/";
+                }
+                URL rootURL = servletContext.getResource(root);
+                if (rootURL.getProtocol().equals("jndi")) {
+                    //this is Tomcat case, we should use getRealPath
+                    File warRootFile = new File(servletContext.getRealPath(root));
+                    contributionRoot = warRootFile.toURI().toString();
+                } else {
+                    //this is Jetty case
+                    contributionRoot = rootURL.toString();
+                }
+
+            } catch (MalformedURLException mf) {
+                //ignore, pass null
+            }
+        }
+
+        logger.info("contributionRoot: " + contributionRoot);
+        return contributionRoot;
+    }
+
+    /**
+     * Initializes the contextPath
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
+     * containers use an init parameter.
+     */
+    @SuppressWarnings("unchecked")
+    private static String initContextPath(ServletContext context) {
+        String contextPath;
+        if (Collections.list(context.getInitParameterNames()).contains("contextPath")) {
+            contextPath = context.getInitParameter("contextPath");
+        } else {
+            try {
+                // Try to get the method anyway since some ServletContext impl has this method even before 2.5
+                Method m = context.getClass().getMethod("getContextPath", new Class[] {});
+                contextPath = (String)m.invoke(context, new Object[] {});
+            } catch (Exception e) {
+                logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
+                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+            }
+        }
+        logger.info("ContextPath: " + contextPath);
+        return contextPath;
+    }
+
+    public static void stop(ServletContext servletContext) {
+        Node node = (Node) servletContext.getAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE);
+        if (node != null) {
+            node.stop();
+            servletContext.setAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE, null);
+        }
+    }
+}

@@ -19,24 +19,15 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -45,14 +36,12 @@ import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * ServletHost implementation for use in a webapp environment.
  * 
- * FIXME: using a static singleton seems a big hack but how should it be shared?
+ * FIXME: TUSCANY-2881: using a static singleton seems a big hack but how should it be shared?
  * Need some way for TuscanyServlet to pull it out.
  *
  * @version $Rev$ $Date$
@@ -65,7 +54,6 @@ public class WebAppServletHost implements ServletHost {
     private static final WebAppServletHost instance = new WebAppServletHost();
 
     private Map<String, Servlet> servlets;
-    private Node node;
     private String contextPath = "/";
     private int defaultPortNumber = 8080;
     private String contributionRoot;
@@ -222,15 +210,8 @@ public class WebAppServletHost implements ServletHost {
         for (String name : tempAttributes.keySet()) {
             servletContext.setAttribute(name, tempAttributes.get(name));
         }
-
-        if (servletContext.getAttribute(SCA_NODE_ATTRIBUTE) == null) {
-            initContextPath(config);
-            contributionRoot = getContributionRoot(servletContext);
-            NodeFactory factory = NodeFactory.newInstance();
-            node = factory.createNode(contextPath, getWebComposite(servletContext), new Contribution(contributionRoot, contributionRoot));
-            node.start();
-            servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
-        }
+        
+        ServletHostHelper.init(servletContext);
 
         // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
@@ -239,93 +220,6 @@ public class WebAppServletHost implements ServletHost {
         
     }
     
-    protected String getWebComposite(ServletContext servletContext) throws ServletException {
-        InputStream stream = servletContext.getResourceAsStream("/WEB-INF/web.composite");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-
-        StringBuilder sb = new StringBuilder();
-        String s = null;
-        try {
-            while ((s = reader.readLine()) != null) {
-                sb.append(s + "\n");
-            }
-        } catch (IOException e) {
-            throw new ServletException(e);
-        } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                throw new ServletException(e);
-            }
-        }
- 
-        return sb.toString();
-    }
-
-    protected String getContributionRoot(ServletContext servletContext) {
-        String contributionRoot = null;
-        try {
-
-            InitialContext ic = new InitialContext();
-            URL repoURL = (URL)ic.lookup("java:comp/env/url/contributions");
-
-            contributionRoot = repoURL.toString();
-
-        } catch (NamingException e) {
-
-            // ignore exception and use default location
-
-            try {
-                
-                String root = servletContext.getInitParameter("contributionRoot");
-                if (root == null || root.length() < 1) {
-                    root = "/";
-                }
-                URL rootURL = servletContext.getResource(root);
-                if (rootURL.getProtocol().equals("jndi")) {
-                    //this is Tomcat case, we should use getRealPath
-                    File warRootFile = new File(servletContext.getRealPath(root));
-                    contributionRoot = warRootFile.toURI().toString();
-                } else {
-                    //this is Jetty case
-                    contributionRoot = rootURL.toString();
-                }
-
-            } catch (MalformedURLException mf) {
-                //ignore, pass null
-            }
-        }
-
-        logger.info("contributionRoot: " + contributionRoot);
-        return contributionRoot;
-    }
-
-    /**
-     * Initializes the contextPath
-     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
-     * containers use an init parameter.
-     */
-    @SuppressWarnings("unchecked")
-    public void initContextPath(ServletConfig config) {
-        
-        if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
-            contextPath = config.getInitParameter("contextPath");
-        } else {
-            // The getContextPath() is introduced since Servlet 2.5
-            ServletContext context = config.getServletContext();
-            try {
-                // Try to get the method anyway since some ServletContext impl has this method even before 2.5
-                Method m = context.getClass().getMethod("getContextPath", new Class[] {});
-                contextPath = (String)m.invoke(context, new Object[] {});
-            } catch (Exception e) {
-                logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
-                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
-            }
-        }
-
-        logger.info("ContextPath: " + contextPath);
-    }
-
     void destroy() {
 
         // Destroy the registered Servlets
@@ -334,9 +228,7 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Close the SCA domain
-        if (node != null) {
-            node.stop();
-        }
+        ServletHostHelper.stop(servletContext);
     }
 
     public String getContextPath() {
