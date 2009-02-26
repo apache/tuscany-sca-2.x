@@ -17,32 +17,42 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!-- A composite which has multiple <service/> subelements with the same @name and no references -->
+<!-- A composite which has a <composite/> <reference/> that is in error
+     since its @promote attribute is not the URI of a <component/> <reference/>
+     within the <composite/>   -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TestComposite16">
+           name="TestComposite20">
            
-	<service name="Service1" promote="TestComponent1/Service1">
-		<interface.java interface="test.Service1"></interface.java>
-	</service>
-
-	<service name="Service1" promote="TestComponent1/Service1">
-		<interface.java interface="test.Service1"></interface.java>
-	</service>
-
-	<service name="Service2" promote="TestComponent1/Service1">
-		<interface.java interface="test.Service1"></interface.java>
+	<service name="Service1" promote="Composite20Component1/Service1">
+		<interface.java interface="test.Service1"/>
 	</service>
 
     <property name="serviceName" type="string"/>
  
-    <component name="TestComponent1">
-		<implementation.java class="test.service1Impl"/>
+    <component name="Composite20Component1">
+		<implementation.java class="test.service1Impl2"/>
         <service name="Service1">
-        	<interface.java interface="test.Service1"></interface.java>
+        	<interface.java interface="test.Service1"/>
         </service>
         <property name="serviceName" source="$serviceName"/>
+        <reference name="reference1"/>
     </component>
-
+ 
+    <component name="Composite20Component2">
+		<implementation.java class="test.service1Impl2"/>
+        <service name="Service1">
+        	<interface.java interface="test.Service1"/>
+        </service>
+        <property name="serviceName">Composite11-C2</property>
+        <reference name="reference1"/>
+    </component>
+    
+    <!-- @promote deliberately incorrect - component names are non-existent -->
+    <reference name="Reference1" 
+        promote="Composite20Componentz/reference1 Composite20Componenty/reference1">
+        <interface.java interface="test.Service1"/>
+    </reference>
+    
 </composite>

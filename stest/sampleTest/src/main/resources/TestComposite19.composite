@@ -17,32 +17,36 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!-- A composite which has multiple <service/> subelements with the same @name and no references -->
+<!-- A composite which has a single <service/> subelement and multiple <reference/> 
+     subelements with the same @name value -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
-           name="TestComposite16">
+           name="TestComposite19">
            
 	<service name="Service1" promote="TestComponent1/Service1">
-		<interface.java interface="test.Service1"></interface.java>
-	</service>
-
-	<service name="Service1" promote="TestComponent1/Service1">
-		<interface.java interface="test.Service1"></interface.java>
-	</service>
-
-	<service name="Service2" promote="TestComponent1/Service1">
 		<interface.java interface="test.Service1"></interface.java>
 	</service>
 
     <property name="serviceName" type="string"/>
  
     <component name="TestComponent1">
-		<implementation.java class="test.service1Impl"/>
+		<implementation.java class="test.service1Impl4"/>
         <service name="Service1">
-        	<interface.java interface="test.Service1"></interface.java>
+        	<interface.java interface="test.Service1"/>
         </service>
         <property name="serviceName" source="$serviceName"/>
+        <reference name="reference1" multiplicity="0..n">
+        	<interface.java interface="test.Service1"/>
+        </reference>
     </component>
+    
+    <reference name="Reference1" promote="TestComponent1/reference1" multiplicity="0..n">
+        <interface.java interface="test.Service1"/>
+    </reference>
+
+    <reference name="Reference1" promote="TestComponent1/reference1" multiplicity="0..n">
+        <interface.java interface="test.Service1"/>
+    </reference>
 
 </composite>
