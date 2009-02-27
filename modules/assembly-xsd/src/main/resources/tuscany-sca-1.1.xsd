@@ -22,7 +22,7 @@
     
     <import namespace="http://www.w3.org/2004/08/wsdl-instance" schemaLocation="wsdli.xsd"/>
     
-    <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-all.xsd"/>
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200712" schemaLocation="sca-1.1-schema-200803.xsd"/>
     
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
