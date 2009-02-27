@@ -1,0 +1,16 @@
+<archetype>
+  <id>tuscany</id>
+  <sources>
+    <source>src/main/java/HelloworldImpl.java</source>
+    <source>src/main/java/HelloworldService.java</source>
+  </sources>
+  <!-- testSources>
+    <source>src/test/java/Start.java</source>
+    <source>src/test/java/TestHomePage.java</source>
+  </testSources -->
+  <resources>
+    <resource>src/main/webapp/hello.jsp</resource>
+    <resource>src/main/webapp/WEB-INF/web.xml</resource>
+    <resource>src/main/webapp/WEB-INF/web.composite</resource>
+  </resources>
+</archetype>
