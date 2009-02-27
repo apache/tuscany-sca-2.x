@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           targetNamespace="http://${packageName}"
+           name=">${artifactId}">
+
+    <component name="=">${artifactId}.web">
+        <implementation.web web-uri=""/>
+        <reference name="service" target="HelloworldComponent"/>
+    </component>
+
+    <component name="HelloworldComponent">
+        <implementation.java class="${packageName}.HelloworldImpl"/>
+    </component>
+
+</composite>
