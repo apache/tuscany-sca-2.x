@@ -26,8 +26,6 @@
     <include schemaLocation="sca-binding-ejb.xsd"/>
 
     <include schemaLocation="sca-implementation-bpel.xsd"/>
-    <include schemaLocation="sca-implementation-spring.xsd"/>
-    <include schemaLocation="sca-implementation-ejb.xsd"/>
     <include schemaLocation="sca-implementation-jee.xsd"/>
     <include schemaLocation="sca-implementation-web.xsd"/>
 
