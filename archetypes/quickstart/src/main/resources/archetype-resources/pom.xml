@@ -54,6 +54,8 @@
 		</dependency>
 	</dependencies>
 	<build>
+            <defaultGoal>install</defaultGoal>
+            <finalName>${artifactId}</finalName>
 		<resources>
 			<resource>
 				<filtering>false</filtering>

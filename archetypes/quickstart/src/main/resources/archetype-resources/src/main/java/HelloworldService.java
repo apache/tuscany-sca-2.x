@@ -1,4 +1,4 @@
-package ${packageName};
+package ${package};
 
 public interface HelloworldService {
 
