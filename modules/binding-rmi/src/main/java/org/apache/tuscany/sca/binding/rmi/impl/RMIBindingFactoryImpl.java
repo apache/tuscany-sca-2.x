@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.binding.rmi.RMIBindingFactory;
  */
 public class RMIBindingFactoryImpl implements RMIBindingFactory {
     public RMIBinding createRMIBinding() {
-        // TODO Auto-generated method stub
         return new RMIBindingImpl();
     }
 
