@@ -180,6 +180,7 @@
                 <module>itest</module>
                 <module>features</module>
                 <module>distribution</module>
+                <module>archetypes</module>
 <!--
                 <module>stest</module>
                 <module>vtest</module>
