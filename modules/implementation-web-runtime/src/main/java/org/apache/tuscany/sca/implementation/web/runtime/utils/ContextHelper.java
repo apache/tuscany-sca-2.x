@@ -34,9 +34,7 @@ import org.oasisopen.sca.annotation.ComponentName;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Service;
 
-@Service
 public class ContextHelper {
 
     public static final String COMPONENT_ATTR = "org.apache.tuscany.sca.implementation.web.RuntimeComponent";
