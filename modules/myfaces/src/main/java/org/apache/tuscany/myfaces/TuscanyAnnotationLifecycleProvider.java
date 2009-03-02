@@ -20,20 +20,20 @@
 package org.apache.tuscany.myfaces;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 import javax.faces.context.ExternalContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
 import org.apache.AnnotationProcessor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.config.annotation.DiscoverableLifecycleProvider;
 import org.apache.myfaces.config.annotation.TomcatAnnotationLifecycleProvider;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 public class TuscanyAnnotationLifecycleProvider extends TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleProvider {
-    private static Log log = LogFactory.getLog(TomcatAnnotationLifecycleProvider.class);
+    private static final Logger logger = Logger.getLogger(TuscanyAnnotationLifecycleProvider.class.getName());
 
     private TuscanyAnnotationProcessor annotationProcessor;
     private ServletContext servletContext;
@@ -48,7 +48,7 @@ public class TuscanyAnnotationLifecycleProvider extends TomcatAnnotationLifecycl
     public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
 
         Class<?> clazz = ClassUtils.classForName(className);
-        log.info("Creating instance of " + className);
+        logger.info("Creating instance of " + className);
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object, servletContext);
         annotationProcessor.postConstruct(object);
