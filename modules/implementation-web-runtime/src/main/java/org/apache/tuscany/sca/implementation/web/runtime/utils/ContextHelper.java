@@ -70,17 +70,17 @@ public class ContextHelper {
                 Reference ref = field.getAnnotation(Reference.class);
                 String name = ref.name() != null && !ref.name().equals("") ? ref.name() : field.getName();
                 Object value = getReference(name, field.getType(), sc);
-                field.set(instance, value);
+                setField(instance, field, value);
             } else if (field.isAnnotationPresent(Property.class)) {
                 Property prop = field.getAnnotation(Property.class);
                 String name = prop.name() != null && !prop.name().equals("") ? prop.name() : field.getName();
                 Object value = getProperty(name, sc);
-                field.set(instance, value);
+                setField(instance, field, value);
             } else if (field.isAnnotationPresent(ComponentName.class)) {
                 RuntimeComponent rc = (RuntimeComponent)sc.getAttribute(COMPONENT_ATTR);
-                field.set(instance, rc.getName());
+                setField(instance, field, rc.getName());
             } else if (field.isAnnotationPresent(Context.class)) {
-                field.set(instance, getComponentContext(sc));
+                setField(instance, field, getComponentContext(sc));
             }
         }
 
@@ -95,18 +95,38 @@ public class ContextHelper {
                 Reference ref = method.getAnnotation(Reference.class);
                 String name = ref.name() != null && !ref.name().equals("") ? ref.name() : targetName;
                 Object value = getReference(name, type, sc);
-                method.invoke(instance, new Object[] {value});
+                setMethod(instance, method, value);
             } else if (method.isAnnotationPresent(Property.class)) {
                 Property prop = method.getAnnotation(Property.class);
                 String name = prop.name() != null && !prop.name().equals("") ? prop.name() : targetName;
                 Object value = getProperty(name, sc);
-                method.invoke(instance, new Object[] {value});
+                setMethod(instance, method, value);
             } else if (method.isAnnotationPresent(ComponentName.class)) {
                 RuntimeComponent rc = (RuntimeComponent)sc.getAttribute(COMPONENT_ATTR);
-                method.invoke(instance, new Object[] {rc.getName()});
+                setMethod(instance, method, rc.getName());
             } else if (method.isAnnotationPresent(Context.class)) {
-                method.invoke(instance, new Object[] {getComponentContext(sc)});
+                setMethod(instance, method, getComponentContext(sc));
             }
+        }
+    }
+
+    private static void setMethod(Object instance, Method method, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        if (method.isAccessible()) {
+            method.invoke(instance, new Object[] {value});
+        } else {
+            method.setAccessible(true);
+            method.invoke(instance, new Object[] {value});
+            method.setAccessible(false);
+        }
+    }
+
+    private static void setField(Object instance, Field field, Object value) throws IllegalArgumentException, IllegalAccessException {
+        if (field.isAccessible()) {
+            field.set(instance, value);
+        } else {
+            field.setAccessible(true);
+            field.set(instance, value);
+            field.setAccessible(false);
         }
     }
 
