@@ -82,6 +82,7 @@
         <module>interface-wsdl-xml</module>
         <module>launcher</module>
         <module>monitor</module>
+        <module>myfaces</module>
         <module>node-api</module>
         <module>node-impl</module>
         <module>node-launcher</module>
