@@ -100,21 +100,7 @@
     </modules>
 
     <profiles>
-        <profile>
-            <id>ws</id>
-            <modules>
-                <module>binding-ws</module>
-                <module>binding-ws-axis2</module>
-                <module>binding-ws-axis2-policy</module>
-                <module>binding-ws-wsdlgen</module>
-                <module>binding-ws-xml</module>
-                <module>databinding-axiom</module>
-                <module>databinding-jaxb-axiom</module>
-                <module>policy-xml-ws</module>
-           </modules>
-       </profile>
-
-        <profile>
+         <profile>
             <id>eclipse</id>
             <build>
 
