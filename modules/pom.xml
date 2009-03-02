@@ -103,7 +103,25 @@
          <profile>
             <id>eclipse</id>
             <build>
-
+               <!--plugins> 	 
+	            <plugin> 	 
+	                <groupId>org.apache.tuscany.maven.plugins</groupId> 	 
+	                <artifactId>maven-bundle-plugin</artifactId> 	 
+	                <version>1.0</version> 	 
+	                <extensions>true</extensions> 	 
+	                <executions> 	 
+	                        <execution> 	 
+	                        <id>generate-pde</id> 	 
+	                        <phase>generate-resources</phase> 	 
+	                        <goals> 	 
+	                                <goal>eclipse</goal> 	 
+	                        </goals> 	 
+	                        <configuration> 	 
+	                        </configuration> 	 
+	                        </execution> 	 
+	                </executions> 	 
+	            </plugin> 	 
+	        </plugins-->
                 <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
 
             </build>
