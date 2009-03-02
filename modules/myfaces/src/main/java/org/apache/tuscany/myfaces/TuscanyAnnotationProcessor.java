@@ -24,31 +24,30 @@ import java.lang.reflect.InvocationTargetException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import org.apache.AnnotationProcessor;
 import org.apache.tuscany.sca.implementation.web.runtime.utils.ContextHelper;
 
-public class TuscanyAnnotationProcessor implements org.apache.AnnotationProcessor {
+//public class TuscanyAnnotationProcessor implements org.apache.AnnotationProcessor {
+public class TuscanyAnnotationProcessor {
 
-    org.apache.AnnotationProcessor annotationProcessor;
+//    private AnnotationProcessor annotationProcessor;
 
-    public TuscanyAnnotationProcessor(AnnotationProcessor annotationProcessor) {
-        this.annotationProcessor = annotationProcessor;
+    public TuscanyAnnotationProcessor() {
     }
 
     public void postConstruct(Object arg0) throws IllegalAccessException, InvocationTargetException {
-        annotationProcessor.postConstruct(arg0);
+//        annotationProcessor.postConstruct(arg0);
     }
 
     public void preDestroy(Object arg0) throws IllegalAccessException, InvocationTargetException {
-        annotationProcessor.preDestroy(arg0);
+//        annotationProcessor.preDestroy(arg0);
     }
 
     public void processAnnotations(Object arg0, ServletContext servletContext) throws IllegalAccessException, InvocationTargetException, NamingException {
         ContextHelper.inject(arg0, servletContext);
-        annotationProcessor.processAnnotations(arg0);
+//        annotationProcessor.processAnnotations(arg0);
     }
 
     public void processAnnotations(Object arg0) throws IllegalAccessException, InvocationTargetException, NamingException {
-        annotationProcessor.processAnnotations(arg0);
+//        annotationProcessor.processAnnotations(arg0);
     }
 }

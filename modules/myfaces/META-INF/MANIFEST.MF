@@ -14,8 +14,7 @@ Import-Package: javax.naming,
  org.apache.myfaces.config.annotation;version="1.2.2",
  org.apache.myfaces.shared_impl.util;version="1.2.2",
  org.apache.tuscany.sca.node.impl;version="2.0",
- org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0",
- org.apache;version="6.0.18"
+ org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.myfaces
 Bundle-DocURL: http://www.apache.org/
 

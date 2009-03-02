@@ -26,34 +26,44 @@ import javax.faces.context.ExternalContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import org.apache.AnnotationProcessor;
 import org.apache.myfaces.config.annotation.DiscoverableLifecycleProvider;
-import org.apache.myfaces.config.annotation.TomcatAnnotationLifecycleProvider;
 import org.apache.myfaces.shared_impl.util.ClassUtils;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
-public class TuscanyAnnotationLifecycleProvider extends TomcatAnnotationLifecycleProvider implements DiscoverableLifecycleProvider {
+public class TuscanyAnnotationLifecycleProvider implements DiscoverableLifecycleProvider {
     private static final Logger logger = Logger.getLogger(TuscanyAnnotationLifecycleProvider.class.getName());
 
     private TuscanyAnnotationProcessor annotationProcessor;
     private ServletContext servletContext;
 
+
     public TuscanyAnnotationLifecycleProvider(ExternalContext externalContext) {
-        super(externalContext);
         this.servletContext = (ServletContext)externalContext.getContext();
-        AnnotationProcessor ap = (org.apache.AnnotationProcessor)servletContext.getAttribute(org.apache.AnnotationProcessor.class.getName());
-        annotationProcessor = new TuscanyAnnotationProcessor(ap);
+        
+        // TODO: Should this use any existing AnnotationProcessor?
+        //      Tomcat based runtimes may use an org.apache.AnnotationProcessor which
+        //      if exists this could delegate to so as to support both SCA and other annotations
+        // AnnotationProcessor existingAnnotationProcessor = (AnnotationProcessor)
+        // servletContext.getAttribute(org.apache.AnnotationProcessor.class.getName());
+        // annotationProcessor = new TuscanyAnnotationProcessor(existingAnnotationProcessor);
+        annotationProcessor = new TuscanyAnnotationProcessor();
     }
 
     public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
-
-        Class<?> clazz = ClassUtils.classForName(className);
         logger.info("Creating instance of " + className);
+        Class<?> clazz = ClassUtils.classForName(className);
         Object object = clazz.newInstance();
         annotationProcessor.processAnnotations(object, servletContext);
         annotationProcessor.postConstruct(object);
-
         return object;
+    }
+
+    public boolean isAvailable() {
+        return true;
+    }
+
+    public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException {
+        logger.info("Destroy instance of " + o.getClass().getName());
+        annotationProcessor.preDestroy(o);
     }
 
 }
