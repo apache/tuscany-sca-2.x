@@ -59,7 +59,7 @@ import org.xml.sax.XMLReader;
  * @version $Rev$ $Date$
  */
 public class ReadDocumentTestCase {
-	private static final String TUSCANY_10_XSD = "sca-10" + File.separator + "tuscany-sca.xsd";
+	private static final String TUSCANY_10_XSD = "sca-10/tuscany-sca.xsd";
 
     private static URLArtifactProcessor<Object> documentProcessor;
     private static ModelResolver resolver;
