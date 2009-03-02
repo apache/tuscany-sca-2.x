@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.xml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -58,6 +59,7 @@ import org.xml.sax.XMLReader;
  * @version $Rev$ $Date$
  */
 public class ReadDocumentTestCase {
+	private static final String TUSCANY_10_XSD = "sca-10" + File.separator + "tuscany-sca.xsd";
 
     private static URLArtifactProcessor<Object> documentProcessor;
     private static ModelResolver resolver;
@@ -90,7 +92,7 @@ public class ReadDocumentTestCase {
             // Some old JDKs don't support XMLSchema validation
             return;
         }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_10_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
         
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -115,7 +117,7 @@ public class ReadDocumentTestCase {
             // Some old JDKs don't support XMLSchema validation
             return;
         }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_10_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
         
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -130,7 +132,7 @@ public class ReadDocumentTestCase {
     public void testReadImplementation() throws Exception { 
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
-        schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
+        schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_10_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
@@ -156,7 +158,7 @@ public class ReadDocumentTestCase {
             // Some old JDKs don't support XMLSchema validation
             return;
         }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd"));
+        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_10_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
         
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -171,7 +173,7 @@ public class ReadDocumentTestCase {
     public void testReadBinding() throws Exception {
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
-        schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
+        schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_10_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
