@@ -36,43 +36,24 @@ public class TuscanyAnnotationLifecycleProvider extends TomcatAnnotationLifecycl
     private static Log log = LogFactory.getLog(TomcatAnnotationLifecycleProvider.class);
 
     private TuscanyAnnotationProcessor annotationProcessor;
-    private ExternalContext externalContext;
-    private ServletContext sc;
+    private ServletContext servletContext;
 
     public TuscanyAnnotationLifecycleProvider(ExternalContext externalContext) {
         super(externalContext);
-        this.externalContext = externalContext;
-        this.sc = (ServletContext)externalContext.getContext();
-        AnnotationProcessor ap = (org.apache.AnnotationProcessor)sc.getAttribute(org.apache.AnnotationProcessor.class.getName());
+        this.servletContext = (ServletContext)externalContext.getContext();
+        AnnotationProcessor ap = (org.apache.AnnotationProcessor)servletContext.getAttribute(org.apache.AnnotationProcessor.class.getName());
         annotationProcessor = new TuscanyAnnotationProcessor(ap);
     }
 
     public Object newInstance(String className) throws InstantiationException, IllegalAccessException, InvocationTargetException, NamingException, ClassNotFoundException {
 
-        System.out.println("foo newInstance: " + className);
-
-        Class clazz = ClassUtils.classForName(className);
+        Class<?> clazz = ClassUtils.classForName(className);
         log.info("Creating instance of " + className);
         Object object = clazz.newInstance();
-        annotationProcessor.processAnnotations(object, sc);
+        annotationProcessor.processAnnotations(object, servletContext);
         annotationProcessor.postConstruct(object);
 
         return object;
     }
-
-//    public boolean isAvailable() {
-//        try {
-//            ServletContext sc = (ServletContext)externalContext.getContext();
-//            AnnotationProcessor ap = (org.apache.AnnotationProcessor)sc.getAttribute(org.apache.AnnotationProcessor.class.getName());
-//
-//            annotationProcessor = new TuscanyAnnotationProcessor(ap);
-//            sc.setAttribute(org.apache.AnnotationProcessor.class.getName(), annotationProcessor);
-//
-//            return super.isAvailable();
-//        } catch (Exception e) {
-//            // ignore
-//        }
-//        return false;
-//    }
 
 }
