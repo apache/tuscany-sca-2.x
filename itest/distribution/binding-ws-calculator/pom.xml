@@ -25,7 +25,7 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-distribution-binidng-ws-calculator</artifactId>
+    <artifactId>itest-distribution-binding-ws-calculator</artifactId>
     <name>Apache Tuscany SCA Distribution itest binding-ws-calculator</name>
 
     <dependencies>
