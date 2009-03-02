@@ -223,9 +223,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Build component reference binding-related information
         componentReferenceBindingBuilder.build(composite, definitions, monitor);
 
-        // Fuse nested composites
-        //FIXME do this later
-        //cloneBuilder.fuseCompositeImplementations(composite);
     }
 
 }
