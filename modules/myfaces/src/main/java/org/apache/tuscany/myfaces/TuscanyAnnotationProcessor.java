@@ -44,7 +44,6 @@ public class TuscanyAnnotationProcessor implements org.apache.AnnotationProcesso
     }
 
     public void processAnnotations(Object arg0, ServletContext servletContext) throws IllegalAccessException, InvocationTargetException, NamingException {
-        System.out.println("foo2 processAnnotations: " + arg0);
         ContextHelper.inject(arg0, servletContext);
         annotationProcessor.processAnnotations(arg0);
     }
