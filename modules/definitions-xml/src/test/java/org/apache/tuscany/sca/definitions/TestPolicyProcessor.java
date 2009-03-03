@@ -34,41 +34,24 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  *
  * @version $Rev$ $Date$
  */
-public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
-
+public class TestPolicyProcessor implements StAXArtifactProcessor<MockPolicy> {
     public QName getArtifactType() {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
     }
 
-    public Policy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
-        return new MockPolicyImplOne();
+    public MockPolicy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
+        return new MockPolicy();
     }
 
-    public void write(Policy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
-                                                        XMLStreamException {
+    public void write(MockPolicy arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
     }
 
-    public Class<Policy> getModelType() {
-        // TODO Auto-generated method stub
-        return Policy.class;
+    public Class<MockPolicy> getModelType() {
+        return MockPolicy.class;
     }
 
-    public void resolve(Policy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(MockPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
 
-    
-    public class MockPolicyImplOne implements Policy {
-        public QName getSchemaName() {
-            return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
-        }
-
-        public boolean isUnresolved() {
-            return false;
-        }
-
-        public void setUnresolved(boolean unresolved) {
-        }
-        
-    }
 }
