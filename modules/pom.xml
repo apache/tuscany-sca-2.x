@@ -32,6 +32,7 @@
     <modules>
         <module>assembly</module>
         <module>assembly-xml</module>
+        <module>assembly-xml-osoa</module>
         <module>assembly-xsd</module>
         <module>binding-dwr</module>
         <module>binding-jsonp</module>
