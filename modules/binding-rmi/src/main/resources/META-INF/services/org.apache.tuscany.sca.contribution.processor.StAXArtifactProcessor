@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#binding.rmi,model=org.apache.tuscany.sca.binding.rmi.RMIBinding,factory=org.apache.tuscany.sca.binding.rmi.RMIBindingFactory
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rmi,model=org.apache.tuscany.sca.binding.rmi.RMIBinding,factory=org.apache.tuscany.sca.binding.rmi.RMIBindingFactory
