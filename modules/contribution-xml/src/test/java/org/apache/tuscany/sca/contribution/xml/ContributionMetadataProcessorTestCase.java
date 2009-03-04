@@ -54,13 +54,13 @@ import org.junit.Test;
 public class ContributionMetadataProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable composite=\"ns:Composite2\"/>"
             + "</contribution>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable/>"
             + "</contribution>";
