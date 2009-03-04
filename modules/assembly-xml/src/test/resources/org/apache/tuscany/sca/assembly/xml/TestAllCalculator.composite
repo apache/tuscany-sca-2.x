@@ -20,9 +20,9 @@
 
 <composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="TestAllCalculator" policySets="sns:SecureReliablePolicy"
     requires="cns:confidentiality" targetNamespace="http://calc" xmlns:tns="http://calc"
-    xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.osoa.org/xmlns/sca/1.0 http://www.osoa.org/xmlns/sca/1.0 "
+    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200712 http://docs.oasis-open.org/ns/opencsa/sca/200712 "
     xmlns:ext="http://extension"
     xmlns:cns="http://test" xmlns:sns="http://test">
 

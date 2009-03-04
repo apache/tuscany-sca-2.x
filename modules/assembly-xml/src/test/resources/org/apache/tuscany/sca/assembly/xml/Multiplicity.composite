@@ -17,7 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="composite1" targetNamespace="http://temp"> 
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+           targetNamespace="http://temp" 
+           name="composite1"> 
   <component name="data7"> 
     <implementation.java class="temp.EchoImpl"/> 
     <service name="Echo"> 
