@@ -65,24 +65,10 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     protected SCABindingImpl() {
     }
     
-    // SCA Binding operations
-    
-    /**
-     * Setters for the binding name. Defaults to the
-     * name of the service or reference with which the binding is
-     * associated
-     * 
-     * @return the binding name
-     */
     public String getName() {
         return name;
     }
     
-    /**
-     * Setter for the binding name
-     * 
-     * @param name the binding name
-     */
     public void setName(String name) {
         this.name = name;
     }
@@ -99,11 +85,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
         return uri;
     }
 
-    /**
-     * Setter for the binding URI
-     * 
-     * @param uri the binding URI
-     */
     public void setURI(String uri) {
         this.uri = uri;
     }
@@ -116,12 +97,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
         return attributeExtensions;
     }
     
-    
-    /**
-     * Returns true if the model element is unresolved.
-     * 
-     * @return true if the model element is unresolved.
-     */
     public boolean isUnresolved() {
         if (targetComponentService == null){
             return true;
@@ -129,23 +104,10 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
             return targetComponentService.isUnresolved();
         }
     }
-    
-    /**
-     * Sets whether the model element is unresolved.
-     * 
-     * @param unresolved whether the model element is unresolved
-     */    
+
     public void setUnresolved(boolean unresolved) {
     }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-    
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
@@ -164,44 +126,26 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     
     // Wireable binding operations
 
-    /**
-     * @return the targetComponent
-     */
     public Component getTargetComponent() {
         return targetComponent;
     }
 
-    /**
-     * @param targetComponent the targetComponent to set
-     */
     public void setTargetComponent(Component targetComponent) {
         this.targetComponent = targetComponent;
     }
 
-    /**
-     * @return the targetComponentService
-     */
     public ComponentService getTargetComponentService() {
         return targetComponentService;
     }
 
-    /**
-     * @param targetComponentService the targetComponentService to set
-     */
     public void setTargetComponentService(ComponentService targetComponentService) {
         this.targetComponentService = targetComponentService;
     }
 
-    /**
-     * @return the targetBinding
-     */
     public Binding getTargetBinding() {
         return targetBinding;
     }
 
-    /**
-     * @param targetBinding the targetBinding to set
-     */
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
     }
@@ -213,7 +157,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
     }
-    
 
     public void setIsAutomatic(boolean isAutomatic){
         this.isAutomatic = isAutomatic;
@@ -222,4 +165,9 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     public boolean getIsAutomatic(){
         return this.isAutomatic;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }    
 }

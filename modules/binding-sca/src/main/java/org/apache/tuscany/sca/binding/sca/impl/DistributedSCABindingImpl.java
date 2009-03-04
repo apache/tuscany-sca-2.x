@@ -32,85 +32,39 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     
     private SCABinding scaBinding;
     
-    /**
-     * Getter for the wrapped sca binding model object
-     * 
-     * @return the sca binding model element
-     */
     public SCABinding getSCABinding(){
         return scaBinding;
     }
     
-    /**
-     * Setter for the wrapped sca binding model element
-     * 
-     * @param scaBinding the sca binding model element
-     */
     public void setSCABinding(SCABinding scaBinding){
         this.scaBinding = scaBinding;
     }
-
     
-    // Operation implementations provided to make this class a 
-    // valid Binding
-    
-    /**
-     * Returns the binding URI.
-     * 
-     * @return the binding URI
-     */
     public String getURI(){
         return null;
     }
 
-    /**
-     * Sets the binding URI.
-     * 
-     * @param uri the binding URI
-     */
     public void setURI(String uri){
     }
 
-    /**
-     * Returns the binding name.
-     * 
-     * @return the binding name
-     */
     public String getName(){
         return null;
     }
 
-    /**
-     * Sets the binding name.
-     * 
-     * @param name the binding name
-     */
     public void setName(String name){
+
     }
     
-    /**
-     * Returns true if the model element is unresolved.
-     * 
-     * @return true if the model element is unresolved.
-     */
     public boolean isUnresolved(){
         return false;
     }
 
-    /**
-     * Sets whether the model element is unresolved.
-     * 
-     * @param unresolved whether the model element is unresolved
-     */
     public void setUnresolved(boolean unresolved){
+
     }
     
-    /**
-     * Clone the binding
-     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     
-
 }
