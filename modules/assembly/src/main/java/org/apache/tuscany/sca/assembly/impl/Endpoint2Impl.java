@@ -23,11 +23,13 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * The assembly model object for an endpoint.
@@ -35,17 +37,19 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * @version $Rev$ $Date$
  */
 public class Endpoint2Impl implements Endpoint2 {
-        
+
     private Component component;
     private ComponentService service;
     private Binding binding;
-    private Binding callbackBinding;   
+    private Binding callbackBinding;
     private InterfaceContract interfaceContract;
     private String uri;
-    
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+
     protected Endpoint2Impl() {
     }
-          
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -55,11 +59,11 @@ public class Endpoint2Impl implements Endpoint2 {
         // TODO Auto-generated method stub
         return false;
     }
-    
+
     public void setUnresolved(boolean unresolved) {
         // TODO Auto-generated method stub
     }
-    
+
     public Component getComponent() {
         return component;
     }
@@ -74,29 +78,48 @@ public class Endpoint2Impl implements Endpoint2 {
 
     public void setService(ComponentService service) {
         this.service = service;
-    }    
-    
+    }
+
     public Binding getBinding() {
         return binding;
     }
 
     public void setBinding(Binding binding) {
         this.binding = binding;
-    } 
-    
+    }
+
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
-    
+
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
     }
-    
+
     public String getURI() {
         return uri;
     }
-    
+
     public void setURI(String uri) {
         this.uri = uri;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public ExtensionType getType() {
+        if (binding instanceof PolicySubject) {
+            return ((PolicySubject)binding).getType();
+        }
+        return null;
+    }
+
+    public void setType(ExtensionType type) {
+        throw new UnsupportedOperationException();
     }
 }
