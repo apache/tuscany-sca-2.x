@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<tuscany:wsConfigParam xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+<tuscany:wsConfigParam xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
  		<parameter name="InflowSecurity">
 		    <action>
 		        <items>Timestamp Signature</items>

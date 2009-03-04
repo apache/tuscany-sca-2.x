@@ -33,9 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
-import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -70,17 +68,17 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private PolicyFactory intentAttachPointTypeFactory;
+    //private PolicyFactory intentAttachPointTypeFactory;
     private Monitor monitor;
     
     public WebServiceBindingProcessor(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.wsFactory = new DefaultWebServiceBindingFactory();
+        this.wsFactory = modelFactories.getFactory(WebServiceBindingFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
+        //this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         if (monitorFactory != null) {
@@ -235,7 +233,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
 
         // Write a <binding.ws>
         policyProcessor.writePolicyPrefixes(wsBinding, writer);
-        writer.writeStartElement(Constants.SCA10_NS, BINDING_WS);
+        writer.writeStartElement(SCA11_NS, BINDING_WS);
         policyProcessor.writePolicyAttributes(wsBinding, writer);
 
         // Write binding name
