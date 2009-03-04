@@ -18,6 +18,7 @@
 * under the License.    
 -->
 
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:sc="http://sample/composite">
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" 
+              xmlns:sc="http://sample/composite">
     <deployable composite="sc:HelloWorld" />
 </contribution>
