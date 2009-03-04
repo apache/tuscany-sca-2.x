@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
-    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     private JavaInterfaceFactory javaFactory;
     private Monitor monitor;
 
@@ -118,7 +118,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     public void write(JavaInterfaceContract javaInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
         // Write an <interface.java>
-        writer.writeStartElement(SCA10_NS, INTERFACE_JAVA);
+        writer.writeStartElement(SCA11_NS, INTERFACE_JAVA);
         JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
         
         if (javaInterface != null && javaInterface.getName() != null) {
