@@ -28,7 +28,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_N;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_ONE;
-import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SCA10_NS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TARGET;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ZERO_N;
@@ -209,7 +209,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writeStart(writer, SCA11_NS, name, attrs);
+        writeStart(writer, SCA10_NS, name, attrs);
     }
 
     /**
@@ -219,9 +219,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
         writer.writeStartDocument();
-        writer.setDefaultNamespace(SCA11_NS);
-        writeStart(writer, SCA11_NS, name, attrs);
-        writer.writeDefaultNamespace(SCA11_NS);
+        writer.setDefaultNamespace(SCA10_NS);
+        writeStart(writer, SCA10_NS, name, attrs);
+        writer.writeDefaultNamespace(SCA10_NS);
     }
 
     /**
