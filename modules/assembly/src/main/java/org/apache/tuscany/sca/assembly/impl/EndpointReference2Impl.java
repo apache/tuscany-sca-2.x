@@ -24,11 +24,13 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * The assembly model object for an endpoint.
@@ -36,7 +38,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * @version $Rev$ $Date$
  */
 public class EndpointReference2Impl implements EndpointReference2 {
-   
+
     private String targetName;
     private Component component;
     private ComponentReference reference;
@@ -45,29 +47,31 @@ public class EndpointReference2Impl implements EndpointReference2 {
     private Endpoint2 endpoint;
     private InterfaceContract interfaceContract;
     private String uri;
-    
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+
     protected EndpointReference2Impl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-          
+
     public boolean isUnresolved() {
         // TODO Auto-generated method stub
         return false;
     }
-    
+
     public void setUnresolved(boolean unresolved) {
         // TODO Auto-generated method stub
     }
-    
-    public String getTargetName(){
+
+    public String getTargetName() {
         return targetName;
     }
-    
-    public void setTargetName(String targetName){
+
+    public void setTargetName(String targetName) {
         this.targetName = targetName;
     }
 
@@ -85,8 +89,8 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setReference(ComponentReference reference) {
         this.reference = reference;
-    }    
-    
+    }
+
     public Binding getBinding() {
         return binding;
     }
@@ -98,24 +102,43 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public Endpoint2 getEndpoint() {
         return endpoint;
     }
-    
+
     public void setEndpoint(Endpoint2 endpoint) {
         this.endpoint = endpoint;
     }
-    
+
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
-    
+
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
     }
-    
+
     public String getURI() {
         return uri;
     }
-    
+
     public void setURI(String uri) {
         this.uri = uri;
-    }    
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public ExtensionType getType() {
+        if (binding instanceof PolicySubject) {
+            return ((PolicySubject)binding).getType();
+        }
+        return null;
+    }
+
+    public void setType(ExtensionType type) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents a service endpoint which is what results from having a configured 
@@ -30,7 +29,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface Endpoint2 extends Base, Cloneable {
+public interface Endpoint2 extends Base, PolicySubject, Cloneable {
     
     /**
      * Get the component model object

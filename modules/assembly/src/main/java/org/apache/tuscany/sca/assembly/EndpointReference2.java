@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Represents an endpoint reference. An SCA reference can reference service enpoints in a 
@@ -29,7 +28,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface EndpointReference2 extends Base, Cloneable {
+public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
     
     /**
      * Get the name of the target service that this endpoint reference refers to
