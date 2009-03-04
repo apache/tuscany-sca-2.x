@@ -25,6 +25,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -42,6 +44,7 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     private Callback callback;
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private boolean promotionOverride;
+    private List<EndpointReference2> endpointReferences = new ArrayList<EndpointReference2>();
 
     public List<PolicySet> getApplicablePolicySets() {
         return applicablePolicySets;
@@ -128,6 +131,10 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
      */
     public InterfaceContract getInterfaceContract(Binding binding){
         return getInterfaceContract();
-    }      
+    } 
+    
+    public List<EndpointReference2> getEndpointReferences() {
+        return endpointReferences;
+    }
 
 }

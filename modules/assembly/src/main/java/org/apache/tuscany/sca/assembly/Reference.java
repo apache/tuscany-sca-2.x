@@ -70,5 +70,18 @@ public interface Reference extends AbstractReference, Contract {
      * @return the targets of this reference.
      */
     List<ComponentService> getTargets();
+    
+    /**
+     * Returns the endpoint references implied by this reference.
+     *  
+     * Endpoint references are used to represent:
+     * 
+     *   - manually specified reference targets
+     *   - reference targets determined by autowire
+     *   - manually configured remote bindings
+     *   
+     * @return the endpoint references implied by this reference
+     */
+    List<EndpointReference2> getEndpointReferences(); 
 
 }

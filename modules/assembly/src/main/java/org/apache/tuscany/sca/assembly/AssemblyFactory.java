@@ -145,6 +145,17 @@ public interface AssemblyFactory {
      */
     Wire createWire();
     
-    // Extension createExtension();
+    /**
+     * Create a new endpoint
+     * 
+     * @return a new endpoint
+     */
+    Endpoint2 createEndpoint();
     
+    /**
+     * Create a new endpoint reference
+     * 
+     * @return a new endpoint reference
+     */
+    EndpointReference2 createEndpointReference();
 }
