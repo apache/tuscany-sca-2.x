@@ -32,8 +32,8 @@ import org.apache.axiom.om.OMElement;
  * @version $Rev$ $Date$
  */
 public class Axis2ConfigParamPolicy {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-    public static final QName NAME = new QName(SCA10_TUSCANY_NS, "wsConfigParam");
+    private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
+    public static final QName NAME = new QName(SCA11_TUSCANY_NS, "wsConfigParam");
     private Map<String, OMElement> paramElements = new Hashtable<String, OMElement>();
     
     public Map<String, OMElement> getParamElements() {

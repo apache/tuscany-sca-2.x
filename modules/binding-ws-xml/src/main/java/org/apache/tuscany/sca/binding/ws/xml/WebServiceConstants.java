@@ -20,22 +20,25 @@ package org.apache.tuscany.sca.binding.ws.xml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-
 /**
  * Constants for the Web Services Binding.
  *
  * @version $Rev$ $Date$
  */
 public interface WebServiceConstants {
-
+	String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+	
     String BINDING_WS = "binding.ws";
-    QName BINDING_WS_QNAME = new QName(Constants.SCA10_NS, BINDING_WS);
+    QName BINDING_WS_QNAME = new QName(SCA11_NS, BINDING_WS);
+    
     String WSDL_ELEMENT = "wsdlElement";
-    QName WSDL_ELEMENT_QNAME = new QName(Constants.SCA10_NS, WSDL_ELEMENT);
+    QName WSDL_ELEMENT_QNAME = new QName(SCA11_NS, WSDL_ELEMENT);
+    
     String WSDL_LOCATION = "wsdlLocation";
     String WSDLI_NS = "http://www.w3.org/2004/08/wsdl-instance";
+    
     QName WSDL_LOCATION_QNAME = new QName(WSDLI_NS, WSDL_LOCATION); 
+    
     String NAME = "name"; 
     String URI = "uri"; 
     String END_POINT_REFERENCE = "EndpointReference";
