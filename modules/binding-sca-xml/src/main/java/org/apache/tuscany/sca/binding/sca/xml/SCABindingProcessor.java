@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -46,15 +45,19 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 
-public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, Constants{
+public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
+	private static final String NAME = "name";
+	private static final String URI = "uri";
+	
+	private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    private static final String BINDING_SCA = "binding.sca";
+    private static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
     
     private PolicyFactory policyFactory;       
     private SCABindingFactory scaBindingFactory;
     private PolicySubjectProcessor policyProcessor;
     private PolicyFactory  intentAttachPointTypeFactory;
 
-    protected static final String BINDING_SCA = "binding.sca";
-    protected static final QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
 
     public SCABindingProcessor(FactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
@@ -110,7 +113,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
 
         // Write <binding.sca>
         policyProcessor.writePolicyPrefixes(scaBinding, writer);
-        writer.writeStartElement(Constants.SCA10_NS, BINDING_SCA);
+        writer.writeStartElement(SCA11_NS, BINDING_SCA);
         policyProcessor.writePolicyAttributes(scaBinding, writer);
 
         // Write binding name
