@@ -120,7 +120,57 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }
+    }   
+    
+    
+    /**
+     * Index components inside a composite
+     * 
+     * @param composite
+     * @param componentServices
+
+     */
+    protected void indexComponents(Composite composite,
+                                 Map<String, Component> components) {
+        for (Component component : composite.getComponents()) {
+            // Index components by name
+            components.put(component.getName(), component);
+        }    
+    }
+    
+    /**
+     * Index services inside a composite
+     * 
+     * @param composite
+     * @param componentServices
+     */
+    protected void indexServices(Composite composite,
+                                 Map<String, ComponentService> componentServices) {
+        ComponentService nonCallbackService = null;
+        int nonCallbackServiceCount = 0;
+        for (Component component : composite.getComponents()) {
+            for (ComponentService componentService : component.getServices()) {                 
+                // Index component services by component name / service name
+                String uri = component.getName() + '/' + componentService.getName();
+                componentServices.put(uri, componentService);
+                
+                // count how many non-callback there are
+                if (!componentService.isCallback()) {                            
+                    
+                    if (nonCallbackServiceCount == 0) {
+                        nonCallbackService = componentService;
+                    }
+                    nonCallbackServiceCount++;
+                }
+            }
+            if (nonCallbackServiceCount == 1) {
+                // If we have a single non callback service, index it by
+                // component name as well
+                componentServices.put(component.getName(), nonCallbackService);
+            }
+        }    
     }    
+    
 
     /**
      * Index components, services and references inside a composite.

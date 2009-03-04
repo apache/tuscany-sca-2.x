@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.List;
+
 /**
  * Represents a service. Services are used to publish services provided by
  * implementations, so that they are addressable by other components.
@@ -25,5 +27,15 @@ package org.apache.tuscany.sca.assembly;
  * @version $Rev$ $Date$
  */
 public interface Service extends AbstractService, Contract {
-
+    /**
+     * Returns the endpoints implied by this service.
+     * 
+     * Endpoints represent configured bindings for a service. Hence a service
+     * with two bindings will expose two Endpoints. Where a promoted service has 
+     * new binding configuration applied by a promoting component Endpoints are
+     * introduced to represent these new bindings.  
+     * 
+     * @return the endpoints implied by this service
+     */
+    List<Endpoint2> getEndpoints(); 
 }

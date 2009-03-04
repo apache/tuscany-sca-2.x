@@ -60,6 +60,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     private CompositeBuilder componentServiceBindingBuilder;
     private CompositeBuilder componentReferenceBindingBuilder;
     
+    private CompositeBuilder compositeReferenceEndpointReferenceBuilder;
+    private CompositeBuilder compositeServiceEndpointBuilder;
+    
     public CompositeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
         this(factories.getFactory(AssemblyFactory.class),
                factories.getFactory(EndpointFactory.class),
@@ -170,6 +173,9 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl();
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl();
+        
+        compositeReferenceEndpointReferenceBuilder = new CompositeReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
+        compositeServiceEndpointBuilder = new CompositeServiceEndpointBuilderImpl(assemblyFactory);
     }
 
     public String getID() {
@@ -198,6 +204,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         
         // Configure composite references
         compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
+        
+        // TODO - temporarily add endpoint builders
+        compositeServiceEndpointBuilder.build(composite, definitions, monitor);
+        compositeReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
 
         // Configure binding URIs
         compositeBindingURIBuilder.build(composite, definitions, monitor);
