@@ -27,50 +27,50 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface Constants {
-    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     
     String COMPONENT_TYPE = "componentType";
-    QName COMPONENT_TYPE_QNAME = new QName(SCA10_NS, COMPONENT_TYPE);
+    QName COMPONENT_TYPE_QNAME = new QName(SCA11_NS, COMPONENT_TYPE);
     
     String SERVICE = "service";
-    QName SERVICE_QNAME = new QName(SCA10_NS, SERVICE);
+    QName SERVICE_QNAME = new QName(SCA11_NS, SERVICE);
     
     String REFERENCE = "reference";
-    QName REFERENCE_QNAME = new QName(SCA10_NS, REFERENCE);
+    QName REFERENCE_QNAME = new QName(SCA11_NS, REFERENCE);
     
     String PROPERTY = "property";
-    QName PROPERTY_QNAME = new QName(SCA10_NS, PROPERTY);
+    QName PROPERTY_QNAME = new QName(SCA11_NS, PROPERTY);
     
     String CONSTRAINING_TYPE = "constrainingType";
-    QName CONSTRAINING_TYPE_QNAME = new QName(SCA10_NS, CONSTRAINING_TYPE);
+    QName CONSTRAINING_TYPE_QNAME = new QName(SCA11_NS, CONSTRAINING_TYPE);
     
     String COMPOSITE = "composite";
-    QName COMPOSITE_QNAME = new QName(SCA10_NS, COMPOSITE);
+    QName COMPOSITE_QNAME = new QName(SCA11_NS, COMPOSITE);
     
     String INCLUDE = "include";
-    QName INCLUDE_QNAME = new QName(SCA10_NS, INCLUDE); 
+    QName INCLUDE_QNAME = new QName(SCA11_NS, INCLUDE); 
     
     String COMPONENT = "component";
-    QName COMPONENT_QNAME = new QName(SCA10_NS, COMPONENT);
+    QName COMPONENT_QNAME = new QName(SCA11_NS, COMPONENT);
     
     String WIRE = "wire";
-    QName WIRE_QNAME = new QName(SCA10_NS, WIRE);
+    QName WIRE_QNAME = new QName(SCA11_NS, WIRE);
 
     String OPERATION = "operation";
-    QName OPERATION_QNAME = new QName(SCA10_NS, OPERATION);
+    QName OPERATION_QNAME = new QName(SCA11_NS, OPERATION);
     
     String CALLBACK = "callback";
-    QName CALLBACK_QNAME = new QName(SCA10_NS, CALLBACK);
+    QName CALLBACK_QNAME = new QName(SCA11_NS, CALLBACK);
 
     String IMPLEMENTATION_COMPOSITE = "implementation.composite";
-    QName IMPLEMENTATION_COMPOSITE_QNAME = new QName(SCA10_NS, IMPLEMENTATION_COMPOSITE);
+    QName IMPLEMENTATION_COMPOSITE_QNAME = new QName(SCA11_NS, IMPLEMENTATION_COMPOSITE);
     
     String IMPLEMENTATION = "implementation";
-    QName IMPLEMENTATION_QNAME = new QName(SCA10_NS, IMPLEMENTATION);
+    QName IMPLEMENTATION_QNAME = new QName(SCA11_NS, IMPLEMENTATION);
     
     String BINDING_SCA = "binding.sca";
-    QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
+    QName BINDING_SCA_QNAME = new QName(Constants.SCA11_NS, BINDING_SCA);
     
     String NAME = "name";
     String TARGET_NAMESPACE = "targetNamespace";

@@ -52,7 +52,7 @@ public class ReadWriteLocalCompositeTestCase {
     private ExtensibleStAXArtifactProcessor staxProcessor;
 
     private static final String LOCAL_COMPOSITE_XML = "<?xml version='1.0' encoding='UTF-8'?>"+
-    "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
+    "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:ns1=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
     "</composite>";
     
     @Before
