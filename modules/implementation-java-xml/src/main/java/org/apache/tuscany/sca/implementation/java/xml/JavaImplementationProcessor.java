@@ -23,7 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.CLASS;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME;
-import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.SCA10_NS;
+import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.SCA11_NS;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -145,7 +145,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 
         // Write an <implementation.java>
         policyProcessor.writePolicyPrefixes(javaImplementation, writer);
-        writer.writeStartElement(SCA10_NS, IMPLEMENTATION_JAVA);
+        writer.writeStartElement(SCA11_NS, IMPLEMENTATION_JAVA);
         policyProcessor.writePolicyAttributes(javaImplementation, writer);
 
         if (javaImplementation.getName() != null) {
