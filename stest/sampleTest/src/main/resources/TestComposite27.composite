@@ -20,7 +20,7 @@
 <!-- An example of a composite which which has a <component/> with a <reference/> 
      element which has @autowire=true and where there is a compatible <component/>
      <service/> in the same composite  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite27">
