@@ -57,7 +57,10 @@ public class PolicyXPathFunctionResolver implements XPathFunctionResolver {
             throw new NullPointerException("Function name is null");
         }
         if (PolicyXPathFunction.functions.contains(functionName)) {
-            if (arity == 1) {
+            if (arity >= 1) {
+                // We are relaxing the arity here so that we can pass in the context node
+                // by modifying the original xpath so that sca functions take self::node()
+                // as the 2nd argument
                 return new PolicyXPathFunction(namespaceContext, functionName);
             } else {
                 throw new IllegalArgumentException("Invalid number of arguments: " + arity);
