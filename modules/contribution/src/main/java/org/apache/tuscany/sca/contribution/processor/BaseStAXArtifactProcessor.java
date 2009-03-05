@@ -307,9 +307,9 @@ public abstract class BaseStAXArtifactProcessor {
      */
     public static class XAttr {
         
-        private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+        private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
 
-        private String uri = SCA10_NS;
+        private String uri = SCA11_NS;
         private String name;
         private Object value;
 
@@ -501,7 +501,7 @@ public abstract class BaseStAXArtifactProcessor {
             }
 
             // Write the attribute
-            if (uri != null && !uri.equals(SCA10_NS)) {
+            if (uri != null && !uri.equals(SCA11_NS)) {
                 writer.writeAttribute(uri, name, str);
             } else {
                 writer.writeAttribute(name,str);
