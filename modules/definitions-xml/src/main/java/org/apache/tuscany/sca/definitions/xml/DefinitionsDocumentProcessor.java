@@ -30,7 +30,6 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -62,9 +61,6 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     private StAXArtifactProcessor<Object> extensionProcessor;
     private XMLInputFactory inputFactory;
     private DefinitionsFactory definitionsFactory;
-    private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
-    private static final String DEFINITIONS = "definitions";
-    private static final QName DEFINITIONS_QNAME = new QName(TUSCANY_NS, DEFINITIONS);
     private Monitor monitor;
 
     /**
@@ -140,20 +136,19 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
 
             Definitions definitions = definitionsFactory.createDefinitions();
-            QName name = null;
-            int event;
+            int event = reader.getEventType();
             while (reader.hasNext()) {
                 event = reader.next();
 
-                if (event == XMLStreamConstants.START_ELEMENT || event == XMLStreamConstants.END_ELEMENT) {
-                    name = reader.getName();
-                    if (name.equals(DEFINITIONS_QNAME)) {
-                        if (event == XMLStreamConstants.END_ELEMENT) {
-                            return definitions;
-                        }
+                // We only deal with the root element
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    // QName name = reader.getName();
+                    Object model = extensionProcessor.read(reader);
+                    if (model instanceof Definitions) {
+                        DefinitionsUtil.aggregate((Definitions)model, definitions);
+                        return definitions;
                     } else {
-                        Definitions aDefn = (Definitions)extensionProcessor.read(reader);
-                        DefinitionsUtil.aggregate(aDefn, definitions);
+                        error("ContributionReadException", model, null);
                     }
                 }
             }
@@ -205,7 +200,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     }
 
     public String getArtifactType() {
-        return "META-INF/definitions.xml";
+        return "/META-INF/definitions.xml";
     }
 
     public Class<Definitions> getModelType() {
