@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference, Cloneable {
     private Reference reference;
     private Boolean autowire;
+    private boolean nonOverridable;
     private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
     private ComponentService callbackService;
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
@@ -109,5 +110,13 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
             interfaceContract = getInterfaceContract();
         }
         return interfaceContract;
+    }
+
+    public boolean isNonOverridable() {
+        return nonOverridable;
+    }
+
+    public void setNonOverridable(boolean nonOverridable) {
+        this.nonOverridable = nonOverridable;
     } 
 }
