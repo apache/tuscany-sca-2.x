@@ -9,5 +9,5 @@ Bundle-ManifestVersion: 2
 Bundle-Description: Apache Tuscany SCA Assembly Model XML Schemas
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.apache.org/
-Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xsd
+Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xsd.osoa
 
