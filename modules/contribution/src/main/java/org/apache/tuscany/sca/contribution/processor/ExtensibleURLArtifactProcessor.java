@@ -34,9 +34,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * 
  * @version $Rev$ $Date$
  */
-public class ExtensibleURLArtifactProcessor
-    implements URLArtifactProcessor<Object> {
-    
+public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Object> {
+
     private URLArtifactProcessorExtensionPoint processors;
     private Monitor monitor;
 
@@ -49,7 +48,7 @@ public class ExtensibleURLArtifactProcessor
         this.processors = processors;
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a error.
      * 
@@ -58,10 +57,16 @@ public class ExtensibleURLArtifactProcessor
      * @param model
      */
     private void error(String message, Object model, Object... messageParameters) {
-    	if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-	        monitor.problem(problem);
-    	}
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "contribution-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +74,12 @@ public class ExtensibleURLArtifactProcessor
         URLArtifactProcessor<Object> processor = null;
         if (sourceURI != null) {
             //try to retrieve a processor for the specific URI
-            processor = (URLArtifactProcessor<Object>)processors.getProcessor(sourceURI.toString());
+            String uri = sourceURI.toString();
+            if (!uri.startsWith("/")) {
+                uri = "/" + uri;
+            }
+            // Register the URI as the artifact type starts with /
+            processor = (URLArtifactProcessor<Object>)processors.getProcessor(uri);
         }
         if (processor == null) {
             // Delegate to the processor associated with file extension
@@ -78,19 +88,20 @@ public class ExtensibleURLArtifactProcessor
             //try to retrieve a processor for the specific filename
             processor = (URLArtifactProcessor<Object>)processors.getProcessor(fileName);
         }
-        
+
         if (processor == null) {
             //try to find my file type (extension)
             String extension = sourceURL.getPath();
-            
+
             int extensionStart = extension.lastIndexOf('.');
             //handle files without extension (e.g NOTICE)
             if (extensionStart > 0) {
+                // File extensions are registered as .<extension>
                 extension = extension.substring(extensionStart);
-                processor = (URLArtifactProcessor<Object>)processors.getProcessor(extension);            
+                processor = (URLArtifactProcessor<Object>)processors.getProcessor(extension);
             }
         }
-        
+
         if (processor == null) {
             return null;
         }
@@ -108,8 +119,8 @@ public class ExtensibleURLArtifactProcessor
             }
         }
     }
-    
-    public <M> M read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<M> type) 
+
+    public <M> M read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<M> type)
         throws ContributionReadException {
         Object mo = read(contributionURL, artifactURI, artifactUrl);
         if (type.isInstance(mo)) {
@@ -121,11 +132,11 @@ public class ExtensibleURLArtifactProcessor
             throw e;
         }
     }
-    
+
     public String getArtifactType() {
         return null;
     }
-    
+
     public Class<Object> getModelType() {
         return null;
     }
@@ -135,10 +146,10 @@ public class ExtensibleURLArtifactProcessor
      * @param url
      * @return
      */
-    private static String getFileName(URL url){
+    private static String getFileName(URL url) {
         String fileName = url.getPath();
         int pos = fileName.lastIndexOf("/");
-        
-        return fileName.substring(pos +1);
+
+        return fileName.substring(pos + 1);
     }
 }
