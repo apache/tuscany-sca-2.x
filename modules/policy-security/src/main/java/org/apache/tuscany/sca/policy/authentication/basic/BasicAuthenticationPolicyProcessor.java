@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor<BasicAuthenticationPolicy> {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public QName getArtifactType() {
         return BasicAuthenticationPolicy.BASIC_AUTHENTICATION_POLICY_QNAME;

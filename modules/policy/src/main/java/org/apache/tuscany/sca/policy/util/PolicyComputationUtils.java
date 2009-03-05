@@ -63,7 +63,7 @@ import org.w3c.dom.NodeList;
  */
 public class PolicyComputationUtils {
     private static final String POLICYSET_PREFIX = "tp_";
-    private static final String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     private static final String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets";
     private static final String POLICY_SETS_ATTR = "policySets";
     private static final String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";

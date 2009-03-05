@@ -43,7 +43,7 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessorTestCase {
-    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     private final static List<String> SEQ =
         Arrays.asList("permitAll",
                       "allow [r1, r2]",
@@ -61,10 +61,10 @@ public class PolicyProcessorTestCase {
         Map<QName, StAXArtifactProcessor> processors = new HashMap<QName, StAXArtifactProcessor>();
         processors.put(AuthorizationPolicy.NAME, new AuthorizationPolicyProcessor(null,null));
         processors.put(SecurityIdentityPolicy.NAME, new SecurityIdentityPolicyProcessor(null,null));
-        processors.put(new QName(SCA10_NS, "allow"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA10_NS, "permitAll"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA10_NS, "denyAll"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA10_NS, "runAs"), new SecurityIdentityPolicyProcessor(null,null));
+        processors.put(new QName(SCA11_NS, "allow"), new AuthorizationPolicyProcessor(null,null));
+        processors.put(new QName(SCA11_NS, "permitAll"), new AuthorizationPolicyProcessor(null,null));
+        processors.put(new QName(SCA11_NS, "denyAll"), new AuthorizationPolicyProcessor(null,null));
+        processors.put(new QName(SCA11_NS, "runAs"), new SecurityIdentityPolicyProcessor(null,null));
         InputStream is = getClass().getResourceAsStream("mock_policy_definitions.xml");
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(is);

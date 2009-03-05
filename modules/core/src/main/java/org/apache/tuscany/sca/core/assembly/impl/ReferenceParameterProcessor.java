@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  */
 public class ReferenceParameterProcessor implements StAXArtifactProcessor<ReferenceParameters> {
     private static final QName REFERENCE_PARAMETERS =
-        new QName("http://tuscany.apache.org/xmlns/sca/1.0", "referenceParameters", "tuscany");
+        new QName("http://tuscany.apache.org/xmlns/sca/1.1", "referenceParameters", "tuscany");
     
     /**
      * Constructs a new processor.

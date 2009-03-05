@@ -61,8 +61,22 @@
             <arg value="unmanaged"/>
         	<arg value="target/${jar.name}"/> 
         </java>    	
-    </target>	
-
+    </target>
+	
+	<!-- We need to add a client component to trigger the calculation -->
+    <target name="run-equinox" depends="compile">
+        <java jar="../../features/tuscany-sca-equinox-manifest.jar" fork="true">
+            <jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
+        	<arg value="-composite"/>
+        	<arg value="CalculatorRMIReference.composite"/>
+            <arg value="-config"/>
+            <arg value="../../features/configuration"/>
+            <arg value="-ttl"/>
+            <arg value="0"/>
+            <arg value="target/${jar.name}"/>
+        </java>
+    </target>
+	
 </project> 
 
 

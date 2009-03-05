@@ -32,12 +32,12 @@ import org.apache.tuscany.sca.policy.security.SecurityUtil;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
- * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
+ * {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationServicePolicyInterceptor implements Interceptor {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, "wsBasicAuthentication");
 
     private Invoker next;

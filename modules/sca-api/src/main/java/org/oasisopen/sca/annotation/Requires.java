@@ -25,8 +25,8 @@ import java.lang.annotation.Target;
  * {@link javax.xml.namespace.QName#toString()}. Intents may be qualified with one or more
  * suffixes separated by a "." such as:
  * <ul>
- * <li>{http://www.osoa.org/xmlns/sca/1.0}confidentiality</li>
- * <li>{http://www.osoa.org/xmlns/sca/1.0}confidentiality.message</li>
+ * <li>{http://docs.oasis-open.org/ns/opencsa/sca/200712}confidentiality</li>
+ * <li>{http://docs.oasis-open.org/ns/opencsa/sca/200712}confidentiality.message</li>
  * </ul>
  * This annotation supports general purpose intents specified as strings.  Users may also define
  * specific intents using the {@link @org.oasisopen.sca.annotation.Intent} annotation.

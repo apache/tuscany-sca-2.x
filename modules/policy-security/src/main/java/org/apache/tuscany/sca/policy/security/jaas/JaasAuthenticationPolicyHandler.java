@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class JaasAuthenticationPolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, jaasPolicy);
     private PolicySet applicablePolicySet = null;
 

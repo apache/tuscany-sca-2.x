@@ -212,7 +212,7 @@ public class CompositeContextImpl extends CompositeContext {
         try {
             StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             Composite composite = assemblyFactory.createComposite();
-            composite.setName(new QName("http://tuscany.apache.org/xmlns/sca/1.0", "default"));
+            composite.setName(new QName("http://tuscany.apache.org/xmlns/sca/1.1", "default"));
             Component comp = assemblyFactory.createComponent();
             comp.setName("default");
             comp.setURI(component.getURI());

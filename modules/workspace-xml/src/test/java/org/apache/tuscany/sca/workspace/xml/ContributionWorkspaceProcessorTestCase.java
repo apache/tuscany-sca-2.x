@@ -48,13 +48,13 @@ import org.junit.Test;
 public class ContributionWorkspaceProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\">"
             + "<contribution uri=\"uri1\" location=\"location1\"/>"
             + "<contribution uri=\"uri2\" location=\"location2\"/>"
             + "</workspace>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\">"
             + "<contribution uri=\"uri1\" location=\"location1\"/>"
             + "<contribution uri=\"uri2\" location=\"location2\"/>"
             + "</contribution>"

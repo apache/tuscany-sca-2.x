@@ -27,8 +27,8 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class SecurityIdentityPolicy {
-    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";    
-    public static final QName NAME = new QName(SCA10_NS, "securityIdentity");
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";    
+    public static final QName NAME = new QName(SCA11_NS, "securityIdentity");
 
     private boolean useCallerIdentity;
 
