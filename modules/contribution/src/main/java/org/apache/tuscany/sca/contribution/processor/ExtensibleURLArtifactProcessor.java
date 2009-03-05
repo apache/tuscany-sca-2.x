@@ -67,12 +67,17 @@ public class ExtensibleURLArtifactProcessor
     @SuppressWarnings("unchecked")
     public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
         URLArtifactProcessor<Object> processor = null;
-        
-        // Delegate to the processor associated with file extension
-        String fileName = getFileName(sourceURL);
-        
-        //try to retrieve a processor for the specific filename
-        processor = (URLArtifactProcessor<Object>)processors.getProcessor(fileName);
+        if (sourceURI != null) {
+            //try to retrieve a processor for the specific URI
+            processor = (URLArtifactProcessor<Object>)processors.getProcessor(sourceURI.toString());
+        }
+        if (processor == null) {
+            // Delegate to the processor associated with file extension
+            String fileName = getFileName(sourceURL);
+
+            //try to retrieve a processor for the specific filename
+            processor = (URLArtifactProcessor<Object>)processors.getProcessor(fileName);
+        }
         
         if (processor == null) {
             //try to find my file type (extension)
