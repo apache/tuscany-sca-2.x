@@ -24,12 +24,12 @@ package test;
  *
  */
 public interface Service2 {
-	
-	/**
-	 * Method for invoking testcase service
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 */
-	public int operation2( int input );
+
+    /**
+     * Method for invoking testcase service
+     * @param input - input parameter(s) as a String
+     * @return - output data as a String
+     */
+    public int operation2(int input);
 
 }

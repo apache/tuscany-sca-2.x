@@ -18,7 +18,8 @@
  */
 package test;
 
-import org.oasisopen.sca.annotation.*;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Java component implementation for business interface Service1
@@ -29,16 +30,16 @@ import org.oasisopen.sca.annotation.*;
  */
 @Service(Service1.class)
 public class service1Impl5 implements Service1 {
-	
-	@Property
-	public String serviceName = "service1";
-	@Property
-	public String serviceData1;
-	@Property
-	public String serviceData2;
 
-	public String operation1(String input) {
-		return serviceName + " operation1 invoked" + serviceData1 + serviceData2;
-	}
+    @Property
+    public String serviceName = "service1";
+    @Property
+    public String serviceData1;
+    @Property
+    public String serviceData2;
+
+    public String operation1(String input) {
+        return serviceName + " operation1 invoked" + serviceData1 + serviceData2;
+    }
 
 }

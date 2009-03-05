@@ -18,7 +18,7 @@
  */
 package client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
@@ -39,58 +39,59 @@ public class BaseTestCase {
     protected NodeLauncher launcher;
     protected Node node;
     protected TestConfiguration testConfiguration = getTestConfiguration();
-    
+
     public static void main(String[] args) throws Exception {
-    	BaseTestCase test = new BaseTestCase(); 
-    	test.setUp();
-    	test.tearDown();
+        BaseTestCase test = new BaseTestCase();
+        test.setUp();
+        test.tearDown();
     }
-    
+
     @Before
-    public void setUp() throws Exception {	
-    	startContribution();
+    public void setUp() throws Exception {
+        startContribution();
     }
 
     @After
     public void tearDown() throws Exception {
-    	stopContribution();
+        stopContribution();
     }
 
     @Test
     public void testDummy() throws Exception {
-    	// System.out.println("Test " + testName + " starting");
-    	try {
-	    	String output = invokeTest( testConfiguration.getInput() );
-	    	assertEquals( testConfiguration.getExpectedOutput(), output );
-    	} catch (Exception e) {
-    		assertEquals( testConfiguration.getExpectedOutput(), "exception" );
-    		System.out.println( "Expected exception - detail: " + e.getMessage() );
-    	}
-    	System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
+        // System.out.println("Test " + testName + " starting");
+        try {
+            String output = invokeTest(testConfiguration.getInput());
+            assertEquals(testConfiguration.getExpectedOutput(), output);
+        } catch (Exception e) {
+            assertEquals(testConfiguration.getExpectedOutput(), "exception");
+            System.out.println("Expected exception - detail: " + e.getMessage());
+        }
+        System.out.println("Test " + testConfiguration.getTestName() + " completed successfully");
     }
-    
-    public String invokeTest( String input ) throws Exception {
 
-    	TestInvocation service = (TestInvocation) getService( testConfiguration.getServiceInterface(), 
-    														  testConfiguration.getTestServiceName() );    	
-    	
-    	return service.invokeTest( input );
+    public String invokeTest(String input) throws Exception {
+
+        TestInvocation service =
+            (TestInvocation)getService(testConfiguration.getServiceInterface(), testConfiguration.getTestServiceName());
+
+        return service.invokeTest(input);
     } // end method invokeTest
-    
-    protected <T> T getService( Class<T> interfaze, String serviceName ) {
-    	T service = node.getService( interfaze, serviceName );
-    	return service;
+
+    protected <T> T getService(Class<T> interfaze, String serviceName) {
+        T service = node.getService(interfaze, serviceName);
+        return service;
     } // end getService
-    
+
     protected void startContribution() throws Exception {
-    	// Tuscany specific code which starts the contribution holding the test
+        // Tuscany specific code which starts the contribution holding the test
         launcher = NodeLauncher.newInstance();
-        node = launcher.createNode(testConfiguration.getComposite(), 
-        		                   new Contribution(testConfiguration.getTestName(), getContributionURI()));
+        node =
+            launcher.createNode(testConfiguration.getComposite(), new Contribution(testConfiguration.getTestName(),
+                                                                                   getContributionURI()));
         System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
         node.start();
     } // end method startContribution
-    
+
     protected void stopContribution() throws Exception {
         if (node != null) {
             node.stop();
@@ -100,22 +101,22 @@ public class BaseTestCase {
             launcher.destroy();
         }
     } // end method stopContribution
-    
+
     protected String getContributionURI() {
-    	String location = ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
-    	return location;
+        String location = ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
+        return location;
     }
-    
+
     protected TestConfiguration getTestConfiguration() {
-    	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0001";
-    	config.input 			= "request";
-    	config.output 			= config.testName + " " + config.input + " invoked ok";
-    	config.composite 		= "Test_ASM_0001.composite";
-    	config.testServiceName 	= "TestClient";
-    	config.testClass 		= ASM_0001_Client.class;
-    	config.serviceInterface = TestInvocation.class;
-    	return config;
+        TestConfiguration config = new TestConfiguration();
+        config.testName = "ASM_0001";
+        config.input = "request";
+        config.output = config.testName + " " + config.input + " invoked ok";
+        config.composite = "Test_ASM_0001.composite";
+        config.testServiceName = "TestClient";
+        config.testClass = ASM_0001_Client.class;
+        config.serviceInterface = TestInvocation.class;
+        return config;
     }
-    
+
 } // end class BaseTest

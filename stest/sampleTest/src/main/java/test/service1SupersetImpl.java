@@ -18,7 +18,8 @@
  */
 package test;
 
-import org.oasisopen.sca.annotation.*;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Simple Java component implementation for business interface Service1Superset
@@ -27,16 +28,16 @@ import org.oasisopen.sca.annotation.*;
  */
 @Service(Service1Superset.class)
 public class service1SupersetImpl implements Service1Superset {
-	
-	@Property
-	public String serviceName = "service1";
 
-	public String operation1(String input) {
-		return serviceName + " operation1 invoked";
-	}
+    @Property
+    public String serviceName = "service1";
 
-	public String operation2(String input) {
-		return serviceName + " operation2 invoked";
-	}
+    public String operation1(String input) {
+        return serviceName + " operation1 invoked";
+    }
+
+    public String operation2(String input) {
+        return serviceName + " operation2 invoked";
+    }
 
 }
