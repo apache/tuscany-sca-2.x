@@ -18,9 +18,9 @@
  * under the License.    
 -->
 <sca:definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
- 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+ 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
  			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
  
  <!-- WS Security POLICY SETS -->
  <!-- A policyset that uses WS Policy -->

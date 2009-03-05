@@ -20,8 +20,8 @@
 
 <!-- $Rev$ $Date$ -->
 
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-            xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712"
             targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorldPrec">
 

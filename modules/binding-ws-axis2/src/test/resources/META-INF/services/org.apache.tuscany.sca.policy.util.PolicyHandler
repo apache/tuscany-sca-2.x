@@ -17,4 +17,4 @@
 # 
 # PolicyHandlerClasses to interpret specific PolicyModels against specific QoS infrastructures
 # handler classname;qname=<policy intent addressed>;model=<policy model class>
-org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#wsAuthentication,model=org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy
+org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.1#wsAuthentication,model=org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy

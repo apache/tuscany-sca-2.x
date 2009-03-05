@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Axis2HeaderPolicy> {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     
     public QName getArtifactType() {
         return Axis2HeaderPolicy.AXIS2_HEADER_POLICY_QNAME;
@@ -88,7 +88,7 @@ public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implem
         writer.writeStartElement(prefix, 
                                  getArtifactType().getLocalPart(),
                                  getArtifactType().getNamespaceURI());
-        writer.writeNamespace("tuscany", SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", SCA11_TUSCANY_NS);
 
         if ( policy.getHeaderName() != null ) {
             writer.writeStartElement(prefix, 
