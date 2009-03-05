@@ -38,9 +38,6 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -84,7 +81,6 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.DefinitionsProvider;
 import org.apache.tuscany.sca.provider.DefinitionsProviderException;
 import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
@@ -567,7 +563,10 @@ public class NodeImpl implements Node, Client {
         // available
         compositeActivator.setDomainComposite(tempComposite);
         
+        /*
+        // The following line may return null, to be investigated
         XPathFactory xPathFactory = modelFactories.getFactory(XPathFactory.class);
+        
         for (PolicySet policySet : systemDefinitions.getPolicySets()) {
             if (policySet.getAppliesTo() != null) {
                 XPath xpath = xPathFactory.newXPath();
@@ -578,6 +577,7 @@ public class NodeImpl implements Node, Client {
                 // exp.evaluate(item, XPathConstants.BOOLEAN);
             }
         }
+        */
     }
 
     public void start() {
