@@ -54,6 +54,25 @@ public interface Wire extends Base, Extensible, PolicySubject, Cloneable {
      * @param target the target of the wire
      */
     void setTarget(ComponentService target);
+    
+    /**
+     * A boolean value, with the default of "false". When a wire element has
+     * @replace="false", the wire is added to the set of wires which apply to 
+     * the reference identified by the @source attribute. When a wire element 
+     * has @replace="true", the wire is added to the set of wires which apply to 
+     * the reference identified by the @source attribute - but any wires for that 
+     * reference specified by means of the @target attribute of the reference 
+     * are removed from the set of wires which apply to the reference.
+     * 
+     * @return
+     */
+    boolean isReplace();
+    
+    /**
+     * Set the replace flag for the wire 
+     * @param replace
+     */
+    void setReplace(boolean replace);
 
     /**
      * Returns a clone of the wire.

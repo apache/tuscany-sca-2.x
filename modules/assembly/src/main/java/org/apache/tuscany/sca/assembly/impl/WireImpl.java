@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
     private ComponentReference source;
     private ComponentService target;
+    private boolean replace;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
@@ -92,5 +93,13 @@ public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+
+    public boolean isReplace() {
+        return replace;
+    }
+
+    public void setReplace(boolean replace) {
+        this.replace = replace;
     }
 }
