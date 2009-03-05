@@ -159,7 +159,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
     public void write(EJBBinding ejbBinding, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
         // Write a <binding.ejb>
-        writer.writeStartElement(Constants.SCA10_NS, EJBBinding.BINDING_EJB);
+        writer.writeStartElement(Constants.SCA11_NS, EJBBinding.BINDING_EJB);
 
         if (ejbBinding.getName() != null){
             writer.writeAttribute(EJBBinding.NAME, ejbBinding.getName());
