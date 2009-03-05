@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for TestException complex type.
  * 
@@ -43,9 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TestException", propOrder = {
-    "message"
-})
+@XmlType(name = "TestException", propOrder = {"message"})
 public class TestException {
 
     protected String message;

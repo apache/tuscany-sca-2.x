@@ -18,7 +18,6 @@
  */
 package client;
 
-
 import test.ASM_0002_Client;
 import testClient.TestInvocation;
 
@@ -30,17 +29,16 @@ import testClient.TestInvocation;
  */
 public class ASM_0025_TestCase extends BaseJAXWSTestCase {
 
- 
     protected TestConfiguration getTestConfiguration() {
-    	TestConfiguration config = new TestConfiguration();
-    	config.testName 		= "ASM_0025";
-    	config.input 			= "request";
-    	config.output 			= "ASM_0025 request service1 operation1 invokedcomplex1complex2";
-    	config.composite 		= "Test_ASM_0025.composite";
-    	config.testServiceName 	= "TestClient";
-    	config.testClass 		= ASM_0002_Client.class;
-    	config.serviceInterface = TestInvocation.class;
-    	return config;
+        TestConfiguration config = new TestConfiguration();
+        config.testName = "ASM_0025";
+        config.input = "request";
+        config.output = "ASM_0025 request service1 operation1 invokedcomplex1complex2";
+        config.composite = "Test_ASM_0025.composite";
+        config.testServiceName = "TestClient";
+        config.testClass = ASM_0002_Client.class;
+        config.serviceInterface = TestInvocation.class;
+        return config;
     }
-    
+
 } // end class Test_ASM_0003

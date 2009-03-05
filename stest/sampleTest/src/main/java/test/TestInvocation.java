@@ -18,8 +18,8 @@
  */
 package test;
 
-import javax.jws.WebService;
 import javax.jws.WebMethod;
+
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
@@ -29,14 +29,14 @@ import org.oasisopen.sca.annotation.Remotable;
  */
 @Remotable
 public interface TestInvocation {
-	
-	/**
-	 * Method for invoking testcase
-	 * @param input - input parameter(s) as a String
-	 * @return - output data as a String
-	 * @throws - a TestException is thrown in cases where the test service fails internally
-	 */
-	@WebMethod
-	public String invokeTest( String input ) throws TestException ;
+
+    /**
+     * Method for invoking testcase
+     * @param input - input parameter(s) as a String
+     * @return - output data as a String
+     * @throws - a TestException is thrown in cases where the test service fails internally
+     */
+    @WebMethod
+    public String invokeTest(String input) throws TestException;
 
 }

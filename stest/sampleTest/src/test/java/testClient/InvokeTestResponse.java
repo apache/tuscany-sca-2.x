@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -46,9 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "_return"
-})
+@XmlType(name = "", propOrder = {"_return"})
 @XmlRootElement(name = "invokeTestResponse")
 public class InvokeTestResponse {
 
@@ -76,7 +73,7 @@ public class InvokeTestResponse {
      *     
      */
     public void setReturn(JAXBElement<String> value) {
-        this._return = ((JAXBElement<String> ) value);
+        this._return = ((JAXBElement<String>)value);
     }
 
 }

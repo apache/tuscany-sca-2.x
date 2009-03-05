@@ -18,7 +18,9 @@
  */
 package test;
 
-import org.oasisopen.sca.annotation.*;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * Enhanced Java component implementation for business interface Service1,
@@ -30,21 +32,21 @@ import org.oasisopen.sca.annotation.*;
  */
 @Service(Service1.class)
 public class service1Impl4 implements Service1 {
-	
-	@Property
-	public String serviceName = "service1";
-	// Required = false + an array -> multiplicity 0..n
-	@Reference(required=false)
-	public Service1[] reference1 = null;
 
-	public String operation1(String input) {
-		String result = serviceName + " operation1 invoked";
-		// Call each of the references in the array, concatenating the results
-		for( int i=0 ; i < reference1.length; i++ ) {
-			result = result.concat(" ");
-			result = result.concat( reference1[i].operation1(input) );
-		} // end for
-		return result;
-	}
+    @Property
+    public String serviceName = "service1";
+    // Required = false + an array -> multiplicity 0..n
+    @Reference(required = false)
+    public Service1[] reference1 = null;
+
+    public String operation1(String input) {
+        String result = serviceName + " operation1 invoked";
+        // Call each of the references in the array, concatenating the results
+        for (int i = 0; i < reference1.length; i++) {
+            result = result.concat(" ");
+            result = result.concat(reference1[i].operation1(input));
+        } // end for
+        return result;
+    }
 
 }
