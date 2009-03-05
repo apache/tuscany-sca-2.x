@@ -19,7 +19,7 @@
 -->
 <!-- A simple composite which provides a single service and no references
      plus a property with a simple type -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
            targetNamespace="http://oasis/tests"
            xmlns:test="http://oasis/tests"
            name="TestComposite14">

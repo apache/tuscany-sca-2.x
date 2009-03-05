@@ -21,7 +21,7 @@
      that is multiplicity 1..1 and which is both wired to a service of a
      second component in the same composite and is also promoted by a 
      composite reference   -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite11">
