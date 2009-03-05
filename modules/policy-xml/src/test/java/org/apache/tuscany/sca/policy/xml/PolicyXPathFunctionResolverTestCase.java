@@ -55,7 +55,8 @@ public class PolicyXPathFunctionResolverTestCase {
     @Test
     public void testIntentsRef() throws Exception {
         InputSource xml = new InputSource(getClass().getResourceAsStream("Calculator.composite"));
-        XPathExpression exp = xpath.compile("//sca:composite/sca:component[sca:IntentRefs('sca:confidentiality')]");
+        // Test the rewrite of xpath so that the self:node() is passed into the SCA function
+        XPathExpression exp = xpath.compile("//sca:composite/sca:component[sca:IntentRefs('sca:confidentiality', self::node())]");
         Object result = exp.evaluate(xml, XPathConstants.NODESET);
         Assert.assertTrue(result instanceof NodeList);
         NodeList nodes = (NodeList)result;

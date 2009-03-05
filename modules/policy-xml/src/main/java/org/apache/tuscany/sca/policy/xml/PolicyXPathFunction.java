@@ -23,16 +23,23 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * The SCA-defined XPath function
  */
 public class PolicyXPathFunction implements XPathFunction {
+    private static Logger logger = Logger.getLogger(PolicyXPathFunction.class.getName());
+    
     static final QName InterfaceRef = new QName(PolicyConstants.SCA11_NS, "InterfaceRef");
     static final QName OperationRef = new QName(PolicyConstants.SCA11_NS, "OperationRef");
     static final QName MessageRef = new QName(PolicyConstants.SCA11_NS, "MessageRef");
@@ -51,12 +58,25 @@ public class PolicyXPathFunction implements XPathFunction {
         this.functionName = functionName;
     }
 
+    private Node getContextNode(List args) {
+        if (args.size() >= 2) {
+            NodeList nodeList = (NodeList)args.get(1);
+            if (nodeList.getLength() > 0) {
+                return nodeList.item(0);
+            }
+        }
+        return null;
+    }
+    
     public Object evaluate(List args) throws XPathFunctionException {
-        System.out.println(functionName + "(" + args + ")");
-        // FIXME: [rfeng] To be implemented
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(functionName + "(" + args + ")");
+        }
+        
         String arg = (String)args.get(0);
+        Node node = getContextNode(args);
         if (InterfaceRef.equals(functionName)) {
-            return evaluateInterface(arg);
+            return evaluateInterface(arg, node);
         } else if (OperationRef.equals(functionName)) {
             String[] params = arg.split("/");
             if (params.length != 2) {
@@ -64,7 +84,7 @@ public class PolicyXPathFunction implements XPathFunction {
             }
             String interfaceName = params[0];
             String operationName = params[1];
-            return evaluateOperation(interfaceName, operationName);
+            return evaluateOperation(interfaceName, operationName, node);
         } else if (MessageRef.equals(functionName)) {
             String[] params = arg.split("/");
             if (params.length != 3) {
@@ -73,34 +93,34 @@ public class PolicyXPathFunction implements XPathFunction {
             String interfaceName = params[0];
             String operationName = params[1];
             String messageName = params[2];
-            return evaluateMessage(interfaceName, operationName, messageName);
+            return evaluateMessage(interfaceName, operationName, messageName, node);
         } else if (URIRef.equals(functionName)) {
-            return evaluateURI(arg);
+            return evaluateURI(arg, node);
         } else if (IntentRefs.equals(functionName)) {
             String[] intents = arg.split("(\\s)+");
-            return evaluateIntents(intents);
+            return evaluateIntents(intents, node);
         } else {
             return Boolean.FALSE;
         }
     }
 
-    private Boolean evaluateInterface(String interfaceName) {
+    private Boolean evaluateInterface(String interfaceName, Node node) {
         return Boolean.FALSE;
     }
 
-    private Boolean evaluateOperation(String interfaceName, String operationName) {
+    private Boolean evaluateOperation(String interfaceName, String operationName, Node node) {
         return Boolean.FALSE;
     }
 
-    private Boolean evaluateMessage(String interfaceName, String operationName, String messageName) {
+    private Boolean evaluateMessage(String interfaceName, String operationName, String messageName, Node node) {
         return Boolean.FALSE;
     }
 
-    private Boolean evaluateURI(String uri) {
+    private Boolean evaluateURI(String uri, Node node) {
         return Boolean.FALSE;
     }
 
-    private Boolean evaluateIntents(String[] intents) {
+    private Boolean evaluateIntents(String[] intents, Node node) {
         return Boolean.FALSE;
     }
 
