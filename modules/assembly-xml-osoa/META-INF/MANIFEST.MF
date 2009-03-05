@@ -10,7 +10,7 @@ Export-Package: org.apache.tuscany.sca.assembly.xml;uses:="org.apache.
  l.xpath,javax.xml.transform,org.apache.tuscany.sca.contribution.proce
  ssor,org.apache.tuscany.sca.interfacedef.impl";version="2.0.0"
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA XML Assembly Model
+Bundle-Name: Apache Tuscany SCA 1.0 (OSOA) XML Assembly Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -34,6 +34,6 @@ Import-Package: javax.xml.namespace,javax.xml.parsers,javax.xml.stream
  x;resolution:=optional,javax.xml
  .validation;resolution:=optional,org.apache.tuscany.sca.assembly.buil
  der;version="2.0.0";resolution:=optional
-Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xml
+Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xml.osoa
 Bundle-DocURL: http://www.apache.org/
 
