@@ -38,11 +38,13 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.LOCAL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.NONOVERRIDABLE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROMOTE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.REPLACE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE_QNAME;
@@ -271,6 +273,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 if (isSet(reader, AUTOWIRE)) {
                                     componentReference.setAutowire(getBoolean(reader, AUTOWIRE));
                                 }
+                                // Read @nonOverridable
+                                String nonOverridable = reader.getAttributeValue(null, NONOVERRIDABLE);
+                                if (nonOverridable != null) {
+                                    componentReference.setNonOverridable(Boolean.parseBoolean(nonOverridable));
+                                }
                                 readTargets(componentReference, reader);
                                 componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
                                 
@@ -406,6 +413,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             target.setUnresolved(true);
                             target.setName(getString(reader, TARGET));
                             wire.setTarget(target);
+                            
+                            // Read @replace
+                            String replace = reader.getAttributeValue(null, REPLACE);
+                            if (replace != null) {
+                                wire.setReplace(Boolean.parseBoolean(replace));
+                            }
     
                             //handle extension attributes
                             this.readExtendedAttributes(reader, name, wire, extensionAttributeProcessor);
@@ -724,10 +737,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             
             // Write <reference> elements
             for (ComponentReference reference : component.getReferences()) {
-                writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
-                           new XAttr(AUTOWIRE, reference.getAutowire()),
-                           writeMultiplicity(reference),
-                           writeTargets(reference),
+                writeStart(writer, 
+                           REFERENCE, 
+                           new XAttr(NAME, reference.getName()), 
+                           new XAttr(AUTOWIRE, reference.getAutowire()), 
+                           (reference.isNonOverridable() ? new XAttr(NONOVERRIDABLE, true) : null), 
+                           writeMultiplicity(reference), 
+                           writeTargets(reference), 
                            policyProcessor.writePolicies(reference));
 
                 //write extended attributes
@@ -883,8 +899,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
         // Write <wire> elements
         for (Wire wire : composite.getWires()) {
-            writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire
-                .getTarget().getName()));
+            writeStart(writer, WIRE, new XAttr(SOURCE, wire.getSource().getName()), new XAttr(TARGET, wire.getTarget()
+                .getName()), wire.isReplace() ? new XAttr(Constants.REPLACE, true) : null);
             
             //write extended attributes
             this.writeExtendedAttributes(writer, wire, extensionAttributeProcessor);

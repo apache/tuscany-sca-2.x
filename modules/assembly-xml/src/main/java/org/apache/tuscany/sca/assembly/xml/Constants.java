@@ -76,6 +76,8 @@ public interface Constants {
     String TARGET_NAMESPACE = "targetNamespace";
     String LOCAL = "local";
     String AUTOWIRE = "autowire";
+    String NONOVERRIDABLE = "nonOverridable";
+    String REPLACE = "replace";
     String REQUIRES = "requires";
     String POLICY_SETS = "policySets"; 
     String APPLICABLE_POLICY_SETS = "applicablePolicySets";
