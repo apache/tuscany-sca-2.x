@@ -51,11 +51,11 @@ public class JavaExportProcessorTestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<export.java  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\" package=\"org.apache.tuscany.sca.contribution.java\"/>";
+            + "<export.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:ns=\"http://ns\" package=\"org.apache.tuscany.sca.contribution.java\"/>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<export.java  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"/>";
+            + "<export.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\"/>";
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
