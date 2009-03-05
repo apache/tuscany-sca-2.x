@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.definitions.xml.DefinitionsDocumentProcessor;type=META-INF/definitions.xml,model=org.apache.tuscany.sca.definitions.Definitions
+org.apache.tuscany.sca.definitions.xml.DefinitionsDocumentProcessor;type=/META-INF/definitions.xml,model=org.apache.tuscany.sca.definitions.Definitions
