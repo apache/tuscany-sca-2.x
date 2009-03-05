@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.implementation.web.impl.WebImplementationFactoryIm
  * Implements a StAX artifact processor for Web implementations.
  */
 public class WebImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WebImplementation> {
-    private static final QName IMPLEMENTATION_WEB = new QName(Constants.SCA10_NS, "implementation.web");
+    private static final QName IMPLEMENTATION_WEB = new QName(Constants.SCA11_NS, "implementation.web");
     
     private AssemblyFactory assemblyFactory;
     private WebImplementationFactory implementationFactory;
