@@ -74,6 +74,39 @@ public interface ComponentReference extends Reference {
     void setCallbackService(ComponentService callbackService);
     
     /**
+     * A boolean value, "false" by default, which indicates whether this component reference 
+     * can have its targets overridden by a composite reference which promotes the 
+     * component reference.
+     * 
+     *  If @nonOverridable==false, the target(s) of the promoting composite reference 
+     *  replace all the targets explicitly declared on the component reference for any 
+     *  value of @multiplicity on the component reference. 
+     *  
+     *  If the component reference has @nonOverridable==false and @multiplicity 1..1 
+     *  and the reference has a target, then any composite reference which promotes 
+     *  the component reference has @multiplicity 0..1.by default and MAY have an explicit @multiplicity of either 
+     *  0..1 or 1..1. 
+     *  
+     *  If @nonOverridable==true, and the component reference has @multiplicity 0..1 or 
+     *  1..1 and the component reference also declares a target, promotion implies 
+     *  that the promoting composite reference has @wiredbyImpl==true and the composite 
+     *  reference cannot supply a target, but can influence the policy attached to the 
+     *  component reference.
+     *  
+     *  If @nonOverridable==true, and the component reference @multiplicity is 0..n 
+     *  or 1..n, promotion targeting is additive 
+     *  
+     *  @return
+     */
+    boolean isNonOverridable();
+    
+    /**
+     * Set the nonOverridable flag
+     * @param nonOverridable
+     */
+    void setNonOverridable(boolean nonOverridable);
+    
+    /**
      * Returns the endpoints implied by this reference.
      * 
      * @return the endpoints implied by this reference
