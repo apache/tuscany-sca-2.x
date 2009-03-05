@@ -24,11 +24,12 @@
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712"
     elementFormDefault="qualified">
 
-
     <!-- A complex type -->
     <complexType name="ComplexType1">
-	    <element name="firstData" type="string" />
-        <element name="secondData" type="string" />
+        <sequence>
+            <element name="firstData" type="string" />
+            <element name="secondData" type="string" />
+        </sequence>
     </complexType>
     
     <!-- A global element with a complex type -->
