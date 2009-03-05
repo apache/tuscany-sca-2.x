@@ -65,10 +65,10 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *  @version $Rev$ $Date$
  */
 public class BPELImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
     private static final String PROCESS = "process";
     private static final String IMPLEMENTATION_BPEL = "implementation.bpel";
-    private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(SCA10_NS, IMPLEMENTATION_BPEL);
+    private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(SCA11_NS, IMPLEMENTATION_BPEL);
     
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
@@ -149,7 +149,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         //FIXME Deal with policy processing...
         // Write <implementation.bpel process="..."/>
         // policyProcessor.writePolicyPrefixes(bpelImplementation, writer);
-        writer.writeStartElement(SCA10_NS, IMPLEMENTATION_BPEL);
+        writer.writeStartElement(SCA11_NS, IMPLEMENTATION_BPEL);
         // policyProcessor.writePolicyAttributes(bpelImplementation, writer);
         
         if (bpelImplementation.getProcess() != null) {

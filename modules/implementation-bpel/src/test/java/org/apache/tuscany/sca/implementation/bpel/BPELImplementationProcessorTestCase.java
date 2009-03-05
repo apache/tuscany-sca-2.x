@@ -46,7 +46,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
 
     private static final String COMPOSITE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
             + " <component name=\"BPELHelloWorldComponent\">"
             + "   <implementation.bpel process=\"hns:HelloWorld\" />"
             + " </component>"
@@ -54,7 +54,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
 
     private static final String COMPOSITE_INVALID =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
+            + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
             + " <component name=\"BPELHelloWorldComponent\">"
             + "   <implementation.bpel/>"
             + " </component>"
