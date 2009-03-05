@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
  */
 public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Axis2TokenAuthenticationPolicy> {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     
     public QName getArtifactType() {
         return Axis2TokenAuthenticationPolicy.AXIS2_TOKEN_AUTHENTICATION_POLICY_QNAME;
@@ -89,7 +89,7 @@ public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactPro
         writer.writeStartElement(prefix, 
                                  getArtifactType().getLocalPart(),
                                  getArtifactType().getNamespaceURI());
-        writer.writeNamespace("tuscany", SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", SCA11_TUSCANY_NS);
 
         if ( policy.getTokenName() != null ) {
             writer.writeStartElement(prefix, 

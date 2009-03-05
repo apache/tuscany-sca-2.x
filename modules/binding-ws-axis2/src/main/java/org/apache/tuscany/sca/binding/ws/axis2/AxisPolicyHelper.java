@@ -34,12 +34,12 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class AxisPolicyHelper {
 
-    public static final String XMLNS_SCA_1_0 = "http://www.osoa.org/xmlns/sca/1.0";
-    public static final QName AUTHENTICATION_INTENT = new QName(XMLNS_SCA_1_0, "authentication");
-    public static final QName CONFIDENTIALITY_INTENT = new QName(XMLNS_SCA_1_0, "confidentiality");
-    public static final QName INTEGRITY_INTENT = new QName(XMLNS_SCA_1_0, "integrity");
-    public static final QName MTOM_INTENT = new QName(XMLNS_SCA_1_0, "MTOM");
-    public static final QName SOAP12_INTENT = new QName(XMLNS_SCA_1_0, "SOAP12");
+    public static final String XMLNS_SCA_11 = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    public static final QName AUTHENTICATION_INTENT = new QName(XMLNS_SCA_11, "authentication");
+    public static final QName CONFIDENTIALITY_INTENT = new QName(XMLNS_SCA_11, "confidentiality");
+    public static final QName INTEGRITY_INTENT = new QName(XMLNS_SCA_11, "integrity");
+    public static final QName MTOM_INTENT = new QName(XMLNS_SCA_11, "MTOM");
+    public static final QName SOAP12_INTENT = new QName(XMLNS_SCA_11, "SOAP12");
 
     public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
         PolicySet returnPolicySet = null;

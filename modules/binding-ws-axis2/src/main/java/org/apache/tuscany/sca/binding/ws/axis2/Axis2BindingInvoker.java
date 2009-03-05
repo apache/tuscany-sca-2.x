@@ -58,16 +58,16 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  * @version $Rev$ $Date$
  */
 public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
-    private final static String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
     public static final String TUSCANY_PREFIX = "tuscany";
     public static final QName CALLBACK_ID_REFPARM_QN =
-        new QName(SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
+        new QName(SCA11_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
-        new QName(SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
+        new QName(SCA11_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
     
     private Axis2ServiceClient serviceClient;
     private QName wsdlOperationName;

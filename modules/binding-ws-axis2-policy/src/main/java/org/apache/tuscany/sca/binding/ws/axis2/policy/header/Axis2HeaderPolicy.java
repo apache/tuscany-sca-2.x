@@ -27,8 +27,8 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class Axis2HeaderPolicy {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-    public static final QName AXIS2_HEADER_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "axis2Header");
+    private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
+    public static final QName AXIS2_HEADER_POLICY_QNAME = new QName(SCA11_TUSCANY_NS, "axis2Header");
     public static final String AXIS2_HEADER_NAME = "headerName";
 
     private QName headerName;
