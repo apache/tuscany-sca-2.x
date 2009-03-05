@@ -20,7 +20,7 @@
 
 <composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="TestAllCalculator" 
     requires="cns:tuscanyIntent_1" targetNamespace="http://calc" xmlns:tns="http://calc"
-    xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200712 http://docs.oasis-open.org/ns/opencsa/sca/200712 "
     xmlns:ext="http://extension"

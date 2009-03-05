@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://callback"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" targetNamespace="http://callback"
     xmlns:t="http://callback">
     <deployable composite="t:CallBackApiTest" />
 </contribution>

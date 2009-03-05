@@ -62,7 +62,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     private StAXArtifactProcessor<Object> extensionProcessor;
     private XMLInputFactory inputFactory;
     private DefinitionsFactory definitionsFactory;
-    private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     private static final String DEFINITIONS = "definitions";
     private static final QName DEFINITIONS_QNAME = new QName(TUSCANY_NS, DEFINITIONS);
     private Monitor monitor;

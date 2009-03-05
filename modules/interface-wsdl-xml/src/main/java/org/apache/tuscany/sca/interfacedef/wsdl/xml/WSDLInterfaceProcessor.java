@@ -160,7 +160,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     
     public void write(WSDLInterfaceContract wsdlInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         // Write an <interface.wsdl>
-        writer.writeStartElement(WSDLConstants.SCA10_NS, INTERFACE_WSDL);
+        writer.writeStartElement(WSDLConstants.SCA11_NS, INTERFACE_WSDL);
 
         // Write interface name
         WSDLInterface wsdlInterface = (WSDLInterface)wsdlInterfaceContract.getInterface();

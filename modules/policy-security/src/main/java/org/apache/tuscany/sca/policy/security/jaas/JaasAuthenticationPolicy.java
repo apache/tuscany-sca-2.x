@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class JaasAuthenticationPolicy {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName NAME = new QName(SCA10_TUSCANY_NS, "jaasAuthentication");
 
     private String configurationName = "other";

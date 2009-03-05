@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<JaasAuthenticationPolicy> {
     private static final QName JAAS_AUTHENTICATION_POLICY_QNAME = JaasAuthenticationPolicy.NAME;
     private static final String callbackHandler = "callbackHandler";
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName CALLBACK_HANDLER_QNAME = new QName(SCA10_TUSCANY_NS, callbackHandler);
     public static final QName CONFIGURATION_QNAME = new QName(SCA10_TUSCANY_NS, "configurationName");
     private Monitor monitor;

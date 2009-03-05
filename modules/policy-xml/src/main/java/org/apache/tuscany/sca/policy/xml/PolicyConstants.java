@@ -29,7 +29,7 @@ public interface PolicyConstants {
     String WHITE_SPACE = " ";
     String COLON = ":";
     String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
-    String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     String INTENT = "intent";
     String POLICY_SET = "policySet";
     String POLICY_SET_REFERENCE = "policySetReference";

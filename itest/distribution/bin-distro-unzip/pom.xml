@@ -71,6 +71,7 @@
                                 </goals>
                                 <configuration>
                                     <tasks>
+                                        <property name="java.home" value="${java.home}"/>
                                         <ant antfile="./build.xml" />
                                     </tasks>
                                 </configuration>
@@ -120,6 +121,7 @@
                                 </goals>
                                 <configuration>
                                     <tasks>
+                                        <property name="java.home" value="${java.home}"/>
                                         <ant antfile="./build.xml" />
                                     </tasks>
                                 </configuration>

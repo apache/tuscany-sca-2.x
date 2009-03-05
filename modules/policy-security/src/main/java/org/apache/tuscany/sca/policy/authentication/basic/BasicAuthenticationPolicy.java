@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationPolicy {
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static final QName BASIC_AUTHENTICATION_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "basicAuthentication");
     public static final String BASIC_AUTHENTICATION_USERNAME = "userName";

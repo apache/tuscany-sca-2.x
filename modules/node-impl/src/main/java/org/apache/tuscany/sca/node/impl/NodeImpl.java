@@ -38,6 +38,9 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
@@ -81,6 +84,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.DefinitionsProvider;
 import org.apache.tuscany.sca.provider.DefinitionsProviderException;
 import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
@@ -95,6 +99,7 @@ import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
+
 /**
  * Represents an SCA runtime node.
  * 
@@ -102,7 +107,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class NodeImpl implements Node, Client {
 
-    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 
@@ -561,6 +566,18 @@ public class NodeImpl implements Node, Client {
         // logic in callable reference resolution relies on this being 
         // available
         compositeActivator.setDomainComposite(tempComposite);
+        
+        XPathFactory xPathFactory = modelFactories.getFactory(XPathFactory.class);
+        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
+            if (policySet.getAppliesTo() != null) {
+                XPath xpath = xPathFactory.newXPath();
+                // FIXME: We need to develop a xpath function resolver to
+                // deal with the SCA functions
+                // xpath.setXPathFunctionResolver(resolver);
+                XPathExpression exp = xpath.compile(policySet.getAppliesTo());
+                // exp.evaluate(item, XPathConstants.BOOLEAN);
+            }
+        }
     }
 
     public void start() {
