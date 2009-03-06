@@ -19,13 +19,19 @@
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
+import java.io.File;
 import java.lang.reflect.Proxy;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
+import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * 
@@ -33,39 +39,46 @@ import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiTestCase extends TestCase {
+public class OSGiTestCase {
+    private static NodeLauncher host;
+    private static Node node;
+    protected static String className;
+    protected static String compositeName;
 
-    protected String className;
-    protected String compositeName;
-
-    protected void setUp() throws Exception {
-
+    @BeforeClass
+    public static void setUp() throws Exception {
+        host = NodeLauncher.newInstance();
         className = OSGiTestImpl.class.getName();
         compositeName = "osgitest.composite";
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
                                      OSGiTestInterface.class,
                                      OSGiTestImpl.class);
 
+        node =
+            host.createNode("osgitest.composite", new Contribution("c1", new File("target/test-classes").toURI()
+                .toString()));
+        node.start();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        OSGiRuntime.stop();
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (host != null) {
+            node.stop();
+            host.destroy();
+        }
     }
 
+    @Test
     public void testOSGiComponent() throws Exception {
 
-        SCADomain scaDomain = SCADomain.newInstance(compositeName);
-        OSGiTestInterface testService = scaDomain.getService(OSGiTestInterface.class, "OSGiTestServiceComponent");
+        OSGiTestInterface testService = node.getService(OSGiTestInterface.class, "OSGiTestServiceComponent");
         assert (testService != null);
 
         assert (testService instanceof Proxy);
 
         String str = testService.testService();
 
-        assertEquals(className, str);
-
-        scaDomain.close();
+        Assert.assertEquals(className, str);
 
     }
 

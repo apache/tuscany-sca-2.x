@@ -40,14 +40,11 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
     private String bundleVersion;
     private Bundle osgiBundle;
 
-    private String[] imports;
     private Hashtable<String, List<ComponentProperty>> referenceProperties;
     private Hashtable<String, List<ComponentProperty>> serviceProperties;
 
     private Hashtable<String, List<ComponentProperty>> referenceCallbackProperties;
     private Hashtable<String, List<ComponentProperty>> serviceCallbackProperties;
-
-    private String[] classList;
 
     private FactoryExtensionPoint modelFactories;
 
@@ -59,18 +56,14 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
     public OSGiImplementationImpl(FactoryExtensionPoint modelFactories,
                                   String bundleSymbolicName,
                                   String bundleVersion,
-                                  String[] imports,
-                                  String[] classList,
                                   Hashtable<String, List<ComponentProperty>> refProperties,
                                   Hashtable<String, List<ComponentProperty>> serviceProperties) {
 
         super();
         this.bundleSymbolicName = bundleSymbolicName;
         this.bundleVersion = bundleVersion;
-        this.imports = imports;
         this.referenceProperties = refProperties;
         this.serviceProperties = serviceProperties;
-        this.classList = classList;
         this.modelFactories = modelFactories;
     }
 

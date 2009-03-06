@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -57,11 +56,8 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -102,8 +98,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
     // Maximum milliseconds to wait for services to be registered into OSGi service registry
     private static final long SERVICE_TIMEOUT_MILLIS = 300000;
 
-    private OSGiImplementationImpl implementation;
-    private OSGiAnnotations osgiAnnotations;
+    private OSGiImplementation implementation;
     private Hashtable<RuntimeWire, Reference> referenceWires = new Hashtable<RuntimeWire, Reference>();
     private Hashtable<RuntimeWire, ComponentReference> componentReferenceWires =
         new Hashtable<RuntimeWire, ComponentReference>();
@@ -112,8 +107,6 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
 
     private AtomicInteger startBundleEntryCount = new AtomicInteger();
     private AtomicInteger processAnnotationsEntryCount = new AtomicInteger();
-
-    private JavaPropertyValueObjectFactory propertyValueFactory;
 
     private Hashtable<String, Object> componentProperties = new Hashtable<String, Object>();
     private RuntimeComponent runtimeComponent;
@@ -183,27 +176,8 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
         return runtimeComponent;
     }
 
-    protected OSGiImplementationImpl getImplementation() {
+    protected OSGiImplementation getImplementation() {
         return implementation;
-    }
-
-    // Create a property table from the list of properties 
-    // The source properties are properties read from <property/> elements
-    // Create property values in the table of the appropriate class based 
-    // on the property type specified.
-    private void processProperties(List<?> props, Hashtable<String, Object> propsTable) {
-
-        if (props != null) {
-            for (Object p : props) {
-
-                Property prop = (Property)p;
-                Class javaType = SimpleTypeMapperImpl.getJavaType(prop.getXSDType());
-                ObjectFactory<?> objFactory = propertyValueFactory.createValueFactory(prop, prop.getValue(), javaType);
-                Object value = objFactory.getInstance();
-
-                propsTable.put(prop.getName(), value);
-            }
-        }
     }
 
     private String getOSGiFilter(Hashtable<String, Object> props) {
@@ -1008,19 +982,19 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
     }
 
     public Scope getScope() {
-        return osgiAnnotations.getScope();
+        return Scope.COMPOSITE;
     }
 
     public boolean isEagerInit() {
-        return osgiAnnotations.isEagerInit();
+        return false;
     }
 
     public long getMaxAge() {
-        return osgiAnnotations.getMaxAge();
+        return 0l;
     }
 
     public long getMaxIdleTime() {
-        return osgiAnnotations.getMaxIdleTime();
+        return 0l;
     }
 
     protected ScopeContainer<?> getScopeContainer() {
@@ -1034,12 +1008,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
         boolean isRemotable = serviceInterface.isRemotable();
 
         Invoker invoker = new OSGiTargetInvoker(operation, this, service);
-        if (isRemotable) {
-            return new OSGiRemotableInvoker(osgiAnnotations, dataBindingRegistry, operation, this, service);
-        } else {
-            return invoker;
-        }
-
+        return invoker;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
