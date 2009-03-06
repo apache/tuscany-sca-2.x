@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -114,7 +115,11 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
     public Wire createWire() {
         return new WireImpl();
     }
-   
+    
+    public Extension createExtension() {
+        return new ExtensionImpl();
+    }
+
     public Endpoint2 createEndpoint() {
         return new Endpoint2Impl();
     }

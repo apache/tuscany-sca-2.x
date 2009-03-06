@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MULTIPLICITY;
@@ -28,9 +30,12 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_N;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_ONE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TARGET;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.VALUE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.VALUE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ZERO_N;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ZERO_ONE;
 
@@ -62,7 +67,6 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
-import org.apache.tuscany.sca.assembly.ExtensionFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -96,7 +100,6 @@ import org.w3c.dom.NodeList;
 abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
     protected AssemblyFactory assemblyFactory;
-    protected ExtensionFactory extensionFactory;
     protected PolicyFactory policyFactory;
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicySubjectProcessor policyProcessor;
@@ -110,13 +113,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     @SuppressWarnings("unchecked")
     protected BaseAssemblyProcessor(AssemblyFactory assemblyFactory,
-                                    ExtensionFactory extensionFactory,
                                     PolicyFactory policyFactory,
                                     DocumentBuilderFactory documentBuilderFactory,
                                     StAXArtifactProcessor extensionProcessor,
                                     Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
-        this.extensionFactory = extensionFactory;
         this.policyFactory = policyFactory;
         this.documentBuilderFactory = documentBuilderFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
@@ -133,7 +134,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                                     StAXArtifactProcessor staxProcessor,
                                     Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        this.extensionFactory = modelFactories.getFactory(ExtensionFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
@@ -324,6 +324,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         property.setMustSupply(getBoolean(reader, MUST_SUPPLY));
         property.setXSDElement(getQName(reader, ELEMENT));
         property.setXSDType(getQName(reader, TYPE));
+
     }
 
     /**
@@ -429,6 +430,68 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             return null;
     }
 
+    protected List<Extension> readPropertyValue(XMLStreamReader reader) throws XMLStreamException,
+        ContributionReadException {
+        List<Extension> values = new ArrayList<Extension>();
+        QName name = reader.getName(); // Should be sca:property
+
+        // SCA 1.1 supports the @value for simple types
+        String valueAttr = getString(reader, VALUE);
+        if (valueAttr != null) {
+            Extension ext = assemblyFactory.createExtension();
+            ext.setValue(valueAttr);
+            ext.setQName(VALUE_QNAME);
+            ext.setAttribute(true);
+            values.add(ext);
+        }
+
+        boolean isTextForProperty = true;
+        StringBuffer text = new StringBuffer();
+
+        int event = reader.getEventType();
+        while (true) {
+            switch (event) {
+                case START_ELEMENT:
+                    name = reader.getName();
+                    if (PROPERTY_QNAME.equals(name)) {
+                        isTextForProperty = true;
+                        continue;
+                    }
+                    isTextForProperty = false;
+                    // Read <value>
+                    if (VALUE_QNAME.equals(name)) {
+                        Object value = extensionProcessor.read(reader);
+                        // Assume the value is the XMLStreamReader for the content
+                        Extension ext = assemblyFactory.createExtension();
+                        ext.setValue(value);
+                        ext.setQName(name);
+                        values.add(ext);
+                    } else {
+                        // Global elements
+                        // FIXME: do we want to check if the element mataches property.element
+                        Object value = extensionProcessor.read(reader);
+                        Extension ext = assemblyFactory.createExtension();
+                        ext.setValue(value);
+                        ext.setQName(name);
+                        values.add(ext);
+                    }
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                case XMLStreamConstants.CDATA:
+                    if (isTextForProperty) {
+                        text.append(reader.getText());
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName();
+                    if (PROPERTY_QNAME.equals(name)) {
+                        return values;
+                    }
+                    break;
+            }
+        }
+    }
+    
     /**
      * Read a property value into a DOM document.
      * @param element
@@ -441,7 +504,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     protected Document readPropertyValue(QName element, QName type, XMLStreamReader reader) throws XMLStreamException,
         ContributionReadException {
-
         Document document;
         try {
             if (documentBuilderFactory == null) {
@@ -703,7 +765,10 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     if (attributeValue instanceof Extension) {
                         attributeExtension = (Extension)attributeValue;
                     } else {
-                        attributeExtension = extensionFactory.createExtension(attributeName, attributeValue, true);
+                        attributeExtension = assemblyFactory.createExtension();
+                        attributeExtension.setQName(attributeName);
+                        attributeExtension.setAttribute(true);
+                        attributeExtension.setValue(attributeValue);
                     }
                     estensibleElement.getAttributeExtensions().add(attributeExtension);
                 }

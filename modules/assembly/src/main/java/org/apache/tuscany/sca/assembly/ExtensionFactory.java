@@ -19,10 +19,13 @@
 package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
-
+/**
+ * @deprecated Use AssemblyFactory directly
+ */
+@Deprecated
 public interface ExtensionFactory {
 
-	Extension createExtension();
-	
-	Extension createExtension(QName qName, Object value, boolean isAttribute);
+    Extension createExtension();
+
+    Extension createExtension(QName qName, Object value, boolean isAttribute);
 }

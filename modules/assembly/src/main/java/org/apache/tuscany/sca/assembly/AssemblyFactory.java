@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly;
 
 
+
 /**
  * A factory for the assembly model
  * 
@@ -145,6 +146,13 @@ public interface AssemblyFactory {
      */
     Wire createWire();
     
+    /**
+     * Create an Extension
+     * @return
+     */
+    Extension createExtension();
+
+   
     /**
      * Create a new endpoint
      * 
