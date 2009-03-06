@@ -17,6 +17,6 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" targetNamespace="http://foo" xmlns:foo="http://foo">
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" targetNamespace="http://foo" xmlns:foo="http://foo">
     <deployable composite="foo:InnerServicesTest" />
 </contribution>

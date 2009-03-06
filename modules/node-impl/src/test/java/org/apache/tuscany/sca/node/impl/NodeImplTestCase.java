@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class NodeImplTestCase {
     private static String composite =
-        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\"" + " xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\""
+        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\"" + " xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\""
             + " targetNamespace=\"http://sample/composite\""
             + " xmlns:sc=\"http://sample/composite\""
             + " name=\"HelloWorld2\">"

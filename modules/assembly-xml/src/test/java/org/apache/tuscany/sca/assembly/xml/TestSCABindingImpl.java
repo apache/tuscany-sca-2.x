@@ -155,7 +155,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     }
     
     private class TestSCABindingType implements ExtensionType {
-        private QName name = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200712","binding");
+        private QName name = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903","binding");
         public QName getBaseType() {
             return BINDING_BASE;
         }

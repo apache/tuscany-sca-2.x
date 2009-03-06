@@ -58,7 +58,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     private DefinitionsFactory definitionsFactory;
     private Monitor monitor;
 
-    public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     public static final String BINDING = "binding";
     public static final String IMPLEMENTATION = "implementation";
     public static final String DEFINITIONS = "definitions";

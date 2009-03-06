@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     private JavaInterfaceFactory javaFactory;
     private Monitor monitor;
 

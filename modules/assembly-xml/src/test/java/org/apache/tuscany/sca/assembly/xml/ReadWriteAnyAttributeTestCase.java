@@ -49,8 +49,8 @@ public class ReadWriteAnyAttributeTestCase {
     private static final QName EXTENDED_ATTRIBUTE = new QName("http://test", "customAttribute");
     
     private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
-		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" " +
-		 	            "xmlns:ns1=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\" " +
+		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" " +
+		 	            "xmlns:ns1=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" " +
 		 	            "targetNamespace=\"http://calc\" " +
 		 	            "name=\"Calculator\">"+
  	 	 	    "<component name=\"AddServiceComponent\" xmlns:test=\"http://test\" test:customAttribute=\"customValue\">"+

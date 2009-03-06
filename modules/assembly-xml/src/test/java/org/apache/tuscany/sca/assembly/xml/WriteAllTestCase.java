@@ -152,7 +152,7 @@ public class WriteAllTestCase {
         assertEquals(composite.getProperties().get(1).getName(),"prop2");
         assertEquals(composite.getProperties().get(1).isMustSupply(), true);
         assertEquals(composite.getProperties().get(0).getXSDType(), new QName("http://foo", "MyComplexType"));
-        assertEquals(composite.getProperties().get(1).getXSDElement(), new QName("http://docs.oasis-open.org/ns/opencsa/sca/200712", "MyComplexPropertyValue1"));
+        assertEquals(composite.getProperties().get(1).getXSDElement(), new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "MyComplexPropertyValue1"));
     }
 
 }
