@@ -387,7 +387,7 @@ public class NodeImpl implements Node, Client {
         // will be extended later with definitions from application contributions
         systemContribution = contributionFactory.createContribution();
         systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
-        systemContribution.setLocation("Derived");
+        systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
         ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
         systemContribution.setModelResolver(modelResolver);
         systemContribution.setUnresolved(true);

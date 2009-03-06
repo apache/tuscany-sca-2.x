@@ -112,15 +112,14 @@
     </reference>
 
     <property name="prop1" xmlns:foo="http://foo">
-    	<ext:testExtension/>
-   	    <MyComplexPropertyValue1 xsi:type="foo:MyComplexType" attr="bar">
+        <value xsi:type="foo:MyComplexType" attr="bar">
             <foo:a>AValue</foo:a>
             <bar:b xmlns:bar="http://bar">InterestingURI</bar:b>
-        </MyComplexPropertyValue1>
-        <MyComplexPropertyValue2 xsi:type="foo:MyComplexType" attr="zing">
+        </value>
+        <value xsi:type="foo:MyComplexType" attr="zing">
             <foo:a>BValue</foo:a>
             <bar:b xmlns:bar="http://bar">BoringURI</bar:b>
-        </MyComplexPropertyValue2>
+        </value>
     </property>
 
 </composite>

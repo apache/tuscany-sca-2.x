@@ -107,17 +107,21 @@
     </reference> 
 
     <property name="prop1" xmlns:foo="http://foo" many="true" type="foo:MyComplexType">
-    	<ext:testExtension/>
-   	    <MyComplexPropertyValue1 xsi:type="foo:MyComplexType" attr="bar">
+   	    <value xsi:type="foo:MyComplexType" attr="bar">
             <foo:a>AValue</foo:a>
             <bar:b xmlns:bar="http://bar">InterestingURI</bar:b>
-        </MyComplexPropertyValue1>
-        <MyComplexPropertyValue2 xsi:type="foo:MyComplexType" attr="zing">
+        </value>
+        <value xsi:type="foo:MyComplexType" attr="zing">
             <foo:a>BValue</foo:a>
             <bar:b xmlns:bar="http://bar">BoringURI</bar:b>
-        </MyComplexPropertyValue2>
+        </value>
     </property>
     
-    <property name="prop2" xmlns:foo="http://foo" mustSupply="true" element="MyComplexPropertyValue1"/>
+    <property name="prop2" xmlns:foo="http://foo" mustSupply="true" element="foo:MyComplexPropertyValue1">
+        <foo:MyComplexPropertyValue1>123</foo:MyComplexPropertyValue1>
+    </property>
+    <property name="prop3" xmlns:foo="http://foo" mustSupply="true" value="123"/>
+    <property name="prop4">123</property>
+    <property name="prop5"><value>123</value></property>
 
 </composite>

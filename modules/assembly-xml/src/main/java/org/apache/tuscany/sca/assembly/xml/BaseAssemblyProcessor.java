@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+import static javax.xml.stream.XMLStreamConstants.CDATA;
+import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
+import static javax.xml.stream.XMLStreamConstants.COMMENT;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ELEMENT;
@@ -30,6 +33,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_N;
 import static org.apache.tuscany.sca.assembly.xml.Constants.ONE_ONE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TARGET;
@@ -430,6 +434,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             return null;
     }
 
+    /*
     protected List<Extension> readPropertyValue(XMLStreamReader reader) throws XMLStreamException,
         ContributionReadException {
         List<Extension> values = new ArrayList<Extension>();
@@ -455,7 +460,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     name = reader.getName();
                     if (PROPERTY_QNAME.equals(name)) {
                         isTextForProperty = true;
-                        continue;
+                        break;
                     }
                     isTextForProperty = false;
                     // Read <value>
@@ -489,8 +494,14 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     }
                     break;
             }
+            if (reader.hasNext()) {
+                event = reader.next();
+            } else {
+                return values;
+            }
         }
     }
+    */
     
     /**
      * Read a property value into a DOM document.
@@ -517,8 +528,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             throw ce;
         }
 
-        // root element has no namespace and local name "value"
-        Element root = document.createElementNS(null, "value");
+        // Collect the property values as <value> elements under the <property>
+        Element root = document.createElementNS(SCA11_NS, "sca:" + PROPERTY);
+        String nameAttr = getString(reader, NAME);
+        if (nameAttr != null) {
+            root.setAttributeNS(SCA11_NS, "sca:" + NAME, nameAttr);
+        }
+        declareNamespace(root, "sca", SCA11_NS);
         if (type != null) {
             org.w3c.dom.Attr xsi = document.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
             xsi.setValue(W3C_XML_SCHEMA_INSTANCE_NS_URI);
@@ -537,7 +553,63 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         }
         document.appendChild(root);
 
-        loadElement(reader, root);
+        // Start to parse the property
+        QName name = reader.getName(); // Should be sca:property
+
+        // SCA 1.1 supports the @value for simple types
+        String valueAttr = getString(reader, VALUE);
+        if (valueAttr != null) {
+            Element valueElement = document.createElementNS(SCA11_NS, VALUE);
+            root.appendChild(valueElement);
+            valueElement.setTextContent(valueAttr);
+        }
+
+        boolean isTextForProperty = true;
+        StringBuffer text = new StringBuffer();
+
+        int event = reader.getEventType();
+        while (true) {
+            switch (event) {
+                case START_ELEMENT:
+                    name = reader.getName();
+                    if (PROPERTY_QNAME.equals(name)) {
+                        isTextForProperty = true;
+                        break;
+                    }
+                    isTextForProperty = false;
+                    // Read <value>
+                    if (VALUE_QNAME.equals(name)) {
+                        loadElement(reader, root);
+                    } else {
+                        // Global elements
+                        loadElement(reader, root);
+                    }
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                case XMLStreamConstants.CDATA:
+                    if (isTextForProperty) {
+                        text.append(reader.getText());
+                    }
+                    break;
+                case END_ELEMENT:
+                    name = reader.getName();
+                    if (PROPERTY_QNAME.equals(name)) {
+                        if (root.getChildNodes().getLength() == 0) {
+                            // Add the text as an <value>
+                            Element valueElement = document.createElementNS(SCA11_NS, VALUE);
+                            root.appendChild(valueElement);
+                            valueElement.setTextContent(text.toString());
+                        }
+                        return document;
+                    }
+                    break;
+            }
+            if (reader.hasNext()) {
+                event = reader.next();
+            } else {
+                break;
+            }
+        }
         return document;
     }
 
@@ -607,8 +679,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         Document document = root.getOwnerDocument();
         Node current = root;
         while (true) {
-            switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
+            switch (reader.getEventType()) {
+                case START_ELEMENT:
                     QName name = reader.getName();
                     Element child = createElement(document, name);
 
@@ -644,20 +716,28 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     }
 
                     break;
-                case XMLStreamConstants.CDATA:
+                case CDATA:
                     current.appendChild(document.createCDATASection(reader.getText()));
                     break;
-                case XMLStreamConstants.CHARACTERS:
+                case CHARACTERS:
                     current.appendChild(document.createTextNode(reader.getText()));
                     break;
-                case XMLStreamConstants.END_ELEMENT:
+                case COMMENT:
+                    current.appendChild(document.createComment(reader.getText()));
+                    break;
+                case END_ELEMENT:
+                    // pop the element off the stack
+                    current = current.getParentNode();
                     // if we are back at the root then we are done
                     if (current == root) {
                         return;
                     }
 
-                    // pop the element off the stack
-                    current = current.getParentNode();
+            }
+            if (reader.hasNext()) {
+                reader.next();
+            } else {
+                return;
             }
         }
     }

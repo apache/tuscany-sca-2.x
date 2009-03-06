@@ -129,6 +129,14 @@
 			<pattern value="[A-Z]{2}\d\s\d[A-Z]{2}" />
 		</restriction>
 	</simpleType>
+    
+    <element name="note" type="ipo:Note" />
+    <complexType name="Note" mixed="true">
+       <sequence>
+          <any namespace="##any" processContents="lax" minOccurs="0"/>
+       </sequence>
+       <anyAttribute/>
+    </complexType>
 
 
 

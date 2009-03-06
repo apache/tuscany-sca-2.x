@@ -209,11 +209,12 @@ public class POJOTestCase {
     public void testPrimitive() throws Exception {
         JAXBContext context = JAXBContext.newInstance(int.class);
         StringWriter writer = new StringWriter();
-        JAXBElement<Object> element = new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, 1);
+        JAXBElement<Integer> element = new JAXBElement<Integer>(new QName("http://ns1", "bean"), Integer.class, 1);
         context.createMarshaller().marshal(element, writer);
         // System.out.println(writer.toString());
 
-        Object result = context.createUnmarshaller().unmarshal(new StringReader(writer.toString()));
+        StreamSource source = new StreamSource(new StringReader(writer.toString()));
+        Object result = context.createUnmarshaller().unmarshal(source, int.class);
         assertTrue(result instanceof JAXBElement);
         JAXBElement e2 = (JAXBElement)result;
         assertEquals(1, e2.getValue());
