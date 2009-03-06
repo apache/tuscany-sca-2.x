@@ -33,4 +33,8 @@ public class OSGiImplementationActivator implements BundleActivator {
         bundleContext = context;
     }
 
+    public static BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
 }

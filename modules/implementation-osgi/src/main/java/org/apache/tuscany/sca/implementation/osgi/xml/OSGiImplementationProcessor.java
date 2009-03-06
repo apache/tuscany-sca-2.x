@@ -22,6 +22,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -53,6 +52,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
+import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationActivator;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -63,6 +63,8 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -78,25 +80,20 @@ import org.w3c.dom.Node;
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
 
-    public static final QName IMPLEMENTATION_OSGI = new QName(Constants.SCA10_TUSCANY_NS, "implementation.osgi");
+    public static final QName IMPLEMENTATION_OSGI = new QName(SCA11_TUSCANY_NS, "implementation.osgi");
 
     private static final String BUNDLE_SYMBOLICNAME = "bundleSymbolicName";
     private static final String BUNDLE_VERSION = "bundleVersion";
     private static final String CLASSES = "classes";
     private static final String IMPORTS = "imports";
 
-    private static final QName PROPERTIES_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "properties");
-    private static final QName PROPERTY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "property");
+    private static final QName PROPERTIES_QNAME = new QName(SCA11_TUSCANY_NS, "properties");
+    private static final QName PROPERTY_QNAME = new QName(SCA11_TUSCANY_NS, "property");
 
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
     private FactoryExtensionPoint modelFactories;
     private Monitor monitor;
-
-    private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-    static {
-        domFactory.setNamespaceAware(true);
-    }
 
     public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
@@ -233,12 +230,23 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
             impl.setUnresolved(false);
 
-            BundleReference bundleReference =
-                new BundleReference(impl.getBundleSymbolicName(), impl.getBundleVersion());
-            BundleReference resolvedBundle = resolver.resolveModel(BundleReference.class, bundleReference);
-            Bundle bundle = (Bundle)resolvedBundle.getBundle();
+            BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
+            Bundle bundle = null;
+            for (Bundle b : bundleContext.getBundles()) {
+                String sn = b.getSymbolicName();
+                String ver = (String)b.getHeaders().get(BUNDLE_VERSION);
+                if (!impl.getBundleSymbolicName().equals(sn)) {
+                    continue;
+                }
+                Version v1 = Version.parseVersion(ver);
+                Version v2 = Version.parseVersion(impl.getBundleVersion());
+                if (v1.equals(v2)) {
+                    bundle = b;
+                    break;
+                }
+            }
             if (bundle != null) {
-                impl.setOSGiBundle(bundle);
+                impl.setBundle(bundle);
             } else {
                 error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
                 //throw new ContributionResolveException("Could not locate OSGi bundle " + 

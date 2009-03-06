@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
@@ -42,7 +41,6 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
 
     private DataBindingExtensionPoint registry;
     private Operation operation;
-    private OSGiAnnotations osgiAnnotations;
 
     /**
      * @param registry
@@ -56,7 +54,6 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExcha
                                 OSGiImplementationProvider provider,
                                 RuntimeComponentService service) {
         super(operation, provider, service);
-        this.osgiAnnotations = osgiAnnotations;
         this.registry = registry;
         this.operation = operation;
     }

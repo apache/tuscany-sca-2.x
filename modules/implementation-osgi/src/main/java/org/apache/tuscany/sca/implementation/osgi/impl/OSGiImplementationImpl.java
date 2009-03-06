@@ -90,14 +90,6 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
         return bundleVersion;
     }
 
-    public String[] getImports() {
-        return imports;
-    }
-
-    public String[] getClassList() {
-        return classList;
-    }
-
     public FactoryExtensionPoint getModelFactories() {
         return modelFactories;
     }
@@ -127,11 +119,11 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
         return true;
     }
 
-    public Bundle getOSGiBundle() {
+    public Bundle getBundle() {
         return osgiBundle;
     }
 
-    public void setOSGiBundle(Bundle osgiBundle) {
+    public void setBundle(Bundle osgiBundle) {
         this.osgiBundle = osgiBundle;
     }
 
