@@ -57,94 +57,61 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     public JavaPropertyValueObjectFactory(ExtensionPointRegistry registry) {
         this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
+
     public JavaPropertyValueObjectFactory(Mediator mediator) {
         this.mediator = mediator;
     }
-    
+
+    /**
+     * Introspect the property 
+     * @param javaElement
+     * @return
+     */
+    private DataType<?> introspect(JavaElementImpl javaElement) {
+        DataType<XMLType> dt =
+            new DataTypeImpl<XMLType>(null, javaElement.getType(), javaElement.getGenericType(), XMLType.UNKNOWN);
+        mediator.getDataBindings().introspectType(dt, null);
+        return dt;
+    }
+
     public ObjectFactory createValueFactory(Property property, Object propertyValue, JavaElementImpl javaElement) {
-        isSimpleType = isSimpleType(property);
         Document doc = (Document)propertyValue;
+        List<Node> nodes = getValues(doc);
         Class<?> javaType = JavaIntrospectionHelper.getBaseType(javaElement.getType(), javaElement.getGenericType());
-        Element rootElement = doc.getDocumentElement();
         if (property.isMany()) {
-            if (isSimpleType) {
-                String value = "";
-                if (rootElement.getChildNodes().getLength() > 0) {
-                    value = rootElement.getChildNodes().item(0).getTextContent();
-                }
-                List<String> values = getSimplePropertyValues(value, javaType);
-                if ( javaElement.getType().isArray() ) {
-                    return new ArrayObjectFactoryImpl(property, values, isSimpleType, javaType);
-                } else {
-                    return new ListObjectFactoryImpl(property, values, isSimpleType, javaType);
-                }
+            if (javaElement.getType().isArray()) {
+                return new ArrayObjectFactoryImpl(property, nodes, javaType);
             } else {
-                if ( javaElement.getType().isArray() ) {
-                    return new ArrayObjectFactoryImpl(property, getComplexPropertyValues(doc), isSimpleType, javaType);
-                } else {
-                    return new ListObjectFactoryImpl(property, getComplexPropertyValues(doc), isSimpleType, javaType);
-                }
+                return new ListObjectFactoryImpl(property, nodes, javaType);
             }
         } else {
-            if (isSimpleType) {
-                String value = "";
-                if (rootElement.getChildNodes().getLength() > 0) {
-                    value = rootElement.getChildNodes().item(0).getTextContent();
-                }
-                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
-            } else {
-                List<Node> nodes = getComplexPropertyValues(doc);
-                Object value = null;
-                if (!nodes.isEmpty()) {
-                    value = nodes.get(0);
-                }
-                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
+            Object value = null;
+            if (!nodes.isEmpty()) {
+                value = nodes.get(0);
             }
+            return new ObjectFactoryImpl(property, value, javaType);
 
         }
     }
-    
+
     public ObjectFactory createValueFactory(Property property, Object propertyValue, Class<?> javaType) {
-        isSimpleType = isSimpleType(property);
         Document doc = (Document)propertyValue;
-        Element rootElement = doc.getDocumentElement();
+        List<Node> nodes = getValues(doc);
         if (property.isMany()) {
-            if (isSimpleType) {
-                String value = "";
-                if (rootElement.getChildNodes().getLength() > 0) {
-                    value = rootElement.getChildNodes().item(0).getTextContent();
-                }
-                List<String> values = getSimplePropertyValues(value, javaType);
-                return new ListObjectFactoryImpl(property, values, isSimpleType, javaType);
-            } else {
-                return new ListObjectFactoryImpl(property, getComplexPropertyValues(doc), isSimpleType, javaType);
-            }
+            return new ListObjectFactoryImpl(property, nodes, javaType);
         } else {
-            if (isSimpleType) {
-                String value = "";
-                if (rootElement.getChildNodes().getLength() > 0) {
-                    value = rootElement.getChildNodes().item(0).getTextContent();
-                }
-                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
-            } else {
-                List<Node> nodes = getComplexPropertyValues(doc);
-                Object value = null;
-                if (!nodes.isEmpty()) {
-                    value = nodes.get(0);
-                }
-                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
+            Object value = null;
+            if (!nodes.isEmpty()) {
+                value = nodes.get(0);
             }
-
+            return new ObjectFactoryImpl(property, value, javaType);
         }
-    } 
+    }
 
-
-    public <B> B createPropertyValue(ComponentProperty property, Class<B> type)
-    {
+    public <B> B createPropertyValue(ComponentProperty property, Class<B> type) {
         ObjectFactory<B> factory = this.createValueFactory(property, property.getValue(), type);
         return factory.getInstance();
     }
-
 
     abstract class ObjectFactoryImplBase implements ObjectFactory {
         protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
@@ -153,15 +120,14 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         protected Class<?> javaType;
         protected DataType<XMLType> sourceDataType;
         protected DataType<?> targetDataType;
-        boolean isSimpleType;
 
-        public ObjectFactoryImplBase(Property property, Object propertyValue, boolean isSimpleType, Class<?> javaType) {
-            this.isSimpleType = isSimpleType;
+        public ObjectFactoryImplBase(Property property, Object propertyValue, Class<?> javaType) {
             this.property = property;
             this.propertyValue = propertyValue;
             this.javaType = javaType;
-            sourceDataType = new DataTypeImpl<XMLType>(DOMDataBinding.NAME, Node.class, new XMLType(null, this.property
-                .getXSDType()));
+            sourceDataType =
+                new DataTypeImpl<XMLType>(DOMDataBinding.NAME, Node.class,
+                                          new XMLType(null, this.property.getXSDType()));
             TypeInfo typeInfo = null;
             if (this.property.getXSDType() != null) {
                 if (SimpleTypeMapperImpl.isSimpleXSDType(this.property.getXSDType())) {
@@ -185,8 +151,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     }
 
     class ObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ObjectFactoryImpl(Property property, Object propertyValue, boolean isSimpleType, Class<?> javaType) {
-            super(property, propertyValue, isSimpleType, javaType);
+        public ObjectFactoryImpl(Property property, Object propertyValue, Class<?> javaType) {
+            super(property, propertyValue, javaType);
         }
 
         public Object getInstance() throws ObjectCreationException {
@@ -194,11 +160,13 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                 try {
                     return simpleTypeMapper.toJavaObject(property.getXSDType(), (String)propertyValue, null);
                 } catch (NumberFormatException ex) {
-                    throw new ObjectCreationException("Failed to create instance for property " 
-                            + property.getName() + " with value " + propertyValue, ex);
+                    throw new ObjectCreationException("Failed to create instance for property " + property.getName()
+                        + " with value "
+                        + propertyValue, ex);
                 } catch (IllegalArgumentException ex) {
-                    throw new ObjectCreationException("Failed to create instance for property " 
-                            + property.getName() + " with value " + propertyValue, ex);
+                    throw new ObjectCreationException("Failed to create instance for property " + property.getName()
+                        + " with value "
+                        + propertyValue, ex);
                 }
             } else {
                 return mediator.mediate(propertyValue, sourceDataType, targetDataType, null);
@@ -208,8 +176,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     }
 
     class ListObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ListObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class<?> javaType) {
-            super(property, propertyValues, isSimpleType, javaType);
+        public ListObjectFactoryImpl(Property property, List<?> propertyValues, Class<?> javaType) {
+            super(property, propertyValues, javaType);
         }
 
         @SuppressWarnings("unchecked")
@@ -220,13 +188,19 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                     try {
                         values.add(simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
                     } catch (NumberFormatException ex) {
-                        throw new ObjectCreationException("Failed to create instance for property " 
-                                + property.getName() + " with value " + aValue 
-                                + " from value list of " + propertyValue, ex);
+                        throw new ObjectCreationException("Failed to create instance for property " + property
+                            .getName()
+                            + " with value "
+                            + aValue
+                            + " from value list of "
+                            + propertyValue, ex);
                     } catch (IllegalArgumentException ex) {
-                        throw new ObjectCreationException("Failed to create instance for property " 
-                                + property.getName() + " with value " + aValue 
-                                + " from value list of " + propertyValue, ex);
+                        throw new ObjectCreationException("Failed to create instance for property " + property
+                            .getName()
+                            + " with value "
+                            + aValue
+                            + " from value list of "
+                            + propertyValue, ex);
                     }
                 }
                 return values;
@@ -239,10 +213,10 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
             }
         }
     }
-    
+
     class ArrayObjectFactoryImpl extends ObjectFactoryImplBase {
-        public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class<?> javaType) {
-            super(property, propertyValues, isSimpleType, javaType);
+        public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, Class<?> javaType) {
+            super(property, propertyValues, javaType);
         }
 
         @SuppressWarnings("unchecked")
@@ -254,13 +228,19 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                     try {
                         Array.set(values, count++, simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
                     } catch (NumberFormatException ex) {
-                        throw new ObjectCreationException("Failed to create instance for property " 
-                                + property.getName() + " with value " + aValue
-                                + " from value list of " + propertyValue, ex);
+                        throw new ObjectCreationException("Failed to create instance for property " + property
+                            .getName()
+                            + " with value "
+                            + aValue
+                            + " from value list of "
+                            + propertyValue, ex);
                     } catch (IllegalArgumentException ex) {
-                        throw new ObjectCreationException("Failed to create instance for property " 
-                                + property.getName() + " with value " + aValue
-                                + " from value list of " + propertyValue, ex);
+                        throw new ObjectCreationException("Failed to create instance for property " + property
+                            .getName()
+                            + " with value "
+                            + aValue
+                            + " from value list of "
+                            + propertyValue, ex);
                     }
                 }
                 return values;
@@ -275,12 +255,10 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
     }
 
-    
-
     /**
      * Utility methods
      */
-    
+
     /**
      * 
      * @param property
@@ -300,7 +278,6 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         }
         return false;
     }
-
 
     /**
      * Retrieve list of simple property values
@@ -331,7 +308,8 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
      * @param document
      * @return
      */
-    private static List<Node> getComplexPropertyValues(Document document) {
+    private static List<Node> getValues(Document document) {
+        // The root is the property element
         Element rootElement = document.getDocumentElement();
         List<Node> propValues = new ArrayList<Node>();
         NodeList nodes = rootElement.getChildNodes();

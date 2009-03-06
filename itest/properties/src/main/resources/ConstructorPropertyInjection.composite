@@ -17,25 +17,23 @@
 	* specific language governing permissions and limitations
 	* under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
-	name="ConstructorPropertyInjection">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" name="ConstructorPropertyInjection">
 
-	<component name="Foo1Component">
-		<implementation.java
-			class="org.apache.tuscany.sca.itest.cdi.Foo1" />
-		<property name="bar">fubar</property>
-	</component>
+    <component name="Foo1Component">
+        <implementation.java class="org.apache.tuscany.sca.itest.cdi.Foo1" />
+        <property name="bar" value="foobar" />
+    </component>
 
-	<component name="Foo2Component">
-		<implementation.java
-			class="org.apache.tuscany.sca.itest.cdi.Foo2" />
-		<property name="bar">fubar</property>
-	</component>
+    <component name="Foo2Component">
+        <implementation.java class="org.apache.tuscany.sca.itest.cdi.Foo2" />
+        <property name="bar">fubar</property>
+    </component>
 
-	<component name="Foo3Component">
-		<implementation.java
-			class="org.apache.tuscany.sca.itest.cdi.Foo3" />
-		<property name="bar">fubar</property>
-	</component>
+    <component name="Foo3Component">
+        <implementation.java class="org.apache.tuscany.sca.itest.cdi.Foo3" />
+        <property name="bar">
+            <value>fubar</value>
+        </property>
+    </component>
 
 </composite>

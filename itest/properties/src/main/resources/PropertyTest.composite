@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" 
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
        xmlns:foo="http://foo" 
        xmlns:cust="http://www.example.com/Customer"
        xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
@@ -35,7 +35,7 @@
                
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
-        <foo:MyComplexValue xsi:type="foo:MyComplexType" >
+        <value xsi:type="foo:MyComplexType" >
             <foo:a>a</foo:a>
             <foo:b>b</foo:b>
             <foo:c>c</foo:c>
@@ -44,11 +44,11 @@
                 <foo:y>y</foo:y>
                 <foo:z>z</foo:z>
             </foo:x>
-        </foo:MyComplexValue>
+        </value>
     </property>
 
     <property name="moreComplex" type="foo:MyMoreComplexType">
-        <MyMoreComplexValue xmlns="">
+        <value>
             <numberSetArray>
                 <integerNumber>1</integerNumber>
                 <floatNumber>11</floatNumber>
@@ -73,16 +73,16 @@
                 <floatNumber>158.68</floatNumber>
                 <doubleNumber>369.04</doubleNumber>
             </numberSet>
-        </MyMoreComplexValue>
+        </value>
     </property>
     
     <property name="complexFoo" type="foo:MyMoreComplexType">
-        <MyMoreComplexValue xmlns="">
+        <value>
             <stringArray>TestString_3</stringArray>
             <stringArray>TestString_4</stringArray>
             <intArray>100</intArray>
             <intArray>200</intArray>
-        </MyMoreComplexValue>
+        </value>
     </property>
 
     <component name="ABCDComponent">
@@ -118,7 +118,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.PropertyComponentImpl"/>
         <property name="complexPropertyOne" source="$moreComplex"></property>
         <property name="complexPropertyTwo">
-            <MyAnotherComplexValue xmlns="">
+            <value>
                 <stringArray>TestString_1</stringArray>
                 <stringArray>TestString_2</stringArray>
                 <intArray>10</intArray>
@@ -143,10 +143,10 @@
                     <floatNumber>158.68</floatNumber>
                     <doubleNumber>369.04</doubleNumber>
                 </numberSet>
-            </MyAnotherComplexValue>
+            </value>
         </property>
         <property name="complexPropertyThree" element="foo:PropertyThreeElement">
-            <PropertyThreeElement xmlns="">
+            <PropertyThreeElement xmlns="http://foo">
                 <stringArray>TestElementString_1</stringArray>
                 <stringArray>TestElementString_2</stringArray>
                 <intArray>10</intArray>
@@ -174,7 +174,7 @@
             </PropertyThreeElement>
         </property>
         <property name="complexPropertyFour" element="foo:PropertyFourElement" many="true">
-            <PropertyFourElement xmlns="">
+            <PropertyFourElement xmlns="http://foo">
                 <integerNumber>1</integerNumber>
                 <floatNumber>11.11</floatNumber>
                 <doubleNumber>111.111</doubleNumber>
@@ -184,7 +184,7 @@
                     <doubleNumber>11111.11111</doubleNumber>
                 </numberSet>
             </PropertyFourElement>
-            <PropertyFourElement xmlns="">
+            <PropertyFourElement xmlns="http://foo">
                 <integerNumber>2</integerNumber>
                 <floatNumber>22.22</floatNumber>
                 <doubleNumber>222.222</doubleNumber>
@@ -194,7 +194,7 @@
                     <doubleNumber>22222.22222</doubleNumber>
                 </numberSet>
             </PropertyFourElement>
-            <PropertyFourElement xmlns="">
+            <PropertyFourElement xmlns="http://foo">
                 <integerNumber>3</integerNumber>
                 <floatNumber>33.33</floatNumber>
                 <doubleNumber>333.333</doubleNumber>
@@ -207,18 +207,18 @@
         </property>
         <property name="complexPropertyFive" source="$complexFoo"/>
         <property name="sdoProperty" type="cust:Customer">	
-        	<cust:customer>
+        	<value>
         		<cust:firstName>Firstly Name</cust:firstName>
         		<cust:middleName>Middler Name</cust:middleName>
         		<cust:lastName>Lasting Name</cust:lastName>
-       		</cust:customer>
+       		</value>
         </property>
         <property name="customerSdo" type="cust:Customer">	
-        	<cust:customer>
+        	<value>
         		<cust:firstName>Sdo Firstly Name</cust:firstName>
         		<cust:middleName>Sdo Middler Name</cust:middleName>
         		<cust:lastName>Sdo Lasting Name</cust:lastName>
-       		</cust:customer>
+       		</value>
         </property>
         <property name="location" type="xsd:string">RTP</property>	
         <property name="year" type="xsd:string">2006</property>	
@@ -226,21 +226,21 @@
         <property name="integerNumbers" many="true" type="xsd:int">1 2 3 4 5 6 7 8 9 10</property>
         <property name="intNumbers" many="true" type="xsd:int">10 9 8 7 6 5 4 3 2 1 0</property>
         <property name="sdoArray" many="true" type="cust:Customer">
-            <cust:customer>
+            <value>
                 <cust:firstName>Firstly Name 1</cust:firstName>
                 <cust:middleName>Middler Name 1</cust:middleName>
                 <cust:lastName>Lasting Name 1</cust:lastName>
-            </cust:customer>
-            <cust:customer>
+            </value>
+            <value>
                 <cust:firstName>Firstly Name 2</cust:firstName>
                 <cust:middleName>Middler Name 2</cust:middleName>
                 <cust:lastName>Lasting Name 2</cust:lastName>
-            </cust:customer>
-            <cust:customer>
+            </value>
+            <value>
                 <cust:firstName>Firstly Name 3</cust:firstName>
                 <cust:middleName>Middler Name 3</cust:middleName>
                 <cust:lastName>Lasting Name 3</cust:lastName>
-            </cust:customer>
+            </value>
         </property>
         <property name="complexJAXBPropertyOne" type="rcp:ReturnCodeProperties">
             <MyRCProps xmlns="http://test.sca.jaxb/rcprops">

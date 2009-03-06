@@ -18,9 +18,9 @@
     * under the License.    
 -->
 <composite autowire="false" local="true" name="MySimpleService"
-    targetNamespace="http://foo" xmlns:foo="http://foo" xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+    targetNamespace="http://foo" xmlns:foo="http://foo" xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200712 http://docs.oasis-open.org/ns/opencsa/sca/200712 ">
+    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903 ">
 
 
     <service name="MyServiceNew1" promote="MyServiceComponentNew/MyService">
