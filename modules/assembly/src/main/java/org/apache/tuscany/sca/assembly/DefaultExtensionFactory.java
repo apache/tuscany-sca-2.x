@@ -23,14 +23,18 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.impl.ExtensionImpl;
 
+/**
+ * @deprecated
+ */
+@Deprecated
 public class DefaultExtensionFactory implements ExtensionFactory {
 
-	public Extension createExtension() {
-		return new ExtensionImpl();
-	}
+    public Extension createExtension() {
+        return new ExtensionImpl();
+    }
 
-	public Extension createExtension(QName name, Object value, boolean isAttribute) {
-		return new ExtensionImpl(name, value, isAttribute);
-	}
+    public Extension createExtension(QName name, Object value, boolean isAttribute) {
+        return new ExtensionImpl(name, value, isAttribute);
+    }
 
 }

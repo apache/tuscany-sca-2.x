@@ -61,5 +61,5 @@ public interface Extension {
      * Set whether or not the extension is an attribute
      * @param value
      */
-    void setIsAttribute(boolean isAttribute);
+    void setAttribute(boolean isAttribute);
 }

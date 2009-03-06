@@ -73,6 +73,8 @@ public interface Constants {
     QName BINDING_SCA_QNAME = new QName(Constants.SCA11_NS, BINDING_SCA);
     
     String NAME = "name";
+    String VALUE = "value";
+    QName VALUE_QNAME = new QName(SCA11_NS, VALUE);    
     String TARGET_NAMESPACE = "targetNamespace";
     String LOCAL = "local";
     String AUTOWIRE = "autowire";

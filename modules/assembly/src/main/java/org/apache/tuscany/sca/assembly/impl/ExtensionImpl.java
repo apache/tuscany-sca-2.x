@@ -56,7 +56,7 @@ public class ExtensionImpl implements Extension {
         return isAttribute;
     }
 
-    public void setIsAttribute(boolean isAttribute) {
+    public void setAttribute(boolean isAttribute) {
         this.isAttribute = isAttribute;
     }
 }

@@ -23,8 +23,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Extension;
-import org.apache.tuscany.sca.assembly.ExtensionFactory;
 import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -43,10 +43,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements StAXAttributeProcessor<Extension> {
     private static final QName ANY_ATTRIBUTE = new QName(Constants.XMLSCHEMA_NS, "anyAttribute");
     
-    private ExtensionFactory extensionFactory;
+    private AssemblyFactory assemblyFactory;
 
     public AnyAttributeProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.extensionFactory = modelFactories.getFactory(ExtensionFactory.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
     }
 	
     public QName getArtifactType() {
@@ -59,7 +59,11 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
 
     public Extension read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         String attributeValue = reader.getAttributeValue(attributeName.getNamespaceURI(), attributeName.getLocalPart());
-        return extensionFactory.createExtension(attributeName, attributeValue, true);
+        Extension ext = assemblyFactory.createExtension();
+        ext.setQName(attributeName);
+        ext.setAttribute(true);
+        ext.setValue(attributeValue);
+        return ext;
     }
 
     public void write(Extension attributeExtension, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
