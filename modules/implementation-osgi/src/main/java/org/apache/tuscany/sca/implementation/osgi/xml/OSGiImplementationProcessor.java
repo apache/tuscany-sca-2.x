@@ -22,7 +22,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -61,7 +60,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -79,13 +77,13 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
+    public final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    public final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static final QName IMPLEMENTATION_OSGI = new QName(SCA11_TUSCANY_NS, "implementation.osgi");
 
     private static final String BUNDLE_SYMBOLICNAME = "bundleSymbolicName";
     private static final String BUNDLE_VERSION = "bundleVersion";
-    private static final String CLASSES = "classes";
-    private static final String IMPORTS = "imports";
 
     private static final QName PROPERTIES_QNAME = new QName(SCA11_TUSCANY_NS, "properties");
     private static final QName PROPERTY_QNAME = new QName(SCA11_TUSCANY_NS, "property");
@@ -112,8 +110,12 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private void error(String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
-                new ProblemImpl(this.getClass().getName(), "impl-osgi-validation-messages", Severity.ERROR, model,
-                                message, ex);
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-osgi-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
             monitor.problem(problem);
         }
     }
@@ -128,8 +130,12 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
-                new ProblemImpl(this.getClass().getName(), "impl-osgi-validation-messages", Severity.ERROR, model,
-                                message, (Object[])messageParameters);
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-osgi-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -157,18 +163,6 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
         String bundleSymbolicName = reader.getAttributeValue(null, BUNDLE_SYMBOLICNAME);
         String bundleVersion = reader.getAttributeValue(null, BUNDLE_VERSION);
-        String imports = reader.getAttributeValue(null, IMPORTS);
-        String[] importList;
-        if (imports != null)
-            importList = tokenize(imports);
-        else
-            importList = new String[0];
-        String classes = reader.getAttributeValue(null, CLASSES);
-        String[] classList;
-        if (classes != null)
-            classList = tokenize(classes);
-        else
-            classList = new String[0];
 
         Hashtable<String, List<ComponentProperty>> refProperties = new Hashtable<String, List<ComponentProperty>>();
         Hashtable<String, List<ComponentProperty>> serviceProperties = new Hashtable<String, List<ComponentProperty>>();
@@ -211,7 +205,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         }
 
         OSGiImplementationImpl implementation =
-            new OSGiImplementationImpl(modelFactories, bundleSymbolicName, bundleVersion, importList, classList,
+            new OSGiImplementationImpl(modelFactories, bundleSymbolicName, bundleVersion, 
                                        refProperties, serviceProperties);
         implementation.setCallbackProperties(refCallbackProperties, serviceCallbackProperties);
 

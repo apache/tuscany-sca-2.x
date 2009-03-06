@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
@@ -110,13 +110,10 @@ public class OSGiReadImplTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         reader.next();
 
-        OSGiImplementationImpl osgiImpl = (OSGiImplementationImpl)staxProcessor.read(reader);
+        OSGiImplementation osgiImpl = (OSGiImplementation)staxProcessor.read(reader);
 
         assertEquals(osgiImpl.getBundleSymbolicName(), "OSGiTestService");
         assertEquals(osgiImpl.getBundleVersion(), "2.0.0");
-        assertTrue(osgiImpl.getImports().length == 2);
-        assertEquals(osgiImpl.getImports()[0], "import1.jar");
-        assertEquals(osgiImpl.getImports()[1], "import2.jar");
     }
 
 }
