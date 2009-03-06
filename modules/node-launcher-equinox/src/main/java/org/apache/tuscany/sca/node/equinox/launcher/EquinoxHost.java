@@ -159,7 +159,15 @@ public class EquinoxHost {
                 // Set location properties
                 // FIXME Use proper locations
                 String tmpDir = getSystemProperty("java.io.tmpdir");
-                File root = new File(tmpDir, ".tuscany/equinox/" + UUID.randomUUID().toString());
+                File root = new File(tmpDir);
+                // Add user name as the prefix. For multiple users on the same Lunix,
+                // there will be permission issue if one user creates the .tuscany folder
+                // first under /tmp with no write permission for others.
+                String userName = getSystemProperty("user.name");
+                if (userName != null) {
+                    root = new File(root, userName);
+                }
+                root = new File(root, ".tuscany/equinox/" + UUID.randomUUID().toString());
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Equinox location: " + root);
                 }
