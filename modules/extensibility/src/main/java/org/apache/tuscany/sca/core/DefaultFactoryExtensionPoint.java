@@ -89,7 +89,9 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
                 ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                Thread.currentThread().setContextClassLoader(classLoader);
+                if (classLoader != null) {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+                }
                 return tccl;
             }
         });
