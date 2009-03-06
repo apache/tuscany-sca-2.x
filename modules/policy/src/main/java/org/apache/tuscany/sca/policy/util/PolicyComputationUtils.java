@@ -67,7 +67,7 @@ public class PolicyComputationUtils {
     private static final String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets";
     private static final String POLICY_SETS_ATTR = "policySets";
     private static final String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
 
     /**
      * This method unconditionally adds intents from the source list to the target list.

@@ -54,7 +54,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public abstract class BaseBuilderImpl implements CompositeBuilder {
-    protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 

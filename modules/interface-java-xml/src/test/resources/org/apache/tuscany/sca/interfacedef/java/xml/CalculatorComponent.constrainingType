@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<constrainingType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<constrainingType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	xmlns:calc="http://calc"
     targetNamespace="http://calc"
 	name="CalculatorComponent">

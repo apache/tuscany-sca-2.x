@@ -92,8 +92,8 @@ public class WSDLModelResolver implements ModelResolver {
     
     // ---- Policy WSDL Attachments
     
-    public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200712", "requires");
-    public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200712", "endsConversation");
+    public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
+    public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
     
     // ---- Stuff added for BPEL extension elements ---  Mike Edwards 01/05/2008
     public static final String ELEM_PLINKTYPE = "partnerLinkType";

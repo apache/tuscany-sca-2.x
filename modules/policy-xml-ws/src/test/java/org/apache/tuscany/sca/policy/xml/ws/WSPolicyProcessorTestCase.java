@@ -40,15 +40,15 @@ public class WSPolicyProcessorTestCase extends TestCase {
 	
 	private static final String VALID_WS_POLICY = 
 		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-		    + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\""
+		    + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
  			+ " targetNamespace=\"http://test\""
  			+ " xmlns:test=\"http://test\""
- 			+ " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\">"
+ 			+ " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
             + " "
             + " <policySet name=\"SecureWSPolicy\""
             + " provides=\"test:confidentiality\""
  	        + " appliesTo=\"sca:binding.ws\""
- 	        + " xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200712\""
+ 	        + " xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
  	        + " xmlns:sp=\"http://schemas.xmlsoap.org/ws/2002/12/secext\""
  	        + " xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\">"
 	        + " <wsp:Policy>"

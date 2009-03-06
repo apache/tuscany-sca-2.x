@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.definitions.xml.DefinitionsProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200712#definitions,model=org.apache.tuscany.sca.definitions.Definitions
+org.apache.tuscany.sca.definitions.xml.DefinitionsProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#definitions,model=org.apache.tuscany.sca.definitions.Definitions

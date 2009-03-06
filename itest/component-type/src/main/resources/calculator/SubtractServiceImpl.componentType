@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712">
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903">
 
   <service name="SubtractService">
      <interface.java interface="calculator.SubtractService"/> 

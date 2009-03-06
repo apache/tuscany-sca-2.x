@@ -19,11 +19,11 @@
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
     targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1" 
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
     xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1" 
     elementFormDefault="qualified">
 
-    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200712" schemaLocation="sca-core-1.1-schema-200803.xsd"/>
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-core-1.1-schema-200803.xsd"/>
 
     <element name="binding.rmi" type="t:RMIBinding"/>
     

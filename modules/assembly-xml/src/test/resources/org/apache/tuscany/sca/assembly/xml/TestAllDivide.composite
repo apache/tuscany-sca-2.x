@@ -24,10 +24,10 @@
 	policySets="" requires=""
 	targetNamespace="http://calc"
 	xmlns:tns="http://calc"
-	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200712 http://docs.oasis-open.org/ns/opencsa/sca/200712 ">
+	xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903 ">
 	
   <include name="tns:CompleteDivide"/>
   

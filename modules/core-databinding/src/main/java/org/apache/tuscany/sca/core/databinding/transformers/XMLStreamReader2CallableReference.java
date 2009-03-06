@@ -38,7 +38,7 @@ import org.oasisopen.sca.CallableReference;
 public class XMLStreamReader2CallableReference extends BaseTransformer<XMLStreamReader, CallableReference>
             implements PullTransformer<XMLStreamReader, CallableReference> {
 
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200712";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     private static final String COMPOSITE = "composite";
     private static final QName COMPOSITE_QNAME = new QName(SCA11_NS, COMPOSITE);
     
