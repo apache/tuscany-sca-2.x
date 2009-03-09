@@ -21,7 +21,7 @@
  ASM_0002_TestCase tests that component with a single reference can be wired to a single
  component service in the same composite.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"

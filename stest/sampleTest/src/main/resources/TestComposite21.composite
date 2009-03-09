@@ -20,7 +20,7 @@
 <!-- A composite which has a <composite/> <reference/> that declares an interface
      which is a superset of the interface declared by the <component/> <reference/>
      promoted by the composite reference   -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite21">

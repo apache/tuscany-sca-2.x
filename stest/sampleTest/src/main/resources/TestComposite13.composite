@@ -20,7 +20,7 @@
 <!-- A simple composite which provides a single service and no references
      plus a property with a complex type with a type which is an XSD global
      element -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:test="http://oasis/tests"
            name="TestComposite13">

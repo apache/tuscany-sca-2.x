@@ -22,7 +22,7 @@
      @source set to the <component/> <reference/> and @target set to a second valid 
      service and has @replace=true,  the <reference/> is wired to the second service 
      only   -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:test="http://oasis/tests"

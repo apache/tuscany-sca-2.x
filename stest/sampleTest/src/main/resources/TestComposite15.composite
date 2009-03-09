@@ -19,7 +19,7 @@
 -->
 <!-- A simple composite which provides a single service and no references,
      where the service is configured with multiple explicit bindings -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite15">

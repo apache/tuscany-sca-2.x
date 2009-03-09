@@ -19,7 +19,7 @@
 -->
 <!-- 2nd of a pair of composite files where the composites have duplicated
      names and targetNamespaces -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="DuplicateComposite">

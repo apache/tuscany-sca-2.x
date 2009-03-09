@@ -20,7 +20,7 @@
 <!-- A composite which has a <composite/> <reference/> that has no interface
      declared that promotes 2 <component/> <reference/>s that have different
      interfaces declared on them   -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite22">

@@ -20,7 +20,7 @@
 <!-- Tests that a <composite/> <reference/> can declare an <interface/> 
      that is a compatible superset of the <interface/> declared by each 
      <component/> <reference/> promoted by the composite reference   -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:test="http://oasis/tests"

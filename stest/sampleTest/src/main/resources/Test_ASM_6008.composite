@@ -20,7 +20,7 @@
 <!-- Tests that where a <composite/> <reference/> has no <interface/> subelement, 
      and that <reference/> promotes 2 or more <component/> <reference/>s, that the 
      <interface/> declared on each of the <component/> <reference/>s are the same   -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:test="http://oasis/tests"
