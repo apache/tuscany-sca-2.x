@@ -19,19 +19,19 @@
 
 package org.apache.tuscany.sca.implementation.osgi;
 
+import javax.xml.namespace.QName;
+
 /**
- * The factory interface to create OSGiImplementation instances
+ * <tuscany:osgi.property> 
  */
-public interface OSGiImplementationFactory {
-    /**
-     * Create a new instance of OSGiImplementation
-     * @return
-     */
-    OSGiImplementation createOSGiImplementation();
-    
-    /**
-     * 
-     * @return
-     */
-    OSGiProperty createOSGiProperty();
+public interface OSGiProperty {
+    QName OSGI_PROPERTY_QNAME = new QName(OSGiImplementation.SCA11_TUSCANY_NS, "property");
+
+    String getValue();
+
+    void setValue(String value);
+
+    String getName();
+
+    void setName(String name);
 }

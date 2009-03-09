@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 public class ServiceDescriptionsImpl extends ArrayList<ServiceDescription> implements ServiceDescriptions {
     private static final long serialVersionUID = 6205649013621747968L;
 
-    public ServiceDescriptionsImpl() {
+    protected ServiceDescriptionsImpl() {
         super();
     }
 }

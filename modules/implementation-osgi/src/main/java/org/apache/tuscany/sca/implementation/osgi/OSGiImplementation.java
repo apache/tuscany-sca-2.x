@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.osgi;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.osgi.framework.Bundle;
@@ -29,6 +31,13 @@ import org.osgi.framework.Bundle;
  * @version $Rev$ $Date$
  */
 public interface OSGiImplementation extends Implementation, Extensible {
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
+
+    String BUNDLE_SYMBOLICNAME = "bundleSymbolicName";
+    String BUNDLE_VERSION = "bundleVersion";
+    QName IMPLEMENTATION_OSGI = new QName(SCA11_TUSCANY_NS, "implementation.osgi");
+    QName PROPERTY_QNAME = new QName(SCA11_TUSCANY_NS, "osgi.property");
 
     String getBundleSymbolicName();
 

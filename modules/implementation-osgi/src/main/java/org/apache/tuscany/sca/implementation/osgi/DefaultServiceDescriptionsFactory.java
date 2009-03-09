@@ -19,19 +19,15 @@
 
 package org.apache.tuscany.sca.implementation.osgi;
 
+import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionsFactoryImpl;
+
 /**
- * The factory interface to create OSGiImplementation instances
+ * 
  */
-public interface OSGiImplementationFactory {
-    /**
-     * Create a new instance of OSGiImplementation
-     * @return
-     */
-    OSGiImplementation createOSGiImplementation();
-    
-    /**
-     * 
-     * @return
-     */
-    OSGiProperty createOSGiProperty();
+public class DefaultServiceDescriptionsFactory extends ServiceDescriptionsFactoryImpl {
+
+    public DefaultServiceDescriptionsFactory() {
+        super();
+    }
+
 }

@@ -20,18 +20,10 @@
 package org.apache.tuscany.sca.implementation.osgi;
 
 /**
- * The factory interface to create OSGiImplementation instances
+ * The factory interface to create OSGi RFC 119 service descriptions
  */
-public interface OSGiImplementationFactory {
-    /**
-     * Create a new instance of OSGiImplementation
-     * @return
-     */
-    OSGiImplementation createOSGiImplementation();
-    
-    /**
-     * 
-     * @return
-     */
-    OSGiProperty createOSGiProperty();
+public interface ServiceDescriptionsFactory {
+    ServiceDescriptions createServiceDescriptions();
+
+    ServiceDescription createServiceDescription();
 }

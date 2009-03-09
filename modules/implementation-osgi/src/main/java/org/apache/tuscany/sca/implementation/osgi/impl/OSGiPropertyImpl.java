@@ -17,21 +17,35 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi;
+package org.apache.tuscany.sca.implementation.osgi.impl;
+
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 
 /**
- * The factory interface to create OSGiImplementation instances
+ * Implementation of OSGiProperty
  */
-public interface OSGiImplementationFactory {
-    /**
-     * Create a new instance of OSGiImplementation
-     * @return
-     */
-    OSGiImplementation createOSGiImplementation();
-    
-    /**
-     * 
-     * @return
-     */
-    OSGiProperty createOSGiProperty();
+public class OSGiPropertyImpl implements OSGiProperty {
+    protected OSGiPropertyImpl() {
+        super();
+    }
+
+    private String name;
+    private String value;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
 }

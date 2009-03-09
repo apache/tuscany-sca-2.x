@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
  * The OSGi RFC 119 description of a remote OSGi service
  */
 public class ServiceDescriptionImpl implements ServiceDescription {
-    public ServiceDescriptionImpl() {
+    protected ServiceDescriptionImpl() {
         super();
     }
 
