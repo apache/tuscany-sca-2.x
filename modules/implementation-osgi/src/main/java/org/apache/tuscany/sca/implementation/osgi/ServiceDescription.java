@@ -22,23 +22,11 @@ package org.apache.tuscany.sca.implementation.osgi;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
 
 /**
  * The OSGi RFC 119 description of a remote OSGi service
  */
 public interface ServiceDescription {
-    String REMOTE_SERVICE_FOLDER = "OSGI-INF/remote-service";
-    String SD_NS = "http://www.osgi.org/xmlns/sd/v1.0.0";
-    QName SERVICE_DESCRIPTIONS_QNAME = new QName(SD_NS, "service-descriptions");
-    QName SERVICE_DESCRIPTION_QNAME = new QName(SD_NS, "service-description");
-    String REMOTE_SERVICE_HEADER = "Remote-Service";
-    String PROP_SERVICE_INTENTS = "service.intents";
-    String PROP_REQUIRES_INTENTS = "osgi.remote.requires.intents";
-    String PROP_CONFIGURATION_TYPE = "osgi.remote.configuration.type";
-    String CONFIGURATION_TYPE_SCA = "sca";
-    String PROP_CONFIGURATION_SCA_BINDINGS = "osgi.remote.configuration.sca.bindings";
-
     List<String> getInterfaces();
 
     Map<String, Object> getProperties();

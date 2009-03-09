@@ -25,6 +25,8 @@ import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -68,7 +70,9 @@ public class ServiceDescriptionsTestCase {
 
     @Test
     public void testLoad() throws Exception {
-        ServiceDescriptionsProcessor processor = new ServiceDescriptionsProcessor();
+        ServiceDescriptionsProcessor processor =
+            new ServiceDescriptionsProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()),
+                                             null);
         List<ServiceDescription> descriptions = processor.read(reader);
         Assert.assertEquals(2, descriptions.size());
         System.out.println(descriptions);

@@ -29,10 +29,11 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
-import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionImpl;
-import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionsImpl;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -56,17 +57,24 @@ import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionsImpl;
 </service-descriptions>
 */
 public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<ServiceDescriptions> {
+    private ServiceDescriptionsFactory factory;
+    private Monitor monitor;
+
+    public ServiceDescriptionsProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.monitor = monitor;
+        this.factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
+    }
 
     public ServiceDescriptions read(XMLStreamReader reader) throws XMLStreamException {
         int event = reader.getEventType();
-        ServiceDescriptions sds = new ServiceDescriptionsImpl();
+        ServiceDescriptions sds = factory.createServiceDescriptions();
         ServiceDescription sd = null;
         while (true) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     QName name = reader.getName();
-                    if (ServiceDescription.SERVICE_DESCRIPTION_QNAME.equals(name)) {
-                        sd = new ServiceDescriptionImpl();
+                    if (ServiceDescriptions.SERVICE_DESCRIPTION_QNAME.equals(name)) {
+                        sd = factory.createServiceDescription();
                         sds.add(sd);
                     } else if ("provide".equals(name.getLocalPart())) {
                         String interfaceName = reader.getAttributeValue(null, "interface");
@@ -109,11 +117,11 @@ public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<Servi
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     name = reader.getName();
-                    if (ServiceDescription.SERVICE_DESCRIPTION_QNAME.equals(name)) {
+                    if (ServiceDescriptions.SERVICE_DESCRIPTION_QNAME.equals(name)) {
                         // Reset the sd
                         sd = null;
                     }
-                    if (ServiceDescription.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
+                    if (ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
                         return sds;
                     }
                     break;
@@ -127,7 +135,7 @@ public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<Servi
     }
 
     public QName getArtifactType() {
-        return ServiceDescription.SERVICE_DESCRIPTIONS_QNAME;
+        return ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME;
     }
 
     public void write(ServiceDescriptions model, XMLStreamWriter writer) throws ContributionWriteException,

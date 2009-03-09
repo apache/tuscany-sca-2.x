@@ -17,21 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi;
+package org.apache.tuscany.sca.implementation.osgi.impl;
+
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 
 /**
- * The factory interface to create OSGiImplementation instances
+ * The factory implementation
  */
-public interface OSGiImplementationFactory {
-    /**
-     * Create a new instance of OSGiImplementation
-     * @return
-     */
-    OSGiImplementation createOSGiImplementation();
-    
-    /**
-     * 
-     * @return
-     */
-    OSGiProperty createOSGiProperty();
+public class ServiceDescriptionsFactoryImpl implements ServiceDescriptionsFactory {
+
+    protected ServiceDescriptionsFactoryImpl() {
+        super();
+    }
+
+    public ServiceDescription createServiceDescription() {
+        return new ServiceDescriptionImpl();
+    }
+
+    public ServiceDescriptions createServiceDescriptions() {
+        return new ServiceDescriptionsImpl();
+    }
+
 }
