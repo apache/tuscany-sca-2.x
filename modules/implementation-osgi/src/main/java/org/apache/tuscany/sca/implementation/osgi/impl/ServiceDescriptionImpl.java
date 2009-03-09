@@ -17,29 +17,22 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi.xml;
+package org.apache.tuscany.sca.implementation.osgi.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 
 /**
  * The OSGi RFC 119 description of a remote OSGi service
  */
-public class ServiceDescription {
-    public final static String REMOTE_SERVICE_FOLDER = "OSGI-INF/remote-service";
-    public final static String SD_NS = "http://www.osgi.org/xmlns/sd/v1.0.0";
-    public final static QName SERVICE_DESCRIPTIONS_QNAME = new QName(SD_NS, "service-descriptions");
-    public final static QName SERVICE_DESCRIPTION_QNAME = new QName(SD_NS, "service-description");
-    public final static String REMOTE_SERVICE_HEADER = "Remote-Service";
-    public final static String PROP_SERVICE_INTENTS = "service.intents";
-    public final static String PROP_REQUIRES_INTENTS = "osgi.remote.requires.intents";
-    public final static String PROP_CONFIGURATION_TYPE = "osgi.remote.configuration.type";
-    public final static String CONFIGURATION_TYPE_SCA = "sca";
-    public final static String PROP_CONFIGURATION_SCA_BINDINGS = "osgi.remote.configuration.sca.bindings";
+public class ServiceDescriptionImpl implements ServiceDescription {
+    public ServiceDescriptionImpl() {
+        super();
+    }
 
     private List<String> interfaces = new ArrayList<String>();
     private Map<String, Object> properties = new HashMap<String, Object>();
