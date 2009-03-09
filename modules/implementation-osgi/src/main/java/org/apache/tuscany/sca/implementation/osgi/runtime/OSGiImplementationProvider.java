@@ -18,11 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
-import static org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationActivator.bundleContext;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -32,11 +27,7 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -56,7 +47,6 @@ import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -79,7 +69,6 @@ import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
-import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
@@ -129,7 +118,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
                                       MessageFactory messageFactory,
                                       InterfaceContractMapper mapper) throws BundleException {
 
-        this.implementation = (OSGiImplementationImpl)impl;
+        this.implementation = impl;
         this.runtimeComponent = definition;
         this.dataBindingRegistry = dataBindingRegistry;
         this.scopeRegistry = scopeRegistry;
@@ -198,7 +187,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
         String compServiceName = runtimeComponent.getName() + "/" + scaServiceName;
         if (filter != null && filter.length() > 0) {
             org.osgi.framework.ServiceReference[] references =
-                bundleContext.getServiceReferences(osgiServiceName, filter);
+                osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, filter);
 
             org.osgi.framework.ServiceReference reference = null;
             if (references != null) {
@@ -221,7 +210,8 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
 
         filter = scaServiceName == null ? null : "(" + COMPONENT_SERVICE_NAME + "=" + compServiceName + ")";
 
-        org.osgi.framework.ServiceReference[] references = bundleContext.getServiceReferences(osgiServiceName, filter);
+        org.osgi.framework.ServiceReference[] references =
+            osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, filter);
 
         if (references != null) {
             for (org.osgi.framework.ServiceReference ref : references) {
@@ -231,7 +221,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
             }
         }
 
-        references = bundleContext.getServiceReferences(osgiServiceName, null);
+        references = osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, null);
 
         org.osgi.framework.ServiceReference reference = null;
 
@@ -448,193 +438,12 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
         }
     }
 
-    // Felix does not support bundle fragments. This is a temporary workaround.
-    protected Bundle installDummyBundleWithoutFragments(Class<?> interfaceClass) throws Exception {
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        String EOL = System.getProperty("line.separator");
-
-        String interfaceName = interfaceClass.getName();
-        String packageName = getPackageName(interfaceClass);
-        String bundleName = "dummy.sca." + packageName;
-
-        String manifestStr =
-            "Manifest-Version: 1.0" + EOL
-                + "Bundle-ManifestVersion: 2"
-                + EOL
-                + "Bundle-Name: "
-                + bundleName
-                + EOL
-                + "Bundle-SymbolicName: "
-                + bundleName
-                + EOL
-                + "Bundle-Version: "
-                + "1.0.0"
-                + EOL
-                + "Bundle-Localization: plugin"
-                + EOL;
-
-        ArrayList<String> dummyClasses = new ArrayList<String>();
-
-        StringBuilder manifestBuf = new StringBuilder();
-        manifestBuf.append(manifestStr);
-        manifestBuf.append("Export-Package: " + packageName + EOL);
-        String exportedInterfaces = interfaceName;
-        Bundle existingBundle = getDummyHostBundle(packageName);
-        String existingClasses;
-        dummyClasses.add(interfaceClass.getName());
-        for (Class<?> clazz : interfaceClass.getClasses()) {
-            dummyClasses.add(clazz.getName());
-        }
-        if (existingBundle != null && (existingClasses = (String)existingBundle.getHeaders().get("SCA-Dummy-Classes")) != null) {
-            exportedInterfaces = exportedInterfaces + " " + existingClasses;
-
-            StringTokenizer tokenizer = new StringTokenizer(existingClasses);
-            while (tokenizer.hasMoreTokens()) {
-                String className = tokenizer.nextToken();
-                if (!dummyClasses.contains(className))
-                    dummyClasses.add(className);
-            }
-        }
-
-        manifestBuf.append("SCA-Dummy-Classes: " + exportedInterfaces + EOL);
-
-        ByteArrayInputStream manifestStream = new ByteArrayInputStream(manifestBuf.toString().getBytes());
-        Manifest manifest = new Manifest();
-        manifest.read(manifestStream);
-
-        JarOutputStream jarOut = new JarOutputStream(out, manifest);
-
-        for (int i = 0; i < dummyClasses.size(); i++) {
-
-            String className = dummyClasses.get(i);
-
-            Class clazz = interfaceClass.getClassLoader().loadClass(className);
-            className = clazz.getName().replaceAll("\\.", "/") + ".class";
-            ZipEntry ze = new ZipEntry(className);
-            jarOut.putNextEntry(ze);
-            InputStream stream = clazz.getResourceAsStream(clazz.getSimpleName() + ".class");
-
-            byte[] bytes = new byte[stream.available()];
-            stream.read(bytes);
-            jarOut.write(bytes);
-            stream.close();
-        }
-
-        jarOut.close();
-        out.close();
-
-        if (existingBundle != null) {
-            existingBundle.stop();
-            existingBundle.uninstall();
-        }
-
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-
-        Bundle bundle = bundleContext.installBundle("file://" + bundleName + ".jar", in);
-
-        bundle.start();
-
-        if (existingBundle != null && packageAdmin != null) {
-            refreshPackages();
-
-        }
-
-        return bundle;
-
-    }
-
-    private Bundle getDummyHostBundle(String packageName) {
-
-        if (packageAdmin == null)
-            return null;
-
-        ExportedPackage exp = packageAdmin.getExportedPackage(packageName);
-        if (exp == null)
-            return null;
-        else
-            return exp.getExportingBundle();
-    }
 
     private static String getPackageName(Class<?> cls) {
         String name = cls.getName();
         int index = name.lastIndexOf('.');
         return index == -1 ? "" : name.substring(0, index);
-    }
-
-    private Bundle installDummyBundle(Class<?> interfaceClass) throws Exception {
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        String EOL = System.getProperty("line.separator");
-        ArrayList<Class<?>> dummyClasses = new ArrayList<Class<?>>();
-
-        String interfaceName = interfaceClass.getName();
-        String packageName = getPackageName(interfaceClass);
-        String bundleName = "dummy.sca." + interfaceName;
-
-        String manifestStr =
-            "Manifest-Version: 1.0" + EOL
-                + "Bundle-ManifestVersion: 2"
-                + EOL
-                + "Bundle-Name: "
-                + bundleName
-                + EOL
-                + "Bundle-SymbolicName: "
-                + bundleName
-                + EOL
-                + "Bundle-Version: "
-                + "1.0.0"
-                + EOL
-                + "Bundle-Localization: plugin"
-                + EOL;
-
-        StringBuilder manifestBuf = new StringBuilder();
-        manifestBuf.append(manifestStr);
-        manifestBuf.append("Export-Package: " + packageName + EOL);
-        Bundle dummyHost = getDummyHostBundle(packageName);
-        if (dummyHost != null)
-            manifestBuf.append("Fragment-Host: " + dummyHost.getSymbolicName() + EOL);
-
-        ByteArrayInputStream manifestStream = new ByteArrayInputStream(manifestBuf.toString().getBytes());
-        Manifest manifest = new Manifest();
-        manifest.read(manifestStream);
-
-        dummyClasses.add(interfaceClass);
-        for (Class<?> clazz : interfaceClass.getClasses()) {
-            dummyClasses.add(clazz);
-        }
-
-        JarOutputStream jarOut = new JarOutputStream(out, manifest);
-
-        for (int i = 0; i < dummyClasses.size(); i++) {
-
-            Class<?> clazz = dummyClasses.get(i);
-            String className = clazz.getName();
-            className = clazz.getName().replaceAll("\\.", "/") + ".class";
-            ZipEntry ze = new ZipEntry(className);
-            jarOut.putNextEntry(ze);
-            InputStream stream = clazz.getResourceAsStream(clazz.getSimpleName() + ".class");
-
-            byte[] bytes = new byte[stream.available()];
-            stream.read(bytes);
-            jarOut.write(bytes);
-            stream.close();
-        }
-
-        jarOut.close();
-        out.close();
-
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-
-        Bundle bundle = bundleContext.installBundle("file://" + bundleName + ".jar", in);
-
-        if (dummyHost == null)
-            bundle.start();
-
-        return bundle;
-
     }
 
     public InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
@@ -1080,8 +889,9 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
 
     public void stop() {
 
-        if (osgiServiceListener != null)
-            bundleContext.removeServiceListener(osgiServiceListener);
+        if (osgiServiceListener != null) {
+            OSGiImplementationActivator.getBundleContext().removeServiceListener(osgiServiceListener);
+        }
     }
 
     public void frameworkEvent(FrameworkEvent event) {
