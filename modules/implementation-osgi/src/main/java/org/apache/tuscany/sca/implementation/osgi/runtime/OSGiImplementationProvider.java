@@ -44,11 +44,9 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.impl.JDKProxyFactory;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
@@ -111,7 +109,7 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
     private Hashtable<String, Object> componentProperties = new Hashtable<String, Object>();
     private RuntimeComponent runtimeComponent;
 
-    private Bundle osgiBundle;
+    Bundle osgiBundle;
     private ArrayList<Bundle> dependentBundles = new ArrayList<Bundle>();
     private OSGiServiceListener osgiServiceListener;
     private PackageAdmin packageAdmin;
@@ -127,40 +125,22 @@ public class OSGiImplementationProvider implements ScopedImplementationProvider,
     public OSGiImplementationProvider(RuntimeComponent definition,
                                       OSGiImplementation impl,
                                       DataBindingExtensionPoint dataBindingRegistry,
-                                      JavaPropertyValueObjectFactory propertyValueFactory,
-                                      ProxyFactory proxyFactory,
                                       ScopeRegistry scopeRegistry,
-                                      RequestContextFactory requestContextFactory,
                                       MessageFactory messageFactory,
                                       InterfaceContractMapper mapper) throws BundleException {
 
         this.implementation = (OSGiImplementationImpl)impl;
         this.runtimeComponent = definition;
         this.dataBindingRegistry = dataBindingRegistry;
-        this.propertyValueFactory = propertyValueFactory;
         this.scopeRegistry = scopeRegistry;
         this.messageFactory = messageFactory;
         this.mapper = mapper;
 
-        BundleContext bundleContext = OSGiImplementationActivator.bundleContext;
-        osgiBundle = (Bundle)implementation.getOSGiBundle();
+        BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
+        osgiBundle = (Bundle)implementation.getBundle();
         bundleContext.addBundleListener(this);
         osgiServiceListener = new OSGiServiceListener(osgiBundle);
         bundleContext.addServiceListener(osgiServiceListener);
-
-        // Install and start all dependent  bundles
-        String[] imports = implementation.getImports();
-        for (int i = 0; i < imports.length; i++) {
-            String location = imports[i].trim();
-            if (location.length() > 0) {
-                Bundle bundle = bundleContext.installBundle(location);
-                dependentBundles.add(bundle);
-            }
-        }
-
-        this.osgiAnnotations =
-            new OSGiAnnotations(implementation.getModelFactories(), implementation.getClassList(), runtimeComponent,
-                                propertyValueFactory, proxyFactory, requestContextFactory, osgiBundle, dependentBundles);
 
         // PackageAdmin is used to resolve bundles 
         org.osgi.framework.ServiceReference packageAdminReference =

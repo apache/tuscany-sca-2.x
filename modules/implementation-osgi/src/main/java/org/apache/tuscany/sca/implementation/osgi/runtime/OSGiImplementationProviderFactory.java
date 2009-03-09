@@ -85,9 +85,8 @@ public class OSGiImplementationProviderFactory implements ImplementationProvider
 
         try {
 
-            return new OSGiImplementationProvider(component, implementation, dataBindings, propertyFactory,
-                                                  proxyFactory, scopeRegistry, requestContextFactory, messageFactory,
-                                                  mapper);
+            return new OSGiImplementationProvider(component, implementation, dataBindings, scopeRegistry,
+                                                  requestContextFactory, messageFactory, mapper);
 
         } catch (BundleException e) {
             throw new RuntimeException(e);
