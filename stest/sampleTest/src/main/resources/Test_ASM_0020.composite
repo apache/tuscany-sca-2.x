@@ -21,7 +21,7 @@
      @autowire=true and where there is also a single <wire/> element 
      which as that <reference/> as its source that the reference is 
      wired only to the single service identified by the <wire/> element  -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"

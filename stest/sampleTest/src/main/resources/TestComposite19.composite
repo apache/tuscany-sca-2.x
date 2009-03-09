@@ -19,7 +19,7 @@
 -->
 <!-- A composite which has a single <service/> subelement and multiple <reference/> 
      subelements with the same @name value -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite19">

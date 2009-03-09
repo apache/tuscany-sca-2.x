@@ -20,7 +20,7 @@
 <!-- A composite which has a single service with a declared <interface/>
      that is a compatible subset of the interface of the component service
      declared in the @promote attribute -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite18">

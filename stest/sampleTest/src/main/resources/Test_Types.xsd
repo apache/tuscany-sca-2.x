@@ -21,7 +21,7 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
     targetNamespace="http://oasis/tests"
     xmlns:test="http://oasis/tests"
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
     elementFormDefault="qualified">
 
     <!-- A complex type -->

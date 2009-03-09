@@ -20,7 +20,7 @@
 <!-- A composite which has a single service with a @promote attribute
      that does not reference the <service/> of a <component/> within the
      <composite/> and no references -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite17">

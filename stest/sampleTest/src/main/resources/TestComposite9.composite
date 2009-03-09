@@ -19,7 +19,7 @@
 -->
 <!-- Composite that provides a single service with the extended
      Service1Superset interface -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite9">

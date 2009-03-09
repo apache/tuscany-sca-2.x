@@ -20,7 +20,7 @@
 <!-- An example of a composite which has a single service and
      a single reference with multiplicity 0..1 which promotes a 
      component reference of multiplicity 0..n  -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
            name="TestComposite24">

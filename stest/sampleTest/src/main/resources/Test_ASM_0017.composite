@@ -21,7 +21,7 @@
      child element, but the corresponding <reference/> element in the 
      componentType does have a binding child element, the <binding/> 
      from the componentType is used for the reference -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"

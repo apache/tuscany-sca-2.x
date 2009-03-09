@@ -20,7 +20,7 @@
 <!-- Test case that verifies that an implementation with a reference with multiplicity 1..n can
      be validly wired to 3 target services and invoke them all correctly.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"

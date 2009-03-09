@@ -21,7 +21,7 @@
      of a <reference/> of a <component/> is a compatible superset of the 
      interface declared on the corresponding <reference/> of the 
      componentType of the <implementation/> of the <component/> -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://oasis/tests"
            xmlns:tns="http://oasis/tests"
            xmlns:sample="http://oasis/tests"
