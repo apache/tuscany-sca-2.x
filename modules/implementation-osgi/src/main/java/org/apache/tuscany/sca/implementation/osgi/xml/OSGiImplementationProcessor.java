@@ -19,12 +19,11 @@
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUNDLE_SYMBOLICNAME;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUNDLE_VERSION;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.IMPLEMENTATION_OSGI;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -34,7 +33,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -47,10 +45,10 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationActivator;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -72,12 +70,14 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
     private FactoryExtensionPoint modelFactories;
+    private OSGiImplementationFactory osgiImplementationFactory;
     private Monitor monitor;
 
     public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
         this.modelFactories = modelFactories;
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
         this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
 
@@ -145,50 +145,22 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         String bundleSymbolicName = reader.getAttributeValue(null, BUNDLE_SYMBOLICNAME);
         String bundleVersion = reader.getAttributeValue(null, BUNDLE_VERSION);
 
-        Hashtable<String, List<ComponentProperty>> refProperties = new Hashtable<String, List<ComponentProperty>>();
-        Hashtable<String, List<ComponentProperty>> serviceProperties = new Hashtable<String, List<ComponentProperty>>();
-        Hashtable<String, List<ComponentProperty>> refCallbackProperties =
-            new Hashtable<String, List<ComponentProperty>>();
-        Hashtable<String, List<ComponentProperty>> serviceCallbackProperties =
-            new Hashtable<String, List<ComponentProperty>>();
+        List<OSGiProperty> refProperties = new ArrayList<OSGiProperty>();
+        List<OSGiProperty> serviceProperties = new ArrayList<OSGiProperty>();
+        List<OSGiProperty> refCallbackProperties = new ArrayList<OSGiProperty>();
+        List<OSGiProperty> serviceCallbackProperties = new ArrayList<OSGiProperty>();
 
+        // Skip to the end of <implementation.osgi>
         while (reader.hasNext()) {
-
             int next = reader.next();
             if (next == END_ELEMENT && IMPLEMENTATION_OSGI.equals(reader.getName())) {
                 break;
-            } else if (next == START_ELEMENT && PROPERTY_QNAME.equals(reader.getName())) {
-
-                // FIXME: This is temporary code which allows reference and service properties used
-                //        for filtering OSGi services to be specified in <implementation.osgi/>
-                //        This should really be provided in the component type file since these
-                //        properties are associated with an implementation rather than a configured
-                //        instance of an implementation.
-                String refName = reader.getAttributeValue(null, "reference");
-                String serviceName = reader.getAttributeValue(null, "service");
-                String refCallbackName = reader.getAttributeValue(null, "referenceCallback");
-                String serviceCallbackName = reader.getAttributeValue(null, "serviceCallback");
-                List<ComponentProperty> props = readProperties(reader);
-                if (refName != null)
-                    refProperties.put(refName, props);
-                else if (serviceName != null)
-                    serviceProperties.put(serviceName, props);
-                else if (refCallbackName != null)
-                    refCallbackProperties.put(refCallbackName, props);
-                else if (serviceCallbackName != null)
-                    serviceCallbackProperties.put(serviceCallbackName, props);
-                else {
-                    error("PropertyShouldSpecifySR", reader);
-                    //throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");
-                }
             }
-
         }
 
-        OSGiImplementationImpl implementation =
-            new OSGiImplementationImpl(modelFactories, bundleSymbolicName, bundleVersion, 
-                                       refProperties, serviceProperties);
-        implementation.setCallbackProperties(refCallbackProperties, serviceCallbackProperties);
+        OSGiImplementation implementation = osgiImplementationFactory.createOSGiImplementation();
+        implementation.setBundleSymbolicName(bundleSymbolicName);
+        implementation.setBundleVersion(bundleVersion);
 
         implementation.setUnresolved(true);
 
@@ -198,103 +170,85 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
     public void resolve(OSGiImplementation impl, ModelResolver resolver) throws ContributionResolveException {
 
-        try {
+        if (impl == null || !impl.isUnresolved())
+            return;
 
-            if (impl == null || !impl.isUnresolved())
-                return;
+        impl.setUnresolved(false);
 
-            impl.setUnresolved(false);
-
-            BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
-            Bundle bundle = null;
-            for (Bundle b : bundleContext.getBundles()) {
-                String sn = b.getSymbolicName();
-                String ver = (String)b.getHeaders().get(BUNDLE_VERSION);
-                if (!impl.getBundleSymbolicName().equals(sn)) {
-                    continue;
-                }
-                Version v1 = Version.parseVersion(ver);
-                Version v2 = Version.parseVersion(impl.getBundleVersion());
-                if (v1.equals(v2)) {
-                    bundle = b;
-                    break;
-                }
+        BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
+        Bundle bundle = null;
+        for (Bundle b : bundleContext.getBundles()) {
+            String sn = b.getSymbolicName();
+            String ver = (String)b.getHeaders().get(BUNDLE_VERSION);
+            if (!impl.getBundleSymbolicName().equals(sn)) {
+                continue;
             }
-            if (bundle != null) {
-                impl.setBundle(bundle);
-            } else {
-                error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
-                //throw new ContributionResolveException("Could not locate OSGi bundle " + 
-                //impl.getBundleSymbolicName());
-                return;
+            Version v1 = Version.parseVersion(ver);
+            Version v2 = Version.parseVersion(impl.getBundleVersion());
+            if (v1.equals(v2)) {
+                bundle = b;
+                break;
             }
-
-            String bundleName = resolvedBundle.getBundleRelativePath();
-            String ctURI =
-                bundleName.endsWith(".jar") || bundleName.endsWith(".JAR") ? bundleName.substring(0, bundleName
-                    .lastIndexOf(".")) : bundleName;
-            ctURI = ctURI.replaceAll("\\.", "/");
-            ctURI = ctURI + ".componentType";
-
-            ComponentType componentType = assemblyFactory.createComponentType();
-            componentType.setURI(ctURI);
-            componentType.setUnresolved(true);
-            componentType = resolver.resolveModel(ComponentType.class, componentType);
-            if (componentType.isUnresolved()) {
-                error("MissingComponentTypeFile", impl, ctURI);
-                //throw new ContributionResolveException("missing .componentType side file " + ctURI);
-                return;
-            }
-
-            List<Service> services = componentType.getServices();
-            for (Service service : services) {
-                Interface interfaze = service.getInterfaceContract().getInterface();
-                if (interfaze instanceof JavaInterface) {
-                    JavaInterface javaInterface = (JavaInterface)interfaze;
-                    if (javaInterface.getJavaClass() == null) {
-
-                        javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
-                    }
-                    Class<?> callback = null;
-                    if (service.getInterfaceContract().getCallbackInterface() instanceof JavaInterface) {
-                        JavaInterface callbackInterface =
-                            (JavaInterface)service.getInterfaceContract().getCallbackInterface();
-                        if (callbackInterface.getJavaClass() == null) {
-                            callbackInterface.setJavaClass(getJavaClass(resolver, callbackInterface.getName()));
-                        }
-                        callback = callbackInterface.getJavaClass();
-                    }
-
-                    Service serv = createService(service, javaInterface.getJavaClass(), callback);
-                    impl.getServices().add(serv);
-                }
-            }
-
-            List<Reference> references = componentType.getReferences();
-            for (Reference reference : references) {
-                Interface interfaze = reference.getInterfaceContract().getInterface();
-                if (interfaze instanceof JavaInterface) {
-                    JavaInterface javaInterface = (JavaInterface)interfaze;
-                    if (javaInterface.getJavaClass() == null) {
-                        javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
-                    }
-                    Reference ref = createReference(reference, javaInterface.getJavaClass());
-                    impl.getReferences().add(ref);
-                } else
-                    impl.getReferences().add(reference);
-            }
-
-            List<Property> properties = componentType.getProperties();
-            for (Property property : properties) {
-                impl.getProperties().add(property);
-            }
-            impl.setConstrainingType(componentType.getConstrainingType());
-
-        } catch (InvalidInterfaceException e) {
-            ContributionResolveException ce = new ContributionResolveException(e);
-            error("ContributionResolveException", resolver, ce);
-            //throw ce;
         }
+        if (bundle != null) {
+            impl.setBundle(bundle);
+        } else {
+            error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
+            //throw new ContributionResolveException("Could not locate OSGi bundle " + 
+            //impl.getBundleSymbolicName());
+            return;
+        }
+
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setURI("META-INF/bundle.componentType");
+        componentType.setUnresolved(true);
+        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        if (componentType.isUnresolved()) {
+            error("MissingComponentTypeFile", impl, componentType.getURI());
+            //throw new ContributionResolveException("missing .componentType side file " + ctURI);
+            return;
+        }
+
+        List<Service> services = componentType.getServices();
+        for (Service service : services) {
+            Interface interfaze = service.getInterfaceContract().getInterface();
+            if (interfaze instanceof JavaInterface) {
+                JavaInterface javaInterface = (JavaInterface)interfaze;
+                if (javaInterface.getJavaClass() == null) {
+                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
+                }
+                Class<?> callback = null;
+                if (service.getInterfaceContract().getCallbackInterface() instanceof JavaInterface) {
+                    JavaInterface callbackInterface =
+                        (JavaInterface)service.getInterfaceContract().getCallbackInterface();
+                    if (callbackInterface.getJavaClass() == null) {
+                        callbackInterface.setJavaClass(getJavaClass(resolver, callbackInterface.getName()));
+                    }
+                    callback = callbackInterface.getJavaClass();
+                }
+
+                impl.getServices().add(service);
+            }
+        }
+
+        List<Reference> references = componentType.getReferences();
+        for (Reference reference : references) {
+            Interface interfaze = reference.getInterfaceContract().getInterface();
+            if (interfaze instanceof JavaInterface) {
+                JavaInterface javaInterface = (JavaInterface)interfaze;
+                if (javaInterface.getJavaClass() == null) {
+                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
+                }
+                impl.getReferences().add(reference);
+            } else
+                impl.getReferences().add(reference);
+        }
+
+        List<Property> properties = componentType.getProperties();
+        for (Property property : properties) {
+            impl.getProperties().add(property);
+        }
+        impl.setConstrainingType(componentType.getConstrainingType());
 
     }
 
