@@ -25,6 +25,7 @@ import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

@@ -19,13 +19,20 @@
 
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
+import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionImpl;
+import org.apache.tuscany.sca.implementation.osgi.impl.ServiceDescriptionsImpl;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -48,18 +55,18 @@ import javax.xml.stream.XMLStreamReader;
     </service-description>
 </service-descriptions>
 */
-public class ServiceDescriptionsProcessor {
+public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<ServiceDescriptions> {
 
-    public List<ServiceDescription> read(XMLStreamReader reader) throws XMLStreamException {
+    public ServiceDescriptions read(XMLStreamReader reader) throws XMLStreamException {
         int event = reader.getEventType();
-        List<ServiceDescription> sds = new ArrayList<ServiceDescription>();
+        ServiceDescriptions sds = new ServiceDescriptionsImpl();
         ServiceDescription sd = null;
         while (true) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     QName name = reader.getName();
                     if (ServiceDescription.SERVICE_DESCRIPTION_QNAME.equals(name)) {
-                        sd = new ServiceDescription();
+                        sd = new ServiceDescriptionImpl();
                         sds.add(sd);
                     } else if ("provide".equals(name.getLocalPart())) {
                         String interfaceName = reader.getAttributeValue(null, "interface");
@@ -117,5 +124,22 @@ public class ServiceDescriptionsProcessor {
                 return sds;
             }
         }
+    }
+
+    public QName getArtifactType() {
+        return ServiceDescription.SERVICE_DESCRIPTIONS_QNAME;
+    }
+
+    public void write(ServiceDescriptions model, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
+        // TODO: To be implemented
+    }
+
+    public Class<ServiceDescriptions> getModelType() {
+        return ServiceDescriptions.class;
+    }
+
+    public void resolve(ServiceDescriptions model, ModelResolver resolver) throws ContributionResolveException {
+        // TODO: To be implemented
     }
 }
