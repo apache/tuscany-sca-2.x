@@ -16,30 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.osgi;
 
-import org.apache.tuscany.sca.assembly.Extensible;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.osgi.framework.Bundle;
+package org.apache.tuscany.sca.implementation.osgi.runtime;
+
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
- *
- * The model representing an OSGi implementation in an SCA assembly model.
- *
- * @version $Rev$ $Date$
+ * A ServiceTracker
  */
-public interface OSGiImplementation extends Implementation, Extensible {
+public class OSGiServiceTracker implements ServiceTrackerCustomizer {
 
-    String getBundleSymbolicName();
+    public Object addingService(ServiceReference serviceReference) {
+        return null;
+    }
 
-    void setBundleSymbolicName(String name);
+    public void modifiedService(ServiceReference serviceReference, Object service) {
+    }
 
-    String getBundleVersion();
-
-    void setBundleVersion(String version);
-
-    Bundle getBundle();
-
-    void setBundle(Bundle bundle);
+    public void removedService(ServiceReference serviceReference, Object service) {
+    }
 
 }

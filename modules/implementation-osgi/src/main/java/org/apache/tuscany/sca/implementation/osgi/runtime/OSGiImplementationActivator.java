@@ -23,7 +23,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class OSGiImplementationActivator implements BundleActivator {
-    static BundleContext bundleContext;
+    private static BundleContext bundleContext;
 
     public void start(BundleContext context) throws Exception {
         bundleContext = context;
