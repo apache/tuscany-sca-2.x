@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a reference.
@@ -38,7 +37,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class ReferenceImpl extends AbstractReferenceImpl implements Reference, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
     private boolean wiredByImpl;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
     private boolean promotionOverride;
@@ -100,10 +98,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         this.promotionOverride = promotionOverride;
     }
 
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
     public List<ComponentService> getTargets() {
         return targets;
     }
@@ -114,10 +108,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
 
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets;
     }
 
     /**
