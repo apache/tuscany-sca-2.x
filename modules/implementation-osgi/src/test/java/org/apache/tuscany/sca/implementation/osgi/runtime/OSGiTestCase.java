@@ -51,8 +51,9 @@ public class OSGiTestCase {
         className = OSGiTestImpl.class.getName();
         compositeName = "osgitest.composite";
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
-                                     OSGiTestInterface.class,
-                                     OSGiTestImpl.class);
+                                     OSGiTestInterface.class.getName(),
+                                     OSGiTestImpl.class,
+                                     OSGiTestInterface.class);
 
         node =
             host.createNode("osgitest.composite", new Contribution("c1", new File("target/test-classes").toURI()

@@ -66,11 +66,14 @@ public class OSGiReadImplTestCase {
             new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
 
-        compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        compositeBuilder =
+            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
+                .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
-                                     OSGiTestInterface.class,
-                                     OSGiTestImpl.class);
+                                     OSGiTestInterface.class.getName(),
+                                     OSGiTestImpl.class,
+                                     OSGiTestInterface.class);
 
     }
 
@@ -94,21 +97,21 @@ public class OSGiReadImplTestCase {
         is = getClass().getClassLoader().getResourceAsStream("bundle.componentType");
         reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader);
-        
+
         assertEquals(1, componentType.getServices().size());
         Object prop1 = componentType.getServices().get(0).getExtensions().get(0);
         assertTrue(prop1 instanceof OSGiProperty);
-        OSGiProperty osgiProp1 = (OSGiProperty) prop1;
+        OSGiProperty osgiProp1 = (OSGiProperty)prop1;
         assertEquals("1", osgiProp1.getValue());
         assertEquals("prop1", osgiProp1.getName());
-        
+
         assertEquals(4, componentType.getReferences().size());
         Object prop2 = componentType.getReferences().get(0).getExtensions().get(1);
         assertTrue(prop2 instanceof OSGiProperty);
-        OSGiProperty osgiProp2 = (OSGiProperty) prop2;
+        OSGiProperty osgiProp2 = (OSGiProperty)prop2;
         assertEquals("ABC", osgiProp2.getValue());
         assertEquals("prop2", osgiProp2.getName());
-        
+
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         staxProcessor.resolve(componentType, resolver);
         resolver.addModel(componentType);

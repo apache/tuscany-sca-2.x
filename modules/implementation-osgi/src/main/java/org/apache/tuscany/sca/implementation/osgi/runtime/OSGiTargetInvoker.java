@@ -28,7 +28,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Java->OSGi references use OSGiTargetInvoker to call methods from OSGi bundles
@@ -48,6 +51,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
     protected InstanceWrapper<T> target;
 
     private final OSGiImplementationProvider provider;
+    private final RuntimeComponent component;
     private final RuntimeComponentService service;
 
     public OSGiTargetInvoker(Operation operation, OSGiImplementationProvider provider, RuntimeComponentService service) {
@@ -55,6 +59,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
         this.operation = operation;
         this.service = service;
         this.provider = provider;
+        this.component = provider.getRuntimeComponent();
 
     }
 
@@ -66,10 +71,12 @@ public class OSGiTargetInvoker<T> implements Invoker {
         }
 
         try {
+            BundleContext bundleContext = provider.getImplementation().getBundle().getBundleContext();
             JavaInterface javaInterface = (JavaInterface)op.getInterface();
             // FIXME: What is the filter?
-            Object instance = provider.osgiBundle.getBundleContext().getServiceReference(javaInterface.getName());
-
+            String filter = "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
+            ServiceReference[] refs = bundleContext.getServiceReferences(javaInterface.getName(), filter);
+            Object instance = bundleContext.getService(refs[0]);
             Method m = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
 
             Object ret = invokeMethod(instance, m, msg);

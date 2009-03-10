@@ -112,7 +112,7 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
     private MessageFactory messageFactory;
     private InterfaceContractMapper mapper;
 
-    public OSGiImplementationProvider(RuntimeComponent definition,
+    public OSGiImplementationProvider(RuntimeComponent component,
                                       OSGiImplementation impl,
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       ScopeRegistry scopeRegistry,
@@ -121,7 +121,7 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
                                       InterfaceContractMapper mapper) throws BundleException {
 
         this.implementation = impl;
-        this.runtimeComponent = definition;
+        this.runtimeComponent = component;
         this.dataBindingRegistry = dataBindingRegistry;
         this.scopeRegistry = scopeRegistry;
         this.messageFactory = messageFactory;

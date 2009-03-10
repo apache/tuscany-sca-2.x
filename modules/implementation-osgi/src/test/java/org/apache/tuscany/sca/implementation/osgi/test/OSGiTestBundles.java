@@ -19,14 +19,18 @@
 
 package org.apache.tuscany.sca.implementation.osgi.test;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.Constants;
 
 /**
  * 
@@ -41,46 +45,54 @@ public class OSGiTestBundles {
         return index == -1 ? "" : name.substring(0, index);
     }
 
-    public static void createBundle(String jarName, Class<?> interfaceClass, Class<?> implClass) throws Exception {
+    public static void createBundle(String jarName, String bundleName, Class<?>... classes) throws Exception {
+
+        Class<?> activator = null;
+        StringBuffer exports = new StringBuffer();
+        for (Class<?> cls : classes) {
+            if (cls.isAssignableFrom(BundleActivator.class)) {
+                activator = cls;
+            }
+            if (cls.isInterface()) {
+                exports.append(getPackageName(cls)).append(",");
+            }
+        }
+        if (exports.length() > 0) {
+            exports.deleteCharAt(exports.length() - 1);
+        }
+
+        Manifest manifest = new Manifest();
+        manifest.getMainAttributes().putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
+        manifest.getMainAttributes().putValue(Constants.BUNDLE_SYMBOLICNAME, bundleName);
+        manifest.getMainAttributes().putValue(Constants.BUNDLE_VERSION, "1.0.0");
+        manifest.getMainAttributes().putValue(Constants.BUNDLE_NAME, bundleName);
+        manifest.getMainAttributes().putValue(Constants.EXPORT_PACKAGE, exports.toString());
+        manifest.getMainAttributes().putValue(Constants.IMPORT_PACKAGE, "org.osgi.framework," + exports.toString());
+
+        if (activator != null) {
+            manifest.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR, activator.getName());
+        }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        String EOL = System.getProperty("line.separator");
-
-        String packageName = getPackageName(interfaceClass);
-        String bundleName = interfaceClass.getName();
-
-        String manifestStr =
-            "Manifest-Version: 1.0" + EOL
-                + "Bundle-ManifestVersion: 2"
-                + EOL
-                + "Bundle-Name: "
-                + bundleName
-                + EOL
-                + "Bundle-SymbolicName: "
-                + bundleName
-                + EOL
-                + "Bundle-Version: "
-                + "1.0.0"
-                + EOL
-                + "Bundle-Localization: plugin"
-                + EOL;
-
-        StringBuilder manifestBuf = new StringBuilder();
-        manifestBuf.append(manifestStr);
-        manifestBuf.append("Export-Package: " + packageName + EOL);
-        manifestBuf.append("Import-Package: org.osgi.framework" + EOL);
-        manifestBuf.append("Bundle-Activator: " + implClass.getName() + EOL);
-
-        ByteArrayInputStream manifestStream = new ByteArrayInputStream(manifestBuf.toString().getBytes());
-        Manifest manifest = new Manifest();
-        manifest.read(manifestStream);
-
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
 
-        String interfaceClassName = interfaceClass.getName().replaceAll("\\.", "/") + ".class";
+        for (Class<?> cls : classes) {
+            addClass(jarOut, cls);
+        }
 
-        URL url = interfaceClass.getClassLoader().getResource(interfaceClassName);
+        jarOut.close();
+        out.close();
+
+        FileOutputStream fileOut = new FileOutputStream(jarName);
+        fileOut.write(out.toByteArray());
+        fileOut.close();
+
+    }
+
+    private static void addClass(JarOutputStream jarOut, Class<?> javaClass) throws IOException, FileNotFoundException {
+        String interfaceClassName = javaClass.getName().replaceAll("\\.", "/") + ".class";
+
+        URL url = javaClass.getClassLoader().getResource(interfaceClassName);
         String path = url.getPath();
 
         ZipEntry ze = new ZipEntry(interfaceClassName);
@@ -90,28 +102,5 @@ public class OSGiTestBundles {
         byte[] fileContents = new byte[file.available()];
         file.read(fileContents);
         jarOut.write(fileContents);
-
-        String implClassName = implClass.getName().replaceAll("\\.", "/") + ".class";
-
-        url = implClass.getClassLoader().getResource(implClassName);
-        path = url.getPath();
-
-        ze = new ZipEntry(implClassName);
-
-        jarOut.putNextEntry(ze);
-        file = new FileInputStream(path);
-        fileContents = new byte[file.available()];
-        file.read(fileContents);
-        jarOut.write(fileContents);
-
-        file.close();
-
-        jarOut.close();
-        out.close();
-
-        FileOutputStream fileOut = new FileOutputStream(jarName);
-        fileOut.write(out.toByteArray());
-        fileOut.close();
-
     }
 }
