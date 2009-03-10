@@ -33,6 +33,20 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public interface Composite extends Implementation, Extensible, Cloneable, PolicySubject {
 
     /**
+     * Returns the spec version of the composite used to build this model
+     * 
+     * @return the spec version used to build this model
+     */
+    String getSpecVersion();
+
+    /**
+     * Sets the spec version of the composite used to build this model
+     * 
+     * @param specVersion the spec version used to build this model
+     */
+    void setSpecVersion(String specVersion);
+    
+    /**
      * Returns the name of the composite.
      * 
      * @return the name of the composite
