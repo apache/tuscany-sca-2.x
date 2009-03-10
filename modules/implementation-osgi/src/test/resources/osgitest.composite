@@ -20,18 +20,16 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-           tagetNamespace="http://test"
+           targetNamespace="http://test"
            name="OSGiTestComposite">
 
     <component name="OSGiTestServiceComponent">
-        <tuscany:implementation.osgi 
-            bundle="OSGiTestService" 
-            bundleSymbolicName="org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface"
-        />
-        
-        <property name="currency" type="xsd:string" >USD</property> 
-        <property name="exchangeRate" type="xsd:double" >2.0</property> 
-            
+        <tuscany:implementation.osgi bundle="OSGiTestService"
+            bundleSymbolicName="org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface" />
+
+        <property name="currency" type="xsd:string">USD</property>
+        <property name="exchangeRate" type="xsd:double">2.0</property>
+
     </component>
 
 </composite>
