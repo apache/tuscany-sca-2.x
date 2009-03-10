@@ -84,7 +84,7 @@ public class OSGiReadImplTestCase extends TestCase {
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        is = getClass().getClassLoader().getResourceAsStream("OSGiTestService.componentType");
+        is = getClass().getClassLoader().getResourceAsStream("bundle.componentType");
         reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader);
 
@@ -100,7 +100,7 @@ public class OSGiReadImplTestCase extends TestCase {
     public void testReadOSGiImplementation() throws Exception {
 
         String str =
-            "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://osgi\" "
+            "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\" targetNamespace=\"http://osgi\" "
                 + "bundleSymbolicName=\"OSGiTestService\" "
                 + "bundleVersion=\"2.0.0\" "
                 + "imports=\"import1.jar import2.jar\""
