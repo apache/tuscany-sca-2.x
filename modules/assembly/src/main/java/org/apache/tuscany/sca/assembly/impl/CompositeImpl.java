@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.assembly.Wire;
  * @version $Rev$ $Date$
  */
 public class CompositeImpl extends ImplementationImpl implements Composite, Cloneable {
+    private String specVersion = "undefined";
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();
     private QName name;
@@ -84,6 +85,14 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
             clone.wires.add((Wire)wire.clone());
         }
         return clone;
+    }
+    
+    public String getSpecVersion() {
+        return specVersion;
+    }
+    
+    public void setSpecVersion(String specVersion) {
+        this.specVersion = specVersion; 
     }
 
     public List<Component> getComponents() {

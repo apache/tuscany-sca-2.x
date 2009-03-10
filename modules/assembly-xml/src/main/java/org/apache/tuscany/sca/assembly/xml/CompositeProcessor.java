@@ -184,6 +184,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     
                             // Read a <composite>
                             composite = assemblyFactory.createComposite();
+                            composite.setSpecVersion(Constants.SCA11_NS);
                             
                             composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
     
