@@ -16,28 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package calculator;
 
-package org.apache.tuscany.sca.implementation.osgi.runtime;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Bundle activator to receive the BundleContext
+ * An implementation of the Divide service.
  */
-public class OSGiImplementationActivator implements BundleActivator {
-    private static BundleContext bundleContext;
+public class DivideServiceImpl implements DivideService {
 
-    public void start(BundleContext context) throws Exception {
-        bundleContext = context;
-    }
-
-    public void stop(BundleContext context) throws Exception {
-        bundleContext = context;
-    }
-
-    public static BundleContext getBundleContext() {
-        return bundleContext;
+    public double divide(double n1, double n2) {
+        Logger logger = Logger.getLogger("calculator");
+        logger.log(Level.INFO, "Dividing " + n1 + " with " + n2);
+        return n1 / n2;
     }
 
 }

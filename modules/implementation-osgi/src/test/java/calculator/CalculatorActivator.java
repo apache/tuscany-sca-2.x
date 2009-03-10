@@ -17,27 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi.runtime;
+package calculator;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
- * Bundle activator to receive the BundleContext
+ * 
  */
-public class OSGiImplementationActivator implements BundleActivator {
-    private static BundleContext bundleContext;
+public class CalculatorActivator implements BundleActivator {
+    private ServiceRegistration registration;
 
     public void start(BundleContext context) throws Exception {
-        bundleContext = context;
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("sca.service", "CalculatorComponent#service-name(Calculator)");
+        registration = context.registerService(CalculatorService.class.getName(),
+                                new CalculatorServiceImpl(),
+                                props);
     }
 
     public void stop(BundleContext context) throws Exception {
-        bundleContext = context;
-    }
-
-    public static BundleContext getBundleContext() {
-        return bundleContext;
+        context.ungetService(registration.getReference());
     }
 
 }
