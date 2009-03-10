@@ -96,14 +96,14 @@ public class OSGiReadImplTestCase {
         ComponentType componentType = (ComponentType)staxProcessor.read(reader);
         
         assertEquals(1, componentType.getServices().size());
-        Object prop1 = componentType.getServices().get(0).getExtensions().get(1);
+        Object prop1 = componentType.getServices().get(0).getExtensions().get(0);
         assertTrue(prop1 instanceof OSGiProperty);
         OSGiProperty osgiProp1 = (OSGiProperty) prop1;
         assertEquals("1", osgiProp1.getValue());
         assertEquals("prop1", osgiProp1.getName());
         
         assertEquals(4, componentType.getReferences().size());
-        Object prop2 = componentType.getReferences().get(0).getExtensions().get(2);
+        Object prop2 = componentType.getReferences().get(0).getExtensions().get(1);
         assertTrue(prop2 instanceof OSGiProperty);
         OSGiProperty osgiProp2 = (OSGiProperty) prop2;
         assertEquals("ABC", osgiProp2.getValue());
