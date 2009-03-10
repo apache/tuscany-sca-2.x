@@ -218,7 +218,7 @@ public class TestUtils {
                 buffer += indent + "Service - " + componentService.getName() + "\n";
                 for (Endpoint2 endpoint : componentService.getEndpoints()) {
                     if (endpoint.getBinding() != null){
-                        buffer += indent + " Endpoint - " + endpoint.getBinding().getName() +"\n";
+                        buffer += printEndpoint(endpoint, indent);
                     }
                 }
             }
@@ -226,10 +226,7 @@ public class TestUtils {
             for (ComponentReference componentReference : component.getReferences()) {
                 buffer += indent + "Reference - " + componentReference.getName() + "\n";
                 for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()) {
-                    buffer += indent + " EndpointReference - target = " + endpointReference.getTargetName() + "\n";
-                    if (endpointReference.getBinding() != null){
-                        buffer += indent + " Endpoint - " + endpointReference.getBinding().getName() + "\n";
-                    }
+                    buffer += printEndpointReference(endpointReference, indent);
                 }
             }
             
@@ -243,5 +240,36 @@ public class TestUtils {
         
         return buffer;        
     }
+    
+    protected static String printEndpoint(Endpoint2 endpoint, String indent){
+        String buffer = ""; 
+        
+        buffer += indent + " Endpoint - Component: " + endpoint.getComponent().getName() +"\n";
+        buffer += indent + "            Service:   " + endpoint.getService().getName() +"\n";
+        buffer += indent + "            Binding:   " + endpoint.getBinding().getName() +"\n";
+        
+        return buffer;
+    }
+    
+    protected static String printEndpointReference(EndpointReference2 endpointReference, String indent){
+        String buffer = ""; 
+        
+        buffer += indent + " EndpointReference - Component:        " + endpointReference.getComponent().getName() +"\n";
+        buffer += indent + "                     Reference:        " + endpointReference.getReference().getName() +"\n";
+        if (endpointReference.getTargetName() != null){
+            buffer += indent + "                     Wired:            " +"\n";
+            buffer += indent + "                       Target:         " + endpointReference.getTargetName()+"\n";
+            if (endpointReference.getTargetEndpoint() != null){
+                buffer += indent + "                       Binding:        " + endpointReference.getBinding().getName() +"\n";
+                buffer += indent + "                       TargetEndpoint: " + endpointReference.getTargetEndpoint().getBinding().getName()+"\n";
+            } else {
+                buffer += indent + "                       Unresolved:     " +"\n";
+            }
+        } else {
+            buffer += indent + "                     NonWired:         " +"\n";
+        }
+        
+        return buffer;
+    }    
 
 }

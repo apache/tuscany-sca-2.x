@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -54,6 +55,7 @@ public class BuilderTestCase {
     }
 
     // Scenario 1: <binding.ws> on outer composite service CompositeA/Service1
+    @Ignore
     @Test
     public void testScenario1() throws Exception {
         System.out.println("====>Running testScenario1");
@@ -64,6 +66,7 @@ public class BuilderTestCase {
         checkScenario1Results(false);
     }
 
+    @Ignore
     @Test
     public void testScenario1NonWiring() throws Exception {
         System.out.println("====>Running testScenario1NonWiring");
@@ -524,6 +527,7 @@ public class BuilderTestCase {
         checkScenario6and7Results("http://scenario6", false);
     }
 
+    @Ignore
     @Test
     public void testScenario6NonWiring() throws Exception {
         System.out.println("====>Running testScenario6NonWiring");
