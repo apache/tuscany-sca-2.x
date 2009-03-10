@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a reference.
@@ -36,7 +35,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Callback callback;
     private List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
 
@@ -79,20 +77,12 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
         return null;
     }
 
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
     public Callback getCallback() {
         return callback;
     }
 
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-    
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
     }
     
     /**
