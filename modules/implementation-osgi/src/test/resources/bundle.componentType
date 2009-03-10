@@ -17,10 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200712" 
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-               xmlns:t = "http://tuscany.apache.org/xmlns/sca/1.1"
-               >
+               xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1">
     <!-- The service elment defines an SCA view of the OSGi service -->
     <service name="Calculator">
         <!-- The interface will be mapped into the OSGi service class -->
