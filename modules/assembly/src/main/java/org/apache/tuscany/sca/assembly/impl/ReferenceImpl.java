@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -42,20 +41,15 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private boolean promotionOverride;
     private List<EndpointReference2> endpointReferences = new ArrayList<EndpointReference2>();
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
 
     /**
      * Constructs a new reference.
      */
     protected ReferenceImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         ReferenceImpl clone = (ReferenceImpl)super.clone();
@@ -121,18 +115,18 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
+
     public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
+        this.policySets = policySets;
     }
-    
+
     /**
      * By default return the interface contract for the reference
      */
-    public InterfaceContract getInterfaceContract(Binding binding){
+    public InterfaceContract getInterfaceContract(Binding binding) {
         return getInterfaceContract();
-    } 
-    
+    }
+
     public List<EndpointReference2> getEndpointReferences() {
         return endpointReferences;
     }
