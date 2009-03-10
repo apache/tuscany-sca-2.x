@@ -22,27 +22,13 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
- * Represents an endpoint reference. An SCA reference can reference service enpoints in a 
+ * Represents an endpoint reference. An SCA reference can reference service endpoints in a 
  * number of ways. Target names, autowire, configured bindings. The endpoint reference
  * captures the result of specifying one of these things. 
  * 
  * @version $Rev$ $Date$
  */
-public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
-    
-    /**
-     * Get the name of the target service that this endpoint reference refers to
-     * 
-     * @return target service name
-     */
-    String getTargetName();
-    
-    /**
-     * Set the name of the target service that this endpoint reference refers to
-     * 
-     * @param targetName
-     */
-    void setTargetName(String targetName);    
+public interface EndpointReference2 extends Base, PolicySubject, Cloneable {  
     
     /**
      * Get the component model object
@@ -85,46 +71,79 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      * @param binding the resolved reference binding
      */
     void setBinding(Binding binding);
+    
+    /**
+     * Get the reference callback binding 
+     * 
+     * @return callbackBinding the reference callback binding
+     */
+    Binding getCallbackBinding();
+    
+    /**
+     * Set the reference callback binding 
+     * 
+     * @param callbackBinding the reference callback binding
+     */
+    void setCallbackBinding(Binding callbackBinding);
 
+    /**
+     * Get the name of the target service that this endpoint reference refers to
+     * 
+     * @return target service name
+     */
+    String getTargetName();
+    
+    /**
+     * Set the name of the target service that this endpoint reference refers to
+     * 
+     * @param targetName
+     */
+    void setTargetName(String targetName);  
+    
     /**
      * Get the target endpoint
      * 
      * @return endpoint the target endpoint
      */
-    Endpoint2 getEndpoint();
+    Endpoint2 getTargetEndpoint();
     
     /**
      * Set the target endpoint model object
      * 
      * @param endpoint the target endpoint
      */
-    void setEndpoint(Endpoint2 endpoint);
+    void setTargetEndpoint(Endpoint2 targetEndpoint);
+    
+    
+    
+    
+    // not sure the methods below are required
     
     /**
      * Returns the interface contract defining the interface 
      * 
      * @return the interface contract
      */
-    InterfaceContract getInterfaceContract();
+    //InterfaceContract getInterfaceContract();
     
     /**
      * Sets the interface contract defining the interface 
      * 
      * @param interfaceContract the interface contract
      */
-    void setInterfaceContract(InterfaceContract interfaceContract); 
+    //void setInterfaceContract(InterfaceContract interfaceContract); 
     
     /**
      * Returns the binding specific target URI for this endpoint reference.
      * 
      * @return uri the binding specific target URI
      */
-    String getURI();
+    //String getURI();
 
     /**
      * Sets the binding specific target URI for this endpoint reference.
      * 
      * @param uri the binding specific target URI
      */
-    void setURI(String uri);    
+    //void setURI(String uri);    
 }

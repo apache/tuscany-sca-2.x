@@ -38,13 +38,13 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public class EndpointReference2Impl implements EndpointReference2 {
-
-    private String targetName;
+    
     private Component component;
     private ComponentReference reference;
     private Binding binding;
     private Binding callbackBinding;
-    private Endpoint2 endpoint;
+    private String targetName;
+    private Endpoint2 targetEndpoint;
     private InterfaceContract interfaceContract;
     private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -65,14 +65,6 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setUnresolved(boolean unresolved) {
         // TODO Auto-generated method stub
-    }
-
-    public String getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
     }
 
     public Component getComponent() {
@@ -98,15 +90,33 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setBinding(Binding binding) {
         this.binding = binding;
     }
-
-    public Endpoint2 getEndpoint() {
-        return endpoint;
+    
+    public Binding getCallbackBinding() {
+        return callbackBinding;
+    }
+    
+    public void setCallbackBinding(Binding callbackBinding) {
+        this.callbackBinding = callbackBinding;
+    }
+    
+    public String getTargetName() {
+        return targetName;
     }
 
-    public void setEndpoint(Endpoint2 endpoint) {
-        this.endpoint = endpoint;
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
+    }
+    
+    public Endpoint2 getTargetEndpoint() {
+        return targetEndpoint;
+    }
+    
+    public void setTargetEndpoint(Endpoint2 targetEndpoint) {
+        this.targetEndpoint = targetEndpoint;   
     }
 
+
+    /*
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
@@ -122,6 +132,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setURI(String uri) {
         this.uri = uri;
     }
+    */
 
     public List<PolicySet> getPolicySets() {
         return policySets;
