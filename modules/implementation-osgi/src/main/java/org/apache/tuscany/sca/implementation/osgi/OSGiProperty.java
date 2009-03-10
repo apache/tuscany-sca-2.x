@@ -25,7 +25,8 @@ import javax.xml.namespace.QName;
  * <tuscany:osgi.property> 
  */
 public interface OSGiProperty {
-    QName OSGI_PROPERTY_QNAME = new QName(OSGiImplementation.SCA11_TUSCANY_NS, "osgi.property");
+    String NAME = "name";
+    QName PROPERTY_QNAME = new QName(OSGiImplementation.SCA11_TUSCANY_NS, "osgi.property");
 
     String getValue();
 

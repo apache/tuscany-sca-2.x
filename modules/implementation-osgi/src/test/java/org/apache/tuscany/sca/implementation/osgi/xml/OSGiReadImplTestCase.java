@@ -19,13 +19,15 @@
 
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -38,23 +40,26 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test reading OSGi implementations.
  *
  * @version $Rev$ $Date$
  */
-public class OSGiReadImplTestCase extends TestCase {
+public class OSGiReadImplTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private CompositeBuilder compositeBuilder;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static CompositeBuilder compositeBuilder;
 
-    @Override
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors =
@@ -69,6 +74,7 @@ public class OSGiReadImplTestCase extends TestCase {
 
     }
 
+    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -78,6 +84,7 @@ public class OSGiReadImplTestCase extends TestCase {
         compositeBuilder.build(composite, null, null);
     }
 
+    @Test
     public void testReadAndResolveComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
@@ -87,7 +94,21 @@ public class OSGiReadImplTestCase extends TestCase {
         is = getClass().getClassLoader().getResourceAsStream("bundle.componentType");
         reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader);
-
+        
+        assertEquals(1, componentType.getServices().size());
+        Object prop1 = componentType.getServices().get(0).getExtensions().get(1);
+        assertTrue(prop1 instanceof OSGiProperty);
+        OSGiProperty osgiProp1 = (OSGiProperty) prop1;
+        assertEquals("1", osgiProp1.getValue());
+        assertEquals("prop1", osgiProp1.getName());
+        
+        assertEquals(4, componentType.getReferences().size());
+        Object prop2 = componentType.getReferences().get(0).getExtensions().get(2);
+        assertTrue(prop2 instanceof OSGiProperty);
+        OSGiProperty osgiProp2 = (OSGiProperty) prop2;
+        assertEquals("ABC", osgiProp2.getValue());
+        assertEquals("prop2", osgiProp2.getName());
+        
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         staxProcessor.resolve(componentType, resolver);
         resolver.addModel(componentType);
@@ -97,6 +118,7 @@ public class OSGiReadImplTestCase extends TestCase {
         compositeBuilder.build(composite, null, null);
     }
 
+    @Test
     public void testReadOSGiImplementation() throws Exception {
 
         String str =

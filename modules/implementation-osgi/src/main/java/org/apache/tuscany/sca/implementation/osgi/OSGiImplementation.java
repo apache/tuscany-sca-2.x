@@ -37,7 +37,6 @@ public interface OSGiImplementation extends Implementation, Extensible {
     String BUNDLE_SYMBOLICNAME = "bundleSymbolicName";
     String BUNDLE_VERSION = "bundleVersion";
     QName IMPLEMENTATION_OSGI = new QName(SCA11_TUSCANY_NS, "implementation.osgi");
-    QName PROPERTY_QNAME = OSGiProperty.OSGI_PROPERTY_QNAME;
 
     String getBundleSymbolicName();
 
