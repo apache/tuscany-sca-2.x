@@ -204,10 +204,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         
         // Configure composite references
         compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
-        
-        // TODO - temporarily add endpoint builders
-        compositeServiceEndpointBuilder.build(composite, definitions, monitor);
-        compositeReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
 
         // Configure binding URIs
         compositeBindingURIBuilder.build(composite, definitions, monitor);
@@ -221,6 +217,14 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Build component service binding-related information
         componentServiceBindingBuilder.build(composite, definitions, monitor);
 
+        // ===============================================
+        // TODO - temporarily add OASIS endpoint builders
+        // create service endpoint models
+        compositeServiceEndpointBuilder.build(composite, definitions, monitor);
+        // create reference enpointreference models
+        compositeReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);  
+        // ===============================================
+        
         // Wire the components
         componentReferenceWireBuilder.build(composite, definitions, monitor);
 

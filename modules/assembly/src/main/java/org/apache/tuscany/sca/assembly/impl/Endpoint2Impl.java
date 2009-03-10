@@ -42,8 +42,8 @@ public class Endpoint2Impl implements Endpoint2 {
     private ComponentService service;
     private Binding binding;
     private Binding callbackBinding;
-    private InterfaceContract interfaceContract;
-    private String uri;
+    //private InterfaceContract interfaceContract;
+    //private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
 
@@ -87,7 +87,7 @@ public class Endpoint2Impl implements Endpoint2 {
     public void setBinding(Binding binding) {
         this.binding = binding;
     }
-
+/*
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
@@ -103,7 +103,7 @@ public class Endpoint2Impl implements Endpoint2 {
     public void setURI(String uri) {
         this.uri = uri;
     }
-
+*/
     public List<PolicySet> getPolicySets() {
         return policySets;
     }

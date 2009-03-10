@@ -33,10 +33,12 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -45,6 +47,8 @@ import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A composite builder that creates endpoint reference models.
@@ -84,7 +88,7 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
     
     private void processComponentReferences(Composite composite, Monitor monitor) {
         
-        // index all of the services in the composite
+        // index all of the components in the composite
         Map<String, Component> components = new HashMap<String, Component>();
         indexComponents(composite, components);
         
@@ -139,14 +143,10 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                             EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                             endpointRef.setComponent(component);
                             endpointRef.setReference(reference);
-                            endpointRef.setInterfaceContract(reference.getInterfaceContract());
                             endpointRef.setTargetName(targetComponentService.getName());
                             endpointRef.setUnresolved(false);
-                            
-                            // TODO binding is chosen at endpoint resolution when 
-                            //      endpoint reference is matched with endpoint
-                            //endpointRef.setBinding(binding);
-                            //endpointRef.setEndpoint(endpoint);
+                            matchForwardBinding(endpointRef, targetComponentService, monitor);
+                            matchCallbackBinding(endpointRef, targetComponentService, monitor);
                             
                             reference.getEndpointReferences().add(endpointRef);
 
@@ -204,14 +204,10 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
-                        endpointRef.setInterfaceContract(reference.getInterfaceContract());
                         endpointRef.setTargetName(targetComponentService.getName());
                         endpointRef.setUnresolved(false);
-                        
-                        // TODO binding is chosen at endpoint resolution when 
-                        //      endpoint reference is matched with endpoint
-                        //endpointRef.setBinding(binding);
-                        //endpointRef.setEndpoint(endpoint);
+                        matchForwardBinding(endpointRef, targetComponentService, monitor);
+                        matchCallbackBinding(endpointRef, targetComponentService, monitor);
                         
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
@@ -227,7 +223,6 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
-                    endpointRef.setInterfaceContract(reference.getInterfaceContract());
                     endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
                     
@@ -267,14 +262,10 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
-                        endpointRef.setInterfaceContract(reference.getInterfaceContract());
                         endpointRef.setTargetName(targetComponentService.getName());
                         endpointRef.setUnresolved(false);
-                        
-                        // TODO binding is chosen at endpoint resolution when 
-                        //      endpoint reference is matched with endpoint
-                        //endpointRef.setBinding(binding);
-                        //endpointRef.setEndpoint(endpoint);
+                        matchForwardBinding(endpointRef, targetComponentService, monitor);
+                        matchCallbackBinding(endpointRef, targetComponentService, monitor);
                         
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
@@ -290,7 +281,6 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
-                    endpointRef.setInterfaceContract(reference.getInterfaceContract());
                     endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
                     
@@ -363,9 +353,11 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
                         endpointRef.setBinding(binding);
-                        endpointRef.setInterfaceContract(reference.getInterfaceContract());
                         endpointRef.setTargetName(targetComponentService.getName());
-                        endpointRef.setUnresolved(false);                       
+                        endpointRef.setUnresolved(false);
+                        matchForwardBinding(endpointRef, targetComponentService, monitor);
+                        matchCallbackBinding(endpointRef, targetComponentService, monitor);
+                        
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
                         warning(monitor, 
@@ -381,12 +373,169 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
                     endpointRef.setBinding(binding);
-                    endpointRef.setInterfaceContract(reference.getInterfaceContract());
-                    endpointRef.setTargetName(uri);
+                    endpointRef.setTargetName(null);
+                    endpointRef.setTargetEndpoint(null);
                     endpointRef.setUnresolved(false);                       
                     reference.getEndpointReferences().add(endpointRef);
                 }
             }
         }
     }
+    
+    private void matchForwardBinding(EndpointReference2 endpointReference,
+                                     ComponentService service, 
+                                     Monitor monitor) {
+
+        List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
+        List<Endpoint2> matchedServiceEndpoint = new ArrayList<Endpoint2>();
+
+        // Find the corresponding bindings from the service side
+        for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
+            for (Endpoint2 serviceEndpoint : service.getEndpoints()) {
+
+                if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && 
+                    hasCompatiblePolicySets(referenceBinding, serviceEndpoint.getBinding())) {
+
+                    matchedReferenceBinding.add(referenceBinding);
+                    matchedServiceEndpoint.add(serviceEndpoint);
+                }
+            }
+        }
+
+        if (matchedReferenceBinding.isEmpty()) {
+            // No matching binding
+            endpointReference.setBinding(null);
+            endpointReference.setTargetEndpoint(null);
+            warning(monitor, 
+                    "NoMatchingBinding", 
+                    endpointReference.getReference(),
+                    endpointReference.getReference().getName(), 
+                    service.getName());
+            return;
+        } else {
+            // default to using the first matched binding
+            int selectedBinding = 0;
+
+            for (int i = 0; i < matchedReferenceBinding.size(); i++) {
+                // If binding.sca is present, use it
+                if (SCABinding.class.isInstance(matchedReferenceBinding.get(i))) {
+                    selectedBinding = i;
+                }
+            }
+
+            Binding referenceBinding = matchedReferenceBinding.get(selectedBinding);
+            Endpoint2 serviceEndpoint = matchedServiceEndpoint.get(selectedBinding);
+
+            // populate the endpoint reference
+            try {
+
+                Binding cloned = (Binding) referenceBinding.clone();
+
+                // Set the binding URI to the URI of the target service
+                // that has been matched
+                if (referenceBinding.getURI() == null) {
+                    cloned.setURI(serviceEndpoint.getBinding().getURI());
+                }
+
+                endpointReference.setBinding(referenceBinding);
+                endpointReference.setTargetEndpoint(serviceEndpoint);
+
+            } catch (Exception ex) {
+                // do nothing
+            }
+        }
+    } 
+    
+    // TODO
+    // Pretty much a duplicate of matchForwardBinding to handle callback bindings
+    // will rationalize when I understand what we need to do with callbacks
+    private void matchCallbackBinding(EndpointReference2 endpointReference, 
+                                     ComponentService service, 
+                                     Monitor monitor) {
+
+        // if no callback on the interface do nothing
+        if (endpointReference.getReference().getInterfaceContract() == null || 
+            endpointReference.getReference().getInterfaceContract().getCallbackInterface() == null){
+                return;
+        }
+        
+        List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
+        List<Binding> matchedServiceBinding = new ArrayList<Binding>();
+        
+        // Find the corresponding bindings from the service side
+        for (Binding referenceBinding : endpointReference.getReference().getCallback().getBindings()) {
+            for (Binding serviceBinding : service.getCallback().getBindings()) {
+
+                if (referenceBinding.getClass() == serviceBinding.getClass() && 
+                    hasCompatiblePolicySets(referenceBinding, serviceBinding)) {
+                    
+                    matchedReferenceBinding.add(referenceBinding);
+                    matchedServiceBinding.add(serviceBinding);                 
+                }
+            }
+        }
+        
+        if (matchedReferenceBinding.isEmpty()) {
+            // No matching binding
+            endpointReference.setBinding(null);
+            endpointReference.setTargetEndpoint(null);
+            warning(monitor, 
+                    "NoMatchingCallbackBinding", 
+                    endpointReference.getReference(),
+                    endpointReference.getReference().getName(), 
+                    service.getName());
+            return;
+        } else {
+            // default to using the first matched binding
+            int selectedBinding = 0;
+            
+            for (int i = 0; i < matchedReferenceBinding.size(); i++){
+                // If binding.sca is present, use it
+                if (SCABinding.class.isInstance(matchedReferenceBinding.get(i))) {
+                    selectedBinding = i;
+                }
+            }
+            
+            Binding referenceBinding = matchedReferenceBinding.get(selectedBinding);
+            Binding serviceBinding = matchedServiceBinding.get(selectedBinding);
+            
+            // populate the endpoint reference
+            try {
+                
+                Binding cloned = (Binding)referenceBinding.clone();
+                
+                // Set the binding URI to the URI of the target service
+                // that has been matched
+                if (referenceBinding.getURI() == null) {
+                    cloned.setURI(serviceBinding.getURI());
+                }
+                
+                endpointReference.setCallbackBinding(referenceBinding);
+                
+            } catch (Exception ex) {
+                // do nothing 
+            }  
+        }
+    }     
+    
+    private boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
+        boolean isCompatible = true;
+        if ( refBinding instanceof PolicySubject && svcBinding instanceof PolicySubject ) {
+            //TODO : need to add more compatibility checks at the policy attachment levels
+            for ( PolicySet svcPolicySet : ((PolicySubject)svcBinding).getPolicySets() ) {
+                isCompatible = false;
+                for ( PolicySet refPolicySet : ((PolicySubject)refBinding).getPolicySets() ) {
+                    if ( svcPolicySet.equals(refPolicySet) ) {
+                        isCompatible = true;
+                        break;
+                    }
+                }
+                //if there exists no matching policy set in the reference binding
+                if ( !isCompatible ) {
+                    return isCompatible;
+                }
+            }
+        }
+        return isCompatible;
+    } 
 }

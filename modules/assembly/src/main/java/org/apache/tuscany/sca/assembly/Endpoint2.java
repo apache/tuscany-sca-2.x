@@ -73,31 +73,35 @@ public interface Endpoint2 extends Base, PolicySubject, Cloneable {
      */
     void setBinding(Binding binding); 
     
+    
+    
+    
+    // not sure these are required
     /**
      * Returns the interface contract defining the interface 
      * 
      * @return the interface contract
      */
-    InterfaceContract getInterfaceContract();
+   // InterfaceContract getInterfaceContract();
     
     /**
      * Sets the interface contract defining the interface 
      * 
      * @param interfaceContract the interface contract
      */
-    void setInterfaceContract(InterfaceContract interfaceContract);   
+   // void setInterfaceContract(InterfaceContract interfaceContract);   
    
     /**
      * Returns the binding specific URI for this endpoint.
      * 
      * @return uri the binding specific URI
      */
-    String getURI();
+   // String getURI();
 
     /**
      * Sets the binding specific URI for this endpoint.
      * 
      * @param uri the binding specific URI
      */
-    void setURI(String uri);
+   // void setURI(String uri);
 }
