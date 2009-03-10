@@ -103,12 +103,11 @@ public class OSGiReadImplTestCase extends TestCase {
             "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\" targetNamespace=\"http://osgi\" "
                 + "bundleSymbolicName=\"OSGiTestService\" "
                 + "bundleVersion=\"2.0.0\" "
-                + "imports=\"import1.jar import2.jar\""
                 + "/>";
         ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
 
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        reader.next();
+        reader.nextTag();
 
         OSGiImplementation osgiImpl = (OSGiImplementation)staxProcessor.read(reader);
 
