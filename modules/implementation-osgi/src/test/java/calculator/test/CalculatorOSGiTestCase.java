@@ -60,13 +60,24 @@ public class CalculatorOSGiTestCase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Set<URL> bundles = new HashSet<URL>();
-        bundles.add(OSGiTestBundles
-            .createBundle("target/test-classes/calculator-bundle.jar",
-                          "calculator/META-INF/MANIFEST.MF",
-                          new String[] {"OSGI-INF/calculator-component.xml"},
-                          CalculatorService.class,
-                          CalculatorServiceImpl.class,
-                          CalculatorActivator.class));
+
+        URL url =
+            CalculatorOSGiTestCase.class.getClassLoader()
+                .getResource("org/osgi/service/component/ComponentContext.class");
+        if (url != null) {
+            String path = url.getPath();
+            int index = path.lastIndexOf('!');
+            path = path.substring(0, index);
+            url = new URL(path);
+            bundles.add(url);
+        }
+
+        bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
+                                                 "calculator/META-INF/MANIFEST.MF",
+                                                 new String[] {"OSGI-INF/calculator-component.xml"},
+                                                 CalculatorService.class,
+                                                 CalculatorServiceImpl.class,
+                                                 CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
                                                  "calculator/operations/META-INF/MANIFEST.MF",
@@ -87,6 +98,7 @@ public class CalculatorOSGiTestCase {
             host = new EquinoxHost(bundles);
             BundleContext context = host.start();
             for (Bundle b : context.getBundles()) {
+                System.out.println(b.getSymbolicName());
                 b.start();
             }
             ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());

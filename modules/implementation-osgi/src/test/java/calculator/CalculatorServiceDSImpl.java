@@ -18,6 +18,8 @@
  */
 package calculator;
 
+import org.osgi.service.component.ComponentContext;
+
 import calculator.operations.AddService;
 import calculator.operations.DivideService;
 import calculator.operations.MultiplyService;
@@ -36,13 +38,13 @@ public class CalculatorServiceDSImpl implements CalculatorService {
         super();
     }
 
-    /*
     protected void activate(ComponentContext context) {
+        System.out.println("Activating " + context);
     }
-    
+
     protected void deactivate(ComponentContext context) {
+        System.out.println("Deactivating " + context);
     }
-    */
 
     /*
      * The following setters can be used for DS injection
