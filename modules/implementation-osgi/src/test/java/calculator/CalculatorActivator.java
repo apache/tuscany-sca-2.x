@@ -27,7 +27,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 import calculator.operations.AddService;
@@ -37,8 +36,6 @@ import calculator.operations.AddService;
  */
 public class CalculatorActivator implements BundleActivator {
     private Logger logger = Logger.getLogger(CalculatorActivator.class.getName());
-
-    private ServiceRegistration registration;
 
     private Bundle getBundle(BundleContext bundleContext, Class<?> cls) {
         PackageAdmin packageAdmin = null;
@@ -57,18 +54,21 @@ public class CalculatorActivator implements BundleActivator {
     }
 
     public void start(BundleContext context) throws Exception {
+        logger.info("Starting " + context.getBundle());
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("sca.service", "CalculatorComponent#service-name(Calculator)");
+        props.put("calculator", "Calculator");
         logger.info("Registering " + CalculatorService.class.getName());
-        registration = context.registerService(CalculatorService.class.getName(), new CalculatorServiceImpl(), props);
+        CalculatorService calculator = new CalculatorServiceImpl(context);
+        context.registerService(CalculatorService.class.getName(), calculator, props);
 
         getBundle(context, AddService.class);
 
     }
 
     public void stop(BundleContext context) throws Exception {
-        logger.info("UnRegistering " + registration);
-        registration.unregister();
+        logger.info("Stopping " + context.getBundle());
+        // Registered services will be automatically unregistered
     }
 
 }
