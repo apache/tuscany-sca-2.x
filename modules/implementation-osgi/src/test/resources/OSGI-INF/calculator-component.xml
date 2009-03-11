@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <component name="CalculatorComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <implementation class="calculator.CalculatorServiceImpl" />
+    <implementation class="calculator.CalculatorServiceDSImpl" />
     <service>
         <provide interface="calculator.CalculatorService" />
     </service>
