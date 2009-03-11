@@ -294,13 +294,15 @@ public class EquinoxHost {
             // Start the extensiblity and launcher bundles
             String extensibilityBundleName = "org.apache.tuscany.sca.extensibility.equinox";
             Bundle extensibilityBundle = allBundles.get(extensibilityBundleName);
-            if ((extensibilityBundle.getState() & Bundle.ACTIVE) == 0) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Starting bundle: " + string(extensibilityBundle, false));
+            if (extensibilityBundle != null) {
+                if ((extensibilityBundle.getState() & Bundle.ACTIVE) == 0) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Starting bundle: " + string(extensibilityBundle, false));
+                    }
+                    extensibilityBundle.start();
+                } else if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Bundle is already started: " + string(extensibilityBundle, false));
                 }
-                extensibilityBundle.start();
-            } else if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Bundle is already started: " + string(extensibilityBundle, false));
             }
             if ((launcherBundle.getState() & Bundle.ACTIVE) == 0) {
                 if (logger.isLoggable(Level.FINE)) {
