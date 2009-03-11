@@ -19,6 +19,9 @@
 
 package calculator.test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import calculator.CalculatorActivator;
 import calculator.CalculatorService;
@@ -56,13 +60,14 @@ public class CalculatorOSGiTestCase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Set<URL> bundles = new HashSet<URL>();
-        bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
-                                                 "calculator",
-                                                 "calculator",
-                                                 "calculator.operations,org.osgi.service.packageadmin",
-                                                 CalculatorService.class,
-                                                 CalculatorServiceImpl.class,
-                                                 CalculatorActivator.class));
+        bundles.add(OSGiTestBundles
+            .createBundle("target/test-classes/calculator-bundle.jar",
+                          "calculator",
+                          "calculator",
+                          "calculator.operations,org.osgi.service.packageadmin,org.osgi.util.tracker",
+                          CalculatorService.class,
+                          CalculatorServiceImpl.class,
+                          CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
                                                  "calculator.operations",
@@ -81,13 +86,43 @@ public class CalculatorOSGiTestCase {
             host = new EquinoxHost(bundles);
             BundleContext context = host.start();
             for (Bundle b : context.getBundles()) {
-                System.out.println(b);
                 b.start();
             }
+            ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());
+            CalculatorService calculator = cast(context.getService(ref), CalculatorService.class);
+            System.out.println("2.0 + 1.0 = " + calculator.add(2.0, 1.0));
+            System.out.println("2.0 - 1.0 = " + calculator.subtract(2.0, 1.0));
+            System.out.println("2.0 * 1.0 = " + calculator.multiply(2.0, 1.0));
+            System.out.println("2.0 / 1.0 = " + calculator.divide(2.0, 1.0));
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    private static <T> T cast(Object obj, Class<T> cls) {
+        if (cls.isInstance(obj)) {
+            return cls.cast(obj);
+        } else {
+            return cls.cast(Proxy.newProxyInstance(cls.getClassLoader(),
+                                                   new Class<?>[] {cls},
+                                                   new InvocationHandlerImpl(obj)));
+        }
+    }
+
+    private static class InvocationHandlerImpl implements InvocationHandler {
+        private Object instance;
+
+        public InvocationHandlerImpl(Object instance) {
+            super();
+            this.instance = instance;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Method m = instance.getClass().getMethod(method.getName(), method.getParameterTypes());
+            return m.invoke(instance, args);
+        }
+
     }
 
     @Test
