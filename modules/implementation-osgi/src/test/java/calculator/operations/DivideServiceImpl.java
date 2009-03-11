@@ -16,20 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+package calculator.operations;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An implementation of the subtract service.
+ * An implementation of the Divide service.
  */
-public class SubtractServiceImpl implements SubtractService {
+public class DivideServiceImpl implements DivideService {
 
-    public double subtract(double n1, double n2) {
+    public double divide(double n1, double n2) {
         Logger logger = Logger.getLogger("calculator");
-        logger.log(Level.INFO, "Subtracting " + n1 + " from " + n2);
-        return n1 - n2;
+        logger.log(Level.INFO, "Dividing " + n1 + " with " + n2);
+        return n1 / n2;
     }
 
 }

@@ -72,8 +72,8 @@ public class OSGiReadImplTestCase {
 
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
                                      OSGiTestInterface.class.getName(),
-                                     OSGiTestImpl.class,
-                                     OSGiTestInterface.class);
+                                     null,
+                                     OSGiTestImpl.class, OSGiTestInterface.class);
 
     }
 

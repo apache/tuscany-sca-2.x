@@ -16,20 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+package calculator.operations;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An implementation of the Add service
+ * An implementation of the Multiply service.
  */
-public class AddServiceImpl implements AddService {
+public class MultiplyServiceImpl implements MultiplyService {
 
-    public double add(double n1, double n2) {
+    public double multiply(double n1, double n2) {
         Logger logger = Logger.getLogger("calculator");
-        logger.log(Level.INFO, "Adding " + n1 + " and " + n2);
-        return n1 + n2;
+        logger.log(Level.INFO, "Multiplying " + n1 + " with " + n2);
+        return n1 * n2;
     }
 
 }
