@@ -259,7 +259,8 @@ public class TestUtils {
         if (endpointReference.getTargetName() != null){
             buffer += indent + "                     Wired:            " +"\n";
             buffer += indent + "                       Target:         " + endpointReference.getTargetName()+"\n";
-            if (endpointReference.getTargetEndpoint() != null){
+            if (endpointReference.getTargetEndpoint() != null && 
+                endpointReference.getTargetEndpoint().isUnresolved() == false){
                 buffer += indent + "                       Binding:        " + endpointReference.getBinding().getName() +"\n";
                 buffer += indent + "                       TargetEndpoint: " + endpointReference.getTargetEndpoint().getBinding().getName()+"\n";
             } else {

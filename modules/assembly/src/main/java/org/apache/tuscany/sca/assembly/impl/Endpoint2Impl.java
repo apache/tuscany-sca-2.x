@@ -38,11 +38,12 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class Endpoint2Impl implements Endpoint2 {
 
+    private Boolean unresolved;
     private Component component;
     private ComponentService service;
     private Binding binding;
     private Binding callbackBinding;
-    //private InterfaceContract interfaceContract;
+    private InterfaceContract interfaceContract;
     //private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -56,12 +57,11 @@ public class Endpoint2Impl implements Endpoint2 {
     }
 
     public boolean isUnresolved() {
-        // TODO Auto-generated method stub
-        return false;
+        return unresolved;
     }
 
     public void setUnresolved(boolean unresolved) {
-        // TODO Auto-generated method stub
+        this.unresolved = unresolved;
     }
 
     public Component getComponent() {
@@ -87,7 +87,7 @@ public class Endpoint2Impl implements Endpoint2 {
     public void setBinding(Binding binding) {
         this.binding = binding;
     }
-/*
+
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
@@ -95,7 +95,7 @@ public class Endpoint2Impl implements Endpoint2 {
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
     }
-
+/*
     public String getURI() {
         return uri;
     }
