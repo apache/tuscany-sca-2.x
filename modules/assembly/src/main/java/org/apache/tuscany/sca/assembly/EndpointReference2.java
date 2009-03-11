@@ -31,6 +31,14 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public interface EndpointReference2 extends Base, PolicySubject, Cloneable {  
     
     /**
+     * Supports endpoint reference cloning
+     * 
+     * @return endpointReference
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
+    
+    /**
      * Get the component model object
      * 
      * @return component
@@ -114,24 +122,24 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      */
     void setTargetEndpoint(Endpoint2 targetEndpoint);
     
-    
-    
-    
-    // not sure the methods below are required
-    
     /**
      * Returns the interface contract defining the interface 
      * 
      * @return the interface contract
      */
-    //InterfaceContract getInterfaceContract();
+    InterfaceContract getInterfaceContract();
     
     /**
      * Sets the interface contract defining the interface 
      * 
      * @param interfaceContract the interface contract
      */
-    //void setInterfaceContract(InterfaceContract interfaceContract); 
+    void setInterfaceContract(InterfaceContract interfaceContract);
+    
+    
+    // not sure the methods below are required
+    
+
     
     /**
      * Returns the binding specific target URI for this endpoint reference.
