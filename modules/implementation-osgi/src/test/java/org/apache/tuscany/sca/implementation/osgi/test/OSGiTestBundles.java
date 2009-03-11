@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,11 +49,42 @@ public class OSGiTestBundles {
         return index == -1 ? "" : name.substring(0, index);
     }
 
+    public static URL createBundle(String jarName, String mfFile, String[] resources, Class<?>... classes)
+        throws IOException {
+        InputStream is = OSGiTestBundles.class.getClassLoader().getResourceAsStream(mfFile);
+        Manifest manifest = new Manifest(is);
+        is.close();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JarOutputStream jarOut = new JarOutputStream(out, manifest);
+
+        for (Class<?> cls : classes) {
+            addClass(jarOut, cls);
+        }
+
+        if (resources != null) {
+            for (String resource : resources) {
+                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource);
+            }
+        }
+
+        jarOut.close();
+        out.close();
+
+        File jar = new File(jarName);
+        FileOutputStream fileOut = new FileOutputStream(jar);
+        fileOut.write(out.toByteArray());
+        fileOut.close();
+
+        return jar.toURI().toURL();
+    }
+
     public static URL createBundle(String jarName,
                                    String bundleName,
                                    String exports,
                                    String imports,
-                                   Class<?>... classes) throws Exception {
+                                   String[] resources,
+                                   Class<?>... classes) throws IOException {
 
         Class<?> activator = null;
         Set<String> packages = new HashSet<String>();
@@ -103,6 +135,12 @@ public class OSGiTestBundles {
             addClass(jarOut, cls);
         }
 
+        if (resources != null) {
+            for (String resource : resources) {
+                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource);
+            }
+        }
+
         jarOut.close();
         out.close();
 
@@ -115,12 +153,19 @@ public class OSGiTestBundles {
     }
 
     private static void addClass(JarOutputStream jarOut, Class<?> javaClass) throws IOException, FileNotFoundException {
-        String interfaceClassName = javaClass.getName().replaceAll("\\.", "/") + ".class";
+        String classFile = javaClass.getName().replace('.', '/') + ".class";
 
-        URL url = javaClass.getClassLoader().getResource(interfaceClassName);
+        ClassLoader cl = javaClass.getClassLoader();
+
+        addResource(jarOut, cl, classFile);
+    }
+
+    private static void addResource(JarOutputStream jarOut, ClassLoader cl, String resourceName) throws IOException,
+        FileNotFoundException {
+        URL url = cl.getResource(resourceName);
         String path = url.getPath();
 
-        ZipEntry ze = new ZipEntry(interfaceClassName);
+        ZipEntry ze = new ZipEntry(resourceName);
 
         jarOut.putNextEntry(ze);
         FileInputStream file = new FileInputStream(path);

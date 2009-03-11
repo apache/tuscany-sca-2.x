@@ -74,6 +74,7 @@ public class OSGiReadImplTestCase {
                                      OSGiTestInterface.class.getName(),
                                      null,
                                      null,
+                                     (String[]) null,
                                      OSGiTestImpl.class, OSGiTestInterface.class);
 
     }
