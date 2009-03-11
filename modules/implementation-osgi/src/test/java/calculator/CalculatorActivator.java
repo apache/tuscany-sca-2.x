@@ -23,9 +23,14 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.packageadmin.PackageAdmin;
+
+import calculator.operations.AddService;
 
 /**
  * 
@@ -35,11 +40,30 @@ public class CalculatorActivator implements BundleActivator {
 
     private ServiceRegistration registration;
 
+    private Bundle getBundle(BundleContext bundleContext, Class<?> cls) {
+        PackageAdmin packageAdmin = null;
+        // PackageAdmin is used to resolve bundles 
+        ServiceReference ref = bundleContext.getServiceReference("org.osgi.service.packageadmin.PackageAdmin");
+        if (ref != null) {
+            packageAdmin = (PackageAdmin)bundleContext.getService(ref);
+            Bundle bundle = packageAdmin.getBundle(cls);
+            if (bundle != null) {
+                logger.info(cls.getName() + " is loaded by bundle: " + bundle.getSymbolicName());
+            }
+            bundleContext.ungetService(ref);
+            return bundle;
+        }
+        return null;
+    }
+
     public void start(BundleContext context) throws Exception {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("sca.service", "CalculatorComponent#service-name(Calculator)");
         logger.info("Registering " + CalculatorService.class.getName());
         registration = context.registerService(CalculatorService.class.getName(), new CalculatorServiceImpl(), props);
+
+        getBundle(context, AddService.class);
+
     }
 
     public void stop(BundleContext context) throws Exception {

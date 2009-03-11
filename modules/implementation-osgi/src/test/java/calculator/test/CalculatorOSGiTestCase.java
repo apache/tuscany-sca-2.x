@@ -58,13 +58,16 @@ public class CalculatorOSGiTestCase {
         Set<URL> bundles = new HashSet<URL>();
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                  "calculator",
-                                                 "calculator.operations",
+                                                 "calculator",
+                                                 "calculator.operations,org.osgi.service.packageadmin",
                                                  CalculatorService.class,
-                                                 CalculatorServiceImpl.class, CalculatorActivator.class));
+                                                 CalculatorServiceImpl.class,
+                                                 CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                 "operations",
-                                                 null,
+                                                 "calculator.operations",
+                                                 "calculator.operations",
+                                                 "calculator.operations",
                                                  OperationsActivator.class,
                                                  AddService.class,
                                                  AddServiceImpl.class,
@@ -72,7 +75,8 @@ public class CalculatorOSGiTestCase {
                                                  SubtractServiceImpl.class,
                                                  MultiplyService.class,
                                                  MultiplyServiceImpl.class,
-                                                 DivideService.class, DivideServiceImpl.class));
+                                                 DivideService.class,
+                                                 DivideServiceImpl.class));
         try {
             host = new EquinoxHost(bundles);
             BundleContext context = host.start();
