@@ -48,25 +48,32 @@ public class OSGiTestBundles {
         return index == -1 ? "" : name.substring(0, index);
     }
 
-    public static URL createBundle(String jarName, String bundleName, String imports, Class<?>... classes)
-        throws Exception {
+    public static URL createBundle(String jarName,
+                                   String bundleName,
+                                   String exports,
+                                   String imports,
+                                   Class<?>... classes) throws Exception {
 
         Class<?> activator = null;
         Set<String> packages = new HashSet<String>();
-        StringBuffer exports = new StringBuffer();
+        StringBuffer exportPackages = new StringBuffer();
+        if (exports != null) {
+            exportPackages.append(exports);
+        }
         for (Class<?> cls : classes) {
             if (BundleActivator.class.isAssignableFrom(cls)) {
                 activator = cls;
             }
-            if (cls.isInterface()) {
+            if (exports == null && cls.isInterface()) {
                 String pkg = getPackageName(cls);
                 if (packages.add(pkg)) {
-                    exports.append(pkg).append(",");
+                    exportPackages.append(pkg).append(",");
                 }
             }
         }
-        if (exports.length() > 0) {
-            exports.deleteCharAt(exports.length() - 1);
+        int len = exportPackages.length();
+        if (len > 0 && exportPackages.charAt(len - 1) == ',') {
+            exportPackages.deleteCharAt(len - 1);
         }
 
         Manifest manifest = new Manifest();
@@ -76,14 +83,14 @@ public class OSGiTestBundles {
         manifest.getMainAttributes().putValue(Constants.BUNDLE_SYMBOLICNAME, bundleName);
         manifest.getMainAttributes().putValue(Constants.BUNDLE_VERSION, "1.0.0");
         manifest.getMainAttributes().putValue(Constants.BUNDLE_NAME, bundleName);
-        manifest.getMainAttributes().putValue(Constants.EXPORT_PACKAGE, exports.toString());
-        String importPackages = null;
+        manifest.getMainAttributes().putValue(Constants.EXPORT_PACKAGE, exportPackages.toString());
+        StringBuffer importPackages = new StringBuffer();
         if (imports != null) {
-            importPackages = "org.osgi.framework," + imports;
+            importPackages.append(imports).append(",org.osgi.framework");
         } else {
-            importPackages = "org.osgi.framework";
+            importPackages.append("org.osgi.framework");
         }
-        manifest.getMainAttributes().putValue(Constants.IMPORT_PACKAGE, importPackages);
+        manifest.getMainAttributes().putValue(Constants.IMPORT_PACKAGE, importPackages.toString());
 
         if (activator != null) {
             manifest.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR, activator.getName());
