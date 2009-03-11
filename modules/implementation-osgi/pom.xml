@@ -42,6 +42,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eclipse.osgi</groupId>
+            <artifactId>services</artifactId>
+            <version>3.1.200-v20070605</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-api</artifactId>
             <version>2.0-SNAPSHOT</version>

@@ -62,17 +62,18 @@ public class CalculatorOSGiTestCase {
         Set<URL> bundles = new HashSet<URL>();
         bundles.add(OSGiTestBundles
             .createBundle("target/test-classes/calculator-bundle.jar",
-                          "calculator",
-                          "calculator",
-                          "calculator.operations,org.osgi.service.packageadmin,org.osgi.util.tracker",
+                          "calculator/META-INF/MANIFEST.MF",
+                          new String[] {"OSGI-INF/calculator-component.xml"},
                           CalculatorService.class,
                           CalculatorServiceImpl.class,
                           CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                 "calculator.operations",
-                                                 "calculator.operations",
-                                                 "calculator.operations",
+                                                 "calculator/operations/META-INF/MANIFEST.MF",
+                                                 new String[] {"OSGI-INF/add-component.xml",
+                                                               "OSGI-INF/subtract-component.xml",
+                                                               "OSGI-INF/multiply-component.xml",
+                                                               "OSGI-INF/divide-component.xml"},
                                                  OperationsActivator.class,
                                                  AddService.class,
                                                  AddServiceImpl.class,
