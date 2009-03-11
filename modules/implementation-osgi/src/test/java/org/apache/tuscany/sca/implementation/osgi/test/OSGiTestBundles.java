@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.implementation.osgi.test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -45,16 +48,21 @@ public class OSGiTestBundles {
         return index == -1 ? "" : name.substring(0, index);
     }
 
-    public static void createBundle(String jarName, String bundleName, Class<?>... classes) throws Exception {
+    public static URL createBundle(String jarName, String bundleName, String imports, Class<?>... classes)
+        throws Exception {
 
         Class<?> activator = null;
+        Set<String> packages = new HashSet<String>();
         StringBuffer exports = new StringBuffer();
         for (Class<?> cls : classes) {
-            if (cls.isAssignableFrom(BundleActivator.class)) {
+            if (BundleActivator.class.isAssignableFrom(cls)) {
                 activator = cls;
             }
             if (cls.isInterface()) {
-                exports.append(getPackageName(cls)).append(",");
+                String pkg = getPackageName(cls);
+                if (packages.add(pkg)) {
+                    exports.append(pkg).append(",");
+                }
             }
         }
         if (exports.length() > 0) {
@@ -62,12 +70,20 @@ public class OSGiTestBundles {
         }
 
         Manifest manifest = new Manifest();
+        // This attribute Manifest-Version is required so that the MF will be added to the jar
+        manifest.getMainAttributes().putValue("Manifest-Version", "1.0");
         manifest.getMainAttributes().putValue(Constants.BUNDLE_MANIFESTVERSION, "2");
         manifest.getMainAttributes().putValue(Constants.BUNDLE_SYMBOLICNAME, bundleName);
         manifest.getMainAttributes().putValue(Constants.BUNDLE_VERSION, "1.0.0");
         manifest.getMainAttributes().putValue(Constants.BUNDLE_NAME, bundleName);
         manifest.getMainAttributes().putValue(Constants.EXPORT_PACKAGE, exports.toString());
-        manifest.getMainAttributes().putValue(Constants.IMPORT_PACKAGE, "org.osgi.framework," + exports.toString());
+        String importPackages = null;
+        if (imports != null) {
+            importPackages = "org.osgi.framework," + imports;
+        } else {
+            importPackages = "org.osgi.framework";
+        }
+        manifest.getMainAttributes().putValue(Constants.IMPORT_PACKAGE, importPackages);
 
         if (activator != null) {
             manifest.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR, activator.getName());
@@ -83,10 +99,12 @@ public class OSGiTestBundles {
         jarOut.close();
         out.close();
 
-        FileOutputStream fileOut = new FileOutputStream(jarName);
+        File jar = new File(jarName);
+        FileOutputStream fileOut = new FileOutputStream(jar);
         fileOut.write(out.toByteArray());
         fileOut.close();
 
+        return jar.toURI().toURL();
     }
 
     private static void addClass(JarOutputStream jarOut, Class<?> javaClass) throws IOException, FileNotFoundException {
@@ -102,5 +120,6 @@ public class OSGiTestBundles {
         byte[] fileContents = new byte[file.available()];
         file.read(fileContents);
         jarOut.write(fileContents);
+        jarOut.closeEntry();
     }
 }

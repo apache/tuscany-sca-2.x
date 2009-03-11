@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package calculator;
+package calculator.operations;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -39,12 +39,20 @@ public class OperationsActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
+
+        logger.info("Registering " + AddService.class.getName());
         props.put("sca.service", "AddComponent#service-name(Add)");
         registrations.add(context.registerService(AddService.class.getName(), new AddServiceImpl(), props));
+
+        logger.info("Registering " + SubtractService.class.getName());
         props.put("sca.service", "SubtractComponent#service-name(Subtract)");
         registrations.add(context.registerService(SubtractService.class.getName(), new SubtractServiceImpl(), props));
+
+        logger.info("Registering " + MultiplyService.class.getName());
         props.put("sca.service", "MultiplyComponent#service-name(Multiply)");
         registrations.add(context.registerService(MultiplyService.class.getName(), new MultiplyServiceImpl(), props));
+
+        logger.info("Registering " + DivideService.class.getName());
         props.put("sca.service", "DivideComponent#service-name(Divide)");
         registrations.add(context.registerService(DivideService.class.getName(), new DivideServiceImpl(), props));
     }
@@ -52,7 +60,7 @@ public class OperationsActivator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
         for (ServiceRegistration registration : registrations) {
             logger.info("Unregistering " + registration);
-            context.ungetService(registration.getReference());
+            registration.unregister();
         }
     }
 

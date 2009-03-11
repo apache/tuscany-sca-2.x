@@ -18,7 +18,11 @@
  */
 package calculator;
 
-import org.oasisopen.sca.annotation.Reference;
+import calculator.operations.AddService;
+import calculator.operations.DivideService;
+import calculator.operations.MultiplyService;
+import calculator.operations.SubtractService;
+
 
 /**
  * An implementation of the Calculator service.
@@ -30,22 +34,18 @@ public class CalculatorServiceImpl implements CalculatorService {
     private MultiplyService multiplyService;
     private DivideService divideService;
 
-    @Reference
     public void setAddService(AddService addService) {
         this.addService = addService;
     }
 
-    @Reference
     public void setSubtractService(SubtractService subtractService) {
         this.subtractService = subtractService;
     }
 
-    @Reference
     public void setDivideService(DivideService divideService) {
         this.divideService = divideService;
     }
 
-    @Reference
     public void setMultiplyService(MultiplyService multiplyService) {
         this.multiplyService = multiplyService;
     }

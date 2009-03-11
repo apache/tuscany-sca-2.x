@@ -16,20 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+package calculator.operations;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * An implementation of the Multiply service.
+ * The interface for the subtract service
  */
-public class MultiplyServiceImpl implements MultiplyService {
+@Remotable
+public interface SubtractService {
 
-    public double multiply(double n1, double n2) {
-        Logger logger = Logger.getLogger("calculator");
-        logger.log(Level.INFO, "Multiplying " + n1 + " with " + n2);
-        return n1 * n2;
-    }
+    double subtract(double n1, double n2);
 
 }

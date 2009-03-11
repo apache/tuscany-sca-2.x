@@ -21,6 +21,7 @@ package calculator;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -30,18 +31,20 @@ import org.osgi.framework.ServiceRegistration;
  * 
  */
 public class CalculatorActivator implements BundleActivator {
+    private Logger logger = Logger.getLogger(CalculatorActivator.class.getName());
+
     private ServiceRegistration registration;
 
     public void start(BundleContext context) throws Exception {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("sca.service", "CalculatorComponent#service-name(Calculator)");
-        registration = context.registerService(CalculatorService.class.getName(),
-                                new CalculatorServiceImpl(),
-                                props);
+        logger.info("Registering " + CalculatorService.class.getName());
+        registration = context.registerService(CalculatorService.class.getName(), new CalculatorServiceImpl(), props);
     }
 
     public void stop(BundleContext context) throws Exception {
-        context.ungetService(registration.getReference());
+        logger.info("UnRegistering " + registration);
+        registration.unregister();
     }
 
 }
