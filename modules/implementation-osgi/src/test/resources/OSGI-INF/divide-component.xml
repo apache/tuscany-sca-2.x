@@ -17,9 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<component name="DivideComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
+<scr:component name="DivideComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.operations.DivideServiceImpl" />
     <service>
         <provide interface="calculator.operations.DivideService" />
     </service>
-</component>
+</scr:component>

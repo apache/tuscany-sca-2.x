@@ -36,6 +36,7 @@ public class CalculatorServiceDSImpl implements CalculatorService {
 
     public CalculatorServiceDSImpl() {
         super();
+        System.out.println("CalculatorServiceDSImpl()");
     }
 
     protected void activate(ComponentContext context) {
@@ -50,6 +51,7 @@ public class CalculatorServiceDSImpl implements CalculatorService {
      * The following setters can be used for DS injection
      */
     public void setAddService(AddService addService) {
+        System.out.println("setAddService()");
         this.addService = addService;
     }
 
@@ -65,6 +67,25 @@ public class CalculatorServiceDSImpl implements CalculatorService {
         this.multiplyService = multiplyService;
     }
 
+    /*
+     * The following setters can be used for DS injection
+     */
+    public void unsetAddService(AddService addService) {
+        System.out.println("unsetAddService()");
+        this.addService = null;
+    }
+
+    public void unsetSubtractService(SubtractService subtractService) {
+        this.subtractService = null;
+    }
+
+    public void unsetDivideService(DivideService divideService) {
+        this.divideService = null;
+    }
+
+    public void unsetMultiplyService(MultiplyService multiplyService) {
+        this.multiplyService = null;
+    }    
     private <T> T getService(Class<T> cls) {
         for (Object s : new Object[] {addService, subtractService, multiplyService, divideService}) {
             if (cls.isInstance(s)) {

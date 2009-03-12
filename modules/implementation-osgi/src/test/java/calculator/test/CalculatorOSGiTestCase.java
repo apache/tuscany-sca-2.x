@@ -19,6 +19,7 @@
 
 package calculator.test;
 
+import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -37,6 +38,7 @@ import org.osgi.framework.ServiceReference;
 
 import calculator.CalculatorActivator;
 import calculator.CalculatorService;
+import calculator.CalculatorServiceDSImpl;
 import calculator.CalculatorServiceImpl;
 import calculator.operations.AddService;
 import calculator.operations.AddServiceImpl;
@@ -61,15 +63,11 @@ public class CalculatorOSGiTestCase {
     public static void setUpBeforeClass() throws Exception {
         Set<URL> bundles = new HashSet<URL>();
 
-        URL url =
-            CalculatorOSGiTestCase.class.getClassLoader()
-                .getResource("org/osgi/service/component/ComponentContext.class");
-        if (url != null) {
-            String path = url.getPath();
-            int index = path.lastIndexOf('!');
-            path = path.substring(0, index);
-            url = new URL(path);
-            bundles.add(url);
+        File plugins = new File("target/test-classes/plugins");
+        for (File f : plugins.listFiles()) {
+            if (f.isFile()) {
+                bundles.add(f.toURI().toURL());
+            }
         }
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
@@ -77,6 +75,7 @@ public class CalculatorOSGiTestCase {
                                                  new String[] {"OSGI-INF/calculator-component.xml"},
                                                  CalculatorService.class,
                                                  CalculatorServiceImpl.class,
+                                                 CalculatorServiceDSImpl.class,
                                                  CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
@@ -98,8 +97,16 @@ public class CalculatorOSGiTestCase {
             host = new EquinoxHost(bundles);
             BundleContext context = host.start();
             for (Bundle b : context.getBundles()) {
-                System.out.println(b.getSymbolicName());
-                b.start();
+                if (b.getSymbolicName().equals("org.eclipse.equinox.ds")) {
+                    b.start();
+                    System.out.println(string(b, false));
+                }
+            }
+            for (Bundle b : context.getBundles()) {
+                if (b.getSymbolicName().startsWith("calculator")) {
+                    b.start();
+                    System.out.println(string(b, false));
+                }
             }
             ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());
             CalculatorService calculator = cast(context.getService(ref), CalculatorService.class);
@@ -141,6 +148,43 @@ public class CalculatorOSGiTestCase {
     @Test
     public void testOSGi() {
 
+    }
+
+    /**
+     * Returns a string representation of the given bundle.
+     * 
+     * @param b
+     * @param verbose
+     * @return
+     */
+    static String string(Bundle bundle, boolean verbose) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(bundle.getBundleId()).append(" ").append(bundle.getSymbolicName());
+        int s = bundle.getState();
+        if ((s & Bundle.UNINSTALLED) != 0) {
+            sb.append(" UNINSTALLED");
+        }
+        if ((s & Bundle.INSTALLED) != 0) {
+            sb.append(" INSTALLED");
+        }
+        if ((s & Bundle.RESOLVED) != 0) {
+            sb.append(" RESOLVED");
+        }
+        if ((s & Bundle.STARTING) != 0) {
+            sb.append(" STARTING");
+        }
+        if ((s & Bundle.STOPPING) != 0) {
+            sb.append(" STOPPING");
+        }
+        if ((s & Bundle.ACTIVE) != 0) {
+            sb.append(" ACTIVE");
+        }
+    
+        if (verbose) {
+            sb.append(" ").append(bundle.getLocation());
+            sb.append(" ").append(bundle.getHeaders());
+        }
+        return sb.toString();
     }
 
     /**
