@@ -18,7 +18,6 @@
  * under the License.    
 -->
 <scr:component name="CalculatorComponent" 
-               immediate="true"
                xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.CalculatorServiceDSImpl" />
     <service>

@@ -71,7 +71,7 @@ public class OSGiReadImplTestCase {
                 .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
-                                     OSGiTestInterface.class.getName(),
+                                     "osgi.test",
                                      null,
                                      null,
                                      (String[]) null,
@@ -127,9 +127,9 @@ public class OSGiReadImplTestCase {
     public void testReadOSGiImplementation() throws Exception {
 
         String str =
-            "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\" targetNamespace=\"http://osgi\" "
-                + "bundleSymbolicName=\"OSGiTestService\" "
-                + "bundleVersion=\"2.0.0\" "
+            "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<implementation.osgi xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\" targetNamespace=\"http://test\" "
+                + "bundleSymbolicName=\"osgi.test\" "
+                + "bundleVersion=\"1.0.0\" "
                 + "/>";
         ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
 
@@ -138,8 +138,8 @@ public class OSGiReadImplTestCase {
 
         OSGiImplementation osgiImpl = (OSGiImplementation)staxProcessor.read(reader);
 
-        assertEquals(osgiImpl.getBundleSymbolicName(), "OSGiTestService");
-        assertEquals(osgiImpl.getBundleVersion(), "2.0.0");
+        assertEquals(osgiImpl.getBundleSymbolicName(), "osgi.test");
+        assertEquals(osgiImpl.getBundleVersion(), "1.0.0");
     }
 
 }

@@ -18,18 +18,21 @@
     * under the License.    
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://test"
-           name="OSGiTestComposite">
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="http://calculator" 
+    name="OperationsComposite">
 
-    <component name="OSGiTestServiceComponent">
-        <tuscany:implementation.osgi bundleVersion="1.0.0"
-            bundleSymbolicName="osgi.test" />
-
-        <property name="currency" type="xsd:string">USD</property>
-        <property name="exchangeRate" type="xsd:double">2.0</property>
-
+    <component name="OperationsComponent">
+        <tuscany:implementation.osgi bundleSymbolicName="calculator.operations" bundleVersion="1.0.0" />
+        <service name="AddService">
+        </service>
+        <service name="SubtractService">
+        </service>
+        <service name="MultiplyService">
+        </service>
+        <service name="DivideService">
+        </service>
     </component>
 
 </composite>
