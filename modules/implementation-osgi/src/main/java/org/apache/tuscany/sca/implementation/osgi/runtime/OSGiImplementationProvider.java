@@ -41,16 +41,12 @@ import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.scope.Scope;
-import org.apache.tuscany.sca.core.scope.ScopeRegistry;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -93,7 +89,6 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
     private boolean wiresResolved;
 
     private AtomicInteger startBundleEntryCount = new AtomicInteger();
-    private AtomicInteger processAnnotationsEntryCount = new AtomicInteger();
 
     private Hashtable<String, Object> componentProperties = new Hashtable<String, Object>();
     private RuntimeComponent runtimeComponent;
@@ -103,30 +98,17 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
     private OSGiServiceListener osgiServiceListener;
     private PackageAdmin packageAdmin;
 
-    private ScopeRegistry scopeRegistry;
-    private DataBindingExtensionPoint dataBindingRegistry;
     private ProxyFactoryExtensionPoint proxyFactoryExtensionPoint;
 
     private boolean packagesRefreshed;
 
-    private MessageFactory messageFactory;
-    private InterfaceContractMapper mapper;
-
     public OSGiImplementationProvider(RuntimeComponent component,
                                       OSGiImplementation impl,
-                                      DataBindingExtensionPoint dataBindingRegistry,
-                                      ScopeRegistry scopeRegistry,
-                                      MessageFactory messageFactory,
-                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint,
-                                      InterfaceContractMapper mapper) throws BundleException {
+                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint) throws BundleException {
 
         this.implementation = impl;
         this.runtimeComponent = component;
-        this.dataBindingRegistry = dataBindingRegistry;
-        this.scopeRegistry = scopeRegistry;
-        this.messageFactory = messageFactory;
         this.proxyFactoryExtensionPoint = proxyFactoryExtensionPoint;
-        this.mapper = mapper;
 
         BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
         osgiBundle = (Bundle)implementation.getBundle();
@@ -183,7 +165,7 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
      * service listener, we use this method to filter all service references so that 
      * the service matching functionality of OSGi can be directly used.
      */
-    private org.osgi.framework.ServiceReference getOSGiServiceReference(String scaServiceName,
+    private ServiceReference getOSGiServiceReference(String scaServiceName,
                                                                         String osgiServiceName,
                                                                         String filter) throws InvalidSyntaxException {
 
@@ -192,9 +174,9 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
             org.osgi.framework.ServiceReference[] references =
                 osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, filter);
 
-            org.osgi.framework.ServiceReference reference = null;
+            ServiceReference reference = null;
             if (references != null) {
-                for (org.osgi.framework.ServiceReference ref : references) {
+                for (ServiceReference ref : references) {
                     if (ref.getBundle() != osgiBundle)
                         continue;
                     Object compName = ref.getProperty(COMPONENT_SERVICE_NAME);
@@ -213,11 +195,11 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
 
         filter = scaServiceName == null ? null : "(" + COMPONENT_SERVICE_NAME + "=" + compServiceName + ")";
 
-        org.osgi.framework.ServiceReference[] references =
+        ServiceReference[] references =
             osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, filter);
 
         if (references != null) {
-            for (org.osgi.framework.ServiceReference ref : references) {
+            for (ServiceReference ref : references) {
                 if (ref.getBundle() == osgiBundle) {
                     return ref;
                 }
@@ -226,10 +208,10 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
 
         references = osgiBundle.getBundleContext().getServiceReferences(osgiServiceName, null);
 
-        org.osgi.framework.ServiceReference reference = null;
+        ServiceReference reference = null;
 
         if (references != null) {
-            for (org.osgi.framework.ServiceReference ref : references) {
+            for (ServiceReference ref : references) {
 
                 if (ref.getBundle() != osgiBundle)
                     continue;
@@ -687,7 +669,7 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
             if (componentProperties.size() == 0)
                 return;
 
-            org.osgi.framework.ServiceReference configAdminReference =
+            ServiceReference configAdminReference =
                 osgiBundle.getBundleContext().getServiceReference("org.osgi.service.cm.ConfigurationAdmin");
             if (configAdminReference != null) {
 
@@ -850,7 +832,7 @@ public class OSGiImplementationProvider implements ImplementationProvider, Frame
 
         public void serviceChanged(org.osgi.framework.ServiceEvent event) {
 
-            org.osgi.framework.ServiceReference reference = event.getServiceReference();
+            ServiceReference reference = event.getServiceReference();
 
             if (event.getType() == ServiceEvent.REGISTERED && reference.getBundle() == bundle) {
 
