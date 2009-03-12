@@ -17,9 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<component name="MultiplyComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
+<scr:component name="MultiplyComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.operations.MultiplyServiceImpl" />
     <service>
         <provide interface="calculator.operations.MultiplyService" />
     </service>
-</component>
+</scr:component>

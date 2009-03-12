@@ -17,9 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<component name="AddComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
+<scr:component name="AddComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.operations.AddServiceImpl" />
     <service>
         <provide interface="calculator.operations.AddService" />
     </service>
-</component>
+</scr:component>

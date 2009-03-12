@@ -17,9 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<component name="SubtractComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
+<scr:component name="SubtractComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.operations.SubtractServiceImpl" />
     <service>
         <provide interface="calculator.operations.SubtractService" />
     </service>
-</component>
+</scr:component>

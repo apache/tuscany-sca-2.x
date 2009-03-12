@@ -17,19 +17,21 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<component name="CalculatorComponent" xmlns="http://www.osgi.org/xmlns/scr/v1.0.0">
+<scr:component name="CalculatorComponent" 
+               immediate="true"
+               xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
     <implementation class="calculator.CalculatorServiceDSImpl" />
     <service>
         <provide interface="calculator.CalculatorService" />
     </service>
 
-    <reference name="addService" interface="calculator.AddService" bind="setAddService" unbind="setAddService"
+    <reference name="addService" interface="calculator.operations.AddService" bind="setAddService" unbind="unsetAddService"
         policy="dynamic" />
-    <reference name="subtractService" interface="calculator.SubtractService" bind="setSubtractService" unbind="setSubtractService"
-        policy="dynamic" />
-    <reference name="multiplyService" interface="calculator.MultiplyService" bind="setMultiplyService" unbind="setMultiplyService"
-        policy="dynamic" />
-    <reference name="divideService" interface="calculator.DivideService" bind="setDivideService" unbind="setDivideService"
-        policy="dynamic" />
+    <reference name="subtractService" interface="calculator.operations.SubtractService" bind="setSubtractService"
+        unbind="unsetSubtractService" policy="dynamic" />
+    <reference name="multiplyService" interface="calculator.operations.MultiplyService" bind="setMultiplyService"
+        unbind="unsetMultiplyService" policy="dynamic" />
+    <reference name="divideService" interface="calculator.operations.DivideService" bind="setDivideService"
+        unbind="unsetDivideService" policy="dynamic" />
 
-</component>
+</scr:component>
