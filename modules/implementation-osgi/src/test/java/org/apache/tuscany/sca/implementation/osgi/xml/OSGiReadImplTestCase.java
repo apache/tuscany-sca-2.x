@@ -96,7 +96,7 @@ public class OSGiReadImplTestCase {
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        is = getClass().getClassLoader().getResourceAsStream("bundle.componentType");
+        is = getClass().getClassLoader().getResourceAsStream("OSGI-INF/sca/bundle.componentType");
         reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader);
 

@@ -19,25 +19,65 @@
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
+import static org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationManager.isSCABundle;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.SynchronousBundleListener;
 
 /**
  * Bundle activator to receive the BundleContext
  */
-public class OSGiImplementationActivator implements BundleActivator {
+public class OSGiImplementationActivator implements BundleActivator, SynchronousBundleListener {
     private static BundleContext bundleContext;
+    private boolean inited;
+
+    private void init() {
+        synchronized (this) {
+            if (inited) {
+                return;
+            }
+            inited = true;
+        }
+    }
 
     public void start(BundleContext context) throws Exception {
         bundleContext = context;
+        boolean found = false;
+        for (Bundle b : context.getBundles()) {
+            if (isSCABundle(b)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            init();
+        } else {
+            context.addBundleListener(this);
+        }
     }
 
     public void stop(BundleContext context) throws Exception {
-        bundleContext = context;
+        context.removeBundleListener(this);
+        bundleContext = null;
     }
 
     public static BundleContext getBundleContext() {
         return bundleContext;
+    }
+
+    public void bundleChanged(BundleEvent event) {
+        if (event.getType() == BundleEvent.STARTING) {
+            if (isSCABundle(event.getBundle())) {
+                // The bundle is an SCA implementation, init implementation.osgi
+                bundleContext.removeBundleListener(this);
+                init();
+            }
+        }
+
     }
 
 }

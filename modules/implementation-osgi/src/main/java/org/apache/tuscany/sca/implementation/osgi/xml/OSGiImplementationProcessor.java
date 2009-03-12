@@ -200,7 +200,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         }
 
         ComponentType componentType = assemblyFactory.createComponentType();
-        componentType.setURI("META-INF/bundle.componentType");
+        componentType.setURI("OSGI-INF/sca/bundle.componentType");
         componentType.setUnresolved(true);
         componentType = resolver.resolveModel(ComponentType.class, componentType);
         if (componentType.isUnresolved()) {
