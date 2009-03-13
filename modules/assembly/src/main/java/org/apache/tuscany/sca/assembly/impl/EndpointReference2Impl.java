@@ -39,18 +39,24 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class EndpointReference2Impl implements EndpointReference2 {
     
+    // this endpoint reference
     private Boolean unresolved = true;
     private Component component;
     private ComponentReference reference;
     private Binding binding;
-    private Binding callbackBinding;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    
+    // the target of the endpoint reference 
     private String targetName;
     private Endpoint2 targetEndpoint;
     private InterfaceContract interfaceContract;
-//    private String uri;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-
+//  private String uri;
+    
+    // callback that messages across this reference 
+    // will be directed toward
+    private Endpoint2 callbackEndpoint;
+   
     protected EndpointReference2Impl() {
     }
 
@@ -91,6 +97,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
         this.binding = binding;
     }
     
+/*    
     public Binding getCallbackBinding() {
         return callbackBinding;
     }
@@ -98,6 +105,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setCallbackBinding(Binding callbackBinding) {
         this.callbackBinding = callbackBinding;
     }
+*/
     
     public String getTargetName() {
         return targetName;
@@ -114,8 +122,6 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setTargetEndpoint(Endpoint2 targetEndpoint) {
         this.targetEndpoint = targetEndpoint;   
     }
-
-
 
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
@@ -152,5 +158,13 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setType(ExtensionType type) {
         throw new UnsupportedOperationException();
+    }
+    
+    public Endpoint2 getCallbackEndpoint() {
+        return callbackEndpoint;
+    }
+    
+    public void setCallbackEndpoint(Endpoint2 callbackEndpoint) {
+        this.callbackEndpoint = callbackEndpoint;
     }
 }
