@@ -41,9 +41,9 @@ import org.osgi.framework.Bundle;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiBundleContributionProcessor implements ContributionScanner {
+public class OSGiBundleContributionScanner implements ContributionScanner {
 
-    public OSGiBundleContributionProcessor() {
+    public OSGiBundleContributionScanner() {
     }
 
     public String getContributionType() {
