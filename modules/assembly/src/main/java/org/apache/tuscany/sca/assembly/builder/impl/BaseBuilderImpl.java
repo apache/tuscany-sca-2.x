@@ -146,9 +146,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      */
     protected void indexServices(Composite composite,
                                  Map<String, ComponentService> componentServices) {
-        ComponentService nonCallbackService = null;
-        int nonCallbackServiceCount = 0;
+
         for (Component component : composite.getComponents()) {
+            
+            ComponentService nonCallbackService = null;
+            int nonCallbackServiceCount = 0;
+            
             for (ComponentService componentService : component.getServices()) {                 
                 // Index component services by component name / service name
                 String uri = component.getName() + '/' + componentService.getName();

@@ -85,14 +85,14 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      * 
      * @return callbackBinding the reference callback binding
      */
-    Binding getCallbackBinding();
+//    Binding getCallbackBinding();
     
     /**
      * Set the reference callback binding 
      * 
      * @param callbackBinding the reference callback binding
      */
-    void setCallbackBinding(Binding callbackBinding);
+//    void setCallbackBinding(Binding callbackBinding);
 
     /**
      * Get the name of the target service that this endpoint reference refers to
@@ -135,6 +135,24 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      * @param interfaceContract the interface contract
      */
     void setInterfaceContract(InterfaceContract interfaceContract);
+    
+    /**
+     * Get the reference callback endpoint that 
+     * represents that target endpoint to which callback 
+     * messages will be directed 
+     * 
+     * @return callbackEndpoint the reference callback endpoint
+     */
+    Endpoint2 getCallbackEndpoint();
+    
+    /**
+     * Set the reference callback endpoint 
+     * 
+     * @param callbackEndpoint the reference callback endpoint
+     */
+    void setCallbackEndpoint(Endpoint2 callbackEndpoint);
+    
+    
     
     
     // not sure the methods below are required

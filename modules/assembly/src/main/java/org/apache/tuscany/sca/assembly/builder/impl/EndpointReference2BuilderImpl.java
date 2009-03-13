@@ -107,7 +107,7 @@ public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements Co
                 processComponentReferences((Composite)implementation, monitor);
             }
             
-            // create endpoint references to represent the component reference
+            // build endpoint references 
             for (ComponentReference reference : component.getReferences()) {
                 for (EndpointReference2 endpointReference : reference.getEndpointReferences()){
                     build(endpointReference, monitor);
@@ -255,8 +255,7 @@ public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements Co
         
         if (matchedReferenceBinding.isEmpty()) {
             // No matching binding
-            endpointReference.setBinding(null);
-            endpointReference.setTargetEndpoint(null);
+            endpointReference.setCallbackEndpoint(null);
             warning(monitor, 
                     "NoMatchingCallbackBinding", 
                     endpointReference.getReference(),
@@ -274,25 +273,19 @@ public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements Co
                 }
             }
             
-            Binding referenceBinding = matchedReferenceBinding.get(selectedBinding);
-            Binding serviceBinding = matchedServiceBinding.get(selectedBinding);
+            Binding selectedCallbackBinding = matchedReferenceBinding.get(selectedBinding);
+
+            ComponentService callbackService = endpointReference.getReference().getCallbackService();
             
-            // populate the endpoint reference
-            try {
-                
-                Binding cloned = (Binding)referenceBinding.clone();
-                
-                // Set the binding URI to the URI of the target service
-                // that has been matched
-                if (referenceBinding.getURI() == null) {
-                    cloned.setURI(serviceBinding.getURI());
+            if (callbackService != null) {
+                // find the callback endpoint that has the selected binding
+                for (Endpoint2 endpoint : callbackService.getEndpoints()){
+                    if (endpoint.getBinding().getName().startsWith(selectedCallbackBinding.getName())){
+                        endpointReference.setCallbackEndpoint(endpoint);
+                        break;
+                    }
                 }
-                
-                endpointReference.setCallbackBinding(referenceBinding);
-                
-            } catch (Exception ex) {
-                // do nothing 
-            }  
+            }
         }
     }     
     

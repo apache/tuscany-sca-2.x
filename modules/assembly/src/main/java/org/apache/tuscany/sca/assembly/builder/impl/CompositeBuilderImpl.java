@@ -225,12 +225,8 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         compositeServiceEndpointBuilder.build(composite, definitions, monitor);
         // create reference enpointreference models
         compositeReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
-        
-        // TODO this needs to be offloaded to a plugpoint
-        //      could be called upon when rebuilding wires
-        // wire endpoint references to endpoints
-        endpointReferenceBuilder.build(composite, definitions, monitor);
         // ===============================================
+
         
         // Wire the components
         componentReferenceWireBuilder.build(composite, definitions, monitor);
@@ -244,6 +240,12 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Build component reference binding-related information
         componentReferenceBindingBuilder.build(composite, definitions, monitor);
 
+        // =============================================== 
+        // TODO this needs to be offloaded to a plugpoint
+        //      could be called upon when rebuilding wires
+        // wire endpoint references to endpoints
+        endpointReferenceBuilder.build(composite, definitions, monitor);
+        // ===============================================        
     }
 
 }

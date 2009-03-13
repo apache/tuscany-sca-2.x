@@ -326,41 +326,31 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     continue;
                 }
 
-                // user might have put a local target name in the uri so get
-                // the path part and see if it refers to a target we know about
+                // user might have put a local target name in the uri 
+                // see if it refers to a target we know about
                 // - if it does the reference binding will be matched with a
                 // service binding
                 // - if it doesn't it is assumed to be an external reference
                 Component targetComponent = null;
                 ComponentService targetComponentService = null;
-                String path = null;
 
-                try {
-                    path = URI.create(uri).getPath();
-                } catch (Exception ex) {
-                    // just assume that no target is identified if
-                    // a URI related exception is thrown
+
+                if (uri.startsWith("/")) {
+                    uri = uri.substring(1);
                 }
 
-                if (path != null) {
-                    if (path.startsWith("/")) {
-                        path = path.substring(1);
-                    }
-
-                    // Resolve the target component and service
-                    targetComponentService = componentServices.get(path);
-                    int s = path.indexOf('/');
-                    if (s == -1) {
-                        targetComponent = components.get(path);
-                    } else {
-                        targetComponent = components.get(path.substring(0, s));
-                    }
+                // Resolve the target component and service
+                targetComponentService = componentServices.get(uri);
+                int s = uri.indexOf('/');
+                if (s == -1) {
+                    targetComponent = components.get(uri);
+                } else {
+                    targetComponent = components.get(uri.substring(0, s));
                 }
 
-                // if the path of the binding URI matches a component in the
+                // if the binding URI matches a component in the
                 // composite then configure an endpoint reference with this component as
-                // the target
-                // if not then the binding URI will be assumed to reference an
+                // the target. If not then the binding URI will be assumed to reference an
                 // external service
                 if (targetComponentService != null) {
 
