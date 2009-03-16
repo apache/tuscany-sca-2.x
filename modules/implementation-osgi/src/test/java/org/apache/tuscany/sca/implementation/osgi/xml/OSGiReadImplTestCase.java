@@ -41,9 +41,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -69,13 +66,6 @@ public class OSGiReadImplTestCase {
         compositeBuilder =
             extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
                 .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
-
-        OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar",
-                                     "osgi.test",
-                                     null,
-                                     null,
-                                     (String[]) null,
-                                     OSGiTestImpl.class, OSGiTestInterface.class);
 
     }
 
