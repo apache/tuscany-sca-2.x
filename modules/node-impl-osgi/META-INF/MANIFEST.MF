@@ -1,0 +1,58 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.node.osgi.impl;version="2.0.0";
+  uses:="org.apache.tuscany.sca.runtime,
+   org.apache.tuscany.sca.definitions,
+   org.apache.tuscany.sca.core,
+   javax.xml.namespace,
+   javax.xml.stream,
+   org.apache.tuscany.sca.core.assembly,
+   org.apache.tuscany.sca.contribution.resolver,
+   org.apache.tuscany.sca.workspace,
+   org.apache.tuscany.sca.core.invocation,
+   org.osoa.sca,
+   org.apache.tuscany.sca.assembly.builder,
+   org.apache.tuscany.sca.implementation.node,
+   org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.node,
+   org.apache.tuscany.sca.workspace.builder,
+   org.apache.tuscany.sca.contribution,
+   org.apache.tuscany.sca.monitor,
+   org.apache.tuscany.sca.work,
+   org.apache.tuscany.sca.contribution.processor"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA OSGi Node Implementation
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397240796
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Node Implementation
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core.invocation;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.definitions.util;version="2.0.0",
+ org.apache.tuscany.sca.implementation.node;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node.osgi.impl;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0",
+ org.apache.tuscany.sca.workspace;version="2.0.0",
+ org.apache.tuscany.sca.workspace.builder;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
+ org.osgi.framework;version="1.4.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.node.osgi.impl
+Bundle-DocURL: http://www.apache.org/
+
