@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleActivator;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.apache.tuscany.sca.node.osgi.impl.NodeImpl;
@@ -72,7 +71,7 @@ public class CalculatorOSGiNodeTestCase {
         }
         
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
-                                                 "calculator/META-INF/MANIFEST.MF",
+                                                 "calculator/dosgi/META-INF/MANIFEST.MF",
                                                  new String[] {"OSGI-INF/calculator-component.xml",
                                                                "OSGI-INF/sca/bundle.componentType",
                                                                "calculator/calculator.composite"},
@@ -82,7 +81,7 @@ public class CalculatorOSGiNodeTestCase {
                                                  CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                 "calculator/operations/META-INF/MANIFEST.MF",
+                                                 "calculator/dosgi/operations/META-INF/MANIFEST.MF",
                                                  new String[] {"OSGI-INF/add-component.xml",
                                                                "OSGI-INF/subtract-component.xml",
                                                                "OSGI-INF/multiply-component.xml",
@@ -106,10 +105,8 @@ public class CalculatorOSGiNodeTestCase {
                 }
             }
             for (Bundle b : context.getBundles()) {
-                if (b.getSymbolicName().equals("calculator")) {
+                if (b.getSymbolicName().equals("calculator.dosgi")) {
                     b.start();
-                    // HACK
-                    OSGiBundleActivator.setBundleContext(b.getBundleContext());
                     NodeImpl node = new NodeImpl(b);
                     node.start();
                     System.out.println(string(b, false));
