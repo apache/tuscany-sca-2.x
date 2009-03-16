@@ -52,6 +52,7 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 /**
@@ -142,7 +143,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         Bundle bundle = null;
         for (Bundle b : bundleContext.getBundles()) {
             String sn = b.getSymbolicName();
-            String ver = (String)b.getHeaders().get(BUNDLE_VERSION);
+            String ver = (String)b.getHeaders().get(Constants.BUNDLE_VERSION);
             if (!impl.getBundleSymbolicName().equals(sn)) {
                 continue;
             }
