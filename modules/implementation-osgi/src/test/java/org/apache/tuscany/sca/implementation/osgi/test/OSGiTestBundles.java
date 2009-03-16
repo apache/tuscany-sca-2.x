@@ -154,15 +154,18 @@ public class OSGiTestBundles {
 
     private static void addClass(JarOutputStream jarOut, Class<?> javaClass) throws IOException, FileNotFoundException {
         String classFile = javaClass.getName().replace('.', '/') + ".class";
-
-        ClassLoader cl = javaClass.getClassLoader();
-
-        addResource(jarOut, cl, classFile);
+        URL url = javaClass.getResource(javaClass.getSimpleName() + ".class");
+        addEntry(jarOut, url, classFile);
     }
 
     private static void addResource(JarOutputStream jarOut, ClassLoader cl, String resourceName) throws IOException,
         FileNotFoundException {
         URL url = cl.getResource(resourceName);
+        addEntry(jarOut, url, resourceName);
+    }
+
+    private static void addEntry(JarOutputStream jarOut, URL url, String resourceName) throws IOException,
+        FileNotFoundException {
         String path = url.getPath();
 
         ZipEntry ze = new ZipEntry(resourceName);
