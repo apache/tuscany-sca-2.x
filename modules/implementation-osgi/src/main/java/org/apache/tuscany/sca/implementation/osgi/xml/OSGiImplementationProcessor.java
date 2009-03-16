@@ -19,13 +19,12 @@
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUNDLE_SYMBOLICNAME;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUNDLE_VERSION;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.IMPLEMENTATION_OSGI;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -46,11 +45,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
-import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
-import org.apache.tuscany.sca.implementation.osgi.runtime.OSGiImplementationActivator;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -67,38 +63,16 @@ import org.osgi.framework.Version;
  * @version $Rev$ $Date$
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
-    private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
-    private FactoryExtensionPoint modelFactories;
+    //    private FactoryExtensionPoint modelFactories;
     private OSGiImplementationFactory osgiImplementationFactory;
     private Monitor monitor;
 
     public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
-        this.modelFactories = modelFactories;
+        //        this.modelFactories = modelFactories;
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
-        this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
-    }
-
-    /**
-     * Report a exception.
-     * 
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "impl-osgi-validation-messages",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
     }
 
     /**
@@ -129,34 +103,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return OSGiImplementation.class;
     }
 
-    private String[] tokenize(String str) {
-        StringTokenizer tokenizer = new StringTokenizer(str);
-        String[] tokens = new String[tokenizer.countTokens()];
-        for (int i = 0; i < tokens.length; i++) {
-            tokens[i] = tokenizer.nextToken();
-        }
-
-        return tokens;
-    }
-
     public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_OSGI.equals(reader.getName());
 
         String bundleSymbolicName = reader.getAttributeValue(null, BUNDLE_SYMBOLICNAME);
         String bundleVersion = reader.getAttributeValue(null, BUNDLE_VERSION);
-
-        List<OSGiProperty> refProperties = new ArrayList<OSGiProperty>();
-        List<OSGiProperty> serviceProperties = new ArrayList<OSGiProperty>();
-        List<OSGiProperty> refCallbackProperties = new ArrayList<OSGiProperty>();
-        List<OSGiProperty> serviceCallbackProperties = new ArrayList<OSGiProperty>();
-
-        // Skip to the end of <implementation.osgi>
-        while (reader.hasNext()) {
-            int next = reader.next();
-            if (next == END_ELEMENT && IMPLEMENTATION_OSGI.equals(reader.getName())) {
-                break;
-            }
-        }
 
         OSGiImplementation implementation = osgiImplementationFactory.createOSGiImplementation();
         implementation.setBundleSymbolicName(bundleSymbolicName);
@@ -164,8 +115,20 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
         implementation.setUnresolved(true);
 
+        // Skip to the end of <implementation.osgi>
+        while (reader.hasNext()) {
+            int next = reader.next();
+            switch (next) {
+                case START_ELEMENT:
+                    break;
+                case END_ELEMENT:
+                    if (IMPLEMENTATION_OSGI.equals(reader.getName())) {
+                        return implementation;
+                    }
+                    break;
+            }
+        }
         return implementation;
-
     }
 
     public void resolve(OSGiImplementation impl, ModelResolver resolver) throws ContributionResolveException {
@@ -217,14 +180,12 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                 if (javaInterface.getJavaClass() == null) {
                     javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
                 }
-                Class<?> callback = null;
                 if (service.getInterfaceContract().getCallbackInterface() instanceof JavaInterface) {
                     JavaInterface callbackInterface =
                         (JavaInterface)service.getInterfaceContract().getCallbackInterface();
                     if (callbackInterface.getJavaClass() == null) {
                         callbackInterface.setJavaClass(getJavaClass(resolver, callbackInterface.getName()));
                     }
-                    callback = callbackInterface.getJavaClass();
                 }
 
                 impl.getServices().add(service);

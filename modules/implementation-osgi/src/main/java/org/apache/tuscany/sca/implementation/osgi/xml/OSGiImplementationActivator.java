@@ -16,24 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+package org.apache.tuscany.sca.implementation.osgi.xml;
 
-import org.oasisopen.sca.annotation.Remotable;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * The Calculator service interface.
+ * Bundle activator to receive the BundleContext
  */
-@Remotable
-public interface CalculatorService extends Remote {
+public class OSGiImplementationActivator implements BundleActivator {
+    private static BundleContext bundleContext;
 
-    double add(double n1, double n2) throws RemoteException;
+    public void start(BundleContext context) throws Exception {
+        bundleContext = context;
+    }
 
-    double subtract(double n1, double n2) throws RemoteException;
+    public void stop(BundleContext context) throws Exception {
+        bundleContext = null;
+    }
 
-    double multiply(double n1, double n2) throws RemoteException;
+    static BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
-    double divide(double n1, double n2) throws RemoteException;
+    static void setBundleContext(BundleContext bundleContext) {
+        OSGiImplementationActivator.bundleContext = bundleContext;
+    }
+
 }
