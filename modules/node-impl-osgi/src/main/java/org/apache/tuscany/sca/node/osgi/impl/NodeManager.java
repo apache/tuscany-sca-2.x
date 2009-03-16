@@ -23,6 +23,8 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -35,6 +37,7 @@ import org.osgi.framework.SynchronousBundleListener;
  * Managing the mapping between OSGi bundles and SCA implementation.osgi
  */
 public class NodeManager implements SynchronousBundleListener, ServiceListener {
+    private static final Logger logger = Logger.getLogger(NodeManager.class.getName());
     private BundleContext bundleContext;
     private Map<Bundle, NodeImpl> nodes = new ConcurrentHashMap<Bundle, NodeImpl>();
 
@@ -84,9 +87,13 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
         if (!isSCABundle(bundle)) {
             return;
         }
-        NodeImpl node = new NodeImpl(bundle);
-        nodes.put(bundle, node);
-        node.start();
+        try {
+            NodeImpl node = new NodeImpl(bundle);
+            nodes.put(bundle, node);
+            node.start();
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
 
     private void bundleStopping(Bundle bundle) {

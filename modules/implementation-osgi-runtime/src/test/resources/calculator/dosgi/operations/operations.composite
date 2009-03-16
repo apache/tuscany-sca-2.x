@@ -25,14 +25,6 @@
 
     <component name="OperationsComponent">
         <tuscany:implementation.osgi bundleSymbolicName="calculator.dosgi.operations" bundleVersion="1.0.0" />
-        <service name="AddService">
-        </service>
-        <service name="SubtractService">
-        </service>
-        <service name="MultiplyService">
-        </service>
-        <service name="DivideService">
-        </service>
     </component>
 
 </composite>

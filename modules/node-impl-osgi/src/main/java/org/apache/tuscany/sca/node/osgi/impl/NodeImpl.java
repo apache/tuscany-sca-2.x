@@ -147,7 +147,10 @@ public class NodeImpl implements Node, Client {
                 modelFactories.getFactory(NodeImplementationFactory.class);
             ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
-            String compositeURI = "OSGI-INF/sca/bundle.composite";
+            String compositeURI = (String)bundle.getHeaders().get("SCA-Composite");
+            if (compositeURI == null) {
+                compositeURI = "OSGI-INF/sca/bundle.composite";
+            }
             if (compositeURI != null) {
                 Composite composite = assemblyFactory.createComposite();
                 composite.setURI(compositeURI);

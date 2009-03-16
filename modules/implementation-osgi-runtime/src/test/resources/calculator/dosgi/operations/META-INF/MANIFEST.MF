@@ -17,3 +17,4 @@ Service-Component: OSGI-INF/add-component.xml,
  OSGI-INF/subtract-component.xml,
  OSGI-INF/multiply-component.xml,
  OSGI-INF/divide-component.xml
+SCA-Composite: calculator/dosgi/operations/operations.composite
