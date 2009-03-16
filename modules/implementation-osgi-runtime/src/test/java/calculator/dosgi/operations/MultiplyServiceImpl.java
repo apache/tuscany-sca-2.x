@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.operations;
+package calculator.dosgi.operations;
 
-import org.oasisopen.sca.annotation.Remotable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * The interface for the multiply service
+ * An implementation of the Multiply service.
  */
-@Remotable
-public interface MultiplyService {
+public class MultiplyServiceImpl implements MultiplyService {
 
-    double multiply(double n1, double n2);
+    public double multiply(double n1, double n2) {
+        Logger logger = Logger.getLogger("calculator");
+        logger.log(Level.INFO, "Multiplying " + n1 + " with " + n2);
+        return n1 * n2;
+    }
 
 }

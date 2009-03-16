@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.operations;
+package calculator.dosgi.operations;
 
-import org.oasisopen.sca.annotation.Remotable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * The interface for the add service
+ * An implementation of the Add service
  */
-@Remotable
-public interface AddService {
+public class AddServiceImpl implements AddService {
 
-    double add(double n1, double n2);
+    public double add(double n1, double n2) {
+        Logger logger = Logger.getLogger("calculator");
+        logger.log(Level.INFO, "Adding " + n1 + " and " + n2);
+        return n1 + n2;
+    }
 
 }

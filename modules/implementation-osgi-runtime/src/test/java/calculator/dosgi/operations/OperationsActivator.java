@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package calculator.operations;
+package calculator.dosgi.operations;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

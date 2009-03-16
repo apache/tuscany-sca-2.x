@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Export-Package: calculator.operations;version="1.0.0"
+Export-Package: calculator.dosgi.operations;version="1.0.0"
 Bundle-Version: 1.0.0
-Bundle-Name: calculator.operations
-Bundle-Activator: calculator.operations.OperationsActivator
+Bundle-Name: calculator.dosgi.operations
+Bundle-Activator: calculator.dosgi.operations.OperationsActivator
 Bundle-ManifestVersion: 2
-Import-Package: calculator.operations;version="1.0.0",
+Import-Package: calculator.dosgi.operations;version="1.0.0",
  org.osgi.framework,
  org.osgi.service.component;resolution:=optional
-Bundle-SymbolicName: calculator.operations
+Bundle-SymbolicName: calculator.dosgi.operations
 Bundle-Vendor: The Apache Software Foundation
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true

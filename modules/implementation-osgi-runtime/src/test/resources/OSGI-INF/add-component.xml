@@ -18,8 +18,8 @@
  * under the License.    
 -->
 <scr:component name="AddComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <implementation class="calculator.operations.AddServiceImpl" />
+    <implementation class="calculator.dosgi.operations.AddServiceImpl" />
     <service>
-        <provide interface="calculator.operations.AddService" />
+        <provide interface="calculator.dosgi.operations.AddService" />
     </service>
 </scr:component>
