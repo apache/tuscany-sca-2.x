@@ -85,6 +85,7 @@ public class CalculatorOSGiNodeTestCase {
 
             bundles.add(getCodeLocation(OSGiImplementation.class));
             bundles.add(getCodeLocation(OSGiBundleContributionScanner.class));
+            bundles.add(getCodeLocation(NodeImpl.class));
 
             bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                      "calculator/dosgi/META-INF/MANIFEST.MF",
@@ -131,8 +132,6 @@ public class CalculatorOSGiNodeTestCase {
             for (Bundle b : context.getBundles()) {
                 if (b.getSymbolicName().equals("calculator.dosgi")) {
                     b.start();
-                    NodeImpl node = new NodeImpl(b);
-                    node.start();
                     System.out.println(string(b, false));
                 }
             }
