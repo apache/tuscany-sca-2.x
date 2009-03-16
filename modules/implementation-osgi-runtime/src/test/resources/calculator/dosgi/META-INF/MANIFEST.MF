@@ -16,3 +16,4 @@ Eclipse-LazyStart: true
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.apache.org/
 Service-Component: OSGI-INF/calculator-component.xml
+SCA-Composite: calculator/dosgi/calculator.composite

@@ -75,6 +75,7 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     public void bundleChanged(BundleEvent event) {
         if (event.getType() == BundleEvent.STARTING) {
             if (isSCABundle(event.getBundle())) {
+                bundleContext.removeBundleListener(this);
                 init();
             }
         }
