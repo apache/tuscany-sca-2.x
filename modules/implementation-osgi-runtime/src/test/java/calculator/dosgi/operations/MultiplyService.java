@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.operations;
+package calculator.dosgi.operations;
 
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The interface for the divide service
+ * The interface for the multiply service
  */
 @Remotable
-public interface DivideService {
+public interface MultiplyService {
 
-    double divide(double n1, double n2);
+    double multiply(double n1, double n2);
 
 }

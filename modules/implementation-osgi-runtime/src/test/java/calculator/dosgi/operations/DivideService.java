@@ -16,24 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
-
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+package calculator.dosgi.operations;
 
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * The Calculator service interface.
+ * The interface for the divide service
  */
 @Remotable
-public interface CalculatorService extends Remote {
+public interface DivideService {
 
-    double add(double n1, double n2) throws RemoteException;
+    double divide(double n1, double n2);
 
-    double subtract(double n1, double n2) throws RemoteException;
-
-    double multiply(double n1, double n2) throws RemoteException;
-
-    double divide(double n1, double n2) throws RemoteException;
 }

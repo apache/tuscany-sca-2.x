@@ -20,11 +20,11 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-    targetNamespace="http://calculator" 
+    targetNamespace="http://calculator.dosgi" 
     name="CalculatorComposite">
 
     <component name="CalculatorComponent">
-        <tuscany:implementation.osgi bundleSymbolicName="calculator" bundleVersion="1.0.0" />
+        <tuscany:implementation.osgi bundleSymbolicName="calculator.dosgi" bundleVersion="1.0.0" />
         <reference name="addService" target="OperationsComponent/AddService">
         </reference>
         <reference name="subtractService" target="OperationsComponent/SubtractService">

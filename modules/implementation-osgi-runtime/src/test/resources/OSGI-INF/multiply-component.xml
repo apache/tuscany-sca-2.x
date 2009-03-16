@@ -18,8 +18,8 @@
  * under the License.    
 -->
 <scr:component name="MultiplyComponent" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <implementation class="calculator.operations.MultiplyServiceImpl" />
+    <implementation class="calculator.dosgi.operations.MultiplyServiceImpl" />
     <service>
-        <provide interface="calculator.operations.MultiplyService" />
+        <provide interface="calculator.dosgi.operations.MultiplyService" />
     </service>
 </scr:component>

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package calculator.test;
+package calculator.dosgi.test;
 
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
@@ -36,19 +36,19 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import calculator.CalculatorActivator;
-import calculator.CalculatorService;
-import calculator.CalculatorServiceDSImpl;
-import calculator.CalculatorServiceImpl;
-import calculator.operations.AddService;
-import calculator.operations.AddServiceImpl;
-import calculator.operations.DivideService;
-import calculator.operations.DivideServiceImpl;
-import calculator.operations.MultiplyService;
-import calculator.operations.MultiplyServiceImpl;
-import calculator.operations.OperationsActivator;
-import calculator.operations.SubtractService;
-import calculator.operations.SubtractServiceImpl;
+import calculator.dosgi.CalculatorActivator;
+import calculator.dosgi.CalculatorService;
+import calculator.dosgi.CalculatorServiceDSImpl;
+import calculator.dosgi.CalculatorServiceImpl;
+import calculator.dosgi.operations.AddService;
+import calculator.dosgi.operations.AddServiceImpl;
+import calculator.dosgi.operations.DivideService;
+import calculator.dosgi.operations.DivideServiceImpl;
+import calculator.dosgi.operations.MultiplyService;
+import calculator.dosgi.operations.MultiplyServiceImpl;
+import calculator.dosgi.operations.OperationsActivator;
+import calculator.dosgi.operations.SubtractService;
+import calculator.dosgi.operations.SubtractServiceImpl;
 
 /**
  * 

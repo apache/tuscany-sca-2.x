@@ -16,42 +16,51 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+package calculator.dosgi;
 
-import org.osgi.service.component.ComponentContext;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.util.tracker.ServiceTracker;
 
-import calculator.operations.AddService;
-import calculator.operations.DivideService;
-import calculator.operations.MultiplyService;
-import calculator.operations.SubtractService;
+import calculator.dosgi.operations.AddService;
+import calculator.dosgi.operations.DivideService;
+import calculator.dosgi.operations.MultiplyService;
+import calculator.dosgi.operations.SubtractService;
 
 /**
  * An implementation of the Calculator service.
  */
-public class CalculatorServiceDSImpl implements CalculatorService {
-    private AddService addService;
-    private SubtractService subtractService;
-    private MultiplyService multiplyService;
-    private DivideService divideService;
+public class CalculatorServiceImpl implements CalculatorService {
+//    private AddService addService;
+//    private SubtractService subtractService;
+//    private MultiplyService multiplyService;
+//    private DivideService divideService;
 
-    public CalculatorServiceDSImpl() {
+    private ServiceTracker tracker;
+
+    public CalculatorServiceImpl() {
         super();
-        System.out.println("CalculatorServiceDSImpl()");
     }
 
-    protected void activate(ComponentContext context) {
-        System.out.println("Activating " + context);
-    }
-
-    protected void deactivate(ComponentContext context) {
-        System.out.println("Deactivating " + context);
+    public CalculatorServiceImpl(BundleContext context) {
+        super();
+        Filter filter = null;
+        try {
+            filter = context.createFilter("(" + Constants.OBJECTCLASS + "=calculator.operations.*)");
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        this.tracker = new ServiceTracker(context, filter, null);
+        tracker.open();
     }
 
     /*
      * The following setters can be used for DS injection
      */
+    /*
     public void setAddService(AddService addService) {
-        System.out.println("setAddService()");
         this.addService = addService;
     }
 
@@ -66,28 +75,10 @@ public class CalculatorServiceDSImpl implements CalculatorService {
     public void setMultiplyService(MultiplyService multiplyService) {
         this.multiplyService = multiplyService;
     }
+    */
 
-    /*
-     * The following setters can be used for DS injection
-     */
-    public void unsetAddService(AddService addService) {
-        System.out.println("unsetAddService()");
-        this.addService = null;
-    }
-
-    public void unsetSubtractService(SubtractService subtractService) {
-        this.subtractService = null;
-    }
-
-    public void unsetDivideService(DivideService divideService) {
-        this.divideService = null;
-    }
-
-    public void unsetMultiplyService(MultiplyService multiplyService) {
-        this.multiplyService = null;
-    }    
     private <T> T getService(Class<T> cls) {
-        for (Object s : new Object[] {addService, subtractService, multiplyService, divideService}) {
+        for (Object s : tracker.getServices()) {
             if (cls.isInstance(s)) {
                 return cls.cast(s);
             }

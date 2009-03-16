@@ -16,20 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.operations;
+package calculator.dosgi.operations;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
- * An implementation of the Divide service.
+ * The interface for the subtract service
  */
-public class DivideServiceImpl implements DivideService {
+@Remotable
+public interface SubtractService {
 
-    public double divide(double n1, double n2) {
-        Logger logger = Logger.getLogger("calculator");
-        logger.log(Level.INFO, "Dividing " + n1 + " with " + n2);
-        return n1 / n2;
-    }
+    double subtract(double n1, double n2);
 
 }
