@@ -21,11 +21,16 @@ package org.apache.tuscany.sca.implementation.osgi.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -77,7 +82,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
             String filter = "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
             ServiceReference[] refs = bundleContext.getServiceReferences(javaInterface.getName(), filter);
             Object instance = bundleContext.getService(refs[0]);
-            Method m = JavaInterfaceUtil.findMethod(instance.getClass(), operation);
+            Method m = findMethod(instance.getClass(), operation);
 
             Object ret = invokeMethod(instance, m, msg);
 
@@ -116,6 +121,71 @@ public class OSGiTargetInvoker<T> implements Invoker {
             msg.setFaultBody(e.getCause());
         }
         return msg;
+    }
+
+    /**
+     * @Deprecated
+     */
+    private static Class<?>[] getPhysicalTypes(Operation operation) {
+        DataType<List<DataType>> inputType = operation.getInputType();
+        if (inputType == null) {
+            return new Class<?>[] {};
+        }
+        List<DataType> types = inputType.getLogical();
+        Class<?>[] javaTypes = new Class<?>[types.size()];
+        for (int i = 0; i < javaTypes.length; i++) {
+            Type physical = types.get(i).getPhysical();
+            if (physical instanceof Class<?>) {
+                javaTypes[i] = (Class<?>)physical;
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+        return javaTypes;
+    }
+
+    /**
+     * Return the method on the implementation class that matches the operation.
+     * 
+     * @param implClass the implementation class or interface
+     * @param operation the operation to match
+     * @return the method described by the operation
+     * @throws NoSuchMethodException if no such method exists
+     * @Deprecated
+     */
+    public static Method findMethod(Class<?> implClass, Operation operation) throws NoSuchMethodException {
+        String name = operation.getName();
+        if (operation instanceof JavaOperation) {
+            name = ((JavaOperation)operation).getJavaMethod().getName();
+        }
+        Interface interface1 = operation.getInterface();
+        int numParams = operation.getInputType().getLogical().size();
+        if (interface1 != null && interface1.isRemotable()) {
+            List<Method> matchingMethods = new ArrayList<Method>();
+            for (Method m : implClass.getMethods()) {
+                if (m.getName().equals(name) && m.getParameterTypes().length == numParams) {
+                    matchingMethods.add(m);
+                }
+            }
+            
+            // TUSCANY-2180 If there is only one method then we just match on the name 
+            // (this is the same as the existing behaviour)
+            if (matchingMethods.size() == 1) {
+                return matchingMethods.get(0);
+            }
+            if (matchingMethods.size() > 1) {
+                // TUSCANY-2180 We need to check the parameter types too
+                Class<?>[] paramTypes = getPhysicalTypes(operation);
+                return implClass.getMethod(name, paramTypes);
+            }
+            
+            // No matching method found
+            throw new NoSuchMethodException("No matching method for operation " + operation.getName()
+                + " is found on "
+                + implClass);
+        }
+        Class<?>[] paramTypes = getPhysicalTypes(operation);
+        return implClass.getMethod(name, paramTypes);
     }
 
 }

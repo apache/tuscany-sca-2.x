@@ -24,9 +24,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.apache.tuscany.sca.node.osgi.impl.NodeImpl;
@@ -56,51 +60,71 @@ import calculator.dosgi.operations.SubtractServiceImpl;
 public class CalculatorOSGiNodeTestCase {
     private static EquinoxHost host;
 
+    public static URL getCodeLocation(final Class<?> anchorClass) {
+        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return anchorClass.getProtectionDomain().getCodeSource().getLocation();
+            }
+        });
+    }
+
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        Set<URL> bundles = new HashSet<URL>();
-
-        File plugins = new File("target/test-classes/plugins");
-        for (File f : plugins.listFiles()) {
-            if (f.isFile()) {
-                bundles.add(f.toURI().toURL());
-            }
-        }
-        
-        bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
-                                                 "calculator/dosgi/META-INF/MANIFEST.MF",
-                                                 new String[] {"OSGI-INF/calculator-component.xml",
-                                                               "OSGI-INF/sca/bundle.componentType",
-                                                               "calculator/calculator.composite"},
-                                                 CalculatorService.class,
-                                                 CalculatorServiceImpl.class,
-                                                 CalculatorServiceDSImpl.class,
-                                                 CalculatorActivator.class));
-
-        bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                 "calculator/dosgi/operations/META-INF/MANIFEST.MF",
-                                                 new String[] {"OSGI-INF/add-component.xml",
-                                                               "OSGI-INF/subtract-component.xml",
-                                                               "OSGI-INF/multiply-component.xml",
-                                                               "OSGI-INF/divide-component.xml"},
-                                                 OperationsActivator.class,
-                                                 AddService.class,
-                                                 AddServiceImpl.class,
-                                                 SubtractService.class,
-                                                 SubtractServiceImpl.class,
-                                                 MultiplyService.class,
-                                                 MultiplyServiceImpl.class,
-                                                 DivideService.class,
-                                                 DivideServiceImpl.class));
         try {
-            host = new EquinoxHost(bundles);
+            Set<URL> bundles = new HashSet<URL>();
+
+            File plugins = new File("target/test-classes/plugins");
+            for (File f : plugins.listFiles()) {
+                if (f.isFile()) {
+                    bundles.add(f.toURI().toURL());
+                }
+            }
+
+            bundles.add(getCodeLocation(OSGiImplementation.class));
+            bundles.add(getCodeLocation(OSGiBundleContributionScanner.class));
+
+            bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
+                                                     "calculator/dosgi/META-INF/MANIFEST.MF",
+                                                     new String[] {"OSGI-INF/calculator-component.xml",
+                                                                   "OSGI-INF/sca/bundle.componentType",
+                                                                   "calculator/dosgi/calculator.composite"},
+                                                     CalculatorService.class,
+                                                     CalculatorServiceImpl.class,
+                                                     CalculatorServiceDSImpl.class,
+                                                     CalculatorActivator.class));
+
+            bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
+                                                     "calculator/dosgi/operations/META-INF/MANIFEST.MF",
+                                                     new String[] {"OSGI-INF/add-component.xml",
+                                                                   "OSGI-INF/subtract-component.xml",
+                                                                   "OSGI-INF/multiply-component.xml",
+                                                                   "OSGI-INF/divide-component.xml"},
+                                                     OperationsActivator.class,
+                                                     AddService.class,
+                                                     AddServiceImpl.class,
+                                                     SubtractService.class,
+                                                     SubtractServiceImpl.class,
+                                                     MultiplyService.class,
+                                                     MultiplyServiceImpl.class,
+                                                     DivideService.class,
+                                                     DivideServiceImpl.class));
+            host = new EquinoxHost();
             BundleContext context = host.start();
+            for(URL loc: bundles) {
+                host.installBundle(loc, null);
+            }
             for (Bundle b : context.getBundles()) {
-                if (b.getSymbolicName().equals("org.eclipse.equinox.ds")) {
-                    b.start();
+                if (b.getSymbolicName().equals("org.eclipse.equinox.ds") || b.getSymbolicName()
+                    .startsWith("org.apache.tuscany.sca.")) {
+                    try {
+                        b.start();
+                    } catch (Exception e) {
+                        System.out.println(string(b, false));
+                        e.printStackTrace();
+                    }
                     System.out.println(string(b, false));
                 }
             }
@@ -177,7 +201,7 @@ public class CalculatorOSGiNodeTestCase {
         if ((s & Bundle.ACTIVE) != 0) {
             sb.append(" ACTIVE");
         }
-    
+
         if (verbose) {
             sb.append(" ").append(bundle.getLocation());
             sb.append(" ").append(bundle.getHeaders());
