@@ -71,7 +71,7 @@ public class CalculatorOSGiTestCase {
         }
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
-                                                 "calculator/META-INF/MANIFEST.MF",
+                                                 "calculator/dosgi/META-INF/MANIFEST.MF",
                                                  new String[] {"OSGI-INF/calculator-component.xml"},
                                                  CalculatorService.class,
                                                  CalculatorServiceImpl.class,
@@ -79,7 +79,7 @@ public class CalculatorOSGiTestCase {
                                                  CalculatorActivator.class));
 
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                 "calculator/operations/META-INF/MANIFEST.MF",
+                                                 "calculator/dosgi/operations/META-INF/MANIFEST.MF",
                                                  new String[] {"OSGI-INF/add-component.xml",
                                                                "OSGI-INF/subtract-component.xml",
                                                                "OSGI-INF/multiply-component.xml",
@@ -103,7 +103,7 @@ public class CalculatorOSGiTestCase {
                 }
             }
             for (Bundle b : context.getBundles()) {
-                if (b.getSymbolicName().startsWith("calculator")) {
+                if (b.getSymbolicName().startsWith("calculator.dosgi")) {
                     b.start();
                     System.out.println(string(b, false));
                 }

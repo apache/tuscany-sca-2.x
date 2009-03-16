@@ -48,7 +48,7 @@ public class CalculatorServiceImpl implements CalculatorService {
         super();
         Filter filter = null;
         try {
-            filter = context.createFilter("(" + Constants.OBJECTCLASS + "=calculator.operations.*)");
+            filter = context.createFilter("(" + Constants.OBJECTCLASS + "=calculator.dosgi.operations.*)");
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
