@@ -49,7 +49,7 @@ public class OSGiTestBundles {
         return index == -1 ? "" : name.substring(0, index);
     }
 
-    public static URL createBundle(String jarName, String mfFile, String[] resources, Class<?>... classes)
+    public static URL createBundle(String jarName, String mfFile, String[][] resources, Class<?>... classes)
         throws IOException {
         InputStream is = OSGiTestBundles.class.getClassLoader().getResourceAsStream(mfFile);
         Manifest manifest = new Manifest(is);
@@ -63,8 +63,8 @@ public class OSGiTestBundles {
         }
 
         if (resources != null) {
-            for (String resource : resources) {
-                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource);
+            for (String resource[] : resources) {
+                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource[0], resource[1]);
             }
         }
 
@@ -137,7 +137,7 @@ public class OSGiTestBundles {
 
         if (resources != null) {
             for (String resource : resources) {
-                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource);
+                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource, null);
             }
         }
 
@@ -158,10 +158,13 @@ public class OSGiTestBundles {
         addEntry(jarOut, url, classFile);
     }
 
-    private static void addResource(JarOutputStream jarOut, ClassLoader cl, String resourceName) throws IOException,
-        FileNotFoundException {
+    private static void addResource(JarOutputStream jarOut, ClassLoader cl, String resourceName, String entryName)
+        throws IOException, FileNotFoundException {
         URL url = cl.getResource(resourceName);
-        addEntry(jarOut, url, resourceName);
+        if (entryName == null) {
+            entryName = resourceName;
+        }
+        addEntry(jarOut, url, entryName);
     }
 
     private static void addEntry(JarOutputStream jarOut, URL url, String resourceName) throws IOException,

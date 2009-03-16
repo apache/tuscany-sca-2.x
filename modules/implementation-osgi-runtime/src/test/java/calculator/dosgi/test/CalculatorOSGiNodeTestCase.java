@@ -89,33 +89,41 @@ public class CalculatorOSGiNodeTestCase {
 
             bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                      "calculator/dosgi/META-INF/MANIFEST.MF",
-                                                     new String[] {"OSGI-INF/calculator-component.xml",
-                                                                   "OSGI-INF/sca/bundle.componentType",
-                                                                   "calculator/dosgi/calculator.composite"},
+                                                     new String[][] {
+                                                                     {"OSGI-INF/calculator-component.xml", null},
+                                                                     {"calculator/dosgi/bundle.componentType",
+                                                                      "OSGI-INF/sca/bundle.componentType"},
+                                                                     {"calculator/dosgi/calculator.composite",
+                                                                      "OSGI-INF/sca/bundle.composite"}},
                                                      CalculatorService.class,
                                                      CalculatorServiceImpl.class,
                                                      CalculatorServiceDSImpl.class,
                                                      CalculatorActivator.class));
 
-            bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
-                                                     "calculator/dosgi/operations/META-INF/MANIFEST.MF",
-                                                     new String[] {"OSGI-INF/add-component.xml",
-                                                                   "OSGI-INF/subtract-component.xml",
-                                                                   "OSGI-INF/multiply-component.xml",
-                                                                   "OSGI-INF/divide-component.xml",
-                                                                   "calculator/dosgi/operations/operations.composite"},
-                                                     OperationsActivator.class,
-                                                     AddService.class,
-                                                     AddServiceImpl.class,
-                                                     SubtractService.class,
-                                                     SubtractServiceImpl.class,
-                                                     MultiplyService.class,
-                                                     MultiplyServiceImpl.class,
-                                                     DivideService.class,
-                                                     DivideServiceImpl.class));
+            bundles.add(OSGiTestBundles
+                .createBundle("target/test-classes/operations-bundle.jar",
+                              "calculator/dosgi/operations/META-INF/MANIFEST.MF",
+                              new String[][] {
+                                              {"OSGI-INF/add-component.xml", null},
+                                              {"OSGI-INF/subtract-component.xml", null},
+                                              {"OSGI-INF/multiply-component.xml", null},
+                                              {"OSGI-INF/divide-component.xml", null},
+                                              {"calculator/dosgi/operations/bundle.componentType",
+                                               "OSGI-INF/sca/bundle.componentType"},
+                                              {"calculator/dosgi/operations/operations.composite",
+                                               "OSGI-INF/sca/bundle.composite"}},
+                              OperationsActivator.class,
+                              AddService.class,
+                              AddServiceImpl.class,
+                              SubtractService.class,
+                              SubtractServiceImpl.class,
+                              MultiplyService.class,
+                              MultiplyServiceImpl.class,
+                              DivideService.class,
+                              DivideServiceImpl.class));
             host = new EquinoxHost();
             BundleContext context = host.start();
-            for(URL loc: bundles) {
+            for (URL loc : bundles) {
                 host.installBundle(loc, null);
             }
             for (Bundle b : context.getBundles()) {
