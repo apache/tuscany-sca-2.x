@@ -356,12 +356,15 @@ public class EquinoxHost {
         }
         return libraryBundle;
     }
-    
-    public Collection<String> collectJarsFromManifestClassPath() {
-        return null;
-    }
 
     public void installBundle(URL bundleFile, String bundleName) throws MalformedURLException, BundleException {
+        if (bundleName == null) {
+            try {
+                bundleName = bundleName(file(bundleFile));
+            } catch (IOException e) {
+                bundleName = null;
+            }
+        }
         Bundle bundle = allBundles.get(bundleName);
         if (bundle == null) {
             long installStart = currentTimeMillis();
