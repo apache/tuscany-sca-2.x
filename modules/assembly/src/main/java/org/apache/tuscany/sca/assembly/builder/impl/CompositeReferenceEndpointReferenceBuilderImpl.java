@@ -238,6 +238,11 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setReference(reference);
                     endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
+                                
+                    // create an unresolved endpoint to go with it
+                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
+                    endpoint.setUnresolved(true);
+                    endpointRef.setTargetEndpoint(endpoint);
                     
                     warning(monitor, 
                             "ComponentReferenceTargetNotFound",
@@ -303,6 +308,11 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setReference(reference);
                     endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
+                    
+                    // create an unresolved endpoint to go with it
+                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
+                    endpoint.setUnresolved(true);
+                    endpointRef.setTargetEndpoint(endpoint);                    
                     
                     warning(monitor, 
                             "ComponentReferenceTargetNotFound",
@@ -392,7 +402,14 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setBinding(binding);
                     endpointRef.setTargetName(null);
                     endpointRef.setTargetEndpoint(null);
-                    endpointRef.setUnresolved(false);                       
+                    endpointRef.setUnresolved(false);
+                    
+                    // create a resolved endpoint to signify that this 
+                    // reference is pointing at some unwired endpoint
+                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
+                    endpoint.setUnresolved(false);
+                    endpointRef.setTargetEndpoint(endpoint);
+                    
                     reference.getEndpointReferences().add(endpointRef);
                 }
             }

@@ -56,6 +56,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -169,6 +170,7 @@ public class EndpointTestCase {
         
     }
     
+    @Ignore
     @Test
     public void testProvider(){
         try {

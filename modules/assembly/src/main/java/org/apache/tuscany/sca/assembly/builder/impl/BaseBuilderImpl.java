@@ -121,8 +121,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             monitor.problem(problem);
         }
     }   
-    
-    
+       
     /**
      * Index components inside a composite
      * 

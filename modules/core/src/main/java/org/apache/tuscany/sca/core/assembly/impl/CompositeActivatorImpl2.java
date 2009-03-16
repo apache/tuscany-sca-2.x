@@ -704,16 +704,18 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 // if there is a binding an endpoint has been found for the endpoint reference
                 if (endpointReference.getBinding() != null){
                     
-                    // add the binding provider 
+                    // add the binding provider. This is apparently a repeat
+                    // of previous configuration as self references are created
+                    // on the fly and miss the previous point where providers are added
                     RuntimeComponentReference runtimeRef = (RuntimeComponentReference)componentReference;
+                    
+                    if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
+                        addReferenceBindingProvider(component, componentReference, endpointReference.getBinding());
+                    }
+                    
+                    // start the binding provider   
                     final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
                     
-/* TODO - Is this actually required                    
-                    if (bindingProvider == null) {
-                        bindingProvider = addReferenceBindingProvider(component, componentReference, endpointReference.getBinding());
-                    }
-*/                   
-                    // start the binding provider                    
                     if (bindingProvider != null) {
                         // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
                         AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -797,7 +799,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
 */        
 
         // create the wire
-        RuntimeWire wire = new RuntimeWireImpl2(false, 
+        RuntimeWire wire = new RuntimeWireImpl2(true, 
                                                 endpointReference, 
                                                 endpoint, 
                                                 interfaceContractMapper, 

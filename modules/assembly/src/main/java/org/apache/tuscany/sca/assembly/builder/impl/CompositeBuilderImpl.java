@@ -62,7 +62,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     
     private CompositeBuilder compositeReferenceEndpointReferenceBuilder;
     private CompositeBuilder compositeServiceEndpointBuilder;
-    private CompositeBuilder endpointReferenceBuilder;
+    //private CompositeBuilder endpointReferenceBuilder;
     
     public CompositeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
         this(factories.getFactory(AssemblyFactory.class),
@@ -177,7 +177,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         
         compositeReferenceEndpointReferenceBuilder = new CompositeReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
         compositeServiceEndpointBuilder = new CompositeServiceEndpointBuilderImpl(assemblyFactory);
-        endpointReferenceBuilder = new EndpointReference2BuilderImpl(assemblyFactory, interfaceContractMapper);
+        //endpointReferenceBuilder = new EndpointReference2BuilderImpl(assemblyFactory, interfaceContractMapper);
     }
 
     public String getID() {
@@ -244,7 +244,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // TODO this needs to be offloaded to a plugpoint
         //      could be called upon when rebuilding wires
         // wire endpoint references to endpoints
-        endpointReferenceBuilder.build(composite, definitions, monitor);
+        //endpointReferenceBuilder.build(composite, definitions, monitor);
         // ===============================================        
     }
 

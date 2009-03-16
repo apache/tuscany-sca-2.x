@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
-import org.apache.tuscany.sca.assembly.builder.EndpointReference2Builder;
+import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -58,7 +58,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * 
  * @version $Rev$ $Date$
  */
-public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements CompositeBuilder, EndpointReference2Builder {
+public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements CompositeBuilder/*, EndpointReference2Builder*/ {
     
     
     public EndpointReference2BuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
@@ -125,36 +125,29 @@ public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements Co
     public void build(EndpointReference2 endpointReference, Monitor monitor) {
         Endpoint2 endpoint = endpointReference.getTargetEndpoint();
       
- 
-        // check if the endpoint was available locally
         if (endpoint == null){
-            if (endpointReference.isUnresolved() == false){
-                // this is a non-wired endpoint reference
-                return;
-            } else {
-                // target service is available remotely
-                
-                // go look it up in the domain
-            }
-        } else {
-            // target service is available locally
-            
-            // check for wired reference that's already resolved
+            // an error?
+        } else {          
             if (endpoint.isUnresolved() == false){
+                // everything is resolved
                 return;
             }
             
-            // find the real endpoint for this reference by matching bindings
-            // and policy sets
-            matchForwardBinding(endpointReference, 
-                                endpointReference.getTargetEndpoint().getService(),
-                                monitor);
-            
-            matchCallbackBinding(endpointReference, 
-                                 endpointReference.getTargetEndpoint().getService(),
-                                 monitor);
+            if (endpointReference.isUnresolved() == false ){  
+                // TODO - bring resolution and binding matching together
+                // just do binding matching
+                matchForwardBinding(endpointReference, 
+                                    endpointReference.getTargetEndpoint().getService(),
+                                    monitor);
+                
+                matchCallbackBinding(endpointReference, 
+                                     endpointReference.getTargetEndpoint().getService(),
+                                     monitor);
+            } else {
+                // resolve the endpoint reference in the domain and then 
+                // match bindings
+            } 
         }        
-        
     }
     
     // TODO - In OASIS case there are no bindings to match with on the 
@@ -213,6 +206,14 @@ public class EndpointReference2BuilderImpl extends BaseBuilderImpl implements Co
                 // that has been matched
                 if (referenceBinding.getURI() == null) {
                     cloned.setURI(serviceEndpoint.getBinding().getURI());
+                }
+                
+                // TODO - can we remove this?
+                if (cloned instanceof OptimizableBinding) {
+                    OptimizableBinding optimizableBinding = (OptimizableBinding)cloned;
+                    optimizableBinding.setTargetComponent(serviceEndpoint.getComponent());
+                    optimizableBinding.setTargetComponentService(serviceEndpoint.getService());
+                    optimizableBinding.setTargetBinding(serviceEndpoint.getBinding());
                 }
 
                 endpointReference.setBinding(referenceBinding);
