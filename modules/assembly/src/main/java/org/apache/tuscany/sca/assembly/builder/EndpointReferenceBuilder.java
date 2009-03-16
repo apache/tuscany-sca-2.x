@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import java.util.Map;
+
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -30,12 +36,30 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public interface EndpointReference2Builder {
+public interface EndpointReferenceBuilder {
     
     /**
-     * Build an endpoint.
+     * Create endpoint references for a component reference
      * 
-     * @param endpoint
+     * @param composite
+     * @param component
+     * @param reference
+     * @param components
+     * @param componentServices
+     * @param monitor
+     */
+    public void createEndpointReferences(Composite composite,
+                                         Component component, 
+                                         ComponentReference reference,
+                                         Map<String, Component> components,
+                                         Map<String, ComponentService> componentServices, 
+                                         Monitor monitor);
+    
+    /**
+     * Build an endpoint reference matching reference bindings 
+     * with service bindings.
+     * 
+     * @param endpointReference
      * @param monitor
      */
     void build(EndpointReference2 endpointReference, Monitor monitor);
