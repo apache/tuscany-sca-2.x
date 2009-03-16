@@ -17,15 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi.runtime;
+package org.apache.tuscany.sca.node.osgi.impl;
 
-import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -36,11 +34,11 @@ import org.osgi.framework.SynchronousBundleListener;
 /**
  * Managing the mapping between OSGi bundles and SCA implementation.osgi
  */
-public class OSGiImplementationManager implements SynchronousBundleListener, ServiceListener {
+public class NodeManager implements SynchronousBundleListener, ServiceListener {
     private BundleContext bundleContext;
-    private Map<Bundle, OSGiImplementation> implementations = new ConcurrentHashMap<Bundle, OSGiImplementation>();
+    private Map<Bundle, NodeImpl> nodes = new ConcurrentHashMap<Bundle, NodeImpl>();
 
-    public OSGiImplementationManager(BundleContext bundleContext) {
+    public NodeManager(BundleContext bundleContext) {
         super();
         this.bundleContext = bundleContext;
     }
@@ -86,15 +84,17 @@ public class OSGiImplementationManager implements SynchronousBundleListener, Ser
         if (!isSCABundle(bundle)) {
             return;
         }
-        URL compositeFile = bundle.getEntry("OSGI-INF/sca/bundle.composite");
-        URL componentTypeFile = bundle.getEntry("OSGI-INF/sca/bundle.componentType");
+        NodeImpl node = new NodeImpl(bundle);
+        nodes.put(bundle, node);
+        node.start();
     }
 
     private void bundleStopping(Bundle bundle) {
-        OSGiImplementation impl = implementations.remove(bundle);
-        if (impl == null) {
+        NodeImpl node = nodes.remove(bundle);
+        if (node == null) {
             return;
         }
+        node.stop();
     }
 
     public void serviceChanged(ServiceEvent event) {
