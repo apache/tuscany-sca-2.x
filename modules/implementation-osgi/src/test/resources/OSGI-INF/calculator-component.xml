@@ -19,18 +19,18 @@
 -->
 <scr:component name="CalculatorComponent" 
                xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <implementation class="calculator.CalculatorServiceDSImpl" />
+    <implementation class="calculator.dosgi.CalculatorServiceDSImpl" />
     <service>
-        <provide interface="calculator.CalculatorService" />
+        <provide interface="calculator.dosgi.CalculatorService" />
     </service>
 
-    <reference name="addService" interface="calculator.operations.AddService" bind="setAddService" unbind="unsetAddService"
+    <reference name="addService" interface="calculator.dosgi.operations.AddService" bind="setAddService" unbind="unsetAddService"
         policy="dynamic" />
-    <reference name="subtractService" interface="calculator.operations.SubtractService" bind="setSubtractService"
+    <reference name="subtractService" interface="calculator.dosgi.operations.SubtractService" bind="setSubtractService"
         unbind="unsetSubtractService" policy="dynamic" />
-    <reference name="multiplyService" interface="calculator.operations.MultiplyService" bind="setMultiplyService"
+    <reference name="multiplyService" interface="calculator.dosgi.operations.MultiplyService" bind="setMultiplyService"
         unbind="unsetMultiplyService" policy="dynamic" />
-    <reference name="divideService" interface="calculator.operations.DivideService" bind="setDivideService"
+    <reference name="divideService" interface="calculator.dosgi.operations.DivideService" bind="setDivideService"
         unbind="unsetDivideService" policy="dynamic" />
 
 </scr:component>
