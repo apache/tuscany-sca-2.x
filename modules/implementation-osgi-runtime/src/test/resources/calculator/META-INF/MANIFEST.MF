@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: calculator;version="1.0.0"
+Bundle-Version: 1.0.0
+Bundle-Name: calculator
+Bundle-Activator: calculator.CalculatorActivator
+Bundle-ManifestVersion: 2
+Import-Package: calculator.operations;version="1.0.0",
+ org.osgi.framework,
+ org.osgi.service.packageadmin,
+ org.osgi.util.tracker,
+ org.osgi.service.component;resolution:=optional
+Bundle-SymbolicName: calculator
+Bundle-Vendor: The Apache Software Foundation
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-DocURL: http://www.apache.org/
+Service-Component: OSGI-INF/calculator-component.xml
