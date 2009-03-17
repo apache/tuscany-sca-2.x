@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -62,11 +61,6 @@ public class OSGiReadImplTestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors =
             new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
-
-        compositeBuilder =
-            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
-                .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
-
     }
 
     @Test
@@ -75,8 +69,6 @@ public class OSGiReadImplTestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
-
-        compositeBuilder.build(composite, null, null);
     }
 
     @Test
@@ -109,8 +101,6 @@ public class OSGiReadImplTestCase {
         resolver.addModel(componentType);
 
         staxProcessor.resolve(composite, resolver);
-
-        compositeBuilder.build(composite, null, null);
     }
 
     @Test
