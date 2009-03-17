@@ -29,10 +29,7 @@ import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;
-import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
-import org.apache.tuscany.sca.node.osgi.impl.NodeImpl;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -85,9 +82,9 @@ public class CalculatorOSGiNodeTestCase {
                 }
             }
 
-            bundles.add(getCodeLocation(OSGiImplementation.class));
-            bundles.add(getCodeLocation(OSGiBundleContributionScanner.class));
-            bundles.add(getCodeLocation(NodeImpl.class));
+//            bundles.add(getCodeLocation(OSGiImplementation.class));
+//            bundles.add(getCodeLocation(OSGiBundleContributionScanner.class));
+//            bundles.add(getCodeLocation(NodeImpl.class));
 
             bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                      "calculator/dosgi/META-INF/MANIFEST.MF",

@@ -18,8 +18,9 @@
  */
 package calculator.dosgi;
 
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
@@ -33,10 +34,10 @@ import calculator.dosgi.operations.SubtractService;
  * An implementation of the Calculator service.
  */
 public class CalculatorServiceImpl implements CalculatorService {
-//    private AddService addService;
-//    private SubtractService subtractService;
-//    private MultiplyService multiplyService;
-//    private DivideService divideService;
+    //    private AddService addService;
+    //    private SubtractService subtractService;
+    //    private MultiplyService multiplyService;
+    //    private DivideService divideService;
 
     private ServiceTracker tracker;
 
@@ -48,7 +49,7 @@ public class CalculatorServiceImpl implements CalculatorService {
         super();
         Filter filter = null;
         try {
-            filter = context.createFilter("(" + Constants.OBJECTCLASS + "=calculator.dosgi.operations.*)");
+            filter = context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (sca.reference=*))");
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
@@ -80,6 +81,7 @@ public class CalculatorServiceImpl implements CalculatorService {
     private <T> T getService(Class<T> cls) {
         for (Object s : tracker.getServices()) {
             if (cls.isInstance(s)) {
+                System.out.println(s);
                 return cls.cast(s);
             }
         }
