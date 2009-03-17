@@ -38,15 +38,14 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProces
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
+import org.apache.tuscany.sca.contribution.scanner.ContributionScannerExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
@@ -63,20 +62,22 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     private FactoryExtensionPoint modelFactories;
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
-    private UtilityExtensionPoint utilities;
-    private Monitor monitor = null;
+    // private UtilityExtensionPoint utilities;
+    private Monitor monitor;
+    private ContributionScannerExtensionPoint scanners;
 
     public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        hackResolvers(modelResolvers);
         this.monitor = monitor;
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors, this.monitor);
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        this.scanners = extensionPoints.getExtensionPoint(ContributionScannerExtensionPoint.class);
     }
     
+    /*
     public ContributionContentProcessor(FactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers,
                                         URLArtifactProcessor<Object> artifactProcessor, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.modelFactories = modelFactories;
@@ -87,6 +88,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.monitor = monitor;
     }
+    */
     
     public String getArtifactType() {
         return ".contribution/content";
@@ -107,11 +109,13 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         contribution.setUnresolved(true);
 
         // Create a contribution scanner
-        ContributionScanner scanner;
-        if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.getFile()).isDirectory()) {
-            scanner = new DirectoryContributionScanner();
-        } else {
-            scanner = new JarContributionScanner();
+        ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
+        if (scanner == null) {
+            if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.getFile()).isDirectory()) {
+                scanner = new DirectoryContributionScanner();
+            } else {
+                scanner = new JarContributionScanner();
+            }
         }
         
         // Scan the contribution and list the artifacts contained in it
@@ -212,19 +216,4 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         }
     }
 
-    /**
-     * FIXME Temporary hack for testing the ClassLoaderModelResolver.
-     * 
-     * @param modelResolvers
-     */
-    private static void hackResolvers(ModelResolverExtensionPoint modelResolvers) {
-        Class<?> resolverClass = modelResolvers.getResolver(ClassReference.class);
-        if (resolverClass==null || !resolverClass.getName().equals("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver")) {
-            try {
-                Class<?> loaderResolverClass = Class.forName("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver", true, ContributionContentProcessor.class.getClassLoader());
-                modelResolvers.addResolver(ClassReference.class, (Class<? extends ModelResolver>)loaderResolverClass);
-            } catch (ClassNotFoundException e) {
-            }
-        }
-    }
 }

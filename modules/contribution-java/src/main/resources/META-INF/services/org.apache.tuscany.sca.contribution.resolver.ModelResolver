@@ -14,5 +14,4 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-
-org.apache.tuscany.sca.contribution.java.impl.ClassReferenceModelResolver;model=org.apache.tuscany.sca.contribution.resolver.ClassReference
+org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver;model=org.apache.tuscany.sca.contribution.resolver.ClassReference
