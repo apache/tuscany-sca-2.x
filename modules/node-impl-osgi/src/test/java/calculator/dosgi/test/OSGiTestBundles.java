@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.osgi.test;
+package calculator.dosgi.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

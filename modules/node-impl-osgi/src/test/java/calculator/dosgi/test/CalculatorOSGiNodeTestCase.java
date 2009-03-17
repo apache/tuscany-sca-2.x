@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.apache.tuscany.sca.node.osgi.impl.NodeImpl;
 import org.junit.AfterClass;

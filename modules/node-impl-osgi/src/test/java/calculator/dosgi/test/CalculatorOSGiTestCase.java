@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
