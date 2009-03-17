@@ -1,0 +1,2 @@
+org.eclipse.equinox.ds/debug=true
+org.eclipse.equinox.ds/print_on_console=true

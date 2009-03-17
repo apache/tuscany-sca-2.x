@@ -25,6 +25,19 @@
 
     <component name="OperationsComponent">
         <tuscany:implementation.osgi bundleSymbolicName="calculator.dosgi.operations" bundleVersion="1.0.0" />
+        <service name="AddService">
+            <tuscany:binding.rmi uri="rmi://localhost:8085/AddService"/>
+        </service>
+        <service name="SubtractService">
+            <tuscany:binding.rmi uri="rmi://localhost:8085/SubtractService"/>
+        </service>
+        <service name="MultiplyService">
+            <tuscany:binding.rmi uri="rmi://localhost:8085/MultiplyService"/>
+        </service>
+        <service name="DivideService">
+            <tuscany:binding.rmi uri="rmi://localhost:8085/DivideService"/>
+        </service>
+        
     </component>
 
 </composite>
