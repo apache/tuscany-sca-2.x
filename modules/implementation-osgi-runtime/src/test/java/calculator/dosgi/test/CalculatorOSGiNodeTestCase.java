@@ -35,10 +35,12 @@ import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.apache.tuscany.sca.node.osgi.impl.NodeImpl;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import calculator.dosgi.CalculatorActivator;
 import calculator.dosgi.CalculatorService;
@@ -59,6 +61,7 @@ import calculator.dosgi.operations.SubtractServiceImpl;
  */
 public class CalculatorOSGiNodeTestCase {
     private static EquinoxHost host;
+    private static BundleContext context;
 
     public static URL getCodeLocation(final Class<?> anchorClass) {
         return AccessController.doPrivileged(new PrivilegedAction<URL>() {
@@ -122,7 +125,7 @@ public class CalculatorOSGiNodeTestCase {
                               DivideService.class,
                               DivideServiceImpl.class));
             host = new EquinoxHost();
-            BundleContext context = host.start();
+            context = host.start();
             for (URL loc : bundles) {
                 host.installBundle(loc, null);
             }
@@ -177,7 +180,15 @@ public class CalculatorOSGiNodeTestCase {
 
     @Test
     public void testOSGi() {
-
+        ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());
+        Assert.assertNotNull(ref);
+        Object service = context.getService(ref);
+        Assert.assertNotNull(service);
+        CalculatorService calculator = cast(service, CalculatorService.class);
+        System.out.println("2.0 + 1.0 = " + calculator.add(2.0, 1.0));
+        System.out.println("2.0 - 1.0 = " + calculator.subtract(2.0, 1.0));
+        System.out.println("2.0 * 1.0 = " + calculator.multiply(2.0, 1.0));
+        System.out.println("2.0 / 1.0 = " + calculator.divide(2.0, 1.0));
     }
 
     /**
@@ -224,6 +235,7 @@ public class CalculatorOSGiNodeTestCase {
     public static void tearDownAfterClass() throws Exception {
         if (host != null) {
             host.stop();
+            context = null;
         }
     }
 

@@ -18,22 +18,19 @@
  */
 package calculator.dosgi;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-
 import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The Calculator service interface.
  */
 @Remotable
-public interface CalculatorService extends Remote {
+public interface CalculatorService {
 
-    double add(double n1, double n2) throws RemoteException;
+    double add(double n1, double n2);
 
-    double subtract(double n1, double n2) throws RemoteException;
+    double subtract(double n1, double n2);
 
-    double multiply(double n1, double n2) throws RemoteException;
+    double multiply(double n1, double n2);
 
-    double divide(double n1, double n2) throws RemoteException;
+    double divide(double n1, double n2);
 }

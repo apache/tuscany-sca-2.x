@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
@@ -64,7 +65,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
         this.operation = operation;
         this.service = service;
         this.provider = provider;
-        this.component = provider.getRuntimeComponent();
+        this.component = provider.getComponent();
 
     }
 
@@ -78,6 +79,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
         try {
             BundleContext bundleContext = provider.getImplementation().getBundle().getBundleContext();
             JavaInterface javaInterface = (JavaInterface)op.getInterface();
+            // String filter = getOSGiFilter(provider.getOSGiProperties(service));
             // FIXME: What is the filter?
             String filter = "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
             ServiceReference[] refs = bundleContext.getServiceReferences(javaInterface.getName(), filter);
@@ -121,6 +123,26 @@ public class OSGiTargetInvoker<T> implements Invoker {
             msg.setFaultBody(e.getCause());
         }
         return msg;
+    }
+
+    private String getOSGiFilter(Hashtable<String, Object> props) {
+
+        String filter = "";
+
+        if (props != null && props.size() > 0) {
+            int propCount = 0;
+            for (String propName : props.keySet()) {
+                if (propName.equals("service.pid"))
+                    continue;
+                filter = filter + "(" + propName + "=" + props.get(propName) + ")";
+                propCount++;
+            }
+
+            if (propCount > 1)
+                filter = "(&" + filter + ")";
+        } else
+            filter = null;
+        return filter;
     }
 
     /**
@@ -167,7 +189,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
                     matchingMethods.add(m);
                 }
             }
-            
+
             // TUSCANY-2180 If there is only one method then we just match on the name 
             // (this is the same as the existing behaviour)
             if (matchingMethods.size() == 1) {
@@ -178,7 +200,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
                 Class<?>[] paramTypes = getPhysicalTypes(operation);
                 return implClass.getMethod(name, paramTypes);
             }
-            
+
             // No matching method found
             throw new NoSuchMethodException("No matching method for operation " + operation.getName()
                 + " is found on "
