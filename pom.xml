@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache</groupId>
@@ -30,12 +30,12 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Implementation Project (2.x)</name>
     <url>http://tuscany.apache.org</url>
-    <version>2.0-M2-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/tuscany/tags/java/sca/test-branch</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/tags/java/sca/test-branch</developerConnection>
-        <url>https://svn.apache.org/repos/asf/tuscany/tags/java/sca/test-branch</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
+        <url>http://svn.apache.org/repos/asf/tuscany/java/sca</url>
     </scm>
 
     <prerequisites>
