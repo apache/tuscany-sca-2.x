@@ -40,15 +40,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Java->OSGi references use OSGiTargetInvoker to call methods from OSGi bundles
- * OSGi->Java references use JDKProxyService and invocation handler and do not use this class
- * OSGi->OSGi references go through OSGi reference mechanisms when a proxy is not used
- *    When a proxy is used, this invoker is used to call methods from OSGi bundles
- *    A proxy is used for OSGi->OSGi if
- *       1) target reference properties are specified  OR
- *       2) there are one or more non-blocking methods in the target interface OR
- *       3) scope is not COMPOSITE
- *
+ * The Invoker looks up the corresponding OSGi service from the OSGi service registry
+ * and delegate the call to it.
+ *  
  * @version $Rev$ $Date$
  */
 public class OSGiTargetInvoker<T> implements Invoker {
@@ -81,9 +75,10 @@ public class OSGiTargetInvoker<T> implements Invoker {
             JavaInterface javaInterface = (JavaInterface)op.getInterface();
             // String filter = getOSGiFilter(provider.getOSGiProperties(service));
             // FIXME: What is the filter?
-            String filter = "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
-            ServiceReference[] refs = bundleContext.getServiceReferences(javaInterface.getName(), filter);
-            Object instance = bundleContext.getService(refs[0]);
+            String filter = "(!(sca.reference=*))";
+            // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
+            ServiceReference ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
+            Object instance = bundleContext.getService(ref);
             Method m = findMethod(instance.getClass(), operation);
 
             Object ret = invokeMethod(instance, m, msg);
@@ -132,16 +127,28 @@ public class OSGiTargetInvoker<T> implements Invoker {
         if (props != null && props.size() > 0) {
             int propCount = 0;
             for (String propName : props.keySet()) {
-                if (propName.equals("service.pid"))
+                if (propName.equals("service.pid")) {
                     continue;
-                filter = filter + "(" + propName + "=" + props.get(propName) + ")";
+                }
+                String value = String.valueOf(props.get(propName));
+                StringBuffer buf = new StringBuffer();
+                for (char c : value.toCharArray()) {
+                    if (c == '(' || c == ')') {
+                        buf.append("\\" + c);
+                    } else {
+                        buf.append(c);
+                    }
+                }
+                filter = filter + "(" + propName + "=" + buf.toString() + ")";
                 propCount++;
             }
 
-            if (propCount > 1)
+            if (propCount > 1) {
                 filter = "(&" + filter + ")";
-        } else
+            }
+        } else {
             filter = null;
+        }
         return filter;
     }
 

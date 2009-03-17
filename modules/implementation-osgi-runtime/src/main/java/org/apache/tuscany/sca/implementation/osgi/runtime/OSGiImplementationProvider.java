@@ -57,6 +57,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                                       ProxyFactoryExtensionPoint proxyFactoryExtensionPoint) throws BundleException {
         this.component = component;
         this.proxyFactoryExtensionPoint = proxyFactoryExtensionPoint;
+        this.implementation = impl;
         this.osgiBundle = impl.getBundle();
     }
 
@@ -71,8 +72,9 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
             final Class<?> interfaceClass = javaInterface.getJavaClass();
 
-            Hashtable<String, Object> targetProperties = getOSGiProperties(reference);
+            final Hashtable<String, Object> targetProperties = getOSGiProperties(reference);
             targetProperties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+            targetProperties.put("sca.reference", component.getURI() + "#reference(" + ref.getName() + ")");
 
             ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
             if (!interfaceClass.isInterface()) {
@@ -81,12 +83,11 @@ public class OSGiImplementationProvider implements ImplementationProvider {
 
             for (RuntimeWire wire : reference.getRuntimeWires()) {
                 final Object proxy = proxyService.createProxy(interfaceClass, wire);
-                final Hashtable<String, Object> finalTargetProperties = targetProperties;
                 AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                     public ServiceRegistration run() {
                         return osgiBundle.getBundleContext().registerService(interfaceClass.getName(),
                                                                              proxy,
-                                                                             finalTargetProperties);
+                                                                             targetProperties);
                     }
                 });
             }
