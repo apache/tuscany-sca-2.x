@@ -396,7 +396,8 @@ public final class JAXBContextHelper {
             typeQName = new QName(typeNamespace, typeName);
         } else {
             XmlEnum xmlEnum = javaType.getAnnotation(XmlEnum.class);
-            if (xmlEnum != null) {
+            // POJO can have the @XmlSchema on the package-info too
+            if (xmlEnum != null || namespace != null) {
                 name = jaxbDecapitalize(javaType.getSimpleName());
                 typeQName = new QName(namespace, name);
             }

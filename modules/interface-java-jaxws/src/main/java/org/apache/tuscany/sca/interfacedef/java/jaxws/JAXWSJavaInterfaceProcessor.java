@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -271,10 +272,12 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     name = getValue(name, "arg" + i);
                     QName element = new QName(ns, name);
                     Object logical = operation.getInputType().getLogical().get(i).getLogical();
+                    QName type = null;
                     if (logical instanceof XMLType) {
                         ((XMLType)logical).setElementName(element);
+                        type = ((XMLType)logical).getTypeName();
                     }
-                    inputElements.add(new ElementInfo(element, null));
+                    inputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
                 }
 
                 List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
@@ -288,10 +291,12 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
                 if (operation.getOutputType() != null) {
                     Object logical = operation.getOutputType().getLogical();
+                    QName type = null;
                     if (logical instanceof XMLType) {
                         ((XMLType)logical).setElementName(element);
+                        type = ((XMLType)logical).getTypeName();
                     }
-                    outputElements.add(new ElementInfo(element, null));
+                    outputElements.add(new ElementInfo(element, new TypeInfo(type, false, null)));
                 }
 
                 String db = inputWrapperDT != null ? inputWrapperDT.getDataBinding() : JAXB_DATABINDING;
