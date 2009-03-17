@@ -34,14 +34,14 @@ public class POJOWSTestCase {
         Node node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/itests/pojo/test.composite", contrib);
         node.start();
 
-        //        try {
-        //            System.out.println("Test server started (press enter to shutdown)");
-        //            System.in.read();
-        //        } 
-        //        catch (IOException e) {
-        //            System.err.println(e);
-        //            e.printStackTrace();
-        //        }
+//                try {
+//                    System.out.println("Test server started (press enter to shutdown)");
+//                    System.in.read();
+//                } 
+//                catch (IOException e) {
+//                    System.err.println(e);
+//                    e.printStackTrace();
+//                }
 
         node.stop();
         System.out.println("Test server stopped");
