@@ -136,9 +136,34 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         });
         Class<?> targetJavaInterface = getTargetJavaClass(serviceInterface);
         targetJavaInterface = RemoteInterfaceGenerator.generate(targetJavaInterface);
-        enhancer.setClassLoader(targetJavaInterface.getClassLoader());
+        /*
+         * In OSGi, the classloader for the interface cannot access the classes for the CGLIB  
+         */
+        enhancer.setClassLoader(new MixedClassLoader(targetJavaInterface.getClassLoader(), getClass().getClassLoader()));
         enhancer.setInterfaces(new Class[] {targetJavaInterface});
         return (Remote)enhancer.create();
+    }
+    
+    private static class MixedClassLoader extends ClassLoader {
+        private ClassLoader runtime;
+
+        public MixedClassLoader(ClassLoader parent, ClassLoader runtime) {
+            super(parent);
+            this.runtime = runtime;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            try {
+                return super.findClass(name);
+            } catch (ClassNotFoundException e) {
+                if (runtime != null && runtime != getParent()) {
+                    return runtime.loadClass(name);
+                } else {
+                    throw e;
+                }
+            }
+        }
     }
 
     private Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
