@@ -34,9 +34,10 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * A Model Resolver for ClassReferences.
- *
+ * @deprecated Use ClassLoaderModelResolver instead
  * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
+@Deprecated()
 public class ClassReferenceModelResolver implements ModelResolver {
     private Contribution contribution;
     private WeakReference<ClassLoader> classLoader;
