@@ -37,7 +37,12 @@
             <version>3.3.0-v20070530</version>
             <scope>compile</scope>
         </dependency>
-         
+        <dependency>
+            <groupId>org.eclipse.osgi</groupId>
+            <artifactId>services</artifactId>
+            <version>3.1.200-v20070605</version>
+            <scope>test</scope>
+        </dependency>         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
