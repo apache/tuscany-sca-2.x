@@ -82,27 +82,26 @@ public class CalculatorOSGiTestCase {
                                                  CalculatorServiceDSImpl.class,
                                                  CalculatorActivator.class));
 
-        bundles.add(OSGiTestBundles
-            .createBundle("target/test-classes/operations-bundle.jar",
-                          "calculator/dosgi/operations/META-INF/MANIFEST.MF",
-                          new String[][] {
-                                          {"OSGI-INF/add-component.xml", null},
-                                          {"OSGI-INF/subtract-component.xml", null},
-                                          {"OSGI-INF/multiply-component.xml", null},
-                                          {"OSGI-INF/divide-component.xml", null},
-                                          {"calculator/dosgi/operations/bundle.componentType",
-                                           "OSGI-INF/sca/bundle.componentType"},
-                                          {"calculator/dosgi/operations/operations.composite",
-                                           "OSGI-INF/sca/bundle.composite"}},
-                          OperationsActivator.class,
-                          AddService.class,
-                          AddServiceImpl.class,
-                          SubtractService.class,
-                          SubtractServiceImpl.class,
-                          MultiplyService.class,
-                          MultiplyServiceImpl.class,
-                          DivideService.class,
-                          DivideServiceImpl.class));
+        bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
+                                                 "calculator/dosgi/operations/META-INF/MANIFEST.MF",
+                                                 new String[][] {
+                                                                 {"OSGI-INF/add-component.xml", null},
+                                                                 {"OSGI-INF/subtract-component.xml", null},
+                                                                 {"OSGI-INF/multiply-component.xml", null},
+                                                                 {"OSGI-INF/divide-component.xml", null},
+                                                                 {"calculator/dosgi/operations/bundle.componentType",
+                                                                  "OSGI-INF/sca/bundle.componentType"},
+                                                                 {"calculator/dosgi/operations/operations.composite",
+                                                                  "OSGI-INF/sca/bundle.composite"}},
+                                                 OperationsActivator.class,
+                                                 AddService.class,
+                                                 AddServiceImpl.class,
+                                                 SubtractService.class,
+                                                 SubtractServiceImpl.class,
+                                                 MultiplyService.class,
+                                                 MultiplyServiceImpl.class,
+                                                 DivideService.class,
+                                                 DivideServiceImpl.class));
         try {
             host = new EquinoxHost(bundles);
             BundleContext context = host.start();
@@ -118,7 +117,13 @@ public class CalculatorOSGiTestCase {
                     System.out.println(string(b, false));
                 }
             }
-            ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());
+            
+            // Sleep for 1 sec so that the DS is available
+            Thread.sleep(1000);
+            // Use the DS version
+            String filter = "(component.name=CalculatorComponent)";
+            System.out.println(filter);
+            ServiceReference ref = context.getServiceReferences(CalculatorService.class.getName(), filter)[0];
             CalculatorService calculator = cast(context.getService(ref), CalculatorService.class);
             System.out.println("2.0 + 1.0 = " + calculator.add(2.0, 1.0));
             System.out.println("2.0 - 1.0 = " + calculator.subtract(2.0, 1.0));

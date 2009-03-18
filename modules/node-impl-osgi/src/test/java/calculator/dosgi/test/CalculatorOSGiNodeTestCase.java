@@ -95,6 +95,11 @@ public class CalculatorOSGiNodeTestCase {
                                                                      {"calculator/dosgi/calculator.composite",
                                                                       "OSGI-INF/sca/bundle.composite"}},
                                                      CalculatorService.class,
+                                                     // Package the interfaces so that the operations bundle can be remote
+                                                     AddService.class,
+                                                     SubtractService.class,
+                                                     MultiplyService.class,
+                                                     DivideService.class,
                                                      CalculatorServiceImpl.class,
                                                      CalculatorServiceDSImpl.class,
                                                      CalculatorActivator.class));
