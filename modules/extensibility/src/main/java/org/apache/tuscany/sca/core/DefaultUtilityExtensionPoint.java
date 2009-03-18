@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
-    private Map<Class<?>, Object> utilities = new HashMap<Class<?>, Object>();
+    private Map<Class<?>, Object> utilities = new ConcurrentHashMap<Class<?>, Object>();
     
     private ExtensionPointRegistry extensionPoints;
     
@@ -95,50 +95,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      * @throws IllegalArgumentException if utilityType is null
      */
     public <T> T getUtility(Class<T> utilityType) {
-        if (utilityType == null) {
-            throw new IllegalArgumentException("Cannot lookup Service of type null");
-        }
-
-        Object utility = utilities.get(utilityType);
-        if (utility == null) {
-            
-            // Dynamically load a utility class declared under META-INF/services/"utilityType"           
-            try {
-                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getFirstServiceDeclaration(utilityType.getName());
-                if (utilityDeclaration != null) {
-                    Class<?> utilityClass = utilityDeclaration.loadClass();
-                    
-                    // Construct the utility
-                    Constructor<?>[] constructors = utilityClass.getConstructors();
-                    Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
-                    if (constructor != null) {
-                        utility = constructor.newInstance(extensionPoints);
-                    } else {
-                        constructor = getConstructor(constructors, new Class<?>[] {});
-                        if (constructor != null) {
-                            utility = constructor.newInstance();
-                        } else {
-                            throw new IllegalArgumentException(
-                                                               "No valid constructor is found for " + utilityClass);
-                        }
-                    }
-                   
-                    // Cache the loaded utility
-                    addUtility(utility);
-                }
-            } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IOException e) {
-                throw new IllegalArgumentException(e);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return utilityType.cast(utility);
+        return getUtility(utilityType, false);
     }
 
     /**
@@ -182,5 +139,54 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             getAllInterfaces(superClass, implemented);
         }
     }
+
+    public <T> T getUtility(Class<T> utilityType, boolean newInstance) {
+        if (utilityType == null) {
+            throw new IllegalArgumentException("Cannot lookup Service of type null");
+        }
+
+        Object utility = null;
+        if (!newInstance) {
+            utility = utilities.get(utilityType);
+        }
+        if (utility == null) {
+            
+            // Dynamically load a utility class declared under META-INF/services/"utilityType"           
+            try {
+                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getFirstServiceDeclaration(utilityType.getName());
+                if (utilityDeclaration != null) {
+                    Class<?> utilityClass = utilityDeclaration.loadClass();
+                    
+                    // Construct the utility
+                    Constructor<?>[] constructors = utilityClass.getConstructors();
+                    Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
+                    if (constructor != null) {
+                        utility = constructor.newInstance(extensionPoints);
+                    } else {
+                        constructor = getConstructor(constructors, new Class<?>[] {});
+                        if (constructor != null) {
+                            utility = constructor.newInstance();
+                        } else {
+                            throw new IllegalArgumentException(
+                                                               "No valid constructor is found for " + utilityClass);
+                        }
+                    }
+                   
+                    // Cache the loaded utility
+                    addUtility(utility);
+                }
+            } catch (InvocationTargetException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IOException e) {
+                throw new IllegalArgumentException(e);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return utilityType.cast(utility);    }
 
 }

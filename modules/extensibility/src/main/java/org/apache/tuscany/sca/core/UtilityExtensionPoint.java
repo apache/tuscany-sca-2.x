@@ -45,6 +45,16 @@ public interface UtilityExtensionPoint {
     <T> T getUtility(Class<T> utilityType);
 
     /**
+     * Get a new instance of the utility by the interface
+     * @param utilityType The lookup key (utility interface)
+     * @param newInstance A new instance is required
+     * @return The instance of the utility
+     *
+     * @throws IllegalArgumentException if utilityType is null
+     */
+    <T> T getUtility(Class<T> utilityType, boolean newInstance);
+    
+    /**
      * Remove a utility
      * @param utility The utility to remove
      *
