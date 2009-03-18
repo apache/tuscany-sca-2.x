@@ -22,24 +22,17 @@ package org.apache.tuscany.sca.core.databinding.processor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
-import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 
 /**
  * The databinding annotation processor for java interfaces
@@ -47,7 +40,6 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
  * @version $Rev$ $Date$
  */
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
-    private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
     private DataBindingExtensionPoint dataBindingRegistry;
 
     public DataBindingJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
@@ -140,71 +132,6 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 // TODO: Handle exceptions
                 dataBindingRegistry.introspectType(d, operation);
             }
-
-            // JIRA: TUSCANY-842
-            String db = operation.getDataBinding();
-            if (db == null || JAXB_DATABINDING.equals(db)) {
-                assignOperationDataBinding(operation);
-                db = operation.getDataBinding();
-            }
-
-            // Introspect the wrapper data type
-            if (operation.getWrapper() != null) {
-                org.apache.tuscany.sca.databinding.DataBinding dbObj =
-                    dataBindingRegistry.getDataBinding(db);
-                WrapperHandler handler = dbObj == null ? null : dbObj.getWrapperHandler();
-                if (handler != null) {
-                    WrapperInfo wrapper = operation.getWrapper();
-                    wrapper.setInputWrapperType(handler.getWrapperType(operation, true));
-                    wrapper.setOutputWrapperType(handler.getWrapperType(operation, false));
-                }
-                if (dbObj != null && handler == null) {
-                    // To avoid JAXB wrapper bean generation
-                    WrapperInfo wrapper = operation.getWrapper();
-                    wrapper.setInputWrapperType(null);
-                    wrapper.setOutputWrapperType(null);
-                }
-            }
-        }
-    }
-
-    /*
-     *  Assigns an operation DB if one of the input types, output type, fault types has a non-default DB.
-     *  However, if two of the input types, output type, fault types have two different non-default DBs 
-     *  ( e.g. SDO and JAXB), then we do nothing to the operation DB.
-     *  
-     *  The method logic assumes the JavaBeans DataBinding is the default 
-     */
-    private void assignOperationDataBinding(Operation operation) {
-
-        Set<String> dbs = new HashSet<String>();
-
-        // Can't use DataType<?> since operation.getInputType() returns: DataType<List<DataType>> 
-        List<DataType> opDataTypes = new LinkedList<DataType>();
-
-        opDataTypes.addAll(operation.getInputType().getLogical());
-        opDataTypes.add(operation.getOutputType());
-        for (DataType<DataType> ft : operation.getFaultTypes()) {
-            opDataTypes.add(ft.getLogical());
-        }
-
-        for (DataType<?> d : opDataTypes) {
-            if (d != null) {
-                String dataBinding = d.getDataBinding();
-                if ("java:array".equals(dataBinding)) {
-                    dataBinding = ((DataType)d.getLogical()).getDataBinding();
-                }
-                if (dataBinding != null) {
-                    dbs.add(dataBinding);
-                }
-            }
-        }
-
-        dbs.remove(JavaBeansDataBinding.NAME);
-        dbs.remove(SimpleJavaDataBinding.NAME);
-
-        if (dbs.size() == 1) {
-            operation.setDataBinding(dbs.iterator().next());
         }
     }
 }

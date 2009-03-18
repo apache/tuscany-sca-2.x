@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
+import org.apache.tuscany.sca.core.databinding.processor.WrapperJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.CallableReferenceXMLAdapter;
 import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
@@ -86,7 +87,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
         // Introspect the data types
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
         javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, xmlAdapterExtensionPoint));
-
+        javaFactory.addInterfaceVisitor(new WrapperJavaInterfaceProcessor(dataBindings));
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
