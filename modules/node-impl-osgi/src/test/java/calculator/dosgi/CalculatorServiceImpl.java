@@ -34,12 +34,8 @@ import calculator.dosgi.operations.SubtractService;
  * An implementation of the Calculator service.
  */
 public class CalculatorServiceImpl implements CalculatorService {
-    //    private AddService addService;
-    //    private SubtractService subtractService;
-    //    private MultiplyService multiplyService;
-    //    private DivideService divideService;
-
-    private ServiceTracker tracker;
+    private ServiceTracker remoteServices;
+    private ServiceTracker localServices;
 
     public CalculatorServiceImpl() {
         super();
@@ -47,41 +43,34 @@ public class CalculatorServiceImpl implements CalculatorService {
 
     public CalculatorServiceImpl(BundleContext context) {
         super();
-        Filter filter = null;
+        Filter remoteFilter = null, localFilter = null;
         try {
-            filter = context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (sca.reference=*))");
+            remoteFilter =
+                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (sca.reference=*))");
+            localFilter =
+                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (!(sca.reference=*)))");
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
-        this.tracker = new ServiceTracker(context, filter, null);
-        tracker.open();
+        this.remoteServices = new ServiceTracker(context, remoteFilter, null);
+        remoteServices.open();
+        this.localServices = new ServiceTracker(context, localFilter, null);
+        localServices.open();
     }
-
-    /*
-     * The following setters can be used for DS injection
-     */
-    /*
-    public void setAddService(AddService addService) {
-        this.addService = addService;
-    }
-
-    public void setSubtractService(SubtractService subtractService) {
-        this.subtractService = subtractService;
-    }
-
-    public void setDivideService(DivideService divideService) {
-        this.divideService = divideService;
-    }
-
-    public void setMultiplyService(MultiplyService multiplyService) {
-        this.multiplyService = multiplyService;
-    }
-    */
 
     private <T> T getService(Class<T> cls) {
-        for (Object s : tracker.getServices()) {
+        Object[] remoteObjects = remoteServices.getServices();
+        if (remoteObjects != null) {
+            for (Object s : remoteObjects) {
+                if (cls.isInstance(s)) {
+                    System.out.println("Remote service: " + s);
+                    return cls.cast(s);
+                }
+            }
+        }
+        for (Object s : localServices.getServices()) {
             if (cls.isInstance(s)) {
-                System.out.println(s);
+                System.out.println("Local service: " + s);
                 return cls.cast(s);
             }
         }
