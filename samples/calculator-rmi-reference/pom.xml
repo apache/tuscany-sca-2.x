@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-calculator-rmi-reference</artifactId>
-    <name>Apache Tuscany SCA Calculator RMI Reference Sample</name>
+    <name>Apache Tuscany SCA Sample Calculator RMI Reference</name>
 
     <dependencies>
         <dependency>

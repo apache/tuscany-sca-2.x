@@ -28,7 +28,7 @@
 
     <artifactId>helloworld-jsp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Helloworld JSP Sample</name>
+    <name>Apache Tuscany SCA Sample Helloworld JSP</name>
 
     <dependencies>
 

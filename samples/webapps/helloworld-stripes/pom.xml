@@ -28,7 +28,7 @@
 
     <artifactId>helloworld-stripes</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Helloworld Sample using Stripes</name>
+    <name>Apache Tuscany SCA Sample Helloworld using Stripes</name>
 
     <dependencies>
 

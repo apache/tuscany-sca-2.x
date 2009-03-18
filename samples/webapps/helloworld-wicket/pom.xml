@@ -28,7 +28,7 @@
 
     <artifactId>helloworld-wicket</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Helloworld Sample using Wicket</name>
+    <name>Apache Tuscany SCA Sample Helloworld using Wicket</name>
 
     <dependencies>
 

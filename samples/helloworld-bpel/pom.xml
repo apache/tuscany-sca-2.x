@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-helloworld-bpel</artifactId>
-    <name>Apache Tuscany SCA HelloWorld BPEL Sample</name>
+    <name>Apache Tuscany SCA Sample HelloWorld BPEL</name>
 
     <repositories>
        <repository>
