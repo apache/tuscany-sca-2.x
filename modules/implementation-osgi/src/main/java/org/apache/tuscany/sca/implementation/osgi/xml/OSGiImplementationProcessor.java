@@ -214,31 +214,21 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
 
     }
 
-    private Class getJavaClass(ModelResolver resolver, String className) {
+    private Class<?> getJavaClass(ModelResolver resolver, String className) {
         ClassReference ref = new ClassReference(className);
         ref = resolver.resolveModel(ClassReference.class, ref);
         return ref.getJavaClass();
     }
 
-    public void write(OSGiImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException,
+    public void write(OSGiImplementation model, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
-
-        //FIXME Implement this method
-    }
-
-    private QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
+        String ns = IMPLEMENTATION_OSGI.getNamespaceURI();
+        writer.writeStartElement(ns, IMPLEMENTATION_OSGI.getLocalPart());
+        writer.writeAttribute(BUNDLE_SYMBOLICNAME, model.getBundleSymbolicName());
+        if (model.getBundleVersion() != null) {
+            writer.writeAttribute(BUNDLE_VERSION, model.getBundleVersion());
         }
+        writer.writeEndElement();
     }
 
 }

@@ -25,9 +25,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -40,6 +43,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,6 +55,7 @@ import org.junit.Test;
 public class OSGiReadImplTestCase {
 
     private static XMLInputFactory inputFactory;
+    private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static CompositeBuilder compositeBuilder;
 
@@ -58,6 +63,8 @@ public class OSGiReadImplTestCase {
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
+        outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
         StAXArtifactProcessorExtensionPoint staxProcessors =
             new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
@@ -120,6 +127,12 @@ public class OSGiReadImplTestCase {
 
         assertEquals(osgiImpl.getBundleSymbolicName(), "osgi.test");
         assertEquals(osgiImpl.getBundleVersion(), "1.0.0");
+
+        StringWriter sw = new StringWriter();
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
+        staxProcessor.write(osgiImpl, writer);
+        writer.flush();
+        Assert.assertTrue(sw.toString().contains("bundleSymbolicName=\"osgi.test\" bundleVersion=\"1.0.0\""));
     }
 
 }
