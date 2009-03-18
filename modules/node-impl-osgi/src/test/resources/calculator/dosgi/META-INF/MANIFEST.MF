@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: calculator.dosgi;version="1.0.0"
+Export-Package: calculator.dosgi;version="1.0.0",
+ calculator.dosgi.operations;version="1.0.0"
 Bundle-Version: 1.0.0
 Bundle-Name: calculator.dosgi
 Bundle-Activator: calculator.dosgi.CalculatorActivator
