@@ -21,7 +21,7 @@
     <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
     <id>src</id>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>tuscany-sca-2.0-SNAPSHOT-src</baseDirectory>
+    <baseDirectory>tuscany-sca-${version}-src</baseDirectory>
     <formats>
         <format>tar.gz</format>
         <format>zip</format>
