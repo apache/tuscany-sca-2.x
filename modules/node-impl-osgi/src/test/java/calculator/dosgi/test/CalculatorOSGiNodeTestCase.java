@@ -19,7 +19,6 @@
 
 package calculator.dosgi.test;
 
-import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -79,13 +78,6 @@ public class CalculatorOSGiNodeTestCase {
                 client = Boolean.valueOf(prop);
             }
             Set<URL> bundles = new HashSet<URL>();
-
-            File plugins = new File("target/test-classes/plugins");
-            for (File f : plugins.listFiles()) {
-                if (f.isFile()) {
-                    bundles.add(f.toURI().toURL());
-                }
-            }
 
             if (client == null || client.booleanValue()) {
                 System.out.println("Generating calculator.dosgi bundle...");

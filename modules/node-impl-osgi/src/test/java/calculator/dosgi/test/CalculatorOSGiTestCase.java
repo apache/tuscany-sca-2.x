@@ -19,7 +19,6 @@
 
 package calculator.dosgi.test;
 
-import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -62,13 +61,6 @@ public class CalculatorOSGiTestCase {
     public static void setUpBeforeClass() throws Exception {
         Set<URL> bundles = new HashSet<URL>();
 
-        File plugins = new File("target/test-classes/plugins");
-        for (File f : plugins.listFiles()) {
-            if (f.isFile()) {
-                bundles.add(f.toURI().toURL());
-            }
-        }
-
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                  "calculator/dosgi/META-INF/MANIFEST.MF",
                                                  new String[][] {
@@ -103,10 +95,14 @@ public class CalculatorOSGiTestCase {
                                                  DivideService.class,
                                                  DivideServiceImpl.class));
         try {
-            host = new EquinoxHost(bundles);
+            host = new EquinoxHost();
             BundleContext context = host.start();
+            for (URL loc : bundles) {
+                host.installBundle(loc, null);
+            }
             for (Bundle b : context.getBundles()) {
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds")) {
+                    System.out.println(string(b, false));
                     b.start();
                     System.out.println(string(b, false));
                 }
