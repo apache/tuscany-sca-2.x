@@ -25,7 +25,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.pojo.TestServiceImpl" />
         <service name="TestService">
             <interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.pojo.TestService" />
-            <binding.ws />
+            <binding.ws uri="http://localhost:8085/testService"/>
         </service>
     </component>
 </composite>
