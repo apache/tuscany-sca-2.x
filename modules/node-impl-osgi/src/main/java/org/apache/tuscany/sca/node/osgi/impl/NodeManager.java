@@ -21,11 +21,10 @@ package org.apache.tuscany.sca.node.osgi.impl;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.node.Node;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -39,11 +38,11 @@ import org.osgi.framework.SynchronousBundleListener;
 public class NodeManager implements SynchronousBundleListener, ServiceListener {
     private static final Logger logger = Logger.getLogger(NodeManager.class.getName());
     private BundleContext bundleContext;
-    private Map<Bundle, NodeImpl> nodes = new ConcurrentHashMap<Bundle, NodeImpl>();
-
+    private NodeFactoryImpl factory;
     public NodeManager(BundleContext bundleContext) {
         super();
         this.bundleContext = bundleContext;
+        this.factory = new NodeFactoryImpl();
     }
 
     public void start() {
@@ -52,6 +51,12 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
                 // Process the active bundles
                 bundleStarted(b);
             }
+        }
+    }
+
+    public void stop() {
+        if (factory != null) {
+            factory.destroy();
         }
     }
 
@@ -88,8 +93,7 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
             return;
         }
         try {
-            NodeImpl node = new NodeImpl(bundle);
-            nodes.put(bundle, node);
+            Node node = factory.createNode(bundle);
             node.start();
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -97,7 +101,7 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
     }
 
     private void bundleStopping(Bundle bundle) {
-        NodeImpl node = nodes.remove(bundle);
+        Node node = factory.getNodes().get(bundle);
         if (node == null) {
             return;
         }

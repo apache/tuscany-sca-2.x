@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
  * @version $Rev: $ $Date: $
  */
 public class NodeUtil {
-    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(NodeFactoryImpl.class.getName());
 
     static Contribution contribution(ContributionFactory contributionFactory, org.apache.tuscany.sca.node.Contribution c) {
         Contribution contribution = contributionFactory.createContribution();

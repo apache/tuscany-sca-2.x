@@ -33,13 +33,14 @@ import org.osgi.framework.SynchronousBundleListener;
 public class NodeActivator implements BundleActivator, SynchronousBundleListener {
     private static BundleContext bundleContext;
     private boolean inited;
+    private NodeManager manager;
 
     private void init() {
         synchronized (this) {
             if (inited) {
                 return;
             }
-            NodeManager manager = new NodeManager(bundleContext);
+            manager = new NodeManager(bundleContext);
             manager.start();
             bundleContext.addBundleListener(manager);
             inited = true;
