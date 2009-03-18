@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-callback-set-conversation</artifactId>
-    <name>Apache Tuscany SCA Callback Set Conversation Integration Tests</name>
+    <name>Apache Tuscany SCA iTest Callback Set Conversation</name>
 
     <dependencies>
         <dependency>

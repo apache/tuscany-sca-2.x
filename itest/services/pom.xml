@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-services</artifactId>
-    <name>Apache Tuscany SCA Services Integration Tests</name>
+    <name>Apache Tuscany SCA iTest Services</name>
 
     <dependencies>
          <dependency>

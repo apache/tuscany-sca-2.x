@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>helloworld-jsf</artifactId>
-    <name>Apache Tuscany SCA Helloworld JSF Sample</name>
+    <name>Apache Tuscany SCA Sample Helloworld JSF</name>
     <packaging>war</packaging>
 
     <dependencies>

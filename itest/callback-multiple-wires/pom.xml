@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-callback-multiple-wires</artifactId>
-    <name>Apache Tuscany SCA Callback With Mutiple Wires Test</name>
+    <name>Apache Tuscany SCA iTest Callback With Mutiple Wires</name>
 
     <dependencies>
         <dependency>

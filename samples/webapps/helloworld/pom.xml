@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>helloworld</artifactId>
-    <name>Apache Tuscany SCA Helloworld Sample</name>
+    <name>Apache Tuscany SCA Sample Helloworld</name>
     <packaging>war</packaging>
 
     <dependencies>
