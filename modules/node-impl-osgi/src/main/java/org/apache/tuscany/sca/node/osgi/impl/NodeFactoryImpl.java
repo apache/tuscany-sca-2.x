@@ -23,14 +23,16 @@ import static java.lang.System.currentTimeMillis;
 import static org.apache.tuscany.sca.node.osgi.impl.NodeUtil.contribution;
 import static org.apache.tuscany.sca.node.osgi.impl.NodeUtil.createURI;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -99,19 +101,16 @@ import org.osgi.framework.Bundle;
  * 
  * @version $Rev$ $Date$
  */
-public class NodeImpl implements Node, Client {
+public class NodeFactoryImpl {
 
     private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
-    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(NodeFactoryImpl.class.getName());
 
-    // The node configuration name, used for logging
-    private String configurationName;
-
-    // The composite loaded into this node
-    private Composite composite;
+    private boolean inited;
 
     private ExtensionPointRegistry extensionPoints;
+    private UtilityExtensionPoint utilities;
     private Monitor monitor;
     private URLArtifactProcessor<Contribution> contributionProcessor;
     private ModelResolverExtensionPoint modelResolvers;
@@ -126,113 +125,96 @@ public class NodeImpl implements Node, Client {
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private ProxyFactory proxyFactory;
     private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
-    private CompositeActivator compositeActivator;
     private WorkScheduler workScheduler;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
 
+    private Map<Bundle, Node> nodes = new ConcurrentHashMap<Bundle, Node>();
+
     /** 
-     * Constructs a new SCA node.
+     * Constructs a new Node controller
      */
-    public NodeImpl(Bundle bundle) {
-        configurationName = "[" + bundle.getBundleId() + "] " + bundle.getSymbolicName();
-        logger.log(Level.INFO, "Creating node: " + configurationName);
-
-        try {
-            // Initialize the runtime
-            init();
-
-            // Create a node configuration
-            NodeImplementationFactory nodeImplementationFactory =
-                modelFactories.getFactory(NodeImplementationFactory.class);
-            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
-
-            String compositeURI = (String)bundle.getHeaders().get("SCA-Composite");
-            if (compositeURI == null) {
-                compositeURI = "OSGI-INF/sca/bundle.composite";
-            }
-            if (compositeURI != null) {
-                Composite composite = assemblyFactory.createComposite();
-                composite.setURI(compositeURI);
-                composite.setUnresolved(true);
-                configuration.setComposite(composite);
-            }
-
-            URL root = bundle.getEntry("/");
-            org.apache.tuscany.sca.node.Contribution bundleContribution =
-                new org.apache.tuscany.sca.node.Contribution(bundle.getSymbolicName(), root.toString());
-
-            Contribution contribution = contribution(contributionFactory, bundleContribution);
-            configuration.getContributions().add(contribution);
-
-            // Configure the node
-            configureNode(configuration);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
+    public NodeFactoryImpl() {
     }
 
-    /** 
-     * Constructs a new SCA node.
-     *  
-     * @param compositeURI
-     * @param compositeContent
-     * @param contributions
-     */
-    public NodeImpl(Bundle bundle, String compositeContent) {
-        configurationName = "[" + bundle.getBundleId() + "] " + bundle.getSymbolicName();
-        logger.log(Level.INFO, "Creating node: " + configurationName);
+    private ConfiguredNodeImplementation getNodeConfiguration(Bundle bundle) {
+        // Create a node configuration
+        NodeImplementationFactory nodeImplementationFactory =
+            modelFactories.getFactory(NodeImplementationFactory.class);
+        ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
 
-        try {
-            // Initialize the runtime
-            init();
-
-            // Create a node configuration
-            NodeImplementationFactory nodeImplementationFactory =
-                modelFactories.getFactory(NodeImplementationFactory.class);
-            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
-
-            URL root = bundle.getEntry("/");
-            org.apache.tuscany.sca.node.Contribution bundleContribution =
-                new org.apache.tuscany.sca.node.Contribution(bundle.getSymbolicName(), root.toString());
-
-            Contribution contribution = contribution(contributionFactory, bundleContribution);
-            configuration.getContributions().add(contribution);
-
-            Contribution defaultContribution = contributionFactory.createContribution();
-            defaultContribution.setURI(SCA11_TUSCANY_NS + "/DefaultContribution");
-
-            XMLStreamReader reader =
-                inputFactory.createXMLStreamReader(new ByteArrayInputStream(compositeContent.getBytes("UTF-8")));
-            reader.nextTag();
-
-            // Read the composite model
-            composite = (Composite)compositeProcessor.read(reader);
-
-            Artifact compositeArtifact = contributionFactory.createArtifact();
-            compositeArtifact.setModel(composite);
-            compositeArtifact.setURI("default.composite");
-
-            defaultContribution.getArtifacts().add(compositeArtifact);
-            defaultContribution.getDeployables().add(composite);
-            defaultContribution.getDependencies().add(contribution);
-
-            analyzeProblems();
-
+        String compositeURI = (String)bundle.getHeaders().get("SCA-Composite");
+        if (compositeURI == null) {
+            compositeURI = "OSGI-INF/sca/bundle.composite";
+        }
+        if (compositeURI != null) {
+            Composite composite = assemblyFactory.createComposite();
+            composite.setURI(compositeURI);
+            composite.setUnresolved(true);
             configuration.setComposite(composite);
-            configuration.getContributions().add(contribution);
-            configuration.getContributions().add(defaultContribution);
-
-            // Configure the node
-            configureNode(configuration);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
         }
+
+        URL root = bundle.getEntry("/");
+        org.apache.tuscany.sca.node.Contribution bundleContribution =
+            new org.apache.tuscany.sca.node.Contribution(bundle.getSymbolicName(), root.toString());
+
+        Contribution contribution = contribution(contributionFactory, bundleContribution);
+        configuration.getContributions().add(contribution);
+        return configuration;
     }
 
-    private void init() {
+    private ConfiguredNodeImplementation getNodeConfiguration(Bundle bundle, String compositeContent) throws Exception {
+
+        ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle);
+
+        Contribution deploymentContrib = createDeploymentContribution(compositeContent);
+
+        configuration.setComposite(deploymentContrib.getDeployables().get(0));
+        configuration.getContributions().add(deploymentContrib);
+
+        return configuration;
+    }
+
+    /**
+     * Create an SCA contribution to hold the deployment composite
+     * @param compositeContent The XML string for the deployment composite
+     * @return An SCA contribution with the deployment composite
+     * @throws Exception
+     */
+    private Contribution createDeploymentContribution(String compositeContent) throws Exception {
+        // Create the deployment contribution
+        Contribution contrib = contributionFactory.createContribution();
+        contrib.setURI(SCA11_TUSCANY_NS + "/contributions/_deployment_");
+        contrib.setLocation(SCA11_TUSCANY_NS + "/contributions/_deployment_");
+        ModelResolver modelResolver = new ExtensibleModelResolver(contrib, modelResolvers, modelFactories);
+        contrib.setModelResolver(modelResolver);
+        contrib.setUnresolved(false);
+
+        // Load the deployment composite
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(compositeContent));
+        reader.nextTag();
+
+        // Read the composite model
+        Composite deploymentComposite = (Composite)compositeProcessor.read(reader);
+
+        Artifact compositeArtifact = contributionFactory.createArtifact();
+        compositeArtifact.setModel(deploymentComposite);
+        compositeArtifact.setURI("META-INF/_deployment_.composite");
+        compositeArtifact.setContents(compositeContent.getBytes("UTF-8"));
+        compositeArtifact.setLocation(SCA11_TUSCANY_NS + "/contributions/_deployment_/META-INF/_deployment_.composite");
+        compositeArtifact.setUnresolved(false);
+
+        contrib.getArtifacts().add(compositeArtifact);
+        contrib.getDeployables().add(deploymentComposite);
+
+        analyzeProblems();
+        return contrib;
+    }
+
+    private synchronized void init() {
+        if (inited) {
+            return;
+        }
         long start = currentTimeMillis();
 
         // Create extension point registry 
@@ -244,7 +226,7 @@ public class NodeImpl implements Node, Client {
         modelFactories.addFactory(assemblyFactory);
 
         // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
 
@@ -299,9 +281,6 @@ public class NodeImpl implements Node, Client {
         ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
         proxyFactory = new ExtensibleProxyFactory(proxyFactories);
 
-        // Get the composite activator
-        compositeActivator = utilities.getUtility(CompositeActivator.class);
-
         workScheduler = utilities.getUtility(WorkScheduler.class);
 
         // Load the system definitions.xml from all of the loaded extension points
@@ -322,8 +301,8 @@ public class NodeImpl implements Node, Client {
         // create a system contribution to hold the definitions. The contribution
         // will be extended later with definitions from application contributions
         systemContribution = contributionFactory.createContribution();
-        systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
-        systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
+        systemContribution.setURI(SCA11_TUSCANY_NS + "/contributions/_system_");
+        systemContribution.setLocation(SCA11_TUSCANY_NS + "/contributions/_system_");
         ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
         systemContribution.setModelResolver(modelResolver);
         systemContribution.setUnresolved(true);
@@ -332,46 +311,19 @@ public class NodeImpl implements Node, Client {
         // add it to the contribution
         List<Artifact> artifacts = systemContribution.getArtifacts();
         Artifact artifact = contributionFactory.createArtifact();
-        artifact.setURI("http://tuscany.apache.org/SystemContribution/Definitions");
-        artifact.setLocation("Derived");
+        artifact.setURI(SCA11_TUSCANY_NS + "/contributions/_system_/definitions");
+        artifact.setLocation(SCA11_TUSCANY_NS + "/contributions/_system_/definitions");
         artifact.setModel(systemDefinitions);
         artifacts.add(artifact);
-
-        // don't resolve the system contribution until all the application 
-        // level definitions have been added 
-
-        //
-        //        // Configure a resolver for the system definitions
-        //        ModelResolver definitionsResolver = new DefaultModelResolver();
-        //        for (Intent intent : systemDefinitions.getPolicyIntents()) {
-        //            definitionsResolver.addModel(intent);
-        //        }
-        //        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
-        //            definitionsResolver.addModel(policySet);
-        //        }
-        //        for (ExtensionType bindingType : systemDefinitions.getBindingTypes()) {
-        //            definitionsResolver.addModel(bindingType);
-        //        }
-        //        for (ExtensionType implementationType : systemDefinitions.getImplementationTypes()) {
-        //            definitionsResolver.addModel(implementationType);
-        //        }
-        //
-        //        // Now that all system sca definitions have been read, let's resolve them
-        //        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        //        URLArtifactProcessor<Definitions> definitionsProcessor = documentProcessors.getProcessor(Definitions.class);
-        //        try {
-        //            definitionsProcessor.resolve(systemDefinitions, definitionsResolver);
-        //        } catch (ContributionResolveException e) {
-        //            throw new IllegalStateException(e);
-        //        }
 
         if (logger.isLoggable(Level.FINE)) {
             long end = currentTimeMillis();
             logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
         }
+        inited = true;
     }
 
-    private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
+    private Composite configureNode(ConfiguredNodeImplementation configuration) throws Exception {
 
         // Create workspace model
         Workspace workspace = workspaceFactory.createWorkspace();
@@ -441,10 +393,10 @@ public class NodeImpl implements Node, Client {
             }
         }
 
-        composite = configuration.getComposite();
+        Composite composite = configuration.getComposite();
 
         if (composite == null) {
-            setDefaultComposite(configuration, workspace);
+            composite = getDefaultComposite(configuration, workspace);
         }
 
         // Find the composite in the given contributions
@@ -487,16 +439,11 @@ public class NodeImpl implements Node, Client {
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         Composite tempComposite = assemblyFactory.createComposite();
-        tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_tempComposite"));
-        tempComposite.setURI(SCA11_TUSCANY_NS);
+        tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_domain_fragment_"));
+        tempComposite.setURI(SCA11_TUSCANY_NS + "_domain_fragment_.composite");
 
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
-
-        // Set the top level composite on the composite activator as 
-        // logic in callable reference resolution relies on this being 
-        // available
-        compositeActivator.setDomainComposite(tempComposite);
 
         /*
         // The following line may return null, to be investigated
@@ -513,40 +460,7 @@ public class NodeImpl implements Node, Client {
             }
         }
         */
-    }
-
-    public void start() {
-        logger.log(Level.INFO, "Starting node: " + configurationName);
-
-        try {
-
-            // Activate the composite
-            compositeActivator.activate(composite);
-
-            // Start the composite
-            compositeActivator.start(composite);
-
-        } catch (ActivationException e) {
-            throw new IllegalStateException(e);
-        }
-
-    }
-
-    public void stop() {
-        logger.log(Level.INFO, "Stopping node: " + configurationName);
-
-        try {
-
-            // Stop the composite
-            compositeActivator.stop(composite);
-
-            // Deactivate the composite
-            compositeActivator.deactivate(composite);
-
-        } catch (ActivationException e) {
-            throw new IllegalStateException(e);
-        }
-
+        return tempComposite;
     }
 
     public void destroy() {
@@ -559,76 +473,16 @@ public class NodeImpl implements Node, Client {
         workScheduler.destroy();
     }
 
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        return (R)proxyFactory.cast(target);
+    public Node createNode(Bundle bundle) {
+        Node node = new NodeImpl(bundle);
+        nodes.put(bundle, node);
+        return node;
     }
 
-    public <B> B getService(Class<B> businessInterface, String serviceName) {
-
-        ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
-        if (serviceReference == null) {
-            throw new ServiceRuntimeException("Service not found: " + serviceName);
-        }
-        return serviceReference.getService();
-    }
-
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
-
-        // Extract the component name
-        String componentName;
-        String serviceName;
-        int i = name.indexOf('/');
-        if (i != -1) {
-            componentName = name.substring(0, i);
-            serviceName = name.substring(i + 1);
-
-        } else {
-            componentName = name;
-            serviceName = null;
-        }
-
-        // Lookup the component 
-        Component component = null;
-
-        for (Component compositeComponent : composite.getComponents()) {
-            if (compositeComponent.getName().equals(componentName)) {
-                component = compositeComponent;
-            }
-        }
-
-        if (component == null) {
-            throw new ServiceRuntimeException("The service " + name + " has not been contributed to the domain");
-        }
-        RuntimeComponentContext componentContext = null;
-
-        // If the component is a composite, then we need to find the
-        // non-composite component that provides the requested service
-        if (component.getImplementation() instanceof Composite) {
-            for (ComponentService componentService : component.getServices()) {
-                if (serviceName == null || serviceName.equals(componentService.getName())) {
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
-                        if (serviceName != null) {
-                            serviceName = "$promoted$" + component.getName() + "$slash$" + serviceName;
-                        }
-                        componentContext =
-                            ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        return componentContext.createSelfReference(businessInterface, compositeService
-                            .getPromotedService());
-                    }
-                    break;
-                }
-            }
-            // No matching service found
-            throw new ServiceRuntimeException("Composite service not found: " + name);
-        } else {
-            componentContext = ((RuntimeComponent)component).getComponentContext();
-            if (serviceName != null) {
-                return componentContext.createSelfReference(businessInterface, serviceName);
-            } else {
-                return componentContext.createSelfReference(businessInterface);
-            }
-        }
+    public Node creatNode(Bundle bundle, String compositeContent) {
+        Node node = new NodeImpl(bundle, compositeContent);
+        nodes.put(bundle, node);
+        return node;
     }
 
     /**
@@ -651,15 +505,15 @@ public class NodeImpl implements Node, Client {
     /*
      * Sets a default composite by using any deployable one.
      */
-    private void setDefaultComposite(ConfiguredNodeImplementation configuration, Workspace workspace) {
+    private Composite getDefaultComposite(ConfiguredNodeImplementation configuration, Workspace workspace) {
         // just use the first deployable composte
         for (Contribution contribution : workspace.getContributions()) {
             for (Composite c : contribution.getDeployables()) {
-                composite = assemblyFactory.createComposite();
+                Composite composite = assemblyFactory.createComposite();
                 composite.setURI(c.getURI());
                 composite.setUnresolved(true);
                 configuration.setComposite(composite);
-                return;
+                return composite;
             }
         }
         throw new ServiceRuntimeException("no deployable composite found");
@@ -667,5 +521,166 @@ public class NodeImpl implements Node, Client {
 
     public ExtensionPointRegistry getExtensionPoints() {
         return extensionPoints;
+    }
+
+    public class NodeImpl implements Node, Client {
+        private Bundle bundle;
+        private Composite domainFragementComposite;
+        private CompositeActivator compositeActivator;
+
+        public NodeImpl(Bundle bundle) {
+            try {
+                // Initialize the runtime
+                init();
+
+                this.bundle = bundle;
+                ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle);
+
+                // Configure the node
+                this.domainFragementComposite = configureNode(configuration);
+                this.compositeActivator = utilities.getUtility(CompositeActivator.class, true);
+                this.compositeActivator.setDomainComposite(domainFragementComposite);
+
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
+        public NodeImpl(Bundle bundle, String compositeContent) {
+            try {
+                // Initialize the runtime
+                init();
+
+                this.bundle = bundle;
+                ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle, compositeContent);
+
+                // Configure the node
+                this.domainFragementComposite = configureNode(configuration);
+                this.compositeActivator = utilities.getUtility(CompositeActivator.class, true);
+                this.compositeActivator.setDomainComposite(domainFragementComposite);
+
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
+        public void start() {
+            logger.log(Level.INFO, "Starting node: " + bundle.getSymbolicName());
+
+            try {
+
+                Composite composite = domainFragementComposite.getIncludes().get(0);
+                // Activate the composite
+                compositeActivator.activate(composite);
+
+                // Start the composite
+                compositeActivator.start(composite);
+
+            } catch (ActivationException e) {
+                throw new IllegalStateException(e);
+            }
+
+        }
+
+        public void stop() {
+            logger.log(Level.INFO, "Stopping node: " + bundle.getSymbolicName());
+
+            try {
+
+                Composite composite = domainFragementComposite.getIncludes().get(0);
+                // Stop the composite
+                compositeActivator.stop(composite);
+
+                // Deactivate the composite
+                compositeActivator.deactivate(composite);
+
+            } catch (ActivationException e) {
+                throw new IllegalStateException(e);
+            }
+
+        }
+
+        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+            return (R)proxyFactory.cast(target);
+        }
+
+        public <B> B getService(Class<B> businessInterface, String serviceName) {
+
+            ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
+            if (serviceReference == null) {
+                throw new ServiceRuntimeException("Service not found: " + serviceName);
+            }
+            return serviceReference.getService();
+        }
+
+        public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
+
+            // Extract the component name
+            String componentName;
+            String serviceName;
+            int i = name.indexOf('/');
+            if (i != -1) {
+                componentName = name.substring(0, i);
+                serviceName = name.substring(i + 1);
+
+            } else {
+                componentName = name;
+                serviceName = null;
+            }
+
+            // Lookup the component 
+            Component component = null;
+
+            for (Component compositeComponent : domainFragementComposite.getIncludes().get(0).getComponents()) {
+                if (compositeComponent.getName().equals(componentName)) {
+                    component = compositeComponent;
+                }
+            }
+
+            if (component == null) {
+                throw new ServiceRuntimeException("The service " + name + " has not been contributed to the domain");
+            }
+            RuntimeComponentContext componentContext = null;
+
+            // If the component is a composite, then we need to find the
+            // non-composite component that provides the requested service
+            if (component.getImplementation() instanceof Composite) {
+                for (ComponentService componentService : component.getServices()) {
+                    if (serviceName == null || serviceName.equals(componentService.getName())) {
+                        CompositeService compositeService = (CompositeService)componentService.getService();
+                        if (compositeService != null) {
+                            if (serviceName != null) {
+                                serviceName = "$promoted$" + component.getName() + "$slash$" + serviceName;
+                            }
+                            componentContext =
+                                ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
+                            return componentContext.createSelfReference(businessInterface, compositeService
+                                .getPromotedService());
+                        }
+                        break;
+                    }
+                }
+                // No matching service found
+                throw new ServiceRuntimeException("Composite service not found: " + name);
+            } else {
+                componentContext = ((RuntimeComponent)component).getComponentContext();
+                if (serviceName != null) {
+                    return componentContext.createSelfReference(businessInterface, serviceName);
+                } else {
+                    return componentContext.createSelfReference(businessInterface);
+                }
+            }
+        }
+
+        public void destroy() {
+            this.bundle = null;
+            this.domainFragementComposite = null;
+            nodes.remove(this);
+        }
+
+    }
+
+    public Map<Bundle, Node> getNodes() {
+        return nodes;
     }
 }
