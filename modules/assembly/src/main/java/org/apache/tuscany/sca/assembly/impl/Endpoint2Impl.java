@@ -108,15 +108,6 @@ public class Endpoint2Impl implements Endpoint2 {
         return callbackEndpointReferences;
     }
     
-    /**
-     * Set the reference callback endpoint refefences
-     * 
-     * @param callbackEndpoint the reference callback endpoint
-     */
-    public void setCallbackEndpointReferences(List<EndpointReference2> callbackEndpointReferences)
-    {
-        this.callbackEndpointReferences = callbackEndpointReferences;
-    }
 /*
     public String getURI() {
         return uri;

@@ -138,7 +138,9 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpoint.setComponent(endpointComponent);
                     endpoint.setService(endpointService);
                     endpoint.setBinding(binding);
-                    endpoint.getCallbackEndpointReferences().addAll(callbackEndpointReferences);
+                    if (callbackEndpointReferences != null) {
+                        endpoint.getCallbackEndpointReferences().addAll(callbackEndpointReferences);
+                    }
                     endpoint.setUnresolved(false);
                     service.getEndpoints().add(endpoint);
                 }
