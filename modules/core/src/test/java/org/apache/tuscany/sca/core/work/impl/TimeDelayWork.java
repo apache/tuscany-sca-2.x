@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.core.work.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.tuscany.sca.core.work.impl.Work;
-
 /**
  * Simple Work item that will sleep in the run() method for the specified 
  * period of time

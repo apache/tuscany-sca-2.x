@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.conversation.ConversationListener;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.scope.AbstractScopeContainer;

@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.tuscany.sca.core.work.impl.WorkEvent;
-import org.apache.tuscany.sca.core.work.impl.WorkListener;
 import org.apache.tuscany.sca.work.WorkSchedulerException;
 import org.junit.Assert;
 

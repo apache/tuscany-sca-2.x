@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.core.work.impl;
 
-import org.apache.tuscany.sca.core.work.impl.Work;
 
 
 /**

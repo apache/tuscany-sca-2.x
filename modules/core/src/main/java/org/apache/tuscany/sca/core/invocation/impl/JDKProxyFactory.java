@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
+import org.apache.tuscany.sca.core.invocation.CachedProxy;
 import org.apache.tuscany.sca.core.invocation.ProxyCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.CachedProxy;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;

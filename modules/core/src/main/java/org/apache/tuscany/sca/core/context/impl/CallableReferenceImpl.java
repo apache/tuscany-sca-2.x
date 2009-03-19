@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointWireImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
