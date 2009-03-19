@@ -125,13 +125,6 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
                 dataBindingRegistry.introspectType(d, operation);
             }
-            for (org.apache.tuscany.sca.interfacedef.DataType<?> d : operation.getFaultTypes()) {
-                if (d.getDataBinding() == null) {
-                    d.setDataBinding(dataBindingId);
-                }
-                // TODO: Handle exceptions
-                dataBindingRegistry.introspectType(d, operation);
-            }
         }
     }
 }
