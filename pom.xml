@@ -407,6 +407,10 @@
 
         <profile>
             <id>release</id>
+            <modules>
+                <module>modules</module>
+                <module>archetypes</module>
+            </modules>
             <build>
                 <plugins>
 
