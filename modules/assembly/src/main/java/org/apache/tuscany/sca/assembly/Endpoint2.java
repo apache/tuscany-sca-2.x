@@ -98,7 +98,7 @@ public interface Endpoint2 extends Base, PolicySubject, Cloneable {
     void setInterfaceContract(InterfaceContract interfaceContract); 
     
     /**
-     * Get the services callbacl enpoint references that 
+     * Get the service's callback endpoint references that 
      * represent endpoint references from which callbacks
      * originate
      * 
