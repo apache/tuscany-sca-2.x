@@ -233,7 +233,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         for (ComponentReference reference : component.getReferences()) {
             if (reference.getInterfaceContract() != null && // can be null in
                                                             // unit tests
-            reference.getInterfaceContract().getCallbackInterface() != null) {
+                reference.getInterfaceContract().getCallbackInterface() != null) {
                 ComponentService service =
                     componentServices.get(reference.getName());
                 if (service == null) {

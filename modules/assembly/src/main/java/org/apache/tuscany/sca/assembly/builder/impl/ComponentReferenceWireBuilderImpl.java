@@ -104,7 +104,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         connectWires(composite, componentServices, componentReferences, monitor);
 
         // Connect component references to their targets
-        connectComponentReferences(composite, components, componentServices, componentReferences, monitor);
+//        connectComponentReferences(composite, components, componentServices, componentReferences, monitor);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
@@ -133,9 +133,9 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         
         // Finally clear the original reference target lists as we now have
         // bindings to represent the targets
-        for (ComponentReference componentReference : componentReferences.values()) {
-            componentReference.getTargets().clear();
-        }
+      //  for (ComponentReference componentReference : componentReferences.values()) {
+      //      componentReference.getTargets().clear();
+      //  }
     }  
     
     /**

@@ -124,6 +124,7 @@ public class NodeImpl implements Node, Client {
     private XMLInputFactory inputFactory;
     private ContributionBuilder contributionDependencyBuilder;
     private CompositeBuilder compositeBuilder;
+    private CompositeBuilder endpointReferenceBuilder;
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
     private StAXArtifactProcessor<Composite> compositeProcessor; 
     private ProxyFactory proxyFactory;
@@ -358,6 +359,10 @@ public class NodeImpl implements Node, Client {
         CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
         compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
+        // Get endpoint builders
+        // TODO - new extension point?
+        endpointReferenceBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.endpoint.impl.EndpointReferenceBuilderImpl");
+        
         // Initialize runtime
 
         // Get proxy factory
@@ -549,6 +554,10 @@ public class NodeImpl implements Node, Client {
         compositeBuilder.build(composite, systemDefinitions, monitor);
         analyzeProblems();
         
+        // build the endpoint references 
+        endpointReferenceBuilder.build(composite, systemDefinitions, monitor);
+        analyzeProblems();
+        
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         Composite tempComposite = assemblyFactory.createComposite();
@@ -673,9 +682,10 @@ public class NodeImpl implements Node, Client {
                 if (serviceName == null || serviceName.equals(componentService.getName())) {
                     CompositeService compositeService = (CompositeService)componentService.getService();
                     if (compositeService != null) {
-                        if (serviceName != null) {
-                            serviceName = "$promoted$" + component.getName() + "$slash$" + serviceName;
-                        }
+                        // TODO - EPR - $promoted$ no longer used
+                        //if (serviceName != null) {
+                        //    serviceName = "$promoted$" + component.getName() + "$slash$" + serviceName;
+                        //}
                         componentContext =
                             ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
                         return componentContext.createSelfReference(businessInterface, compositeService

@@ -46,22 +46,23 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     private static final Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder componentReferenceWireBuilder;
-    private CompositeBuilder componentReferencePromotionWireBuilder;
-    private CompositeBuilder compositeReferenceWireBuilder;
+    //private CompositeBuilder componentReferencePromotionWireBuilder;
+    private CompositeBuilder componentReferencePromotionBuilder;
+    //private CompositeBuilder compositeReferenceWireBuilder;
     private CompositeBuilder compositeCloneBuilder;
     private CompositeBuilder componentConfigurationBuilder;
     private CompositeBuilder compositeServiceConfigurationBuilder;
     private CompositeBuilder compositeReferenceConfigurationBuilder;
     private CompositeBuilder compositeBindingURIBuilder;
-    private CompositeBuilder componentServicePromotionBuilder;
-    private CompositeBuilder compositeServicePromotionBuilder;
+    //private CompositeBuilder componentServicePromotionBuilder;
+    //private CompositeBuilder compositeServicePromotionBuilder;
     private CompositeBuilder compositePromotionBuilder;
     private CompositeBuilder compositePolicyBuilder;
     private CompositeBuilder componentServiceBindingBuilder;
     private CompositeBuilder componentReferenceBindingBuilder;
     
-    private CompositeBuilder compositeReferenceEndpointReferenceBuilder;
-    private CompositeBuilder compositeServiceEndpointBuilder;
+    private CompositeBuilder componentReferenceEndpointReferenceBuilder;
+    private CompositeBuilder componentServiceEndpointBuilder;
     //private CompositeBuilder endpointReferenceBuilder;
     
     public CompositeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
@@ -161,22 +162,23 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(); 
         componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
-        componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory);
-        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory);
+        //componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory);
+        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(assemblyFactory, endpointFactory);
+        //compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory);
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
         componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper);
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory);
         compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
         compositeBindingURIBuilder = new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper);
-        componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
-        compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
+        //componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
+        //compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl();
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl();
         
-        compositeReferenceEndpointReferenceBuilder = new CompositeReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
-        compositeServiceEndpointBuilder = new CompositeServiceEndpointBuilderImpl(assemblyFactory);
+        componentReferenceEndpointReferenceBuilder = new ComponentReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
+        componentServiceEndpointBuilder = new ComponentServiceEndpointBuilderImpl(assemblyFactory);
         //endpointReferenceBuilder = new EndpointReference2BuilderImpl(assemblyFactory, interfaceContractMapper);
     }
 
@@ -201,51 +203,58 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Compute the policies across the model hierarchy
         compositePolicyBuilder.build(composite, definitions, monitor);
 
-        // Configure composite services
+        // Configure composite services by copying bindings up the promotion
+        // hierarchy overwriting automatic bindings with those added manually
         compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
         
-        // Configure composite references
+        // Configure composite references by copying bindings down promotion
+        // hierarchy overwriting automatic bindings with those added manually
         compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
 
-        // Configure binding URIs
+        // Configure service binding URIs and names. Creates an SCA defined URI based
+        // on the scheme base URI, the component name and the binding name
         compositeBindingURIBuilder.build(composite, definitions, monitor);
 
-        // Create promoted component services
-        componentServicePromotionBuilder.build(composite, definitions, monitor);
+        // Create $promoted$ component services on bottom level components
+        // to represent promoted services
+        // TODO - EPR replaced by endpoints on the promoted services
+        //componentServicePromotionBuilder.build(composite, definitions, monitor);
 
-        // Create promoted composite services
-        compositeServicePromotionBuilder.build(composite, definitions, monitor);
+        // Create $promoted$ component services on bottom level components
+        // to represent promoted composite services
+        // TODO - EPR OASIS doesn't deploy top level composite services
+        //        if it did it would be replaced by endpoints
+        //compositeServicePromotionBuilder.build(composite, definitions, monitor);
 
-        // Build component service binding-related information
+        // Perform and service binding related build activities. The binding
+        // will provide the builder. 
         componentServiceBindingBuilder.build(composite, definitions, monitor);
 
-        // ===============================================
-        // TODO - temporarily add OASIS endpoint builders
-        // create service endpoint models
-        compositeServiceEndpointBuilder.build(composite, definitions, monitor);
-        // create reference enpointreference models
-        compositeReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
-        // ===============================================
-
+        // create endpoints on component services. 
+        componentServiceEndpointBuilder.build(composite, definitions, monitor);
         
-        // Wire the components
+        // Apply any wires in the composite to create new component reference targets
         componentReferenceWireBuilder.build(composite, definitions, monitor);
+        
+        // create reference endpoint reference models
+        componentReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
+        
+        // Push down configuration from promoted references to the 
+        // references they promote
+        componentReferencePromotionBuilder.build(composite, definitions, monitor);
 
-        // Wire the promoted component references
-        componentReferencePromotionWireBuilder.build(composite, definitions, monitor);
+        // Push down configuration from promoted references to the 
+        // references they promote
+        // TODO - EPR Seems to be a repeat of compositeReferenceConfigurationBuilder
+        // componentReferencePromotionWireBuilder.build(composite, definitions, monitor);
 
         // Wire the composite references
-        compositeReferenceWireBuilder.build(composite, definitions, monitor);
+        // TODO - EPR OASIS doesn't deploy top level composite references
+        // compositeReferenceWireBuilder.build(composite, definitions, monitor);
 
-        // Build component reference binding-related information
-        componentReferenceBindingBuilder.build(composite, definitions, monitor);
-
-        // =============================================== 
-        // TODO this needs to be offloaded to a plugpoint
-        //      could be called upon when rebuilding wires
-        // wire endpoint references to endpoints
-        //endpointReferenceBuilder.build(composite, definitions, monitor);
-        // ===============================================        
+        // Perform and reference binding related build activities. The binding
+        // will provide the builder.
+        componentReferenceBindingBuilder.build(composite, definitions, monitor);      
     }
 
 }

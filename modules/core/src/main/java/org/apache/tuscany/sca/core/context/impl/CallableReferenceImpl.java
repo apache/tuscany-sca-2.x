@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -81,15 +82,16 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected transient RuntimeComponent component;
     protected transient RuntimeComponentReference reference;
+    // TODO - EPR - remove wire indexing on bindings as enpoint references
+    //              can share reference bindings
     protected transient Binding binding;
+    protected transient EndpointReference2 endpointReference;
 
     protected String scdl;
 
     private transient RuntimeComponentReference clonedRef;
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
-
-    private transient RuntimeWire endpointWire;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -133,6 +135,16 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     }
                 }
             }
+            
+            // TODO - EPR - If not binding specified assume default binding and find the enpoint reference 
+            //              related to it
+            for (EndpointReference2 endpointReference : this.reference.getEndpointReferences()){
+                if ((endpointReference.getBinding() != null) && 
+                    (endpointReference.getBinding() instanceof SCABinding)){
+                    this.endpointReference = endpointReference;
+                    break;
+                }
+            }
         }
 
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
@@ -151,8 +163,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public RuntimeWire getRuntimeWire() {
         try {
             resolve();
-            if (endpointWire != null) {
-                return endpointWire;
+            if (endpointReference != null){
+                return reference.getRuntimeWire(endpointReference);
             } else if (reference != null) {
                 return reference.getRuntimeWire(binding);
             } else {
@@ -165,13 +177,10 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected void bind(RuntimeWire wire) {
         if (wire != null) {
-
-            if (wire instanceof EndpointWireImpl) {
-                endpointWire = wire;
-            }
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
             this.binding = wire.getSource().getBinding();
+            this.endpointReference = wire.getEndpointReference();
             this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
             initCallbackID();

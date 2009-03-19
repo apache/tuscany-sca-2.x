@@ -55,6 +55,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
         // Process nested composites recursively
         configureNestedCompositeServices(composite);
 
+        // TODO - In OASIS the treatment of top level composite services it different
         // Process top level composite services
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;

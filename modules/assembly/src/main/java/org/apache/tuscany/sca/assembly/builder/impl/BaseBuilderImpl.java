@@ -199,6 +199,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
                 
+                // TODO - EPR - $promoted$ no longer used but it doesn't do any harm here
                 boolean promotedService = false;
                 if (componentService.getName() != null && componentService.getName().indexOf("$promoted$") > -1) {
                     promotedService = true;

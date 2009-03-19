@@ -55,6 +55,8 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         clone.bindings.addAll(getBindings());
         clone.targets = new ArrayList<ComponentService>();
         clone.targets.addAll(getTargets());
+        clone.endpointReferences = new ArrayList<EndpointReference2>();
+        clone.endpointReferences.addAll(getEndpointReferences());
         return clone;
     }
 

@@ -289,9 +289,14 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
             return;
         }
+        
+        /* TODO - EPR - activate services at all levels as promoted endpoin references are maintained 
+         *              on the higher level services 
         if (service.getService() instanceof CompositeService) {
             return;
         }
+        */
+        
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Activating component service: " + component.getURI() + "#" + service.getName());
         }
@@ -367,6 +372,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             // so we need to represent the reference that will call us
             EndpointReference2 endpointReference = assemblyFactory.createEndpointReference();
             endpointReference.setBinding(endpoint.getBinding());
+            endpointReference.setTargetEndpoint(endpoint);
             
             // create the interface contract for the binding and service ends of the wire
             // that are created as forward only contracts
@@ -496,7 +502,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             return;
         }
         
-        // TODO - what is this all about?
+        // TODO - EPR what is this all about?
         // [rfeng] Comment out the following statements to avoid the on-demand activation
         // RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
         // runtimeRef.getRuntimeWires().clear();
@@ -539,7 +545,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         
         configureComponentContext(runtimeComponent);
 
-/* TODO - won't start until reference is actually started later
+/* TODO - EPR won't start until reference is actually started later
         for (ComponentReference reference : component.getReferences()) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
@@ -679,11 +685,11 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
     
     // Service start/stop
     
-    // TODO - done as part of the component start above
+    // TODO - EPR done as part of the component start above
     
     // Reference start/stop
     // Used by component context start
-    // TODO - I don't know why reference wires don't get added until component start
+    // TODO - EPR I don't know why reference wires don't get added until component start
     
     public void start(RuntimeComponent component, RuntimeComponentReference componentReference) {
         synchronized (componentReference) {
@@ -692,13 +698,12 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 return;
             }
             
-            // create wire for all endpoint references. An endpoint reference says that a
+            // create a wire for each endpoint reference. An endpoint reference says that a
             // target has been specified and hence the reference has been wired in some way.
             // The service may not have been found yet, depending on the way the composite 
             // is deployed, but it is expected to be found. In the case where the reference 
             // is unwired (a target has not been specified) there will be no endpoint 
             // reference and this will lead to null being injected
-            
             for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()){
                 
                 // if there is a binding an endpoint has been found for the endpoint reference
@@ -762,7 +767,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         
         endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
 
-/* TODO - should have been done previously during matching
+/* TODO - EPR should have been done previously during matching
         ComponentService callbackService = reference.getCallbackService();
         if (callbackService != null) {
             // select a reference callback binding to pass with invocations on this wire
@@ -790,7 +795,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         Endpoint2 endpoint = endpointReference.getTargetEndpoint();
         endpoint.setInterfaceContract(bindingContract);
     
-/* TODO - review in the light of new matching code        
+/* TODO - EPR review in the light of new matching code        
         // TUSCANY-2029 - We should use the URI of the serviceBinding because the target may be a Component in a
         // nested composite. 
         if (serviceBinding != null) {

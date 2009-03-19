@@ -25,24 +25,22 @@
             targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorldPrec">
 
-    <service name="helloWorld" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
-        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
-    </service>
     
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
+        <service name="HelloWorldOM">
+	        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
+	    <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
+    </service>
     </component>
     
     <component name="HelloWorldComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMComponent"/>
-        <reference name="helloWorldWS" />
+	    <reference name="helloWorldWS">
+	        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
+	        <binding.ws wsdlElement="http://helloworld-prec#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+	                    uri="http://INVALID.END.POINT" />
+	    </reference>
     </component>
-    
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-prec#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://INVALID.END.POINT" />
-    </reference>
 
 </composite>

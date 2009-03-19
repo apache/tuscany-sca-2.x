@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -95,6 +97,21 @@ public interface Endpoint2 extends Base, PolicySubject, Cloneable {
      */
     void setInterfaceContract(InterfaceContract interfaceContract); 
     
+    /**
+     * Get the services callbacl enpoint references that 
+     * represent endpoint references from which callbacks
+     * originate
+     * 
+     * @return callbackEndpoint the reference callback endpoint
+     */
+    List<EndpointReference2> getCallbackEndpointReferences();
+    
+    /**
+     * Set the reference callback endpoint refefences
+     * 
+     * @param callbackEndpoint the reference callback endpoint
+     */
+    void setCallbackEndpointReferences(List<EndpointReference2> callbackEndpointReferences);   
     
     // not sure these are required
   

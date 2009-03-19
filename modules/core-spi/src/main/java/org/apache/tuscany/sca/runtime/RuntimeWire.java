@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
@@ -34,6 +35,11 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public interface RuntimeWire extends Cloneable {
 
+    
+    // =================================================================
+    // TODO - EPR - remove the following three methods when we have
+    //        changes the rest of the instructure over to using EndpointReference2
+    //        and EndpointReference2 throughout
     /**
      * Get the source of the wire
      * 
@@ -53,6 +59,15 @@ public interface RuntimeWire extends Cloneable {
      * @param target The target endpoint reference
      */
     void setTarget(EndpointReference target);
+    
+    //==================================================================
+    
+    /**
+     * return the endpoint reference that configured this wire
+     * 
+     * @return the endpoint reference that configured this wire 
+     */
+    EndpointReference2 getEndpointReference();
     
     /**
      * Force the invocation chains to be rebuilt

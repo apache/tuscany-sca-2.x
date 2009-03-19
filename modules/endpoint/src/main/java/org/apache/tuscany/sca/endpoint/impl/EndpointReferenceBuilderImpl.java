@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
@@ -243,11 +244,9 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 // TODO - bring resolution and binding matching together
                 // just do binding matching
                 matchForwardBinding(endpointReference, 
-                                    endpointReference.getTargetEndpoint().getService(),
                                     monitor);
                 
                 matchCallbackBinding(endpointReference, 
-                                     endpointReference.getTargetEndpoint().getService(),
                                      monitor);
             } else {
                 // resolve the endpoint reference in the domain and then 
@@ -256,19 +255,19 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         }        
     }
     
-    // TODO - In OASIS case there are no bindings to match with on the 
-    //        reference side. This code will be factored out into a pluggable 
-    //        piece
+    // TODO - EPR - In OASIS case there are no bindings to match with on the 
+    //        reference side. 
     private void matchForwardBinding(EndpointReference2 endpointReference,
-                                     ComponentService service, 
                                      Monitor monitor) {
+        
+        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
 
         List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
         List<Endpoint2> matchedServiceEndpoint = new ArrayList<Endpoint2>();
 
         // Find the corresponding bindings from the service side
         for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
-            for (Endpoint2 serviceEndpoint : service.getEndpoints()) {
+            for (Endpoint2 serviceEndpoint : endpoint.getService().getEndpoints()) {
 
                 if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && 
                     hasCompatiblePolicySets(referenceBinding, serviceEndpoint.getBinding())) {
@@ -287,7 +286,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     "NoMatchingBinding", 
                     endpointReference.getReference(),
                     endpointReference.getReference().getName(), 
-                    service.getName());
+                    endpoint.getService().getName());
             return;
         } else {
             // default to using the first matched binding
@@ -314,7 +313,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     cloned.setURI(serviceEndpoint.getBinding().getURI());
                 }
                 
-                // TODO - can we remove this?
+                // TODO - EPR can we remove this?
                 if (cloned instanceof OptimizableBinding) {
                     OptimizableBinding optimizableBinding = (OptimizableBinding)cloned;
                     optimizableBinding.setTargetComponent(serviceEndpoint.getComponent());
@@ -322,7 +321,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     optimizableBinding.setTargetBinding(serviceEndpoint.getBinding());
                 }
 
-                endpointReference.setBinding(referenceBinding);
+                endpointReference.setBinding(cloned);
                 endpointReference.setTargetEndpoint(serviceEndpoint);
 
             } catch (Exception ex) {
@@ -331,68 +330,61 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         }
     } 
     
-    // TODO
-    // Pretty much a duplicate of matchForwardBinding to handle callback bindings
-    // will rationalize when I understand what we need to do with callbacks
+    // TODO - EPR
+    // Find the callback endpoint for the endpoint reference by matching
+    // callback bindings between reference and service
     private void matchCallbackBinding(EndpointReference2 endpointReference, 
-                                     ComponentService service, 
                                      Monitor monitor) {
 
-        // if no callback on the interface do nothing
+        // if no callback on the interface or we are creating a self reference do nothing
         if (endpointReference.getReference().getInterfaceContract() == null || 
-            endpointReference.getReference().getInterfaceContract().getCallbackInterface() == null){
+            endpointReference.getReference().getInterfaceContract().getCallbackInterface() == null ||
+            endpointReference.getReference().getName().startsWith("$self$.")){
                 return;
         }
         
-        List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
-        List<Binding> matchedServiceBinding = new ArrayList<Binding>();
+        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
         
-        // Find the corresponding bindings from the service side
-        for (Binding referenceBinding : endpointReference.getReference().getCallback().getBindings()) {
-            for (Binding serviceBinding : service.getCallback().getBindings()) {
-
-                if (referenceBinding.getClass() == serviceBinding.getClass() && 
-                    hasCompatiblePolicySets(referenceBinding, serviceBinding)) {
-                    
-                    matchedReferenceBinding.add(referenceBinding);
-                    matchedServiceBinding.add(serviceBinding);                 
+        List<Endpoint2> callbackEndpoints = endpointReference.getReference().getCallbackService().getEndpoints();
+        List<EndpointReference2> callbackEndpointReferences = endpoint.getCallbackEndpointReferences();
+        
+        List<Endpoint2> matchedEndpoint = new ArrayList<Endpoint2>();
+        
+        if ((callbackEndpoints != null) &&  (callbackEndpointReferences != null)){
+            // Find the corresponding bindings from the service side
+            for (EndpointReference2 epr : callbackEndpointReferences) {
+                for (Endpoint2 ep : callbackEndpoints) {
+    
+                    if (epr.getBinding().getClass() == ep.getBinding().getClass() &&
+                        hasCompatiblePolicySets(epr.getBinding(), ep.getBinding())) {
+                        
+                        matchedEndpoint.add(ep);              
+                    }
                 }
             }
         }
         
-        if (matchedReferenceBinding.isEmpty()) {
+        if (matchedEndpoint.isEmpty()) {
             // No matching binding
             endpointReference.setCallbackEndpoint(null);
             warning(monitor, 
                     "NoMatchingCallbackBinding", 
                     endpointReference.getReference(),
                     endpointReference.getReference().getName(), 
-                    service.getName());
+                    endpoint.getService().getName());
             return;
         } else {
             // default to using the first matched binding
-            int selectedBinding = 0;
+            int selectedEndpoint = 0;
             
-            for (int i = 0; i < matchedReferenceBinding.size(); i++){
+            for (int i = 0; i < matchedEndpoint.size(); i++){
                 // If binding.sca is present, use it
-                if (SCABinding.class.isInstance(matchedReferenceBinding.get(i))) {
-                    selectedBinding = i;
+                if (SCABinding.class.isInstance(matchedEndpoint.get(i).getBinding())) {
+                    selectedEndpoint = i;
                 }
             }
             
-            Binding selectedCallbackBinding = matchedReferenceBinding.get(selectedBinding);
-
-            ComponentService callbackService = endpointReference.getReference().getCallbackService();
-            
-            if (callbackService != null) {
-                // find the callback endpoint that has the selected binding
-                for (Endpoint2 endpoint : callbackService.getEndpoints()){
-                    if (endpoint.getBinding().getName().startsWith(selectedCallbackBinding.getName())){
-                        endpointReference.setCallbackEndpoint(endpoint);
-                        break;
-                    }
-                }
-            }
+            endpointReference.setCallbackEndpoint(matchedEndpoint.get(selectedEndpoint));
         }
     }     
     
@@ -416,326 +408,4 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         }
         return isCompatible;
     }    
-
-    public void createEndpointReferences(Composite composite,
-                                         Component component, 
-                                         ComponentReference reference,
-                                         Map<String, Component> components,
-                                         Map<String, ComponentService> componentServices, 
-                                         Monitor monitor) {
-        
-        if (reference.getAutowire() == Boolean.TRUE
-                && reference.getTargets().isEmpty()) {
-
-            // Find suitable targets in the current composite for an
-            // autowired reference
-            Multiplicity multiplicity = reference.getMultiplicity();
-            for (Component targetComponent : composite.getComponents()) {
-
-                // prevent autowire connecting to self
-                boolean skipSelf = false;
-                for (ComponentReference targetComponentReference : targetComponent
-                        .getReferences()) {
-                    if (reference == targetComponentReference) {
-                        skipSelf = true;
-                    }
-                }
-
-                if (!skipSelf) {
-                    for (ComponentService targetComponentService : targetComponent
-                            .getServices()) {
-                        if (reference.getInterfaceContract() == null
-                                || interfaceContractMapper.isCompatible(
-                                        reference.getInterfaceContract(),
-                                        targetComponentService
-                                                .getInterfaceContract())) {
-                            // create endpoint reference
-                            EndpointReference2 endpointRef = assemblyFactory
-                                    .createEndpointReference();
-                            endpointRef.setComponent(component);
-                            endpointRef.setReference(reference);
-                            endpointRef.setTargetName(targetComponentService
-                                    .getName());
-                            endpointRef.setUnresolved(false);
-
-                            // create dummy endpoint. This will be replaced when
-                            // policies
-                            // are matched and bindings are configured later
-                            Endpoint2 endpoint = assemblyFactory
-                                    .createEndpoint();
-                            endpoint.setComponent(targetComponent);
-                            endpoint.setService(targetComponentService);
-                            endpoint.setUnresolved(true);
-                            endpointRef.setTargetEndpoint(endpoint);
-
-                            reference.getEndpointReferences().add(endpointRef);
-
-                            if (multiplicity == Multiplicity.ZERO_ONE
-                                    || multiplicity == Multiplicity.ONE_ONE) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (multiplicity == Multiplicity.ONE_N
-                    || multiplicity == Multiplicity.ONE_ONE) {
-                if (reference.getEndpointReferences().size() == 0) {
-                    warning(monitor, "NoComponentReferenceTarget", reference,
-                            reference.getName());
-                }
-            }
-
-        } else if (!reference.getTargets().isEmpty()) {
-
-            // Check that the component reference does not mix the use of
-            // endpoint references specified via the target attribute with
-            // the presence of binding elements
-            if (reference.getBindings().size() > 0) {
-                warning(monitor, "ReferenceEndPointMixWithTarget", composite,
-                        reference.getName());
-            }
-
-            // Resolve targets specified on the component reference
-            for (ComponentService target : reference.getTargets()) {
-
-                String targetName = target.getName();
-                ComponentService targetComponentService = componentServices
-                        .get(targetName);
-
-                Component targetComponent;
-                int s = targetName.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(targetName);
-                } else {
-                    targetComponent = components
-                            .get(targetName.substring(0, s));
-                }
-
-                if (targetComponentService != null) {
-
-                    // Check that the target component service provides
-                    // a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null
-                            || interfaceContractMapper.isCompatible(reference
-                                    .getInterfaceContract(),
-                                    targetComponentService
-                                            .getInterfaceContract())) {
-
-                        // create endpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory
-                                .createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setTargetName(targetComponentService
-                                .getName());
-                        endpointRef.setUnresolved(false);
-
-                        // create dummy endpoint. This will be replaced when
-                        // policies
-                        // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-
-                        reference.getEndpointReferences().add(endpointRef);
-                    } else {
-                        warning(monitor, "ReferenceIncompatibleInterface",
-                                composite, composite.getName().toString(),
-                                reference.getName(), targetName);
-                    }
-                } else {
-                    // add an unresolved endpoint reference
-                    EndpointReference2 endpointRef = assemblyFactory
-                            .createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setTargetName(targetName);
-                    endpointRef.setUnresolved(true);
-
-                    // create an unresolved endpoint to go with it
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(true);
-                    endpointRef.setTargetEndpoint(endpoint);
-
-                    warning(monitor, "ComponentReferenceTargetNotFound",
-                            composite, composite.getName().toString(),
-                            targetName);
-                }
-            }
-        } else if ((reference.getReference() != null)
-                && (!reference.getReference().getTargets().isEmpty())) {
-
-            // Resolve targets from the corresponding reference in the
-            // componentType
-            for (ComponentService target : reference.getReference()
-                    .getTargets()) {
-
-                String targetName = target.getName();
-                ComponentService targetComponentService = componentServices
-                        .get(targetName);
-
-                Component targetComponent;
-                int s = targetName.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(targetName);
-                } else {
-                    targetComponent = components
-                            .get(targetName.substring(0, s));
-                }
-
-                if (targetComponentService != null) {
-
-                    // Check that the target component service provides
-                    // a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null
-                            || interfaceContractMapper.isCompatible(reference
-                                    .getInterfaceContract(),
-                                    targetComponentService
-                                            .getInterfaceContract())) {
-
-                        // create endpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory
-                                .createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setTargetName(targetComponentService
-                                .getName());
-                        endpointRef.setUnresolved(false);
-
-                        // create dummy endpoint. This will be replaced when
-                        // policies
-                        // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-
-                        reference.getEndpointReferences().add(endpointRef);
-                    } else {
-                        warning(monitor, "ReferenceIncompatibleInterface",
-                                composite, composite.getName().toString(),
-                                reference.getName(), targetName);
-                    }
-                } else {
-                    // add an unresolved endpoint reference
-                    EndpointReference2 endpointRef = assemblyFactory
-                            .createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setTargetName(targetName);
-                    endpointRef.setUnresolved(true);
-
-                    // create an unresolved endpoint to go with it
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(true);
-                    endpointRef.setTargetEndpoint(endpoint);
-
-                    warning(monitor, "ComponentReferenceTargetNotFound",
-                            composite, composite.getName().toString(),
-                            targetName);
-                }
-            }
-        }
-
-        // if no endpoints have found so far the bindings become targets.
-        if (reference.getEndpointReferences().isEmpty()) {
-            for (Binding binding : reference.getBindings()) {
-
-                String uri = binding.getURI();
-
-                // user hasn't put a uri on the binding so it's not a target
-                // name
-                if (uri == null) {
-                    continue;
-                }
-
-                // user might have put a local target name in the uri
-                // see if it refers to a target we know about
-                // - if it does the reference binding will be matched with a
-                // service binding
-                // - if it doesn't it is assumed to be an external reference
-                Component targetComponent = null;
-                ComponentService targetComponentService = null;
-
-                if (uri.startsWith("/")) {
-                    uri = uri.substring(1);
-                }
-
-                // Resolve the target component and service
-                targetComponentService = componentServices.get(uri);
-                int s = uri.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(uri);
-                } else {
-                    targetComponent = components.get(uri.substring(0, s));
-                }
-
-                // if the binding URI matches a component in the
-                // composite then configure an endpoint reference with this
-                // component as
-                // the target. If not then the binding URI will be assumed to
-                // reference an
-                // external service
-                if (targetComponentService != null) {
-
-                    // Check that the target component service provides
-                    // a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null
-                            || interfaceContractMapper.isCompatible(reference
-                                    .getInterfaceContract(),
-                                    targetComponentService
-                                            .getInterfaceContract())) {
-                        // create enpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory
-                                .createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setBinding(binding);
-                        endpointRef.setTargetName(targetComponentService
-                                .getName());
-                        endpointRef.setUnresolved(false);
-
-                        // create dummy endpoint. This will be replaced when
-                        // policies
-                        // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-
-                        reference.getEndpointReferences().add(endpointRef);
-                    } else {
-                        warning(monitor, "ReferenceIncompatibleInterface",
-                                composite, composite.getName().toString(),
-                                reference.getName(), uri);
-                    }
-                } else {
-                    // create endpoint reference for manually configured
-                    // bindings
-                    EndpointReference2 endpointRef = assemblyFactory
-                            .createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setBinding(binding);
-                    endpointRef.setTargetName(null);
-                    endpointRef.setTargetEndpoint(null);
-                    endpointRef.setUnresolved(false);
-
-                    // create a resolved endpoint to signify that this
-                    // reference is pointing at some unwired endpoint
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(false);
-                    endpointRef.setTargetEndpoint(endpoint);
-
-                    reference.getEndpointReferences().add(endpointRef);
-                }
-            }
-        }
-} 
 }

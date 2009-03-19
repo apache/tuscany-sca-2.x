@@ -39,23 +39,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public interface EndpointReferenceBuilder {
     
     /**
-     * Create endpoint references for a component reference
-     * 
-     * @param composite
-     * @param component
-     * @param reference
-     * @param components
-     * @param componentServices
-     * @param monitor
-     */
-    public void createEndpointReferences(Composite composite,
-                                         Component component, 
-                                         ComponentReference reference,
-                                         Map<String, Component> components,
-                                         Map<String, ComponentService> componentServices, 
-                                         Monitor monitor);
-    
-    /**
      * Build an endpoint reference matching reference bindings 
      * with service bindings.
      * 

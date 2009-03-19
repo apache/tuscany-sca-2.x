@@ -91,7 +91,7 @@ public class InnerReferenceTestCase {
         Assert.assertTrue(components.contains("DComponent1"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = Exception.class)
     public void testRequiredFalseReference() {
         acomponent.getDReference().dFoo();
     }

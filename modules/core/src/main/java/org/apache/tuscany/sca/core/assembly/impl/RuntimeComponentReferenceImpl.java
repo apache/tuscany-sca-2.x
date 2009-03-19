@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -63,6 +64,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         return wires;
     }
 
+    // TODO - EPR - shouldn't rely on this anymore
     public RuntimeWire getRuntimeWire(Binding binding) {
         for (RuntimeWire wire : getRuntimeWires()) {
             if (wire.getSource().getBinding() == binding) {
@@ -70,17 +72,16 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
             }
         }
 
-        // TODO: TUSCANY-2580: before returning null see if a candidate binding matches 
+        return null;
+    }
+    
+    public RuntimeWire getRuntimeWire(EndpointReference2 endpointReference) {
         for (RuntimeWire wire : getRuntimeWires()) {
-            if (wire instanceof EndpointWireImpl) {
-                Endpoint endpoint = ((EndpointWireImpl)wire).getEndpoint();
-                for (Binding b : endpoint.getCandidateBindings()) {
-                    if (b == binding) {
-                        return wire;
-                    }
-                }
+            if (wire.getEndpointReference() == endpointReference) {
+                return wire;
             }
         }
+        
         return null;
     }
 

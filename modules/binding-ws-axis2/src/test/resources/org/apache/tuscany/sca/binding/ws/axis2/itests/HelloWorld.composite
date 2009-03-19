@@ -22,30 +22,26 @@
 		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorld">
 
-    <service name="helloWorld" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-        <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)">
-           <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
-              <wsa:Address>http://localhost:8085/services/HelloWorldWebService</wsa:Address>
-           </wsa:EndpointReference>
-        </binding.ws>
-        
-    </service>
-
     <component name="HelloWorldService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldService"/>
+	    <service name="HelloWorld">
+	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+	        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)">
+	           <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+	              <wsa:Address>http://localhost:8085/services/HelloWorldWebService</wsa:Address>
+	           </wsa:EndpointReference>
+	        </binding.ws>
+	    </service>		
     </component>
 
     <component name="HelloWorldComponent">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldComponent"/>
-        <reference name="helloWorldWS" />
+	    <reference name="helloWorldWS">
+	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+	        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+	    </reference>
     </component>
 
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-        <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
-    </reference>
+
 
 </composite>

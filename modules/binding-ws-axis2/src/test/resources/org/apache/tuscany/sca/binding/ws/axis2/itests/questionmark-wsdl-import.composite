@@ -21,12 +21,11 @@
            targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="QuestionMarkWSDLImport">
 
-    <service name="ep1" promote="AccountService">
-        <binding.ws wsdlElement="http://account2#wsdl.port(AccountService/AccountSoapPort)" />
-    </service>
-
     <component name="AccountService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.AccountService" />
+		<service name="Account">
+            <binding.ws wsdlElement="http://account2#wsdl.port(AccountService/AccountSoapPort)" />
+        </service>
     </component>
 
 </composite>

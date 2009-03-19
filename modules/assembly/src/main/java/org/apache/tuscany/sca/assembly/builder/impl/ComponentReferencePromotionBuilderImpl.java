@@ -43,36 +43,36 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class ComponentReferencePromotionWireBuilderImpl implements CompositeBuilder {
+public class ComponentReferencePromotionBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
     private EndpointFactory endpointFactory;
 
-    public ComponentReferencePromotionWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory) {
+    public ComponentReferencePromotionBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory) {
         this.assemblyFactory = assemblyFactory;
         this.endpointFactory = endpointFactory;
     }
 
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
-        wireCompositeReferences(composite, monitor);
+        configureNestedCompositeReferences(composite, monitor);
     }
 
     public String getID() {
-        return "org.apache.tuscany.sca.assembly.builder.ComponentReferencePromotionWireBuilder";
+        return "org.apache.tuscany.sca.assembly.builder.ComponentReferencePromotionBuilder";
     }
 
     /**
-     * Wire composite references in nested composites.
+     * Push down reference configuration into nested composites.
      * 
      * @param composite
      * @param problems
      */
-    private void wireCompositeReferences(Composite composite, Monitor monitor) {
+    private void configureNestedCompositeReferences(Composite composite, Monitor monitor) {
     
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireCompositeReferences((Composite)implementation, monitor);
+                configureNestedCompositeReferences((Composite)implementation, monitor);
             }
         }
     

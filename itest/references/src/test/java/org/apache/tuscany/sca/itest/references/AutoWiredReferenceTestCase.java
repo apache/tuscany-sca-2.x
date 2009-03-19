@@ -28,6 +28,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 public class AutoWiredReferenceTestCase {
     private static Node node;
@@ -69,7 +70,7 @@ public class AutoWiredReferenceTestCase {
         assertEquals("BCComponent", acomponent.fooBC());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = Exception.class)
     public void testD1Reference() {
         acomponent.fooD1();
     }

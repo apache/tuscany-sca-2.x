@@ -20,24 +20,21 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
            name="HelloWorldRmiComposite">
-
-	<service name="HelloWorldRmiService" promote="HelloWorldServiceComponent">
-        <interface.java interface="helloworld.HelloWorldService"/>
-        <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
-    </service>
-      
+           
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <interface.java interface="helloworld.HelloWorldService"/>
+            <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"/>
+        </service>
     </component>   
   
-   <component name="HelloWorldRmiServiceComponent">
+    <component name="HelloWorldRmiServiceComponent">
         <implementation.java class="helloworld.HelloWorldRmiImpl"/>
-        <reference name="extService"></reference>
+        <reference name="extService">
+            <interface.java interface="helloworld.HelloWorldService"/>
+            <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
+        </reference>
     </component>        
            
-  	<reference name="HelloWorldRmiReference" promote="HelloWorldRmiServiceComponent/extService">
-        <interface.java interface="helloworld.HelloWorldService"/>
-        <tuscany:binding.rmi uri="rmi://localhost:8099/HelloWorldRemoteService"   />
-    </reference>
-
 </composite>
