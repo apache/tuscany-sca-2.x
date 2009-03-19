@@ -318,7 +318,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             for (DataType exceptionType : operation.getFaultTypes()) {
                 faultExceptionMapper.introspectFaultDataType(exceptionType, operation, true);
                 DataType faultType = (DataType)exceptionType.getLogical();
-                if (faultType.getDataBinding() == JavaExceptionDataBinding.NAME) {
+                if (JavaExceptionDataBinding.NAME.equals(faultType.getDataBinding())) {
                     // The exception class doesn't have an associated bean class, so
                     // synthesize a virtual bean by introspecting the exception class.
                     createSyntheticBean(operation, exceptionType);
