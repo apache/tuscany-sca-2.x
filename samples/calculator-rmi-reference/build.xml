@@ -36,10 +36,12 @@
       	     source="1.5" 
       	     target="1.5"
       	     failonerror="true"> 
-         <classpath> 
-            <pathelement location="../../modules/tuscany-sca-api-2.0-SNAPSHOT.jar"/>
-            <pathelement location="../../modules/tuscany-node-api-2.0-SNAPSHOT.jar"/>
-         </classpath> 
+         <classpath>
+            <fileset dir="../../modules">
+               <include name="tuscany-sca-api-*.jar" />
+               <include name="tuscany-node-api-*.jar" />
+            </fileset>
+         </classpath>
       </javac> 
       <copy todir="target/classes"> 
          <fileset dir="src/main/resources"/> 
