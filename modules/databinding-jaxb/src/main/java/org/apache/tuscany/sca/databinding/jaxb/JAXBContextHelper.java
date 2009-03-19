@@ -148,7 +148,8 @@ public final class JAXBContextHelper {
             element = value;
         }
         if (element == null) {
-            element = new JAXBElement(name, type, value);
+            // For local elements, we still have to produce xsi:type
+            element = new JAXBElement(name, Object.class, value);
         }
         return element;
     }
