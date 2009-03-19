@@ -72,14 +72,4 @@ public class OSGiBundleProcessor {
         }
         return bundleReference;
     }
-
-    //    private void initialize() {
-    //        try {
-    //            if (!initializedOSGi) {
-    //                initializedOSGi = true;
-    //                osgiRuntime = OSGiRuntime.getRuntime();
-    //            }
-    //        } catch (Exception e) {
-    //        }
-    //    }
 }

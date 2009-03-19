@@ -36,7 +36,7 @@ import org.osgi.framework.Bundle;
  */
 public class OSGiBundleReferenceModelResolver implements ModelResolver {
     private Contribution contribution;
-    private Map<String, BundleReference> map = new HashMap<String, BundleReference>();
+    private Map<BundleReference, BundleReference> refs = new HashMap<BundleReference, BundleReference>();
 
     private OSGiBundleProcessor bundleProcessor;
 
@@ -47,11 +47,11 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
 
     public void addModel(Object resolved) {
         BundleReference bundleRef = (BundleReference)resolved;
-        map.put(bundleRef.getSymbolicName(), bundleRef);
+        refs.put(bundleRef, bundleRef);
     }
 
     public Object removeModel(Object resolved) {
-        return map.remove(((BundleReference)resolved).getSymbolicName());
+        return refs.remove(resolved);
     }
 
     /**
@@ -75,7 +75,7 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
     }
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        Object resolved = map.get(unresolved);
+        Object resolved = refs.get(unresolved);
 
         if (resolved != null) {
             return modelClass.cast(resolved);
@@ -95,14 +95,13 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
         if (bundle == null) {
             bundleReference = bundleProcessor.installNestedBundle(contribution, bundleName, bundleVersion);
         } else {
-            bundleReference =
-                new BundleReference(bundle);
+            bundleReference = new BundleReference(bundle);
         }
 
         if (bundleReference != null) {
             //if we load the class            
 
-            map.put(((BundleReference)unresolved).getSymbolicName(), bundleReference);
+            refs.put(((BundleReference)unresolved), bundleReference);
 
             // Return the resolved BundleReference
             return modelClass.cast(bundleReference);
@@ -113,28 +112,4 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
         }
 
     }
-
-    private String getBundleFileName(Object bundle) {
-        if (bundle instanceof Bundle) {
-            String path = ((Bundle)bundle).getLocation();
-            if (path.endsWith("/"))
-                path = path.substring(0, path.length() - 1);
-            if (path.startsWith(contribution.getLocation())) {
-                if (path.equals(contribution.getLocation())) {
-                    int index = path.lastIndexOf('/');
-                    if (index > 0 && index < path.length() - 1)
-                        path = path.substring(index + 1);
-                } else {
-                    path = path.substring(contribution.getLocation().length());
-                    if (path.startsWith("/"))
-                        path = path.substring(1);
-                }
-            } else if (path.lastIndexOf('/') >= 0)
-                path = path.substring(path.lastIndexOf('/') + 1);
-            return path;
-        }
-        return null;
-
-    }
-
 }
