@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.core.conversation.impl;
 
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
+import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;

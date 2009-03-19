@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationState;

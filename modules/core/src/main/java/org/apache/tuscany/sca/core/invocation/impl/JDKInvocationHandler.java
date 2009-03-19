@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
