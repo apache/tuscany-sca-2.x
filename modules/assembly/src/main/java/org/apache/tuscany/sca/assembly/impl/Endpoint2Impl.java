@@ -44,7 +44,7 @@ public class Endpoint2Impl implements Endpoint2 {
     private ComponentService service;
     private Binding binding;
     private InterfaceContract interfaceContract;
-    private List<EndpointReference2> callbackEndpointReferences;
+    private List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
     //private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();

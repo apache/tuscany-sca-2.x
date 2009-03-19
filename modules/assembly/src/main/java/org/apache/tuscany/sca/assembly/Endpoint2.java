@@ -105,27 +105,5 @@ public interface Endpoint2 extends Base, PolicySubject, Cloneable {
      * @return callbackEndpoint the reference callback endpoint
      */
     List<EndpointReference2> getCallbackEndpointReferences();
-    
-    /**
-     * Set the reference callback endpoint refefences
-     * 
-     * @param callbackEndpoint the reference callback endpoint
-     */
-    void setCallbackEndpointReferences(List<EndpointReference2> callbackEndpointReferences);   
-    
-    // not sure these are required
-  
-    /**
-     * Returns the binding specific URI for this endpoint.
-     * 
-     * @return uri the binding specific URI
-     */
-   // String getURI();
 
-    /**
-     * Sets the binding specific URI for this endpoint.
-     * 
-     * @param uri the binding specific URI
-     */
-   // void setURI(String uri);
 }

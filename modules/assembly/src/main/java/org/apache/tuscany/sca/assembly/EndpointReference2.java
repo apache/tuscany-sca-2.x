@@ -81,20 +81,6 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
     void setBinding(Binding binding);
     
     /**
-     * Get the reference callback binding 
-     * 
-     * @return callbackBinding the reference callback binding
-     */
-//    Binding getCallbackBinding();
-    
-    /**
-     * Set the reference callback binding 
-     * 
-     * @param callbackBinding the reference callback binding
-     */
-//    void setCallbackBinding(Binding callbackBinding);
-
-    /**
      * Get the name of the target service that this endpoint reference refers to
      * 
      * @return target service name
@@ -151,25 +137,4 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      * @param callbackEndpoint the reference callback endpoint
      */
     void setCallbackEndpoint(Endpoint2 callbackEndpoint);
-    
-    
-    
-    
-    // not sure the methods below are required
-    
-
-    
-    /**
-     * Returns the binding specific target URI for this endpoint reference.
-     * 
-     * @return uri the binding specific target URI
-     */
-    //String getURI();
-
-    /**
-     * Sets the binding specific target URI for this endpoint reference.
-     * 
-     * @param uri the binding specific target URI
-     */
-    //void setURI(String uri);    
 }

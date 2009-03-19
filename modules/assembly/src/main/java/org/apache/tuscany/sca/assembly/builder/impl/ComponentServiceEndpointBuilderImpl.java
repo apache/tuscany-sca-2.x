@@ -24,17 +24,13 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -142,7 +138,7 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpoint.setComponent(endpointComponent);
                     endpoint.setService(endpointService);
                     endpoint.setBinding(binding);
-                    endpoint.setCallbackEndpointReferences(callbackEndpointReferences);
+                    endpoint.getCallbackEndpointReferences().addAll(callbackEndpointReferences);
                     endpoint.setUnresolved(false);
                     service.getEndpoints().add(endpoint);
                 }
