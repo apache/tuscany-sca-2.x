@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
@@ -457,5 +458,9 @@ public class RuntimeWireImpl implements RuntimeWire {
 
     private void setClonedFrom(RuntimeWireImpl wire) {
         clonedFrom = wire;
+    }
+    
+    public EndpointReference2 getEndpointReference(){
+        return null;
     }
 }

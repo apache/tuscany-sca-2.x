@@ -68,8 +68,11 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/services/HelloWorldWebService?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://helloworld/HelloWorldService/$promoted$ep1",
-                                                          "HelloWorldService"));
+        // TODO - EPR - $promoted$ no longer used
+        //Service service = definition.getService(new QName("http://helloworld/HelloWorldService/$promoted$ep1",
+        //                                                  "HelloWorldService"));
+        Service service = definition.getService(new QName("http://helloworld/HelloWorldService/HelloWorld",
+                                                 "HelloWorldService"));        
         Port port = service.getPort("HelloWorldSoapPort");
 
         String endpoint = getEndpoint(port);

@@ -22,22 +22,22 @@
 			targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorldOM-Merged">
 
-    <service name="helloWorld" promote="HelloWorldMergedService">
-        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
-        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
-    </service>
 
     <component name="HelloWorldMergedService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
+		<service name="HelloWorldOM">
+	        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
+	        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
+	    </service>
     </component>
 
     <component name="HelloWorldWSDLMergedComponent">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMComponent"/>
-    </component>
- 
-    <reference name="mergedHelloWorldWS" promote="HelloWorldWSDLMergedComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
-        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld" />
+		<reference name="helloWorldWS">
+	        <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
+	    <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld" />
     </reference>
+    </component>
+
 
 </composite>

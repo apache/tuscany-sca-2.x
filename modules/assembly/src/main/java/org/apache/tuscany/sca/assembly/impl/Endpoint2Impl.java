@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -42,8 +43,8 @@ public class Endpoint2Impl implements Endpoint2 {
     private Component component;
     private ComponentService service;
     private Binding binding;
-    private Binding callbackBinding;
     private InterfaceContract interfaceContract;
+    private List<EndpointReference2> callbackEndpointReferences;
     //private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -94,6 +95,27 @@ public class Endpoint2Impl implements Endpoint2 {
 
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
+    }
+    
+    /**
+     * Get the services callbacl enpoint references that 
+     * represent endpoint references from which callbacks
+     * originate
+     * 
+     * @return callbackEndpoint the reference callback endpoint
+     */
+    public List<EndpointReference2> getCallbackEndpointReferences(){
+        return callbackEndpointReferences;
+    }
+    
+    /**
+     * Set the reference callback endpoint refefences
+     * 
+     * @param callbackEndpoint the reference callback endpoint
+     */
+    public void setCallbackEndpointReferences(List<EndpointReference2> callbackEndpointReferences)
+    {
+        this.callbackEndpointReferences = callbackEndpointReferences;
     }
 /*
     public String getURI() {

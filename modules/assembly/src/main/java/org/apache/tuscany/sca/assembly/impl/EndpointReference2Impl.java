@@ -62,7 +62,13 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        EndpointReference2 cloned = (EndpointReference2)super.clone();
+        
+        if (targetEndpoint != null){
+            cloned.setTargetEndpoint((Endpoint2)targetEndpoint.clone());
+        }
+        
+        return cloned;
     }
 
     public boolean isUnresolved() {

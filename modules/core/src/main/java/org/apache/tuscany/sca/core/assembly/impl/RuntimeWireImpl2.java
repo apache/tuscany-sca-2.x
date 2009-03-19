@@ -275,15 +275,31 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         
     }
 
+    // ===============================================================
+    // TODO - EPR remove when we convert fully over to EndpointReference2
+    
     // TODO - remove. Just here during development
     static EndpointReference epr;
     
     public EndpointReference getSource() {
-        // TODO - convert this into method that returns EndpointReference2
+        // TODO - EPR convert this into method that returns EndpointReference2
+        
+        // convert the source info into old endpoint reference format
         epr = new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(),
                                                           endpointReference.getReference(),
                                                           endpointReference.getBinding(),
                                                           endpointReference.getInterfaceContract());
+        
+        if (endpointReference.getCallbackEndpoint() != null){
+            // convert the source callback endpoint into old endpoint reference format
+            EndpointReference cepr;
+            cepr = new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(),
+                    endpointReference.getCallbackEndpoint().getService(),
+                    endpointReference.getCallbackEndpoint().getBinding(),
+                    endpointReference.getCallbackEndpoint().getInterfaceContract());
+            epr.setCallbackEndpoint(cepr);
+        }
+        
         
         // TODO - somtimes used to reset the interface contract so we 
         //        copy it back in in the rebuild method below  
@@ -293,8 +309,9 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     
     
     public EndpointReference getTarget() {
-        // TODO - convert this into method that return Endpoint2
+        // TODO - EPR convert this into method that returns Endpoint2
         
+        // convert the target info into old endpoint reference format
         EndpointReference epr = new EndpointReferenceImpl((RuntimeComponent)endpoint.getComponent(),
                                                            endpoint.getService(),
                                                            endpoint.getBinding(),
@@ -306,6 +323,8 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         // TODO - can we use the idea of setTarget to rebuild the wire?
 
     }
+    
+    // ===================================================================
 
     public void rebuild() {
         // TODO - can we use the idea of setTarget to rebuild the wire?
@@ -316,6 +335,10 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         // TODO - cheating here as I fixed the RuntimeComponentService code
         //        to call this when it resets the interface contract
         endpointReference.setInterfaceContract(epr.getInterfaceContract());
+    }
+    
+    public EndpointReference2 getEndpointReference(){
+        return endpointReference;
     }
 
     /**
@@ -440,7 +463,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     public Object clone() throws CloneNotSupportedException {
         RuntimeWireImpl2 copy = (RuntimeWireImpl2)super.clone();
         copy.endpointReference = (EndpointReference2)endpointReference.clone();
-        copy.endpoint = (Endpoint2)endpoint.clone();
+        copy.endpoint = copy.endpointReference.getTargetEndpoint();
         copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
         copy.cachedWire = null; // TUSCANY-2630
         return copy;

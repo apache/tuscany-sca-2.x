@@ -27,24 +27,24 @@
     so for this composite the service is: http://localhost:8085/myExplicitURI 
     -->      
 
-    <service name="helloWorld" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
-    </service>
 
     <component name="HelloWorldService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
+	    <service name="HelloWorldOM">
+	        <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
+	        <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.port(HelloWorldService/HelloWorldSoapPort)" />
+	    </service>		
     </component>
 
     <component name="HelloWorldComponent">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMComponent"/>
-        <reference name="helloWorldWS" />
+	    <reference name="helloWorldWS">
+	        <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
+	        <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.binding(HelloWorldSoapBinding)"
+	                    uri="http://localhost:8085/myExplicitURI"/>
+	    </reference>
     </component>
 
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld-om-uri#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om-uri#wsdl.binding(HelloWorldSoapBinding)"
-                    uri="http://localhost:8085/myExplicitURI"/>
-    </reference>
+
 
 </composite>

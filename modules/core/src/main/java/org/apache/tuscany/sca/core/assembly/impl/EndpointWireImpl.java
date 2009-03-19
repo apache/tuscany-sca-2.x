@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.impl.InvocationChainImpl;
@@ -183,4 +184,8 @@ public class EndpointWireImpl implements RuntimeWire {
         EndpointWireImpl copy = (EndpointWireImpl)super.clone();
         return copy;
     }
+    
+    public EndpointReference2 getEndpointReference(){
+        return null;
+    }    
 }

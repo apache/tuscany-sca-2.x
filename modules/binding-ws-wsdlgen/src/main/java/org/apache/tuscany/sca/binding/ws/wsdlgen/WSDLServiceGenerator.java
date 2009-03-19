@@ -131,6 +131,7 @@ public class WSDLServiceGenerator {
 
         //[nash] changes to the builder sequence avoid calling this for a CompositeService
         assert !(contract instanceof CompositeService);
+        // TODO - EPR - $promoted$ no longer used
         /*
         // For every promoted composite service, the underlying component
         // gets a copy of the service with the name prefixed by "$promoted$."

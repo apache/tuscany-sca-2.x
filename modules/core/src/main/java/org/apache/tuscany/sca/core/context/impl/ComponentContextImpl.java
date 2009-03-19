@@ -23,6 +23,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -30,10 +32,15 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -51,6 +58,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -73,6 +82,8 @@ public class ComponentContextImpl implements ComponentContextExt {
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final PropertyValueFactory propertyFactory;
+    private final EndpointReferenceBuilder endpointReferenceBuilder;
+    private final Monitor monitor;
     
     public ComponentContextImpl(ExtensionPointRegistry registry, RuntimeComponent component) {
         this.component = component;
@@ -85,6 +96,11 @@ public class ComponentContextImpl implements ComponentContextExt {
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
         this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
         this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
+        
+        this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        this.monitor = monitorFactory.createMonitor();
     }
 
     public String getURI() {
@@ -304,6 +320,7 @@ public class ComponentContextImpl implements ComponentContextExt {
         InvalidInterfaceException {
         ComponentReference componentReference = assemblyFactory.createComponentReference();
         componentReference.setName("$self$." + service.getName());
+        
         for (Binding binding : service.getBindings()) {
             if (binding instanceof OptimizableBinding) {
                 OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
@@ -330,6 +347,26 @@ public class ComponentContextImpl implements ComponentContextExt {
         componentReference.setInterfaceContract(interfaceContract);
         componentReference.setMultiplicity(Multiplicity.ONE_ONE);
         // component.getReferences().add(componentReference);
+        
+        // create endpoint reference
+        EndpointReference2 endpointReference = assemblyFactory
+                .createEndpointReference();
+        endpointReference.setComponent(component);
+        endpointReference.setReference(componentReference);
+         endpointReference.setUnresolved(false);
+
+        // create endpoint. 
+        Endpoint2 endpoint = assemblyFactory.createEndpoint();
+        endpoint.setComponent(component);
+        endpoint.setService(service);
+        endpoint.setUnresolved(true);
+        endpointReference.setTargetEndpoint(endpoint);
+        
+        componentReference.getEndpointReferences().add(endpointReference);
+        
+        // do binding matching
+        endpointReferenceBuilder.build(endpointReference, monitor);
+        
         return componentReference;
     }
 

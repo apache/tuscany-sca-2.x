@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -45,10 +46,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeServiceEndpointBuilderImpl implements CompositeBuilder {
+public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
 
-    public CompositeServiceEndpointBuilderImpl(AssemblyFactory assemblyFactory) {
+    public ComponentServiceEndpointBuilderImpl(AssemblyFactory assemblyFactory) {
         this.assemblyFactory = assemblyFactory;
     }
 
@@ -109,11 +110,39 @@ public class CompositeServiceEndpointBuilderImpl implements CompositeBuilder {
 
             // create an endpoint for each component service binding
             for (ComponentService service : component.getServices()) {
+                
+                Component endpointComponent = component;
+                ComponentService endpointService = service;
+                
+                // TODO - EPR - We maintain all endpoints at the right level now
+                //              but endpoints for promoting services must point down
+                //              to the services they promote. 
+                if (service.getService() instanceof CompositeService) {
+                    CompositeService compositeService = (CompositeService)service.getService();
+                    endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
+                    endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
+                } 
+                
+                // if this service has a callback get the callback endpoint references
+                List<EndpointReference2> callbackEndpointReferences = null;
+                
+                if ((service.getInterfaceContract() != null) &&
+                    (service.getInterfaceContract().getCallbackInterface() != null)){
+                    // find the callback reference
+                    for ( Reference reference : component.getReferences()){
+                        if ( reference.getName().equals(service.getName())){
+                            callbackEndpointReferences = reference.getEndpointReferences();
+                            break;
+                        }
+                    } 
+                }
+                
                 for (Binding binding : service.getBindings()){
                     Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setComponent(component);
-                    endpoint.setService(service);
+                    endpoint.setComponent(endpointComponent);
+                    endpoint.setService(endpointService);
                     endpoint.setBinding(binding);
+                    endpoint.setCallbackEndpointReferences(callbackEndpointReferences);
                     endpoint.setUnresolved(false);
                     service.getEndpoints().add(endpoint);
                 }

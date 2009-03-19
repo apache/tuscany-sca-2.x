@@ -22,41 +22,32 @@
 		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorldNoWSDL">
 
-    <service name="helloWorld" promote="HelloWorldService">
-        <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws uri="http://localhost:8085/helloWorld"/>
-    </service>
-
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldService"/>
+        <service name="HelloWorld" >
+            <binding.ws uri="http://localhost:8085/helloWorld"/>
+        </service>
     </component>
 
     <component name="HelloWorldComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldComponent"/>
-        <reference name="helloWorldWS" />
+	    <reference name="helloWorldWS" >
+	        <binding.ws uri="http://localhost:8085/helloWorld"/>
+	    </reference>
     </component>
-
-    <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <!-- interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" / -->
-        <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws uri="http://localhost:8085/helloWorld"/>
-    </reference>
-
-    <service name="Echo" promote="EchoService">
-        <binding.ws uri="http://localhost:8085/Echo"/>
-    </service>
 
     <component name="EchoService">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.EchoImpl"/>
+        <service name="Echo">
+	        <binding.ws uri="http://localhost:8085/Echo"/>
+	    </service>
     </component>
 
     <component name="EchoComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.EchoComponent"/>
-        <reference name="echoWS" />
+	    <reference name="echoWS">
+	        <binding.ws uri="http://localhost:8085/Echo"/>
+	    </reference>
     </component>
-
-    <reference name="echoWS" promote="EchoComponent/echoWS">
-        <binding.ws uri="http://localhost:8085/Echo"/>
-    </reference>
 
 </composite>

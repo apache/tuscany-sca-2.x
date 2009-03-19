@@ -43,7 +43,7 @@ public class MyClientImpl2 implements MyClient, MyServiceCallback {
 
     public void receiveResult(String result) {
         System.out.println("Work thread " + Thread.currentThread());
-        System.out.println("Result: " + result);
+        System.out.println("Result in client2: " + result);
         MyClientImpl2.result = result;
     }
 }

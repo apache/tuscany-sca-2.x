@@ -19,9 +19,6 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:foo="http://foo" targetNamespace="http://foo"
     name="InnerReferencesTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <service name="AComponent" promote="AComponent">
-        <interface.java interface="org.apache.tuscany.sca.itest.references.AComponent" />
-    </service>
 
     <component name="AComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.references.AComponentImpl" />

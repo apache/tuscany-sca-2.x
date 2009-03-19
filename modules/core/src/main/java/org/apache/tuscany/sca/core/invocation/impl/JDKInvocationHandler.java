@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
@@ -100,6 +101,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     protected void init(RuntimeWire wire) {
+        // TODO - EPR needs fixing when we remove the old EndpointReference
         if (wire != null) {
             try {
                 // Clone the endpoint reference so that reference parameters can be changed
@@ -387,7 +389,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             return;
         }
 
-        ConversationManager conversationManager = ((RuntimeWireImpl)wire).getConversationManager();
+        ConversationManager conversationManager = ((RuntimeWireImpl2)wire).getConversationManager();
 
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
 

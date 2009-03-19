@@ -56,6 +56,7 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
         configureNestedCompositeReferences(composite);
 
         // Process top level composite references
+        // TODO - In OASIS the treament of top level composite references is different so need to review
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
 

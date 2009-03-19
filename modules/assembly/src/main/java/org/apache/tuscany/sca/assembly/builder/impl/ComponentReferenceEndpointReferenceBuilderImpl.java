@@ -55,10 +55,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
+public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
 
-    public CompositeReferenceEndpointReferenceBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
+    public ComponentReferenceEndpointReferenceBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
 
@@ -333,6 +333,23 @@ public class CompositeReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 // user hasn't put a uri on the binding so it's not a target
                 // name
                 if (uri == null) {
+                    // create endpoint reference for manually configured bindings
+                    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
+                    endpointRef.setComponent(component);
+                    endpointRef.setReference(reference);
+                    endpointRef.setBinding(binding);
+                    endpointRef.setTargetName(null);
+                    endpointRef.setTargetEndpoint(null);
+                    endpointRef.setUnresolved(false);
+                    
+                    // create a resolved endpoint to signify that this 
+                    // reference is pointing at some unwired endpoint
+                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
+                    endpoint.setUnresolved(false);
+                    endpointRef.setTargetEndpoint(endpoint);
+                    
+                    reference.getEndpointReferences().add(endpointRef);
+                    
                     continue;
                 }
 
