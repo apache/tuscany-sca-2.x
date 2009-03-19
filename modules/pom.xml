@@ -104,6 +104,16 @@
 
     <profiles>
          <profile>
+            <id>rfc119</id>
+            <modules>
+                <module>contribution-osgi</module>
+                <module>implementation-osgi</module>
+                <module>implementation-osgi-runtime</module>
+                <module>node-impl-osgi</module>
+            </modules>
+        </profile>
+
+         <profile>
             <id>eclipse</id>
             <build>
                <!--plugins> 	 
