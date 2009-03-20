@@ -24,10 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
-import org.apache.tuscany.sca.endpointresolver.EndpointResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -45,9 +43,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private ArrayList<RuntimeWire> wires;
     private HashMap<Binding, ReferenceBindingProvider> bindingProviders =
-        new HashMap<Binding, ReferenceBindingProvider>();
-    private HashMap<Endpoint, EndpointResolver> endpointResolvers =
-        new HashMap<Endpoint, EndpointResolver>();    
+        new HashMap<Binding, ReferenceBindingProvider>(); 
     private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
 
     private RuntimeComponent component;
@@ -93,14 +89,6 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         bindingProviders.put(binding, bindingProvider);
     }
     
-    public EndpointResolver getEndpointResolver(Endpoint endpoint){
-        return endpointResolvers.get(endpoint);
-    }
-    
-    public void setEndpointResolver(Endpoint endpoint, EndpointResolver endpointResolver){
-        endpointResolvers.put(endpoint, endpointResolver);
-    }
-
     public Invoker getInvoker(Binding binding, Operation operation) {
         RuntimeWire wire = getRuntimeWire(binding);
         if (wire == null) {

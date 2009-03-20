@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
@@ -277,7 +276,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         // FIXME: Is this the best way to do this?
         final RuntimeWire cbWire = ((RuntimeComponentService) targetService).getRuntimeWires().get(0);
         try {
-            this.wire = (RuntimeWireImpl) cbWire.clone();
+            this.wire = (RuntimeWireImpl2) cbWire.clone();
         } catch (CloneNotSupportedException e) {
             throw new IOException(e.toString());
         }

@@ -55,7 +55,6 @@ import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.core.scope.impl.ConversationalScopeContainer;
-import org.apache.tuscany.sca.endpointresolver.EndpointResolverFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -90,7 +89,6 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
     private final WorkScheduler workScheduler;
     private final RuntimeWireProcessor wireProcessor;
     private final ProviderFactoryExtensionPoint providerFactories;
-    private final EndpointResolverFactoryExtensionPoint endpointResolverFactories;
 
     private final ComponentContextFactory componentContextFactory;
     private final RequestContextFactory requestContextFactory;
@@ -115,7 +113,6 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         this.workScheduler = utilities.getUtility(WorkScheduler.class);
         this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        this.endpointResolverFactories = extensionPoints.getExtensionPoint(EndpointResolverFactoryExtensionPoint.class);
         this.javaInterfaceFactory = compositeContext.getJavaInterfaceFactory();
         this.propertyValueFactory = factories.getFactory(PropertyValueFactory.class);
         ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);

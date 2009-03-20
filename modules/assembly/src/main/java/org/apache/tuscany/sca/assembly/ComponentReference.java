@@ -105,12 +105,5 @@ public interface ComponentReference extends Reference {
      * @param nonOverridable
      */
     void setNonOverridable(boolean nonOverridable);
-    
-    /**
-     * Returns the endpoints implied by this reference.
-     * 
-     * @return the endpoints implied by this reference
-     */
-    List<Endpoint> getEndpoints();    
-    
+        
 }

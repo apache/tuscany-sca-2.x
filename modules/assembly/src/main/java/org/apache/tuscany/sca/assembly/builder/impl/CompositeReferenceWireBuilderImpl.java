@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
-import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -40,11 +39,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
-    private EndpointFactory endpointFactory;
 
-    public CompositeReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory) {
+    public CompositeReferenceWireBuilderImpl(AssemblyFactory assemblyFactory) {
         this.assemblyFactory = assemblyFactory;
-        this.endpointFactory = endpointFactory;
     }
 
     public String getID() {
@@ -72,7 +69,7 @@ public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
                     ReferenceConfigurationUtil.getPromotedComponentReferences(compositeReference);
                 for (ComponentReference promotedReference : promotedReferences) {
                     ReferenceConfigurationUtil.reconcileReferenceBindings(
-                            compositeReference, promotedReference, assemblyFactory, endpointFactory, monitor);
+                            compositeReference, promotedReference, assemblyFactory, monitor);
                     if (compositeReference.getInterfaceContract() != null && // can be null in unit tests
                         compositeReference.getInterfaceContract().getCallbackInterface() != null) {
                         SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);

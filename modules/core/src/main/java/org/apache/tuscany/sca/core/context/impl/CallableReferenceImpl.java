@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl;
+import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl2;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
@@ -118,6 +118,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         this.component = component;
         this.reference = reference;
         this.binding = binding;
+        
         // FIXME: The SCA Specification is not clear how we should handle multiplicity 
         // for CallableReference
         if (this.binding == null) {
@@ -127,15 +128,10 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                 // TODO: TUSCANY-2580: if the refernece doesn't have a binding yet then instead of NPE use a candidate one if its avaialable              
                 if (reference.getBindings() != null && reference.getBindings().size() > 0) {
                     this.binding = this.reference.getBindings().get(0);
-                } else {
-                    this.binding = this.reference.getEndpoints().get(0).getCandidateBindings().get(0);
-                    if (this.reference.getEndpoints().get(0).getInterfaceContract() == null) {
-                        this.reference.getEndpoints().get(0).setInterfaceContract(reference.getInterfaceContract());
-                    }
-                }
+                } 
             }
             
-            // TODO - EPR - If not binding specified assume default binding and find the enpoint reference 
+            // TODO - EPR - If no binding specified assume default binding and find the endpoint reference 
             //              related to it
             for (EndpointReference2 endpointReference : this.reference.getEndpointReferences()){
                 if ((endpointReference.getBinding() != null) && 
@@ -464,7 +460,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             if (conversation != null) {
                 refParams.setConversationID(conversation.getConversationID());
             }
-            return ((CompositeActivatorImpl)compositeActivator).getCompositeContext().toXML(component, clonedRef);
+            return ((CompositeActivatorImpl2)compositeActivator).getCompositeContext().toXML(component, clonedRef);
         } else {
             return scdl;
         }
