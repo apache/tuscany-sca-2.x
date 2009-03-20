@@ -46,14 +46,13 @@ public class EndpointReference2Impl implements EndpointReference2 {
     private Binding binding;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private InterfaceContract interfaceContract;
     
     // the target of the endpoint reference 
-    private String targetName;
     private Endpoint2 targetEndpoint;
-    private InterfaceContract interfaceContract;
 //  private String uri;
     
-    // callback that messages across this reference 
+    // callback endpoint that messages across this reference 
     // will be directed toward
     private Endpoint2 callbackEndpoint;
    
@@ -102,25 +101,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setBinding(Binding binding) {
         this.binding = binding;
     }
-    
-/*    
-    public Binding getCallbackBinding() {
-        return callbackBinding;
-    }
-    
-    public void setCallbackBinding(Binding callbackBinding) {
-        this.callbackBinding = callbackBinding;
-    }
-*/
-    
-    public String getTargetName() {
-        return targetName;
-    }
-
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
-    
+            
     public Endpoint2 getTargetEndpoint() {
         return targetEndpoint;
     }

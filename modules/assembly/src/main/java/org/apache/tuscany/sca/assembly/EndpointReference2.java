@@ -78,21 +78,7 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable {
      * 
      * @param binding the resolved reference binding
      */
-    void setBinding(Binding binding);
-    
-    /**
-     * Get the name of the target service that this endpoint reference refers to
-     * 
-     * @return target service name
-     */
-    String getTargetName();
-    
-    /**
-     * Set the name of the target service that this endpoint reference refers to
-     * 
-     * @param targetName
-     */
-    void setTargetName(String targetName);  
+    void setBinding(Binding binding); 
     
     /**
      * Get the target endpoint
