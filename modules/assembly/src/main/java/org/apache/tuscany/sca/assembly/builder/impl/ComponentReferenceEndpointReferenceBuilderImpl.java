@@ -146,7 +146,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                             EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                             endpointRef.setComponent(component);
                             endpointRef.setReference(reference);
-                            endpointRef.setTargetName(targetComponentService.getName());
                             endpointRef.setUnresolved(false);
                             
                             // create dummy endpoint. This will be replaced when policies
@@ -214,7 +213,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
-                        endpointRef.setTargetName(targetComponentService.getName());
                         endpointRef.setUnresolved(false);
 
                         // create dummy endpoint. This will be replaced when policies
@@ -239,7 +237,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
-                    endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
                                 
                     // create an unresolved endpoint to go with it
@@ -284,7 +281,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
-                        endpointRef.setTargetName(targetComponentService.getName());
                         endpointRef.setUnresolved(false);
                         
                         // create dummy endpoint. This will be replaced when policies
@@ -309,7 +305,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
-                    endpointRef.setTargetName(targetName);
                     endpointRef.setUnresolved(true);
                     
                     // create an unresolved endpoint to go with it
@@ -341,7 +336,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
                     endpointRef.setBinding(binding);
-                    endpointRef.setTargetName(null);
                     endpointRef.setTargetEndpoint(null);
                     endpointRef.setUnresolved(false);
                     
@@ -394,7 +388,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         endpointRef.setComponent(component);
                         endpointRef.setReference(reference);
                         endpointRef.setBinding(binding);
-                        endpointRef.setTargetName(targetComponentService.getName());
                         endpointRef.setUnresolved(false);
 
                         // create dummy endpoint. This will be replaced when policies
@@ -420,7 +413,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpointRef.setComponent(component);
                     endpointRef.setReference(reference);
                     endpointRef.setBinding(binding);
-                    endpointRef.setTargetName(null);
                     endpointRef.setTargetEndpoint(null);
                     endpointRef.setUnresolved(false);
                     
