@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.CompositeReference;
-import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -167,7 +166,6 @@ abstract class ReferenceConfigurationUtil {
     static void reconcileReferenceBindings(Reference reference,
                                            ComponentReference promotedReference,
                                            AssemblyFactory assemblyFactory,
-                                           EndpointFactory endpointFactory,
                                            Monitor monitor) {
               
         if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE ||

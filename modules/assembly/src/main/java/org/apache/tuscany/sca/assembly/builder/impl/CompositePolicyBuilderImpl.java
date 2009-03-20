@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -54,7 +53,6 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
     public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory,
-                                      EndpointFactory endpointFactory,
                                       InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
