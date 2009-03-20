@@ -297,10 +297,20 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 String promote = reader.getAttributeValue(null, Constants.PROMOTE);
                                 if (promote != null) {
                                     for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
+                                        String refName = tokens.nextToken();
+                                        Component promotedComponent = assemblyFactory.createComponent();
+                                        int index = refName.indexOf('/');
+                                        if (index == -1) {
+                                            error("Invalid reference name", compositeReference, refName);
+                                        }
+                                        String promotedComponentName = refName.substring(0, index); 
+                                        promotedComponent.setName(promotedComponentName);
+                                        promotedComponent.setUnresolved(true);
+                                        compositeReference.getPromotedComponents().add(promotedComponent);
                                         ComponentReference promotedReference =
                                             assemblyFactory.createComponentReference();
                                         promotedReference.setUnresolved(true);
-                                        promotedReference.setName(tokens.nextToken());
+                                        promotedReference.setName(refName);
                                         compositeReference.getPromotedReferences().add(promotedReference);
                                     }
                                 }

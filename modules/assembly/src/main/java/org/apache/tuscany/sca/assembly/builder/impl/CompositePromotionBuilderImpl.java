@@ -86,7 +86,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
         // Connect composite services and references to the component
         // services and references that they promote
         connectCompositeServices(composite, components, componentServices, monitor);
-        connectCompositeReferences(composite, componentReferences, monitor);
+        connectCompositeReferences(composite, components, componentReferences, monitor);
     }
             
     /**
@@ -170,6 +170,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
      * @param problems
      */
     private void connectCompositeReferences(Composite composite,
+                                            Map<String, Component> components,
                                             Map<String, ComponentReference> componentReferences, Monitor monitor) {
     
         // Propagate interfaces from inner composite components' references to
@@ -198,7 +199,11 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                     String componentReferenceName = componentReference.getName();
                     componentReference = componentReferences.get(componentReferenceName);
                     if (componentReference != null) {
-    
+                        // Set the promoted component
+                        Component promotedComponent = compositeReference.getPromotedComponents().get(i);
+                        promotedComponent = components.get(promotedComponent.getName());
+                        compositeReference.getPromotedComponents().set(i, promotedComponent);
+                        
                         // Point to the resolved component reference
                         promotedReferences.set(i, componentReference);
     
