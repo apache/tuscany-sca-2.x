@@ -15,6 +15,6 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;model=org.apache.tuscany.sca.assembly.Composite
-org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;model=org.apache.tuscany.sca.assembly.ConstrainingType
-org.apache.tuscany.sca.assembly.xml.ComponentTypeModelResolver;model=org.apache.tuscany.sca.assembly.ComponentType
+# org.apache.tuscany.sca.assembly.xml.osoa.CompositeModelResolver;model=org.apache.tuscany.sca.assembly.Composite
+# org.apache.tuscany.sca.assembly.xml.osoa.ConstrainingTypeModelResolver;model=org.apache.tuscany.sca.assembly.ConstrainingType
+# org.apache.tuscany.sca.assembly.xml.osoa.ComponentTypeModelResolver;model=org.apache.tuscany.sca.assembly.ComponentType
