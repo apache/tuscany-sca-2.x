@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 
@@ -31,6 +32,7 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
  * @version $Rev$ $Date$
  */
 public class CompositeReferenceImpl extends ReferenceImpl implements CompositeReference, Cloneable {
+    private List<Component> promotedComponents = new ArrayList<Component>();
     private List<ComponentReference> promotedReferences = new ArrayList<ComponentReference>();
 
     /**
@@ -46,6 +48,10 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
 
     public List<ComponentReference> getPromotedReferences() {
         return promotedReferences;
+    }
+
+    public List<Component> getPromotedComponents() {
+        return promotedComponents;
     }
 
 }

@@ -26,12 +26,19 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public interface CompositeReference extends Reference {
+    /**
+     * Returns the promoted components. For each promoted component/reference, 
+     * they have the same index in the component and reference list. 
+     *  
+     * @return the promoted components
+     */
+    List<Component> getPromotedComponents();
 
     /**
-     * Returns the promoted composite references.
+     * Returns the promoted component references.
      * 
-     * @return the promoted composite references
+     * @return the promoted component references
      */
     List<ComponentReference> getPromotedReferences();
-
+    
 }
