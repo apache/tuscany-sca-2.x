@@ -758,6 +758,14 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         } else {
             sourceContract = componentTypeRef.getInterfaceContract();
         }
+       
+        // TODO - EPR - interface contract seems to be null in the implementation.web
+        //              case. Not introspecting the CT properly?
+        if (sourceContract == null){
+            // take the contract from the service to which the reference is connected
+            sourceContract = endpointReference.getTargetEndpoint().getInterfaceContract();
+            reference.setInterfaceContract(sourceContract);
+        }
         
         endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
 
