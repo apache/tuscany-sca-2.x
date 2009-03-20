@@ -119,28 +119,12 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
                 } 
                 
-                // if this service has a callback get the callback endpoint references
-                List<EndpointReference2> callbackEndpointReferences = null;
-                
-                if ((service.getInterfaceContract() != null) &&
-                    (service.getInterfaceContract().getCallbackInterface() != null)){
-                    // find the callback reference
-                    for ( Reference reference : component.getReferences()){
-                        if ( reference.getName().equals(service.getName())){
-                            callbackEndpointReferences = reference.getEndpointReferences();
-                            break;
-                        }
-                    } 
-                }
                 
                 for (Binding binding : service.getBindings()){
                     Endpoint2 endpoint = assemblyFactory.createEndpoint();
                     endpoint.setComponent(endpointComponent);
                     endpoint.setService(endpointService);
                     endpoint.setBinding(binding);
-                    if (callbackEndpointReferences != null) {
-                        endpoint.getCallbackEndpointReferences().addAll(callbackEndpointReferences);
-                    }
                     endpoint.setUnresolved(false);
                     service.getEndpoints().add(endpoint);
                 }
