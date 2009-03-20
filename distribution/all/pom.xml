@@ -78,6 +78,13 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                   <dependency>
+                      <groupId>org.eclipse</groupId>
+                      <artifactId>osgi</artifactId>
+                      <version>3.3.0-v20070530</version>
+                   </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
