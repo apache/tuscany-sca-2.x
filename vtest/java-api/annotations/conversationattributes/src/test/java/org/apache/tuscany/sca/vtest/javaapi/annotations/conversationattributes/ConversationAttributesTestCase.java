@@ -30,7 +30,7 @@ import org.oasisopen.sca.ConversationEndedException;
  * This test class tests the Service annotation described in section 1.2.1 and
  * 1.8.17
  */
-public class ConversationAttributesAnnotationTestCase {
+public class ConversationAttributesTestCase {
 
     protected static String compositeName = "conversation.composite";
     protected static AService aService = null;
