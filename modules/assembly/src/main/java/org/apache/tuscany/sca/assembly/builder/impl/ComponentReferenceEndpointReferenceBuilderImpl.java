@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -94,9 +95,23 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             
             // create endpoint references to represent the component reference
             for (ComponentReference reference : component.getReferences()) {
+                
                 createReferenceEndpointReferences(composite, component, reference, components, componentServices, monitor);
+                
+                // fix up links between endpoints and endpoint references that represent callbacks
+                for (ComponentService service : component.getServices()){
+                    if ((service.getInterfaceContract() != null) &&
+                        (service.getInterfaceContract().getCallbackInterface() != null)){
+                        if ( reference.getName().equals(service.getName())){
+                            for ( Endpoint2 endpoint : service.getEndpoints()){
+                                endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
+                            }
+                            break;
+                        } 
+                    }
+                }
             }
-        }
+        } 
     }    
     
     private void createReferenceEndpointReferences(Composite composite, 
