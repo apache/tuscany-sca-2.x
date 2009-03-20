@@ -69,6 +69,7 @@
                         </goals>
                         <configuration>
                             <tasks> 
+                                <property name="tuscany.version" value="${version}" />
                                 <ant antfile="./build.xml" target="run"/>
                             </tasks>
                         </configuration>
