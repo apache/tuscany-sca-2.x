@@ -166,11 +166,13 @@ public class NodeFactoryImpl {
     private ConfiguredNodeImplementation getNodeConfiguration(Bundle bundle, String compositeContent) throws Exception {
 
         ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle);
+        if (compositeContent != null) {
 
-        Contribution deploymentContrib = createDeploymentContribution(compositeContent);
+            Contribution deploymentContrib = createDeploymentContribution(compositeContent);
 
-        configuration.setComposite(deploymentContrib.getDeployables().get(0));
-        configuration.getContributions().add(deploymentContrib);
+            configuration.setComposite(deploymentContrib.getDeployables().get(0));
+            configuration.getContributions().add(deploymentContrib);
+        }
 
         return configuration;
     }
@@ -527,23 +529,10 @@ public class NodeFactoryImpl {
         private Bundle bundle;
         private Composite domainFragementComposite;
         private CompositeActivator compositeActivator;
+        private ConfiguredNodeImplementation configuration;
 
         public NodeImpl(Bundle bundle) {
-            try {
-                // Initialize the runtime
-                init();
-
-                this.bundle = bundle;
-                ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle);
-
-                // Configure the node
-                this.domainFragementComposite = configureNode(configuration);
-                this.compositeActivator = utilities.getUtility(CompositeActivator.class, true);
-                this.compositeActivator.setDomainComposite(domainFragementComposite);
-
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
+            this(bundle, null);
         }
 
         public NodeImpl(Bundle bundle, String compositeContent) {
@@ -552,7 +541,7 @@ public class NodeFactoryImpl {
                 init();
 
                 this.bundle = bundle;
-                ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle, compositeContent);
+                this.configuration = getNodeConfiguration(bundle, compositeContent);
 
                 // Configure the node
                 this.domainFragementComposite = configureNode(configuration);
@@ -675,6 +664,8 @@ public class NodeFactoryImpl {
         public void destroy() {
             this.bundle = null;
             this.domainFragementComposite = null;
+            this.compositeActivator = null;
+            this.configuration = null;
             nodes.remove(this);
         }
 
