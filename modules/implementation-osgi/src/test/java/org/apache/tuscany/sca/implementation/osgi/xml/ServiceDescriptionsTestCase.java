@@ -53,13 +53,16 @@ public class ServiceDescriptionsTestCase {
             + "</property>"
             + "</service-description>"
             + "<service-description>"
-            + "<provide interface=\"com.iona.soa.pojo.hello.GreeterService\"/>"
-            + "<property name=\"service.intents\">SOAP HTTP</property>"
-            + "<property name=\"osgi.remote.configuration.type\">pojo</property>"
-            + "<property name=\"osgi.remote.configuration.pojo.address\">"
-            + "http://localhost:9005/greeter"
+            + "<provide interface=\"calculator.operations.SubtractService\"/>"
+            + "<property name=\"service.intents\">sca:SOAP sca:HTTP</property>"
+            + "<property name=\"osgi.remote.configuration.type\">sca</property>"
+            + "<property name=\"osgi.remote.configuration.sca.componentType\">"
+            + "OSGI-INF/sca/bundle.componentType"
             + "</property>"
-            + "</service-description>"
+            + "<property name=\"osgi.remote.configuration.sca.reference\">"
+            + "subtractService"
+            + "</property>"
+            + "</service-description>"            
             + "</service-descriptions>";
 
     private static XMLStreamReader reader;
