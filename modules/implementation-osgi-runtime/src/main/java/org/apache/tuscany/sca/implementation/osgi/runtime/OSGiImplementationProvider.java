@@ -72,9 +72,12 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
             final Class<?> interfaceClass = javaInterface.getJavaClass();
 
-            final Hashtable<String, Object> targetProperties = getOSGiProperties(reference);
-            targetProperties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
-            targetProperties.put("sca.reference", component.getURI() + "#reference(" + ref.getName() + ")");
+            final Hashtable<String, Object> osgiProps = getOSGiProperties(reference);
+            osgiProps.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+            osgiProps.put("sca.reference", component.getURI() + "#reference(" + ref.getName() + ")");
+            osgiProps.put(OSGiProperty.OSGI_REMOTE, "true");
+            osgiProps.put(OSGiProperty.OSGI_REMOTE_CONFIGURATION_TYPE, "sca");
+            osgiProps.put(OSGiProperty.OSGI_REMOTE_INTERFACES, interfaceClass.getName());
 
             ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
             if (!interfaceClass.isInterface()) {
@@ -87,7 +90,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                     public ServiceRegistration run() {
                         return osgiBundle.getBundleContext().registerService(interfaceClass.getName(),
                                                                              proxy,
-                                                                             targetProperties);
+                                                                             osgiProps);
                     }
                 });
             }
