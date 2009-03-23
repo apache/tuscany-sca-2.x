@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -65,13 +66,13 @@ import org.osgi.framework.Version;
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
     private AssemblyFactory assemblyFactory;
-    //    private FactoryExtensionPoint modelFactories;
+    private ServiceDescriptionsFactory serviceDescriptionsFactory;
     private OSGiImplementationFactory osgiImplementationFactory;
     private Monitor monitor;
 
     public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
-        //        this.modelFactories = modelFactories;
+        this.serviceDescriptionsFactory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
     }
@@ -171,8 +172,15 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             error("MissingComponentTypeFile", impl, componentType.getURI());
             //throw new ContributionResolveException("missing .componentType side file " + ctURI);
             return;
+        } else {
+            mergeFromComponentType(impl, componentType, resolver);
         }
 
+        // FIXME: How to find the RFC 119 service descriptions in the contribution and 
+        // derive the SCA component type from them?
+    }
+
+    private void mergeFromComponentType(OSGiImplementation impl, ComponentType componentType, ModelResolver resolver) {
         List<Service> services = componentType.getServices();
         for (Service service : services) {
             Interface interfaze = service.getInterfaceContract().getInterface();
@@ -211,7 +219,6 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             impl.getProperties().add(property);
         }
         impl.setConstrainingType(componentType.getConstrainingType());
-
     }
 
     private Class<?> getJavaClass(ModelResolver resolver, String className) {

@@ -30,12 +30,12 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
  * The OSGi RFC 119 description of a remote OSGi service
  */
 public class ServiceDescriptionImpl implements ServiceDescription {
+    private List<String> interfaces = new ArrayList<String>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
+
     protected ServiceDescriptionImpl() {
         super();
     }
-
-    private List<String> interfaces = new ArrayList<String>();
-    private Map<String, Object> properties = new HashMap<String, Object>();
 
     public List<String> getInterfaces() {
         return interfaces;
@@ -46,6 +46,6 @@ public class ServiceDescriptionImpl implements ServiceDescription {
     }
 
     public String toString() {
-        return "service-description: interfaces=" + interfaces + "properties=" + properties;
+        return "service-description: interfaces=" + interfaces + " properties=" + properties;
     }
 }

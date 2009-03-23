@@ -18,14 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
-import java.util.Hashtable;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 /**
  * OSGi implementation 
@@ -40,39 +37,18 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
     private String bundleVersion;
     private Bundle osgiBundle;
 
-    private Hashtable<String, List<ComponentProperty>> referenceProperties;
-    private Hashtable<String, List<ComponentProperty>> serviceProperties;
-
-    private Hashtable<String, List<ComponentProperty>> referenceCallbackProperties;
-    private Hashtable<String, List<ComponentProperty>> serviceCallbackProperties;
-
     private FactoryExtensionPoint modelFactories;
-
 
     protected OSGiImplementationImpl(FactoryExtensionPoint modelFactories) {
         this.modelFactories = modelFactories;
     }
 
-    public OSGiImplementationImpl(FactoryExtensionPoint modelFactories,
-                                  String bundleSymbolicName,
-                                  String bundleVersion,
-                                  Hashtable<String, List<ComponentProperty>> refProperties,
-                                  Hashtable<String, List<ComponentProperty>> serviceProperties) {
+    public OSGiImplementationImpl(FactoryExtensionPoint modelFactories, String bundleSymbolicName, String bundleVersion) {
 
         super();
         this.bundleSymbolicName = bundleSymbolicName;
         this.bundleVersion = bundleVersion;
-        this.referenceProperties = refProperties;
-        this.serviceProperties = serviceProperties;
         this.modelFactories = modelFactories;
-    }
-
-    public void setCallbackProperties(Hashtable<String, List<ComponentProperty>> refCallbackProperties,
-                                      Hashtable<String, List<ComponentProperty>> serviceCallbackProperties) {
-
-        this.referenceCallbackProperties = refCallbackProperties;
-        this.serviceCallbackProperties = serviceCallbackProperties;
-
     }
 
     public String getBundleSymbolicName() {
@@ -85,22 +61,6 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
 
     public FactoryExtensionPoint getModelFactories() {
         return modelFactories;
-    }
-
-    public List<ComponentProperty> getReferenceProperties(String referenceName) {
-        return referenceProperties.get(referenceName);
-    }
-
-    public List<ComponentProperty> getServiceProperties(String serviceName) {
-        return serviceProperties.get(serviceName);
-    }
-
-    public List<ComponentProperty> getReferenceCallbackProperties(String referenceName) {
-        return referenceCallbackProperties.get(referenceName);
-    }
-
-    public List<ComponentProperty> getServiceCallbackProperties(String serviceName) {
-        return serviceCallbackProperties.get(serviceName);
     }
 
     /**
@@ -118,6 +78,10 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
 
     public void setBundle(Bundle osgiBundle) {
         this.osgiBundle = osgiBundle;
+        if (osgiBundle != null) {
+            this.bundleSymbolicName = osgiBundle.getSymbolicName();
+            this.bundleVersion = (String)osgiBundle.getHeaders().get(Constants.BUNDLE_VERSION);
+        }
     }
 
     private boolean areEqual(Object obj1, Object obj2) {
@@ -137,14 +101,6 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
         if (!areEqual(bundleSymbolicName, impl.bundleSymbolicName))
             return false;
         if (!areEqual(bundleVersion, impl.bundleVersion))
-            return false;
-        if (!areEqual(serviceProperties, impl.serviceProperties))
-            return false;
-        if (!areEqual(serviceCallbackProperties, impl.serviceCallbackProperties))
-            return false;
-        if (!areEqual(referenceProperties, impl.referenceProperties))
-            return false;
-        if (!areEqual(referenceCallbackProperties, impl.referenceCallbackProperties))
             return false;
         return super.equals(obj);
     }

@@ -28,6 +28,21 @@ public interface OSGiProperty {
     String NAME = "name";
     QName PROPERTY_QNAME = new QName(OSGiImplementation.SCA11_TUSCANY_NS, "osgi.property");
 
+    /**
+     * Standard OSGi property names
+     */
+    String OSGI_REMOTE = "osgi.remote";
+    String SERVICE_INTENTS = "service.intents";
+    String OSGI_REMOTE_INTERFACES = "osgi.remote.interfaces";
+    String OSGI_REMOTE_INTENTS = "osgi.remote.requires.intents";
+    String OSGI_REMOTE_CONFIGURATION_TYPE = "osgi.remote.configuration.type";
+    String SCA_BINDINGS = "osgi.remote.configuration.sca.bindings";
+    String SCA_REFERENCE = "osgi.remote.configuration.sca.reference";
+    String SCA_SERVICE = "osgi.remote.configuration.sca.service";
+    String SCA_REFERENCE_BINDING = "osgi.remote.configuration.sca.reference.binding";
+    String SCA_SERVICE_BINDING = "osgi.remote.configuration.sca.service.binding";
+    String OSGI_REMOTE_CONFIGURATION_TYPE_SCA = "sca";
+
     String getValue();
 
     void setValue(String value);

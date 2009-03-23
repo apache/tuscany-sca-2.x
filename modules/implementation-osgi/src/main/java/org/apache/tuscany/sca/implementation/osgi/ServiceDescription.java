@@ -22,12 +22,19 @@ package org.apache.tuscany.sca.implementation.osgi;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * The OSGi RFC 119 description of a remote OSGi service
  */
 public interface ServiceDescription {
+    /**
+     * Get a list of interfaces
+     * @return
+     */
     List<String> getInterfaces();
 
+    /**
+     * Get a list of properties
+     * @return
+     */
     Map<String, Object> getProperties();
 }
