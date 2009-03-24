@@ -64,7 +64,7 @@ public class CalculatorOSGiTestCase {
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/calculator-bundle.jar",
                                                  "calculator/dosgi/META-INF/MANIFEST.MF",
                                                  new String[][] {
-                                                                 {"OSGI-INF/calculator-component.xml", null},
+                                                                 {"OSGI-INF/calculator-component.xml"},
                                                                  {"calculator/dosgi/bundle.componentType",
                                                                   "OSGI-INF/sca/bundle.componentType"},
                                                                  {"calculator/dosgi/calculator.composite",
@@ -77,10 +77,10 @@ public class CalculatorOSGiTestCase {
         bundles.add(OSGiTestBundles.createBundle("target/test-classes/operations-bundle.jar",
                                                  "calculator/dosgi/operations/META-INF/MANIFEST.MF",
                                                  new String[][] {
-                                                                 {"OSGI-INF/add-component.xml", null},
-                                                                 {"OSGI-INF/subtract-component.xml", null},
-                                                                 {"OSGI-INF/multiply-component.xml", null},
-                                                                 {"OSGI-INF/divide-component.xml", null},
+                                                                 {"OSGI-INF/add-component.xml"},
+                                                                 {"OSGI-INF/subtract-component.xml"},
+                                                                 {"OSGI-INF/multiply-component.xml"},
+                                                                 {"OSGI-INF/divide-component.xml"},
                                                                  {"calculator/dosgi/operations/bundle.componentType",
                                                                   "OSGI-INF/sca/bundle.componentType"},
                                                                  {"calculator/dosgi/operations/operations.composite",
@@ -113,7 +113,7 @@ public class CalculatorOSGiTestCase {
                     System.out.println(string(b, false));
                 }
             }
-            
+
             // Sleep for 1 sec so that the DS is available
             Thread.sleep(1000);
             // Use the DS version

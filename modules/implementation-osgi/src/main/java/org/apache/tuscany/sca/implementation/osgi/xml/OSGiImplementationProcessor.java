@@ -45,6 +45,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -176,6 +178,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             mergeFromComponentType(impl, componentType, resolver);
         }
 
+        ServiceDescriptions descriptions = serviceDescriptionsFactory.createServiceDescriptions();
+        descriptions = resolver.resolveModel(ServiceDescriptions.class, descriptions);
+        for(ServiceDescription ds: descriptions) {
+            System.out.println(ds);
+        }
         // FIXME: How to find the RFC 119 service descriptions in the contribution and 
         // derive the SCA component type from them?
     }
