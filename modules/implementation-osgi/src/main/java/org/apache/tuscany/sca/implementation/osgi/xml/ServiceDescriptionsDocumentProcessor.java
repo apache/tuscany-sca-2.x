@@ -50,7 +50,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
                                                 StAXArtifactProcessor staxProcessor,
                                                 Monitor monitor) {
         super();
-        this.extensionProcessor = extensionProcessor;
+        this.extensionProcessor = staxProcessor;
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
 

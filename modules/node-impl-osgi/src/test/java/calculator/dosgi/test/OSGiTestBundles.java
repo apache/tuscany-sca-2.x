@@ -64,7 +64,11 @@ public class OSGiTestBundles {
 
         if (resources != null) {
             for (String resource[] : resources) {
-                addResource(jarOut, OSGiTestBundles.class.getClassLoader(), resource[0], resource[1]);
+                if (resource.length >= 1) {
+                    String r1 = resource[0];
+                    String r2 = resource.length > 1 ? resource[1] : r1;
+                    addResource(jarOut, OSGiTestBundles.class.getClassLoader(), r1, r2);
+                }
             }
         }
 
