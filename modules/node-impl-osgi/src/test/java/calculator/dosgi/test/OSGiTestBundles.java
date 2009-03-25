@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package calculator.dosgi.test;
@@ -55,7 +55,7 @@ import calculator.dosgi.operations.SubtractService;
 import calculator.dosgi.operations.SubtractServiceImpl;
 
 /**
- * 
+ *
  * Utility class to create OSGi bundles
  *
  * @version $Rev$ $Date$
@@ -63,17 +63,17 @@ import calculator.dosgi.operations.SubtractServiceImpl;
 public class OSGiTestBundles {
     private static class InvocationHandlerImpl implements InvocationHandler {
         private Object instance;
-    
+
         public InvocationHandlerImpl(Object instance) {
             super();
             this.instance = instance;
         }
-    
+
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Method m = instance.getClass().getMethod(method.getName(), method.getParameterTypes());
             return m.invoke(instance, args);
         }
-    
+
     }
 
     private static String getPackageName(Class<?> cls) {
@@ -271,15 +271,15 @@ public class OSGiTestBundles {
                             DivideService.class,
                             DivideServiceImpl.class);
     }
-    
+
     /**
      * Returns a string representation of the given bundle.
-     * 
+     *
      * @param b
      * @param verbose
      * @return
      */
-    static String bundleStatus(Bundle bundle, boolean verbose) {
+    public static String bundleStatus(Bundle bundle, boolean verbose) {
         StringBuffer sb = new StringBuffer();
         sb.append(bundle.getBundleId()).append(" ").append(bundle.getSymbolicName());
         int s = bundle.getState();
@@ -309,7 +309,16 @@ public class OSGiTestBundles {
         return sb.toString();
     }
 
-    static <T> T cast(Object obj, Class<T> cls) {
+    /**
+     * A utility to cast the object to the given interface. If the class for the object
+     * is loaded by a different classloader, a proxy will be created.
+     *
+     * @param <T>
+     * @param obj
+     * @param cls
+     * @return
+     */
+    public static <T> T cast(Object obj, Class<T> cls) {
         if (cls.isInstance(obj)) {
             return cls.cast(obj);
         } else {
