@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
@@ -45,11 +45,15 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -59,7 +63,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 /**
- * 
+ *
  * Process an <implementation.osgi/> element in a component definition. An instance of
  * OSGiImplementation is created.
  * Also associates the component type file with the implementation.
@@ -70,6 +74,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private AssemblyFactory assemblyFactory;
     private ServiceDescriptionsFactory serviceDescriptionsFactory;
     private OSGiImplementationFactory osgiImplementationFactory;
+    private JavaInterfaceFactory javaInterfaceFactory;
     private Monitor monitor;
 
     public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
@@ -77,11 +82,12 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         this.serviceDescriptionsFactory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
+        this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
 
     /**
      * Report a error.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -161,7 +167,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             impl.setBundle(bundle);
         } else {
             error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
-            //throw new ContributionResolveException("Could not locate OSGi bundle " + 
+            //throw new ContributionResolveException("Could not locate OSGi bundle " +
             //impl.getBundleSymbolicName());
             return;
         }
@@ -171,20 +177,52 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         componentType.setUnresolved(true);
         componentType = resolver.resolveModel(ComponentType.class, componentType);
         if (componentType.isUnresolved()) {
-            error("MissingComponentTypeFile", impl, componentType.getURI());
+            // Try to derive it from the service descriptions
+            if (!deriveFromServiceDescriptions(impl, resolver)) {
+                error("MissingComponentTypeFile", impl, componentType.getURI());
+            }
             //throw new ContributionResolveException("missing .componentType side file " + ctURI);
             return;
         } else {
             mergeFromComponentType(impl, componentType, resolver);
         }
+    }
 
+    private boolean deriveFromServiceDescriptions(OSGiImplementation impl, ModelResolver resolver)
+        throws ContributionResolveException {
+        // FIXME: How to find the RFC 119 service descriptions in the contribution and
+        // derive the SCA component type from them?
         ServiceDescriptions descriptions = serviceDescriptionsFactory.createServiceDescriptions();
         descriptions = resolver.resolveModel(ServiceDescriptions.class, descriptions);
-        for(ServiceDescription ds: descriptions) {
-            System.out.println(ds);
+        if (descriptions != null && !descriptions.isEmpty()) {
+            ComponentType ct = assemblyFactory.createComponentType();
+            int index = 0;
+            for (ServiceDescription ds : descriptions) {
+                for (String i : ds.getInterfaces()) {
+                    Class<?> cls = getJavaClass(resolver, i);
+                    JavaInterface javaInterface;
+                    try {
+                        javaInterface = javaInterfaceFactory.createJavaInterface(cls);
+                    } catch (InvalidInterfaceException e) {
+                        throw new ContributionResolveException(e);
+                    }
+                    Reference reference = assemblyFactory.createReference();
+                    JavaInterfaceContract contract = javaInterfaceFactory.createJavaInterfaceContract();
+                    contract.setInterface(javaInterface);
+                    reference.setInterfaceContract(contract);
+                    String refName = (String)ds.getProperties().get(OSGiProperty.SCA_REFERENCE);
+                    if (refName == null) {
+                        refName = "ref" + (index++);
+                    }
+                    reference.setName(refName);
+                    reference.setUnresolved(false);
+                    ct.getReferences().add(reference);
+                }
+            }
+            mergeFromComponentType(impl, ct, resolver);
+            return true;
         }
-        // FIXME: How to find the RFC 119 service descriptions in the contribution and 
-        // derive the SCA component type from them?
+        return false;
     }
 
     private void mergeFromComponentType(OSGiImplementation impl, ComponentType componentType, ModelResolver resolver) {
