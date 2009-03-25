@@ -17,8 +17,7 @@
 * specific language governing permissions and limitations
 * under the License.    
 -->
-
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
-              xmlns:sc="http://sample/composite">
-    <deployable composite="sc:HelloWorld" />
+              xmlns:c="http://calculator.dosgi">
+    <deployable composite="c:OperationsComposite" />
 </contribution>
