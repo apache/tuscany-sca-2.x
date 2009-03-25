@@ -152,9 +152,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         // Connect composite services/references to promoted services/references
         compositePromotionBuilder.build(composite, definitions, monitor);
 
-        // Compute the policies across the model hierarchy
-        compositePolicyBuilder.build(composite, definitions, monitor);
-
         // Configure composite services by copying bindings up the promotion
         // hierarchy overwriting automatic bindings with those added manually
         compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
@@ -206,7 +203,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
         // Perform and reference binding related build activities. The binding
         // will provide the builder.
-        componentReferenceBindingBuilder.build(composite, definitions, monitor);      
+        componentReferenceBindingBuilder.build(composite, definitions, monitor);
+        
+        // Compute the policies across the model hierarchy
+        compositePolicyBuilder.build(composite, definitions, monitor);
     }
 
 }

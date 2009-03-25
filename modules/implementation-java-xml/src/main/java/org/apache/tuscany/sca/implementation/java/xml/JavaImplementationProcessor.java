@@ -59,6 +59,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -71,7 +72,6 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private PolicyFactory  intentAttachPointTypeFactory;
     private Monitor monitor;
 
     public JavaImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
@@ -79,10 +79,9 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a error.
      * 
@@ -90,39 +89,49 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Object... messageParameters) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message,(Object[])messageParameters);
-    	     monitor.problem(problem);
-    	 }        
-     }
-     
-     /**
-      * Report a exception.
-      * 
-      * @param problems
-      * @param message
-      * @param model
-      */
-      private void error(String message, Object model, Exception ex) {
-     	 if (monitor != null) {
-     		 Problem problem = monitor.createProblem(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message, ex);
-     	     monitor.problem(problem);
-     	 }        
-      }
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-javaxml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-javaxml-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
+    }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
         // Read an <implementation.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
-        
-        /*if ( javaImplementation instanceof PolicySubject ) {
-            ExtensionType implType = intentAttachPointTypeFactory.createImplementationType();
-            implType.setName(getArtifactType());
-            implType.setUnresolved(true);
-            ((PolicySubject)javaImplementation).setType(implType);
-        }*/
-        
+
+        ExtensionType implType = policyFactory.createImplementationType();
+        implType.setType(getArtifactType());
+        implType.setUnresolved(true);
+        javaImplementation.setType(implType);
+
         javaImplementation.setUnresolved(true);
         javaImplementation.setName(reader.getAttributeValue(null, CLASS));
 
@@ -162,22 +171,22 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         classReference = resolver.resolveModel(ClassReference.class, classReference);
         Class<?> javaClass = classReference.getJavaClass();
         if (javaClass == null) {
-        	error("ClassNotFoundException", resolver, javaImplementation.getName());
+            error("ClassNotFoundException", resolver, javaImplementation.getName());
             //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
-        	return;
+            return;
         }
-        
-        javaImplementation.setJavaClass(javaClass);        
+
+        javaImplementation.setJavaClass(javaClass);
 
         try {
             javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
         } catch (IntrospectionException e) {
-        	ContributionResolveException ce = new ContributionResolveException(e);
-        	error("ContributionResolveException", javaFactory, ce);
+            ContributionResolveException ce = new ContributionResolveException(e);
+            error("ContributionResolveException", javaFactory, ce);
             //throw ce;
-        	return;
+            return;
         }
-        
+
         javaImplementation.setUnresolved(false);
         mergeComponentType(resolver, javaImplementation);
 
@@ -201,7 +210,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
                 field = impl.getJavaClass().getDeclaredField(name);
                 int mod = field.getModifiers();
                 if ((Modifier.isPublic(mod) || Modifier.isProtected(mod)) && (!Modifier.isStatic(mod))) {
-                	return new JavaElementImpl(field);
+                    return new JavaElementImpl(field);
                 }
             } catch (NoSuchFieldException e1) {
                 // Ignore

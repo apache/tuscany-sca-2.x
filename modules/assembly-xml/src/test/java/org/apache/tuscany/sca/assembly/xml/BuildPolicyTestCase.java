@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.xml;
@@ -29,8 +29,11 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
@@ -46,53 +49,53 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test reading SCA XML assembly documents.
- * 
+ *
  * @version $Rev: 561254 $ $Date: 2007-07-31 13:16:27 +0530 (Tue, 31 Jul 2007) $
  */
-public class BuildPolicyTestCase { 
+public class BuildPolicyTestCase {
     private static URLArtifactProcessor<Object> documentProcessor;
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
-    private static ModelResolver resolver; 
+    private static ModelResolver resolver;
     private static CompositeBuilder compositeBuilder;
     private static Composite composite;
     private static Monitor monitor;
 
-
     @BeforeClass
     public static void setUp() throws Exception {
-    	/*
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         modelFactories.addFactory(scaBindingFactory);
-        compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        compositeBuilder =
+            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
+                .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         List<Definitions> policyDefinitions = new ArrayList<Definitions>();
         resolver = new DefaultModelResolver();
-        
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();
-        monitor = monitorFactory.createMonitor();
-        
+
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
+
         InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-        
-        URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
+
+        URLArtifactProcessorExtensionPoint documentProcessors =
+            new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
-        
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
-        
+
         URL url = BuildPolicyTestCase.class.getResource("CalculatorComponent.constrainingType");
         URI uri = URI.create("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
@@ -100,52 +103,38 @@ public class BuildPolicyTestCase {
         resolver.addModel(constrainingType);
 
         url = BuildPolicyTestCase.class.getResource("TestAllPolicyCalculator.composite");
-        uri = URI.create("TestAllCalculator.constrainingType");
+        uri = URI.create("TestAllCalculator.composite");
         composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
-        
+
         url = BuildPolicyTestCase.class.getResource("another_test_definitions.xml");
         uri = URI.create("another_test_definitions.xml");
         Definitions definitions = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(definitions);
         policyDefinitions.add(definitions);
-        
+
         documentProcessor.resolve(definitions, resolver);
         documentProcessor.resolve(composite, resolver);
-        
-        compositeBuilder.build(composite, null, monitor);
-        */
-    }
 
-    //@Test
-    @Ignore("The inheritance will be calculated differently in OASIS SCA")
-    public void testPolicyIntentInheritance() throws Exception {
-        String namespaceUri = "http://test";
-        
-        PolicySubject policiedComposite = (PolicySubject)composite;
-        assertEquals(policiedComposite.getRequiredIntents().size(), 1);
-        assertEquals(policiedComposite.getRequiredIntents().get(0).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
-        
-        //1 defined for composite, 2 defined for the service, 1 defined and 3 inherited for the promoted service (4)
-        assertEquals(composite.getServices().get(0).getRequiredIntents().size(), 7);
-        //1 from the operation defined in this service and 2 from the operation defined in the promoted service 
-        assertEquals(composite.getServices().get(0).getRequiredIntents().get(3).getName(), new QName(namespaceUri, "tuscanyIntent_3"));
-        //bindings will have only 2 intents since duplications will be cut out
-        assertEquals(((PolicySubject)composite.getServices().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
-        
-        assertEquals(composite.getReferences().get(0).getRequiredIntents().size(), 5);
-        assertEquals(composite.getReferences().get(0).getRequiredIntents().get(1).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
-        assertEquals(((PolicySubject)composite.getReferences().get(0).getBindings().get(0)).getRequiredIntents().size(), 3);
-
-        assertEquals(composite.getComponents().get(0).getRequiredIntents().size(), 3);
-        assertEquals(composite.getComponents().get(0).getRequiredIntents().get(2).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
-        assertEquals(composite.getComponents().get(0).getServices().get(0).getRequiredIntents().size(), 4);
-        assertEquals(composite.getComponents().get(0).getServices().get(0).getCallback().getRequiredIntents().size(), 4);
-        assertEquals(composite.getComponents().get(0).getReferences().get(0).getRequiredIntents().size(), 5);
+        compositeBuilder.build(composite, definitions, monitor);
     }
 
     @Test
-    public void testDummy() throws Exception {
-    	
+    // @Ignore("The inheritance will be calculated differently in OASIS SCA")
+    public void testPolicyIntentInheritance() throws Exception {
+        String namespaceUri = "http://test";
+
+        PolicySubject policiedComposite = composite;
+        assertEquals(policiedComposite.getRequiredIntents().size(), 1);
+        assertEquals(policiedComposite.getRequiredIntents().get(0).getName(),
+                     new QName(namespaceUri, "tuscanyIntent_1"));
+
+        Component component = composite.getComponents().get(0);
+        Endpoint2 ep = component.getServices().get(0).getEndpoints().get(0);
+        EndpointReference2 epr = component.getReferences().get(0).getEndpointReferences().get(0);
+
+        System.out.println(ep.getRequiredIntents());
+        System.out.println(epr.getRequiredIntents());
     }
+
 }

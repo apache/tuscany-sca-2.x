@@ -6,20 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -41,6 +42,7 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
@@ -52,8 +54,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
-    public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory,
-                                      InterfaceContractMapper interfaceContractMapper) {
+    public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
 
@@ -62,7 +63,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
     }
 
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
-        computePolicies(composite, monitor);
+        computePolicies(composite, definitions, monitor);
     }
 
     /**
@@ -82,7 +83,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
     }
 
     /**
-     * Check if two policy subjects requires multually exclusive intents 
+     * Check if two policy subjects requires multually exclusive intents
      * @param subject1
      * @param subject2
      * @return
@@ -101,27 +102,67 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return false;
     }
 
-    private void inheritFromService(PolicySubject subject, Service service) {
-        if (service instanceof ComponentService) {
-            inheritFromService(subject, ((ComponentService)service).getService());
-        } else if (service instanceof CompositeService) {
-            CompositeService compositeService = (CompositeService)service;
-            inherit(subject, compositeService.getPromotedComponent());
-            inheritFromService(subject, compositeService.getPromotedService());
+    /**
+     * Inherit the policySets and intents from the implementation hierarchy
+     * @param subject
+     * @param composite
+     * @param component
+     * @param service
+     */
+    private void inheritFromService(PolicySubject subject, Composite composite, Component component, Service service) {
+        if (service == null) {
+            return;
         }
-        inherit(subject, service);
+        if (service instanceof ComponentService) {
+            // component!=null
+            if (component.getImplementation() instanceof Composite) {
+                composite = (Composite)component.getImplementation();
+            }
+            inheritFromService(subject, composite, component, ((ComponentService)service).getService());
+            // Component service also inherits the intents/policySets from composite/component
+            inherit(subject, composite, component);
+        } else if (service instanceof CompositeService) {
+            // composite!=null, component is not used
+            CompositeService compositeService = (CompositeService)service;
+            // Handle the promoted component service
+            inheritFromService(subject, composite, compositeService.getPromotedComponent(), compositeService
+                .getPromotedService());
+        }
+        // For atomic service, the composite is not used
+        inherit(subject, component.getImplementation(), service);
     }
 
-    private void inheritFromReference(PolicySubject subject, Reference reference) {
+    /**
+     * Inherit the policySets and intents from the implementation hierarchy
+     * @param subject
+     * @param composite
+     * @param component
+     * @param reference
+     */
+    private void inheritFromReference(PolicySubject subject,
+                                      Composite composite,
+                                      Component component,
+                                      Reference reference) {
+        if (reference == null) {
+            return;
+        }
         if (reference instanceof ComponentReference) {
-            inheritFromReference(subject, ((ComponentReference)reference).getReference());
+            // component!=null
+            if (component.getImplementation() instanceof Composite) {
+                composite = (Composite)component.getImplementation();
+            }
+            inheritFromReference(subject, composite, component, ((ComponentReference)reference).getReference());
         } else if (reference instanceof CompositeReference) {
             CompositeReference compositeReference = (CompositeReference)reference;
-            for (ComponentReference componentReference : compositeReference.getPromotedReferences()) {
-                inheritFromReference(subject, componentReference);
+            for (int i = 0, n = compositeReference.getPromotedReferences().size(); i < n; i++) {
+                inheritFromReference(subject,
+                                     composite,
+                                     compositeReference.getPromotedComponents().get(i),
+                                     compositeReference.getPromotedReferences().get(i));
             }
         }
-        inherit(subject, reference);
+        // Inherit from the componentType/reference
+        inherit(subject, component.getImplementation(), reference);
     }
 
     /**
@@ -141,8 +182,20 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
     }
 
-    private void validate(PolicySubject subject) {
-        Set<Intent> intents = new HashSet<Intent>(subject.getRequiredIntents());
+    private void resolveAndNormalize(PolicySubject subject, Definitions definitions, Monitor monitor) {
+
+        Set<Intent> intents = new HashSet<Intent>();
+        if (definitions != null) {
+            for (Intent i : subject.getRequiredIntents()) {
+                int index = definitions.getIntents().indexOf(i);
+                if (index != -1) {
+                    intents.add(definitions.getIntents().get(index));
+                } else {
+                    warning(monitor, "intent-not-found", subject, i.getName().toString());
+                    // Intent cannot be resolved
+                }
+            }
+        }
 
         // Replace profile intents with their required intents
         boolean profileIntentsFound = false;
@@ -179,15 +232,35 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
         }
 
+        subject.getRequiredIntents().clear();
+        subject.getRequiredIntents().addAll(intents);
+
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        if (definitions != null) {
+            for (PolicySet policySet : subject.getPolicySets()) {
+                int index = definitions.getPolicySets().indexOf(policySet);
+                if (index != -1) {
+                    policySets.add(definitions.getPolicySets().get(index));
+                } else {
+                    // PolicySet cannot be resolved
+                }
+            }
+        }
+
+        for (PolicySet policySet : policySets) {
+            List<Intent> provided = policySet.getProvidedIntents();
+            // FIXME: Check if required intents are provided by the policy sets
+        }
+
     }
 
-    protected void computePolicies(Composite composite, Monitor monitor) {
+    protected void computePolicies(Composite composite, Definitions definitions, Monitor monitor) {
 
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                computePolicies((Composite)implementation, monitor);
+                computePolicies((Composite)implementation, definitions, monitor);
             }
         }
 
@@ -206,27 +279,36 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
 
                 for (Endpoint2 ep : componentService.getEndpoints()) {
                     // Inherit from the componentType.service.interface
-                    inherit(ep, componentService.getService().getInterfaceContract().getInterface());
-                    // Inherit from the component.service.interface
-                    inherit(ep, componentService.getInterfaceContract().getInterface());
-                    // Inherit from the componentType/service 
-                    inherit(ep, component.getImplementation(), componentService.getService());
+                    if (componentService.getService() != null && componentService.getService().getInterfaceContract() != null) {
+                        inherit(ep, componentService.getService().getInterfaceContract().getInterface());
+                    }
+                    if (componentService.getInterfaceContract() != null) {
+                        // Inherit from the component.service.interface
+                        inherit(ep, componentService.getInterfaceContract().getInterface());
+                    }
+                    // Inherit from the componentType/service
+                    inheritFromService(ep, composite, component, componentService.getService());
                     // Find the corresponding binding in the componentType and inherit the intents/policySets
-                    for (Binding binding : componentService.getService().getBindings()) {
-                        if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
-                            isMutualExclusive((PolicySubject)ep.getBinding(), (PolicySubject)binding);
-                            // Inherit from componentType.service.binding
-                            inherit(ep, binding);
-                            break;
+                    if (componentService.getService() != null) {
+                        for (Binding binding : componentService.getService().getBindings()) {
+                            if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
+                                isMutualExclusive((PolicySubject)ep.getBinding(), (PolicySubject)binding);
+                                // Inherit from componentType.service.binding
+                                inherit(ep, binding);
+                                break;
+                            }
                         }
                     }
-                    // Inherit from composite/component/service/binding
-                    inherit(ep, composite, ep.getComponent(), ep.getService(), ep.getBinding());
+                    // Inherit from composite/component/service
+                    inheritFromService(ep, composite, ep.getComponent(), ep.getService());
+                    // Inherit from binding
+                    inherit(ep, ep.getBinding());
 
                     // Replace profile intents with their required intents
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
+                    resolveAndNormalize(ep, definitions, monitor);
                 }
             }
 
@@ -242,68 +324,41 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
 
                 for (EndpointReference2 epr : componentReference.getEndpointReferences()) {
                     // Inherit from the componentType.reference.interface
-                    inherit(epr, componentReference.getReference().getInterfaceContract().getInterface());
+                    if (componentReference.getReference() != null && componentReference.getReference()
+                        .getInterfaceContract() != null) {
+                        inherit(epr, componentReference.getReference().getInterfaceContract().getInterface());
+                    }
                     // Inherit from the component.reference.interface
-                    inherit(epr, componentReference.getInterfaceContract().getInterface());
-                    // Inherit from the componentType/reference 
-                    inherit(epr, component.getImplementation(), componentReference.getReference());
+                    if (componentReference.getInterfaceContract() != null) {
+                        inherit(epr, componentReference.getInterfaceContract().getInterface());
+                    }
+                    // Inherit from the componentType/reference
+                    inheritFromReference(epr, composite, component, componentReference.getReference());
                     // Find the corresponding binding in the componentType and inherit the intents/policySets
-                    for (Binding binding : componentReference.getReference().getBindings()) {
-                        if (isEqual(epr.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
-                            isMutualExclusive((PolicySubject)epr.getBinding(), (PolicySubject)binding);
-                            // Inherit from componentType.reference.binding
-                            inherit(epr, binding);
-                            break;
+                    if (componentReference.getReference() != null) {
+                        for (Binding binding : componentReference.getReference().getBindings()) {
+                            if (isEqual(epr.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
+                                isMutualExclusive((PolicySubject)epr.getBinding(), (PolicySubject)binding);
+                                // Inherit from componentType.reference.binding
+                                inherit(epr, binding);
+                                break;
+                            }
                         }
                     }
                     // Inherit from composite/component/reference/binding
-                    inherit(epr, composite, epr.getComponent(), epr.getReference(), epr.getBinding());
+                    inheritFromReference(epr, composite, epr.getComponent(), epr.getReference());
+                    inherit(epr, epr.getBinding());
 
                     // Replace profile intents with their required intents
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
+                    resolveAndNormalize(epr, definitions, monitor);
                 }
             }
 
-            Implementation implemenation = component.getImplementation();
-            try {
-                PolicyConfigurationUtil.computeImplementationIntentsAndPolicySets(implemenation, component);
-            } catch (Exception e) {
-                error(monitor, "PolicyRelatedException", implemenation, e);
-                //throw new RuntimeException(e);
-            }
+            Implementation implementation = component.getImplementation();
+            // How to deal with implementation level policySets/intents
         }
-
-        //compute policies for composite service bindings
-        for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-
-            // Composite service inherits the policySets and intents from the promoted component service
-            Component promotedComponent = compositeService.getPromotedComponent();
-            // Promoted component service inherits from the component type service
-            // as well as the structural hierarchy, i.e., composite/promotedComponent
-            ComponentService promotedService = compositeService.getPromotedService();
-            // We need to calculate the inherited intents/policySets for the promoted
-            // service first
-            isMutualExclusive(compositeService, promotedService);
-        }
-
-        //compute policies for composite reference bindings
-        for (Reference reference : composite.getReferences()) {
-            CompositeReference compositeReference = (CompositeReference)reference;
-
-            // Composite reference inherits the policySets and intents from the promoted component references
-            for (ComponentReference promotedReference : compositeReference.getPromotedReferences()) {
-
-                // Promoted component reference inherits from the component type reference
-                // as well as the structural hierarchy, i.e., composite/promotedComponent
-                // We need to calculate the inherited intents/policySets for the promoted
-                // reference first
-                isMutualExclusive(compositeReference, promotedReference);
-
-            }
-        }
-
     }
 }

@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.xml;
@@ -54,33 +54,35 @@ import org.xml.sax.XMLReader;
 
 /**
  * Test reading SCA XML assembly documents.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ReadDocumentTestCase {
-	private static final String TUSCANY_11_XSD = "tuscany-sca-1.1.xsd";
+    private static final String TUSCANY_11_XSD = "tuscany-sca-1.1.xsd";
 
     private static URLArtifactProcessor<Object> documentProcessor;
     private static ModelResolver resolver;
     private static XMLInputFactory inputFactory;
-    private static StAXArtifactProcessor<Object> staxProcessor; 
+    private static StAXArtifactProcessor<Object> staxProcessor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null); 
-        
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint documentProcessors =
+            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
-        
+
         resolver = new DefaultModelResolver();
     }
 
     @Test
     public void testValidateAssembly() throws Exception {
-        
+
         SchemaFactory schemaFactory;
         try {
             schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -93,19 +95,19 @@ public class ReadDocumentTestCase {
         }
         Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
-        
+
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("Calculator.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
         reader.setFeature("http://xml.org/sax/features/namespaces", true);
         reader.setContentHandler(handler);
         reader.parse(new InputSource(url.openStream()));
-           
+
     }
 
     @Test
     public void testValidateImplementation() throws Exception {
-        
+
         SchemaFactory schemaFactory;
         try {
             schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -118,7 +120,7 @@ public class ReadDocumentTestCase {
         }
         Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
-        
+
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("Calculator.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
@@ -126,27 +128,28 @@ public class ReadDocumentTestCase {
         reader.setContentHandler(handler);
         reader.parse(new InputSource(url.openStream()));
     }
-        
+
     @Test
-    public void testReadImplementation() throws Exception { 
-        
+    public void testReadImplementation() throws Exception {
+
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
-        
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(factories , staxProcessor, null);
-        
+
+        CompositeDocumentProcessor compositeDocumentProcessor =
+            new CompositeDocumentProcessor(factories, staxProcessor, null);
+
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");
         Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
         assertNotNull(composite);
     }
-        
+
     @Test
     public void testValidateBinding() throws Exception {
-        
+
         SchemaFactory schemaFactory;
         try {
             schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -159,7 +162,7 @@ public class ReadDocumentTestCase {
         }
         Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
-        
+
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("RMIBindingTest.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
@@ -167,26 +170,27 @@ public class ReadDocumentTestCase {
         reader.setContentHandler(handler);
         reader.parse(new InputSource(url.openStream()));
     }
-        
+
     @Test
     public void testReadBinding() throws Exception {
-        
+
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(factories , staxProcessor, null);
-        
+        CompositeDocumentProcessor compositeDocumentProcessor =
+            new CompositeDocumentProcessor(factories, staxProcessor, null);
+
         URL url = getClass().getResource("RMIBindingTest.composite");
         URI uri = URI.create("RMIBindingTest.composite");
         Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
         assertNotNull(composite);
     }
-        
+
     @Test
     public void testResolveConstrainingType() throws Exception {
-        
+
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         URI uri = URI.create("CalculatorComponent.constrainingType");
         ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
@@ -194,13 +198,13 @@ public class ReadDocumentTestCase {
         resolver.addModel(constrainingType);
 
         url = getClass().getResource("TestAllCalculator.composite");
-        uri = URI.create("TestAllCalculator.constrainingType");
+        uri = URI.create("TestAllCalculator.composite");
         Composite composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
-        
+
         documentProcessor.resolve(composite, resolver);
-        
-       assertEquals(composite.getConstrainingType(), constrainingType);
+
+        assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
@@ -215,9 +219,9 @@ public class ReadDocumentTestCase {
         url = getClass().getResource("TestAllCalculator.composite");
         uri = URI.create("TestAllCalculator.composite");
         Composite composite = (Composite)documentProcessor.read(null, uri, url);
-        
+
         documentProcessor.resolve(composite, resolver);
-        
+
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }
 
