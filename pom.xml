@@ -74,6 +74,18 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <!-- Tuscany repository to hold artifacts that are not published in the public maven repos -->
+        <repository>
+            <id>tuscany.repo</id>
+            <name>Tuscany Maven 2.x Repository</name>
+            <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>apache.ws.zone</id>
             <name>Apache WS Zone Repository</name>

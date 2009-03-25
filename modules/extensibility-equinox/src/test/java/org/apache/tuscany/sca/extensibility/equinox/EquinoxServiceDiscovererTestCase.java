@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.extensibility.equinox;
@@ -41,7 +41,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Test the Equinox service discoverer.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class EquinoxServiceDiscovererTestCase {
@@ -88,20 +88,22 @@ public class EquinoxServiceDiscovererTestCase {
         discoverer = new EquinoxServiceDiscoverer(context);
         File dep = new File("target/bundles");
         List<Bundle> bundles = new ArrayList<Bundle>();
+        if(dep.isDirectory()) {
         for (File f : dep.listFiles()) {
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
-            JarInputStream jis = new JarInputStream(bis);
-            Manifest manifest = jis.getManifest();
-            if (manifest == null || manifest.getMainAttributes().getValue("Bundle-Name") == null) {
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
+                JarInputStream jis = new JarInputStream(bis);
+                Manifest manifest = jis.getManifest();
+                if (manifest == null || manifest.getMainAttributes().getValue("Bundle-Name") == null) {
+                    bis.close();
+                    continue;
+                }
                 bis.close();
-                continue;
+                bis = new BufferedInputStream(new FileInputStream(f));
+                Bundle b = context.installBundle(f.getName(), bis);
+                System.out.println("Installed " + b.getSymbolicName() + " [" + getState(b) + "]");
+                bundles.add(b);
+                bis.close();
             }
-            bis.close();
-            bis = new BufferedInputStream(new FileInputStream(f));
-            Bundle b = context.installBundle(f.getName(), bis);
-            System.out.println("Installed "+b.getSymbolicName() + " [" + getState(b) + "]");
-            bundles.add(b);
-            bis.close();
         }
         for (Bundle b : bundles) {
             b.start();
@@ -144,7 +146,7 @@ public class EquinoxServiceDiscovererTestCase {
         Assert.assertNotNull(descriptor);
         descriptor = discoverer.getFirstServiceDeclaration("notthere");
         Assert.assertNull(descriptor);
-    }    
-    
+    }
+
 
 }
