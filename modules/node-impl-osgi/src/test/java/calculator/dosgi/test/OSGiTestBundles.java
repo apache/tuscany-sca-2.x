@@ -26,6 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,8 +36,23 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
+
+import calculator.dosgi.CalculatorActivator;
+import calculator.dosgi.CalculatorService;
+import calculator.dosgi.CalculatorServiceDSImpl;
+import calculator.dosgi.CalculatorServiceImpl;
+import calculator.dosgi.operations.AddService;
+import calculator.dosgi.operations.AddServiceImpl;
+import calculator.dosgi.operations.DivideService;
+import calculator.dosgi.operations.DivideServiceImpl;
+import calculator.dosgi.operations.MultiplyService;
+import calculator.dosgi.operations.MultiplyServiceImpl;
+import calculator.dosgi.operations.OperationsActivator;
+import calculator.dosgi.operations.SubtractService;
+import calculator.dosgi.operations.SubtractServiceImpl;
 
 /**
  * 
@@ -43,6 +61,21 @@ import org.osgi.framework.Constants;
  * @version $Rev$ $Date$
  */
 public class OSGiTestBundles {
+    private static class InvocationHandlerImpl implements InvocationHandler {
+        private Object instance;
+    
+        public InvocationHandlerImpl(Object instance) {
+            super();
+            this.instance = instance;
+        }
+    
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Method m = instance.getClass().getMethod(method.getName(), method.getParameterTypes());
+            return m.invoke(instance, args);
+        }
+    
+    }
+
     private static String getPackageName(Class<?> cls) {
         String name = cls.getName();
         int index = name.lastIndexOf('.');
@@ -183,5 +216,106 @@ public class OSGiTestBundles {
         file.read(fileContents);
         jarOut.write(fileContents);
         jarOut.closeEntry();
+    }
+
+    static URL generateCalculatorBundle() throws IOException {
+        return createBundle("target/test-classes/calculator-bundle.jar",
+                            "calculator/dosgi/META-INF/MANIFEST.MF",
+                            new String[][] {
+                                            {
+                                             "calculator/dosgi/OSGI-INF/remote-service/calculator-service-descriptions.xml",
+                                             "OSGI-INF/remote-service/calculator-service-descriptions.xml"},
+                                            {"calculator/dosgi/OSGI-INF/calculator-component.xml",
+                                             "OSGI-INF/calculator-component.xml"},
+                                            {"calculator/dosgi/bundle.componentType",
+                                             "OSGI-INF/sca/bundle.componentType"},
+                                            {"calculator/dosgi/calculator.composite", "OSGI-INF/sca/bundle.composite"},
+                                            {"calculator/dosgi/META-INF/sca-contribution.xml",
+                                             "META-INF/sca-contribution.xml"}},
+                            CalculatorService.class,
+                            // Package the interfaces so that the operations bundle can be remote
+                            AddService.class,
+                            SubtractService.class,
+                            MultiplyService.class,
+                            DivideService.class,
+                            CalculatorServiceImpl.class,
+                            CalculatorServiceDSImpl.class,
+                            CalculatorActivator.class);
+    }
+
+    static URL generateOperationsBundle() throws IOException {
+        return createBundle("target/test-classes/operations-bundle.jar",
+                            "calculator/dosgi/operations/META-INF/MANIFEST.MF",
+                            new String[][] {
+                                            {"calculator/dosgi/operations/OSGI-INF/add-component.xml",
+                                             "OSGI-INF/add-component.xml"},
+                                            {"calculator/dosgi/operations/OSGI-INF/subtract-component.xml",
+                                             "OSGI-INF/subtract-component.xml"},
+                                            {"calculator/dosgi/operations/OSGI-INF/multiply-component.xml",
+                                             "OSGI-INF/multiply-component.xml"},
+                                            {"calculator/dosgi/operations/OSGI-INF/divide-component.xml",
+                                             "OSGI-INF/divide-component.xml"},
+                                            {"calculator/dosgi/operations/bundle.componentType",
+                                             "OSGI-INF/sca/bundle.componentType"},
+                                            {"calculator/dosgi/operations/operations.composite",
+                                             "OSGI-INF/sca/bundle.composite"},
+                                            {"calculator/dosgi/operations/META-INF/sca-contribution.xml",
+                                             "META-INF/sca-contribution.xml"}},
+                            OperationsActivator.class,
+                            AddService.class,
+                            AddServiceImpl.class,
+                            SubtractService.class,
+                            SubtractServiceImpl.class,
+                            MultiplyService.class,
+                            MultiplyServiceImpl.class,
+                            DivideService.class,
+                            DivideServiceImpl.class);
+    }
+    
+    /**
+     * Returns a string representation of the given bundle.
+     * 
+     * @param b
+     * @param verbose
+     * @return
+     */
+    static String bundleStatus(Bundle bundle, boolean verbose) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(bundle.getBundleId()).append(" ").append(bundle.getSymbolicName());
+        int s = bundle.getState();
+        if ((s & Bundle.UNINSTALLED) != 0) {
+            sb.append(" UNINSTALLED");
+        }
+        if ((s & Bundle.INSTALLED) != 0) {
+            sb.append(" INSTALLED");
+        }
+        if ((s & Bundle.RESOLVED) != 0) {
+            sb.append(" RESOLVED");
+        }
+        if ((s & Bundle.STARTING) != 0) {
+            sb.append(" STARTING");
+        }
+        if ((s & Bundle.STOPPING) != 0) {
+            sb.append(" STOPPING");
+        }
+        if ((s & Bundle.ACTIVE) != 0) {
+            sb.append(" ACTIVE");
+        }
+
+        if (verbose) {
+            sb.append(" ").append(bundle.getLocation());
+            sb.append(" ").append(bundle.getHeaders());
+        }
+        return sb.toString();
+    }
+
+    static <T> T cast(Object obj, Class<T> cls) {
+        if (cls.isInstance(obj)) {
+            return cls.cast(obj);
+        } else {
+            return cls.cast(Proxy.newProxyInstance(cls.getClassLoader(),
+                                                   new Class<?>[] {cls},
+                                                   new InvocationHandlerImpl(obj)));
+        }
     }
 }
