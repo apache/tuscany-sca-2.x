@@ -100,19 +100,15 @@
         <module>workspace-xml</module>
         <module>xsd</module>
         <module>xsd-xml</module>
+        <!-- OSGi RFC 119 -->
+        <module>contribution-osgi</module>
+        <module>implementation-osgi</module>
+        <module>implementation-osgi-runtime</module>
+        <module>node-impl-osgi</module>
+
     </modules>
 
     <profiles>
-         <profile>
-            <id>rfc119</id>
-            <modules>
-                <module>contribution-osgi</module>
-                <module>implementation-osgi</module>
-                <module>implementation-osgi-runtime</module>
-                <module>node-impl-osgi</module>
-            </modules>
-        </profile>
-
          <profile>
             <id>eclipse</id>
             <build>
