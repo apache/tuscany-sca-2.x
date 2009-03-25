@@ -1,5 +1,5 @@
-Building the Apache Tuscany SCA 2.0-M1 February 2009 Release source distribution
-=======================================================================================
+Building the Apache Tuscany SCA source distribution
+===================================================
 
 Initial Setup
 -------------
@@ -29,8 +29,7 @@ Building
 1) Change to the top level directory of Apache Tuscany source distribution.
 2) Run
 
-	$> mvn -Psetup
-        $> mvn
+      $> mvn
 
    This will compile Apache Tuscany and run all of the tests in the source
    distribution. 
@@ -42,15 +41,4 @@ Building
    dependencies have been downloaded you may use the -o option to run maven
    in offline mode, for example, 'mvn clean install -o'.
 
-
-Building the distributions
---------------------------
-
-1) Change to the distribution folder
-2) Run
-
-	$> mvn
-
-   This will build the binary and source distribution with .zip and .gz 
-   formats in the distribution/target directory.
 
