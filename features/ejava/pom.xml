@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tuscany-feature-ejava</artifactId>
-    <name>Apache Tuscany SCA JEE Feature</name>
+    <name>Apache Tuscany SCA Enterprise Java Feature</name>
     <packaging>pom</packaging>
 
     <dependencies>
