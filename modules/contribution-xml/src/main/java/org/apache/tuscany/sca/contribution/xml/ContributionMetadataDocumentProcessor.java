@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.contribution.xml;
 
@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * URLArtifactProcessor that handles sca-contribution.xml files.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<ContributionMetadata>{
@@ -65,10 +65,10 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         this.staxProcessor = staxProcessor;
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a exception.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -79,31 +79,31 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
 	        monitor.problem(problem);
     	}
     }
-    
+
     public String getArtifactType() {
-        return "sca-contribution.xml";
+        return "/META-INF/sca-contribution.xml";
     }
-    
+
     public Class<ContributionMetadata> getModelType() {
         return ContributionMetadata.class;
     }
-    
+
     public ContributionMetadata read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {
-            
+
             // Create a stream reader
             URLConnection connection = url.openConnection();
             connection.setUseCaches(false);
             urlStream = connection.getInputStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader.nextTag();
-            
+
             // Read the contribution model
             ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
 
             return contribution;
-            
+
         } catch (XMLStreamException e) {
         	ContributionReadException ex = new ContributionReadException(e);
         	error("XMLStreamException", inputFactory, ex);
@@ -123,7 +123,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
             }
         }
     }
-    
+
     public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
         staxProcessor.resolve(contribution, resolver);
     }

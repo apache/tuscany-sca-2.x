@@ -81,6 +81,8 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
             // Register the URI as the artifact type starts with /
             processor = (URLArtifactProcessor<Object>)processors.getProcessor(uri);
         }
+        
+        /*
         if (processor == null) {
             // Delegate to the processor associated with file extension
             String fileName = getFileName(sourceURL);
@@ -101,6 +103,7 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
                 processor = (URLArtifactProcessor<Object>)processors.getProcessor(extension);
             }
         }
+        */
 
         if (processor == null) {
             return null;
