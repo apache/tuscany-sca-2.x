@@ -71,12 +71,12 @@ public class CalculatorOSGiNodeTestCase {
 
             if (client == null || client.booleanValue()) {
                 System.out.println("Generating calculator.dosgi bundle...");
-                calculatorBundle = context.installBundle(generateCalculatorBundle().toString());
+                calculatorBundle = context.installBundle("reference:" + generateCalculatorBundle().toString());
             }
 
             if (client == null || !client.booleanValue()) {
                 System.out.println("Generating calculator.dosgi.operations bundle...");
-                operationsBundle = context.installBundle(generateOperationsBundle().toString());
+                operationsBundle = context.installBundle("reference:" + generateOperationsBundle().toString());
             }
 
             for (Bundle b : context.getBundles()) {
@@ -111,7 +111,8 @@ public class CalculatorOSGiNodeTestCase {
     @Test
     public void testOSGi() {
         if (client == null || client.booleanValue()) {
-            ServiceReference ref = calculatorBundle.getBundleContext().getServiceReference(CalculatorService.class.getName());
+            ServiceReference ref =
+                calculatorBundle.getBundleContext().getServiceReference(CalculatorService.class.getName());
             Assert.assertNotNull(ref);
             Object service = context.getService(ref);
             Assert.assertNotNull(service);
