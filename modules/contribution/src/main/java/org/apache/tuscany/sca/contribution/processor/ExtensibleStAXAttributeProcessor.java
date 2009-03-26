@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.contribution.processor;
 
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -152,10 +154,13 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
         processor = (StAXAttributeProcessor<?>)processors.getProcessor(attributeName);
         if (processor == null) {
             Location location = source.getLocation();
-            if (logger.isLoggable(Level.WARNING)) {
-                logger.warning("Attribute " + attributeName + " cannot be processed. (" + location + ")");
+            // Skip xsi:type, xsi:nil and xsi:schemaLocation etc
+            if (!W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(attributeName.getNamespaceURI())) {
+                if (logger.isLoggable(Level.WARNING)) {
+                    logger.warning("Attribute " + attributeName + " cannot be processed. (" + location + ")");
+                }
+                warning("AttributeCannotBeProcessed", processors, attributeName, location);
             }
-            warning("AttributeCannotBeProcessed", processors, attributeName, location);
         } else {
             return processor.read(attributeName, source);
         }
