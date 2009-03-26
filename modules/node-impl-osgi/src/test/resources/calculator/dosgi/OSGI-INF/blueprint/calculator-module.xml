@@ -19,7 +19,7 @@
 -->
 <!-- A sample module-context.xml for OSGI RFC 124 (BluePrint Service) -->
 <components xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
-    <component id="CalculatorComponent" class="calculator.dosgi.CalculatorServiceImpl">
+    <component id="CalculatorComponent" class="calculator.dosgi.impl.CalculatorServiceImpl">
         <property name="addService" ref="AddService" />
         <property name="subtractService" ref="SubtractService" />
         <property name="multiplyService" ref="MultiplyService" />

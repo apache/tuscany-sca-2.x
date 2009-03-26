@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.dosgi;
+package calculator.dosgi.impl;
 
 import org.osgi.service.component.ComponentContext;
 
+import calculator.dosgi.CalculatorService;
 import calculator.dosgi.operations.AddService;
 import calculator.dosgi.operations.DivideService;
 import calculator.dosgi.operations.MultiplyService;

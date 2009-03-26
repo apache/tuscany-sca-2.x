@@ -19,7 +19,7 @@
 -->
 <scr:component name="CalculatorComponent" 
                xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <implementation class="calculator.dosgi.CalculatorServiceDSImpl" />
+    <implementation class="calculator.dosgi.impl.CalculatorServiceDSImpl" />
     <service>
         <provide interface="calculator.dosgi.CalculatorService" />
     </service>

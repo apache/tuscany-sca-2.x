@@ -6,28 +6,26 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package calculator.dosgi.test;
 
+import static calculator.dosgi.test.OSGiTestBundles.bundleStatus;
 import static calculator.dosgi.test.OSGiTestBundles.generateCalculatorBundle;
 import static calculator.dosgi.test.OSGiTestBundles.generateOperationsBundle;
-import static calculator.dosgi.test.OSGiTestBundles.bundleStatus;
 
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.junit.AfterClass;
@@ -41,11 +39,13 @@ import org.osgi.framework.ServiceReference;
 import calculator.dosgi.CalculatorService;
 
 /**
- * 
+ *
  */
 public class CalculatorOSGiNodeTestCase {
     private static EquinoxHost host;
     private static BundleContext context;
+    private static Bundle calculatorBundle;
+    private static Bundle operationsBundle;
     private static Boolean client;
 
     public static URL getCodeLocation(final Class<?> anchorClass) {
@@ -62,26 +62,23 @@ public class CalculatorOSGiNodeTestCase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         try {
+            host = new EquinoxHost();
+            context = host.start();
             String prop = System.getProperty("client");
             if (prop != null) {
                 client = Boolean.valueOf(prop);
             }
-            Set<URL> bundles = new HashSet<URL>();
 
             if (client == null || client.booleanValue()) {
                 System.out.println("Generating calculator.dosgi bundle...");
-                bundles.add(generateCalculatorBundle());
+                calculatorBundle = context.installBundle(generateCalculatorBundle().toString());
             }
 
             if (client == null || !client.booleanValue()) {
                 System.out.println("Generating calculator.dosgi.operations bundle...");
-                bundles.add(generateOperationsBundle());
+                operationsBundle = context.installBundle(generateOperationsBundle().toString());
             }
-            host = new EquinoxHost();
-            context = host.start();
-            for (URL loc : bundles) {
-                host.installBundle(loc, null);
-            }
+
             for (Bundle b : context.getBundles()) {
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds") || b.getSymbolicName()
                     .startsWith("org.apache.tuscany.sca.")) {
@@ -94,12 +91,17 @@ public class CalculatorOSGiNodeTestCase {
                     System.out.println(bundleStatus(b, false));
                 }
             }
-            for (Bundle b : context.getBundles()) {
-                if (b.getSymbolicName().startsWith("calculator.dosgi")) {
-                    b.start();
-                    System.out.println(bundleStatus(b, false));
-                }
+
+            if (calculatorBundle != null) {
+                calculatorBundle.start();
+                System.out.println(bundleStatus(calculatorBundle, false));
             }
+
+            if (operationsBundle != null) {
+                operationsBundle.start();
+                System.out.println(bundleStatus(operationsBundle, false));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -109,7 +111,7 @@ public class CalculatorOSGiNodeTestCase {
     @Test
     public void testOSGi() {
         if (client == null || client.booleanValue()) {
-            ServiceReference ref = context.getServiceReference(CalculatorService.class.getName());
+            ServiceReference ref = calculatorBundle.getBundleContext().getServiceReference(CalculatorService.class.getName());
             Assert.assertNotNull(ref);
             Object service = context.getService(ref);
             Assert.assertNotNull(service);

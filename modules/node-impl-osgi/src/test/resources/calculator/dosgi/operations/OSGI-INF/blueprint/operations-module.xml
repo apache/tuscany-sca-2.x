@@ -19,13 +19,13 @@
 -->
 <!-- A sample module-context.xml for OSGI RFC 124 (BluePrint Service) -->
 <components xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
-    <component id="AddComponent" class="calculator.dosgi.operations.AddServiceImpl">
+    <component id="AddComponent" class="calculator.dosgi.operations.impl.AddServiceImpl">
     </component>
-    <component id="SubtractComponent" class="calculator.dosgi.operations.SubtractServiceImpl">
+    <component id="SubtractComponent" class="calculator.dosgi.operations.impl.SubtractServiceImpl">
     </component>
-    <component id="MultiplyComponent" class="calculator.dosgi.operations.MultiplyServiceImpl">
+    <component id="MultiplyComponent" class="calculator.dosgi.operations.impl.MultiplyServiceImpl">
     </component>
-    <component id="DivideComponent" class="calculator.dosgi.operations.DivideServiceImpl">
+    <component id="DivideComponent" class="calculator.dosgi.operations.impl.DivideServiceImpl">
     </component>
 
     <!-- We can derive the SCA services for the implementation.osgi -->
