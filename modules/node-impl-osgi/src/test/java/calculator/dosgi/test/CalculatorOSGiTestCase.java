@@ -47,8 +47,8 @@ public class CalculatorOSGiTestCase {
         try {
             host = new EquinoxHost();
             BundleContext context = host.start();
-            Bundle calculatorBundle = context.installBundle(generateCalculatorBundle().toString());
-            Bundle operationsBundle = context.installBundle(generateOperationsBundle().toString());
+            Bundle calculatorBundle = context.installBundle("reference:" + generateCalculatorBundle().toString());
+            Bundle operationsBundle = context.installBundle("reference:" + generateOperationsBundle().toString());
 
             for (Bundle b : context.getBundles()) {
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds")) {
