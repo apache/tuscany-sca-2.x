@@ -6,15 +6,15 @@
 * to you under the Apache License, Version 2.0 (the
 * "License"); you may not use this file except in compliance
 * with the License.  You may obtain a copy of the License at
-* 
+*
 *   http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing,
 * software distributed under the License is distributed on an
 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 * KIND, either express or implied.  See the License for the
 * specific language governing permissions and limitations
-* under the License.    
+* under the License.
 */
 
 package org.apache.tuscany.sca.node.osgi.impl;
@@ -55,6 +55,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -98,7 +99,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Represents an SCA runtime node.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class NodeFactoryImpl {
@@ -131,7 +132,7 @@ public class NodeFactoryImpl {
 
     private Map<Bundle, Node> nodes = new ConcurrentHashMap<Bundle, Node>();
 
-    /** 
+    /**
      * Constructs a new Node controller
      */
     public NodeFactoryImpl() {
@@ -219,10 +220,17 @@ public class NodeFactoryImpl {
         }
         long start = currentTimeMillis();
 
-        // Create extension point registry 
+        // Create extension point registry
         extensionPoints = new DefaultExtensionPointRegistry();
 
-        // Use the runtime-enabled assembly factory 
+        // Enable schema validation only of the logger level is FINE or higher
+        ValidationSchemaExtensionPoint schemas =
+            extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+        if (schemas != null) {
+            schemas.setEnabled(logger.isLoggable(Level.FINE));
+        }
+
+        // Use the runtime-enabled assembly factory
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = new RuntimeAssemblyFactory();
         modelFactories.addFactory(assemblyFactory);
@@ -230,6 +238,7 @@ public class NodeFactoryImpl {
         // Create a monitor
         utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+
         monitor = monitorFactory.createMonitor();
 
         // Initialize the Tuscany module activators
@@ -352,10 +361,10 @@ public class NodeFactoryImpl {
         // resolve any contributions or composites as they may depend on the full
         // definitions.xml picture
 
-        // get all definitions.xml artifacts from contributions and aggregate 
+        // get all definitions.xml artifacts from contributions and aggregate
         // into the system contribution. In turn add a default import into
-        // each contribution so that for unresolved items the resolution 
-        // processing will look in the system contribution 
+        // each contribution so that for unresolved items the resolution
+        // processing will look in the system contribution
         for (Contribution contribution : workspace.getContributions()) {
             // aggregate definitions
             for (Artifact artifact : contribution.getArtifacts()) {
@@ -367,19 +376,19 @@ public class NodeFactoryImpl {
 
             // create a default import and wire it up to the system contribution
             // model resolver. This is the trick that makes the resolution processing
-            // skip over to the system contribution if resolution is unsuccessful 
+            // skip over to the system contribution if resolution is unsuccessful
             // in the current contribution
             DefaultImport defaultImport = contributionFactory.createDefaultImport();
             defaultImport.setModelResolver(systemContribution.getModelResolver());
             contribution.getImports().add(defaultImport);
         }
 
-        // now resolve the system contribution and add the contribution 
+        // now resolve the system contribution and add the contribution
         // to the workspace
         contributionProcessor.resolve(systemContribution, workspace.getModelResolver());
         workspace.getContributions().add(systemContribution);
 
-        // TODO - Now we can calculate applicable policy sets for each composite 
+        // TODO - Now we can calculate applicable policy sets for each composite
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
@@ -444,13 +453,13 @@ public class NodeFactoryImpl {
         tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_domain_fragment_"));
         tempComposite.setURI(SCA11_TUSCANY_NS + "_domain_fragment_.composite");
 
-        // Include the node composite in the top-level composite 
+        // Include the node composite in the top-level composite
         tempComposite.getIncludes().add(composite);
 
         /*
         // The following line may return null, to be investigated
         XPathFactory xPathFactory = modelFactories.getFactory(XPathFactory.class);
-        
+
         for (PolicySet policySet : systemDefinitions.getPolicySets()) {
             if (policySet.getAppliesTo() != null) {
                 XPath xpath = xPathFactory.newXPath();
@@ -489,7 +498,7 @@ public class NodeFactoryImpl {
 
     /**
      * Analyze problems reported by the artifact processors and builders.
-     * 
+     *
      * @throws Exception
      */
     private void analyzeProblems() throws Exception {
@@ -617,7 +626,7 @@ public class NodeFactoryImpl {
                 serviceName = null;
             }
 
-            // Lookup the component 
+            // Lookup the component
             Component component = null;
 
             for (Component compositeComponent : domainFragementComposite.getIncludes().get(0).getComponents()) {
