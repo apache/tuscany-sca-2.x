@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Export-Package: calculator.dosgi.operations;version="1.0.0"
 Bundle-Version: 1.0.0
 Bundle-Name: calculator.dosgi.operations
-Bundle-Activator: calculator.dosgi.operations.OperationsActivator
+Bundle-Activator: calculator.dosgi.operations.impl.OperationsActivator
 Bundle-ManifestVersion: 2
 Import-Package: calculator.dosgi.operations;version="1.0.0",
  org.osgi.framework,

@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.dosgi.operations;
+package calculator.dosgi.operations.impl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import calculator.dosgi.operations.AddService;
 
 /**
  * An implementation of the Add service

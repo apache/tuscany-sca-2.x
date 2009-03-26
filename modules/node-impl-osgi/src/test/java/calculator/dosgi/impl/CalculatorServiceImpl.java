@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator.dosgi;
+package calculator.dosgi.impl;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
@@ -25,6 +25,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
+import calculator.dosgi.CalculatorService;
 import calculator.dosgi.operations.AddService;
 import calculator.dosgi.operations.DivideService;
 import calculator.dosgi.operations.MultiplyService;

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package calculator.dosgi;
+package calculator.dosgi.impl;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -29,6 +29,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+import calculator.dosgi.CalculatorService;
 import calculator.dosgi.operations.AddService;
 
 /**

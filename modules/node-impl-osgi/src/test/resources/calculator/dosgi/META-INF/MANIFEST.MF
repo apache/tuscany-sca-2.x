@@ -3,13 +3,12 @@ Export-Package: calculator.dosgi;version="1.0.0",
  calculator.dosgi.operations;version="1.0.0"
 Bundle-Version: 1.0.0
 Bundle-Name: calculator.dosgi
-Bundle-Activator: calculator.dosgi.CalculatorActivator
+Bundle-Activator: calculator.dosgi.impl.CalculatorActivator
 Bundle-ManifestVersion: 2
-Import-Package: calculator.dosgi.operations;version="1.0.0",
- org.osgi.framework,
+Import-Package: org.osgi.framework,
+ org.osgi.service.component;resolution:=optional,
  org.osgi.service.packageadmin,
- org.osgi.util.tracker,
- org.osgi.service.component;resolution:=optional
+ org.osgi.util.tracker
 Bundle-SymbolicName: calculator.dosgi
 Bundle-Vendor: The Apache Software Foundation
 Bundle-ActivationPolicy: lazy

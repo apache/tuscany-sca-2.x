@@ -40,19 +40,19 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.Constants;
 
-import calculator.dosgi.CalculatorActivator;
 import calculator.dosgi.CalculatorService;
-import calculator.dosgi.CalculatorServiceDSImpl;
-import calculator.dosgi.CalculatorServiceImpl;
+import calculator.dosgi.impl.CalculatorActivator;
+import calculator.dosgi.impl.CalculatorServiceDSImpl;
+import calculator.dosgi.impl.CalculatorServiceImpl;
 import calculator.dosgi.operations.AddService;
-import calculator.dosgi.operations.AddServiceImpl;
 import calculator.dosgi.operations.DivideService;
-import calculator.dosgi.operations.DivideServiceImpl;
 import calculator.dosgi.operations.MultiplyService;
-import calculator.dosgi.operations.MultiplyServiceImpl;
-import calculator.dosgi.operations.OperationsActivator;
 import calculator.dosgi.operations.SubtractService;
-import calculator.dosgi.operations.SubtractServiceImpl;
+import calculator.dosgi.operations.impl.AddServiceImpl;
+import calculator.dosgi.operations.impl.DivideServiceImpl;
+import calculator.dosgi.operations.impl.MultiplyServiceImpl;
+import calculator.dosgi.operations.impl.OperationsActivator;
+import calculator.dosgi.operations.impl.SubtractServiceImpl;
 
 /**
  *

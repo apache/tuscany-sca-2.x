@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package calculator.dosgi.operations;
+package calculator.dosgi.operations.impl;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -25,6 +25,11 @@ import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import calculator.dosgi.operations.AddService;
+import calculator.dosgi.operations.DivideService;
+import calculator.dosgi.operations.MultiplyService;
+import calculator.dosgi.operations.SubtractService;
 
 /**
  * 
