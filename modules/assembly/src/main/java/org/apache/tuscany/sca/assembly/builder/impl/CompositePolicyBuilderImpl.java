@@ -337,7 +337,8 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Find the corresponding binding in the componentType and inherit the intents/policySets
                     if (componentReference.getReference() != null) {
                         for (Binding binding : componentReference.getReference().getBindings()) {
-                            if (isEqual(epr.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
+                            if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
+                                && (binding instanceof PolicySubject)) {
                                 isMutualExclusive((PolicySubject)epr.getBinding(), (PolicySubject)binding);
                                 // Inherit from componentType.reference.binding
                                 inherit(epr, binding);
