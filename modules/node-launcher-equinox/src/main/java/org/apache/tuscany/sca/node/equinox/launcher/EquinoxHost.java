@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.equinox.launcher;
@@ -127,7 +127,7 @@ public class EquinoxHost {
 
     /**
      * Start the Equinox host.
-     * 
+     *
      * @return
      */
     public BundleContext start() {
@@ -203,7 +203,7 @@ public class EquinoxHost {
 
             } else {
 
-                // Get bundle context from the running Eclipse instance 
+                // Get bundle context from the running Eclipse instance
                 bundleContext = EclipseStarter.getSystemBundleContext();
             }
 
@@ -357,7 +357,7 @@ public class EquinoxHost {
         return libraryBundle;
     }
 
-    public void installBundle(URL bundleFile, String bundleName) throws MalformedURLException, BundleException {
+    public Bundle installBundle(URL bundleFile, String bundleName) throws MalformedURLException, BundleException {
         if (bundleName == null) {
             try {
                 bundleName = bundleName(file(bundleFile));
@@ -372,7 +372,7 @@ public class EquinoxHost {
             if ("file".equals(bundleFile.getProtocol())) {
                 File target = file(bundleFile);
                 // Use a special "reference" scheme to install the bundle as a reference
-                // instead of copying the bundle 
+                // instead of copying the bundle
                 location = "reference:file:/" + target.getPath();
             }
             bundle = bundleContext.installBundle(location);
@@ -384,6 +384,7 @@ public class EquinoxHost {
             allBundles.put(bundleName, bundle);
             installedBundles.add(bundle);
         }
+        return bundle;
     }
 
     public Bundle installAsBundle(URL jarFile, String symbolicName) throws IOException, BundleException {
