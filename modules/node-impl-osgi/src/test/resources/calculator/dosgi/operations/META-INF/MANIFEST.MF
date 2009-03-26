@@ -6,7 +6,8 @@ Bundle-Activator: calculator.dosgi.operations.impl.OperationsActivator
 Bundle-ManifestVersion: 2
 Import-Package: calculator.dosgi.operations;version="1.0.0",
  org.osgi.framework,
- org.osgi.service.component;resolution:=optional
+ org.osgi.service.component;resolution:=optional,
+ org.osgi.service.packageadmin
 Bundle-SymbolicName: calculator.dosgi.operations
 Bundle-Vendor: The Apache Software Foundation
 Bundle-ActivationPolicy: lazy
