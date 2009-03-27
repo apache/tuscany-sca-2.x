@@ -28,7 +28,9 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,6 +98,8 @@ import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * Represents an SCA runtime node.
@@ -109,6 +113,8 @@ public class NodeFactoryImpl {
     private static final Logger logger = Logger.getLogger(NodeFactoryImpl.class.getName());
 
     private boolean inited;
+    private BundleContext bundleContext;
+    private ServiceRegistration registration;
 
     private ExtensionPointRegistry extensionPoints;
     private UtilityExtensionPoint utilities;
@@ -135,7 +141,8 @@ public class NodeFactoryImpl {
     /**
      * Constructs a new Node controller
      */
-    public NodeFactoryImpl() {
+    public NodeFactoryImpl(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
     private ConfiguredNodeImplementation getNodeConfiguration(Bundle bundle) {
@@ -223,6 +230,15 @@ public class NodeFactoryImpl {
         // Create extension point registry
         extensionPoints = new DefaultExtensionPointRegistry();
 
+        utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+
+        // Add the OSGi BundleContext as a system utility
+        utilities.addUtility(bundleContext);
+
+        // Register the ExtensionPointRegistry as an OSGi service
+        Dictionary<Object, Object> props = new Hashtable<Object, Object>();
+        registration = bundleContext.registerService(ExtensionPointRegistry.class.getName(), extensionPoints, props);
+
         // Enable schema validation only of the logger level is FINE or higher
         ValidationSchemaExtensionPoint schemas =
             extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
@@ -236,9 +252,7 @@ public class NodeFactoryImpl {
         modelFactories.addFactory(assemblyFactory);
 
         // Create a monitor
-        utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-
         monitor = monitorFactory.createMonitor();
 
         // Initialize the Tuscany module activators
@@ -475,6 +489,10 @@ public class NodeFactoryImpl {
     }
 
     public void destroy() {
+        if (registration != null) {
+            registration.unregister();
+        }
+
         // Stop the runtime modules
         for (ModuleActivator moduleActivator : moduleActivators) {
             moduleActivator.stop(extensionPoints);
@@ -490,7 +508,7 @@ public class NodeFactoryImpl {
         return node;
     }
 
-    public Node creatNode(Bundle bundle, String compositeContent) {
+    public Node createNode(Bundle bundle, String compositeContent) {
         Node node = new NodeImpl(bundle, compositeContent);
         nodes.put(bundle, node);
         return node;
