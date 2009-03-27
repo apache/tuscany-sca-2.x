@@ -1,5 +1,5 @@
-Apache Tuscany SCA 2.0-M1 February 2009 Release Notes
-============================================================
+Apache Tuscany SCA 2.0-M2 March 2009 Release Notes
+==================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
@@ -9,7 +9,7 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-     The Apache Tuscany SCA 2.0-M1 release includes implementations of the
+     The Apache Tuscany SCA 2.0-M2 release includes implementations of the
      main SCA specifications and recent updates from Open CSA drafts including:
 
         SCA Assembly Model V1.0
@@ -17,12 +17,15 @@ Overview
         SCA Java Common Annotations and APIs V1.0
         SCA Java Component Implementation V1.0
         SCA Web Services Binding V1.0
+        SCA WS-BPEL Client and Implementation V1.0
+        (portions of) SCA JEE Integration V1.0
 
     It also includes implementations of many features not yet defined
     by SCA specifications, including:
 
         - SCA bindings for RMI.
         - Databindings for JAXB, Axis2's AXIOM, DOM, SAX and StAX
+        - Integration with various web frameworks
 
     The Tuscany SCA Runtime can be configured as a single node SCA domain or 
     as an SCA domain distributed across multiple nodes. 
@@ -31,8 +34,6 @@ Overview
         - running in a OSGi enabled runtime Environment (Equinox)
         - running with distributed nodes across multiple JVMs
      
-
-
 See the CHANGES file for a detailed list of the features in this release.
 
 Support
