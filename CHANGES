@@ -1,3 +1,16 @@
+Changes With Apache Tuscany SCA 2.0-M2 April 2009
+=================================================
+
+Highlights include:
+- OSGi Enhancements including support for <implementation.osgi> and a new OSGi RFC119 prototype
+- Many updates towards support for OASIS OpenCSA specification and the use OASIS namespaces and schemas
+- Start to implement the SCA policy framework 1.1 spec draft from OASIS OpenCSA
+- New Endpoint and EndpoitReference structures
+- Webapps integration support including <implementation.web> and the web application composite along 
+- with support for various web technologies and frameworks including JSP support, JSF support with
+- Apache MyFaces, and integration with the Stripes Web Framework
+- New Maven Archetypes to make developing SCA applications easier
+
 Changes With Apache Tuscany SCA 2.0-M1 February 2009
 ====================================================
 
