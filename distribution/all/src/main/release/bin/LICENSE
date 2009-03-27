@@ -219,7 +219,6 @@ The following components come under Apache Software License 1.1
 
 The following components come under Apache Software License 2.0
 
- app-1.0.0-v20070606.jar
  activeio-2.0-r118.jar
  addressing-1.3.mar
  annogen-0.1.0.jar
@@ -456,13 +455,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===============================================================================
 The Equinox OSGi Runtime jars;
-   common-3.3.0-v20070426.jar
-   contenttype-3.2.100-v20070319.jar
-   jobs-3.3.0-v20070423.jar
-   osgi-3.3.0-v20070530.jar
-   preferences-3.2.100-v20070522.jar
-   registry-3.3.0-v20070522.jar
-   runtime-3.3.100-v20070530.jar
+   osgi-3.4.0-v20080605-1900.jar
 
 Eclipse Public License - v 1.0
 
