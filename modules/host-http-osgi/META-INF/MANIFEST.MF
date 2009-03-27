@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.http.osgi;version="2.0.0"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Jetty Servlet Host Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397258562
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
+Import-Package: javax.net.ssl;resolution:=optional,
+ javax.servlet,
+ javax.servlet.http,
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0",
+ org.osgi.framework;version="1.4.0",
+ org.osgi.service.http;version="1.2",
+ org.osgi.util.tracker;version="1.3.3"
+Bundle-SymbolicName: org.apache.tuscany.sca.host.http.osgi
+Bundle-DocURL: http://www.apache.org/
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.apache.tuscany.sca.http.osgi.OSGiServletHost
+
