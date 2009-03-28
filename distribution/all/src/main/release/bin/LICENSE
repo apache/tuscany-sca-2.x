@@ -272,8 +272,8 @@ The following components come under Apache Software License 2.0
  geronimo-util-1.2-beta\META-INF
  httpcore-4.0-beta1.jar
  httpcore-nio-4.0-beta1.jar
- jetty-6.1.7.jar
- jetty-util-6.1.7.jar
+ jetty-6.1.15.jar
+ jetty-util-6.1.15.jar
  log4j-1.2.13.jar
  mex-1.41-impl.jar
  myfaces-api-1.2.2.jar
