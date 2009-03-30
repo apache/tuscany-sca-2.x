@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>vtest-wsbinding-nowsdl</artifactId>
-        <version>2.0-M2-SNAPSHOT</version>
+        <version>2.0-M2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>vtest-wsbinding-nowsdl-promoted</artifactId>
@@ -32,26 +32,26 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>2.0-M2-SNAPSHOT</version>
+            <version>2.0-M2</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>2.0-M2-SNAPSHOT</version>
+            <version>2.0-M2</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
-            <version>2.0-M2-SNAPSHOT</version>
+            <version>2.0-M2</version>
             <scope>runtime</scope>
         </dependency>         
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-M2-SNAPSHOT</version>
+            <version>2.0-M2</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>

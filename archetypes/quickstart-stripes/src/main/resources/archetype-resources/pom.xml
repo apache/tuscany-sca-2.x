@@ -114,7 +114,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<tuscany.version>2.0-M2-SNAPSHOT</tuscany.version>
+		<tuscany.version>2.0-M2</tuscany.version>
 		<stripes.version>1.5</stripes.version>
 	</properties>
 	#end
