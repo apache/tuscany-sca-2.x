@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.ws.jaxws;version="2.0.0"
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA Axis2-based WS Binding Extension
+Bundle-Name: Apache Tuscany SCA JAXWS-based WS Binding Extension
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -21,11 +20,11 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  javax.wsdl.factory;resolution:=optional,
  javax.wsdl.xml;resolution:=optional,
  javax.xml.namespace,
+ javax.xml.soap,
  javax.xml.stream,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.ws,
- javax.xml.soap,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.ws;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
@@ -48,8 +47,6 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.xsd;version="2.0.0",
  org.apache.tuscany.sca.xsd.xml;version="2.0.0",
- org.apache.ws.security,
- org.apache.ws.security.handler,
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.w3c.dom,
