@@ -18,12 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.Dispatch;
-import javax.xml.ws.Service;
-
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -40,7 +34,6 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
 
     private javax.xml.soap.MessageFactory messageFactory;
     private WebServiceBinding wsBinding;
-    private Dispatch<SOAPMessage> dispatch;
 
     public JAXWSReferenceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentReference reference,
@@ -61,10 +54,6 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
         if (contract.getInterface() != null) {
             contract.getInterface().resetDataBinding(Node.class.getName());
         }
-
-        Service service = Service.create(wsBinding.getServiceName());
-        JAXBContext context = null;
-        Dispatch<Object> dispath = service.createDispatch(new QName(wsBinding.getServiceName().getNamespaceURI(), wsBinding.getPortName()), context,Service.Mode.MESSAGE);
     }
 
     public void start() {
@@ -82,7 +71,7 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new JAXWSBindingInvoker(dispatch, null, null, messageFactory, wsBinding);
+        return new JAXWSBindingInvoker(operation, null, messageFactory, wsBinding);
     }
 
 }

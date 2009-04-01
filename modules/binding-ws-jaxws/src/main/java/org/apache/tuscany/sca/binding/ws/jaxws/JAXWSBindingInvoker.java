@@ -18,9 +18,16 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.xml.namespace.QName;
+import javax.xml.soap.Detail;
 import javax.xml.soap.DetailEntry;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPBody;
@@ -29,11 +36,11 @@ import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.Dispatch;
+import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
-import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
@@ -49,9 +56,6 @@ import org.w3c.dom.Node;
 public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     private final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
-    public static final QName QNAME_WSA_FROM =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
-                  AddressingConstants.WSA_DEFAULT_PREFIX);
     public static final String TUSCANY_PREFIX = "tuscany";
     public static final QName CALLBACK_ID_REFPARM_QN = new QName(SCA11_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
@@ -62,16 +66,33 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     private Operation operation;
     private WebServiceBinding wsBinding;
 
-    public JAXWSBindingInvoker(Dispatch<SOAPMessage> dispatch,
-                               Operation operation,
+    public JAXWSBindingInvoker(Operation operation,
                                WebServiceFeature[] features,
                                MessageFactory messageFactory,
                                WebServiceBinding wsBinding) {
-        this.dispatch = dispatch;
         this.messageFactory = messageFactory;
         this.operation = operation;
         this.wsBinding = wsBinding;
+        this.dispatch = createDispatch(wsBinding);
+    }
 
+    private Dispatch<SOAPMessage> createDispatch(WebServiceBinding wsBinding) {
+        // FIXME: What should we do if the WSDL is generated in memory?
+        URL wsdlLocation = null;
+        try {
+            wsdlLocation = new URL(wsBinding.getWSDLDocument().getDocumentBaseURI());
+        } catch (MalformedURLException e) {
+            try {
+                wsdlLocation = wsBinding.getWSDLDefinition().getLocation().toURL();
+            } catch (MalformedURLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+        Service service = Service.create(wsdlLocation, wsBinding.getServiceName());
+        return service.createDispatch(new QName(wsBinding.getServiceName().getNamespaceURI(), wsBinding.getPortName()),
+                                      SOAPMessage.class,
+                                      Service.Mode.MESSAGE);
     }
 
     public Message invoke(Message msg) {
@@ -88,8 +109,8 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
                 }
 
             }
-            msg.setBody(resp);
         } catch (SOAPFaultException e) {
+            e.printStackTrace();
             setFault(msg, e.getFault());
         } catch (WebServiceException e) {
             msg.setFaultBody(e);
@@ -103,22 +124,52 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     private void setFault(Message msg, SOAPFault fault) {
-        for (Iterator i = fault.getDetail().getDetailEntries(); i.hasNext();) {
+        Detail detail = fault.getDetail();
+        if (detail == null) {
+            return;
+        }
+        for (Iterator i = detail.getDetailEntries(); i.hasNext();) {
             DetailEntry entry = (DetailEntry)i.next();
             msg.setFaultBody(entry);
         }
+    }
+
+    protected String getSOAPAction(String operationName) {
+        Binding binding = wsBinding.getBinding();
+        if (binding != null) {
+            for (Object o : binding.getBindingOperations()) {
+                BindingOperation bop = (BindingOperation)o;
+                if (bop.getName().equalsIgnoreCase(operationName)) {
+                    for (Object o2 : bop.getExtensibilityElements()) {
+                        if (o2 instanceof SOAPOperation) {
+                            return ((SOAPOperation)o2).getSoapActionURI();
+                        } else if (o2 instanceof SOAP12Operation) {
+                            return ((SOAP12Operation)o2).getSoapActionURI();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     protected SOAPMessage invokeTarget(Message msg) throws SOAPException {
         SOAPMessage soapMessage = messageFactory.createMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
         javax.xml.soap.SOAPEnvelope envelope = soapPart.getEnvelope();
-        javax.xml.soap.SOAPBody body = envelope.addBody();
-        body.addDocument(((Node)msg.getBody()).getOwnerDocument());
+        javax.xml.soap.SOAPBody body = envelope.getBody();
+        Object[] args = (Object[])msg.getBody();
+        body.addDocument(((Node)args[0]).getOwnerDocument());
         soapMessage.saveChanges();
         if (operation.isNonBlocking()) {
             dispatch.invokeOneWay(soapMessage);
             return null;
+        }
+
+        // FIXME: We need to find out the soapAction
+        String action = getSOAPAction(operation.getName());
+        if (action != null) {
+            dispatch.getRequestContext().put(Dispatch.SOAPACTION_URI_PROPERTY, action);
         }
         SOAPMessage response = dispatch.invoke(soapMessage);
         return response;
