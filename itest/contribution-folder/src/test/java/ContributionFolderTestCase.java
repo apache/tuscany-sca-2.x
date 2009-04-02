@@ -15,13 +15,13 @@ import calculator.CalculatorService;
  * 
  * @version $Rev: 608205 $ $Date: 2008-01-02 20:29:05 +0000 (Wed, 02 Jan 2008) $
  */
-public class ContributionZIPTestCaseFIXME extends TestCase {
+public class ContributionFolderTestCase extends TestCase {
 
     private Node node;
     
     @Override
     protected void setUp() throws Exception {
-		node = NodeFactory.newInstance().createNode(null, new Contribution("foo", "src/test/resources/repository3/contribution.zip"));
+		node = NodeFactory.newInstance().createNode(null, new Contribution("foo", "src/test/resources/repository"));
         node.start();
     }
 
