@@ -59,6 +59,8 @@
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
                 <module>component-type</module>
+                <module>contribution-folder</module>
+                <module>contribution-zip</module>
                 <module>conversations</module>
                 <!--module>definitions-multiple</module-->
                 <module>exceptions</module>

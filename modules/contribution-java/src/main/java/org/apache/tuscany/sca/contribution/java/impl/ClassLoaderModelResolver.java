@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -52,9 +51,16 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         ClassLoader parentClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
         return parentClassLoader;
     }
-    
-    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws MalformedURLException {
-        super(new URL[] {new URL(contribution.getLocation())}, parentClassLoader());
+
+    private static URL[] getContributionURLs(final Contribution contribution) throws IOException {
+        List<URL> urls = new ArrayList<URL>();
+        urls.add(new URL(contribution.getLocation()));
+        urls.addAll(ContributionHelper.getNestedJarUrls(contribution));
+        return urls.toArray(new URL[urls.size()]);
+    }
+
+    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
+        super(getContributionURLs(contribution), parentClassLoader());
         this.contribution = contribution;
         
         // Index Java import resolvers by package name
