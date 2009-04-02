@@ -165,7 +165,6 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         } else if (!(wildcard.startsWith("/") || wildcard.startsWith("**"))) {
             wildcard = '/' + wildcard;
         }
-        System.out.println(pattern +"-->" + wildcard);
         StringBuffer regex = new StringBuffer();
         char[] chars = wildcard.toCharArray();
         for (int i = 0; i < chars.length; i++) {
