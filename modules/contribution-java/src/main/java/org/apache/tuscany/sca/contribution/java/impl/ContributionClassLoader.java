@@ -55,7 +55,10 @@ public class ContributionClassLoader extends URLClassLoader {
         if (contribution.getLocation() != null) {
             try {
                 this.addURL(new URL(contribution.getLocation()));
-            } catch (MalformedURLException e) {
+                for (URL url : ContributionHelper.getNestedJarUrls(contribution)) {
+                    this.addURL(url);
+                }
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
