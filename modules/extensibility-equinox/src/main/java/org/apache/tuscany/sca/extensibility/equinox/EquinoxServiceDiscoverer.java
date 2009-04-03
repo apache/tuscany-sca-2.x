@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.extensibility.equinox;
@@ -118,7 +118,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
 
     }
-    
+
     /**
      * Empty static method to trigger the activation of this bundle.
      */
@@ -154,7 +154,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     /**
      * Parse a service declaration in the form class;attr=value,attr=value and
      * return a map of attributes
-     * 
+     *
      * @param declaration
      * @return a map of attributes
      */
@@ -185,7 +185,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return attributes;
     }
-    
+
     public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException {
         Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
         if (declarations.isEmpty()) {
@@ -203,6 +203,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
         serviceName = "META-INF/services/" + serviceName;
 
+        Set<URL> visited = new HashSet<URL>();
         for (Bundle bundle : context.getBundles()) {
             if (bundle.getBundleId() == 0 || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
                 // Skip system bundle as it has access to the application classloader
@@ -214,7 +215,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
                 // Use getResources to find resources on the classpath of the bundle
                 // Please note there are cases that getResources will return null even
                 // the bundle containing such entries:
-                // 1. There is a match on Import-Package or DynamicImport-Package, and another 
+                // 1. There is a match on Import-Package or DynamicImport-Package, and another
                 // bundle exports the resource package, there is a possiblity that it doesn't
                 // find the containing entry
                 // 2. The bundle cannot be resolved, then getResources will return null
@@ -239,6 +240,11 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             }
             while (urls.hasMoreElements()) {
                 final URL url = urls.nextElement();
+
+                if (!visited.add(url)) {
+                    // The URL has already been processed
+                    continue;
+                }
 
                 if (debug) {
                     logger.fine("Reading service provider file: " + url.toExternalForm());

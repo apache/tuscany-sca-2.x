@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.interfacedef.impl;
 
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
 
@@ -31,13 +32,13 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents an operation on a service interface.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class OperationImpl implements Operation {
@@ -53,8 +54,11 @@ public class OperationImpl implements Operation {
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
     private boolean dynamic;
+
+    private Map<Object, Object> attributes = new ConcurrentHashMap<Object, Object>();
+
     private Map<QName, List<DataType<XMLType>>> faultBeans;
-    
+
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
@@ -280,11 +284,11 @@ public class OperationImpl implements Operation {
     public void setDynamic(boolean b) {
         this.dynamic = b;
     }
-    
+
     public Map<QName, List<DataType<XMLType>>> getFaultBeans() {
         return faultBeans;
     }
-    
+
     public void setFaultBeans(Map<QName, List<DataType<XMLType>>> faultBeans) {
         this.faultBeans = faultBeans;
     }
@@ -292,7 +296,7 @@ public class OperationImpl implements Operation {
     @Override
     public OperationImpl clone() throws CloneNotSupportedException {
         OperationImpl copy = (OperationImpl) super.clone();
-        
+
         final List<DataType> clonedFaultTypes = new ArrayList<DataType>(this.faultTypes.size());
         for (DataType t : this.faultTypes) {
             clonedFaultTypes.add((DataType) t.clone());
@@ -308,11 +312,14 @@ public class OperationImpl implements Operation {
             new DataTypeImpl<List<DataType>>(inputType.getPhysical(), clonedLogicalTypes);
         clonedInputType.setDataBinding(inputType.getDataBinding());
         copy.inputType = clonedInputType;
-        
+
         if (this.outputType != null) {
             copy.outputType = (DataType) this.outputType.clone();
         }
-        
+
+        copy.attributes = new ConcurrentHashMap<Object, Object>();
+        copy.attributes.putAll(attributes);
+
         return copy;
     }
 
@@ -335,5 +342,9 @@ public class OperationImpl implements Operation {
     public void setType(ExtensionType type) {
         this.type = type;
     }
-    
+
+    public Map<Object, Object> getAttributes() {
+        return attributes;
+    }
+
 }
