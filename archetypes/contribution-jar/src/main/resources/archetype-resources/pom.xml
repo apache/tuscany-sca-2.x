@@ -35,6 +35,7 @@
                <groupId>org.apache.tuscany.sca</groupId>
                <artifactId>tuscany-sca-api</artifactId>
                <version>${tuscany.version}</version>
+               <scope>provided</scope>
             </dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
