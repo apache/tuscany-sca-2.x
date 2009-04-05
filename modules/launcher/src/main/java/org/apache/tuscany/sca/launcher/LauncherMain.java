@@ -162,7 +162,7 @@ public class LauncherMain {
             return false;
         }
         File f = new File(args[0]);
-        if (!f.exists()) {
+        if (!f.exists() || f.isDirectory()) {
             return false;
         }
         JarFile jar = new JarFile(f);
