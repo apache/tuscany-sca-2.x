@@ -18,12 +18,17 @@ public class ContributionHelper {
 
     public static List<URL> getNestedJarUrls(final Contribution contribution) throws IOException {
         List<URL> urls = new ArrayList<URL>();
-        for (Artifact a : contribution.getArtifacts()) {
-            if (a.getLocation().endsWith(".jar")) {
-                if (contribution.getLocation().endsWith(".zip")) {
-                    urls.add(createTempJar(a, contribution));
-                } else {
-                    urls.add(new URL(a.getLocation()));
+        boolean isZipContribution = contribution.getLocation().endsWith(".zip");
+        URI uri = URI.create(contribution.getLocation());
+        boolean isFolderContribution = !isZipContribution && uri.getScheme().equals("file") && new File(uri).isDirectory();
+        if (isZipContribution || isFolderContribution) {
+            for (Artifact a : contribution.getArtifacts()) {
+                if (a.getLocation().endsWith(".jar")) {
+                    if (isZipContribution) {
+                        urls.add(createTempJar(a, contribution));
+                    } else {
+                        urls.add(new URL(a.getLocation()));
+                    }
                 }
             }
         }
@@ -42,7 +47,7 @@ public class ContributionHelper {
             while (zipEntry != null) {
                 if (artifact.getLocation().endsWith(zipEntry.getName())) {
 
-                    String tempName = "tmp." + artifact.getURI().substring(0, artifact.getURI().length() - 3);
+                    String tempName = ("tmp." + artifact.getURI().substring(0, artifact.getURI().length() - 3)).replace('/', '.');
                     File tempFile = File.createTempFile(tempName, ".jar");
                     tempFile.deleteOnExit();
                     fileOutputStream = new FileOutputStream(tempFile);
