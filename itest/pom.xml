@@ -73,6 +73,7 @@
                 -->
                 <module>recursive-multi-level</module>
                 <module>references</module>
+                <module>scaclient-api</module>
                 <module>distribution</module>
                 <module>scopes</module>
                 <module>services</module>
