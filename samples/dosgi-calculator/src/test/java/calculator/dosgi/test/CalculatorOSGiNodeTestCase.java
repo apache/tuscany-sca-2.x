@@ -21,6 +21,11 @@ package calculator.dosgi.test;
 
 import static calculator.dosgi.test.OSGiTestUtils.bundleStatus;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -28,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 import calculator.dosgi.CalculatorService;
@@ -59,9 +65,11 @@ public class CalculatorOSGiNodeTestCase {
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds") || b.getSymbolicName()
                     .startsWith("org.apache.tuscany.sca.")) {
                     try {
-                        b.start();
+                        if (b.getHeaders().get(Constants.FRAGMENT_HOST) == null) {
+                            // Start the non-fragment bundle
+                            b.start();
+                        }
                     } catch (Exception e) {
-                        System.out.println(bundleStatus(b, false));
                         e.printStackTrace();
                     }
                     System.out.println(bundleStatus(b, false));
@@ -94,6 +102,29 @@ public class CalculatorOSGiNodeTestCase {
         System.out.println("2.0 - 1.0 = " + calculator.subtract(2.0, 1.0));
         System.out.println("2.0 * 1.0 = " + calculator.multiply(2.0, 1.0));
         System.out.println("2.0 / 1.0 = " + calculator.divide(2.0, 1.0));
+    }
+
+    @Test
+    /**
+     * Test the Web service exposed by the Calculator
+     */
+    public void testWS() throws Exception {
+        URL url = new URL("http://localhost:8086/CalculatorService?wsdl");
+        InputStream is = url.openStream();
+        Reader reader = new InputStreamReader(is);
+        char[] content = new char[10240]; // 10k
+        int len = 0;
+        while (true) {
+            int size = reader.read(content, len, content.length - len);
+            if (size < 0) {
+                break;
+            }
+            len += size;
+        }
+        Assert.assertTrue(len > 0);
+        String str = new String(content, 0, len);
+        System.out.println(str);
+        Assert.assertTrue(str.indexOf("<wsdl:definitions") != -1);
     }
 
     /**
