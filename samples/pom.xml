@@ -50,6 +50,9 @@
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
 
+                <module>dosgi-calculator</module>
+                <module>dosgi-calculator-operations</module>
+
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
                 <!-- module>host-webapp-calculator</module -->
