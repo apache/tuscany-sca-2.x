@@ -41,7 +41,7 @@ import calculator.dosgi.operations.AddService;
 /**
  *
  */
-public class CalculatorOSGiNodeTestCase {
+public class OperationsOSGiNodeTestCase {
     private static EquinoxHost host;
     private static BundleContext context;
     private static Bundle operationsBundle;
