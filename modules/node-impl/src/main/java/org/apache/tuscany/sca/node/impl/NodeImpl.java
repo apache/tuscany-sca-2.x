@@ -95,8 +95,11 @@ import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.client.SCAClient;
 
 
 /**
@@ -104,7 +107,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class NodeImpl implements Node, Client {
+public class NodeImpl implements Node, Client, SCAClient {
 
     private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
@@ -765,5 +768,9 @@ public class NodeImpl implements Node, Client {
 
     public ExtensionPointRegistry getExtensionPoints() {
         return extensionPoints;
+    }
+
+    public <T> T getService(Class<T> businessInterface, String serviceName, URI domainURI) throws NoSuchServiceException, NoSuchDomainException {
+        return getService(businessInterface, serviceName);
     }
 }
