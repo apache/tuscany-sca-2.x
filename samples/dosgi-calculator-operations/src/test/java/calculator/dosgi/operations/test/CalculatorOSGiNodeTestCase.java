@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 import calculator.dosgi.operations.AddService;
 
@@ -66,9 +67,11 @@ public class CalculatorOSGiNodeTestCase {
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds") || b.getSymbolicName()
                     .startsWith("org.apache.tuscany.sca.")) {
                     try {
-                        b.start();
+                        if (b.getHeaders().get(Constants.FRAGMENT_HOST) == null) {
+                            // Start the non-fragment bundle
+                            b.start();
+                        }
                     } catch (Exception e) {
-                        System.out.println(bundleStatus(b, false));
                         e.printStackTrace();
                     }
                     System.out.println(bundleStatus(b, false));

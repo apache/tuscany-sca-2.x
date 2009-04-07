@@ -58,12 +58,14 @@ public class OperationsRMIServer implements OperationsRemote, Serializable {
         Thread thread = new Thread() {
             public void run() {
                 try {
+                    System.out.println("Starting the RMI server for calculator operations...");
                     Remote stub = UnicastRemoteObject.exportObject(OperationsRMIServer.this);
                     registry = LocateRegistry.createRegistry(8085);
                     registry.bind("AddService", stub);
                     registry.bind("SubtractService", stub);
                     registry.bind("MultiplyService", stub);
                     registry.bind("DivideService", stub);
+                    System.out.println("RMI server for calculator operations is now started.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
