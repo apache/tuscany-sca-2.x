@@ -3,6 +3,7 @@
 import itest.HelloworldService;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.node.Node;
 import org.oasisopen.sca.client.SCAClient;
 import org.oasisopen.sca.client.SCAClientFactory;
 
@@ -29,6 +30,7 @@ public class SCAClientTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
+        ((Node)scaClient).stop();
     }
 
 }
