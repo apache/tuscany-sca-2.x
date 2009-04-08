@@ -21,11 +21,8 @@ package calculator.dosgi.operations.test;
 
 import static calculator.dosgi.operations.test.OSGiTestUtils.bundleStatus;
 
-import java.net.URL;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.node.equinox.launcher.EquinoxHost;
 import org.junit.AfterClass;
@@ -45,14 +42,6 @@ public class OperationsOSGiNodeTestCase {
     private static EquinoxHost host;
     private static BundleContext context;
     private static Bundle operationsBundle;
-
-    public static URL getCodeLocation(final Class<?> anchorClass) {
-        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
-            public URL run() {
-                return anchorClass.getProtectionDomain().getCodeSource().getLocation();
-            }
-        });
-    }
 
     /**
      * @throws java.lang.Exception
