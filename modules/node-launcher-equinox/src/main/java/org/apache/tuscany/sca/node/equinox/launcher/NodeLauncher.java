@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.equinox.launcher;
@@ -35,17 +35,19 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 /**
  * A launcher for SCA nodes.
- * 
+ *
  * Agruments:
- * [-config <equinoxConfiguration>]: The configuration folder for Equinox 
+ * [-config <equinoxConfiguration>]: The configuration folder for Equinox
  * [-c <compositeURI>]: The composite URI
  * [-t <ttl>]: Time to live in milliseconds before the node is started
  * contribution1 ... contributionN: A list of contribution files or URLs
- *  
+ *
  * @version $Rev$ $Date$
  */
 public class NodeLauncher {
@@ -64,7 +66,7 @@ public class NodeLauncher {
 
     /**
      * Returns a new launcher instance.
-     *  
+     *
      * @return a new launcher instance
      */
     public static NodeLauncher newInstance() {
@@ -73,10 +75,10 @@ public class NodeLauncher {
 
     /**
      * Creates a new SCA node from the configuration URL
-     * 
+     *
      * @param configurationURL the URL of the node configuration which is the ATOM feed
      * that contains the URI of the composite and a collection of URLs for the contributions
-     *  
+     *
      * @return a new SCA node.
      * @throws LauncherException
      */
@@ -86,12 +88,12 @@ public class NodeLauncher {
 
     /**
      * Creates a new SCA OSGi Node.
-     * 
-     * @param compositeURI the URI of the composite to use 
-     * @param contributions the URI of the contributions that provides the composites and related 
+     *
+     * @param compositeURI the URI of the composite to use
+     * @param contributions the URI of the contributions that provides the composites and related
      * artifacts. If the list is empty, then we will use the thread context classloader to discover
      * the contribution on the classpath
-     *   
+     *
      * @return a new SCA node.
      * @throws LauncherException
      */
@@ -101,10 +103,10 @@ public class NodeLauncher {
 
     /**
      * Creates a new SCA OSGi Node.
-     * 
-     * @param compositeURI the URI of the composite to use 
-     * @param compositeContent the XML content of the composite to use 
-     * @param contributions the URI of the contributions that provides the composites and related artifacts 
+     *
+     * @param compositeURI the URI of the composite to use
+     * @param compositeContent the XML content of the composite to use
+     * @param contributions the URI of the contributions that provides the composites and related artifacts
      * @return a new SCA node.
      * @throws LauncherException
      */
@@ -137,6 +139,27 @@ public class NodeLauncher {
                     equinox = launcher.equinoxHost;
 
                     node = launcher.createNode(configurationURI);
+                } else if (cli.hasOption("bundles")) {
+                    // Create a node launcher
+                    NodeLauncher launcher = newInstance();
+                    equinox = launcher.equinoxHost;
+                    List<String> bundleFiles = cli.getArgList();
+                    for (String bf : bundleFiles) {
+                        File f = new File(bf);
+                        equinox.installBundle(f.toURI().toURL(), null);
+                    }
+                    for (Bundle b : launcher.bundleContext.getBundles()) {
+                        try {
+                            if (b.getHeaders().get(Constants.FRAGMENT_HOST) == null) {
+                                // Start the non-fragment bundle
+                                b.start();
+                            }
+                        } catch (Exception e) {
+                            logger.info(NodeLauncherUtil.string(b, false));
+                            logger.log(Level.SEVERE, e.getMessage(), e);
+                        }
+                    }
+
                 } else {
                     // Create a node from a composite URI and a contribution location
                     String compositeURI = cli.getOptionValue("composite");
@@ -173,17 +196,18 @@ public class NodeLauncher {
                     node = launcher.createNode(compositeURI, contributions);
                 }
 
-                logger.info("Apache Tuscany SCA Node is starting...");
+                if (node != null) {
+                    logger.info("Apache Tuscany SCA Node is starting...");
 
-                // Start the node
-                try {
-                    node.getClass().getMethod("start").invoke(node);
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, "SCA Node could not be started", e);
-                    throw e;
+                    // Start the node
+                    try {
+                        node.getClass().getMethod("start").invoke(node);
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, "SCA Node could not be started", e);
+                        throw e;
+                    }
+                    logger.info("SCA Node is now started.");
                 }
-                logger.info("SCA Node is now started.");
-
                 // Install a shutdown hook
                 shutdown = new ShutdownThread(node, equinox);
                 Runtime.getRuntime().addShutdownHook(shutdown);
@@ -257,6 +281,10 @@ public class NodeLauncher {
         // opt4.setType(long.class);
         options.addOption(opt4);
 
+        Option opt5 = new Option("b", "bundles", false, "OSGi bundles");
+        opt4.setArgName("osgiBundles");
+        options.addOption(opt5);
+
         return options;
     }
 
@@ -269,7 +297,7 @@ public class NodeLauncher {
 
     /**
      * Stop the given node.
-     * 
+     *
      * @param node
      * @throws Exception
      */
@@ -311,7 +339,7 @@ public class NodeLauncher {
 
     /**
      * Stop the given node.
-     * 
+     *
      * @param node
      * @throws Exception
      */
