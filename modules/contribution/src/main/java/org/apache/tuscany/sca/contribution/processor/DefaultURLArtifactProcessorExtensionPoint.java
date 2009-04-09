@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -46,7 +50,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class DefaultURLArtifactProcessorExtensionPoint extends
-    DefaultArtifactProcessorExtensionPoint<URLArtifactProcessor> implements URLArtifactProcessorExtensionPoint {
+    DefaultArtifactProcessorExtensionPoint<URLArtifactProcessor<?>> implements URLArtifactProcessorExtensionPoint {
 
     private ExtensionPointRegistry extensionPoints;
     private StAXArtifactProcessor<?> staxProcessor;
@@ -90,7 +94,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         }
     }
 
-    public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
+    public void addArtifactProcessor(URLArtifactProcessor<?> artifactProcessor) {
         if (artifactProcessor.getArtifactType() != null) {
             Pattern pattern = Pattern.compile(wildcard2regex(artifactProcessor.getArtifactType()));
             processorsByArtifactType.put(pattern, artifactProcessor);
@@ -100,7 +104,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         }
     }
 
-    public void removeArtifactProcessor(URLArtifactProcessor artifactProcessor) {
+    public void removeArtifactProcessor(URLArtifactProcessor<?> artifactProcessor) {
         if (artifactProcessor.getArtifactType() != null) {
             String regex = wildcard2regex(artifactProcessor.getArtifactType());
             for (Object key : processorsByArtifactType.keySet()) {
@@ -116,38 +120,47 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
     }
 
     @Override
-    public URLArtifactProcessor getProcessor(Class<?> modelType) {
+    public <T> URLArtifactProcessor<T> getProcessor(Class<T> modelType) {
         loadProcessors();
-        return super.getProcessor(modelType);
+        return (URLArtifactProcessor<T>)super.getProcessor(modelType);
     }
 
-    @Override
-    public URLArtifactProcessor getProcessor(Object artifactType) {
+    public Collection<URLArtifactProcessor<?>> getProcessors(Object artifactType) {
         loadProcessors();
-        URLArtifactProcessor processor = null;
         String uri = (String)artifactType;
         if (uri.endsWith("/")) {
             // Ignore directories
-            return null;
+            return Collections.emptyList();
         }
         if (!uri.startsWith("/")) {
             uri = "/" + uri;
         }
-        for (Object key : processorsByArtifactType.keySet()) {
-            Pattern pattern = (Pattern)key;
+        List<URLArtifactProcessor<?>> processors = new ArrayList<URLArtifactProcessor<?>>();
+        for (Map.Entry<Object, URLArtifactProcessor<?>> e : processorsByArtifactType.entrySet()) {
+            Pattern pattern = (Pattern)e.getKey();
             if (pattern.matcher(uri).matches()) {
-                return processorsByArtifactType.get(key);
+                processors.add(e.getValue());
             }
         }
-        return processor;
+        return processors;
     }
 
-    private String wildcard2regex(String wildcard) {
+    public URLArtifactProcessor<?> getProcessor(Object artifactType) {
+        Collection<URLArtifactProcessor<?>> processors = getProcessors(artifactType);
+        return processors.isEmpty() ? null : processors.iterator().next();
+    }
+
+    private static String wildcard2regex(String pattern) {
+        String wildcard = pattern;
+        if (wildcard.endsWith("/")) {
+            // Directory: xyz/ --> xyz/**
+            wildcard = wildcard + "**";
+        }
         if (wildcard.startsWith(".")) {
-            // File extension
+            // File extension: .xyz --> **/*.xyz
             wildcard = "**/*" + wildcard;
         } else if (wildcard.indexOf('/') == -1) {
-            // file name
+            // File name: abc.txt --> **/abc.txt
             wildcard = "**/" + wildcard;
         } else if (!(wildcard.startsWith("/") || wildcard.startsWith("**"))) {
             wildcard = '/' + wildcard;
@@ -158,9 +171,22 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
             switch (chars[i]) {
                 case '*':
                     if (i < chars.length - 1 && chars[i + 1] == '*') {
-                        regex.append(".*");
-                        i++; // Skip next *
+                        // Next char is '*'
+                        if (i < chars.length - 2) {
+                            if (chars[i + 2] == '/') {
+                                // The wildcard is **/, it matches zero or more directories
+                                regex.append("(.*/)*");
+                                i += 2; // Skip */
+                            } else {
+                                // ** can only be followed by /
+                                throw new IllegalArgumentException("** can only be used as the name for a directory");
+                            }
+                        } else {
+                            regex.append(".*");
+                            i++; // Skip next *
+                        }
                     } else {
+                        // Non-directory
                         regex.append("[^/]*");
                     }
                     break;

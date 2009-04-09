@@ -9,7 +9,8 @@ Highlights include:
 - Webapps integration support including <implementation.web> and the web application composite along 
 - with support for various web technologies and frameworks including JSP support, JSF support with
 - Apache MyFaces, and integration with the Stripes Web Framework
-- New Maven Archetypes to make developing SCA applications easier
+- New Maven Archetypes to make developing SCA applications easier, 
+  see http://cwiki.apache.org/confluence/display/TUSCANYWIKI/Tuscany+Maven+Archetypes
 
 Changes With Apache Tuscany SCA 2.0-M1 February 2009
 ====================================================

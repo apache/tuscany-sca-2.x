@@ -47,6 +47,7 @@
                 <!-- exclude>**/target</exclude -->
                 <!-- exclude>**/target/**/*</exclude -->
                 <exclude>*/target/mvn-eclipse-cache.properties</exclude>
+                <exclude>*/target/pom-transformed.xml</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
                 <exclude>*/target/dependency-maven-plugin-markers</exclude>
