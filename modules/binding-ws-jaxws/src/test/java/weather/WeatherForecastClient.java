@@ -39,7 +39,7 @@ public class WeatherForecastClient {
 
     public static void main(String[] args) throws Exception {
 
-        String location = ContributionLocationHelper.getContributionLocation("WeatherForecast.composite");
+        String location = ContributionLocationHelper.getContributionLocation(WeatherForecastImpl.class);
         Node node = NodeFactory.newInstance().createNode("WeatherForecast.composite", new Contribution("c1", location));
         node.start();
         WeatherForecastSoap weatherService = node.getService(WeatherForecastSoap.class, "WeatherForecastService");

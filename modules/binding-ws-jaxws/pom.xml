@@ -102,7 +102,14 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-http</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -155,9 +162,9 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <mkdir dir="${project.build.directory}/jaxws-source/wsdl/" />
+                                <mkdir dir="${basedir}/src/test/resources/wsdl/" />
                                 <get src="http://www.webservicex.net/WeatherForecast.asmx?wsdl"
-                                    dest="${project.build.directory}/jaxws-source/wsdl/WeatherForecast.wsdl" verbose="true"
+                                    dest="${basedir}/src/test/resources/wsdl/WeatherForecast.wsdl" verbose="true"
                                     usetimestamp="true" />
                             </tasks>
                         </configuration>
@@ -251,7 +258,7 @@
                         </goals>
                         <configuration>
                             <packageName>com.example.weather</packageName>
-                            <wsdlDirectory>${project.build.directory}/jaxws-source/wsdl</wsdlDirectory>
+                            <wsdlDirectory>${basedir}/src/test/resources/wsdl</wsdlDirectory>
                             <wsdlFiles>
                                 <wsdlFile>WeatherForecast.wsdl</wsdlFile>
                             </wsdlFiles>
