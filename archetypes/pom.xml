@@ -37,10 +37,11 @@
             </activation>
 
             <modules>
+                <module>contribution-jar</module>
+                <module>contribution-zip</module>
                 <module>quickstart</module>
                 <module>quickstart-jsf</module>
                 <module>quickstart-stripes</module>
-                <module>contribution-jar</module>
             </modules>
         </profile>
     </profiles>    
