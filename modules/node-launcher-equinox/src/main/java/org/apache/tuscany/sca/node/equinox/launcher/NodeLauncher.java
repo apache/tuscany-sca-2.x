@@ -155,8 +155,8 @@ public class NodeLauncher {
                                 b.start();
                             }
                         } catch (Exception e) {
-                            logger.info(NodeLauncherUtil.string(b, false));
-                            logger.log(Level.SEVERE, e.getMessage(), e);
+                            logger.severe(NodeLauncherUtil.string(b, false) + " " + e.getMessage());
+                            // logger.log(Level.SEVERE, e.getMessage(), e);
                         }
                     }
 
