@@ -172,10 +172,20 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             return;
         }
 
+        // The bundle may be different from the current contribution
         ComponentType componentType = assemblyFactory.createComponentType();
-        componentType.setURI("OSGI-INF/sca/bundle.componentType");
+        // Try to find a bundle.componentType for the target bundle
+        componentType.setURI("OSGI-INF/sca/" + bundle.getSymbolicName() + "/bundle.componentType");
         componentType.setUnresolved(true);
         componentType = resolver.resolveModel(ComponentType.class, componentType);
+        if (componentType.isUnresolved()) {
+            // Create a new instance to prevent it being treated as reentry
+            // See org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver.resolveModel(Class<T>, T)
+            componentType = assemblyFactory.createComponentType();
+            // Try a generic one
+            componentType.setURI("OSGI-INF/sca/bundle.componentType");
+            componentType = resolver.resolveModel(ComponentType.class, componentType);
+        }
         if (componentType.isUnresolved()) {
             // Try to derive it from the service descriptions
             if (!deriveFromServiceDescriptions(impl, resolver)) {
