@@ -43,6 +43,7 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -161,7 +162,8 @@ public class Axis2ServiceProvider {
                                 AbstractContract contract,
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
-                                MessageFactory messageFactory) {
+                                MessageFactory messageFactory,
+                                final XMLInputFactory xmlInputFactory) {
 
         this.component = component; 
         this.contract = contract; 
@@ -174,20 +176,27 @@ public class Axis2ServiceProvider {
             // TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             // Allow privileged access to read properties. Requires PropertyPermission read in
             // security policy.
-            TuscanyAxisConfigurator tuscanyAxisConfigurator =
-                AccessController.doPrivileged(new PrivilegedExceptionAction<TuscanyAxisConfigurator>() {
-                    public TuscanyAxisConfigurator run() throws AxisFault {
-                        return new TuscanyAxisConfigurator(isRampartRequired);
+            configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
+                public ConfigurationContext run() throws AxisFault {
+                    ClassLoader newTccl = xmlInputFactory.getClass().getClassLoader();
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    if (newTccl != null && newTccl != tccl) {
+                        Thread.currentThread().setContextClassLoader(newTccl);
                     }
-                });
-            configContext = tuscanyAxisConfigurator.getConfigurationContext();
+                    try {
+                        return new TuscanyAxisConfigurator(isRampartRequired).getConfigurationContext();
+                    } finally {
+                        if (newTccl != null && newTccl != tccl) {
+                            Thread.currentThread().setContextClassLoader(tccl);
+                        }
+                    }
+                }
+            });
             // deployRampartModule();
             // configureSecurity();
         } catch (PrivilegedActionException e) {
             throw new ServiceRuntimeException(e.getException());
-        } catch (AxisFault e) {
-            throw new ServiceRuntimeException(e); // TODO: better exception
-        } 
+        }
 
         configContext.setContextRoot(servletHost.getContextPath());
         
