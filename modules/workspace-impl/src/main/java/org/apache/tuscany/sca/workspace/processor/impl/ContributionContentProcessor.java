@@ -199,8 +199,8 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             if (model != null) {
                 try {
                    artifactProcessor.resolve(model, contributionResolver);
-                } catch (Exception e) {
-                    //FIXME this shouldn't happen
+                } catch (Throwable e) {
+                    throw new ContributionResolveException(e);
                 }
             }
         }
