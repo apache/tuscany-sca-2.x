@@ -23,3 +23,4 @@ Bundle-DocURL: http://www.apache.org/
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.apache.tuscany.sca.http.osgi.OSGiServletHost
 
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

@@ -31,4 +31,4 @@ Import-Package: javax.wsdl,
  org.apache.tuscany.sca.policy;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

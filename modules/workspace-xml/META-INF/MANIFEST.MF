@@ -20,4 +20,4 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.workspace;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.workspace.xml
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

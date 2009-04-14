@@ -17,6 +17,7 @@ Import-Package: javax.xml.bind,
  javax.xml.datatype;resolution:=optional,
  javax.xml.namespace,
  javax.xml.stream,
+ javax.xml.stream.util,
  javax.xml.transform,
  javax.xml.transform.stream,
  org.apache.axiom.om,
@@ -35,4 +36,4 @@ Import-Package: javax.xml.bind,
  org.w3c.dom;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb.axiom
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

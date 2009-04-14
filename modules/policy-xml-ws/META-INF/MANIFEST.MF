@@ -28,4 +28,4 @@ Export-Package: org.apache.tuscany.sca.policy.xml.ws;version="2.0.0";
    org.apache.tuscany.sca.contribution.processor,
    org.apache.tuscany.sca.policy,
    javax.xml.namespace"
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

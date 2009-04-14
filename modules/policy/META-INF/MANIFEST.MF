@@ -29,4 +29,4 @@ Import-Package: javax.xml.namespace,
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.policy
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
