@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.myfaces;
+package org.apache.tuscany.sca.myfaces;
 
 import java.lang.reflect.InvocationTargetException;
 
