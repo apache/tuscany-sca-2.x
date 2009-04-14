@@ -45,4 +45,4 @@ Bundle-SymbolicName: org.apache.tuscany.sca.core.databinding
 Bundle-DocURL: http://www.apache.org/
 Export-Package: org.apache.tuscany.sca.core.databinding.processor;
  version="2.0.0";uses:="org.w3c.dom"
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

@@ -17,4 +17,4 @@ Import-Package: javax.xml.namespace,javax.xml.stream,javax.xml.xpath,o
  cy.impl;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.policy.xml
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

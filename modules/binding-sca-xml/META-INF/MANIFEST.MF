@@ -23,4 +23,4 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca.xml
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
