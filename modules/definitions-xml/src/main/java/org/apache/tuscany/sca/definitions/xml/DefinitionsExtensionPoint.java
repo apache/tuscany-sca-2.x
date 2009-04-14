@@ -33,25 +33,32 @@ public interface DefinitionsExtensionPoint {
     String DEFINITIONS_FILE = "org.apache.tuscany.sca.definitions.xml.Definitions";
 
     /**
-     * Add a definitions.
+     * Add a definitions document
      *
      * @param url the URL of the definitions
      */
     void addDefinitionsDocument(URL url);
 
     /**
-     * Remove a definitions.
+     * Remove a definitions document
      *
      * @param url the URL of the definitions
      */
     void removeDefinitionsDocument(URL url);
+    
+    /**
+     * @param definitions
+     */
+    void addDefinitions(Definitions definitions);
+    /**
+     * @param definitions
+     */
+    void removeDefinitions(Definitions definitions);
 
     /**
-     * Returns the list of definitions registered in the extension point.
-     * @return the list of definitions
+     * Get the list of definitions
+     * @return A list of definitions
      */
-    List<URL> getDefinitionsDocuments();
-
     List<Definitions> getDefinitions();
 
 }
