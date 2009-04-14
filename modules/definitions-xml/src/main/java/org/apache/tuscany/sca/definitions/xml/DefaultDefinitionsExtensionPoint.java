@@ -47,7 +47,8 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
     private static final URI DEFINITIONS_URI = URI.create("META-INF/definitions.xml");
     private ExtensionPointRegistry registry;
     private List<URL> documents = new ArrayList<URL>();
-    private List<Definitions> definitions;
+    private List<Definitions> definitions = new ArrayList<Definitions>();
+    private boolean documentsLoaded;
     private boolean loaded;
 
     public DefaultDefinitionsExtensionPoint(ExtensionPointRegistry registry) {
@@ -66,8 +67,8 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
      * Load definitions declarations from META-INF/services/
      * org.apache.tuscany.sca.contribution.processor.Definitions files
      */
-    private synchronized void loadDefinitions() {
-        if (loaded)
+    private synchronized void loadDefinitionsDocuments() {
+        if (documentsLoaded)
             return;
 
         // Get the definitions declarations
@@ -87,21 +88,15 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
             documents.add(url);
         }
 
-        loaded = true;
-    }
-
-    public List<URL> getDefinitionsDocuments() {
-        loadDefinitions();
-        return documents;
+        documentsLoaded = true;
     }
 
     public synchronized List<Definitions> getDefinitions() {
-        if (definitions == null) {
-            loadDefinitions();
+        if (!loaded) {
+            loadDefinitionsDocuments();
             URLArtifactProcessorExtensionPoint processors =
                 registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
             URLArtifactProcessor<Definitions> processor = processors.getProcessor(Definitions.class);
-            definitions = new ArrayList<Definitions>();
             for (URL url : documents) {
                 Definitions def;
                 try {
@@ -111,7 +106,16 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
+            loaded = true;
         }
         return definitions;
+    }
+
+    public void addDefinitions(Definitions def) {
+        this.definitions.add(def);
+    }
+
+    public void removeDefinitions(Definitions def) {
+        this.definitions.remove(def);
     }
 }
