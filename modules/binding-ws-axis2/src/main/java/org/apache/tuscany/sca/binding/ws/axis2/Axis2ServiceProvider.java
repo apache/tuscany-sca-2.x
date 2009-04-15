@@ -190,7 +190,7 @@ public class Axis2ServiceProvider {
         protected Class<?> findClass(String className) throws ClassNotFoundException {
             for (ClassLoader parent : classLoaders) {
                 try {
-                    parent.loadClass(className);
+                    return parent.loadClass(className);
                 } catch (ClassNotFoundException e) {
                     continue;
                 }
@@ -248,7 +248,10 @@ public class Axis2ServiceProvider {
                     ClassLoader cl2 =
                         modelFactories.getFactory(DocumentBuilderFactory.class).getClass().getClassLoader();
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    ClassLoader newTccl = new MultiParentClassLoader(tccl, new ClassLoader[] {cl1, cl2});
+                    ClassLoader newTccl = tccl;
+                    if (cl1 != tccl || cl2 != tccl) {
+                        newTccl = new MultiParentClassLoader(null, new ClassLoader[] {cl1, cl2});
+                    }
                     if (newTccl != null && newTccl != tccl) {
                         Thread.currentThread().setContextClassLoader(newTccl);
                     }
