@@ -75,6 +75,7 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
+import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -400,10 +401,16 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         workScheduler = utilities.getUtility(WorkScheduler.class);
 
-        // Load the system definitions.xml from all of the loaded extension points
-        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();
+        
+        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
+            DefinitionsUtil.aggregate(systemDefinitions, defs);
+        }
+        
+        // Load the system definitions.xml from all of the loaded extension points
+        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
         // aggregate all the definitions into a single definitions model
         try {
