@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import javax.xml.stream.XMLInputFactory;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -60,9 +58,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 
-        // Pass in the XMLInputFactory to work around the Axis2 way of loading XMLInputFactory
-        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost, messageFactory, inputFactory);
+        axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost, messageFactory, modelFactories);
     }
 
     public void start() {
