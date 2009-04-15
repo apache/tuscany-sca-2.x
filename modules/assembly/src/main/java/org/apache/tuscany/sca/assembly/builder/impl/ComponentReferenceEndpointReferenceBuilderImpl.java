@@ -184,7 +184,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             // the presence of binding elements 
             if (reference.getBindings().size() > 0) {
                 warning(monitor, "ReferenceEndPointMixWithTarget",
-                        composite, reference.getName());
+                        composite, composite.getName().toString(), component.getName(), reference.getName());
             }
 
             // Resolve targets specified on the component reference
