@@ -309,14 +309,17 @@ public class NodeFactoryImpl {
 
         workScheduler = utilities.getUtility(WorkScheduler.class);
 
-        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
-        List<Definitions> definitions = definitionsExtensionPoint.getDefinitions();
-
         // Load the system definitions.xml from all of the loaded extension points
-        DefinitionsProviderExtensionPoint definitionsProviders =
-            extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();
+
+        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
+            DefinitionsUtil.aggregate(systemDefinitions, defs);
+        }
+        
+        DefinitionsProviderExtensionPoint definitionsProviders =
+            extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
         // aggregate all the definitions into a single definitions model
         try {
