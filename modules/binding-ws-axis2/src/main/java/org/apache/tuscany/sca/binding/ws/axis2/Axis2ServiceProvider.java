@@ -19,18 +19,23 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +48,7 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -111,12 +117,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class Axis2ServiceProvider {
     public static final String IMPORT_TAG = "import";
     public static final String INCLUDE_TAG = "include";
-    
-    private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
+
+    private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());
 
     private RuntimeComponent component;
     private AbstractContract contract;
@@ -127,7 +134,7 @@ public class Axis2ServiceProvider {
     private JMSSender jmsSender;
     private JMSListener jmsListener;
     private Map<String, Port> urlMap = new HashMap<String, Port>();
-    
+
     private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
     private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
     private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
@@ -158,15 +165,74 @@ public class Axis2ServiceProvider {
     public static final List<QName> XSD_QNAME_LIST =
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
 
+    /**
+     * This classloader is used in OSGi to work around XXXFactory.newInstance()
+     */
+    private static class MultiParentClassLoader extends ClassLoader {
+        private final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+
+        /**
+         * @param parent The parent classloaders
+         * @param loaders A list of classloaders to be used to load classes or resources
+         */
+        public MultiParentClassLoader(ClassLoader parent, ClassLoader[] loaders) {
+            super(parent);
+            if (loaders != null) {
+                for (ClassLoader cl : loaders) {
+                    if (cl != null && cl != parent) {
+                        this.classLoaders.add(cl);
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected Class<?> findClass(String className) throws ClassNotFoundException {
+            for (ClassLoader parent : classLoaders) {
+                try {
+                    parent.loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    continue;
+                }
+            }
+            throw new ClassNotFoundException(className);
+        }
+
+        @Override
+        protected URL findResource(String resName) {
+            for (ClassLoader parent : classLoaders) {
+                URL url = parent.getResource(resName);
+                if (url != null) {
+                    return url;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String resName) throws IOException {
+            Set<URL> urlSet = new HashSet<URL>();
+            for (ClassLoader parent : classLoaders) {
+                Enumeration<URL> urls = parent.getResources(resName);
+                if (urls != null) {
+                    while (urls.hasMoreElements()) {
+                        urlSet.add(urls.nextElement());
+                    }
+                }
+            }
+            return Collections.enumeration(urlSet);
+        }
+    }
+
     public Axis2ServiceProvider(RuntimeComponent component,
                                 AbstractContract contract,
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
                                 MessageFactory messageFactory,
-                                final XMLInputFactory xmlInputFactory) {
+                                final FactoryExtensionPoint modelFactories) {
 
-        this.component = component; 
-        this.contract = contract; 
+        this.component = component;
+        this.contract = contract;
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
@@ -178,8 +244,11 @@ public class Axis2ServiceProvider {
             // security policy.
             configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
                 public ConfigurationContext run() throws AxisFault {
-                    ClassLoader newTccl = xmlInputFactory.getClass().getClassLoader();
+                    ClassLoader cl1 = modelFactories.getFactory(XMLInputFactory.class).getClass().getClassLoader();
+                    ClassLoader cl2 =
+                        modelFactories.getFactory(DocumentBuilderFactory.class).getClass().getClassLoader();
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    ClassLoader newTccl = new MultiParentClassLoader(tccl, new ClassLoader[] {cl1, cl2});
                     if (newTccl != null && newTccl != tccl) {
                         Thread.currentThread().setContextClassLoader(newTccl);
                     }
@@ -199,13 +268,13 @@ public class Axis2ServiceProvider {
         }
 
         configContext.setContextRoot(servletHost.getContextPath());
-        
+
         // Enable MTOM if the policy intent is specified.
         if (AxisPolicyHelper.isIntentRequired(wsBinding, AxisPolicyHelper.MTOM_INTENT)) {
             configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setLocked(false);
-            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setValue("true");            
+            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setValue("true");
         }
-        
+
         // Update port addresses with runtime information, and create a
         // map from endpoint URIs to WSDL ports that eliminates duplicate
         // ports for the same endpoint.
@@ -215,7 +284,7 @@ public class Axis2ServiceProvider {
             setPortAddress((Port)port, endpointURI);
             urlMap.put(endpointURI, (Port)port);
         }
-        
+
         /*
         // find out which policies are active
         if (wsBinding instanceof PolicySubject) {
@@ -234,7 +303,7 @@ public class Axis2ServiceProvider {
                 }
             }
         } 
-        */       
+        */
     }
 
     static String getPortAddress(Port port) {
@@ -265,7 +334,7 @@ public class Axis2ServiceProvider {
         RuntimeAssemblyFactory factory = (RuntimeAssemblyFactory)factories.getFactory(AssemblyFactory.class);
         return factory.createEndpointReference(uri);
     }
-    
+
     private String computeEndpointURI(String uri, ServletHost servletHost) {
 
         if (uri == null) {
@@ -274,38 +343,40 @@ public class Axis2ServiceProvider {
 
         // pull out the binding intents to see what sort of transport is required
         PolicySet transportJmsPolicySet = AxisPolicyHelper.getPolicySet(wsBinding, TRANSPORT_JMS_QUALIFIED_INTENT);
-        if (transportJmsPolicySet != null){
+        if (transportJmsPolicySet != null) {
             if (!uri.startsWith("jms:/")) {
                 uri = "jms:" + uri;
             }
-            
+
             // construct the rest of the URI based on the policy. All the details are put
             // into the URI here rather than being place directly into the Axis configuration 
             // as the Axis JMS sender relies on parsing the target URI      
             Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
-            for ( Object policy : transportJmsPolicySet.getPolicies() ) {
-                if ( policy instanceof Axis2ConfigParamPolicy ) {
+            for (Object policy : transportJmsPolicySet.getPolicies()) {
+                if (policy instanceof Axis2ConfigParamPolicy) {
                     axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                    Iterator paramIterator = axis2ConfigParamPolicy.getParamElements().get(DEFAULT_QUEUE_CONNECTION_FACTORY).getChildElements();
-                    
-                    if (paramIterator.hasNext()){
+                    Iterator paramIterator =
+                        axis2ConfigParamPolicy.getParamElements().get(DEFAULT_QUEUE_CONNECTION_FACTORY)
+                            .getChildElements();
+
+                    if (paramIterator.hasNext()) {
                         StringBuffer uriParams = new StringBuffer("?");
-                       
-                        while (paramIterator.hasNext()){
+
+                        while (paramIterator.hasNext()) {
                             OMElement parameter = (OMElement)paramIterator.next();
-                            uriParams.append(parameter.getAttributeValue(new QName("","name")));
+                            uriParams.append(parameter.getAttributeValue(new QName("", "name")));
                             uriParams.append("=");
                             uriParams.append(parameter.getText());
-                            
-                            if (paramIterator.hasNext()){
+
+                            if (paramIterator.hasNext()) {
                                 uriParams.append("&");
                             }
                         }
-                        
+
                         uri = uri + uriParams;
                     }
                 }
-            }                     
+            }
         } else {
             if (!uri.startsWith("jms:")) {
                 uri = servletHost.getURLMapping(uri).toString();
@@ -323,10 +394,11 @@ public class Axis2ServiceProvider {
                 AxisService axisService = createAxisService(entry.getKey(), entry.getValue());
                 configContext.getAxisConfiguration().addService(axisService);
             }
-          
+
             Axis2ServiceServlet servlet = null;
             for (String endpointURL : urlMap.keySet()) {
-                if (endpointURL.startsWith("http://") || endpointURL.startsWith("https://") || endpointURL.startsWith("/")) {
+                if (endpointURL.startsWith("http://") || endpointURL.startsWith("https://")
+                    || endpointURL.startsWith("/")) {
                     if (servlet == null) {
                         servlet = new Axis2ServiceServlet();
                         servlet.init(configContext);
@@ -334,34 +406,36 @@ public class Axis2ServiceProvider {
                     //[nash] configContext.setContextRoot(endpointURL);
                     servletHost.addServletMapping(endpointURL, servlet);
                 } else if (endpointURL.startsWith("jms")) {
-                    logger.log(Level.INFO,"Axis2 JMS URL=" + endpointURL);
-                    
+                    logger.log(Level.INFO, "Axis2 JMS URL=" + endpointURL);
+
                     jmsListener = new JMSListener();
                     jmsSender = new JMSSender();
                     ListenerManager listenerManager = configContext.getListenerManager();
-                    TransportInDescription trsIn = configContext.getAxisConfiguration().getTransportIn(Constants.TRANSPORT_JMS);
-                                    
+                    TransportInDescription trsIn =
+                        configContext.getAxisConfiguration().getTransportIn(Constants.TRANSPORT_JMS);
+
                     // get JMS transport parameters from the computed URL
                     Map<String, String> jmsProps = JMSUtils.getProperties(endpointURL);
 
                     // collect the parameters used to configure the JMS transport
                     OMFactory fac = OMAbstractFactory.getOMFactory();
-                    OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONNECTION_FACTORY, null);                    
+                    OMElement parms = fac.createOMElement(DEFAULT_QUEUE_CONNECTION_FACTORY, null);
 
-                    for ( String key : jmsProps.keySet() ) {
+                    for (String key : jmsProps.keySet()) {
                         OMElement param = fac.createOMElement("parameter", null);
-                        param.addAttribute( "name", key, null );
+                        param.addAttribute("name", key, null);
                         param.addChild(fac.createOMText(param, jmsProps.get(key)));
                         parms.addChild(param);
                     }
-                    
+
                     Parameter queueConnectionFactory = new Parameter(DEFAULT_QUEUE_CONNECTION_FACTORY, parms);
-                    trsIn.addParameter( queueConnectionFactory );
-                    
+                    trsIn.addParameter(queueConnectionFactory);
+
                     trsIn.setReceiver(jmsListener);
 
-                    configContext.getAxisConfiguration().addTransportIn( trsIn );
-                    TransportOutDescription trsOut = configContext.getAxisConfiguration().getTransportOut(Constants.TRANSPORT_JMS);
+                    configContext.getAxisConfiguration().addTransportIn(trsIn);
+                    TransportOutDescription trsOut =
+                        configContext.getAxisConfiguration().getTransportOut(Constants.TRANSPORT_JMS);
                     //configContext.getAxisConfiguration().addTransportOut( trsOut );
                     trsOut.setSender(jmsSender);
 
@@ -387,17 +461,16 @@ public class Axis2ServiceProvider {
     }
 
     public void stop() {
-        if ( jmsListener != null ) {
+        if (jmsListener != null) {
             jmsListener.stop();
             jmsListener.destroy();
-        }
-        else {
+        } else {
             for (String endpointURL : urlMap.keySet()) {
                 servletHost.removeServletMapping(endpointURL);
             }
         }
 
-        if ( jmsSender != null )
+        if (jmsSender != null)
             jmsSender.stop();
 
         try {
@@ -405,14 +478,14 @@ public class Axis2ServiceProvider {
                 // get the path to the service
                 URI uriPath = new URI(endpointURL);
                 String stringURIPath = uriPath.getPath();
-            
+
                 /* [nash] Need a leading slash for WSDL imports to work with ?wsdl
                 // remove any "/" from the start of the path
                 if (stringURIPath.startsWith("/")) {
                     stringURIPath = stringURIPath.substring(1, stringURIPath.length());
                 }
                 */
-            
+
                 configContext.getAxisConfiguration().removeService(stringURIPath);
             }
         } catch (URISyntaxException e) {
@@ -454,7 +527,7 @@ public class Axis2ServiceProvider {
 
         return axisService;
     }
-    
+
     /**
      * Workaround for https://issues.apache.org/jira/browse/AXIS2-3205
      * @param definition
@@ -462,11 +535,11 @@ public class Axis2ServiceProvider {
      * @return
      */
     private static Definition getDefinition(Definition definition, QName serviceName) {
-        
-        if (serviceName == null){
+
+        if (serviceName == null) {
             return definition;
         }
-        
+
         if (definition == null) {
             return null;
         }
@@ -523,9 +596,9 @@ public class Axis2ServiceProvider {
         axisService.setName(name);
         axisService.setEndpointURL(endpointURL);
         axisService.setDocumentation("Tuscany configured AxisService for service: " + endpointURL);
-        for ( Iterator i = axisService.getEndpoints().values().iterator(); i.hasNext(); ) {
+        for (Iterator i = axisService.getEndpoints().values().iterator(); i.hasNext();) {
             AxisEndpoint ae = (AxisEndpoint)i.next();
-            if (endpointURL.startsWith("jms") ) {
+            if (endpointURL.startsWith("jms")) {
                 Parameter qcf = new Parameter(JMSConstants.CONFAC_PARAM, null);
                 qcf.setValue(DEFAULT_QUEUE_CONNECTION_FACTORY);
                 axisService.addParameter(qcf);
@@ -585,14 +658,14 @@ public class Axis2ServiceProvider {
         }
     }
 
-    private void modifySchemaImportsAndIncludes(Definition definition, String name){
+    private void modifySchemaImportsAndIncludes(Definition definition, String name) {
         // adjust the schema locations in types section
         Types types = definition.getTypes();
         if (types != null) {
             for (Iterator iter = types.getExtensibilityElements().iterator(); iter.hasNext();) {
                 Object ext = iter.next();
-                if (ext instanceof UnknownExtensibilityElement &&
-                    XSD_QNAME_LIST.contains(((UnknownExtensibilityElement)ext).getElementType())) {
+                if (ext instanceof UnknownExtensibilityElement && XSD_QNAME_LIST
+                    .contains(((UnknownExtensibilityElement)ext).getElementType())) {
                     changeLocations(((UnknownExtensibilityElement)ext).getElement(), name);
                 }
             }
@@ -669,7 +742,7 @@ public class Axis2ServiceProvider {
         String callbackAddress = null;
         String callbackID = null;
         Object conversationID = null;
-        
+
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
@@ -702,30 +775,28 @@ public class Axis2ServiceProvider {
                     }
                 }
             }
-            
+
             // get policy specified headers
-            for (Axis2HeaderPolicy policy : axis2HeaderPolicies){
+            for (Axis2HeaderPolicy policy : axis2HeaderPolicies) {
                 //Axis2BindingHeaderConfigurator.getHeader(inMC, msg, policy.getHeaderName());
             }
-            
+
             if (axis2TokenAuthenticationPolicy != null) {
                 Axis2SOAPHeaderString tokenHeader = new Axis2SOAPHeaderString();
-                Axis2BindingHeaderConfigurator.getHeader(inMC, 
-                                                         msg, 
-                                                         axis2TokenAuthenticationPolicy.getTokenName(), 
+                Axis2BindingHeaderConfigurator.getHeader(inMC,
+                                                         msg,
+                                                         axis2TokenAuthenticationPolicy.getTokenName(),
                                                          tokenHeader);
             }
         }
-        
+
         //fill message with QoS context info 
         fillQoSContext(msg, inMC);
-        
+
         // if reference parameters are needed, create a new "From" EPR to hold them
         EndpointReference from = null;
         ReferenceParameters parameters = null;
-        if (callbackAddress != null ||
-            callbackID != null ||
-            conversationID != null) {
+        if (callbackAddress != null || callbackID != null || conversationID != null) {
             from = createEndpointReference(null);
             parameters = from.getReferenceParameters();
             msg.setFrom(from);
@@ -745,11 +816,11 @@ public class Axis2ServiceProvider {
         if (basicAuthenticationPolicy != null) {
             Axis2BindingBasicAuthenticationConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
         }
-        
+
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
-        Object response =  wire.invoke(op, msg);
-        
+        Object response = wire.invoke(op, msg);
+
         return response;
     }
 
@@ -766,47 +837,45 @@ public class Axis2ServiceProvider {
     protected Binding getBinding() {
         return wsBinding;
     }
-    
-    private void createPolicyHandlers() throws IllegalAccessException,
-                                               InstantiationException, 
-                                               ClassNotFoundException {
+
+    private void createPolicyHandlers() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         if (wsBinding instanceof PolicySubject) {
-            
+
             // code to create policy handlers using a policy SPI based
             // on policy providers
-/*            
-            List<PolicyProvider> policyProviders = ((RuntimeComponentService)contract).getPolicyProviders(wsBinding);
-            
-            for (PolicyProvider policyProvider : policyProviders){
-                policyHandler = policyProvider.createHandler();
-                if (policyHandler != null) {
-                    policyHandlerList.add(policyHandler);
-                } 
-            }
-*/           
+            /*            
+                        List<PolicyProvider> policyProviders = ((RuntimeComponentService)contract).getPolicyProviders(wsBinding);
+                        
+                        for (PolicyProvider policyProvider : policyProviders){
+                            policyHandler = policyProvider.createHandler();
+                            if (policyHandler != null) {
+                                policyHandlerList.add(policyHandler);
+                            } 
+                        }
+            */
         }
-    }      
-    
+    }
+
     private void fillQoSContext(Message message, MessageContext axis2MsgCtx) {
-        if ( axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) != null &&
-            axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) instanceof Vector ) {
+        if (axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) != null && axis2MsgCtx
+            .getProperty(WSHandlerConstants.RECV_RESULTS) instanceof Vector) {
             Vector recvResults = (Vector)axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS);
-            for ( int count1 = 0 ; count1 < recvResults.size() ; ++count1 ) {
-                if ( recvResults.elementAt(count1) instanceof WSHandlerResult ) {
+            for (int count1 = 0; count1 < recvResults.size(); ++count1) {
+                if (recvResults.elementAt(count1) instanceof WSHandlerResult) {
                     WSHandlerResult wshr = (WSHandlerResult)recvResults.elementAt(count1);
                     Vector results = wshr.getResults();
-                    for ( int count2 = 0 ; count2 < results.size() ; ++count2 ) {
-                        if ( results.elementAt(count2) instanceof WSSecurityEngineResult ) {
-                            WSSecurityEngineResult securityResult = 
+                    for (int count2 = 0; count2 < results.size(); ++count2) {
+                        if (results.elementAt(count2) instanceof WSSecurityEngineResult) {
+                            WSSecurityEngineResult securityResult =
                                 (WSSecurityEngineResult)wshr.getResults().elementAt(count2);
-                            if ( securityResult.get("principal") != null ) {
+                            if (securityResult.get("principal") != null) {
                                 message.getHeaders().add(securityResult.get("principal"));
                             }
                         }
                     }
                 }
             }
-            
+
         }
     }
 }
