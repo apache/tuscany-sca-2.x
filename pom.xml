@@ -513,7 +513,7 @@
                         <reportFormat>brief</reportFormat>
                         <useFile>false</useFile>
                         <forkMode>once</forkMode>
-                        <argLine>-ea -Xmx256m</argLine>
+                        <argLine>-ea -Xmx256m -Dorg.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled=false</argLine>
                     </configuration>
                 </plugin>
 
