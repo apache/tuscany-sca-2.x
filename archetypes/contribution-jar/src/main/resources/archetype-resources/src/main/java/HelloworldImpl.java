@@ -18,10 +18,19 @@
  */
 package ${package};
 
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.EagerInit;
+
+@Scope("COMPOSITE") @EagerInit
 public class HelloworldImpl implements HelloworldService {
 
     public String sayHello(String name) {
         return "Hello " + name;
     }
 
+    @Init
+    public void init() {
+        System.out.println(sayHello("world"));
+    }
 }

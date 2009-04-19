@@ -18,6 +18,7 @@
  */
 package ${package};
 
+import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Scope;
 import org.oasisopen.sca.annotation.EagerInit;
 
@@ -28,4 +29,8 @@ public class HelloworldImpl implements HelloworldService {
         return "Hello " + name;
     }
 
+    @Init
+    public void init() {
+        System.out.println(sayHello("world"));
+    }
 }
