@@ -47,8 +47,7 @@ import org.apache.wicket.IClusterable;
  * 
  * @see SpringBeanLocator
  * 
- * @author Igor Vaynberg (ivaynberg)
- * 
+ * Based on code from Apache Wicket by Igor Vaynberg
  */
 public interface IContextLocator extends IClusterable
 {

@@ -39,9 +39,7 @@ import org.apache.wicket.protocol.http.WebApplication;
  * components such as {@link Session}, {@link Model}, and any other pojo can be injected by calling
  * <code>InjectorHolder.getInjector().inject(this)</code> in their constructor.
  * 
- * @author Igor Vaynberg (ivaynberg)
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- * 
+ * Based on code from Apache Wicket by Igor Vaynberg and Justin Lee
  */
 public class TuscanyComponentInjector extends ComponentInjector
 {
