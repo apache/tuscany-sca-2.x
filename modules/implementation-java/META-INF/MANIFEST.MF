@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.implementation.java.introspect;
- uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.impleme
- ntation.java,org.oasisopen.sca";version="2.0.0",org.apache.tuscany.sca.imple
- mentation.java;uses:="org.apache.tuscany.sca.assembly,org.apache.tusc
- any.sca.implementation.java.introspect,org.apache.tuscany.sca.core,or
- g.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef.java"
- ;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.implementation.java;version="2.0.0";
+  uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.implementation.java.introspect,
+   org.apache.tuscany.sca.core,
+   org.apache.tuscany.sca.policy,
+   org.apache.tuscany.sca.interfacedef.java",
+ org.apache.tuscany.sca.implementation.java.introspect;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.implementation.java,org.oasisopen.sca",
+ org.apache.tuscany.sca.implementation.java.introspect.impl;version="2.0.0"
 Private-Package: org.apache.tuscany.sca.implementation.java.impl;versi
  on="2.0.0",org.apache.tuscany.sca.implementation.java.introspect.impl;v
  ersion="2.0.0"
