@@ -17,11 +17,11 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           targetNamespace="http://sample"
-           xmlns:sample="http://sample"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://contextimports"
+           xmlns:sample="http://contextimports"
            name="ContextImports"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <component name="CalculatorServiceComponent">
         <implementation.spring location="META-INF/sca/context-imports/SpringImport-context.xml"/>
