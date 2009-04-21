@@ -18,16 +18,13 @@
  * under the License.    
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           targetNamespace="http://implementationpolicies"
-           xmlns:sample="http://implementationpolicies"
-           name="ImplementationPolicies"
+           targetNamespace="http://sample"
+           xmlns:sample="http://sample"
+           name="Calculator"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <component name="CalculatorServiceComponent">
-        <implementation.spring location="META-INF/sca/implementation-policies/CalculatorService-context.xml">		
-			<operation name="divide" requires="tuscany:logging"/>
-			<operation name="subtract" requires="tuscany:logging"/>
-		</implementation.spring>
+        <implementation.spring location="META-INF/sca/implementation-policies/CalculatorService-context.xml"/>		
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />

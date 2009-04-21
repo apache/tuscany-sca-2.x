@@ -36,7 +36,7 @@ public class StockQuoteServer {
         System.out.println("Starting the Sample SCA StockQuote Service...");
 
         String location = ContributionLocationHelper.getContributionLocation("context/multiple/MultipleContext.composite");
-        Node node = NodeFactory.newInstance().createNode("MultipleContext.composite", new Contribution("c1", location));
+        Node node = NodeFactory.newInstance().createNode("context/multiple/MultipleContext.composite", new Contribution("c1", location));
         node.start();
         
         // Method 1: To access the Spring Application Context instance
