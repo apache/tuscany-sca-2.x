@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.itest.spring;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -31,8 +33,9 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-    	NodeFactory factory = NodeFactory.newInstance();
-        node = factory.createNode(getCompositeName());
+    	NodeFactory factory = NodeFactory.newInstance();    	
+    	String location = ContributionLocationHelper.getContributionLocation(getCompositeName());
+        node = factory.createNode(getCompositeName(), new Contribution("c1", location));        
     	node.start();
         service = ((Client)node).getService(getServiceClass(), "ClientComponent");
     }

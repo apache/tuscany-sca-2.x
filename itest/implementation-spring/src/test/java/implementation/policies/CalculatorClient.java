@@ -42,7 +42,7 @@ public class CalculatorClient {
         }
 
         String location = ContributionLocationHelper.getContributionLocation("implementation/policies/ImplementationPolicies.composite");
-        Node node = NodeFactory.newInstance().createNode("ImplementationPolicies.composite", new Contribution("c1", location));
+        Node node = NodeFactory.newInstance().createNode("implementation/policies/ImplementationPolicies.composite", new Contribution("c1", location));
         node.start();   
               
         CalculatorService calculatorService = 

@@ -35,7 +35,7 @@ public class CalculatorClient {
     public static void main(String[] args) throws Exception {        
 
     	String location = ContributionLocationHelper.getContributionLocation("spring/annotations/Calculator.composite");
-        Node node = NodeFactory.newInstance().createNode("Calculator.composite", new Contribution("c1", location));
+        Node node = NodeFactory.newInstance().createNode("spring/annotations/Calculator.composite", new Contribution("c1", location));
         node.start();        
               
         CalculatorService calculatorService = 

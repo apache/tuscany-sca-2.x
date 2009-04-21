@@ -17,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           targetNamespace="http://sample"
+<composite targetNamespace="http://sample"
+           xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"           
            xmlns:sample="http://sample"
            name="Calculator"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
