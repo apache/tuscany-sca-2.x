@@ -314,31 +314,41 @@ public class EquinoxHost {
             }
 
             // Start all our bundles for now to help diagnose any class loading issues
-            //            for (Bundle bundle: bundleContext.getBundles()) {
-            //                if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
-            //                    if ((bundle.getState() & Bundle.ACTIVE) == 0) {
-            //                        if (logger.isLoggable(Level.FINE)) {
-            //                            logger.fine("Starting bundle: " + string(bundle, false));
-            //                        }
-            //                        try {
-            //                            //bundle.start();
-            //                        } catch (Exception e) {
-            //                            logger.log(Level.SEVERE, e.getMessage(), e);
-            //                            // throw e;
-            //                        }
-            //                        if (logger.isLoggable(Level.FINE)) {
-            //                            logger.fine("Bundle: " + string(bundle, false));
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //            logger.fine("Tuscany bundles are started in " + (System.currentTimeMillis() - activateStart) + " ms.");
+            // startBundles( bundleContext );
             return bundleContext;
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
+    
+    /**
+     * Start all the bundles as a check for class loading issues
+     * @param bundleContext - the bundle context
+     */
+    private void startBundles( BundleContext bundleContext ) {
+    	
+        for (Bundle bundle: bundleContext.getBundles()) {
+        //    if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
+                if ((bundle.getState() & Bundle.ACTIVE) == 0) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Starting bundle: " + string(bundle, false));
+                    } // end if
+                    try {
+                        bundle.start();
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                        // throw e;
+                    } // end try
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Bundle: " + string(bundle, false));
+                    } // end if
+                } //  end if
+        //    } // end if
+        } // end for
+        logger.fine("Tuscany bundles are started.");
+        return;
+    } // end startBundles
 
     public Bundle installAsBundle(Collection<URL> jarFiles, String libraryBundleName) throws IOException,
         BundleException {
@@ -398,9 +408,16 @@ public class EquinoxHost {
                 logger.fine("Installing third-party jar as bundle: " + jarFile);
             }
             InputStream is = thirdPartyLibraryBundle(Collections.singleton(jarFile), symbolicName, version);
+            // try/catch and output message added 10/04/2009 Mike Edwards
+            try {
             bundle = bundleContext.installBundle(symbolicName, is);
             allBundles.put(symbolicName, bundle);
             installedBundles.add(bundle);
+            } catch (BundleException e) {
+            	System.out.println("EquinoxHost:installAsBundle - BundleException raised when dealing with jar " + symbolicName);
+            	throw (e);
+            } // end try
+            // end of addition
         }
         return bundle;
     }
@@ -416,7 +433,11 @@ public class EquinoxHost {
 
                 // Use classpath entries from a distribution if there is one and the classpath
                 // entries on the current application's classloader
-                bundleLocations = runtimeClasspathEntries(true, true, false);
+            	// *** Changed by Mike Edwards, 9th April 2009 ***
+            	// -- this place is reached when starting from within Eclipse so why use the classpath??
+            	// bundleLocations = runtimeClasspathEntries(true, true, false);
+            	// Instead search the modules directory
+                bundleLocations = runtimeClasspathEntries(true, true, true);
             }
         }
         return bundleLocations;

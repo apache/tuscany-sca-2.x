@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
@@ -240,7 +241,14 @@ final class NodeLauncherUtil {
      * starting with -, then some digits, then . or - or _, then some digits again
      * 
      */
-    private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+)*");
+    // Mike Edwards 13/04/2009 - this original pattern allows for any number of repeated
+    // groups of digits, so that 1.2.3.4 is legal, for example.  The problem with this is
+    // that OSGi only deals with a maximum of 3 groups of digits...
+    // private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+)*");
+    //
+    // This updated version restricts the allowed patterns to a maximum of 3 groups of 
+    // digits so that "1", "1.2" and "1.2.3" are allowed but not "1.2.3.4" etc
+    private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+){0,2}");
 
     /**
      * Returns the version number to use for the given JAR file.
@@ -265,7 +273,12 @@ final class NodeLauncherUtil {
         String version = "0.0.0";
         if (matcher.find()) {
             version = matcher.group();
+            // Remove the leading "-" character
             version = version.substring(1);
+            // The Pattern above allows the version string to contain "-" and "_" as digit separators.  
+            // OSGi only allows for "." as a separator thus any "-" and "_" characters in the version string must be replaced by "."
+            version = version.replace('-', '.');
+            version = version.replace('_', '.');
         }
         return version;
     }
@@ -367,6 +380,31 @@ final class NodeLauncherUtil {
             }
         }
     }
+    
+    /**
+     * Finds the OSGi manifest file for a JAR file, where the manifest file is held in a META-INF directory
+     * alongside the JAR 
+     * @param jarURL - The URL of the JAR file
+     * @return - a Manifest object corresponding to the manifest file, or NULL if there is no OSGi manifest
+     */
+    static private Manifest findOSGiManifest( URL jarURL ) {
+		try{
+			File jarFile = new File( jarURL.toURI() );
+			File theManifestFile = new File(jarFile.getParent(), "META-INF/MANIFEST.MF");
+			if( theManifestFile.exists() ) {
+				// Create manifest object by reading the manifest file
+				Manifest manifest = new Manifest( new FileInputStream(theManifestFile) );
+				// Check that this manifest file has the necessary OSGi metadata
+				String bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+				if( bundleName != null ) {
+					return manifest;
+				} // end if
+			} // end if
+		} catch ( Exception e ) {
+			// Could not read the manifest - continue
+		}
+		return null;
+    } // end findOSGiManifest
 
     /**
      * Generate a manifest from a list of third-party JAR files.
@@ -381,7 +419,17 @@ final class NodeLauncherUtil {
                                                             String bundleSymbolicName,
                                                             String bundleVersion) throws IllegalStateException {
         try {
-
+        	// Added by Mike Edwards, 12/04/2009 - to handle the third party JAR files in the distribution that
+        	// have separate OSGi manifest files provided alongside them
+        	// In some cases a single JAR file is already accompanied by a MANIFEST.MF file, sitting in
+        	// a META-INF directory alongside the JAR
+        	//if( jarFiles.size() == 1 ){
+        	//	URL theJar = jarFiles.iterator().next();
+        	//	Manifest theManifest = findOSGiManifest( theJar );
+        	//	if( theManifest != null ) return theManifest;
+        	//} // end if
+        	// End of addition
+        	
             // List exported packages and bundle classpath entries
             StringBuffer classpath = new StringBuffer();
             StringBuffer exports = new StringBuffer();
@@ -825,7 +873,10 @@ final class NodeLauncherUtil {
                                                                    jarDirectoryURLs,
                                                                    jarURLs,
                                                                    new StandAloneDevelopmentClassesFileNameFilter());
-                            }
+                                // Added Mike Edwards, 09/04/2009
+                                // Get hold of the Libraries that are used by the Tuscany modules
+                                collectDevelopmentLibraryEntries( modulesDirectory, jarDirectoryURLs, jarURLs );
+                            } // end if
                         }
                     }
                 }
@@ -1053,6 +1104,29 @@ final class NodeLauncherUtil {
     }
 
     /**
+     * A file name filter used to filter the libraries in the \java\sca\distribution\all\target\modules
+     * directory
+     */
+    private static class DistributionLibsFileNameFilter implements FilenameFilter {
+
+        public boolean accept(File dir, String name) {
+            name = name.toLowerCase();
+
+            // Include subdirectories
+            if (new File(dir, name).isDirectory()) { return true; }
+
+            // Filter out the Tuscany jars - since the development versions of these are used
+            // from the \target\classes directories...
+            if (name.startsWith("tuscany")) { return false; }
+
+            // Include JAR and MAR files
+            if (name.endsWith(".jar")) { return true; }
+            if (name.endsWith(".mar")) { return true; }
+            return false;
+        } // end accept
+    } // end DistributionLibsFileNameFilter
+
+    /**
      * Returns the File object representing  the given URL.
      * 
      * @param url
@@ -1108,6 +1182,34 @@ final class NodeLauncherUtil {
             collectTargetClassesClasspathEntries(directoryFile, jarURLs, filter);
 
         }
-    }
+    } // end collectDevelopmentClasspathEntries
+    
+    /**
+     * Collect the dependent Library JAR files for the development use of Tuscany
+     * It is assumed that these live in the \java\sca\distribution\all\target\modules
+     * directory, where the development modules live in \java\sca\modules, but that 
+     * same directory also contains prebuilt versions of the Tuscany JARs, which must be
+     * filtered out so as not to clash with the development versions of the code
+     * 
+     * @param directory - the \java\sca\modules directory
+     * @param jarDirectoryURLs
+     * @param jarURLs
+     * @throws MalformedURLException
+     */
+    private static void collectDevelopmentLibraryEntries(File modulesDirectory,
+                                                         Set<URL> jarDirectoryURLs,
+                                                         Set<URL> jarURLs) throws MalformedURLException {
+        // Get the \java\sca directory
+    	File rootDirectory = modulesDirectory.getParentFile();
+    	// Get the \java\sca\distribution\all\target\modules
+        String sep = File.separator;
+        File libsDirectory = new File(rootDirectory, "distribution" + sep + "all" + sep + "target" + sep + "modules");
+        URL libsURL = libsDirectory.toURI().toURL();
+        if (!jarDirectoryURLs.contains(libsURL) && libsDirectory.exists()) {
+            // Collect files under the libs module directory
+            jarDirectoryURLs.add(libsURL);
+            collectClasspathEntries(libsDirectory, jarURLs, new DistributionLibsFileNameFilter(), true);
+        } // end if
+    } // end collectDevelopmentLibraryEntries
 
 }
