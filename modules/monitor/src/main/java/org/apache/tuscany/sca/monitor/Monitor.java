@@ -76,4 +76,16 @@ public interface Monitor {
      */
     Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams );
     
+    /**
+     * Set the name of an artifact for which errors are Monitored
+     * @param artifactName the artifact name
+     */
+    void setArtifactName( String artifactName );
+    
+    /**
+     * Get the name of the artifact for which errors are Monitored
+     * @return the name of the Artifact or null if no artifact name has been set
+     */
+    String getArtifactName();
+    
 }
