@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
@@ -43,13 +43,16 @@ import org.junit.Test;
 
 /**
  * Test NamespaceExportProcessorTestCase
- *  
+ *
  * @version $Rev$ $Date$
  */
 public class NamespaceExportProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\" namespace=\"http://foo\"/>";
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>"
+            + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\""
+            + " ns:ext=\"extended\" namespace=\"http://foo\">"
+            + "<ns:foo/></export>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\"/>";
@@ -83,6 +86,8 @@ public class NamespaceExportProcessorTestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
         NamespaceExport namespaceExport = (NamespaceExport)staxProcessor.read(reader);
         assertEquals("http://foo", namespaceExport.getNamespace());
+        assertEquals(1, namespaceExport.getAttributeExtensions().size());
+        assertEquals(1, namespaceExport.getExtensions().size());
     }
 
     /**

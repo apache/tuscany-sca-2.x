@@ -32,7 +32,6 @@ class ArtifactImpl implements Artifact {
     private String location;
     private Object model;
     private boolean unresolved;
-    private byte[] contents;
 
     ArtifactImpl() {
     }
@@ -59,14 +58,6 @@ class ArtifactImpl implements Artifact {
 
     public void setModel(Object model) {
         this.model = model;
-    }
-
-    public byte[] getContents() {
-        return contents;
-    }
-
-    public void setContents(byte[] contents) {
-        this.contents = contents;
     }
 
     public boolean isUnresolved() {

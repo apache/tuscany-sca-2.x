@@ -14,6 +14,8 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Namespace Import/Export Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",

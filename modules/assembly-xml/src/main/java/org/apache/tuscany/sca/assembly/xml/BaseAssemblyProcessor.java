@@ -70,7 +70,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Extensible;
-import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -78,7 +77,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -833,48 +831,12 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      */
     protected void readExtendedAttributes(XMLStreamReader reader,
                                           QName elementName,
-                                          Extensible estensibleElement,
+                                          Extensible extensible,
                                           StAXAttributeProcessor extensionAttributeProcessor)
         throws ContributionReadException, XMLStreamException {
-        for (int a = 0; a < reader.getAttributeCount(); a++) {
-            QName attributeName = reader.getAttributeName(a);
-            if (attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
-                if (!elementName.getNamespaceURI().equals(attributeName.getNamespaceURI())) {
-                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader);
-                    Extension attributeExtension;
-                    if (attributeValue instanceof Extension) {
-                        attributeExtension = (Extension)attributeValue;
-                    } else {
-                        attributeExtension = assemblyFactory.createExtension();
-                        attributeExtension.setQName(attributeName);
-                        attributeExtension.setAttribute(true);
-                        attributeExtension.setValue(attributeValue);
-                    }
-                    estensibleElement.getAttributeExtensions().add(attributeExtension);
-                }
-            }
-        }
+        super.readExtendedAttributes(reader, extensible, extensionAttributeProcessor, assemblyFactory);
     }
 
-    /**
-     * 
-     * @param attributeModel
-     * @param writer
-     * @param extensibleElement
-     * @param extensionAttributeProcessor
-     * @throws ContributionWriteException
-     * @throws XMLStreamException
-     */
-    protected void writeExtendedAttributes(XMLStreamWriter writer,
-                                           Extensible extensibleElement,
-                                           StAXAttributeProcessor extensionAttributeProcessor)
-        throws ContributionWriteException, XMLStreamException {
-        for (Extension extension : extensibleElement.getAttributeExtensions()) {
-            if (extension.isAttribute()) {
-                extensionAttributeProcessor.write(extension, writer);
-            }
-        }
-    }
 
     /*protected void validatePolicySets(PolicySubject policySetAttachPoint) 
                                                             throws ContributionResolveException {

@@ -15,6 +15,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Domain Workspace Model
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",

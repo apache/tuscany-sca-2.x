@@ -177,29 +177,22 @@ public class NodeFactoryImpl {
         ConfiguredNodeImplementation configuration = getNodeConfiguration(bundle);
         if (compositeContent != null) {
 
-            Contribution deploymentContrib = createDeploymentContribution(compositeContent);
+            Composite deploymentComposite =
+                addDeploymentComposite(configuration.getContributions().get(0), compositeContent);
 
-            configuration.setComposite(deploymentContrib.getDeployables().get(0));
-            configuration.getContributions().add(deploymentContrib);
+            configuration.setComposite(deploymentComposite);
         }
 
         return configuration;
     }
 
     /**
-     * Create an SCA contribution to hold the deployment composite
+     * Add the deployment composite to an installed SCA contribution
      * @param compositeContent The XML string for the deployment composite
-     * @return An SCA contribution with the deployment composite
+     * @return The deployment composite
      * @throws Exception
      */
-    private Contribution createDeploymentContribution(String compositeContent) throws Exception {
-        // Create the deployment contribution
-        Contribution contrib = contributionFactory.createContribution();
-        contrib.setURI(SCA11_TUSCANY_NS + "/contributions/_deployment_");
-        contrib.setLocation(SCA11_TUSCANY_NS + "/contributions/_deployment_");
-        ModelResolver modelResolver = new ExtensibleModelResolver(contrib, modelResolvers, modelFactories);
-        contrib.setModelResolver(modelResolver);
-        contrib.setUnresolved(false);
+    private Composite addDeploymentComposite(Contribution contrib, String compositeContent) throws Exception {
 
         // Load the deployment composite
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(compositeContent));
@@ -210,16 +203,14 @@ public class NodeFactoryImpl {
 
         Artifact compositeArtifact = contributionFactory.createArtifact();
         compositeArtifact.setModel(deploymentComposite);
-        compositeArtifact.setURI("META-INF/_deployment_.composite");
-        compositeArtifact.setContents(compositeContent.getBytes("UTF-8"));
-        compositeArtifact.setLocation(SCA11_TUSCANY_NS + "/contributions/_deployment_/META-INF/_deployment_.composite");
+        compositeArtifact.setURI(deploymentComposite.getName()+".composite");
         compositeArtifact.setUnresolved(false);
 
         contrib.getArtifacts().add(compositeArtifact);
         contrib.getDeployables().add(deploymentComposite);
 
         analyzeProblems();
-        return contrib;
+        return deploymentComposite;
     }
 
     private synchronized void init() {
