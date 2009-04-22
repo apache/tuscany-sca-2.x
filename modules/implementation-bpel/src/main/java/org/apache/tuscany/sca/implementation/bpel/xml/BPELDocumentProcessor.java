@@ -64,23 +64,38 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
-    public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
-    public final static QName BPEL_EXECUTABLE_DEFINITION = new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", "process");
-    private static final String SCA_BPEL_NS = "http://docs.oasis-open.org/ns/opencsa/sca-bpel/200801";
-    private static final String BPEL_NS = "http://schemas.xmlsoap.org/ws/2004/03/business-process/";
-    private static final String BPEL_PLINK_NS = "http://schemas.xmlsoap.org/ws/2004/03/partner-link/";
-    private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
-    private static final QName PROCESS_ELEMENT = new QName(BPEL_NS, "process");
-    private static final QName PARTNERLINK_ELEMENT = new QName(BPEL_NS, "partnerLink");
-    private static final QName ONEVENT_ELEMENT = new QName(BPEL_NS, "onEvent");
-    private static final QName RECEIVE_ELEMENT = new QName(BPEL_NS, "receive");
-    private static final QName ONMESSAGE_ELEMENT = new QName(BPEL_NS, "onMessage");
-    private static final QName INVOKE_ELEMENT = new QName(BPEL_NS, "invoke");
-    private static final QName IMPORT_ELEMENT = new QName(BPEL_NS, "import");
-    private static final String LINKTYPE_NAME = "partnerLinkType";
-    private static final QName LINKTYPE_ELEMENT = new QName(BPEL_PLINK_NS, LINKTYPE_NAME);
-    private final static String NAME_ELEMENT = "name";
-    private final static String TARGET_NAMESPACE = "targetNamespace";
+//    public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
+//    public final static QName BPEL_EXECUTABLE_DEFINITION = new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", "process");
+
+    private static final String SCA_BPEL_NS 	= "http://docs.oasis-open.org/ns/opencsa/sca-bpel/200801";
+    private static final String WSDL_NS 		= "http://schemas.xmlsoap.org/wsdl/";
+
+    // BPEL 1.1
+    private static final String BPEL_NS 		= "http://schemas.xmlsoap.org/ws/2004/03/business-process/";
+    private static final String BPEL_PLINK_NS 	= "http://schemas.xmlsoap.org/ws/2004/03/partner-link/";
+    private final static String NAME_ELEMENT 		= "name";
+    private static final String LINKTYPE_NAME 		= "partnerLinkType";
+    private final static String TARGET_NAMESPACE 	= "targetNamespace";
+    private static final QName PROCESS_ELEMENT 		= new QName(BPEL_NS, "process");
+    private static final QName PARTNERLINK_ELEMENT 	= new QName(BPEL_NS, "partnerLink");
+    private static final QName ONEVENT_ELEMENT 		= new QName(BPEL_NS, "onEvent");
+    private static final QName RECEIVE_ELEMENT 		= new QName(BPEL_NS, "receive");
+    private static final QName ONMESSAGE_ELEMENT 	= new QName(BPEL_NS, "onMessage");
+    private static final QName INVOKE_ELEMENT 		= new QName(BPEL_NS, "invoke");
+    private static final QName IMPORT_ELEMENT 		= new QName(BPEL_NS, "import");
+    private static final QName LINKTYPE_ELEMENT 	= new QName(BPEL_PLINK_NS, LINKTYPE_NAME);
+    
+    // BPEL 2.0
+    private static final String BPEL_NS_20 			= "http://docs.oasis-open.org/wsbpel/2.0/process/executable";
+    private static final String BPEL_PLINK_NS_20	= "http://docs.oasis-open.org/wsbpel/2.0/plnktype";
+    private static final QName PROCESS_ELEMENT_20 		= new QName(BPEL_NS_20, "process");
+    private static final QName PARTNERLINK_ELEMENT_20 	= new QName(BPEL_NS_20, "partnerLink");
+    private static final QName ONEVENT_ELEMENT_20 		= new QName(BPEL_NS_20, "onEvent");
+    private static final QName RECEIVE_ELEMENT_20 		= new QName(BPEL_NS_20, "receive");
+    private static final QName ONMESSAGE_ELEMENT_20 	= new QName(BPEL_NS_20, "onMessage");
+    private static final QName INVOKE_ELEMENT_20 		= new QName(BPEL_NS_20, "invoke");
+    private static final QName IMPORT_ELEMENT_20 		= new QName(BPEL_NS_20, "import");   
+    private static final QName LINKTYPE_ELEMENT_20 		= new QName(BPEL_PLINK_NS_20, LINKTYPE_NAME);
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
@@ -168,8 +183,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     	model.getPortTypes().addAll(thePortTypes);
     	model.getInterfaces().addAll(theInterfaces);
     	
-    	// Now, for each partnerLink in the BPEL process, find the related partnerLinkType
-    	// element 
+    	// Now, for each partnerLink in the BPEL process, find the related partnerLinkType element 
         List<BPELPartnerLinkElement> thePartnerLinks = model.getPartnerLinks();
         for (BPELPartnerLinkElement thePartnerLink : thePartnerLinks) {
             QName partnerLinkType = thePartnerLink.getPartnerLinkType();
@@ -358,21 +372,23 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                 switch (reader.next()) {
                     case START_ELEMENT:
                         QName qname = reader.getName();
-                        if (BPEL_PROCESS_DEFINITION.equals(qname) || BPEL_EXECUTABLE_DEFINITION.equals(qname)) {
+                        if (PROCESS_ELEMENT.equals(qname) || PROCESS_ELEMENT_20.equals(qname)) {
                             QName processName = new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
                             processDefinition.setName(processName);
-                        } else if (PARTNERLINK_ELEMENT.equals(qname)) {
+                        } else if (PARTNERLINK_ELEMENT.equals(qname) || PARTNERLINK_ELEMENT_20.equals(qname)) {
                             processDefinition.getPartnerLinks().add(processPartnerLinkElement(reader));
-                        } else if (ONEVENT_ELEMENT.equals(qname) || RECEIVE_ELEMENT.equals(qname) || ONMESSAGE_ELEMENT.equals(qname)) {
+                        } else if (ONEVENT_ELEMENT.equals(qname) || RECEIVE_ELEMENT.equals(qname) || ONMESSAGE_ELEMENT.equals(qname) || 
+                        		   ONEVENT_ELEMENT_20.equals(qname) || RECEIVE_ELEMENT_20.equals(qname) || ONMESSAGE_ELEMENT_20.equals(qname)) {
                             processPartnerLinkAsService(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks());
-                        } else if (INVOKE_ELEMENT.equals(qname)) {
+                        } else if (INVOKE_ELEMENT.equals(qname) || INVOKE_ELEMENT_20.equals(qname)) {
                             processPartnerLinkAsReference(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks());
-                        } else if (IMPORT_ELEMENT.equals(qname)) {
+                        } else if (IMPORT_ELEMENT.equals(qname) || IMPORT_ELEMENT_20.equals(qname)) {
                             processDefinition.getImports().add(processImportElement(reader));
                         } // end if
                         break;
                     case END_ELEMENT:
-                        if (PROCESS_ELEMENT.equals(reader.getName())) {
+                    	qname = reader.getName();
+                    	if (PROCESS_ELEMENT.equals(qname) || PROCESS_ELEMENT_20.equals(qname)) {
                             completed = true;
                             break;
                         } // end if
@@ -394,11 +410,10 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param reader
      */
     private BPELPartnerLinkElement processPartnerLinkElement(XMLStreamReader reader) throws ContributionReadException {
-        BPELPartnerLinkElement partnerLink = new BPELPartnerLinkElement(
-                                                                        reader.getAttributeValue(null, "name"),
-                                                                        getQNameValue(reader, reader.getAttributeValue(null, "partnerLinkType")),
-                                                                        reader.getAttributeValue(null, "myRole"),
-                                                                        reader.getAttributeValue(null, "partnerRole"));
+        BPELPartnerLinkElement partnerLink = new BPELPartnerLinkElement( reader.getAttributeValue(null, "name"),
+                                                                         getQNameValue(reader, reader.getAttributeValue(null, "partnerLinkType")),
+                                                                         reader.getAttributeValue(null, "myRole"),
+                                                                         reader.getAttributeValue(null, "partnerRole"));
         
         // See if there are any SCA extension attributes
         String scaService = reader.getAttributeValue(SCA_BPEL_NS, "service");
