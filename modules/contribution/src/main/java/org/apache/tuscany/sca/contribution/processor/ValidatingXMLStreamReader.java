@@ -83,14 +83,14 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
         // get the metadata we need from the document
         handler.setErrorHandler(new ErrorHandler() {        	
             private String getMessage(SAXParseException e) {
-                return "XMLSchema validation problem in: " + e.getSystemId() + ", line: " + e.getLineNumber() + ", column: " + e.getColumnNumber() + "\n" + e.getMessage();
+                return "XMLSchema validation problem in: " + getArtifactName( e.getSystemId() ) + ", line: " + e.getLineNumber() + ", column: " + e.getColumnNumber() + "\n" + e.getMessage();
             }
             
             public void error(SAXParseException exception) throws SAXException {            	
             	if (ValidatingXMLStreamReader.this.monitor == null)
             		logger.warning(getMessage(exception));
             	else            		
-            		ValidatingXMLStreamReader.this.error("SchemaError", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+            		ValidatingXMLStreamReader.this.error("SchemaError", ValidatingXMLStreamReader.this.getClass(), getArtifactName( exception.getSystemId() ), 
                    		exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());                              
             }
             
@@ -98,7 +98,7 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
             	if (ValidatingXMLStreamReader.this.monitor == null)
             		logger.warning(getMessage(exception));
             	else
-            		ValidatingXMLStreamReader.this.error("SchemaFatalError", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+            		ValidatingXMLStreamReader.this.error("SchemaFatalError", ValidatingXMLStreamReader.this.getClass(), getArtifactName( exception.getSystemId() ), 
                        	exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());               
             }
             
@@ -106,8 +106,16 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
             	if (ValidatingXMLStreamReader.this.monitor == null)
             		logger.warning(getMessage(exception));
             	else
-            		ValidatingXMLStreamReader.this.warning("SchemaWarning", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+            		ValidatingXMLStreamReader.this.warning("SchemaWarning", ValidatingXMLStreamReader.this.getClass(), getArtifactName( exception.getSystemId() ), 
                        	exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());                
+            }
+            
+            private String getArtifactName( String input ) {
+            	String artifactName = input;
+            	if( ValidatingXMLStreamReader.this.monitor != null ) {
+            		artifactName = ValidatingXMLStreamReader.this.monitor.getArtifactName();
+            	}
+            	return artifactName;
             }
         });
     }
