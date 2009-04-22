@@ -56,6 +56,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     private List scaDefnSink;
     private Collection<PolicySet> domainPolicySets = null;
     private int scaDefnsCount = 0;
+    private Monitor monitor;
 
     /**
      * Constructs a new composite processor.
@@ -68,6 +69,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
+        this.monitor = monitor;
     }
     
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
@@ -93,6 +95,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
 */            
             
             Composite composite = null;
+            
+            // Tag the monitor with the name of the composite artifact
+            if( monitor != null ) {
+            	monitor.setArtifactName(uri.toString());
+            } //end if
             
             byte[] transformedArtifactContent;
             try {
