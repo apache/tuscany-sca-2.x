@@ -38,6 +38,9 @@ public class MonitorImpl implements Monitor {
     
     // Cache all the problem reported to monitor for further analysis
     private List<Problem> problemCache = new ArrayList<Problem>();
+    
+    // Name of an artifact for which problems are being Monitored
+    private String artifactName = null;
 
     public void problem(Problem problem) {
         
@@ -89,4 +92,12 @@ public class MonitorImpl implements Monitor {
     public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams) {
         return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, messageParams);
     }
+
+	public String getArtifactName() {
+		return artifactName;
+	}
+
+	public void setArtifactName(String artifactName) {
+		this.artifactName = artifactName;
+	}
 }
