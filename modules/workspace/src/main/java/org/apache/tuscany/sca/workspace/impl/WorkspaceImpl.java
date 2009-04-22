@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.impl.ExtensibleImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
@@ -35,7 +36,7 @@ import org.apache.tuscany.sca.workspace.Workspace;
  *
  * @version $Rev$ $Date$
  */
-class WorkspaceImpl implements Workspace {
+class WorkspaceImpl extends ExtensibleImpl implements Workspace {
 
     private List<Contribution> contributions = new ArrayList<Contribution>();
     private String location;

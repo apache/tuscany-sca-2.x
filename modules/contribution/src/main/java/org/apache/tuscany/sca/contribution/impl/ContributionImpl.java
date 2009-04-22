@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.impl.ExtensibleImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
@@ -34,7 +35,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  *
  * @version $Rev$ $Date$
  */
-class ContributionImpl implements Contribution {
+class ContributionImpl extends ExtensibleImpl implements Contribution {
     private String uri;
     private String location;
     private Object model;

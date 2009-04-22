@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.xml;
@@ -47,16 +47,18 @@ import org.junit.Test;
 
 /**
  * Test the contribution metadata processor.
- * 
+ *
  * @version $Rev$ $Date$
  */
 
 public class ContributionMetadataProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
+            + " xmlns:ns=\"http://ns\" ns:foo=\"extended\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable composite=\"ns:Composite2\"/>"
+            + "<ns:bar x=\"1\"/>"
             + "</contribution>";
 
     private static final String INVALID_XML =
@@ -95,6 +97,8 @@ public class ContributionMetadataProcessorTestCase {
         ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
+        assertEquals(1, contribution.getAttributeExtensions().size());
+        assertEquals(1, contribution.getExtensions().size());
     }
 
     @Test

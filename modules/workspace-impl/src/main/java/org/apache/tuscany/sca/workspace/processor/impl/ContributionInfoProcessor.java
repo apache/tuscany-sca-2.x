@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.workspace.processor.impl;
 
@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 /**
  * URLArtifactProcessor that handles contribution files and returns a contribution
  * info model.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ContributionInfoProcessor implements URLArtifactProcessor<Contribution>{
@@ -76,7 +76,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
-    
+
     public ContributionInfoProcessor(FactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
@@ -84,17 +84,17 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         this.artifactProcessor = artifactProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
-    
+
     public String getArtifactType() {
         return ".contribution/info";
     }
-    
+
     public Class<Contribution> getModelType() {
         return null;
     }
-    
+
     public Contribution read(URL parentURL, URI contributionURI, URL contributionURL) throws ContributionReadException {
-        
+
         // Create contribution model
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
@@ -110,7 +110,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         } else {
             scanner = new JarContributionScanner();
         }
-        
+
         // Read generated and user sca-contribution.xml files
         boolean contributionMetadata = false;
         for (String path: new String[]{
@@ -127,14 +127,16 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                 continue;
             }
             contributionMetadata = true;
-            
+
             // Read the sca-contribution.xml file
             ContributionMetadata c = (ContributionMetadata)artifactProcessor.read(contributionURL, URI.create(path), url);
             contribution.getImports().addAll(c.getImports());
             contribution.getExports().addAll(c.getExports());
             contribution.getDeployables().addAll(c.getDeployables());
+            contribution.getExtensions().addAll(c.getExtensions());
+            contribution.getAttributeExtensions().addAll(c.getAttributeExtensions());
         }
-        
+
         // If no sca-contribution.xml file was provided then consider
         // all composites in the contribution as deployables, and also
         // read any files that are explicitly asssigned artifact processors
@@ -160,10 +162,10 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                     }
                     if (read) {
                         URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
-        
+
                         // Read each artifact
                         Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
-                        
+
                         // In the absence of more info, consider all composites as deployable
                         if (model instanceof Composite) {
                             contribution.getDeployables().add((Composite)model);
@@ -171,7 +173,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                     }
                 }
             }
-            
+
             // Add default contribution import and export
             DefaultImport defaultImport = contributionFactory.createDefaultImport();
             defaultImport.setModelResolver(new DefaultModelResolver());
@@ -179,24 +181,24 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
             DefaultExport defaultExport = contributionFactory.createDefaultExport();
             contribution.getExports().add(defaultExport);
         }
-        
+
         return contribution;
     }
-    
+
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
-        
+
         // Mark the contribution model resolved
         ModelResolver contributionResolver = contribution.getModelResolver();
         contribution.setUnresolved(false);
         contributionResolver.addModel(contribution);
-        
+
         // Resolve imports and exports
         for (Export export: contribution.getExports()) {
             if (export instanceof DefaultExport) {
-                
+
                 // Initialize the default export's resolver
                 export.setModelResolver(contributionResolver);
-                
+
             } else {
                 extensionProcessor.resolve(export, contributionResolver);
             }
@@ -204,12 +206,12 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         for (Import import_: contribution.getImports()) {
             extensionProcessor.resolve(import_, contributionResolver);
         }
-        
+
     }
 
     /**
      * FIXME Temporary hack for testing the ClassLoaderModelResolver.
-     * 
+     *
      * @param modelResolvers
      */
     private static void hackResolvers(ModelResolverExtensionPoint modelResolvers) {
