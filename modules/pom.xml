@@ -99,7 +99,6 @@
         <module>workspace-impl</module>
         <module>workspace-xml</module>
         <module>xsd</module>
-        <module>xsd-xml</module>
         <!-- OSGi RFC 119 -->
         <module>contribution-osgi</module>
         <module>implementation-osgi</module>

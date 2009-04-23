@@ -122,14 +122,11 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Added by Mike Edwards, 11th December 2008 -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-xsd-xml</artifactId>
+            <artifactId>tuscany-xsd</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        <!-- end of addition -->
-
 
         <dependency>
             <groupId>org.apache.axis2</groupId>
