@@ -11,6 +11,7 @@ Bundle-Description: Apache Tuscany SCA Spring Implementation Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
@@ -32,9 +33,32 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0"
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.springframework.beans;version="2.5.5",
+ org.springframework.beans.factory;version="2.5.5",
+ org.springframework.beans.factory.annotation;version="2.5.5",
+ org.springframework.beans.factory.config;version="2.5.5",
+ org.springframework.beans.factory.support;version="2.5.5",
+ org.springframework.beans.factory.xml;version="2.5.5",
+ org.springframework.context;version="2.5.5",
+ org.springframework.context.support;version="2.5.5",
+ org.springframework.core.io;version="2.5.5",
+ org.springframework.util;version="2.5.5"
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.spring
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
-Export-Package: org.apache.tuscany.sca.implementation.spring;version="2.0.0",
- org.apache.tuscany.sca.implementation.spring.introspect;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.implementation.spring;version="2.0.0";
+  uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.assembly.impl,
+   org.springframework.core.io,
+   org.apache.tuscany.sca.interfacedef,
+   javax.xml.namespace",
+ org.apache.tuscany.sca.implementation.spring.introspect;version="2.0.0";
+  uses:="org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.implementation.java.introspect,
+   org.springframework.core.io,
+   org.apache.tuscany.sca.implementation.spring,
+   org.apache.tuscany.sca.implementation.java,
+   org.apache.tuscany.sca.policy,
+   org.apache.tuscany.sca.interfacedef.java"
