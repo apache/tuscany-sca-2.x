@@ -17,12 +17,18 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA WSDL Interface Model
 Import-Package: javax.wsdl,
  javax.wsdl.extensions,
+ javax.wsdl.extensions.schema,
+ javax.wsdl.factory,
+ javax.wsdl.xml,
  javax.xml.namespace,
  org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.contribution;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
@@ -30,7 +36,10 @@ Import-Package: javax.wsdl,
  org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.xsd;version="2.0.0",
- org.apache.ws.commons.schema
+ org.apache.tuscany.sca.xsd.xml;version="2.0.0",
+ org.apache.ws.commons.schema,
+ org.w3c.dom,
+ org.xml.sax
 Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
