@@ -80,7 +80,6 @@
         <module>interface-java-jaxws</module>
         <module>interface-java-xml</module>
         <module>interface-wsdl</module>
-        <module>interface-wsdl-xml</module>
         <module>launcher</module>
         <module>monitor</module>
         <module>myfaces</module>
