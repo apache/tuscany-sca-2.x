@@ -15,7 +15,7 @@
          <extension base="sca:CommonExtensionBase">
             <sequence>
                <element name="deployable" type="sca:DeployableType" 
-                        maxOccurs="unbounded"/>
+                        minOccurs="0" maxOccurs="unbounded"/>
                <element ref="sca:importBase" minOccurs="0" 
                         maxOccurs="unbounded"/>
                <element ref="sca:exportBase" minOccurs="0" 
