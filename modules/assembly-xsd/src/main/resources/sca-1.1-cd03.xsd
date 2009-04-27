@@ -30,5 +30,6 @@
    <include schemaLocation="sca-contribution-1.1-cd03.xsd"/>
    <include schemaLocation="sca-contribution-cpp-1.1-cd02.xsd"/>
    <include schemaLocation="sca-contribution-c-1.1-cd02.xsd"/>
+   <include schemaLocation="sca-contribution-java-1.1-cd01.xsd"/>
    
 </schema>
