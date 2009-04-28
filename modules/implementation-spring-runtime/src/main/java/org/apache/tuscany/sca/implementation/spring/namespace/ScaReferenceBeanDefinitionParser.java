@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.apache.tuscany.sca.implementation.spring;
+package org.apache.tuscany.sca.implementation.spring.namespace;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -23,9 +23,10 @@ import org.w3c.dom.Element;
 
 /**
  * Parser for the &lt;sca:reference&gt; element
+ *
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
  */
-public class ScaPropertyBeanDefinitionParser implements BeanDefinitionParser {
+public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         // do nothing, this is handled by Tuscany
