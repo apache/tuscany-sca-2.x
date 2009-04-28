@@ -31,15 +31,35 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-spring</artifactId>
+            <artifactId>tuscany-assembly</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-spring-xml</artifactId>
+            <artifactId>tuscany-interface</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+               
         <!-- Spring dependencies... -->    
         <dependency>
             <groupId>org.springframework</groupId>
