@@ -18,13 +18,13 @@
  * under the License.    
 -->
 <archetype>
-  <id>tuscany-contribution-jar</id>
+  <id>tuscany-contribution-zip</id>
   <sources>
-    <source>src\main\java\HelloworldImpl.java</source>
-    <source>src\main\java\HelloworldService.java</source>
+    <source>src\main\java\AddImpl.java</source>
+    <source>src\main\java\AddService.java</source>
   </sources>
   <resources>
-    <resource>src\main\hello.composite</resource>
-    <resource>src\main\webapp\META-INF\sca-contribution.xml</resource>
+    <resource>src\main\resources\add.composite</resource>
+    <resource>src\main\resources\META-INF\sca-contribution.xml</resource>
   </resources>
 </archetype>

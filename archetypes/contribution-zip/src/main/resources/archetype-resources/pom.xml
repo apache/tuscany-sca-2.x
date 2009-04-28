@@ -40,9 +40,9 @@
 
 		<!--  AN EXAMPLE APPLICATION DEPENDENCY TO BE INCLUDED IN ZIP -->
             <dependency>
-               <groupId>commons-io</groupId>
-               <artifactId>commons-io</artifactId>
-               <version>1.4</version>
+               <groupId>commons-math</groupId>
+               <artifactId>commons-math</artifactId>
+               <version>1.2</version>
             </dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
