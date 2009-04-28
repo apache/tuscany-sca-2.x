@@ -48,6 +48,9 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+// Added MJE 28/04/2009
+import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+//
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -140,6 +143,8 @@ public class NodeImpl implements Node, Client, SCAClient {
     private WorkScheduler workScheduler;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
+    // Added MJE 28/04/2009
+    private URLArtifactProcessor<Composite> compositeDocumentProcessor;
 
     /**
      * Constructs a new SCA node.
@@ -374,6 +379,10 @@ public class NodeImpl implements Node, Client, SCAClient {
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
+        
+        // Added MJE 28/04/2009
+        // Create Composite Document processor
+        compositeDocumentProcessor = docProcessorExtensions.getProcessor(Composite.class);
 
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -546,6 +555,8 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         composite = configuration.getComposite();
 
+        // If a composite was not originally supplied when the Node was created, pick one of the deployable 
+        // composites from the supplied contributions.  Note: throws an exception if none can be found. 
         if (composite == null) {
             setDefaultComposite(configuration, workspace);
         }
@@ -557,11 +568,9 @@ public class NodeImpl implements Node, Client, SCAClient {
         compositeFile.setURI(composite.getURI());
         for (Contribution contribution: workspace.getContributions()) {
             ModelResolver resolver = contribution.getModelResolver();
-//            for (Artifact artifact : contribution.getArtifacts()){
-//                logger.log(Level.INFO,"artifact - " + artifact.getURI());
-//            }
+
             Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
-//            if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
+            if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
 
                 if (!composite.isUnresolved()) {
 
@@ -576,12 +585,29 @@ public class NodeImpl implements Node, Client, SCAClient {
                     composite = (Composite)resolvedArtifact.getModel();
                 }
                 found = true;
-    //            break;
-  //          }
-        }
-//        if (!found) {
-//            throw new IllegalArgumentException("Composite not found: " + composite.getURI());
-//        }
+                break;
+            } // end if
+        } // end for
+
+        if (!found) {
+        	// If the composite was not found, then it must be a separate composite file outside any of the contributions
+        	// - a "composite by value" - this requires its URI to be absolute and pointing at the composite file itself.
+        	// First read in the composite file to create a composite model object...
+        	URI compositeURI = new URI(composite.getURI());
+        	URL compositeURL = compositeURI.toURL();
+        	composite = compositeDocumentProcessor.read(compositeURL, compositeURI, compositeURL);
+        	if( composite == null ) {
+        		 throw new IllegalArgumentException("Composite not found: " + compositeURI);
+        	}
+        	
+        	// Resolve the "composite by value" against the FIRST contribution
+        	Contribution contribution = workspace.getContributions().get(0);
+        	ModelResolver resolver = contribution.getModelResolver();
+        	compositeProcessor.resolve(composite, resolver);
+            if( composite.isUnresolved() ) {
+            	throw new IllegalArgumentException("Could not resolve composite: " + compositeURI + " in contribution " + contribution.getURI() );
+            }
+        } // end if
 
         // Build the composite and wire the components included in it
         compositeBuilder.build(composite, systemDefinitions, monitor);
@@ -760,7 +786,7 @@ public class NodeImpl implements Node, Client, SCAClient {
      * Sets a default composite by using any deployable one.
      */
     private void setDefaultComposite(ConfiguredNodeImplementation configuration, Workspace workspace) {
-        // just use the first deployable composte
+        // just use the first deployable composite
         for (Contribution contribution : workspace.getContributions()) {
             for (Composite c : contribution.getDeployables()) {
                 composite = assemblyFactory.createComposite();
