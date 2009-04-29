@@ -65,8 +65,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
@@ -133,7 +131,7 @@ public class SpringXMLComponentTypeLoader {
         List<SpringSCAReferenceElement> references = new ArrayList<SpringSCAReferenceElement>();
         List<SpringSCAPropertyElement> scaproperties = new ArrayList<SpringSCAPropertyElement>();        
 
-        Resource resource;
+        URL resource;
 
         contextPath = implementation.getLocation();
 
@@ -144,10 +142,10 @@ public class SpringXMLComponentTypeLoader {
             resource = getApplicationContextResource(contextPath, cl);
             implementation.setResource(resource);
             // The URI is used to uniquely identify the Implementation
-            implementation.setURI(resource.getURL().toString());            
+            implementation.setURI(resource.toString());            
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-            reader = xmlFactory.createXMLStreamReader(resource.getInputStream());
+            reader = xmlFactory.createXMLStreamReader(new FileInputStream(resource.toString()));
 
             // System.out.println("Spring TypeLoader - starting to read context file");            
             readContextDefinition(reader, beans, services, references, scaproperties);
@@ -175,10 +173,11 @@ public class SpringXMLComponentTypeLoader {
         try {
             // FIXME - is the ContextClassLoader the right place to start the search?
             cl = Thread.currentThread().getContextClassLoader();
-            Resource resource = getApplicationContextResource(location, cl);            
+            URL resource = getApplicationContextResource(location, cl);            
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-            XMLStreamReader reader = xmlFactory.createXMLStreamReader(resource.getInputStream());
+            XMLStreamReader reader = 
+            	xmlFactory.createXMLStreamReader(new FileInputStream(resource.toString()));
             return reader;
         } catch (IOException e) {
             throw new ContributionReadException(e);
@@ -596,7 +595,7 @@ public class SpringXMLComponentTypeLoader {
      * @param locationAttr - the location attribute from the <implementation.spring../> element
      * @param cl - the ClassLoader for the Spring implementation
      */
-    protected Resource getApplicationContextResource(String locationAttr, ClassLoader cl)
+    protected URL getApplicationContextResource(String locationAttr, ClassLoader cl)
         throws ContributionReadException {
         File manifestFile = null;
         File appXmlFile;
@@ -622,7 +621,7 @@ public class SpringXMLComponentTypeLoader {
                     if (appCtxPath != null) {
                         appXmlFile = new File(locationFile, appCtxPath);
                         if (appXmlFile.exists()) {
-                            return new UrlResource(appXmlFile.toURL());
+                            return appXmlFile.toURL();
                         }
                     }
                 }
@@ -630,7 +629,7 @@ public class SpringXMLComponentTypeLoader {
                 appXmlFile = new File(locationFile, "META-INF" + File.separator + "spring" 
                                                         + File.separator + SpringImplementationConstants.APPLICATION_CONTEXT);
                 if (appXmlFile.exists()) {
-                    return new UrlResource(appXmlFile.toURL());
+                    return appXmlFile.toURL();
                 }
             } catch (IOException e) {
                 throw new ContributionReadException("Error reading manifest " + manifestFile);
@@ -648,13 +647,13 @@ public class SpringXMLComponentTypeLoader {
                             je = jf.getJarEntry(appCtxPath);
                             if (je != null) {
                                 // TODO return a Spring specific Resource type for jars
-                                return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + appCtxPath));
+                                return new URL("jar:" + locationFile.toURI().toURL() + "!/" + appCtxPath);
                             }
                         }
                     }
                     je = jf.getJarEntry("META-INF" + "/" + "spring" + "/" + SpringImplementationConstants.APPLICATION_CONTEXT);
                     if (je != null) {
-                        return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!/" + SpringImplementationConstants.APPLICATION_CONTEXT));
+                        return new URL("jar:" + locationFile.toURI().toURL() + "!/" + SpringImplementationConstants.APPLICATION_CONTEXT);
                     }
                 } catch (IOException e) {
                     // bad archive
@@ -665,7 +664,7 @@ public class SpringXMLComponentTypeLoader {
         	}
         	else {
         		if (locationFile.getName().endsWith(".xml")) {
-        			return new UrlResource(url);
+        			return url;
         		} 
         		else {
         			// Deal with the directory inside a jar file, in case the contribution itself is a JAR file.
@@ -682,7 +681,7 @@ public class SpringXMLComponentTypeLoader {
 	                            if (appCtxPath != null) {
 	                                je = jf.getJarEntry(url.getPath().substring(url.getPath().indexOf("!/")+2) + "/" + appCtxPath);
 	                                if (je != null) {
-	                                    return new UrlResource(new URL("jar:" + url.getPath() + "/" + appCtxPath));
+	                                    return new URL("jar:" + url.getPath() + "/" + appCtxPath);
 	                                }
 	                            }
 	        				}

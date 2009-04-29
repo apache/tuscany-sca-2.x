@@ -45,6 +45,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.core.io.UrlResource;
 
 /**
  * A provider class for runtime Spring implementation instances
@@ -79,7 +80,7 @@ public class SpringImplementationProvider implements ImplementationProvider {
             new SCAParentApplicationContext(component, implementation, proxyService, propertyValueObjectFactory);
         //springContext = new SCAApplicationContext(scaParentContext, implementation.getResource());        
         
-        XmlBeanFactory beanFactory = new XmlBeanFactory(implementation.getResource());
+        XmlBeanFactory beanFactory = new XmlBeanFactory(new UrlResource(implementation.getResource()));
         springContext = createApplicationContext(beanFactory, scaParentContext);        
         
     } // end constructor
