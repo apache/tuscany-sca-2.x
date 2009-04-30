@@ -29,8 +29,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Initial implementation of a Spring bean invoker
@@ -43,7 +41,7 @@ public class SpringInvoker implements Invoker {
     private SpringBeanElement beanElement;
     private boolean badInvoker = false;
 
-    private AbstractApplicationContext springContext;
+    private SpringContextStub springContext;
     private Operation operation;
 
     /**
@@ -53,7 +51,7 @@ public class SpringInvoker implements Invoker {
      * @param operation - the operation to invoke
      */
     public SpringInvoker(RuntimeComponent component,
-                         AbstractApplicationContext springContext,
+                         SpringContextStub springContext,
                          RuntimeComponentService service,
                          Operation operation) {
 
@@ -78,8 +76,6 @@ public class SpringInvoker implements Invoker {
             Class<?> beanClass = bean.getClass();
             theMethod = JavaInterfaceUtil.findMethod(beanClass, operation);
             //System.out.println("SpringInvoker - found method " + theMethod.getName() );
-        } catch (BeansException e) {
-            throw new SpringInvocationException(e);
         } catch (NoSuchMethodException e) {
         	throw new SpringInvocationException(e);
         }

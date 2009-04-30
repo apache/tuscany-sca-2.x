@@ -18,27 +18,24 @@
  */
 package org.apache.tuscany.sca.implementation.spring.processor;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Constructor;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Constructor;
 
-import org.springframework.util.Assert;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
+import org.springframework.util.Assert;
 
 public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostProcessorAdapter {
 
-    private Class<? extends Annotation> constructorAnnotationType 
-                                            = org.oasisopen.sca.annotation.Constructor.class;
+//    private Class<? extends Annotation> constructorAnnotationType 
+//    = org.oasisopen.sca.annotation.Constructor.class;
+    private Class<? extends Annotation> constructorAnnotationType;
     
     private Class<? extends Annotation> autowiredAnnotationType = Autowired.class;
     
-    public ConstructorAnnotationProcessor () {
-        // Default constructor.
+    public ConstructorAnnotationProcessor (Class<? extends Annotation> annotation) {
+        this.constructorAnnotationType = annotation;
     }
     
     /**

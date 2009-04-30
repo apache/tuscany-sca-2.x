@@ -19,18 +19,22 @@
 package org.apache.tuscany.sca.implementation.spring.processor;
 
 import java.lang.annotation.Annotation;
-import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Destroy;
+
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
-import org.springframework.util.Assert;
 
 public class InitDestroyAnnotationProcessor extends InitDestroyAnnotationBeanPostProcessor {    
     
     private static final long serialVersionUID = 0;
     
-    private Class<? extends Annotation> initAnnotationType = Init.class;
-
-    private Class<? extends Annotation> destroyAnnotationType = Destroy.class;
+//    private Class<? extends Annotation> initAnnotationType = Init.class;
+//    private Class<? extends Annotation> destroyAnnotationType = Destroy.class;
+    private Class<? extends Annotation> initAnnotationType;
+    private Class<? extends Annotation> destroyAnnotationType;
+    
+    public InitDestroyAnnotationProcessor(Class<? extends Annotation> initAnnotationType, Class<? extends Annotation> destroyAnnotationType) {
+        this.initAnnotationType = initAnnotationType;
+        this.destroyAnnotationType = destroyAnnotationType;
+    }
     
     /**
      * Gets init annotation type.
