@@ -18,30 +18,28 @@
  */
 package org.apache.tuscany.sca.implementation.spring.processor;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import org.springframework.util.Assert;
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.ReflectionUtils;
+import javax.naming.Reference;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-
-import org.oasisopen.sca.annotation.Reference;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 public class ReferenceAnnotationProcessor implements BeanPostProcessor {
 
-    private Class<? extends Annotation> referenceAnnotationType = Reference.class;
+//    private Class<? extends Annotation> referenceAnnotationType = Reference.class;
+    private Class<? extends Annotation> referenceAnnotationType;
     
-    private RuntimeComponent component;
+//    private RuntimeComponent component;
     
-    public ReferenceAnnotationProcessor (RuntimeComponent component) {
-        this.component = component;
+    public ReferenceAnnotationProcessor (Class<? extends Annotation> referenceAnnotationType, Object component) {
+        this.referenceAnnotationType = referenceAnnotationType;
     }
     
     /**
@@ -90,61 +88,61 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
         ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) {
                 //Annotation annotation = method.getAnnotation(getReferenceAnnotationType());                
-                Reference annotation = (Reference) method.getAnnotation(getReferenceAnnotationType());
-                
-                if (annotation != null) {
-                    if (Modifier.isStatic(method.getModifiers())) {
-                        throw new IllegalStateException("Reference annotation is not supported on static methods");
-                    }
-                    
-                    if (Modifier.isPrivate(method.getModifiers())) {
-                        throw new IllegalStateException("Reference annotation is not supported on private methods");
-                    }
-
-                    if (method.getParameterTypes().length == 0) {
-                        throw new IllegalStateException("Reference annotation requires at least one argument: " + method);
-                    }
-                    
-                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
-                    if (pd != null) {
-                        String refName = annotation.name();
-                        if ("".equals(refName)) {
-                            injectReference(bean, pd, pd.getName());
-                        } else {
-                            injectReference(bean, pd, refName);
-                        }
-                    }
-                }
+//                Reference annotation = (Reference) method.getAnnotation(getReferenceAnnotationType());
+//                
+//                if (annotation != null) {
+//                    if (Modifier.isStatic(method.getModifiers())) {
+//                        throw new IllegalStateException("Reference annotation is not supported on static methods");
+//                    }
+//                    
+//                    if (Modifier.isPrivate(method.getModifiers())) {
+//                        throw new IllegalStateException("Reference annotation is not supported on private methods");
+//                    }
+//
+//                    if (method.getParameterTypes().length == 0) {
+//                        throw new IllegalStateException("Reference annotation requires at least one argument: " + method);
+//                    }
+//                    
+//                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
+//                    if (pd != null) {
+//                        String refName = annotation.name();
+//                        if ("".equals(refName)) {
+//                            injectReference(bean, pd, pd.getName());
+//                        } else {
+//                            injectReference(bean, pd, refName);
+//                        }
+//                    }
+//                }
             }
         });
         
         ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
             public void doWith(Field field) {
                 //Annotation annotation = field.getAnnotation(getReferenceAnnotationType());                
-                Reference annotation = (Reference) field.getAnnotation(getReferenceAnnotationType());
-                
-                if (annotation != null) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        throw new IllegalStateException("Reference annotation is not supported on static fields");
-                    }
-                    
-                    if (Modifier.isPrivate(field.getModifiers())) {
-                        throw new IllegalStateException("Reference annotation is not supported on private fields");
-                    }
-
-                    ReflectionUtils.makeAccessible(field);
-                    
-                    Object referenceObj = null;
-                    String refName = annotation.name();
-                    if ("".equals(refName)) {
-                        referenceObj = component.getComponentContext().getService(field.getType(), field.getName());
-                    } else {
-                        referenceObj = component.getComponentContext().getService(field.getType(), refName);
-                    }                        
-                    
-                    if (referenceObj != null)
-                        ReflectionUtils.setField(field, bean, referenceObj);
-                }
+//                Reference annotation = (Reference) field.getAnnotation(getReferenceAnnotationType());
+//                
+//                if (annotation != null) {
+//                    if (Modifier.isStatic(field.getModifiers())) {
+//                        throw new IllegalStateException("Reference annotation is not supported on static fields");
+//                    }
+//                    
+//                    if (Modifier.isPrivate(field.getModifiers())) {
+//                        throw new IllegalStateException("Reference annotation is not supported on private fields");
+//                    }
+//
+//                    ReflectionUtils.makeAccessible(field);
+//                    
+//                    Object referenceObj = null;
+//                    String refName = annotation.name();
+//                    if ("".equals(refName)) {
+//                        referenceObj = component.getComponentContext().getService(field.getType(), field.getName());
+//                    } else {
+//                        referenceObj = component.getComponentContext().getService(field.getType(), refName);
+//                    }                        
+//                    
+//                    if (referenceObj != null)
+//                        ReflectionUtils.setField(field, bean, referenceObj);
+//                }
             }
         });
     }
@@ -154,15 +152,15 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      */
     public void injectReference(Object bean, PropertyDescriptor pd, String name) {
                
-        Object referenceObj = component.getComponentContext().getService(pd.getPropertyType(), name);
-        
-        if (referenceObj != null) {
-            try {                                                       
-                pd.getWriteMethod().invoke(bean, new Object[] { referenceObj });
-            } catch (Throwable e) {
-                throw new FatalBeanException("Problem injecting reference:  " + e.getMessage(), e);
-            }
-        }
+//        Object referenceObj = component.getComponentContext().getService(pd.getPropertyType(), name);
+//        
+//        if (referenceObj != null) {
+//            try {                                                       
+//                pd.getWriteMethod().invoke(bean, new Object[] { referenceObj });
+//            } catch (Throwable e) {
+//                throw new FatalBeanException("Problem injecting reference:  " + e.getMessage(), e);
+//            }
+//        }
     }
     
     /**

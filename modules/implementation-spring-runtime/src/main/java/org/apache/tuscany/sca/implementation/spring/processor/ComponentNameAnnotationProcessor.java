@@ -18,30 +18,30 @@
  */
 package org.apache.tuscany.sca.implementation.spring.processor;
 
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 
-import org.springframework.util.Assert;
 import org.springframework.beans.BeanUtils;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-
-import org.oasisopen.sca.annotation.ComponentName;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
 
-    private Class<? extends Annotation> componentNameAnnotationType = ComponentName.class;
+//    private Class<? extends Annotation> componentNameAnnotationType = ComponentName.class;
+    private Class<? extends Annotation> componentNameAnnotationType;
     
-    private RuntimeComponent component;
+    private String componentName;
     
-    public ComponentNameAnnotationProcessor (RuntimeComponent component) {
-        this.component = component;
+    public ComponentNameAnnotationProcessor (Class<? extends Annotation> componentNameAnnotationType,String componentName) {
+        this.componentNameAnnotationType = componentNameAnnotationType;
+        this.componentName = componentName;
     }
     
     /**
@@ -103,7 +103,7 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
                     ReflectionUtils.makeAccessible(field);
                     
                     if (field.getType().getName().equals("java.lang.String")) {
-                        Object nameObj = component.getName();   
+                        Object nameObj = componentName;   
                         if (nameObj != null)
                             ReflectionUtils.setField(field, bean, nameObj);
                     } else {
@@ -133,7 +133,7 @@ public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
                     PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);                    
                     
                     if (pd.getPropertyType().getName().equals("java.lang.String")) {
-                        Object nameObj = component.getName();                    
+                        Object nameObj = componentName;                    
                         if (nameObj != null) {
                             try {                                                       
                                 pd.getWriteMethod().invoke(bean, new Object[] { nameObj });

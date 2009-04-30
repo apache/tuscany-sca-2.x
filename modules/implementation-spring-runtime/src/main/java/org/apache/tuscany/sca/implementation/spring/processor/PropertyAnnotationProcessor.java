@@ -18,38 +18,32 @@
  */
 package org.apache.tuscany.sca.implementation.spring.processor;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-import org.springframework.util.Assert;
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
-import org.oasisopen.sca.annotation.Property;
-import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import com.sun.xml.internal.bind.v2.runtime.property.Property;
 
 public class PropertyAnnotationProcessor implements BeanPostProcessor {
 
-    private Class<? extends Annotation> propertyAnnotationType = Property.class;
+//    private Class<? extends Annotation> propertyAnnotationType = Property.class;
+    private Class<? extends Annotation> propertyAnnotationType;
     
-    private RuntimeComponent component;
+//    private RuntimeComponent component;
+//    
+//    private JavaPropertyValueObjectFactory propertyFactory;
     
-    private JavaPropertyValueObjectFactory propertyFactory;
-    
-    public PropertyAnnotationProcessor (JavaPropertyValueObjectFactory propertyFactory, 
-                                        RuntimeComponent component) {
-        this.propertyFactory = propertyFactory;
-        this.component = component;
+    public PropertyAnnotationProcessor (Class<? extends Annotation> propertyAnnotationType) {
+        this.propertyAnnotationType = propertyAnnotationType;
+//        this.propertyFactory = propertyFactory;
+//        this.component = component;
     }
 
     /**
@@ -97,62 +91,62 @@ public class PropertyAnnotationProcessor implements BeanPostProcessor {
 
         ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) {
-                //Annotation annotation = method.getAnnotation(getPropertyAnnotationType());                
-                Property annotation = (Property) method.getAnnotation(getPropertyAnnotationType());
-                
-                if (annotation != null) {
-                    if (Modifier.isStatic(method.getModifiers())) {
-                        throw new IllegalStateException("Property annotation is not supported on static methods");
-                    }
-                    
-                    if (Modifier.isPrivate(method.getModifiers())) {
-                        throw new IllegalStateException("Property annotation is not supported on private methods");
-                    }
-
-                    if (method.getParameterTypes().length == 0) {
-                        throw new IllegalStateException("Property annotation requires at least one argument: " + method);
-                    }
-                    
-                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
-                    if (pd != null) {
-                        String propName = annotation.name();
-                        if ("".equals(propName)) {
-                            injectProperty(bean, pd, getPropertyObj(pd.getPropertyType(), pd.getName()));
-                        } else {
-                            injectProperty(bean, pd, getPropertyObj(pd.getPropertyType(), propName));
-                        }
-                    }
-                }
+//                //Annotation annotation = method.getAnnotation(getPropertyAnnotationType());                
+//                Property annotation = (Property) method.getAnnotation(getPropertyAnnotationType());
+//                
+//                if (annotation != null) {
+//                    if (Modifier.isStatic(method.getModifiers())) {
+//                        throw new IllegalStateException("Property annotation is not supported on static methods");
+//                    }
+//                    
+//                    if (Modifier.isPrivate(method.getModifiers())) {
+//                        throw new IllegalStateException("Property annotation is not supported on private methods");
+//                    }
+//
+//                    if (method.getParameterTypes().length == 0) {
+//                        throw new IllegalStateException("Property annotation requires at least one argument: " + method);
+//                    }
+//                    
+//                    PropertyDescriptor pd = BeanUtils.findPropertyForMethod(method);
+//                    if (pd != null) {
+//                        String propName = annotation.name();
+//                        if ("".equals(propName)) {
+//                            injectProperty(bean, pd, getPropertyObj(pd.getPropertyType(), pd.getName()));
+//                        } else {
+//                            injectProperty(bean, pd, getPropertyObj(pd.getPropertyType(), propName));
+//                        }
+//                    }
+//                }
             }
         });
         
         ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
             public void doWith(Field field) {
                 //Annotation annotation = field.getAnnotation(getPropertyAnnotationType());
-                Property annotation = (Property) field.getAnnotation(getPropertyAnnotationType());
-                
-                if (annotation != null) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        throw new IllegalStateException("Property annotation is not supported on static fields");
-                    }
-                    
-                    if (Modifier.isPrivate(field.getModifiers())) {
-                        throw new IllegalStateException("Property annotation is not supported on private fields");
-                    }
-
-                    ReflectionUtils.makeAccessible(field);
-                    
-                    Object propertyObj = null;
-                    String propName = annotation.name();
-                    if ("".equals(propName)) {
-                        propertyObj = getPropertyObj(field.getType(), field.getName());                        
-                    } else {
-                        propertyObj = getPropertyObj(field.getType(), propName);
-                    }
-                    
-                    if (propertyObj != null)
-                        ReflectionUtils.setField(field, bean, propertyObj);
-                }
+//                Property annotation = (Property) field.getAnnotation(getPropertyAnnotationType());
+//                
+//                if (annotation != null) {
+//                    if (Modifier.isStatic(field.getModifiers())) {
+//                        throw new IllegalStateException("Property annotation is not supported on static fields");
+//                    }
+//                    
+//                    if (Modifier.isPrivate(field.getModifiers())) {
+//                        throw new IllegalStateException("Property annotation is not supported on private fields");
+//                    }
+//
+//                    ReflectionUtils.makeAccessible(field);
+//                    
+//                    Object propertyObj = null;
+//                    String propName = annotation.name();
+//                    if ("".equals(propName)) {
+//                        propertyObj = getPropertyObj(field.getType(), field.getName());                        
+//                    } else {
+//                        propertyObj = getPropertyObj(field.getType(), propName);
+//                    }
+//                    
+//                    if (propertyObj != null)
+//                        ReflectionUtils.setField(field, bean, propertyObj);
+//                }
             }
         });
     }
@@ -164,15 +158,15 @@ public class PropertyAnnotationProcessor implements BeanPostProcessor {
         
         Object propertyObj = null;
         
-        List<ComponentProperty> props = component.getProperties();
-        for (ComponentProperty prop : props) {
-            if (prop.getName().equals(name)) {
-                // On finding the property, create a factory for it and create a Bean using
-                // the factory
-                ObjectFactory factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
-                propertyObj = factory.getInstance();
-            } // end if
-        } // end for        
+//        List<ComponentProperty> props = component.getProperties();
+//        for (ComponentProperty prop : props) {
+//            if (prop.getName().equals(name)) {
+//                // On finding the property, create a factory for it and create a Bean using
+//                // the factory
+//                ObjectFactory factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
+//                propertyObj = factory.getInstance();
+//            } // end if
+//        } // end for        
         
         return propertyObj;
     }
