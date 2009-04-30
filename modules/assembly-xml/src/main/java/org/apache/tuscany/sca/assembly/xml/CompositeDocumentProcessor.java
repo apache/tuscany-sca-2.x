@@ -26,7 +26,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -53,18 +52,17 @@ import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
     private XMLInputFactory inputFactory;
     private DocumentBuilderFactory documentBuilderFactory;
-    private List scaDefnSink;
     private Collection<PolicySet> domainPolicySets = null;
-    private int scaDefnsCount = 0;
     private Monitor monitor;
 
     /**
-     * Constructs a new composite processor.
+     * Constructs a composite document processor
      * @param modelFactories
      * @param staxProcessor
+     * @param monitor
      */
     public CompositeDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                      StAXArtifactProcessor staxProcessor,
+                                      StAXArtifactProcessor<?> staxProcessor,
                                       Monitor monitor) {
         super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
@@ -72,6 +70,13 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         this.monitor = monitor;
     }
     
+    /**
+     * Reads the contents of a Composite document and returns a Composite object
+     * @param contributionURL - the URL of the contribution containing the Composite - can be null
+     * @param uri - the URI of the composite document
+     * @param url - the URL of the composite document
+     * @return a Composite object built from the supplied Composite document
+     */
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream scdlStream = null;
         try {
@@ -87,12 +92,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     }
 
     public Composite read(URI uri, InputStream scdlStream) throws ContributionReadException {
-        try {
-/*            
-            if (scaDefnSink != null ) {
-                fillDomainPolicySets(scaDefnSink);
-            }
-*/            
+        try {       
             
             Composite composite = null;
             
@@ -128,24 +128,6 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                 composite.setURI(uri.toString());
             }
 
-            // For debugging purposes, write it back to XML
-//            if (composite != null) {
-//                try {
-//                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//                    XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-//                    outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-//                    extensionProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
-//                    Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
-//                    OutputFormat format = new OutputFormat();
-//                    format.setIndenting(true);
-//                    format.setIndent(2);
-//                    XMLSerializer serializer = new XMLSerializer(System.out, format);
-//                    serializer.serialize(document);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-            
             return composite;
             
         } catch (XMLStreamException e) {
@@ -177,33 +159,4 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         return Composite.class;
     }
     
-    /* 
-     * TODO - remove - definitions information is now aggregated in the 
-     *        systems definitions contribution and we need to add 
-     *        applicable policy sets once all composites have been read
-    private void fillDomainPolicySets(List scaDefnsSink) {
-        Map<QName, PolicySet> domainPolicySetMap = null;
-        if ( scaDefnsSink.size() > scaDefnsCount ) {
-        //if ( !scaDefnsSink.isEmpty() ) {
-            domainPolicySetMap = new Hashtable<QName, PolicySet>();
-            
-            if ( domainPolicySets != null ) {
-                for ( PolicySet policySet : domainPolicySets ) {
-                    domainPolicySetMap.put(policySet.getName(), policySet);
-                } 
-            }
-            
-            for ( Object object : scaDefnsSink ) {
-                if ( object instanceof Definitions ) {
-                    for ( PolicySet policySet : ((Definitions)object).getPolicySets() ) {
-                        domainPolicySetMap.put( policySet.getName(), policySet);
-                    }
-                }
-            }
-            domainPolicySets =  domainPolicySetMap.values();
-            //scaDefnsSink.clear();
-            scaDefnsCount = scaDefnsSink.size();
-        }
-    }
-    */
-}
+} // end class
