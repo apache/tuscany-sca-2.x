@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.implementation.spring.processor.InitDestroyAnnotat
 import org.apache.tuscany.sca.implementation.spring.processor.PropertyAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.PropertyValueStub;
 import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotationProcessor;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -55,9 +56,9 @@ public class SpringContextTie {
     private SpringImplementationStub implementation;
     
     public SpringContextTie(SpringImplementationStub implementation, URL resource) {
+        this.implementation = implementation;
         SCAParentApplicationContext scaParentContext = new SCAParentApplicationContext(implementation);
         springContext = createApplicationContext(scaParentContext, resource);  
-        this.implementation = implementation;
     }
 
     public void start() {
@@ -130,12 +131,9 @@ public class SpringContextTie {
         return appContext;
     }
 
-//    public Object getBean(String id) throws SpringInvocationException {
-//        try {
-//            return springContext.getBean(beanElement.getId());
-//        } catch (BeansException e) {
-//            throw new SpringInvocationException(e);
-//    }
+    public Object getBean(String id) throws BeansException {
+        return springContext.getBean(id);
+    }
 
     /**
      * Include BeanPostProcessor to deal with SCA Annotations in Spring Bean
@@ -147,12 +145,12 @@ public class SpringContextTie {
         beanFactory.addBeanPostProcessor(initDestroyProcessor);
 
         // Processor to deal with @Reference SCA Annotations
-        ComponentStub component = new ComponentStub(implementation.getComponentStub());
+        ComponentStub component = new ComponentStub(implementation.getComponentTie());
         BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
         beanFactory.addBeanPostProcessor(referenceProcessor);
         
         // Processor to deal with @Property SCA Annotations
-        PropertyValueStub pvs = new PropertyValueStub(implementation.getPropertyValueStub());
+        PropertyValueStub pvs = new PropertyValueStub(implementation.getPropertyValueTie());
         BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(pvs);
         beanFactory.addBeanPostProcessor(propertyProcessor);
         
