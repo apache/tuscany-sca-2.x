@@ -146,15 +146,15 @@ public class SpringContextTie {
         BeanPostProcessor initDestroyProcessor = new InitDestroyAnnotationProcessor();
         beanFactory.addBeanPostProcessor(initDestroyProcessor);
 
-        ComponentStub component = null; //TODO
         // Processor to deal with @Reference SCA Annotations
-//        BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
-//        beanFactory.addBeanPostProcessor(referenceProcessor);
+        ComponentStub component = new ComponentStub(implementation.getComponentStub());
+        BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
+        beanFactory.addBeanPostProcessor(referenceProcessor);
         
-        PropertyValueStub pvs = null; //TODO
         // Processor to deal with @Property SCA Annotations
-//        BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(pvs);
-//        beanFactory.addBeanPostProcessor(propertyProcessor);
+        PropertyValueStub pvs = new PropertyValueStub(implementation.getPropertyValueStub());
+        BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(pvs);
+        beanFactory.addBeanPostProcessor(propertyProcessor);
         
         // Processor to deal with @ComponentName SCA Annotations
         BeanPostProcessor componentNameProcessor = new ComponentNameAnnotationProcessor(implementation.getComponentName());
