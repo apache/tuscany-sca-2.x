@@ -20,22 +20,17 @@ package org.apache.tuscany.sca.implementation.spring.processor;
 
 import java.lang.annotation.Annotation;
 
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 
-public class InitDestroyAnnotationProcessor extends InitDestroyAnnotationBeanPostProcessor {    
-    
+public class InitDestroyAnnotationProcessor extends InitDestroyAnnotationBeanPostProcessor {
+
     private static final long serialVersionUID = 0;
-    
-//    private Class<? extends Annotation> initAnnotationType = Init.class;
-//    private Class<? extends Annotation> destroyAnnotationType = Destroy.class;
-    private Class<? extends Annotation> initAnnotationType;
-    private Class<? extends Annotation> destroyAnnotationType;
-    
-    public InitDestroyAnnotationProcessor(Class<? extends Annotation> initAnnotationType, Class<? extends Annotation> destroyAnnotationType) {
-        this.initAnnotationType = initAnnotationType;
-        this.destroyAnnotationType = destroyAnnotationType;
-    }
-    
+
+    private Class<? extends Annotation> initAnnotationType = Init.class;
+    private Class<? extends Annotation> destroyAnnotationType = Destroy.class;
+
     /**
      * Gets init annotation type.
      */
@@ -46,11 +41,13 @@ public class InitDestroyAnnotationProcessor extends InitDestroyAnnotationBeanPos
     /**
      * Sets init annotation type.
      */
-    /*public void setInitAnnotationType(Class<? extends Annotation> initAnnotationType) {
-        Assert.notNull(initAnnotationType, "Init annotation type must not be null.");
-        this.initAnnotationType = initAnnotationType;
-    }*/
-    
+    /*
+     * public void setInitAnnotationType(Class<? extends Annotation>
+     * initAnnotationType) { Assert.notNull(initAnnotationType,
+     * "Init annotation type must not be null."); this.initAnnotationType =
+     * initAnnotationType; }
+     */
+
     /**
      * Gets destroy annotation type.
      */
@@ -61,15 +58,17 @@ public class InitDestroyAnnotationProcessor extends InitDestroyAnnotationBeanPos
     /**
      * Sets destroy annotation type.
      */
-    /*public void setDestroyAnnotationType(Class<? extends Annotation> destroyAnnotationType) {
-        Assert.notNull(destroyAnnotationType, "Destroy annotation type must not be null.");
-        this.destroyAnnotationType = destroyAnnotationType;
-    }*/
+    /*
+     * public void setDestroyAnnotationType(Class<? extends Annotation>
+     * destroyAnnotationType) { Assert.notNull(destroyAnnotationType,
+     * "Destroy annotation type must not be null."); this.destroyAnnotationType
+     * = destroyAnnotationType; }
+     */
 
-    public InitDestroyAnnotationProcessor () {
+    public InitDestroyAnnotationProcessor() {
         // Set the @Init annotation type
         setInitAnnotationType(initAnnotationType);
-        
+
         // Set the @Destroy annotation type
         setDestroyAnnotationType(destroyAnnotationType);
     }

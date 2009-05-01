@@ -23,8 +23,13 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.tuscany.sca.implementation.spring.processor.ComponentNameAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.ComponentStub;
 import org.apache.tuscany.sca.implementation.spring.processor.ConstructorAnnotationProcessor;
 import org.apache.tuscany.sca.implementation.spring.processor.InitDestroyAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.PropertyAnnotationProcessor;
+import org.apache.tuscany.sca.implementation.spring.processor.PropertyValueStub;
+import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotationProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -47,10 +52,12 @@ import org.springframework.core.io.UrlResource;
 public class SpringContextTie {
 
     private AbstractApplicationContext springContext;
+    private SpringImplementationStub implementation;
     
     public SpringContextTie(SpringImplementationStub implementation, URL resource) {
         SCAParentApplicationContext scaParentContext = new SCAParentApplicationContext(implementation);
-        springContext = createApplicationContext(scaParentContext, resource);        
+        springContext = createApplicationContext(scaParentContext, resource);  
+        this.implementation = implementation;
     }
 
     public void start() {
@@ -107,11 +114,11 @@ public class SpringContextTie {
                         
                         if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1) {                                                                   
                                 appContext = new ClassPathXmlApplicationContext(listValues, false, scaParentContext);                                   
-                                //includeAnnotationProcessors(appContext.getBeanFactory());
+                                includeAnnotationProcessors(appContext.getBeanFactory());
                                         return appContext;
                         } else {
                                 appContext = new FileSystemXmlApplicationContext(listValues, false, scaParentContext);                                  
-                                //includeAnnotationProcessors(appContext.getBeanFactory());
+                                includeAnnotationProcessors(appContext.getBeanFactory());
                                         return appContext;
                         }
                 }               
@@ -136,25 +143,26 @@ public class SpringContextTie {
     private void includeAnnotationProcessors(ConfigurableListableBeanFactory beanFactory) {
         
         // Processor to deal with @Init and @Destroy SCA Annotations
-//        BeanPostProcessor initDestroyProcessor = new InitDestroyAnnotationProcessor();
-//        beanFactory.addBeanPostProcessor(initDestroyProcessor);
+        BeanPostProcessor initDestroyProcessor = new InitDestroyAnnotationProcessor();
+        beanFactory.addBeanPostProcessor(initDestroyProcessor);
 
-// TODO: implement passing the component and property factory        
-//        // Processor to deal with @Reference SCA Annotations
+        ComponentStub component = null; //TODO
+        // Processor to deal with @Reference SCA Annotations
 //        BeanPostProcessor referenceProcessor = new ReferenceAnnotationProcessor(component);
 //        beanFactory.addBeanPostProcessor(referenceProcessor);
-//        
-//        // Processor to deal with @Property SCA Annotations
-//        BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(propertyValueObjectFactory, component);
+        
+        PropertyValueStub pvs = null; //TODO
+        // Processor to deal with @Property SCA Annotations
+//        BeanPostProcessor propertyProcessor = new PropertyAnnotationProcessor(pvs);
 //        beanFactory.addBeanPostProcessor(propertyProcessor);
-//        
-//        // Processor to deal with @ComponentName SCA Annotations
-//        BeanPostProcessor componentNameProcessor = new ComponentNameAnnotationProcessor(component);
-//        beanFactory.addBeanPostProcessor(componentNameProcessor);
+        
+        // Processor to deal with @ComponentName SCA Annotations
+        BeanPostProcessor componentNameProcessor = new ComponentNameAnnotationProcessor(implementation.getComponentName());
+        beanFactory.addBeanPostProcessor(componentNameProcessor);
         
         // Processor to deal with @Constructor SCA Annotations
-//        BeanPostProcessor constructorProcessor = new ConstructorAnnotationProcessor();
-//        beanFactory.addBeanPostProcessor(constructorProcessor);         
+        BeanPostProcessor constructorProcessor = new ConstructorAnnotationProcessor();
+        beanFactory.addBeanPostProcessor(constructorProcessor);         
     }
 
 }
