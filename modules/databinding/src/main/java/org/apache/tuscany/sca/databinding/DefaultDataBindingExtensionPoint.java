@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.databinding;
 
@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -39,16 +40,21 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * The default implementation of a data binding extension point.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
+    private ExtensionPointRegistry registry;
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
     private final List<DataBinding> databindings = new ArrayList<DataBinding>();
     private static final Logger logger = Logger.getLogger(DefaultDataBindingExtensionPoint.class.getName());
     private boolean loadedDataBindings;
 
     public DefaultDataBindingExtensionPoint() {
+    }
+
+    public DefaultDataBindingExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public DataBinding getDataBinding(String id) {
@@ -121,7 +127,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
      * A data binding facade allowing data bindings to be lazily loaded and
      * initialized.
      */
-    private static class LazyDataBinding implements DataBinding {
+    private class LazyDataBinding implements DataBinding {
 
         private String name;
         private ServiceDeclaration dataBindingDeclaration;
@@ -134,7 +140,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
         /**
          * Load and instantiate the data binding class.
-         * 
+         *
          * @return The data binding.
          */
         @SuppressWarnings("unchecked")
@@ -142,8 +148,14 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             if (dataBinding == null) {
                 try {
                     Class<DataBinding> dataBindingClass = (Class<DataBinding>)dataBindingDeclaration.loadClass();
-                    Constructor<DataBinding> constructor = dataBindingClass.getConstructor();
-                    dataBinding = constructor.newInstance();
+                    try {
+                        Constructor<DataBinding> constructor = dataBindingClass.getConstructor();
+                        dataBinding = constructor.newInstance();
+                    } catch (NoSuchMethodException e) {
+                        Constructor<DataBinding> constructor =
+                            dataBindingClass.getConstructor(ExtensionPointRegistry.class);
+                        dataBinding = constructor.newInstance(DefaultDataBindingExtensionPoint.this.registry);
+                    }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

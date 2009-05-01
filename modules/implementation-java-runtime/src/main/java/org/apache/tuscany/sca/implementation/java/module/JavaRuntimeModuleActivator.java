@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.java.module;
@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -33,9 +34,7 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaCallbackRuntimeWireProcessor;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationProviderFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -58,7 +57,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
-        
+
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         InterfaceContractMapper interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
@@ -72,10 +71,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
 
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
-        utilities.addUtility(mediator);
-        JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
+        Mediator mediator = utilities.getUtility(Mediator.class);
+        PropertyValueFactory factory = utilities.getUtility(PropertyValueFactory.class);
         factories.addFactory(factory);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
@@ -83,7 +80,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactories);
-        
+
         JavaImplementationProviderFactory javaImplementationProviderFactory =
             new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
                                                   requestContextFactory);
