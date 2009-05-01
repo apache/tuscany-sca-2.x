@@ -37,8 +37,8 @@ public class SpringImplementationStub {
     Method getURI;
     Method getBean;
     Method getComponentName;
-    Method getComponentStub;
-    Method getPropertyValueStub;
+    Method getComponentTie;
+    Method getPropertyValueTie;
     
     public SpringImplementationStub(Object tie) {
         this.tie = tie;
@@ -47,8 +47,8 @@ public class SpringImplementationStub {
             getURI = tieClass.getMethod("getURI", new Class<?>[]{});
             getBean = tieClass.getMethod("getBean", new Class<?>[]{String.class, Class.class});
             getComponentName = tieClass.getMethod("getComponentName");
-            getComponentStub = tieClass.getMethod("getComponentStub");
-            getPropertyValueStub = tieClass.getMethod("getPropertyValueStub");
+            getComponentTie = tieClass.getMethod("getComponentTie");
+            getPropertyValueTie = tieClass.getMethod("getPropertyValueTie");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -95,20 +95,20 @@ public class SpringImplementationStub {
         }
     }
 
-    public Object getComponentStub() {
+    public Object getComponentTie() {
         try {
 
-            return (String)getComponentStub.invoke(tie);
+            return getComponentTie.invoke(tie);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Object getPropertyValueStub() {
+    public Object getPropertyValueTie() {
         try {
 
-            return (String)getPropertyValueStub.invoke(tie);
+            return getPropertyValueTie.invoke(tie);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
