@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
+import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
-import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -29,10 +29,10 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 
 /**
  * Represents a Spring implementation. 

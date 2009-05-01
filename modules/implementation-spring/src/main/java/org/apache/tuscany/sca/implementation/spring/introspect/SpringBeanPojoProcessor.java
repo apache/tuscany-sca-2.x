@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.implementation.spring.introspect;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
-import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getPrivateFields;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
+import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getPrivateFields;
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.toPropertyName;
 
 import java.lang.annotation.Annotation;
@@ -44,10 +44,17 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
-import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.AmbiguousConstructorException;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidServiceTypeException;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.NoConstructorException;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.Resource;
+import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -59,14 +66,6 @@ import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Remotable;
-
-import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.NoConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.AmbiguousConstructorException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InvalidServiceTypeException;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.Resource;
-import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine
