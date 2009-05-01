@@ -36,6 +36,7 @@ public class SpringImplementationStub {
     Object tie;
     Method getURI;
     Method getBean;
+    Method getComponentName;
     
     public SpringImplementationStub(Object tie) {
         this.tie = tie;
@@ -43,6 +44,7 @@ public class SpringImplementationStub {
         try {
             getURI = tieClass.getMethod("getURI", new Class<?>[]{});
             getBean = tieClass.getMethod("getBean", new Class<?>[]{String.class, Class.class});
+            getComponentName = tieClass.getMethod("getComponentName");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -73,6 +75,16 @@ public class SpringImplementationStub {
                 throw new NoSuchBeanDefinitionException("Unable to find Bean with name " + name);
             }
             return bean;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getComponentName() {
+        try {
+
+            return (String)getComponentName.invoke(tie);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.oasisopen.sca.annotation.ComponentName;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -34,13 +35,11 @@ import org.springframework.util.ReflectionUtils;
 
 public class ComponentNameAnnotationProcessor implements BeanPostProcessor {
 
-//    private Class<? extends Annotation> componentNameAnnotationType = ComponentName.class;
-    private Class<? extends Annotation> componentNameAnnotationType;
+    private Class<? extends Annotation> componentNameAnnotationType = ComponentName.class;
     
     private String componentName;
     
-    public ComponentNameAnnotationProcessor (Class<? extends Annotation> componentNameAnnotationType,String componentName) {
-        this.componentNameAnnotationType = componentNameAnnotationType;
+    public ComponentNameAnnotationProcessor (String componentName) {
         this.componentName = componentName;
     }
     

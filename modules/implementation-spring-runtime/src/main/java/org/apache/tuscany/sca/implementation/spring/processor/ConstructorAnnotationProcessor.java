@@ -28,14 +28,13 @@ import org.springframework.util.Assert;
 
 public class ConstructorAnnotationProcessor extends InstantiationAwareBeanPostProcessorAdapter {
 
-//    private Class<? extends Annotation> constructorAnnotationType 
-//    = org.oasisopen.sca.annotation.Constructor.class;
-    private Class<? extends Annotation> constructorAnnotationType;
+    private Class<? extends Annotation> constructorAnnotationType 
+    = org.oasisopen.sca.annotation.Constructor.class;
     
     private Class<? extends Annotation> autowiredAnnotationType = Autowired.class;
     
-    public ConstructorAnnotationProcessor (Class<? extends Annotation> annotation) {
-        this.constructorAnnotationType = annotation;
+    public ConstructorAnnotationProcessor () {
+        // Default constructor.
     }
     
     /**
