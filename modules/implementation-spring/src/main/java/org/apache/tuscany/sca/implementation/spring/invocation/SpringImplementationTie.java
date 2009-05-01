@@ -50,10 +50,12 @@ public class SpringImplementationTie {
     }
     
     public String getURI() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IllegalStateException("Not yet impl");
     }
 
+    public String getComponentName() {
+        return component.getName();
+    }
     /**
      * Method to create a Java Bean for a Property value
      * @param <B> the class type of the Bean
@@ -130,5 +132,13 @@ public class SpringImplementationTie {
         throw new RuntimeException("Unable to find Bean with name " + name);
 
     } // end method getBean( String, Class )
+    
+    public Object getComponentTie() {
+        return new ComponentTie();
+    }
+    
 
+    public Object getPropertyValueTie() {
+        return new PropertyValueTie();
+    }
 }

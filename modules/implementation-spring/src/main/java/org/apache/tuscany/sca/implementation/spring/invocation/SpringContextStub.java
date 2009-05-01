@@ -66,11 +66,11 @@ public class SpringContextStub {
 
             Class<?> tieClass = Class.forName("org.apache.tuscany.sca.implementation.spring.runtime.context.SpringContextTie", true, cl);
             Constructor<?> tieConstructor = tieClass.getConstructor(new Class<?>[]{stubClass, URL.class});
-            this.tie = tieConstructor.newInstance(stub,null);
+            this.tie = tieConstructor.newInstance(stub, implementation.getResource());
             
             this.startMethod = tieClass.getMethod("start");
             this.closeMethod = tieClass.getMethod("close");
-            this.getBeanMethod = tieClass.getMethod("getBean");
+            this.getBeanMethod = tieClass.getMethod("getBean", String.class);
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
