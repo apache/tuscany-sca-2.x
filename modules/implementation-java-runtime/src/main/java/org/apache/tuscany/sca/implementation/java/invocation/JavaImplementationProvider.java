@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.java.invocation;
@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
@@ -32,7 +33,6 @@ import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.RequestContextObjectFactory;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
@@ -53,27 +53,27 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
-    
+
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
                                       ProxyFactory proxyService,
                                       DataBindingExtensionPoint dataBindingRegistry,
-                                      JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                                      PropertyValueFactory propertyValueObjectFactory,
                                       ComponentContextFactory componentContextFactory,
                                       RequestContextFactory requestContextFactory) {
         super();
         this.implementation = implementation;
         this.requestContextFactory = requestContextFactory;
-        
+
         try {
             JavaInstanceFactoryProvider configuration = new JavaInstanceFactoryProvider(implementation);
             configuration.setProxyFactory(proxyService);
             componentContextProvider =
-                new JavaComponentContextProvider(component, 
-                                                 configuration, 
+                new JavaComponentContextProvider(component,
+                                                 configuration,
                                                  dataBindingRegistry,
                                                  propertyValueObjectFactory,
-                                                 componentContextFactory, 
+                                                 componentContextFactory,
                                                  requestContextFactory);
 
             Scope scope = getScope();
@@ -106,9 +106,9 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        
+
     }
-    
+
     private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();
@@ -165,7 +165,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             }
         }
     }
-    
+
     public boolean supportsOneWayInvocation() {
         return false;
     }

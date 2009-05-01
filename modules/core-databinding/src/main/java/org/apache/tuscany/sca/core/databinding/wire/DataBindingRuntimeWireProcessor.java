@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core.databinding.wire;
@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 /**
  * This processor is responsible to add an interceptor to invocation chain if
  * the source and target operations have different databinding requirements
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
@@ -149,14 +149,13 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
                 // Add the interceptor to the source side because multiple
                 // references can be wired to the same service
                 interceptor =
-                    new DataTransformationInterceptor(wire, sourceOperation, targetOperation, mediator,
-                                                      faultExceptionMapper);
+                    new DataTransformationInterceptor(wire, sourceOperation, targetOperation, mediator);
             } else {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
                 if (!isOnMessage(targetOperation) && isRemotable(chain, sourceOperation, targetOperation)) {
                     interceptor =
-                        new PassByValueInterceptor(dataBindings, faultExceptionMapper, chain, targetOperation);
+                        new PassByValueInterceptor(mediator, chain, targetOperation);
                 }
             }
             if (interceptor != null) {
@@ -172,7 +171,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     /**
      * FIXME: TUSCANY-2586, temporary work around till the JIRA is fixed to prevent
      *  the PassByValueInterceptor being used for services when the binding protocol
-     *  doesn't need the copies done. 
+     *  doesn't need the copies done.
      */
     protected boolean isOnMessage(Operation op) {
         return "onMessage".equals(op.getName());

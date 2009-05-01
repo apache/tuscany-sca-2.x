@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
@@ -67,7 +68,7 @@ import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * The runtime instantiation of Java component implementations
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JavaComponentContextProvider {
@@ -79,7 +80,7 @@ public class JavaComponentContextProvider {
     public JavaComponentContextProvider(RuntimeComponent component,
                                         JavaInstanceFactoryProvider configuration,
                                         DataBindingExtensionPoint dataBindingExtensionPoint,
-                                        JavaPropertyValueObjectFactory propertyValueObjectFactory,
+                                        PropertyValueFactory propertyValueObjectFactory,
                                         ComponentContextFactory componentContextFactory,
                                         RequestContextFactory requestContextFactory) {
         super();
@@ -91,7 +92,7 @@ public class JavaComponentContextProvider {
         //            this.componentContext = new ComponentContextImpl(this, requestContextFactory, this.proxyService);
         //        }
         this.component = component;
-        this.propertyValueFactory = propertyValueObjectFactory;
+        this.propertyValueFactory = (JavaPropertyValueObjectFactory) propertyValueObjectFactory;
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
@@ -129,7 +130,7 @@ public class JavaComponentContextProvider {
             ObjectFactory<?> propertyObjectFactory =
                 createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), element);
             instanceFactoryProvider.setObjectFactory(element, propertyObjectFactory);
-            
+
             JavaConstructorImpl<?> constructor = instanceFactoryProvider.getImplementation().getConstructor();
             for(JavaElementImpl p: constructor.getParameters()){
                 if(element.getName().equals(p.getName())) {
