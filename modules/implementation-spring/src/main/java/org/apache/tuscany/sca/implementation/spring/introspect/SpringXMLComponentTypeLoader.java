@@ -24,6 +24,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -145,7 +146,7 @@ public class SpringXMLComponentTypeLoader {
             implementation.setURI(resource.toString());            
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-            reader = xmlFactory.createXMLStreamReader(new FileInputStream(resource.toString()));
+            reader = xmlFactory.createXMLStreamReader(new FileInputStream(new File(resource.toURI())));
 
             // System.out.println("Spring TypeLoader - starting to read context file");            
             readContextDefinition(reader, beans, services, references, scaproperties);
@@ -153,6 +154,8 @@ public class SpringXMLComponentTypeLoader {
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
         }
 
@@ -177,11 +180,13 @@ public class SpringXMLComponentTypeLoader {
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
             XMLStreamReader reader = 
-            	xmlFactory.createXMLStreamReader(new FileInputStream(resource.toString()));
+            	xmlFactory.createXMLStreamReader(new FileInputStream(new File(resource.toURI())));
             return reader;
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
         }
     }    
