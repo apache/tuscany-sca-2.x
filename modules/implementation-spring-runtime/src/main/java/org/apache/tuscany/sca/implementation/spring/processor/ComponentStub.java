@@ -25,18 +25,17 @@ public class ComponentStub {
 
     private Object tie;
     private Method getService;
-    private Method getReference;
     
     public ComponentStub(Object tie) {
         this.tie = tie;
         Class<?> tieClass = tie.getClass();
         try {
             getService = tieClass.getMethod("getService", new Class<?>[]{Class.class, String.class});
-            getReference = tieClass.getMethod("getReference", new Class<?>[]{Class.class, String.class});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     public Object getService(Class<?> type, String name) {
         try {
 
@@ -46,15 +45,4 @@ public class ComponentStub {
             throw new RuntimeException(e);
         }
     }
-
-    public Object getReference(Class<?> type, String name) {
-        try {
-
-            return getReference.invoke(tie, type, name);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }
