@@ -25,6 +25,12 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+/**
+ * This is the Tuscany side tie for the corresponding Spring runtime side stub class.
+ * It enables the Tuscany code to invoke methods on a Spring context without
+ * needing to know about any Spring classes. See the PropertyValueStub class
+ * in the implementation-spring-runtime module for what the stub does. 
+ */
 public class PropertyValueTie {
 
     private RuntimeComponent component;

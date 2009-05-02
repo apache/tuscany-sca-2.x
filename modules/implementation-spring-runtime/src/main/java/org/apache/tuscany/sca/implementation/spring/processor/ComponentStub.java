@@ -21,6 +21,12 @@ package org.apache.tuscany.sca.implementation.spring.processor;
 
 import java.lang.reflect.Method;
 
+/**
+ * This is the Spring runtime side stub for the corresponding Tuscany tie class.
+ * It enables the Tuscany code to invoke methods on a Spring context without
+ * needing to know about any Spring classes. See the ComponentTie class
+ * in the implementation-spring module for what the tie does. 
+ */
 public class ComponentStub {
 
     private Object tie;
