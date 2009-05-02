@@ -134,11 +134,10 @@ public class SpringImplementationTie {
     } // end method getBean( String, Class )
     
     public Object getComponentTie() {
-        return new ComponentTie();
+        return new ComponentTie(component);
     }
-    
 
     public Object getPropertyValueTie() {
-        return new PropertyValueTie();
+        return new PropertyValueTie(component, propertyFactory);
     }
 }
