@@ -1,0 +1,9 @@
+Note that the implementation spring modules have a different structure from other extensions.
+
+The aim is to have the Tuscany runtime embedded in a container with the Tuscany classes hidden
+from user applications and the Spring jar's packaged with the application. That means that the
+Tuscany code has no visibilty of the Spring classes and visa-versa. To implement that the
+implementation-spring module has no dependencies on Spring and the implementation-spring-runtime
+module has no dependencies on Tuscany (other than the sca-api), and reflection is used to call
+methods between the modules.
+
