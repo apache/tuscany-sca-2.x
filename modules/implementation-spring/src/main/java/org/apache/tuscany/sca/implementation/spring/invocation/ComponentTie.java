@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.spring.invocation;
 
+/**
+ * This is the Tuscany side tie for the corresponding Spring runtime side stub class.
+ * It enables the Tuscany code to invoke methods on a Spring context without
+ * needing to know about any Spring classes. See the ComponentStub class
+ * in the implementation-spring-runtime module for what the stub does. 
+ */
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 public class ComponentTie {
