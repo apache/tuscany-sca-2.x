@@ -115,12 +115,14 @@ public class SpringContextTie {
                         
                         if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1) {                                                                   
                                 appContext = new ClassPathXmlApplicationContext(listValues, false, scaParentContext);                                   
+                                appContext.refresh(); // TODO why is this needed here now?
                                 includeAnnotationProcessors(appContext.getBeanFactory());
-                                        return appContext;
+                                return appContext;
                         } else {
                                 appContext = new FileSystemXmlApplicationContext(listValues, false, scaParentContext);                                  
+                                appContext.refresh(); // TODO why is this needed here now?
                                 includeAnnotationProcessors(appContext.getBeanFactory());
-                                        return appContext;
+                                return appContext;
                         }
                 }               
         }
