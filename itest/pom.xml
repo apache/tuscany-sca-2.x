@@ -64,6 +64,7 @@
                 <module>conversations</module>
                 <!--module>definitions-multiple</module-->
                 <module>exceptions</module>
+                <module>implementation-spring</module>
                 <module>interfaces</module>
 <!--
                 <module>operation-overloading</module>
