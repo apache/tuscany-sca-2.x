@@ -151,7 +151,7 @@ public class ReferenceAnnotationProcessor implements BeanPostProcessor {
      */
     public void injectReference(Object bean, PropertyDescriptor pd, String name) {
                
-        Object referenceObj = component.getReference(pd.getPropertyType(), name);
+        Object referenceObj = component.getService(pd.getPropertyType(), name);
         
         if (referenceObj != null) {
             try {                                                       
