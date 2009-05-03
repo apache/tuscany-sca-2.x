@@ -147,8 +147,14 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     }
     
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
-        if (composite != null)
-    	    extensionProcessor.resolve(composite, resolver);
+    	try {
+	        if (composite != null)
+	    	    extensionProcessor.resolve(composite, resolver);
+    	} catch (Throwable e ) {
+    		// Add information about which composite was being processed when the exception occurred
+    		String newMessage = "Processing composite " + composite.getName() + ": " + e.getMessage();
+    		throw new ContributionResolveException( newMessage, e );
+    	} // end try
     }
 
     public String getArtifactType() {
