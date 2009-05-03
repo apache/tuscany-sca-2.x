@@ -167,34 +167,38 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     public void resolve(JavaImplementation javaImplementation, ModelResolver resolver)
         throws ContributionResolveException {
 
-        ClassReference classReference = new ClassReference(javaImplementation.getName());
-        classReference = resolver.resolveModel(ClassReference.class, classReference);
-        Class<?> javaClass = classReference.getJavaClass();
-        if (javaClass == null) {
-            error("ClassNotFoundException", resolver, javaImplementation.getName());
-            //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
-            return;
-        }
-
-        javaImplementation.setJavaClass(javaClass);
-
-        try {
-            javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
-        } catch (IntrospectionException e) {
-            ContributionResolveException ce = new ContributionResolveException(e);
-            error("ContributionResolveException", javaFactory, ce);
-            //throw ce;
-            return;
-        }
-
-        javaImplementation.setUnresolved(false);
-        mergeComponentType(resolver, javaImplementation);
-
-        // FIXME the introspector should always create at least one service
-        if (javaImplementation.getServices().isEmpty()) {
-            javaImplementation.getServices().add(assemblyFactory.createService());
-        }
-    }
+    	try {
+	        ClassReference classReference = new ClassReference(javaImplementation.getName());
+	        classReference = resolver.resolveModel(ClassReference.class, classReference);
+	        Class<?> javaClass = classReference.getJavaClass();
+	        if (javaClass == null) {
+	            error("ClassNotFoundException", resolver, javaImplementation.getName());
+	            //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
+	            return;
+	        }
+	
+	        javaImplementation.setJavaClass(javaClass);
+	
+	        try {
+	            javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
+	        } catch (IntrospectionException e) {
+	            ContributionResolveException ce = new ContributionResolveException(e);
+	            error("ContributionResolveException", javaFactory, ce);
+	            //throw ce;
+	            return;
+	        }
+	
+	        javaImplementation.setUnresolved(false);
+	        mergeComponentType(resolver, javaImplementation);
+	
+	        // FIXME the introspector should always create at least one service
+	        if (javaImplementation.getServices().isEmpty()) {
+	            javaImplementation.getServices().add(assemblyFactory.createService());
+	        }
+    	} catch (Throwable e ) {
+    		throw new ContributionResolveException( "Resolving Java implementation: " + javaImplementation.getName(), e);
+    	} // end try
+    } // end method
 
     private JavaElementImpl getMemeber(JavaImplementation impl, String name, Class<?> type) {
         String setter = JavaIntrospectionHelper.toSetter(name);
