@@ -71,6 +71,7 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
             return true;
         }
 
+        /*
         // OSGi Declarative Services
         if (headers.get("Service-Component") != null) {
             return true;
@@ -85,6 +86,7 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
         if (entries != null && entries.hasMoreElements()) {
             return true;
         }
+        */
         return false;
     }
 

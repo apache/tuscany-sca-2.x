@@ -227,11 +227,14 @@ public class OSGiTestBundles {
                                              "OSGI-INF/remote-service/calculator-service-descriptions.xml"},
                                             {"calculator/dosgi/OSGI-INF/calculator-component.xml",
                                              "OSGI-INF/calculator-component.xml"},
+                                             /*
                                             {"calculator/dosgi/bundle.componentType",
                                              "OSGI-INF/sca/bundle.componentType"},
                                             {"calculator/dosgi/calculator.composite", "OSGI-INF/sca/bundle.composite"},
                                             {"calculator/dosgi/META-INF/sca-contribution.xml",
-                                             "META-INF/sca-contribution.xml"}},
+                                             "META-INF/sca-contribution.xml"}
+                                             */
+                                            },
                             CalculatorService.class,
                             // Package the interfaces so that the operations bundle can be remote
                             AddService.class,
@@ -243,6 +246,31 @@ public class OSGiTestBundles {
                             CalculatorActivator.class);
     }
 
+    /**
+     * Create the OSGi bundle for calculator SCA
+     * @return
+     * @throws IOException
+     */
+    static URL generateCalculatorSCABundle() throws IOException {
+        return createBundle("target/test-classes/calculator-sca-bundle.jar",
+                            "calculator/dosgi/sca/META-INF/MANIFEST.MF",
+                            new String[][] {
+                                            {"calculator/dosgi/sca/OSGI-INF/sca/calculator.composite",
+                                             "OSGI-INF/sca/bundle.composite"},
+                                            {"calculator/dosgi/sca/META-INF/sca-contribution.xml",
+                                             "META-INF/sca-contribution.xml"},
+                                             {"calculator/dosgi/bundle.componentType",
+                                             "OSGI-INF/sca/calculator.dosgi/bundle.componentType"},
+                                             {"calculator/dosgi/operations/bundle.componentType",
+                                              "OSGI-INF/sca/calculator.dosgi.operations/bundle.componentType"},
+                                             });
+    }
+
+    /**
+     * Create the OSGi bundle for calculator operations
+     * @return
+     * @throws IOException
+     */
     static URL generateOperationsBundle() throws IOException {
         return createBundle("target/test-classes/operations-bundle.jar",
                             "calculator/dosgi/operations/META-INF/MANIFEST.MF",
@@ -255,12 +283,15 @@ public class OSGiTestBundles {
                                              "OSGI-INF/multiply-component.xml"},
                                             {"calculator/dosgi/operations/OSGI-INF/divide-component.xml",
                                              "OSGI-INF/divide-component.xml"},
+                                             /*
                                             {"calculator/dosgi/operations/bundle.componentType",
                                              "OSGI-INF/sca/bundle.componentType"},
                                             {"calculator/dosgi/operations/operations.composite",
                                              "OSGI-INF/sca/bundle.composite"},
                                             {"calculator/dosgi/operations/META-INF/sca-contribution.xml",
-                                             "META-INF/sca-contribution.xml"}},
+                                             "META-INF/sca-contribution.xml"}
+                                             */
+                                             },
                             OperationsActivator.class,
                             AddService.class,
                             AddServiceImpl.class,
