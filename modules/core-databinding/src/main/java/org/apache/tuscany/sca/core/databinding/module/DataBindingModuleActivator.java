@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
@@ -55,9 +54,9 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         XMLAdapterExtensionPoint xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
         xmlAdapterExtensionPoint.addAdapter(CallableReference.class, CallableReferenceXMLAdapter.class);
-        FaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, xmlAdapterExtensionPoint);
-        registry.getExtensionPoint(UtilityExtensionPoint.class).addUtility(faultExceptionMapper);
-
+        
+        FaultExceptionMapper faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
+        
         Mediator mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
 
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
