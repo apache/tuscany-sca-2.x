@@ -338,8 +338,19 @@ public class MediatorImpl implements Mediator {
             throw new ServiceRuntimeException(cause);
         }
 
+        Map<String, Object> context = new HashMap<String, Object>();
+        if (metadata != null) {
+            context.putAll(metadata);
+        }
+        if (targetOperation != null) {
+            context.put(SOURCE_OPERATION, targetOperation);
+        }
+        if (sourceOperation != null) {
+            context.put(TARGET_OPERATION, sourceOperation);
+        }
+
         Object newResult =
-            transformException(result, targetDataType, sourceDataType, targetFaultType, sourceFaultType, metadata);
+            transformException(result, targetDataType, sourceDataType, targetFaultType, sourceFaultType, context);
 
         return newResult;
 
@@ -359,6 +370,9 @@ public class MediatorImpl implements Mediator {
     }
 
     /**
+     * Assumes we're going from target-to-source, knowing that we're sending BACK an output response, rather than the more
+     * obvious source-to-target.
+     *
      * @param output
      * @param sourceOperation
      * @param targetOperation
