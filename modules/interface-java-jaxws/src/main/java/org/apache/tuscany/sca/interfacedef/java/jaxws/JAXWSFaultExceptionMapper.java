@@ -30,6 +30,7 @@ import java.security.PrivilegedAction;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -61,6 +62,11 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         super();
         this.dataBindingExtensionPoint = dataBindingExtensionPoint;
         this.xmlAdapterExtensionPoint = xmlAdapters;
+    }
+    
+    public JAXWSFaultExceptionMapper(ExtensionPointRegistry registry) {
+        this.dataBindingExtensionPoint = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        this.xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
     }
 
     /**
@@ -362,9 +368,4 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
             return Character.toUpperCase(name.charAt(0)) + name.substring(1);
         }
     }
-
-    public void setDataBindingExtensionPoint(DataBindingExtensionPoint dataBindingExtensionPoint) {
-        this.dataBindingExtensionPoint = dataBindingExtensionPoint;
-    }
-
 }
