@@ -22,8 +22,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
@@ -52,10 +50,7 @@ public class SpringImplementationProviderFactory implements ImplementationProvid
         proxyFactory = new ExtensibleProxyFactory(proxyFactories); 
 
         // TODO: could the runtime have a default PropertyValueObjectFactory?
-        DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformers = extensionPoints.getExtensionPoint(TransformerExtensionPoint.class);
-        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
-        propertyFactory = new JavaPropertyValueObjectFactory(mediator);
+        propertyFactory = new JavaPropertyValueObjectFactory(new MediatorImpl(extensionPoints));
     }
 
     /**
