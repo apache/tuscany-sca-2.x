@@ -24,6 +24,8 @@ import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUND
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.BUNDLE_VERSION;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiImplementation.IMPLEMENTATION_OSGI;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -40,8 +42,11 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
@@ -71,18 +76,29 @@ import org.osgi.framework.Version;
  * @version $Rev$ $Date$
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
+    private static final String BUNDLE_COMPONENT_TYPE = "OSGI-INF/sca/bundle.componentType";
+    private static final String COMPONENT_TYPE_HEADER = "SCA-ComponentType";
+
     private AssemblyFactory assemblyFactory;
     private ServiceDescriptionsFactory serviceDescriptionsFactory;
     private OSGiImplementationFactory osgiImplementationFactory;
     private JavaInterfaceFactory javaInterfaceFactory;
     private Monitor monitor;
+    private ExtensionPointRegistry registry;
+    private StAXArtifactProcessor artifactProcessor;
 
-    public OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    protected OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
         this.serviceDescriptionsFactory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
         this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+    }
+
+    public OSGiImplementationProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
+        this(registry.getExtensionPoint(FactoryExtensionPoint.class), monitor);
+        this.artifactProcessor = processor;
+        this.registry = registry;
     }
 
     /**
@@ -172,6 +188,14 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             return;
         }
 
+        try {
+            if (introspect(impl, resolver, bundle)) {
+                return;
+            }
+        } catch (ContributionReadException e) {
+            throw new ContributionResolveException(e);
+        }
+
         // The bundle may be different from the current contribution
         ComponentType componentType = assemblyFactory.createComponentType();
         // Try to find a bundle.componentType for the target bundle
@@ -183,7 +207,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             // See org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver.resolveModel(Class<T>, T)
             componentType = assemblyFactory.createComponentType();
             // Try a generic one
-            componentType.setURI("OSGI-INF/sca/bundle.componentType");
+            componentType.setURI(BUNDLE_COMPONENT_TYPE);
             componentType = resolver.resolveModel(ComponentType.class, componentType);
         }
         if (componentType.isUnresolved()) {
@@ -291,6 +315,25 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             writer.writeAttribute(BUNDLE_VERSION, model.getBundleVersion());
         }
         writer.writeEndElement();
+    }
+
+    private boolean introspect(OSGiImplementation implementation, ModelResolver resolver, Bundle bundle)
+        throws ContributionReadException, ContributionResolveException {
+        String componentTypeFile = (String)bundle.getHeaders().get(COMPONENT_TYPE_HEADER);
+        if (componentTypeFile == null) {
+            componentTypeFile = BUNDLE_COMPONENT_TYPE;
+        }
+        URL url = bundle.getEntry(componentTypeFile);
+        if (url != null) {
+            URLArtifactProcessorExtensionPoint processors =
+                registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+            URLArtifactProcessor<ComponentType> processor = processors.getProcessor(ComponentType.class);
+            ComponentType componentType = processor.read(null, URI.create(BUNDLE_COMPONENT_TYPE), url);
+            artifactProcessor.resolve(componentType, resolver);
+            mergeFromComponentType(implementation, componentType, resolver);
+            return true;
+        }
+        return false;
     }
 
 }

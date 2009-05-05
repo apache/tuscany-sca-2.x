@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
@@ -38,13 +38,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * 
+ *
  */
 public class OSGiImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
@@ -66,6 +67,15 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
+        // First try to start the osgi bundle
+        try {
+            int state = osgiBundle.getState();
+            if ((state & Bundle.STARTING) == 0 && (state & Bundle.ACTIVE) == 0) {
+                osgiBundle.start();
+            }
+        } catch (BundleException e) {
+            throw new ServiceRuntimeException(e);
+        }
         for (ComponentReference ref : component.getReferences()) {
             RuntimeComponentReference reference = (RuntimeComponentReference)ref;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
@@ -88,9 +98,8 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                 final Object proxy = proxyService.createProxy(interfaceClass, wire);
                 AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                     public ServiceRegistration run() {
-                        return osgiBundle.getBundleContext().registerService(interfaceClass.getName(),
-                                                                             proxy,
-                                                                             osgiProps);
+                        return osgiBundle.getBundleContext()
+                            .registerService(interfaceClass.getName(), proxy, osgiProps);
                     }
                 });
             }
@@ -100,6 +109,14 @@ public class OSGiImplementationProvider implements ImplementationProvider {
 
     public void stop() {
         // Do we have to unregister the services?
+        try {
+            int state = osgiBundle.getState();
+            if ((state & Bundle.STARTING) == 0) {
+                osgiBundle.stop();
+            }
+        } catch (BundleException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     public boolean supportsOneWayInvocation() {

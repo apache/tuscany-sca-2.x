@@ -81,7 +81,7 @@ public class CalculatorOSGiNodeTestCase {
                 System.out.println("Generating calculator.dosgi.operations bundle...");
                 operationsBundle = context.installBundle("reference:" + generateOperationsBundle().toString());
             }
-            
+
             scaBundle = context.installBundle("reference:" + generateCalculatorSCABundle().toString());
 
             for (Bundle b : context.getBundles()) {
@@ -98,7 +98,7 @@ public class CalculatorOSGiNodeTestCase {
                     System.out.println(bundleStatus(b, false));
                 }
             }
-            
+
             if (scaBundle != null) {
                 scaBundle.start();
             }
@@ -141,6 +141,9 @@ public class CalculatorOSGiNodeTestCase {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         if (host != null) {
+            if (scaBundle != null) {
+                scaBundle.stop();
+            }
             if (client != null && !client.booleanValue()) {
                 System.out.println("Press Enter to stop the node...");
                 System.in.read();
