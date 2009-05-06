@@ -679,7 +679,7 @@ public class NodeImpl implements Node, Client, SCAClient {
             // Start the composite
             compositeActivator.start(composite);
             
-            SCAClientImpl.addDomain(URI.create(configurationName), this);
+            SCAClientImpl.addDomain(getDomainName(), this);
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
@@ -692,7 +692,7 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         try {
 
-            SCAClientImpl.removeDomain(URI.create(configurationName));
+            SCAClientImpl.removeDomain(getDomainName());
 
             // Stop the composite
             compositeActivator.stop(composite);
@@ -704,6 +704,16 @@ public class NodeImpl implements Node, Client, SCAClient {
             throw new IllegalStateException(e);
         }
 
+    }
+    
+    private URI getDomainName() {
+        URI domainName;
+        if (configurationName != null) {
+            domainName = URI.create(configurationName);
+        } else {
+            domainName = URI.create("default");
+        }
+        return domainName;
     }
 
     public void destroy() {
