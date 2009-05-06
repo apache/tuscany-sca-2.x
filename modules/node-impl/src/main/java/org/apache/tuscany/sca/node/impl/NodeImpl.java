@@ -48,6 +48,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.client.impl.SCAClientImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -677,6 +678,8 @@ public class NodeImpl implements Node, Client, SCAClient {
 
             // Start the composite
             compositeActivator.start(composite);
+            
+            SCAClientImpl.addDomain(URI.create(configurationName), this);
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
@@ -688,6 +691,8 @@ public class NodeImpl implements Node, Client, SCAClient {
         logger.log(Level.INFO, "Stopping node: " + configurationName);
 
         try {
+
+            SCAClientImpl.removeDomain(URI.create(configurationName));
 
             // Stop the composite
             compositeActivator.stop(composite);
