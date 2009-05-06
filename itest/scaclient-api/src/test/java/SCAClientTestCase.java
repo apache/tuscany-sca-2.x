@@ -1,13 +1,11 @@
-
+import java.net.URI;
 
 import itest.HelloworldService;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
-import org.oasisopen.sca.client.SCAClient;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.oasisopen.sca.client.SCAClientFactory;
-
-
 
 /**
  * Test SCADomain.newInstance and invocation of a service.
@@ -16,21 +14,22 @@ import org.oasisopen.sca.client.SCAClientFactory;
  */
 public class SCAClientTestCase extends TestCase {
 
-    private SCAClient scaClient;
-    
+    private Node node;
+
     @Override
     protected void setUp() throws Exception {
-        scaClient = SCAClientFactory.newInstance();
+        node = NodeFactory.newInstance().createNode();
+        node.start();
     }
 
     public void testInvoke() throws Exception {
-        HelloworldService service = scaClient.getService(HelloworldService.class, "HelloworldComponent", null);
+        HelloworldService service = SCAClientFactory.newInstance().getService(HelloworldService.class, "HelloworldComponent", URI.create("default"));
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
     @Override
     protected void tearDown() throws Exception {
-        ((Node)scaClient).stop();
+        node.stop();
     }
 
 }
