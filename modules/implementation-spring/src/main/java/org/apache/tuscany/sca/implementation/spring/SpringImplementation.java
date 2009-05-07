@@ -49,7 +49,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     // Mapping of Services to Beans
     private Hashtable<String, SpringBeanElement> serviceMap;
     // Mapping of property names to Java class
-    private Hashtable<String, Class> propertyMap;
+    private Hashtable<String, Class<?>> propertyMap;
     // List of unresolved bean property references
     private Hashtable<String, Reference> unresolvedBeanRef;
 
@@ -58,7 +58,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
         this.resource = null;
         setUnresolved(true);
         serviceMap = new Hashtable<String, SpringBeanElement>();
-        propertyMap = new Hashtable<String, Class>();
+        propertyMap = new Hashtable<String, Class<?>>();
         unresolvedBeanRef = new Hashtable<String, Reference>();
     } // end method SpringImplementation
 
@@ -137,7 +137,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
      * @param propertyName
      * @param propertyClass
      */
-    public void setPropertyClass(String propertyName, Class propertyClass) {
+    public void setPropertyClass(String propertyName, Class<?> propertyClass) {
         if (propertyName == null || propertyClass == null)
             return;
         propertyMap.put(propertyName, propertyClass);
@@ -149,7 +149,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
      * @param propertyName - the property name
      * @return - a Class object for the type of the property
      */
-    public Class getPropertyClass(String propertyName) {
+    public Class<?> getPropertyClass(String propertyName) {
         return propertyMap.get(propertyName);
     } // end method getPropertyClass
     

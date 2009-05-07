@@ -63,7 +63,7 @@ public class SpringImplementationTie {
      * @param name - the Property name
      * @return - a Bean of the specified property, with value set
      */
-    private <B> B getPropertyBean(Class requiredType, String name) {
+    private <B> B getPropertyBean(Class<?> requiredType, String name) {
         B propertyObject = null;
         // Get the component's list of properties
         List<ComponentProperty> props = component.getProperties();
@@ -71,7 +71,7 @@ public class SpringImplementationTie {
             if (prop.getName().equals(name)) {
                 // On finding the property, create a factory for it and create a Bean using
                 // the factory
-                ObjectFactory factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
+                ObjectFactory<?> factory = propertyFactory.createValueFactory(prop, prop.getValue(), requiredType);
                 propertyObject = (B)factory.getInstance();
             } // end if
         } // end for
@@ -97,7 +97,7 @@ public class SpringImplementationTie {
      * @param requiredType - the required type of the Bean (either a Java class or a Java interface)
      * @return Object - a Bean which matches the requested bean
      */
-    public Object getBean(String name, Class requiredType) {
+    public Object getBean(String name, Class<?> requiredType) {
         System.out.println("Spring parent context - getBean called for name: " + name);
         // The expectation is that the requested Bean is either a reference or a property
         // from the Spring context
