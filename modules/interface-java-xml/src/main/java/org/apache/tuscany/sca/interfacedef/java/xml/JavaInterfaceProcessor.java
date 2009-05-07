@@ -174,13 +174,16 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     }
     
     public void resolve(JavaInterfaceContract javaInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
-        
-        // Resolve the interface and callback interface
-        JavaInterface javaInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getInterface(), resolver);
-        javaInterfaceContract.setInterface(javaInterface);
-        
-        JavaInterface javaCallbackInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver);
-        javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+        try {
+	        // Resolve the interface and callback interface
+	        JavaInterface javaInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getInterface(), resolver);
+	        javaInterfaceContract.setInterface(javaInterface);
+	        
+	        JavaInterface javaCallbackInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver);
+	        javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+        } catch (Exception e) {
+        	throw new ContributionResolveException( "Resolving Java Interface " + javaInterfaceContract.getInterface().toString(), e );
+        } // end try
     }
     
     public QName getArtifactType() {
