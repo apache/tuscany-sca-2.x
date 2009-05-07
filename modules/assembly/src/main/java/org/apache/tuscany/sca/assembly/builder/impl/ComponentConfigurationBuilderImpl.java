@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -270,7 +272,34 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         }
         Reference implReference = reference.getReference();
         if (implReference != null) {
-            Service implService = assemblyFactory.createService();
+        	// If the implementation reference is a CompositeReference, ensure that the Service that is 
+        	// created is a CompositeService, otherwise create a Service
+        	Service implService;
+        	if( implReference instanceof CompositeReference ) {
+        		CompositeService implCompService = assemblyFactory.createCompositeService();
+        		// TODO The reality here is that the composite reference which has the callback COULD promote more than
+        		// one component reference - and there must be a separate composite callback service for each of these component
+        		// references
+        		// Set the promoted component from the promoted component of the composite reference
+        		implCompService.setPromotedComponent(((CompositeReference) implReference).getPromotedComponents().get(0));
+        		implCompService.setIsCallback(true);
+        		// Set the promoted service
+        		ComponentService promotedService = assemblyFactory.createComponentService();
+        		promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0).getName());
+        		promotedService.setUnresolved(true);
+        		promotedService.setIsCallback(true);
+        		implCompService.setPromotedService(promotedService);
+        		implService = implCompService;
+        		// Add the composite service to the composite implementation artifact
+        		Implementation implementation = component.getImplementation();
+        		if( implementation != null && implementation instanceof Composite) {
+        			((Composite)implementation).getServices().add(implCompService);
+        		} // end if
+        		//
+        	} else {
+        		implService = assemblyFactory.createService();
+        	} // end if
+        	//
             implService.setName(implReference.getName());
             try {
                 InterfaceContract implContract =
@@ -334,7 +363,30 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         }
         Service implService = service.getService();
         if (implService != null) {
-            Reference implReference = assemblyFactory.createReference();
+            
+        	// If the implementation service is a CompositeService, ensure that the Reference that is 
+        	// created is a CompositeReference, otherwise create a Reference
+        	Reference implReference;
+        	if( implService instanceof CompositeService ) {
+        		CompositeReference implCompReference = assemblyFactory.createCompositeReference();
+        		// Set the promoted component from the promoted component of the composite service
+        		implCompReference.getPromotedComponents().add(((CompositeService) implService).getPromotedComponent());
+        		// Set the promoted service
+        		ComponentReference promotedReference = assemblyFactory.createComponentReference();
+        		promotedReference.setName(((CompositeService)implService).getPromotedService().getName());
+        		promotedReference.setUnresolved(true);
+        		implCompReference.getPromotedReferences().add(promotedReference);
+        		implReference = implCompReference;
+        		// Add the composite reference to the composite implementation artifact
+        		Implementation implementation = component.getImplementation();
+        		if( implementation != null && implementation instanceof Composite) {
+        			((Composite)implementation).getReferences().add(implCompReference);
+        		} // end if
+        	} else {
+        		implReference = assemblyFactory.createReference();
+        	} // end if
+        	//
+            
             implReference.setName(implService.getName());
             try {
                 InterfaceContract implContract =
