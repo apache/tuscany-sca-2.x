@@ -74,7 +74,7 @@
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
         <module>implementation-spring</module>
-        <module>implementation-spring-runtime</module>
+        <module>implementation-spring-sca</module>
         <module>implementation-web</module>
         <module>implementation-web-runtime</module>
         <module>interface</module>
@@ -94,6 +94,7 @@
         <module>policy-xml</module>
         <module>policy-xml-ws</module>
         <module>sca-api</module>
+        <module>sca-client-impl</module>
         <module>stripes</module>
         <module>workspace</module>
         <module>workspace-impl</module>
