@@ -126,7 +126,12 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                 String promotedComponentName = compositeService.getPromotedComponent().getName(); 
                 String promotedServiceName;
                 if (componentService.getName() != null) {
-                    promotedServiceName = promotedComponentName + '/' + componentService.getName();
+                	if( compositeService.isCallback() ) {
+                		// For callbacks the name already has the form "componentName"/"servicename"
+                		promotedServiceName = componentService.getName();
+                	} else {
+                		promotedServiceName = promotedComponentName + '/' + componentService.getName();
+                	}
                 } else {
                     promotedServiceName = promotedComponentName;
                 }
