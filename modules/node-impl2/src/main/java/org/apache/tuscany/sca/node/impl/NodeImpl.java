@@ -379,7 +379,6 @@ public class NodeImpl implements Node, Client, SCAClient {
 
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
-            System.out.println("contributionProcessor " + contributionProcessor);
             Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
             contributions.add(contribution);
             analyzeProblems();
