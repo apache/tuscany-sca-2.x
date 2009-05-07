@@ -25,7 +25,6 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.implementation.java.injection;version="2.0.0",
  org.apache.tuscany.sca.implementation.java.introspect;version="2.0.0",
  org.apache.tuscany.sca.implementation.java.introspect.impl;version="2.0.0",
- org.apache.tuscany.sca.implementation.spring.processor;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.java.impl;version="2.0.0",
@@ -51,8 +50,4 @@ Export-Package: org.apache.tuscany.sca.implementation.spring;version="2.0.0";
    org.apache.tuscany.sca.implementation.spring,
    org.apache.tuscany.sca.implementation.java,
    org.apache.tuscany.sca.policy,
-   org.apache.tuscany.sca.interfacedef.java",
- org.apache.tuscany.sca.implementation.spring.processor;version="2.0.0";
-  uses:="org.apache.tuscany.sca.implementation.java.injection,
-   org.apache.tuscany.sca.runtime"
-   
+   org.apache.tuscany.sca.interfacedef.java"
