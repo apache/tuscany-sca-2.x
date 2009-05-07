@@ -78,6 +78,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @return a Composite object built from the supplied Composite document
      */
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    	if( uri == null || url == null ) {
+    		throw new ContributionReadException("Request to read composite with uri or url NULL");
+    	} // end if
         InputStream scdlStream = null;
         try {
             URLConnection connection = url.openConnection();
