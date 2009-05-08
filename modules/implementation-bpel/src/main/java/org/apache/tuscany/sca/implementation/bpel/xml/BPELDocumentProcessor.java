@@ -201,6 +201,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * 
      * @param theImports
      */
+    @SuppressWarnings("unchecked")
     private List<BPELPartnerLinkTypeElement> getPartnerLinkTypes( List<BPELImportElement> theImports) throws ContributionResolveException {
     	
     	List<BPELPartnerLinkTypeElement> thePLinks = new ArrayList<BPELPartnerLinkTypeElement>();
@@ -272,6 +273,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @return
      * @throws ContributionResolveException
      */
+    @SuppressWarnings("unchecked")
     private Collection<PortType> getAllPortTypes(List<BPELImportElement> theImports,
                                                  Collection<WSDLInterface> theInterfaces, ModelResolver resolver) throws ContributionResolveException {
 
