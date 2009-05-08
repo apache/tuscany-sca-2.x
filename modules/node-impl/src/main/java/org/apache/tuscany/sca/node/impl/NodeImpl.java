@@ -98,7 +98,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
