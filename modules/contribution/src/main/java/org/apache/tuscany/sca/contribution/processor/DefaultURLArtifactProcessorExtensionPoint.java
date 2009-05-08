@@ -119,7 +119,8 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         }
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T> URLArtifactProcessor<T> getProcessor(Class<T> modelType) {
         loadProcessors();
         return (URLArtifactProcessor<T>)super.getProcessor(modelType);
@@ -145,7 +146,8 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         return processors;
     }
 
-    public URLArtifactProcessor<?> getProcessor(Object artifactType) {
+    @SuppressWarnings("unchecked")
+	public URLArtifactProcessor<?> getProcessor(Object artifactType) {
         Collection<URLArtifactProcessor<?>> processors = getProcessors(artifactType);
         return processors.isEmpty() ? null : processors.iterator().next();
     }
@@ -242,7 +244,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
             String modelTypeName = attributes.get("model");
 
             // Create a processor wrapper and register it
-            URLArtifactProcessor processor =
+            URLArtifactProcessor<?> processor =
                 new LazyURLArtifactProcessor(artifactType, modelTypeName, processorDeclaration, extensionPoints,
                                              staxProcessor, monitor);
             addArtifactProcessor(processor);
@@ -255,13 +257,13 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
      * A wrapper around an Artifact processor class allowing lazy loading and
      * initialization of artifact processors.
      */
-    private static class LazyURLArtifactProcessor implements URLArtifactProcessor {
+    private static class LazyURLArtifactProcessor implements ExtendedURLArtifactProcessor {
 
         private ExtensionPointRegistry extensionPoints;
         private String artifactType;
         private String modelTypeName;
         private ServiceDeclaration processorDeclaration;
-        private URLArtifactProcessor processor;
+        private URLArtifactProcessor<?> processor;
         private Class<?> modelType;
         private StAXArtifactProcessor<?> staxProcessor;
         private Monitor monitor;
@@ -353,7 +355,18 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         @SuppressWarnings("unchecked")
         public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
             getProcessor().resolve(model, resolver);
-        }
+        } // end method resolve
+        
+        /**
+         * Preresolve phase, for ExtendedURLArtifactProcessors only
+         */
+        @SuppressWarnings("unchecked")
+        public void preResolve( Object model, ModelResolver resolver ) throws ContributionResolveException {
+        	URLArtifactProcessor<?> processor = getProcessor();
+        	if( processor instanceof ExtendedURLArtifactProcessor ) {
+        		((ExtendedURLArtifactProcessor)processor).preResolve(model, resolver);
+        	} // end if
+        } // end method resolve
 
-    }
-}
+    } // end class LazyURLArtifactProcessor
+} // end class DefaultURLArtifactProcessorExtensionPoint
