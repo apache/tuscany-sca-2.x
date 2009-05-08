@@ -60,7 +60,6 @@ public class BPELInvoker implements Invoker {
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
     
-    private RuntimeComponent component;
     private RuntimeComponentService service;
     private Operation operation;
     private QName bpelServiceName;
@@ -69,7 +68,6 @@ public class BPELInvoker implements Invoker {
     private Part bpelOperationOutputPart;
     
     public BPELInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
-        this.component = component;
         this.service = service;
         this.operation = operation;
         this.bpelOperationName = operation.getName();
@@ -120,7 +118,7 @@ public class BPELInvoker implements Invoker {
         }
         
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
-        Future onhold = null;
+        Future<?> onhold = null;
         
         //Process the BPEL process invocation
         try {
@@ -239,7 +237,6 @@ public class BPELInvoker implements Invoker {
      * @return
      */
     private Element processResponse(Element response) {
-        // return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName())).getFirstChild();
         return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
     }
 }

@@ -36,15 +36,9 @@ import org.w3c.dom.Element;
  */
 public class TuscanyPRC implements PartnerRoleChannel {
     private final QName processName;
-    private final QName pid;
-    private final PortType portType;
-    private final Endpoint endpoint;
     
     public TuscanyPRC(QName processName, QName pid, PortType portType, Endpoint endpoint){
         this.processName = processName;
-        this.pid = pid;
-        this.portType = portType;
-        this.endpoint = endpoint;
     }
     
     public QName getProcessName() {
