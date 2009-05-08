@@ -303,24 +303,27 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
             // populate the endpoint reference
             try {
 
-                Binding cloned = (Binding) referenceBinding.clone();
+                Binding clonedBinding = (Binding) referenceBinding.clone();
 
                 // Set the binding URI to the URI of the target service
                 // that has been matched
                 if (referenceBinding.getURI() == null) {
-                    cloned.setURI(serviceEndpoint.getBinding().getURI());
+                    clonedBinding.setURI(serviceEndpoint.getBinding().getURI());
                 }
                 
                 // TODO - EPR can we remove this?
-                if (cloned instanceof OptimizableBinding) {
-                    OptimizableBinding optimizableBinding = (OptimizableBinding)cloned;
+                if (clonedBinding instanceof OptimizableBinding) {
+                    OptimizableBinding optimizableBinding = (OptimizableBinding)clonedBinding;
                     optimizableBinding.setTargetComponent(serviceEndpoint.getComponent());
                     optimizableBinding.setTargetComponentService(serviceEndpoint.getService());
                     optimizableBinding.setTargetBinding(serviceEndpoint.getBinding());
                 }
 
-                endpointReference.setBinding(cloned);
-                endpointReference.setTargetEndpoint(serviceEndpoint);
+                endpointReference.setBinding(clonedBinding);
+                
+                Endpoint2 clonedEndpoint = (Endpoint2)serviceEndpoint.clone();
+                
+                endpointReference.setTargetEndpoint(clonedEndpoint);
 
             } catch (Exception ex) {
                 // do nothing
