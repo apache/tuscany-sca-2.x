@@ -34,14 +34,9 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class TuscanyEPR implements EndpointReference {
-    private final QName prcessName;
-    private final Endpoint endpoint;
     private final Document doc = DOMUtils.newDocument();
     
     public TuscanyEPR(QName processName, Endpoint endpoint) {
-        this.prcessName = processName;
-        this.endpoint = endpoint;
-        
         Element serviceref = doc.createElementNS(EndpointReference.SERVICE_REF_QNAME.getNamespaceURI(),
                                                  EndpointReference.SERVICE_REF_QNAME.getLocalPart());
         serviceref.setNodeValue(endpoint.serviceName + ":" + endpoint.portName);

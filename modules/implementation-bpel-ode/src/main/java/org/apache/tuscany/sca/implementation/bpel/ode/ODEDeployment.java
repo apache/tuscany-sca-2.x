@@ -31,7 +31,7 @@ public class ODEDeployment {
     public File deployDir;
 
     /** If non-null the type of exception we expect to get when we deploy. */
-    public Class expectedException = null;
+    public Class<?> expectedException = null;
 
     public ODEDeployment(File deployDir) {
         this.deployDir = deployDir;
