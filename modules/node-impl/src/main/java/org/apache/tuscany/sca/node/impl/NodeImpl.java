@@ -53,6 +53,8 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -96,6 +98,7 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
 import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
+import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -123,7 +126,7 @@ public class NodeImpl implements Node, Client, SCAClient {
 
     private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
-    private URLArtifactProcessor<Contribution> contributionProcessor;
+    private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
     private ModelResolverExtensionPoint modelResolvers;
     private FactoryExtensionPoint modelFactories;
     private WorkspaceFactory workspaceFactory;
@@ -385,7 +388,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions =
             extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
+        contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
 
         // Added MJE 28/04/2009
         // Create Composite Document processor
@@ -552,6 +555,9 @@ public class NodeImpl implements Node, Client, SCAClient {
         workspace.getContributions().add(systemContribution);
 
         // TODO - Now we can calculate applicable policy sets for each composite
+        
+        // pre-resolve the contributions
+        contributionsPreresolve( workspace.getContributions(), workspace.getModelResolver() );
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
@@ -667,6 +673,20 @@ public class NodeImpl implements Node, Client, SCAClient {
         }
         */
     }
+    
+    /**
+     * Pre-resolve phase for contributions, to set up handling of imports and exports prior to full resolution
+     * @param contributions - the contributions to preresolve
+     * @param resolver - the ModelResolver to use
+     * @throws ContributionResolveException
+     */
+    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver ) 
+    	throws ContributionResolveException {
+    	
+    	for( Contribution contribution : contributions ) {
+    		contributionProcessor.preResolve(contribution, resolver);
+    	} // end for
+    } // end method contributionsPreresolve
 
     public void start() {
         logger.log(Level.INFO, "Starting node: " + configurationName);
@@ -823,15 +843,18 @@ public class NodeImpl implements Node, Client, SCAClient {
         // just use the first deployable composite
         for (Contribution contribution : workspace.getContributions()) {
             for (Composite c : contribution.getDeployables()) {
-                composite = assemblyFactory.createComposite();
-                composite.setURI(c.getURI());
-                composite.setUnresolved(true);
-                configuration.setComposite(composite);
+            	// Ensure that we pick a composite that has actually been found in its contribution!!
+            	if( c.getURI() != null ) {
+	                composite = assemblyFactory.createComposite();
+	                composite.setURI(c.getURI());
+	                composite.setUnresolved(true);
+	                configuration.setComposite(composite);
                 return;
-            }
-        }
-        throw new ServiceRuntimeException("no deployable composite found");
-    }
+            	} // end if
+            } // end for
+        } // end for
+        throw new ServiceRuntimeException("No deployable composite found");
+    } // end method setDefaultComposite
 
     public ExtensionPointRegistry getExtensionPoints() {
         return extensionPoints;
