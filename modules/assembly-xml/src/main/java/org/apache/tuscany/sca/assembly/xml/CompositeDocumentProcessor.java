@@ -87,7 +87,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             connection.setUseCaches(false);
             scdlStream = connection.getInputStream();
         } catch (IOException e) {
-            ContributionReadException ce = new ContributionReadException(e);
+            ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             error("ContributionReadException", url, ce);
             throw ce;
         }
@@ -112,11 +112,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                     scdlStream = new ByteArrayInputStream(transformedArtifactContent);
                 } 
             } catch ( IOException e ) {
-            	ContributionReadException ce = new ContributionReadException(e);
+            	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             	error("ContributionReadException", scdlStream, ce);
             	throw ce;
             } catch ( Exception e ) {
-            	ContributionReadException ce = new ContributionReadException(e);
+            	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             	error("ContributionReadException", scdlStream, ce);
                 //throw ce;
             }
@@ -134,7 +134,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             return composite;
             
         } catch (XMLStreamException e) {
-        	ContributionReadException ce = new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
         	error("ContributionReadException", inputFactory, ce);
             throw ce;
         } finally {
