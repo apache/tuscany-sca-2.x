@@ -43,7 +43,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-bpel</module>
+                <!-- module>helloworld-bpel</module -->
                 <module>calculator</module>
                 <module>calculator-equinox</module>
                 <module>calculator-osgi</module>
