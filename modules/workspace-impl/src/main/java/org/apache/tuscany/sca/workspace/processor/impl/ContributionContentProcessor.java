@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -56,7 +57,7 @@ import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
  *
  * @version $Rev$ $Date$
  */
-public class ContributionContentProcessor implements URLArtifactProcessor<Contribution>{
+public class ContributionContentProcessor implements ExtendedURLArtifactProcessor<Contribution>{
     private ContributionFactory contributionFactory;
     private ModelResolverExtensionPoint modelResolvers;
     private FactoryExtensionPoint modelFactories;
@@ -65,6 +66,8 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     // private UtilityExtensionPoint utilities;
     private Monitor monitor;
     private ContributionScannerExtensionPoint scanners;
+    // Marks pre-resolve phase completed
+    private boolean preResolved = false;
 
     public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -173,27 +176,32 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         return contribution;
     }
 
-    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
-
+    /**
+     * A pre-resolution step, which is required for Contributions to handle the resolution of imports and exports so that
+     * at resolve time, imports can be followed to exports and anything exported that is required can be resolved on demand
+     * without the need to have already resolved the whole of the Contribution containing the export
+     * @param contribution - the Contribution
+     * @param resolver - the Resolver to use
+     * @throws ContributionResolveException
+     */
+    public void preResolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
         // Resolve the contribution model itself
         ModelResolver contributionResolver = contribution.getModelResolver();
         contribution.setUnresolved(false);
         contributionResolver.addModel(contribution);
 
-        // Resolve imports and exports
-        for (Export export: contribution.getExports()) {
-            if (export instanceof DefaultExport) {
+        // Resolve Exports
+        resolveExports(contribution, contributionResolver);
+        // Resolve Imports
+        resolveImports(contribution, contributionResolver);
+        
+        preResolved = true;
+    } // end method preResolve
+    
+    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
 
-                // Initialize the default export's resolver
-                export.setModelResolver(contributionResolver);
-
-            } else {
-                extensionProcessor.resolve(export, contributionResolver);
-            }
-        }
-        for (Import import_: contribution.getImports()) {
-            extensionProcessor.resolve(import_, contributionResolver);
-        }
+    	if( !preResolved ) preResolve( contribution, resolver);
+    	ModelResolver contributionResolver = contribution.getModelResolver();
 
         // Resolve all artifact models
         for (Artifact artifact : contribution.getArtifacts()) {
@@ -215,7 +223,35 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             if (resolved != deployable) {
                 deployables.set(i, resolved);
             }
-        }
-    }
+        } // end for
+    } // end method resolve
+    
+    /**
+     * Resolves the Exports of the contribution
+     * @param contribution
+     * @param resolver
+     */
+    private void resolveExports(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    	for (Export export: contribution.getExports()) {
+            if (export instanceof DefaultExport) {
+                // Initialize the default export's resolver
+                export.setModelResolver(resolver);
+            } else {
+                extensionProcessor.resolve(export, resolver);
+            } // end if
+        } // end for
 
-}
+    } // end method resolveExports
+    
+    /**
+     * Resolves the Imports of the contribution
+     * @param contribution
+     * @param resolver
+     */
+    private void resolveImports(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+        for (Import import_: contribution.getImports()) {
+            extensionProcessor.resolve(import_, resolver);
+        } // end for 
+    } // end method resolveImports
+
+} // end class ContributionContentProcessor
