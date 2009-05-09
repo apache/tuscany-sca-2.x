@@ -140,73 +140,78 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
-        // Collect and fuse includes
-        compositeIncludeBuilder.build(composite, definitions, monitor);
+    	try {
+	    	// Collect and fuse includes
+	        compositeIncludeBuilder.build(composite, definitions, monitor);
+	
+	        // Expand nested composites
+	        compositeCloneBuilder.build(composite, definitions, monitor);
+	
+	        // Configure all components
+	        componentConfigurationBuilder.build(composite, definitions, monitor);
+	
+	        // Connect composite services/references to promoted services/references
+	        compositePromotionBuilder.build(composite, definitions, monitor);
+	
+	        // Configure composite services by copying bindings up the promotion
+	        // hierarchy overwriting automatic bindings with those added manually
+	        compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
+	        
+	        // Configure composite references by copying bindings down promotion
+	        // hierarchy overwriting automatic bindings with those added manually
+	        compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
+	
+	        // Configure service binding URIs and names. Creates an SCA defined URI based
+	        // on the scheme base URI, the component name and the binding name
+	        compositeBindingURIBuilder.build(composite, definitions, monitor);
+	
+	        // Create $promoted$ component services on bottom level components
+	        // to represent promoted services
+	        // TODO - EPR replaced by endpoints on the promoted services
+	        //componentServicePromotionBuilder.build(composite, definitions, monitor);
 
-        // Expand nested composites
-        compositeCloneBuilder.build(composite, definitions, monitor);
+	        // Create $promoted$ component services on bottom level components
+	        // to represent promoted composite services
+	        // TODO - EPR OASIS doesn't deploy top level composite services
+	        //        if it did it would be replaced by endpoints
+	        //compositeServicePromotionBuilder.build(composite, definitions, monitor);
+	
+	        // Perform and service binding related build activities. The binding
+	        // will provide the builder. 
+	        componentServiceBindingBuilder.build(composite, definitions, monitor);
+	
+	        // create endpoints on component services. 
+	        componentServiceEndpointBuilder.build(composite, definitions, monitor);
+	        
+	        // Apply any wires in the composite to create new component reference targets
+	        componentReferenceWireBuilder.build(composite, definitions, monitor);
+	        
+	        // create reference endpoint reference models
+	        componentReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
+	        
+	        // Push down configuration from promoted references to the 
+	        // references they promote
+	        componentReferencePromotionBuilder.build(composite, definitions, monitor);
+	
+	        // Push down configuration from promoted references to the 
+	        // references they promote
+	        // TODO - EPR Seems to be a repeat of compositeReferenceConfigurationBuilder
+	        // componentReferencePromotionWireBuilder.build(composite, definitions, monitor);
+	
+	        // Wire the composite references
+	        // TODO - EPR OASIS doesn't deploy top level composite references
+	        // compositeReferenceWireBuilder.build(composite, definitions, monitor);
+	
+	        // Perform and reference binding related build activities. The binding
+	        // will provide the builder.
+	        componentReferenceBindingBuilder.build(composite, definitions, monitor);
+	        
+	        // Compute the policies across the model hierarchy
+	        compositePolicyBuilder.build(composite, definitions, monitor);
+    	} catch (Exception e) {
+    		throw new CompositeBuilderException("Exception while building composite " + composite.getName(), e);
+    	} // end try
+    	
+    } // end method build
 
-        // Configure all components
-        componentConfigurationBuilder.build(composite, definitions, monitor);
-
-        // Connect composite services/references to promoted services/references
-        compositePromotionBuilder.build(composite, definitions, monitor);
-
-        // Configure composite services by copying bindings up the promotion
-        // hierarchy overwriting automatic bindings with those added manually
-        compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
-        
-        // Configure composite references by copying bindings down promotion
-        // hierarchy overwriting automatic bindings with those added manually
-        compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
-
-        // Configure service binding URIs and names. Creates an SCA defined URI based
-        // on the scheme base URI, the component name and the binding name
-        compositeBindingURIBuilder.build(composite, definitions, monitor);
-
-        // Create $promoted$ component services on bottom level components
-        // to represent promoted services
-        // TODO - EPR replaced by endpoints on the promoted services
-        //componentServicePromotionBuilder.build(composite, definitions, monitor);
-
-        // Create $promoted$ component services on bottom level components
-        // to represent promoted composite services
-        // TODO - EPR OASIS doesn't deploy top level composite services
-        //        if it did it would be replaced by endpoints
-        //compositeServicePromotionBuilder.build(composite, definitions, monitor);
-
-        // Perform and service binding related build activities. The binding
-        // will provide the builder. 
-        componentServiceBindingBuilder.build(composite, definitions, monitor);
-
-        // create endpoints on component services. 
-        componentServiceEndpointBuilder.build(composite, definitions, monitor);
-        
-        // Apply any wires in the composite to create new component reference targets
-        componentReferenceWireBuilder.build(composite, definitions, monitor);
-        
-        // create reference endpoint reference models
-        componentReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
-        
-        // Push down configuration from promoted references to the 
-        // references they promote
-        componentReferencePromotionBuilder.build(composite, definitions, monitor);
-
-        // Push down configuration from promoted references to the 
-        // references they promote
-        // TODO - EPR Seems to be a repeat of compositeReferenceConfigurationBuilder
-        // componentReferencePromotionWireBuilder.build(composite, definitions, monitor);
-
-        // Wire the composite references
-        // TODO - EPR OASIS doesn't deploy top level composite references
-        // compositeReferenceWireBuilder.build(composite, definitions, monitor);
-
-        // Perform and reference binding related build activities. The binding
-        // will provide the builder.
-        componentReferenceBindingBuilder.build(composite, definitions, monitor);
-        
-        // Compute the policies across the model hierarchy
-        compositePolicyBuilder.build(composite, definitions, monitor);
-    }
-
-}
+} //end class
