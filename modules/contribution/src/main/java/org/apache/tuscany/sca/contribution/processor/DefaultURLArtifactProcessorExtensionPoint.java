@@ -326,8 +326,9 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
                             processor = constructor.newInstance(extensionPoints, staxProcessor, monitor);
                         }
                     }
-                } catch (Exception e) {
-                    IllegalStateException ie = new IllegalStateException(e);
+                } catch (Throwable e) {
+                    IllegalStateException ie = new IllegalStateException("Exception during getProcessor() for " + 
+                    		                                             processorDeclaration.getClassName(), e);
                     error("IllegalStateException", processor, ie);
                     throw ie;
                 }
