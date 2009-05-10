@@ -47,9 +47,6 @@
         <module>binding-ws-wsdlgen</module>
         <module>binding-ws-xml</module>
         <module>contribution</module>
-        <module>contribution-java</module>
-        <module>contribution-namespace</module>
-        <module>contribution-xml</module>
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>
