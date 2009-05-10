@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -121,7 +123,9 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                                    Map<String, ComponentService> componentServices, 
                                                    Monitor monitor)
     {
-        if (reference.getAutowire() == Boolean.TRUE && 
+        // Get reference targets 
+    	List<ComponentService> refTargets = getReferenceTargets( reference );
+    	if (reference.getAutowire() == Boolean.TRUE && 
             reference.getTargets().isEmpty()) {
 
             // Find suitable targets in the current composite for an
@@ -142,19 +146,10 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         if (reference.getInterfaceContract() == null || 
                             interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
                                                                  targetComponentService.getInterfaceContract())) {
-                            // create endpoint reference
-                            EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                            endpointRef.setComponent(component);
-                            endpointRef.setReference(reference);
-                            endpointRef.setUnresolved(false);
-                            
-                            // create dummy endpoint. This will be replaced when policies
+                            // create endpoint reference - with a dummy endpoint which will be replaced when policies
                             // are matched and bindings are configured later
-                            Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                            endpoint.setComponent(targetComponent);
-                            endpoint.setService(targetComponentService);
-                            endpoint.setUnresolved(true);
-                            endpointRef.setTargetEndpoint(endpoint);
+                            EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
+                            endpointRef.setTargetEndpoint( createEndpoint(targetComponent, targetComponentService, true) );
                             
                             reference.getEndpointReferences().add(endpointRef);
 
@@ -170,15 +165,13 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             if (multiplicity == Multiplicity.ONE_N || 
                 multiplicity == Multiplicity.ONE_ONE) {
                 if (reference.getEndpointReferences().size() == 0) {
-                    warning(monitor, 
-                            "NoComponentReferenceTarget",
+                    warning(monitor, "NoComponentReferenceTarget",
                             reference, 
                             reference.getName());
                 }
             }
 
-        } else if (!reference.getTargets().isEmpty()) {
-
+        } else if (!refTargets.isEmpty()) {
             // Check that the component reference does not mix the use of
             // endpoint references specified via the target attribute with 
             // the presence of binding elements 
@@ -188,139 +181,43 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             }
 
             // Resolve targets specified on the component reference
-            for (ComponentService target : reference.getTargets()) {               
+            for (ComponentService target : refTargets) {               
                 
                 String targetName = target.getName();
                 ComponentService targetComponentService = componentServices.get(targetName);
                 
-                Component targetComponent;
-                int s = targetName.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(targetName);
-                } else {
-                    targetComponent = components.get(targetName.substring(0, s));
-                }
+                Component targetComponent = getComponentFromTargetName( components, targetName );
 
                 if (targetComponentService != null) {
-
-                    // Check that the target component service provides
-                    // a superset of the component reference interface
+                    // Check that target component service provides a superset of the component reference interface
                     if (reference.getInterfaceContract() == null || 
                         interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
                                                              targetComponentService.getInterfaceContract())) {
 
-                        // create endpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setUnresolved(false);
-
-                        // create dummy endpoint. This will be replaced when policies
+                        // create endpoint reference -  with dummy endpoint which will be replaced when policies
                         // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-                        
+                        EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
+                        endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
-                        warning(monitor, 
-                                "ReferenceIncompatibleInterface",
+                        warning(monitor, "ReferenceIncompatibleInterface",
                                 composite, 
                                 composite.getName().toString(),
                                 reference.getName(), 
                                 targetName);
                     }
                 } else {
-                    // add an unresolved endpoint reference
-                    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setUnresolved(true);
-                                
-                    // create an unresolved endpoint to go with it
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(true);
-                    endpointRef.setTargetEndpoint(endpoint);
-                    
-                    warning(monitor, 
-                            "ComponentReferenceTargetNotFound",
+                    // add an unresolved endpoint reference with an unresolved endpoint to go with it
+                    EndpointReference2 endpointRef = createEndpointRef( component, reference, true  );
+                    endpointRef.setTargetEndpoint(createEndpoint(true));
+                    reference.getEndpointReferences().add(endpointRef);
+                    warning(monitor, "ComponentReferenceTargetNotFound",
                             composite, 
                             composite.getName().toString(),
                             targetName);
-                }
-            }
-        } else if ((reference.getReference() != null)
-                && (!reference.getReference().getTargets().isEmpty())) {
-
-            // Resolve targets from the corresponding reference in the
-            // componentType
-            for (ComponentService target : reference.getReference().getTargets()) {
-
-                String targetName = target.getName();
-                ComponentService targetComponentService = componentServices.get(targetName);
-                
-                Component targetComponent;
-                int s = targetName.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(targetName);
-                } else {
-                    targetComponent = components.get(targetName.substring(0, s));
-                }
-
-                if (targetComponentService != null) {
-
-                    // Check that the target component service provides
-                    // a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null || 
-                        interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
-                                                             targetComponentService.getInterfaceContract())) {
-
-                        // create endpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setUnresolved(false);
-                        
-                        // create dummy endpoint. This will be replaced when policies
-                        // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-                        
-                        reference.getEndpointReferences().add(endpointRef);
-                    } else {
-                        warning(monitor, 
-                                "ReferenceIncompatibleInterface",
-                                composite, 
-                                composite.getName().toString(),
-                                reference.getName(), 
-                                targetName);
-                    }
-                } else {
-                    // add an unresolved endpoint reference
-                    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setUnresolved(true);
-                    
-                    // create an unresolved endpoint to go with it
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(true);
-                    endpointRef.setTargetEndpoint(endpoint);                    
-                    
-                    warning(monitor, 
-                            "ComponentReferenceTargetNotFound",
-                            composite, 
-                            composite.getName().toString(),
-                            targetName);
-                }
-            }
-        } 
-
+                } // end if
+            } // end for
+        } // end if
 
         // if no endpoints have found so far the bindings become targets. 
         if (reference.getEndpointReferences().isEmpty()) {
@@ -328,54 +225,36 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
                 String uri = binding.getURI();
 
-                // user hasn't put a uri on the binding so it's not a target
-                // name
+                // user hasn't put a uri on the binding so it's not a target name and the assumption is that
+                // the target is established via configuration of the binding element itself
                 if (uri == null) {
-                    // create endpoint reference for manually configured bindings
-                    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setBinding(binding);
-                    endpointRef.setTargetEndpoint(null);
-                    endpointRef.setUnresolved(false);
-                    
-                    // create a resolved endpoint to signify that this 
-                    // reference is pointing at some unwired endpoint
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(false);
-                    endpointRef.setTargetEndpoint(endpoint);
-                    
+                	// Regular forward references are UNWIRED with no endpoint if they have an SCABinding with NO targets
+                	// and NO URI set - but Callbacks with an SCABinding are wired and need an endpoint
+                	if( !reference.isCallback() && (binding instanceof SCABinding) ) continue;
+                	
+                    // create endpoint reference for manually configured bindings with a resolved endpoint to
+                	// signify that this reference is pointing at some unwired endpoint
+                    EndpointReference2 endpointRef = createEndpointRef( component, reference, 
+                    		binding, null, false  );
+                    endpointRef.setTargetEndpoint(createEndpoint(false));
                     reference.getEndpointReferences().add(endpointRef);
-                    
                     continue;
-                }
+                } // end if
 
-                // user might have put a local target name in the uri 
-                // see if it refers to a target we know about
-                // - if it does the reference binding will be matched with a
-                // service binding
+                // user might have put a local target name in the uri - see if it refers to a target we know about
+                // - if it does the reference binding will be matched with a service binding
                 // - if it doesn't it is assumed to be an external reference
-                Component targetComponent = null;
-                ComponentService targetComponentService = null;
-
-
                 if (uri.startsWith("/")) {
                     uri = uri.substring(1);
                 }
 
                 // Resolve the target component and service
-                targetComponentService = componentServices.get(uri);
-                int s = uri.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(uri);
-                } else {
-                    targetComponent = components.get(uri.substring(0, s));
-                }
+                ComponentService targetComponentService = componentServices.get(uri);
+                Component targetComponent = getComponentFromTargetName( components, uri );
 
-                // if the binding URI matches a component in the
-                // composite then configure an endpoint reference with this component as
-                // the target. If not then the binding URI will be assumed to reference an
-                // external service
+                // If the binding URI matches a component in the composite, configure an endpoint reference with 
+                // this component as the target. 
+                // If not, the binding URI is assumed to reference an external service
                 if (targetComponentService != null) {
 
                     // Check that the target component service provides
@@ -383,48 +262,120 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     if (reference.getInterfaceContract() == null || 
                         interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
                                                              targetComponentService.getInterfaceContract())) {
-                        // create enpoint reference
-                        EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                        endpointRef.setComponent(component);
-                        endpointRef.setReference(reference);
-                        endpointRef.setBinding(binding);
-                        endpointRef.setUnresolved(false);
-
-                        // create dummy endpoint. This will be replaced when policies
+                        // create endpoint reference with dummy endpoint which will be replaced when policies
                         // are matched and bindings are configured later
-                        Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                        endpoint.setComponent(targetComponent);
-                        endpoint.setService(targetComponentService);
-                        endpoint.setUnresolved(true);
-                        endpointRef.setTargetEndpoint(endpoint);
-                        
+                        EndpointReference2 endpointRef = createEndpointRef( component, reference, binding, null, false  );
+                        endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
-                        warning(monitor, 
-                                "ReferenceIncompatibleInterface",
+                        warning(monitor, "ReferenceIncompatibleInterface",
                                 composite, 
                                 composite.getName().toString(),
                                 reference.getName(), 
                                 uri);
                     }
                 } else {
-                    // create endpoint reference for manually configured bindings
-                    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
-                    endpointRef.setComponent(component);
-                    endpointRef.setReference(reference);
-                    endpointRef.setBinding(binding);
-                    endpointRef.setTargetEndpoint(null);
-                    endpointRef.setUnresolved(false);
-                    
-                    // create a resolved endpoint to signify that this 
-                    // reference is pointing at some unwired endpoint
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setUnresolved(false);
-                    endpointRef.setTargetEndpoint(endpoint);
-                    
+                    // create endpoint reference for manually configured bindings with resolved endpoint 
+                	// to signify that this reference is pointing at some unwired endpoint
+                    EndpointReference2 endpointRef = createEndpointRef( component, reference, 
+                    		binding, null, false  );
+                    endpointRef.setTargetEndpoint(createEndpoint( false ));
                     reference.getEndpointReferences().add(endpointRef);
-                }
+                } // end if 
             }
         }
-    } 
-}
+    } // end method
+    
+    /**
+     * Helper method which obtains a list of targets for a reference
+     * @param reference - Component reference
+     * @return - the list of targets, which will be empty if there are no targets
+     */
+    private List<ComponentService> getReferenceTargets( ComponentReference reference ) {
+    	List<ComponentService> theTargets = reference.getTargets();
+    	if( theTargets.isEmpty() ) {
+    		// Component reference list of targets is empty, try the implementation reference
+    		if( reference.getReference() != null ) {
+    			theTargets = reference.getReference().getTargets();
+    		} // end if
+    	} // end if
+    	return theTargets;
+    } // end method getReferenceTargets
+    
+    /**
+     * Helper method that finds the Component given a target name
+     * @param components
+     * @param targetName
+     * @return the component
+     */
+    private Component getComponentFromTargetName( Map<String, Component> components, String targetName ) {
+    	Component theComponent;
+        int s = targetName.indexOf('/');
+        if (s == -1) {
+        	theComponent = components.get(targetName);
+        } else {
+        	theComponent = components.get(targetName.substring(0, s));
+        }
+    	return theComponent;
+    } // end method getComponentFromTargetName
+    
+    /**
+     * Helper method to create an Endpoint Reference
+     * @param component
+     * @param reference
+     * @param binding
+     * @param endpoint
+     * @param unresolved
+     * @return the endpoint reference
+     */
+    private EndpointReference2 createEndpointRef( Component component, ComponentReference reference, 
+    		Binding binding, Endpoint2 endpoint, boolean unresolved  ) {
+    	EndpointReference2 endpointRef = createEndpointRef( component, reference, unresolved  );
+        endpointRef.setBinding(binding);
+        endpointRef.setTargetEndpoint(endpoint);
+        return endpointRef;
+    } // end method	
+    
+    /**
+     * Helper method to create an Endpoint Reference
+     * @param component
+     * @param reference
+     * @param unresolved
+     * @return the endpoint reference
+     */
+    private EndpointReference2 createEndpointRef( Component component, ComponentReference reference, boolean unresolved  ) {
+	    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
+	    endpointRef.setComponent(component);
+	    endpointRef.setReference(reference);
+	    endpointRef.setUnresolved(unresolved);
+	    return endpointRef;
+    } // end method createEndpointRef
+    
+    
+    /**
+     * Helper method to create an endpoint
+     * @param component
+     * @param service
+     * @param unresolved
+     * @return the endpoint
+     */
+    private Endpoint2 createEndpoint( Component component, ComponentService service, boolean unresolved) {
+	    Endpoint2 endpoint = createEndpoint( unresolved);
+	    endpoint.setComponent(component);
+	    endpoint.setService(service);
+	    endpoint.setUnresolved(unresolved);
+	    return endpoint;
+    } // end method createEndpoint
+    
+    /**
+     * Helper method to create an Endpoint
+     * @param unresolved
+     * @return the endpoint
+     */
+    private Endpoint2 createEndpoint( boolean unresolved) {
+    	Endpoint2 endpoint = assemblyFactory.createEndpoint();
+	    endpoint.setUnresolved(unresolved);
+	    return endpoint;
+    } // end method createEndpoint
+    
+} // end class

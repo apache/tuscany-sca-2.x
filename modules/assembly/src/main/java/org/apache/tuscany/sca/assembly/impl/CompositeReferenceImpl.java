@@ -56,5 +56,8 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
     public List<Component> getPromotedComponents() {
         return promotedComponents;
     }
-
+    
+    public String toString() {
+        return getName();
+    }
 }
