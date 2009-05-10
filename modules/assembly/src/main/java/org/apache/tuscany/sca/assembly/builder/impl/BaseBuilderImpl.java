@@ -275,13 +275,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
             // A component must have an implementation
-            warning(monitor, "NoComponentImplementation", component, component
-                    .getName());
+            error(monitor, "NoComponentImplementation", component, component.getName());
 
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            warning(monitor, "UnresolvedComponentImplementation", component,
+            error(monitor, "UnresolvedComponentImplementation", component,
                     component.getName(), implementation.getURI());
 
         } else {

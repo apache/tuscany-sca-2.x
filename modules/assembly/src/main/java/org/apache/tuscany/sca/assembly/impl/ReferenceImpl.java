@@ -120,4 +120,7 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         return endpointReferences;
     }
 
+    public String toString() {
+        return getName();
+    }
 }
