@@ -10,6 +10,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Spring Implementation Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
+ javax.jws,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
  org.apache.tuscany.sca.assembly.impl;version="2.0.0",
