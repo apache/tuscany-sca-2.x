@@ -23,10 +23,11 @@
     targetNamespace="http://sample/node"
     name="TestNode2"
     domain="http://domain1">
-    <deploymentComposite contribution="http://c1" location="test/Test.composite"/>
 
     <binding name="sca:binding.ws" baseURIs="http://localhost:8080/ws https://localhost:8081/ws"/>
     <binding name="tuscany:binding.rmi" baseURIs="rmi://localhost:8080/rmi"/>
-    <contribution uri="http://c1" location="file:///a.jar"/>
+    <contribution uri="http://c1" location="file:///a.jar">
+        <deploymentComposite location="test/Test.composite"/>
+    </contribution>
     <contribution uri="http://c4" location="http://locahost/repo/d.jar"/>
 </node>

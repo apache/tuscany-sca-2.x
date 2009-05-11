@@ -17,32 +17,32 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node.configuration;
+package org.apache.tuscany.sca.node.configuration.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
+
 /**
- * Configuration for bindings used by an SCA node
+ *
  */
-public interface BindingConfiguration {
-    /**
-     * Get the QName of the binding
-     * @return
-     */
-    QName getBindingType();
+class BindingConfigurationImpl implements BindingConfiguration {
+    private QName type;
+    private List<String> baseURIs = new ArrayList<String>();
 
-    /**
-     * Set the type of the binding
-     * @param type
-     */
-    void setBindingType(QName type);
+    public List<String> getBaseURIs() {
+        return baseURIs;
+    }
 
-    /**
-     * Get a list of base URIs for the binding. For each protocol supported by the binding,
-     * one base URI can be configured
-     * @return A list of base URIs
-     */
-    List<String> getBaseURIs();
+    public QName getBindingType() {
+        return type;
+    }
+
+    public void setBindingType(QName type) {
+        this.type = type;
+    }
+
 }
