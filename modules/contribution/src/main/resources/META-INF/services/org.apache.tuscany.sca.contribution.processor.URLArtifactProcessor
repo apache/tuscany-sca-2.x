@@ -18,3 +18,5 @@
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;type=/META-INF/sca-contribution.xml,model=org.apache.tuscany.sca.contribution.ContributionMetadata
 org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;type=/META-INF/sca-contribution-generated.xml
+org.apache.tuscany.sca.contribution.processor.impl.ContributionContentProcessor;type=.contribution/content,model=org.apache.tuscany.sca.contribution.Contribution
+org.apache.tuscany.sca.contribution.processor.impl.ContributionInfoProcessor;type=.contribution/info
