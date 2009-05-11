@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
+@Ignore("TUSCANY-3014")
 public class NodeImplementationTestCase {
 
     private Node node;
