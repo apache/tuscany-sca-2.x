@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.node.xml.NodeImplementationProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.node,model=org.apache.tuscany.sca.implementation.node.NodeImplementation,factory=org.apache.tuscany.sca.implementation.node.NodeImplementationFactory
+org.apache.tuscany.sca.implementation.node.xml.NodeImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#implementation.node,model=org.apache.tuscany.sca.implementation.node.NodeImplementation,factory=org.apache.tuscany.sca.implementation.node.NodeImplementationFactory
 org.apache.tuscany.sca.implementation.node.xml.ConfiguredNodeImplementationProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.node.configured,model=org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation,factory=org.apache.tuscany.sca.implementation.node.NodeImplementationFactory
