@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.node;
 
+import junit.framework.Assert;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -32,7 +34,6 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
-@Ignore("TUSCANY-3014")
 public class NodeImplementationTestCase {
 
     private Node node;
@@ -46,11 +47,14 @@ public class NodeImplementationTestCase {
 
     @After
     public void tearDown() throws Exception {
-        node.stop();
+        if (node != null){
+            node.stop();
+        }
     }
     
     @Test
     public void testNode() {
+        Assert.assertNotNull(node);
     }
 
 }
