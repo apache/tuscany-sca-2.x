@@ -20,19 +20,20 @@
 package org.apache.tuscany.sca.node.impl;
 
 import static java.lang.System.currentTimeMillis;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.contribution;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +54,8 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -60,6 +63,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -79,8 +83,6 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
-import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
-import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -94,10 +96,6 @@ import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.apache.tuscany.sca.workspace.Workspace;
-import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionBuilder;
-import org.apache.tuscany.sca.workspace.builder.ContributionBuilderExtensionPoint;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -128,11 +126,9 @@ public class NodeImpl implements Node, Client, SCAClient {
     private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
     private ModelResolverExtensionPoint modelResolvers;
     private FactoryExtensionPoint modelFactories;
-    private WorkspaceFactory workspaceFactory;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
     private XMLInputFactory inputFactory;
-    private ContributionBuilder contributionDependencyBuilder;
     private CompositeBuilder compositeBuilder;
     private CompositeBuilder endpointReferenceBuilder;
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
@@ -143,7 +139,6 @@ public class NodeImpl implements Node, Client, SCAClient {
     private WorkScheduler workScheduler;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
-    // Added MJE 28/04/2009
     private URLArtifactProcessor<Composite> compositeDocumentProcessor;
 
     /**
@@ -158,34 +153,15 @@ public class NodeImpl implements Node, Client, SCAClient {
             throw new ServiceRuntimeException("no META-INF/sca-contribution.xml found");
         }
 
-        String compositeURI = null;
-        org.apache.tuscany.sca.node.Contribution[] contributions =
-            new org.apache.tuscany.sca.node.Contribution[] {new org.apache.tuscany.sca.node.Contribution(root, root)};
-
         try {
             // Initialize the runtime
             init();
 
-            // Create a node configuration
-            NodeImplementationFactory nodeImplementationFactory =
-                modelFactories.getFactory(NodeImplementationFactory.class);
-            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
-
-            if (compositeURI != null) {
-                Composite composite = assemblyFactory.createComposite();
-                composite.setURI(compositeURI);
-                composite.setUnresolved(true);
-                configuration.setComposite(composite);
-            }
-
-            // Create contribution models
-            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
-                Contribution contribution = contribution(contributionFactory, c);
-                configuration.getContributions().add(contribution);
-            }
-
+            Map<String, String> contributions = new HashMap<String, String>();
+            contributions.put(root, root);
+            
             // Configure the node
-            configureNode(configuration);
+            configureNode(contributions, null, null);
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -198,48 +174,16 @@ public class NodeImpl implements Node, Client, SCAClient {
      * @param configurationURI the URI of the node configuration information.
      */
     NodeImpl(String configurationURI) {
-        configurationName = configurationURI;
-        logger.log(Level.INFO, "Creating node: " + configurationName);
-
-        try {
-            // Initialize the runtime
-            init();
-
-            // Read the node configuration feed
-            StAXArtifactProcessor<ConfiguredNodeImplementation> configurationProcessor =
-                xmlProcessors.getProcessor(ConfiguredNodeImplementation.class);
-            URL configurationURL = new URL(configurationURI);
-            InputStream is = configurationURL.openStream();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            reader.nextTag();
-            ConfiguredNodeImplementation configuration = configurationProcessor.read(reader);
-            is.close();
-
-            // Resolve contribution URLs
-            for (Contribution contribution : configuration.getContributions()) {
-                URL contributionURL = new URL(configurationURL, contribution.getLocation());
-                contribution.setLocation(contributionURL.toString());
-            }
-
-            // Resolve composite URL
-            URL compositeURL = new URL(configurationURL, configuration.getComposite().getURI());
-            configuration.getComposite().setURI(compositeURL.toString());
-
-            // Configure the node
-            configureNode(configuration);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
+        throw new IllegalStateException("not supported");
     }
 
     /**
      * Constructs a new SCA node.
      *
      * @param compositeURI
-     * @param contributions
+     * @param nodeContributions
      */
-    NodeImpl(String compositeURI, org.apache.tuscany.sca.node.Contribution[] contributions) {
+    NodeImpl(String compositeURI, org.apache.tuscany.sca.node.Contribution[] nodeContributions) {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);
 
@@ -247,26 +191,14 @@ public class NodeImpl implements Node, Client, SCAClient {
             // Initialize the runtime
             init();
 
-            // Create a node configuration
-            NodeImplementationFactory nodeImplementationFactory =
-                modelFactories.getFactory(NodeImplementationFactory.class);
-            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
-
-            if (compositeURI != null) {
-                Composite composite = assemblyFactory.createComposite();
-                composite.setURI(compositeURI);
-                composite.setUnresolved(true);
-                configuration.setComposite(composite);
-            }
-
             // Create contribution models
-            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
-                Contribution contribution = contribution(contributionFactory, c);
-                configuration.getContributions().add(contribution);
+            Map<String, String> contributions = new HashMap<String, String>();
+            for (org.apache.tuscany.sca.node.Contribution c : nodeContributions) {
+                contributions.put(c.getURI(), c.getLocation());
             }
 
             // Configure the node
-            configureNode(configuration);
+            configureNode(contributions, compositeURI, null);
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -278,9 +210,9 @@ public class NodeImpl implements Node, Client, SCAClient {
      *
      * @param compositeURI
      * @param compositeContent
-     * @param contributions
+     * @param nodeContributions
      */
-    NodeImpl(String compositeURI, String compositeContent, org.apache.tuscany.sca.node.Contribution[] contributions) {
+    NodeImpl(String compositeURI, String compositeContent, org.apache.tuscany.sca.node.Contribution[] nodeContributions) {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);
 
@@ -288,36 +220,16 @@ public class NodeImpl implements Node, Client, SCAClient {
             // Initialize the runtime
             init();
 
-            // Create a node configuration
-            NodeImplementationFactory nodeImplementationFactory =
-                modelFactories.getFactory(NodeImplementationFactory.class);
-            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
-
             // Read the composite model
             logger.log(Level.INFO, "Loading composite: " + compositeURI);
 
-            XMLStreamReader reader =
-                inputFactory.createXMLStreamReader(new ByteArrayInputStream(compositeContent.getBytes("UTF-8")));
-            reader.nextTag();
-
-            // Read the composite model
-            composite = (Composite)compositeProcessor.read(reader);
-            if (composite != null && compositeURI != null) {
-                composite.setURI(compositeURI);
-                useDeploymentComposite = true;
-            }
-            analyzeProblems();
-
-            configuration.setComposite(composite);
-
-            // Create contribution models
-            for (org.apache.tuscany.sca.node.Contribution c : contributions) {
-                Contribution contribution = contribution(contributionFactory, c);
-                configuration.getContributions().add(contribution);
+            Map<String, String> contributions = new HashMap<String, String>();
+            for (org.apache.tuscany.sca.node.Contribution c : nodeContributions) {
+                contributions.put(c.getURI(), c.getLocation());
             }
 
             // Configure the node
-            configureNode(configuration);
+            configureNode(contributions, compositeURI, compositeContent);
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -361,9 +273,8 @@ public class NodeImpl implements Node, Client, SCAClient {
         monitor = monitorFactory.createMonitor();
 
         // Initialize the Tuscany module activators
-        ModuleActivatorExtensionPoint activators =
-            extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-        for (ModuleActivator moduleActivator : activators.getModuleActivators()) {
+        ModuleActivatorExtensionPoint activators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+        for (ModuleActivator moduleActivator: activators.getModuleActivators()) {
             try {
                 moduleActivator.start(extensionPoints);
                 moduleActivators.add(moduleActivator);
@@ -378,41 +289,28 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         // Get contribution workspace and assembly model factories
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
 
         // Create XML artifact processors
         xmlProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         compositeProcessor = xmlProcessors.getProcessor(Composite.class);
 
         // Create contribution content processor
-        URLArtifactProcessorExtensionPoint docProcessorExtensions =
-            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
 
-        // Added MJE 28/04/2009
         // Create Composite Document processor
         compositeDocumentProcessor = docProcessorExtensions.getProcessor(Composite.class);
 
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
 
-        // Get a contribution dependency builder
-        ContributionBuilderExtensionPoint contributionBuilders =
-            extensionPoints.getExtensionPoint(ContributionBuilderExtensionPoint.class);
-        contributionDependencyBuilder =
-            contributionBuilders
-                .getContributionBuilder("org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder");
-
         // Get composite builders
-        CompositeBuilderExtensionPoint compositeBuilders =
-            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
-        compositeBuilder =
-            compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         // Get endpoint builders
         // TODO - new extension point?
-        endpointReferenceBuilder =
-            compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.endpoint.impl.EndpointReferenceBuilderImpl");
+        endpointReferenceBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.endpoint.impl.EndpointReferenceBuilderImpl");
 
         // Initialize runtime
 
@@ -427,16 +325,14 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();
-
-        DefinitionsExtensionPoint definitionsExtensionPoint =
-            extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
-        for (Definitions defs : definitionsExtensionPoint.getDefinitions()) {
+        
+        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
             DefinitionsUtil.aggregate(systemDefinitions, defs);
         }
-
+        
         // Load the system definitions.xml from all of the loaded extension points
-        DefinitionsProviderExtensionPoint definitionsProviders =
-            extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
+        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
         // aggregate all the definitions into a single definitions model
         try {
@@ -465,60 +361,30 @@ public class NodeImpl implements Node, Client, SCAClient {
         artifact.setModel(systemDefinitions);
         artifacts.add(artifact);
 
-        // don't resolve the system contribution until all the application
-        // level definitions have been added
-
-        //
-        //        // Configure a resolver for the system definitions
-        //        ModelResolver definitionsResolver = new DefaultModelResolver();
-        //        for (Intent intent : systemDefinitions.getPolicyIntents()) {
-        //            definitionsResolver.addModel(intent);
-        //        }
-        //        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
-        //            definitionsResolver.addModel(policySet);
-        //        }
-        //        for (ExtensionType bindingType : systemDefinitions.getBindingTypes()) {
-        //            definitionsResolver.addModel(bindingType);
-        //        }
-        //        for (ExtensionType implementationType : systemDefinitions.getImplementationTypes()) {
-        //            definitionsResolver.addModel(implementationType);
-        //        }
-        //
-        //        // Now that all system sca definitions have been read, let's resolve them
-        //        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        //        URLArtifactProcessor<Definitions> definitionsProcessor = documentProcessors.getProcessor(Definitions.class);
-        //        try {
-        //            definitionsProcessor.resolve(systemDefinitions, definitionsResolver);
-        //        } catch (ContributionResolveException e) {
-        //            throw new IllegalStateException(e);
-        //        }
-
         if (logger.isLoggable(Level.FINE)) {
             long end = currentTimeMillis();
             logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
         }
     }
 
-    private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
+    private void configureNode(Map<String, String> contributionLocations, String defaultCompositeURI, String defaultCompositeContent) throws Exception {
 
-        // Create workspace model
-        Workspace workspace = workspaceFactory.createWorkspace();
-        workspace.setModelResolver(new ExtensibleModelResolver(workspace, modelResolvers, modelFactories));
-
+        List<Contribution> contributions = new ArrayList<Contribution>();
+        
         // Load the specified contributions
-        for (Contribution c : configuration.getContributions()) {
-            URI contributionURI = URI.create(c.getURI());
+        for (String c : contributionLocations.keySet()) {
+            URI contributionURI = URI.create(c);
 
-            URI uri = createURI(c.getLocation());
+            URI uri = createURI(contributionLocations.get(c));
             if (uri.getScheme() == null) {
-                uri = new File(c.getLocation()).toURI();
+                uri = new File(contributionLocations.get(c)).toURI();
             }
             URL contributionURL = uri.toURL();
 
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
             Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
-            workspace.getContributions().add(contribution);
+            contributions.add(contribution);
             analyzeProblems();
         }
 
@@ -530,7 +396,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         // into the system contribution. In turn add a default import into
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
-        for (Contribution contribution : workspace.getContributions()) {
+        for (Contribution contribution: contributions) {
             // aggregate definitions
             for (Artifact artifact : contribution.getArtifacts()) {
                 Object model = artifact.getModel();
@@ -548,37 +414,32 @@ public class NodeImpl implements Node, Client, SCAClient {
             contribution.getImports().add(defaultImport);
         }
 
-        // now resolve the system contribution and add the contribution
-        // to the workspace
-        contributionProcessor.resolve(systemContribution, workspace.getModelResolver());
-        workspace.getContributions().add(systemContribution);
+        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
+        
+        // now resolve and add the system contribution
+        contributionProcessor.resolve(systemContribution, modelResolver);
+        contributions.add(systemContribution);
 
         // TODO - Now we can calculate applicable policy sets for each composite
-        
+
         // pre-resolve the contributions
-        contributionsPreresolve( workspace.getContributions(), workspace.getModelResolver() );
+        contributionsPreresolve(contributions, modelResolver);
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
-        for (Contribution contribution : workspace.getContributions()) {
-            contributionDependencyBuilder.build(contribution, workspace, monitor);
+        for (Contribution contribution: contributions) {
+            buildDependencies(contribution, contributions, monitor);
 
             // Resolve contributions
-            for (Contribution dependency : contribution.getDependencies()) {
+            for (Contribution dependency: contribution.getDependencies()) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
-                    contributionProcessor.resolve(dependency, workspace.getModelResolver());
+                    contributionProcessor.resolve(dependency, modelResolver);
                 }
             }
         }
 
-        composite = configuration.getComposite();
-
-        // If a composite was not originally supplied when the Node was created, pick one of the deployable 
-        // composites from the supplied contributions.  Note: throws an exception if none can be found. 
-        if (composite == null) {
-            setDefaultComposite(configuration, workspace);
-        }
+        composite = getDefaultComposite(contributions, defaultCompositeURI, defaultCompositeContent);
 
         // Find the composite in the given contributions
         boolean found = false;
@@ -586,7 +447,7 @@ public class NodeImpl implements Node, Client, SCAClient {
             Artifact compositeFile = contributionFactory.createArtifact();
             compositeFile.setUnresolved(true);
             compositeFile.setURI(composite.getURI());
-            for (Contribution contribution : workspace.getContributions()) {
+            for (Contribution contribution : contributions) {
                 ModelResolver resolver = contribution.getModelResolver();
 
                 Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
@@ -624,7 +485,7 @@ public class NodeImpl implements Node, Client, SCAClient {
             }
 
             // Resolve the "composite by value" against the FIRST contribution
-            Contribution contribution = workspace.getContributions().get(0);
+            Contribution contribution = contributions.get(0);
             ModelResolver resolver = contribution.getModelResolver();
             compositeProcessor.resolve(composite, resolver);
             if (composite.isUnresolved()) {
@@ -656,21 +517,71 @@ public class NodeImpl implements Node, Client, SCAClient {
         // available
         compositeActivator.setDomainComposite(tempComposite);
 
-        /*
-        // The following line may return null, to be investigated
-        XPathFactory xPathFactory = modelFactories.getFactory(XPathFactory.class);
+    }
 
-        for (PolicySet policySet : systemDefinitions.getPolicySets()) {
-            if (policySet.getAppliesTo() != null) {
-                XPath xpath = xPathFactory.newXPath();
-                // FIXME: We need to develop a xpath function resolver to
-                // deal with the SCA functions
-                // xpath.setXPathFunctionResolver(resolver);
-                XPathExpression exp = xpath.compile(policySet.getAppliesTo());
-                // exp.evaluate(item, XPathConstants.BOOLEAN);
+    private void buildDependencies(Contribution contribution, List<Contribution> contributions, Monitor monitor) {
+        contribution.getDependencies().clear();
+        
+        List<Contribution> dependencies = new ArrayList<Contribution>();
+        Set<Contribution> set = new HashSet<Contribution>();
+
+        dependencies.add(contribution);
+        set.add(contribution);
+        addContributionDependencies(contribution, contributions, dependencies, set, monitor);
+        
+        Collections.reverse(dependencies);
+        
+        contribution.getDependencies().addAll(dependencies);
+    }
+
+    /**
+     * Analyze a contribution and add its dependencies to the given dependency set.
+     */
+    private void addContributionDependencies(Contribution contribution, List<Contribution> contributions, List<Contribution> dependencies, Set<Contribution> set, Monitor monitor) {
+        
+        // Go through the contribution imports
+        for (Import import_: contribution.getImports()) {
+            boolean resolved = false;
+            
+            // Go through all contribution candidates and their exports
+            List<Export> matchingExports = new ArrayList<Export>();
+            for (Contribution dependency: contributions) {
+                if (dependency == contribution) {
+                    // Do not self import
+                    continue;
+                }
+                for (Export export: dependency.getExports()) {
+                    
+                    // If an export from a contribution matches the import in hand
+                    // add that contribution to the dependency set
+                    if (import_.match(export)) {
+                        resolved = true;
+                        matchingExports.add(export);
+
+                        if (!set.contains(dependency)) {
+                            set.add(dependency);
+                            dependencies.add(dependency);
+                            
+                            // Now add the dependencies of that contribution 
+                            addContributionDependencies(dependency, contributions, dependencies, set, monitor);
+                        }
+                    }
+                }
+            }
+            
+            if (resolved) {
+                
+                // Initialize the import's model resolver with a delegating model
+                // resolver which will delegate to the matching exports 
+                import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
+                
+            } else {
+                // Record import resolution issue
+                if (!(import_ instanceof DefaultImport)) {
+                    warning(monitor, "UnresolvedImport", import_, import_);
+                }
             }
         }
-        */
     }
     
     /**
@@ -680,11 +591,11 @@ public class NodeImpl implements Node, Client, SCAClient {
      * @throws ContributionResolveException
      */
     private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver ) 
-    	throws ContributionResolveException {
-    	
-    	for( Contribution contribution : contributions ) {
-    		contributionProcessor.preResolve(contribution, resolver);
-    	} // end for
+        throws ContributionResolveException {
+        
+        for( Contribution contribution : contributions ) {
+                contributionProcessor.preResolve(contribution, resolver);
+        } // end for
     } // end method contributionsPreresolve
 
     public void start() {
@@ -745,6 +656,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         workScheduler.destroy();
     }
 
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         return (R)proxyFactory.cast(target);
     }
@@ -838,29 +750,55 @@ public class NodeImpl implements Node, Client, SCAClient {
     /*
      * Sets a default composite by using any deployable one.
      */
-    private void setDefaultComposite(ConfiguredNodeImplementation configuration, Workspace workspace) {
-        // just use the first deployable composite
-        for (Contribution contribution : workspace.getContributions()) {
-            for (Composite c : contribution.getDeployables()) {
-            	// Ensure that we pick a composite that has actually been found in its contribution!!
-            	if( c.getURI() != null ) {
-	                composite = assemblyFactory.createComposite();
-	                composite.setURI(c.getURI());
-	                composite.setUnresolved(true);
-	                configuration.setComposite(composite);
-                return;
-            	} // end if
-            } // end for
-        } // end for
-        throw new ServiceRuntimeException("No deployable composite found");
-    } // end method setDefaultComposite
+    private Composite getDefaultComposite(List<Contribution> contributions, String defaultCompositeURI, String content) throws Exception {
+        Composite composite = assemblyFactory.createComposite();
+        composite.setUnresolved(true);
+        
+        if (content != null && content.length() > 0) {
+
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(content.getBytes("UTF-8")));
+            reader.nextTag();
+
+            // Read the composite model
+            composite = (Composite)compositeProcessor.read(reader);
+            if (composite != null && defaultCompositeURI != null) {
+                composite.setURI(defaultCompositeURI);
+            }
+            analyzeProblems();
+            useDeploymentComposite = true;
+            return composite;
+            
+        } else if (defaultCompositeURI != null && defaultCompositeURI.length() > 0) {
+            composite.setURI(defaultCompositeURI);
+            return composite;
+
+        } else {
+            // just use the first deployable composte
+            for (Contribution contribution : contributions) {
+                for (Composite c : contribution.getDeployables()) {
+                    // Ensure that we pick a composite that has actually been found in its contribution!!
+                    if( c.getURI() != null ) {
+                        composite.setURI(c.getURI());
+                        return composite;
+                    }
+                }
+            }
+        }
+        throw new ServiceRuntimeException("no deployable composite found");
+    }
 
     public ExtensionPointRegistry getExtensionPoints() {
         return extensionPoints;
     }
 
-    public <T> T getService(Class<T> businessInterface, String serviceName, URI domainURI)
-        throws NoSuchServiceException, NoSuchDomainException {
+    public <T> T getService(Class<T> businessInterface, String serviceName, URI domainURI) throws NoSuchServiceException, NoSuchDomainException {
         return getService(businessInterface, serviceName);
+    }
+
+    private static void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(NodeImpl.class.getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
 }

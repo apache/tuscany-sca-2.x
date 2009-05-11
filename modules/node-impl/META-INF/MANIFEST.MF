@@ -5,11 +5,9 @@ Export-Package: org.apache.tuscany.sca.node.impl;uses:="org.apache.tus
  a.core.assembly,org.apache.tuscany.sca.contribution.resolver,org.apac
  he.tuscany.sca.workspace,org.apache.tuscany.sca.core.invocation,org.o
  soa.sca,org.apache.tuscany.sca.assembly.builder,org.apache.tuscany.sc
- a.implementation.node,org.apache.tuscany.sca.assembly,org.apache.tusc
- any.sca.node,org.apache.tuscany.sca.workspace.builder,org.apache.tusc
- any.sca.contribution,org.apache.tuscany.sca.monitor,org.apache.tuscan
- y.sca.work,org.apache.tuscany.sca.contribution.processor";version="2.0.
- 0"
+ a.assembly,org.apache.tuscany.sca.node,org.apache.tusc any.sca.contri
+ bution,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.work,org
+ .apache.tuscany.sca.contribution.processor";version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Node Implementation
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
@@ -34,7 +32,6 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.definitions;version="2.0.0",
  org.apache.tuscany.sca.definitions.util;version="2.0.0",
  org.apache.tuscany.sca.definitions.xml;version="2.0.0",
- org.apache.tuscany.sca.implementation.node;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
@@ -42,8 +39,6 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.work;version="2.0.0",
- org.apache.tuscany.sca.workspace;version="2.0.0",
- org.apache.tuscany.sca.workspace.builder;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.oasisopen.sca.client;version="2.0.0"
