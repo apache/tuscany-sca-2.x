@@ -17,55 +17,69 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node.configuration;
+package org.apache.tuscany.sca.node.configuration.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 
 /**
  * Configuration for an SCA contribution used by the SCA node
  */
-public interface ContributionConfiguration {
+class ContributionConfigurationImpl implements ContributionConfiguration {
+    private List<DeploymentComposite> deploymentComposites = new ArrayList<DeploymentComposite>();
+    private Contribution contribution;
+    private String uri;
+    private String location;
+
+    public Contribution getContribution() {
+        return contribution;
+    }
+
+    public void setContribution(Contribution contribution) {
+        this.contribution = contribution;
+    }
+
     /**
      * Get the URI of the contribution
      * @return The URI of the contribution
      */
-    String getURI();
+    public String getURI() {
+        return uri;
+    }
 
     /**
      * Set the URI of the contribution
      * @param uri The URI of the contribution
      */
-    void setURI(String uri);
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
 
     /**
      * Get the location of the contribution
      * @return The location of the contribution
      */
-    String getLocation();
+    public String getLocation() {
+        return location;
+    }
 
     /**
      * Set the location of the contribution
      * @param location The location of the contribution
      */
-    void setLocation(String location);
-
-    /**
-     * Get the contribution
-     * @return
-     */
-    Contribution getContribution();
-
-    /**
-     * Set the contribution
-     * @param contribution
-     */
-    void setContribution(Contribution contribution);
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     /**
      * Get the list of deployment composites that are attached to the contribution
      * @return
      */
-    List<DeploymentComposite> getDeploymentComposites();
+    public List<DeploymentComposite> getDeploymentComposites() {
+        return deploymentComposites;
+    }
 }

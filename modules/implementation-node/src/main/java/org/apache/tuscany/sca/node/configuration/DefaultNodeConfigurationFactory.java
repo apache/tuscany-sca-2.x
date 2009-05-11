@@ -19,30 +19,10 @@
 
 package org.apache.tuscany.sca.node.configuration;
 
-import java.util.List;
-
-import javax.xml.namespace.QName;
+import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationFactoryImpl;
 
 /**
- * Configuration for bindings used by an SCA node
+ * Default NodeConfigurationFactory
  */
-public interface BindingConfiguration {
-    /**
-     * Get the QName of the binding
-     * @return
-     */
-    QName getBindingType();
-
-    /**
-     * Set the type of the binding
-     * @param type
-     */
-    void setBindingType(QName type);
-
-    /**
-     * Get a list of base URIs for the binding. For each protocol supported by the binding,
-     * one base URI can be configured
-     * @return A list of base URIs
-     */
-    List<String> getBaseURIs();
+public class DefaultNodeConfigurationFactory extends NodeConfigurationFactoryImpl {
 }

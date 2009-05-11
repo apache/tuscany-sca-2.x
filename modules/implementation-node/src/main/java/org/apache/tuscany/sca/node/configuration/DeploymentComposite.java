@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.node.configuration;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
+
 /**
  * Configuration for a deployment composite
  */
@@ -42,18 +45,34 @@ public interface DeploymentComposite {
      */
     String getContent();
 
+    /**
+     * Set the XML content for the composite
+     * @param compositeXML
+     */
     void setContent(String compositeXML);
 
     /**
-     * Get the URI of the owning contribution
+     * Get the composite
      * @return
      */
-    String getContributionURI();
+    Composite getComposite();
 
     /**
-     * Set the URI of the owning contribution
-     * @param contributionURI
+     * Set the composite
+     * @param composite
      */
-    void setContributionURI(String contributionURI);
+    void setComposite(Composite composite);
+
+    /**
+     * Get the contribution that this deployment composite is attached to
+     * @return
+     */
+    Contribution getContribution();
+
+    /**
+     * Set the contribution that this deployment composite is attached to
+     * @param contribution
+     */
+    void setContribution(Contribution contribution);
 
 }

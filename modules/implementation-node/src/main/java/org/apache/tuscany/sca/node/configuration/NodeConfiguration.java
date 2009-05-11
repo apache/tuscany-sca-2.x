@@ -29,9 +29,9 @@ public interface NodeConfiguration {
 
     void setDomainURI(String domainURI);
 
-    DeploymentComposite getDeploymentComposite();
+    String getURI();
 
-    void setDeploymentComposite(DeploymentComposite deploymentComposite);
+    void setURI(String uri);
 
     List<ContributionConfiguration> getContributions();
 

@@ -20,18 +20,8 @@
 <node xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
     xmlns="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-    targetNamespace="http://sample/node"
-    name="TestNode1"
+    uri="http://sample/nodes/TestNode1"
     domain="http://domain1">
-
-    <!-- The deployment composite is optional -->
-    <!-- The deployment composite can be defined inline or referenced using a URI -->
-    <!-- Should we make it a child of contribution element? -->
-    <!-- Can we have more than one deployment composites -->
-    <deploymentComposite contribution="http://c2" location="test/Test.composite">
-        <sca:composite>
-        </sca:composite>
-    </deploymentComposite>
 
     <!-- Configure the base URIs for a given binding -->
     <!-- Each base URI is for a protocol supported by the binding -->
@@ -40,6 +30,17 @@
 
     <!-- Configure a list of contributions -->
     <contribution uri="http://c1" location="file:///a.jar"/>
-    <contribution uri="http://c2" location="http://locahost/repo/b.jar"/>
+    <contribution uri="http://c2" location="http://locahost/repo/b.jar">
+        <!-- The deployment composite is optional -->
+        <!-- The deployment composite can be defined inline or referenced using a URI -->
+        <!-- Can we have more than one deployment composites -->
+        <deploymentComposite>
+            <sca:composite>
+            </sca:composite>
+        </deploymentComposite>
+    </contribution>
     <contribution uri="http://c3" location="http://locahost/repo/c.jar"/>
+        <deploymentComposite location="test/Test.composite">
+        </deploymentComposite>
+    </contribution>
 </node>

@@ -17,33 +17,46 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node.configuration;
+package org.apache.tuscany.sca.node.configuration.impl;
+
+import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
+import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 
 /**
  * The factory to create java models related to the node configuration
  */
-public interface NodeConfigurationFactory {
+public abstract class NodeConfigurationFactoryImpl implements NodeConfigurationFactory {
     /**
      * Create a new instance of NodeConfiguration
      * @return
      */
-    NodeConfiguration createNodeConfiguration();
+    public NodeConfigurationImpl createNodeConfiguration() {
+        return new NodeConfigurationImpl();
+    }
 
     /**
      * Create a new instance of ContributionConfiguration
      * @return
      */
-    ContributionConfiguration createContributionConfiguration();
+    public ContributionConfiguration createContributionConfiguration() {
+        return new ContributionConfigurationImpl();
+    }
 
     /**
      * Create a new instance of BindingConfiguration
      * @return
      */
-    BindingConfiguration createBindingConfiguration();
+    public BindingConfiguration createBindingConfiguration() {
+        return new BindingConfigurationImpl();
+    }
 
     /**
      * Create a new instance of DeploymentComposite
      * @return
      */
-    DeploymentComposite createDeploymentComposite();
+    public DeploymentComposite createDeploymentComposite() {
+        return new DeploymentCompositeImpl();
+    }
 }
