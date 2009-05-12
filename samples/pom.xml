@@ -43,7 +43,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>helloworld-bpel</module>
                 <module>calculator</module>
                 <module>calculator-equinox</module>
                 <module>calculator-osgi</module>
@@ -52,7 +51,9 @@
 
                 <module>dosgi-calculator</module>
                 <module>dosgi-calculator-operations</module>
-
+                
+                <module>helloworld-bpel</module>
+                
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
                 <!-- module>host-webapp-calculator</module -->
