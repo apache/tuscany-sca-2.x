@@ -354,7 +354,7 @@ public class NodeFactoryImpl {
 
         // Load the specified contributions
         for (Contribution c : configuration.getContributions()) {
-            URI contributionURI = URI.create(c.getURI());
+            URI contributionURI = NodeUtil.createURI(c.getURI());
 
             URI uri = createURI(c.getLocation());
             if (uri.getScheme() == null) {
