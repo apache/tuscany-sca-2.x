@@ -96,10 +96,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
             }
 
             String location = this.implementation.getProcessDefinition().getLocation();
-            if (location.indexOf(' ') != -1) {
-               location = location.replace(" ", "%20");
-            }
-            URI deployURI = URI.create(location);
+            URI deployURI = new URI(null, location, null);
             
             File deploymentDir = new File(deployURI).getParentFile();
             
