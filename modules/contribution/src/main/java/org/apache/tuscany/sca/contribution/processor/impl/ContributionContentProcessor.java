@@ -116,7 +116,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
         if (scanner == null) {
             try {
-                if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.toURI()).isDirectory()) {
+                if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.toURI().getPath()).isDirectory()) {
                     scanner = new DirectoryContributionScanner();
                 } else {
                     scanner = new JarContributionScanner();

@@ -47,10 +47,18 @@ public class NodeUtil {
      * @return
      */
     static URI createURI(String uri) {
-        if (uri.indexOf(' ') != -1) {
-            uri = uri.replace(" ", "%20");
-        }
-        return URI.create(uri);
+    	URI returnURI = null;
+    	
+    	try {
+    		returnURI = URI.create(uri);
+    	} catch( Exception e) {
+    		try {
+    			returnURI = new URI(null, uri, null);
+    		} catch (Exception ee) {
+    			throw new IllegalArgumentException("Invalid URI :" + uri, ee);
+    		}
+    	}
+    	return returnURI;
     }
 
 }

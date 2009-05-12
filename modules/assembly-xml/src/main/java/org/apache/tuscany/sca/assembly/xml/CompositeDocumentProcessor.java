@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
@@ -83,14 +85,24 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     	} // end if
         InputStream scdlStream = null;
         try {
-            URLConnection connection = url.openConnection();
+            URLConnection connection;
+            if (url.getProtocol().equals("file")) {
+            	File scdlFile = new File(url.toURI().getPath());
+            	connection = scdlFile.toURL().openConnection();
+            } else {
+            	connection = url.openConnection();
+            }
             connection.setUseCaches(false);
             scdlStream = connection.getInputStream();
         } catch (IOException e) {
             ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             error("ContributionReadException", url, ce);
             throw ce;
-        }
+        } catch (URISyntaxException e) {
+        	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
+        	error("ContributionReadException", url, ce);
+        	throw ce;
+		}
         return read(uri, scdlStream);
     }
 
