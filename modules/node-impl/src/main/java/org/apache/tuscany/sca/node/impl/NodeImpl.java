@@ -373,7 +373,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         
         // Load the specified contributions
         for (String c : contributionLocations.keySet()) {
-            URI contributionURI = URI.create(c);
+            URI contributionURI = NodeUtil.createURI(c);
 
             URI uri = createURI(contributionLocations.get(c));
             if (uri.getScheme() == null) {
