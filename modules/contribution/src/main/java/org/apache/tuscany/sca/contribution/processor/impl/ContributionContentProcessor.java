@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.contribution.processor.impl;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -114,10 +115,14 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         // Create a contribution scanner
         ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
         if (scanner == null) {
-            if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.getFile()).isDirectory()) {
-                scanner = new DirectoryContributionScanner();
-            } else {
-                scanner = new JarContributionScanner();
+            try {
+                if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.toURI()).isDirectory()) {
+                    scanner = new DirectoryContributionScanner();
+                } else {
+                    scanner = new JarContributionScanner();
+                }
+            } catch (URISyntaxException e) {
+                throw new ContributionReadException(e);
             }
         }
 
