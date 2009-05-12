@@ -17,69 +17,41 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node.configuration.impl;
+package org.apache.tuscany.sca.node.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
-import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 
 /**
  * Configuration for an SCA contribution used by the SCA node
  */
-class ContributionConfigurationImpl implements ContributionConfiguration {
-    private List<DeploymentComposite> deploymentComposites = new ArrayList<DeploymentComposite>();
-    private Contribution contribution;
-    private String uri;
-    private String location;
-
-    public Contribution getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
-    }
-
+public interface ContributionConfiguration {
     /**
      * Get the URI of the contribution
      * @return The URI of the contribution
      */
-    public String getURI() {
-        return uri;
-    }
+    String getURI();
 
     /**
      * Set the URI of the contribution
      * @param uri The URI of the contribution
      */
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
+    void setURI(String uri);
 
     /**
      * Get the location of the contribution
      * @return The location of the contribution
      */
-    public String getLocation() {
-        return location;
-    }
+    String getLocation();
 
     /**
      * Set the location of the contribution
      * @param location The location of the contribution
      */
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    void setLocation(String location);
 
     /**
      * Get the list of deployment composites that are attached to the contribution
      * @return
      */
-    public List<DeploymentComposite> getDeploymentComposites() {
-        return deploymentComposites;
-    }
+    List<DeploymentComposite> getDeploymentComposites();
 }

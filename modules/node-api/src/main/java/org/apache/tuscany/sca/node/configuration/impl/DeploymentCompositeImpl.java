@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.node.configuration.impl;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 
 /**
@@ -29,8 +27,7 @@ import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 class DeploymentCompositeImpl implements DeploymentComposite {
     private String location;
     private String content;
-    private Composite composite;
-    private Contribution contribution;
+    private String contributionURI;
 
     public String getLocation() {
         return location;
@@ -48,20 +45,12 @@ class DeploymentCompositeImpl implements DeploymentComposite {
         this.content = content;
     }
 
-    public Composite getComposite() {
-        return composite;
+    public String getContributionURI() {
+        return contributionURI;
     }
 
-    public void setComposite(Composite composite) {
-        this.composite = composite;
-    }
-
-    public Contribution getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
+    public void setContributionURI(String contributionURI) {
+        this.contributionURI = contributionURI;
     }
 
 }
