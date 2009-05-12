@@ -22,18 +22,42 @@ package org.apache.tuscany.sca.node.configuration;
 import java.util.List;
 
 /**
- *
+ * The configuration for a Node which represents the deployment of an SCA composite application
  */
 public interface NodeConfiguration {
+    /**
+     * Get the URI of the SCA domain that manages the composite application
+     * @return The URI of the SCA domain
+     */
     String getDomainURI();
 
+    /**
+     * Set the URI of the SCA domain
+     * @param domainURI The URI of the SCA domain
+     */
     void setDomainURI(String domainURI);
 
+    /**
+     * Get the URI of the node. It uniquely identifies a node within the SCA domain
+     * @return The URI of the node
+     */
     String getURI();
 
+    /**
+     * Set the URI of the node
+     * @param uri The URI of the node
+     */
     void setURI(String uri);
 
+    /**
+     * Get a list of confiurations for SCA contributions
+     * @return A list of configurations for SCA contributions
+     */
     List<ContributionConfiguration> getContributions();
 
+    /**
+     * Get a list of configurations for SCA bindings
+     * @return A list of configurations for SCA bindings
+     */
     List<BindingConfiguration> getBindings();
 }
