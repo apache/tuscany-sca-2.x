@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -104,11 +105,17 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         contribution.setUnresolved(true);
 
         // Create a contribution scanner
-        ContributionScanner scanner;
-        if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.getFile()).isDirectory()) {
-            scanner = new DirectoryContributionScanner();
-        } else {
-            scanner = new JarContributionScanner();
+        ContributionScanner scanner = null;
+        if (scanner == null) {
+            try {
+                if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.toURI()).isDirectory()) {
+                    scanner = new DirectoryContributionScanner();
+                } else {
+                    scanner = new JarContributionScanner();
+                }
+            } catch (URISyntaxException e) {
+                throw new ContributionReadException(e);
+            }
         }
 
         // Read generated and user sca-contribution.xml files
