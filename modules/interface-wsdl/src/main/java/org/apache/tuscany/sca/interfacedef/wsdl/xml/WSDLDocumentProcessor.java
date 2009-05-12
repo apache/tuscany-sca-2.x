@@ -123,6 +123,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         }
                     } else {
                         String location = imp.getLocationURI();
+                        if (location.indexOf(' ') != -1) {
+                            location = location.replace(" ", "%20");
+                        }
                         URI uri = URI.create(location);
                         if (uri.isAbsolute()) {
                             WSDLDefinition resolved;
