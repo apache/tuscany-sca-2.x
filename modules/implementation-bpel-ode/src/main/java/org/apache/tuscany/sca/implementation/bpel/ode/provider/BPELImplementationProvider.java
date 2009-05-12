@@ -95,7 +95,11 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 odeServer.init();
             }
 
-            URI deployURI = URI.create(this.implementation.getProcessDefinition().getLocation());
+            String location = this.implementation.getProcessDefinition().getLocation();
+            if (location.indexOf(' ') != -1) {
+               location = location.replace(" ", "%20");
+            }
+            URI deployURI = URI.create(location);
             
             File deploymentDir = new File(deployURI).getParentFile();
             

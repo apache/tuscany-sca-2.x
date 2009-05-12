@@ -210,7 +210,11 @@ public class BPELODEDeployFile {
      */
     private File getBPELFile() {
         try {
-            File theProcess = new File(URI.create(implementation.getProcessDefinition().getLocation()));
+            String location = this.implementation.getProcessDefinition().getLocation();
+            if (location.indexOf(' ') != -1) {
+               location = location.replace(" ", "%20");
+            }
+            File theProcess = new File(URI.create(location));
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {
