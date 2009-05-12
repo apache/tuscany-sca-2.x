@@ -96,10 +96,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         //System.out.println("getBPELDocument called");
         try {
             String location = this.implementation.getProcessDefinition().getLocation();
-            if (location.indexOf(' ') != -1) {
-               location = location.replace(" ", "%20");
-            }
-            File processFile = new File(URI.create(location));
+            URI locationURI = new URI(null, location, null);
+            File processFile = new File(locationURI);
             return getRelativePath( getDirectory(), processFile);
         } catch (Exception e) {
             if(__log.isWarnEnabled()) {
@@ -387,10 +385,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     private File getBPELFile() {
         try {
             String location = this.implementation.getProcessDefinition().getLocation();
-            if (location.indexOf(' ') != -1) {
-               location = location.replace(" ", "%20");
-            }
-            File theProcess = new File(URI.create(location));
+            URI locationURI = new URI(null, location, null);
+            File theProcess = new File(locationURI);
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {
