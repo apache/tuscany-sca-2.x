@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
@@ -89,7 +90,11 @@ public class EmbeddedODEServer {
         URL dbLocation = getClass().getClassLoader().getResource("jpadb");
         if (dbLocation == null)
             throw new ODEInitializationException("Couldn't find database in the classpath");
-        _workRoot = new File(dbLocation.getFile()).getParentFile();
+        try {
+            _workRoot = new File(dbLocation.toURI()).getParentFile();
+        } catch (URISyntaxException e) {
+            throw new ODEInitializationException(e);
+        }
 
         initTxMgr();
         initPersistence();
