@@ -239,7 +239,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             Map<String, ComponentProperty> componentProperties, Monitor monitor) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning(monitor, "DuplicateComponentServiceName", component,
+            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentServiceName", component,
                         component.getName(), componentService.getName());
             } else {
                 componentServices.put(componentService.getName(),
@@ -248,7 +249,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-                warning(monitor, "DuplicateComponentReferenceName", component,
+            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentReferenceName", component,
                         component.getName(), componentReference.getName());
             } else {
                 componentReferences.put(componentReference.getName(),
@@ -257,7 +259,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning(monitor, "DuplicateComponentPropertyName", component,
+            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentPropertyName", component,
                         component.getName(), componentProperty.getName());
             } else {
                 componentProperties.put(componentProperty.getName(),
@@ -289,7 +292,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning(monitor, "DuplicateImplementationPropertyName",
+                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationPropertyName",
                             component, component.getName(), property.getName());
                 } else {
                     properties.put(property.getName(), property);
@@ -297,7 +301,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                    warning(monitor, "DuplicateImplementationServiceName",
+                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationServiceName",
                             component, component.getName(), service.getName());
                 } else {
                     services.put(service.getName(), service);
@@ -305,7 +310,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning(monitor, "DuplicateImplementationReferenceName",
+                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationReferenceName",
                             component, component.getName(), reference.getName());
                 } else {
                     references.put(reference.getName(), reference);
