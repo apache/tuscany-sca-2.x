@@ -101,10 +101,12 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     
     /**
      * Create a WSDL interface from a URI.
-     * @param uri
-     * @return
+     * @param uri - the URI in the form nameSpace#wsdl.interface(porttypeName) or nameSpace#wsdl.porttype(porttypeName)
+     * @return a WSDLInterface object 
      * @throws ContributionReadException
      */
+    private static String FRAGMENT_INTERFACE = "wsdl.interface";
+    private static String FRAGMENT_PORTTYPE = "wsdl.porttype";
     private WSDLInterface createWSDLInterface(String uri) throws ContributionReadException {
         
     	WSDLInterface wsdlInterface = null;        
@@ -116,17 +118,43 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         	error("InvalidWSDLInterfaceAttr", wsdlFactory, uri);
             //throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
         } else {
+        	// Read the URI and extract namespace and fragment
+        	String namespace = uri.substring(0, index);
+        	String name = uri.substring(index + 1);
+        	String porttype = null;
+        	if( name.contains(FRAGMENT_INTERFACE)) {
+        		// Deal with the case where #wsdl.interface is used
+        		porttype = name.substring("wsdl.interface(".length(), name.length() - 1);
+        	} // end if
+        	if( name.contains(FRAGMENT_PORTTYPE)) {
+        		// Deal with the case where #wsdl.porttype is used
+        		porttype = name.substring("wsdl.porttype(".length(), name.length() - 1);
+        	} // end if
+        	if( porttype == null ) {
+        		error("InvalidWSDLInterfaceAttr", wsdlFactory, uri);
+        		return null;
+        	} // end if
         	wsdlInterface = wsdlFactory.createWSDLInterface();
             wsdlInterface.setUnresolved(true);
-            String namespace = uri.substring(0, index);
-            String name = uri.substring(index + 1);
-            name = name.substring("wsdl.interface(".length(), name.length() - 1);
-            wsdlInterface.setName(new QName(namespace, name));
-        }       
+            wsdlInterface.setName(new QName(namespace, porttype));
+        } // end if       
         
         return wsdlInterface;
-    }
+    } // end method createWSDLInterface
 
+    /**
+     * Creates a WSDLInterfaceContract from a <interface.wsdl/> element in a SCDL file
+     * 
+     * The form of the <interface.wsdl/> element is as follows:
+     * 
+     * <interface.wsdl interface="http://sampleNamespace#wsdl.interface(porttypeName)"
+     *                 callbackInterface="http://sampleNamespace#wsdl.porttype(callbackPorttypeName)"/>
+     * where interface = URI pointing to the WSDL document containing a WSDL interface or porttype for the forward call interface
+     *       callbackInterface = URI pointing to the WSDL document containing a WSDL interface or porttype for the callback interface
+     * 
+     * @param reader - XMLStreamReader holding the <interface.wsdl/> element
+     * @return - the WSDLInterfaceContract
+     */
     public WSDLInterfaceContract read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         // Read an <interface.wsdl>
         WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
@@ -216,17 +244,23 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                             wsdlInterface.setWsdlDefinition(wsdlDefinition);
                             resolver.addModel(wsdlInterface);
                         } catch (InvalidInterfaceException e) {
-                        	ContributionResolveException ce = new ContributionResolveException(e);
+                        	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
+                        			                                                            portType.toString(), e);
                         	error("ContributionResolveException", wsdlFactory, ce);
                             //throw ce;
                         }                        
                     }
                     else {
                     	warning("WsdlInterfaceDoesNotMatch", wsdlDefinition, wsdlInterface.getName());
-                    }
-                }
-            }
-        }
+                    } // end if
+                } else {
+                	// If we get here, the WSDLDefinition is unresolved...
+                	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
+                			wsdlInterface.getName().getNamespaceURI() );
+                    error("ContributionResolveException", wsdlFactory, ce);
+                }// end if
+            } // end if
+        } // end if
         return wsdlInterface;
     }
     
