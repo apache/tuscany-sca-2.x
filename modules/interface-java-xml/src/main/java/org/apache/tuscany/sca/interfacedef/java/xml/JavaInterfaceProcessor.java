@@ -157,8 +157,9 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     javaFactory.createJavaInterface(javaInterface, javaClass);
                 
                 } catch (InvalidInterfaceException e) {
-                	ContributionResolveException ce = new ContributionResolveException(e);
-                	error("ContributionResolveException", javaFactory, ce);
+                	ContributionResolveException ce = new ContributionResolveException("Resolving Java interface " + javaInterface.getName(), e);
+                	//error("ContributionResolveException", javaFactory, ce);
+                	error("InvalidInterfaceException", javaFactory, e);
                     return javaInterface;
                 	//throw ce;
                 } catch ( Exception e ) {
