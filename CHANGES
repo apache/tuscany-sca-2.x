@@ -1,3 +1,18 @@
+Changes With Apache Tuscany SCA 2.0-M3 Early June 2009
+======================================================
+
+Highlights include:
+- Support for <implementation.bpel> and the OASIS BPEL specification
+- Support for <implementation.spring> and the draft OASIS Spring specification
+- Support for the new SCACleint API as defined in the OASIS spec drafts
+- Runtime support for SCA contributions in ZIP archives from the OASIS Assembly spec
+- New Maven archetype to simplify create ZIP contributions
+- New tuscany:run maven plugin for easy running SCA contributions
+- Clean up and simplify the Tuscany module structure
+- Various fixes for Assembly spec compliance and improved error reporting 
+
+
+
 Changes With Apache Tuscany SCA 2.0-M2 April 2009
 =================================================
 
