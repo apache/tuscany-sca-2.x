@@ -104,13 +104,15 @@ public class JavaInterfaceIntrospectorImpl {
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
             if (remotable && !callbackClass.isAnnotationPresent(Remotable.class)) {
-                throw new InvalidCallbackException("Callback must be remotable on a remotable interface");
+                throw new InvalidCallbackException("Callback " + callbackClass.getName() + 
+                		" must be remotable on remotable interface " + clazz.getName());
             }
             if (!remotable && callbackClass.isAnnotationPresent(Remotable.class)) {
-                throw new InvalidCallbackException("Callback must not be remotable on a local interface");
+                throw new InvalidCallbackException("Callback" + callbackClass.getName() + 
+                		" must not be remotable on local interface " + clazz.getName());
             }
         } else if (callback != null && Void.class.equals(callback.value())) {
-            throw new InvalidCallbackException("No callback interface specified on annotation");
+            throw new InvalidCallbackException("No callback interface specified on callback annotation in " + clazz.getName());
         }
 
         javaInterface.setCallbackClass(callbackClass);
