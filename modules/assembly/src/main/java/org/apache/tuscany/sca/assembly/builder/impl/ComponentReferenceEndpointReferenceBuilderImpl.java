@@ -109,12 +109,12 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                 endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
                             }
                             break;
-                        } 
-                    }
-                }
-            }
-        } 
-    }    
+                        } // end if
+                    } // end if
+                } // end for
+            } // end for
+        } // end for
+    } // end method processCompoenntReferences
     
     private void createReferenceEndpointReferences(Composite composite, 
                                                    Component component, 
@@ -133,34 +133,27 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             Multiplicity multiplicity = reference.getMultiplicity();
             for (Component targetComponent : composite.getComponents()) {
                 
-                // prevent autowire connecting to self
-                boolean skipSelf = false;
-                for (ComponentReference targetComponentReference : targetComponent.getReferences()) {
-                    if (reference == targetComponentReference) {
-                        skipSelf = true;
-                    }
-                }
+                // Prevent autowire connecting to self
+            	if( targetComponent == component ) continue;
+                
+                for (ComponentService targetComponentService : targetComponent.getServices()) {
+                    if (reference.getInterfaceContract() == null || 
+                        interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
+                                                             targetComponentService.getInterfaceContract())) {
+                        // create endpoint reference - with a dummy endpoint which will be replaced when policies
+                        // are matched and bindings are configured later
+                        EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
+                        endpointRef.setTargetEndpoint( createEndpoint(targetComponent, targetComponentService, true) );
+                        reference.getEndpointReferences().add(endpointRef);
 
-                if (!skipSelf) {
-                    for (ComponentService targetComponentService : targetComponent.getServices()) {
-                        if (reference.getInterfaceContract() == null || 
-                            interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
-                                                                 targetComponentService.getInterfaceContract())) {
-                            // create endpoint reference - with a dummy endpoint which will be replaced when policies
-                            // are matched and bindings are configured later
-                            EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
-                            endpointRef.setTargetEndpoint( createEndpoint(targetComponent, targetComponentService, true) );
-                            
-                            reference.getEndpointReferences().add(endpointRef);
-
-                            if (multiplicity == Multiplicity.ZERO_ONE || 
-                                multiplicity == Multiplicity.ONE_ONE) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+                        // Stop with the first match for 0..1 and 1..1 references
+                        if (multiplicity == Multiplicity.ZERO_ONE || 
+                            multiplicity == Multiplicity.ONE_ONE) {
+                            break;
+                        } // end if
+                    } // end if
+                } // end for
+            } // end for
 
             if (multiplicity == Multiplicity.ONE_N || 
                 multiplicity == Multiplicity.ONE_ONE) {
@@ -172,10 +165,9 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             }
 
         } else if (!refTargets.isEmpty()) {
-            // Check that the component reference does not mix the use of
-            // endpoint references specified via the target attribute with 
-            // the presence of binding elements 
-            if (reference.getBindings().size() > 0) {
+            // Check that the component reference does not mix the use of endpoint references 
+        	// specified via the target attribute with the presence of binding elements 
+            if( bindingsIdentifyTargets( reference ) ) {
                 warning(monitor, "ReferenceEndPointMixWithTarget",
                         composite, composite.getName().toString(), component.getName(), reference.getName());
             }
@@ -219,7 +211,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             } // end for
         } // end if
 
-        // if no endpoints have found so far the bindings become targets. 
+        // if no endpoints have found so far the bindings hold the targets. 
         if (reference.getEndpointReferences().isEmpty()) {
             for (Binding binding : reference.getBindings()) {
 
@@ -277,14 +269,28 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 } else {
                     // create endpoint reference for manually configured bindings with resolved endpoint 
                 	// to signify that this reference is pointing at some unwired endpoint
-                    EndpointReference2 endpointRef = createEndpointRef( component, reference, 
-                    		binding, null, false  );
+                    EndpointReference2 endpointRef = createEndpointRef( component, reference, binding, null, false  );
                     endpointRef.setTargetEndpoint(createEndpoint( false ));
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if 
             }
         }
     } // end method
+    
+    /**
+     * Evaluates whether the bindings attached to a reference indentify one or more target services.
+     * @param reference - the reference
+     * @return true if the bindings identify a target, false otherwise
+     */
+    private boolean bindingsIdentifyTargets( ComponentReference reference ) {
+    	for( Binding binding : reference.getBindings() ) {
+    		// <binding.sca without a URI does not identify a target
+        	if( (binding instanceof SCABinding) && (binding.getURI() == null) ) continue;
+        	// any other binding implies a target 
+        	return true;
+    	} // end for
+    	return false;
+    } // end bindingsIdentifyTargets
     
     /**
      * Helper method which obtains a list of targets for a reference
