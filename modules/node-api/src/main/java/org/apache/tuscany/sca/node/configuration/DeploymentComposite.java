@@ -35,7 +35,7 @@ public interface DeploymentComposite {
      * Set the location of the deployment composite
      * @param location
      */
-    void setLocation(String location);
+    DeploymentComposite setLocation(String location);
 
     /**
      * Get string content of the deployment composite (XML)
@@ -47,7 +47,7 @@ public interface DeploymentComposite {
      * Set the XML content for the composite
      * @param compositeXML
      */
-    void setContent(String compositeXML);
+    DeploymentComposite setContent(String compositeXML);
 
     /**
      * Get the URI of the contribution that the deployment composite is attached to
@@ -59,6 +59,6 @@ public interface DeploymentComposite {
      * Set the URI of the contribution that the deployment composite is attached to
      * @param contributionURI
      */
-    void setContributionURI(String contributionURI);
+    DeploymentComposite setContributionURI(String contributionURI);
 
 }

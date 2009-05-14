@@ -33,24 +33,27 @@ class DeploymentCompositeImpl implements DeploymentComposite {
         return location;
     }
 
-    public void setLocation(String location) {
+    public DeploymentComposite setLocation(String location) {
         this.location = location;
+        return this;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public DeploymentComposite setContent(String content) {
         this.content = content;
+        return this;
     }
 
     public String getContributionURI() {
         return contributionURI;
     }
 
-    public void setContributionURI(String contributionURI) {
+    public DeploymentComposite setContributionURI(String contributionURI) {
         this.contributionURI = contributionURI;
+        return this;
     }
 
 }

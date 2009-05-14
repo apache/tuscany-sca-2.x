@@ -19,7 +19,13 @@
 
 package org.apache.tuscany.sca.node.configuration;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 /**
  * The configuration for a Node which represents the deployment of an SCA composite application
@@ -35,7 +41,7 @@ public interface NodeConfiguration {
      * Set the URI of the SCA domain
      * @param domainURI The URI of the SCA domain
      */
-    void setDomainURI(String domainURI);
+    NodeConfiguration setDomainURI(String domainURI);
 
     /**
      * Get the URI of the node. It uniquely identifies a node within the SCA domain
@@ -47,7 +53,7 @@ public interface NodeConfiguration {
      * Set the URI of the node
      * @param uri The URI of the node
      */
-    void setURI(String uri);
+    NodeConfiguration setURI(String uri);
 
     /**
      * Get a list of confiurations for SCA contributions
@@ -60,4 +66,18 @@ public interface NodeConfiguration {
      * @return A list of configurations for SCA bindings
      */
     List<BindingConfiguration> getBindings();
+
+    NodeConfiguration addContribution(ContributionConfiguration contribution);
+    NodeConfiguration addContribution(String contributionURI, String location);
+    NodeConfiguration addContribution(String contributionURI, URL location);
+    NodeConfiguration addContribution(URI contributionURI, URL location);
+    NodeConfiguration addContribution(URL...location);
+
+    NodeConfiguration addDeploymentComposite(String contributionURI, String location);
+    NodeConfiguration addDeploymentComposite(String contributionURI, Reader content);
+    NodeConfiguration addDeploymentComposite(String contributionURI, InputStream content);
+
+    NodeConfiguration addBinding(BindingConfiguration binding);
+    NodeConfiguration addBinding(QName bindingType, String...baseURIs);
+    NodeConfiguration addBinding(QName bindingType, URI...baseURIs);
 }

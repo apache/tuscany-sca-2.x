@@ -19,6 +19,13 @@
 
 package org.apache.tuscany.sca.node.configuration.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +40,21 @@ class ContributionConfigurationImpl implements ContributionConfiguration {
     private String uri;
     private String location;
 
+    public ContributionConfigurationImpl() {
+        super();
+    }
+
+    public ContributionConfigurationImpl(String uri, String location) {
+        super();
+        this.uri = uri;
+        this.location = location;
+    }
+
+    public ContributionConfigurationImpl(String location) {
+        super();
+        this.uri = location;
+        this.location = location;
+    }
 
     /**
      * Get the URI of the contribution
@@ -46,8 +68,9 @@ class ContributionConfigurationImpl implements ContributionConfiguration {
      * Set the URI of the contribution
      * @param uri The URI of the contribution
      */
-    public void setURI(String uri) {
+    public ContributionConfiguration setURI(String uri) {
         this.uri = uri;
+        return this;
     }
 
     /**
@@ -62,8 +85,9 @@ class ContributionConfigurationImpl implements ContributionConfiguration {
      * Set the location of the contribution
      * @param location The location of the contribution
      */
-    public void setLocation(String location) {
+    public ContributionConfiguration setLocation(String location) {
         this.location = location;
+        return this;
     }
 
     /**
@@ -72,5 +96,60 @@ class ContributionConfigurationImpl implements ContributionConfiguration {
      */
     public List<DeploymentComposite> getDeploymentComposites() {
         return deploymentComposites;
+    }
+
+    public ContributionConfiguration addDeploymentComposite(DeploymentComposite deploymentComposite) {
+        deploymentComposites.add(deploymentComposite);
+        if (uri != null) {
+            deploymentComposite.setContributionURI(uri);
+        }
+        return this;
+    }
+
+    public ContributionConfiguration addDeploymentComposite(Reader reader) {
+        try {
+            DeploymentComposite composite = new DeploymentCompositeImpl();
+            char[] buf = new char[8192];
+            StringWriter sw = new StringWriter();
+            int size = 0;
+            while (size >= 0) {
+                size = reader.read(buf);
+                if (size > 0) {
+                    sw.write(buf, 0, size);
+                }
+            }
+            reader.close();
+            composite.setContent(sw.toString());
+            return addDeploymentComposite(composite);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public ContributionConfiguration addDeploymentComposite(InputStream content) {
+        try {
+            InputStreamReader reader = new InputStreamReader(content, "UTF-8");
+            return addDeploymentComposite(reader);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public ContributionConfiguration addDeploymentComposite(String content) {
+        DeploymentComposite composite = new DeploymentCompositeImpl();
+        composite.setContent(content);
+        return addDeploymentComposite(composite);
+    }
+
+    public ContributionConfiguration addDeploymentComposite(URI location) {
+        DeploymentComposite composite = new DeploymentCompositeImpl();
+        composite.setLocation(location.toString());
+        return addDeploymentComposite(composite);
+    }
+
+    public ContributionConfiguration addDeploymentComposite(URL location) {
+        DeploymentComposite composite = new DeploymentCompositeImpl();
+        composite.setLocation(location.toString());
+        return addDeploymentComposite(composite);
     }
 }

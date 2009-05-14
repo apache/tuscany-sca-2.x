@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.node.configuration.impl;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 
 /**
@@ -32,7 +33,7 @@ public abstract class NodeConfigurationFactoryImpl implements NodeConfigurationF
      * Create a new instance of NodeConfiguration
      * @return
      */
-    public NodeConfigurationImpl createNodeConfiguration() {
+    public NodeConfiguration createNodeConfiguration() {
         return new NodeConfigurationImpl();
     }
 

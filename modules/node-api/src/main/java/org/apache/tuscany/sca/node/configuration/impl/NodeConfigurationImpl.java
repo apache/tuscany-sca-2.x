@@ -19,8 +19,14 @@
 
 package org.apache.tuscany.sca.node.configuration.impl;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
@@ -39,16 +45,18 @@ class NodeConfigurationImpl implements NodeConfiguration {
         return uri;
     }
 
-    public void setURI(String uri) {
+    public NodeConfiguration setURI(String uri) {
         this.uri = uri;
+        return this;
     }
 
     public String getDomainURI() {
         return domainURI;
     }
 
-    public void setDomainURI(String domainURI) {
+    public NodeConfiguration setDomainURI(String domainURI) {
         this.domainURI = domainURI;
+        return this;
     }
 
     public List<ContributionConfiguration> getContributions() {
@@ -59,5 +67,68 @@ class NodeConfigurationImpl implements NodeConfiguration {
         return bindings;
     }
 
+    public NodeConfiguration addBinding(BindingConfiguration bindingConfiguration) {
+        bindings.add(bindingConfiguration);
+        return this;
+    }
+
+    public NodeConfiguration addContribution(ContributionConfiguration contributionConfiguration) {
+        contributions.add(contributionConfiguration);
+        return this;
+    }
+
+    public NodeConfiguration addBinding(QName bindingType, String... baseURIs) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addBinding(QName bindingType, URI... baseURIs) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addContribution(String contributionURI, String location) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addContribution(String contributionURI, URL location) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addContribution(URI contributionURI, URL location) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addContribution(URL... location) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NodeConfiguration addDeploymentComposite(String contributionURI, InputStream content) {
+        findContribution(contributionURI).addDeploymentComposite(content);
+        return this;
+    }
+
+    public NodeConfiguration addDeploymentComposite(String contributionURI, Reader content) {
+        findContribution(contributionURI).addDeploymentComposite(content);
+        return this;
+    }
+
+    public NodeConfiguration addDeploymentComposite(String contributionURI, String location) {
+        findContribution(contributionURI).addDeploymentComposite(URI.create(location));
+        return this;
+    }
+
+    private ContributionConfiguration findContribution(String uri) {
+        for (ContributionConfiguration c : contributions) {
+            if (c.getURI() != null && c.getURI().equals(uri)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException("Contribution is not found (uri=" + uri + ")");
+    }
 
 }
