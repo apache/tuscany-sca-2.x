@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.sca.provider;
@@ -41,13 +41,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceUnavailableException;
 
-/** 
- * The sca reference binding provider mediates between the twin requirements of 
- * local sca bindings and remote sca bindings. In the local case is does 
- * very little. When the sca binding model is set as being remote (because a 
- * reference target can't be resolved in the current model) this binding will 
+/**
+ * The sca reference binding provider mediates between the twin requirements of
+ * local sca bindings and remote sca bindings. In the local case is does
+ * very little. When the sca binding model is set as being remote (because a
+ * reference target can't be resolved in the current model) this binding will
  * try and create a remote connection to it
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
@@ -71,7 +71,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         this.binding = binding;
 
         // look to see if a distributed SCA binding implementation has
-        // been included on the classpath. This will be needed by the 
+        // been included on the classpath. This will be needed by the
         // provider itself to do it's thing
         ProviderFactoryExtensionPoint factoryExtensionPoint =
             extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
@@ -89,10 +89,10 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
         // The decision is based on the results of the wiring process in the assembly model
         // The SCA binding is used to represent unresolved reference targets, i.e. those
-        // reference targets that need resolving at run time. We can tell by lookin if the 
-        // service to which this binding refers is resolved or not. 
+        // reference targets that need resolving at run time. We can tell by lookin if the
+        // service to which this binding refers is resolved or not.
         //
-        // TODO - When a callback is in operation. A callback reference bindings sometimes has to 
+        // TODO - When a callback is in operation. A callback reference bindings sometimes has to
         //        act as though there is a local wire and sometimes as if there is a remote wire
         //        what are the implications of this here?
 
@@ -112,9 +112,13 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // the case where the wire is specified by URI, e.g. callbacks or user specified bindings, and
             // look at the provided URI to decide whether it is a local or remote case
             try {
-                URI uri = new URI(binding.getURI());
-                if (uri.isAbsolute()) {
-                    targetIsRemote = true;
+                if (binding.getURI() != null) {
+                    URI uri = new URI(binding.getURI());
+                    if (uri.isAbsolute()) {
+                        targetIsRemote = true;
+                    } else {
+                        targetIsRemote = false;
+                    }
                 } else {
                     targetIsRemote = false;
                 }
