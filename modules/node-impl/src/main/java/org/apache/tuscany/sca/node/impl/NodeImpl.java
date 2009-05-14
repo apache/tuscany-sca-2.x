@@ -159,7 +159,7 @@ public class NodeImpl implements Node, Client, SCAClient {
 
             Map<String, String> contributions = new HashMap<String, String>();
             contributions.put(root, root);
-            
+
             // Configure the node
             configureNode(contributions, null, null);
 
@@ -325,12 +325,12 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();
-        
+
         DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
         for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
             DefinitionsUtil.aggregate(systemDefinitions, defs);
         }
-        
+
         // Load the system definitions.xml from all of the loaded extension points
         DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
@@ -370,7 +370,7 @@ public class NodeImpl implements Node, Client, SCAClient {
     private void configureNode(Map<String, String> contributionLocations, String defaultCompositeURI, String defaultCompositeContent) throws Exception {
 
         List<Contribution> contributions = new ArrayList<Contribution>();
-        
+
         // Load the specified contributions
         for (String c : contributionLocations.keySet()) {
             URI contributionURI = NodeUtil.createURI(c);
@@ -415,7 +415,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         }
 
         ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
-        
+
         // now resolve and add the system contribution
         contributionProcessor.resolve(systemContribution, modelResolver);
         contributions.add(systemContribution);
@@ -521,16 +521,16 @@ public class NodeImpl implements Node, Client, SCAClient {
 
     private void buildDependencies(Contribution contribution, List<Contribution> contributions, Monitor monitor) {
         contribution.getDependencies().clear();
-        
+
         List<Contribution> dependencies = new ArrayList<Contribution>();
         Set<Contribution> set = new HashSet<Contribution>();
 
         dependencies.add(contribution);
         set.add(contribution);
         addContributionDependencies(contribution, contributions, dependencies, set, monitor);
-        
+
         Collections.reverse(dependencies);
-        
+
         contribution.getDependencies().addAll(dependencies);
     }
 
@@ -538,11 +538,11 @@ public class NodeImpl implements Node, Client, SCAClient {
      * Analyze a contribution and add its dependencies to the given dependency set.
      */
     private void addContributionDependencies(Contribution contribution, List<Contribution> contributions, List<Contribution> dependencies, Set<Contribution> set, Monitor monitor) {
-        
+
         // Go through the contribution imports
         for (Import import_: contribution.getImports()) {
             boolean resolved = false;
-            
+
             // Go through all contribution candidates and their exports
             List<Export> matchingExports = new ArrayList<Export>();
             for (Contribution dependency: contributions) {
@@ -551,7 +551,7 @@ public class NodeImpl implements Node, Client, SCAClient {
                     continue;
                 }
                 for (Export export: dependency.getExports()) {
-                    
+
                     // If an export from a contribution matches the import in hand
                     // add that contribution to the dependency set
                     if (import_.match(export)) {
@@ -561,20 +561,20 @@ public class NodeImpl implements Node, Client, SCAClient {
                         if (!set.contains(dependency)) {
                             set.add(dependency);
                             dependencies.add(dependency);
-                            
-                            // Now add the dependencies of that contribution 
+
+                            // Now add the dependencies of that contribution
                             addContributionDependencies(dependency, contributions, dependencies, set, monitor);
                         }
                     }
                 }
             }
-            
+
             if (resolved) {
-                
+
                 // Initialize the import's model resolver with a delegating model
-                // resolver which will delegate to the matching exports 
+                // resolver which will delegate to the matching exports
                 import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-                
+
             } else {
                 // Record import resolution issue
                 if (!(import_ instanceof DefaultImport)) {
@@ -583,22 +583,22 @@ public class NodeImpl implements Node, Client, SCAClient {
             }
         }
     }
-    
+
     /**
      * Pre-resolve phase for contributions, to set up handling of imports and exports prior to full resolution
      * @param contributions - the contributions to preresolve
      * @param resolver - the ModelResolver to use
      * @throws ContributionResolveException
      */
-    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver ) 
+    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver )
         throws ContributionResolveException {
-        
+
         for( Contribution contribution : contributions ) {
                 contributionProcessor.preResolve(contribution, resolver);
         } // end for
     } // end method contributionsPreresolve
 
-    public void start() {
+    public Node start() {
         logger.log(Level.INFO, "Starting node: " + configurationName);
 
         try {
@@ -608,8 +608,10 @@ public class NodeImpl implements Node, Client, SCAClient {
 
             // Start the composite
             compositeActivator.start(composite);
-            
+
             SCAClientImpl.addDomain(getDomainName(), this);
+
+            return this;
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
@@ -635,7 +637,7 @@ public class NodeImpl implements Node, Client, SCAClient {
         }
 
     }
-    
+
     private URI getDomainName() {
         URI domainName;
         if (configurationName != null) {
@@ -753,7 +755,7 @@ public class NodeImpl implements Node, Client, SCAClient {
     private Composite getDefaultComposite(List<Contribution> contributions, String defaultCompositeURI, String content) throws Exception {
         Composite composite = assemblyFactory.createComposite();
         composite.setUnresolved(true);
-        
+
         if (content != null && content.length() > 0) {
 
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(content.getBytes("UTF-8")));
@@ -767,7 +769,7 @@ public class NodeImpl implements Node, Client, SCAClient {
             analyzeProblems();
             useDeploymentComposite = true;
             return composite;
-            
+
         } else if (defaultCompositeURI != null && defaultCompositeURI.length() > 0) {
             composite.setURI(defaultCompositeURI);
             return composite;

@@ -6,21 +6,24 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -28,10 +31,16 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * A factory for SCA processing nodes. An SCA processing node can be loaded
  * with an SCA composite and the SCA contributions required by the composite.
- * 
+ *
  * @version $Rev$ $Date$
  */
-public abstract class NodeFactory {
+public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
+
+    protected static NodeFactory nodeFactory;
+
+    protected static void setNodeFactory(NodeFactory factory) {
+        nodeFactory = factory;
+    }
 
     public static class NodeProxy implements Node, Client {
         private Object node;
@@ -79,11 +88,12 @@ public abstract class NodeFactory {
             }
         }
 
-        public void start() {
+        public Node start() {
             try {
-                node.getClass().getMethod("start").invoke(node);
+                return new NodeProxy(node.getClass().getMethod("start").invoke(node));
             } catch (Throwable e) {
                 handleException(e);
+                return null;
             }
         }
 
@@ -121,10 +131,14 @@ public abstract class NodeFactory {
 
     /**
      * Returns a new SCA node factory instance.
-     *  
+     *
      * @return a new SCA node factory
      */
     public static NodeFactory newInstance() {
+        if (nodeFactory != null) {
+            return nodeFactory;
+        }
+
         NodeFactory scaNodeFactory = null;
 
         try {
@@ -133,14 +147,18 @@ public abstract class NodeFactory {
             try {
                 Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                 Object instance = discoveryClass.getMethod("getInstance").invoke(null);
-                Object factoryDeclaration = discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance, NodeFactory.class.getName());
+                Object factoryDeclaration =
+                    discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance,
+                                                                                                NodeFactory.class
+                                                                                                    .getName());
                 if (factoryDeclaration != null) {
-                    Class<?> factoryImplClass = (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
+                    Class<?> factoryImplClass =
+                        (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
                     scaNodeFactory = (NodeFactory)factoryImplClass.newInstance();
                     return scaNodeFactory;
                 }
             } catch (ClassNotFoundException e) {
-                // Ignore 
+                // Ignore
             }
 
             // Fail back to default impl
@@ -157,43 +175,63 @@ public abstract class NodeFactory {
 
     /**
      * Creates a new SCA node using defaults for the contribution location and runnable composite
-     * 
+     *
      * @return a new SCA node.
      */
     public abstract Node createNode();
 
     /**
      * Creates a new SCA node from the configuration URL
-     * 
+     *
      * @param configurationURL the URL of the node configuration which is the ATOM feed
      * that contains the URI of the composite and a collection of URLs for the contributions
-     *  
+     *
      * @return a new SCA node.
      */
     public abstract Node createNode(String configurationURL);
 
     /**
      * Creates a new SCA node.
-     * 
-     * @param compositeURI the URI of the composite to use 
-     * @param contributions the URI of the contributions that provides the composites and related 
+     *
+     * @param compositeURI the URI of the composite to use
+     * @param contributions the URI of the contributions that provides the composites and related
      * artifacts. If the list is empty, then we will use the thread context classloader to discover
      * the contribution on the classpath
-     *   
+     *
      * @return a new SCA node.
      */
     public abstract Node createNode(String compositeURI, Contribution... contributions);
 
     /**
      * Creates a new SCA node.
-     * 
-     * @param compositeURI the URI of the composite to use 
-     * @param compositeContent the XML content of the composite to use 
-     * @param contributions the URI of the contributions that provides the composites and related artifacts 
+     *
+     * @param compositeURI the URI of the composite to use
+     * @param compositeContent the XML content of the composite to use
+     * @param contributions the URI of the contributions that provides the composites and related artifacts
      * @return a new SCA node.
      */
-    public abstract Node createNode(String compositeURI,
-                                          String compositeContent,
-                                          Contribution... contributions);
+    public abstract Node createNode(String compositeURI, String compositeContent, Contribution... contributions);
 
+    /**
+     * Create a new SCA node based on the configuration
+     * @param configuration
+     * @return
+     */
+    public abstract Node createNode(NodeConfiguration configuration);
+
+    /**
+     * Create the node configuration from the XML document
+     * @param configuration The input stream of the XML document
+     * @return The node configuration
+     */
+    public abstract NodeConfiguration loadConfiguration(InputStream xml);
+
+    public static void main(String args[]) {
+        NodeFactory factory = NodeFactory.newInstance();
+        NodeConfiguration nodeConfiguration =
+            factory.createNodeConfiguration().setDomainURI("http://d1").setURI("http://node1")
+                .addContribution("http://c1", "file:/a.jar");
+        Node node = factory.createNode(nodeConfiguration).start();
+
+    }
 }

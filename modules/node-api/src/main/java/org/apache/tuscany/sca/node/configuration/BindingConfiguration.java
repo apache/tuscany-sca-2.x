@@ -28,16 +28,16 @@ import javax.xml.namespace.QName;
  */
 public interface BindingConfiguration {
     /**
-     * Get the QName of the binding
-     * @return
+     * Get the QName of the binding type
+     * @return the QName of the binding type
      */
     QName getBindingType();
 
     /**
      * Set the type of the binding
-     * @param type
+     * @param type The QName of the binding type
      */
-    void setBindingType(QName type);
+    BindingConfiguration setBindingType(QName type);
 
     /**
      * Get a list of base URIs for the binding. For each protocol supported by the binding,
@@ -45,4 +45,11 @@ public interface BindingConfiguration {
      * @return A list of base URIs
      */
     List<String> getBaseURIs();
+
+    /**
+     * Add a base URI
+     * @param baseURI
+     * @return
+     */
+    BindingConfiguration addBaseURI(String baseURI);
 }

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.configuration;
 
+
 /**
  * The factory to create java models related to the node configuration
  */

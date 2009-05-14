@@ -308,7 +308,7 @@ public class NodeFactoryImpl {
         for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
             DefinitionsUtil.aggregate(systemDefinitions, defs);
         }
-        
+
         DefinitionsProviderExtensionPoint definitionsProviders =
             extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
@@ -578,7 +578,7 @@ public class NodeFactoryImpl {
             }
         }
 
-        public void start() {
+        public Node start() {
             logger.log(Level.INFO, "Starting node: " + bundle.getSymbolicName());
 
             try {
@@ -589,6 +589,8 @@ public class NodeFactoryImpl {
 
                 // Start the composite
                 compositeActivator.start(composite);
+
+                return this;
 
             } catch (ActivationException e) {
                 throw new IllegalStateException(e);

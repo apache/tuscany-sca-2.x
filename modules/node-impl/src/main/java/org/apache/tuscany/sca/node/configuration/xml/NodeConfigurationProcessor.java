@@ -76,6 +76,15 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         this.xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
     }
 
+    public NodeConfigurationProcessor(NodeConfigurationFactory nodeConfigurationFactory,
+                                      XMLInputFactory xmlInputFactory,
+                                      XMLOutputFactory xmlOutputFactory) {
+        super();
+        this.nodeConfigurationFactory = nodeConfigurationFactory;
+        this.xmlInputFactory = xmlInputFactory;
+        this.xmlOutputFactory = xmlOutputFactory;
+    }
+
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
         return NODE;

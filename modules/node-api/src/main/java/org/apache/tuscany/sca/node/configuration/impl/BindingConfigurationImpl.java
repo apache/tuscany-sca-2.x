@@ -41,8 +41,14 @@ class BindingConfigurationImpl implements BindingConfiguration {
         return type;
     }
 
-    public void setBindingType(QName type) {
+    public BindingConfiguration setBindingType(QName type) {
         this.type = type;
+        return this;
+    }
+
+    public BindingConfiguration addBaseURI(String baseURI) {
+        baseURIs.add(baseURI);
+        return this;
     }
 
 }
