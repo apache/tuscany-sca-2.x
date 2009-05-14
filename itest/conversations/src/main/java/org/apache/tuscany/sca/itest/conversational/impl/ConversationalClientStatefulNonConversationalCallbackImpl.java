@@ -6,21 +6,22 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
 import org.apache.tuscany.sca.itest.conversational.ConversationalClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalReferenceClient;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
+import org.apache.tuscany.sca.itest.conversational.ConversationalServiceNonConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.NonConversationalCallback;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.ServiceReference;
@@ -49,10 +50,10 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
     protected ComponentContext componentContext;
 
     @Reference
-    protected ConversationalService conversationalService;
+    protected ConversationalServiceNonConversationalCallback conversationalService;
 
     @Reference
-    protected ConversationalService conversationalService2;
+    protected ConversationalServiceNonConversationalCallback conversationalService2;
 
     @Reference
     protected ConversationalReferenceClient conversationalReferenceClient;
@@ -80,7 +81,7 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         conversationalService2.initializeCount(1);
         conversationalService2.incrementCount();
 
-        // stick in a call to the first reference to 
+        // stick in a call to the first reference to
         // make sure the two references don't clash
         conversationalService.initializeCount(1);
 
@@ -147,7 +148,7 @@ public class ConversationalClientStatefulNonConversationalCallbackImpl implement
         // run a conversation
         return runConversationFromInjectedReference();
 
-        // test will then use a static method to find out how many times 
+        // test will then use a static method to find out how many times
         // init/destroy were called
     }
 
