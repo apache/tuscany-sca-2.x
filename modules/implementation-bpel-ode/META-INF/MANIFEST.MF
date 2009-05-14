@@ -14,7 +14,7 @@ Bundle-Description: Apache Tuscany SCA BPEL ODE Implementation Extensi
  on
 Import-Package: javax.resource.spi,
  javax.sql,
- javax.transaction;version="1.0.1",
+ javax.transaction;version="1.1.0",
  javax.wsdl,
  javax.xml.namespace,
  org.apache.commons.logging,

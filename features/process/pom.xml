@@ -26,19 +26,13 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-feature-all</artifactId>
-    <name>Apache Tuscany SCA All-in-one Feature</name>
+    <artifactId>tuscany-feature-process</artifactId>
+    <name>Apache Tuscany SCA Process Feature</name>
     <packaging>pom</packaging>
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-api</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
+        <!-- Core distribution -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-feature-core</artifactId>
@@ -46,40 +40,17 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- ODE BPEL -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webservice</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-implementation-bpel</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-ejava</artifactId>
-            <type>pom</type>
+            <artifactId>tuscany-implementation-bpel-ode</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webapp</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-       <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-process</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-launcher</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
 
     </dependencies>
 

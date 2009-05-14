@@ -37,9 +37,9 @@
         <module>ejava</module>
         <module>webservice</module>
         <module>webapp</module>
+        <module>process</module>
 <!--
         <module>manager</module>
-        <module>process</module>
         <module>repository</module>
         <module>web20</module>
 -->
