@@ -225,13 +225,4 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @return The node configuration
      */
     public abstract NodeConfiguration loadConfiguration(InputStream xml);
-
-    public static void main(String args[]) {
-        NodeFactory factory = NodeFactory.newInstance();
-        NodeConfiguration nodeConfiguration =
-            factory.createNodeConfiguration().setDomainURI("http://d1").setURI("http://node1")
-                .addContribution("http://c1", "file:/a.jar");
-        Node node = factory.createNode(nodeConfiguration).start();
-
-    }
 }

@@ -78,33 +78,40 @@ class NodeConfigurationImpl implements NodeConfiguration {
     }
 
     public NodeConfiguration addBinding(QName bindingType, String... baseURIs) {
-        // TODO Auto-generated method stub
-        return null;
+        BindingConfiguration binding = new BindingConfigurationImpl().setBindingType(bindingType);
+        for (String u : baseURIs) {
+            binding.addBaseURI(u);
+        }
+        return addBinding(binding);
     }
 
     public NodeConfiguration addBinding(QName bindingType, URI... baseURIs) {
-        // TODO Auto-generated method stub
-        return null;
+        BindingConfiguration binding = new BindingConfigurationImpl().setBindingType(bindingType);
+        for (URI u : baseURIs) {
+            binding.addBaseURI(u.toString());
+        }
+        return addBinding(binding);
     }
 
     public NodeConfiguration addContribution(String contributionURI, String location) {
-        // TODO Auto-generated method stub
-        return null;
+        ContributionConfiguration contribution = new ContributionConfigurationImpl(contributionURI, location);
+        return addContribution(contribution);
     }
 
     public NodeConfiguration addContribution(String contributionURI, URL location) {
-        // TODO Auto-generated method stub
-        return null;
+        return addContribution(contributionURI, location.toString());
     }
 
     public NodeConfiguration addContribution(URI contributionURI, URL location) {
-        // TODO Auto-generated method stub
-        return null;
+        return addContribution(contributionURI.toString(), location.toString());
     }
 
-    public NodeConfiguration addContribution(URL... location) {
-        // TODO Auto-generated method stub
-        return null;
+    public NodeConfiguration addContribution(URL... locations) {
+        for (URL url : locations) {
+            ContributionConfiguration contribution = new ContributionConfigurationImpl(url.toString(), url.toString());
+            addContribution(contribution);
+        }
+        return this;
     }
 
     public NodeConfiguration addDeploymentComposite(String contributionURI, InputStream content) {
@@ -129,6 +136,14 @@ class NodeConfigurationImpl implements NodeConfiguration {
             }
         }
         throw new IllegalArgumentException("Contribution is not found (uri=" + uri + ")");
+    }
+
+    public String toString() {
+        if (domainURI != null) {
+            return "{" + domainURI + "}" + uri;
+        } else {
+            return uri;
+        }
     }
 
 }

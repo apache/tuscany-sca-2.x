@@ -24,5 +24,5 @@ import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationFactoryIm
 /**
  * Default NodeConfigurationFactory
  */
-public class DefaultNodeConfigurationFactory extends NodeConfigurationFactoryImpl {
+public class DefaultNodeConfigurationFactory extends NodeConfigurationFactoryImpl implements NodeConfigurationFactory {
 }
