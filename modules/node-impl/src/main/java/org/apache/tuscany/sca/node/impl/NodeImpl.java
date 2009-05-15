@@ -21,25 +21,28 @@ package org.apache.tuscany.sca.node.impl;
 
 import static java.lang.System.currentTimeMillis;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
+import static org.apache.tuscany.sca.node.impl.NodeUtil.openStream;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -56,11 +59,11 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
@@ -88,8 +91,10 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.provider.DefinitionsProvider;
 import org.apache.tuscany.sca.provider.DefinitionsProviderException;
 import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
@@ -117,10 +122,6 @@ public class NodeImpl implements Node, Client, SCAClient {
     // The node configuration name, used for logging
     private String configurationName;
 
-    // The composite loaded into this node
-    private Composite composite;
-    private boolean useDeploymentComposite;
-
     private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
     private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
@@ -139,97 +140,15 @@ public class NodeImpl implements Node, Client, SCAClient {
     private WorkScheduler workScheduler;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
-    private URLArtifactProcessor<Composite> compositeDocumentProcessor;
-
-    /**
-     * Constructs a new SCA node.
-     */
-    NodeImpl() {
-        configurationName = "default";
-        logger.log(Level.INFO, "Creating node: " + configurationName);
-
-        String root = ContributionLocationHelper.getContributionLocation("META-INF/sca-contribution.xml");
-        if (root == null) {
-            throw new ServiceRuntimeException("no META-INF/sca-contribution.xml found");
-        }
+    NodeImpl(NodeConfiguration configuration) {
+        logger.log(Level.INFO, "Creating node: " + configuration.getURI());
 
         try {
             // Initialize the runtime
             init();
 
-            Map<String, String> contributions = new HashMap<String, String>();
-            contributions.put(root, root);
-
             // Configure the node
-            configureNode(contributions, null, null);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    /**
-     * Constructs a new SCA node.
-     *
-     * @param configurationURI the URI of the node configuration information.
-     */
-    NodeImpl(String configurationURI) {
-        throw new IllegalStateException("not supported");
-    }
-
-    /**
-     * Constructs a new SCA node.
-     *
-     * @param compositeURI
-     * @param nodeContributions
-     */
-    NodeImpl(String compositeURI, org.apache.tuscany.sca.node.Contribution[] nodeContributions) {
-        configurationName = compositeURI;
-        logger.log(Level.INFO, "Creating node: " + configurationName);
-
-        try {
-            // Initialize the runtime
-            init();
-
-            // Create contribution models
-            Map<String, String> contributions = new HashMap<String, String>();
-            for (org.apache.tuscany.sca.node.Contribution c : nodeContributions) {
-                contributions.put(c.getURI(), c.getLocation());
-            }
-
-            // Configure the node
-            configureNode(contributions, compositeURI, null);
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    /**
-     * Constructs a new SCA node.
-     *
-     * @param compositeURI
-     * @param compositeContent
-     * @param nodeContributions
-     */
-    NodeImpl(String compositeURI, String compositeContent, org.apache.tuscany.sca.node.Contribution[] nodeContributions) {
-        configurationName = compositeURI;
-        logger.log(Level.INFO, "Creating node: " + configurationName);
-
-        try {
-            // Initialize the runtime
-            init();
-
-            // Read the composite model
-            logger.log(Level.INFO, "Loading composite: " + compositeURI);
-
-            Map<String, String> contributions = new HashMap<String, String>();
-            for (org.apache.tuscany.sca.node.Contribution c : nodeContributions) {
-                contributions.put(c.getURI(), c.getLocation());
-            }
-
-            // Configure the node
-            configureNode(contributions, compositeURI, compositeContent);
+            configureNode(configuration);
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -298,9 +217,6 @@ public class NodeImpl implements Node, Client, SCAClient {
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
 
-        // Create Composite Document processor
-        compositeDocumentProcessor = docProcessorExtensions.getProcessor(Composite.class);
-
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
 
@@ -367,17 +283,16 @@ public class NodeImpl implements Node, Client, SCAClient {
         }
     }
 
-    private void configureNode(Map<String, String> contributionLocations, String defaultCompositeURI, String defaultCompositeContent) throws Exception {
-
+    private void configureNode(NodeConfiguration configuration) throws Exception {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions
-        for (String c : contributionLocations.keySet()) {
-            URI contributionURI = NodeUtil.createURI(c);
+        for (ContributionConfiguration contrib : configuration.getContributions()) {
+            URI contributionURI = createURI(contrib.getURI());
 
-            URI uri = createURI(contributionLocations.get(c));
+            URI uri = createURI(contrib.getLocation());
             if (uri.getScheme() == null) {
-                uri = new File(contributionLocations.get(c)).toURI();
+                uri = new File(contrib.getLocation()).toURI();
             }
             URL contributionURL = uri.toURL();
 
@@ -385,6 +300,42 @@ public class NodeImpl implements Node, Client, SCAClient {
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
             Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
             contributions.add(contribution);
+
+            boolean attached = false;
+            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
+                if (dc.getContent() != null) {
+                    Reader xml = new StringReader(dc.getContent());
+                    attached = attachDeploymentComposite(contribution, xml, null, attached);
+                } else if (dc.getLocation() != null) {
+                    URI dcURI = createURI(dc.getLocation());
+                    if (!dcURI.isAbsolute()) {
+                        Composite composite = null;
+                        // The location is pointing to an artifact within the contribution
+                        for (Artifact a : contribution.getArtifacts()) {
+                            if (dcURI.toString().equals(a.getURI())) {
+                                composite = (Composite)a.getModel();
+                                if (!attached) {
+                                    contribution.getDeployables().clear();
+                                    attached = true;
+                                }
+                                contribution.getDeployables().add(composite);
+                                break;
+                            }
+                        }
+                        if (composite == null) {
+                            // Not found
+                            throw new ServiceRuntimeException("Deployment composite " + dcURI
+                                + " cannot be found within contribution "
+                                + contribution.getLocation());
+                        }
+                    } else {
+                        URL url = dcURI.toURL();
+                        InputStream is = openStream(url);
+                        Reader xml = new InputStreamReader(is, "UTF-8");
+                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached);
+                    }
+                }
+            }
             analyzeProblems();
         }
 
@@ -439,84 +390,70 @@ public class NodeImpl implements Node, Client, SCAClient {
             }
         }
 
-        composite = getDefaultComposite(contributions, defaultCompositeURI, defaultCompositeContent);
-
-        // Find the composite in the given contributions
-        boolean found = false;
-        if (!useDeploymentComposite) {
-            Artifact compositeFile = contributionFactory.createArtifact();
-            compositeFile.setUnresolved(true);
-            compositeFile.setURI(composite.getURI());
-            for (Contribution contribution : contributions) {
-                ModelResolver resolver = contribution.getModelResolver();
-
-                Artifact resolvedArtifact = resolver.resolveModel(Artifact.class, compositeFile);
-                if (!resolvedArtifact.isUnresolved() && resolvedArtifact.getModel() instanceof Composite) {
-
-                    if (!composite.isUnresolved()) {
-
-                        // The composite content was passed into the node and read into a composite model,
-                        // don't use the composite found in the contribution, use that composite, but just resolve
-                        // it within the context of the contribution
-                        compositeProcessor.resolve(composite, resolver);
-
-                    } else {
-
-                        // Use the resolved composite we've found in the contribution
-                        composite = (Composite)resolvedArtifact.getModel();
-                    }
-                    found = true;
-                    break;
-                } // end if
-            } // end for
-        }
-
-        if (!found) {
-            if (!useDeploymentComposite) {
-                // If the composite was not found, then it must be a separate composite file outside any of the contributions
-                // - a "composite by value" - this requires its URI to be absolute and pointing at the composite file itself.
-                // First read in the composite file to create a composite model object...
-                URI compositeURI = new URI(composite.getURI());
-                URL compositeURL = compositeURI.toURL();
-                composite = compositeDocumentProcessor.read(compositeURL, compositeURI, compositeURL);
-                if (composite == null) {
-                    throw new IllegalArgumentException("Composite not found: " + compositeURI);
-                }
-            }
-
-            // Resolve the "composite by value" against the FIRST contribution
-            Contribution contribution = contributions.get(0);
-            ModelResolver resolver = contribution.getModelResolver();
-            compositeProcessor.resolve(composite, resolver);
-            if (composite.isUnresolved()) {
-                throw new IllegalArgumentException("Could not resolve composite: " + composite.getURI()
-                    + " in contribution "
-                    + contribution.getURI());
-            }
-        } // end if
-
-        // Build the composite and wire the components included in it
-        compositeBuilder.build(composite, systemDefinitions, monitor);
-        analyzeProblems();
-
-        // build the endpoint references
-        endpointReferenceBuilder.build(composite, systemDefinitions, monitor);
-        analyzeProblems();
-
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         Composite tempComposite = assemblyFactory.createComposite();
         tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_tempComposite"));
         tempComposite.setURI(SCA11_TUSCANY_NS);
 
-        // Include the node composite in the top-level composite
-        tempComposite.getIncludes().add(composite);
+        for (Contribution contribution : contributions) {
+            for (Composite composite : contribution.getDeployables()) {
+
+                // Build the composite and wire the components included in it
+                compositeBuilder.build(composite, systemDefinitions, monitor);
+                analyzeProblems();
+
+                // build the endpoint references
+                endpointReferenceBuilder.build(composite, systemDefinitions, monitor);
+                analyzeProblems();
+
+                // Include the node composite in the top-level composite
+                tempComposite.getIncludes().add(composite);
+
+            }
+
+        }
 
         // Set the top level composite on the composite activator as
         // logic in callable reference resolution relies on this being
         // available
         compositeActivator.setDomainComposite(tempComposite);
 
+    }
+
+    private boolean attachDeploymentComposite(Contribution contribution, Reader xml, String location, boolean attached)
+        throws XMLStreamException, ContributionReadException {
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
+        reader.nextTag();
+
+        // Read the composite model
+        Composite composite = (Composite)compositeProcessor.read(reader);
+        reader.close();
+
+        // Create an artifact for the deployment composite
+        Artifact artifact = contributionFactory.createArtifact();
+        String uri = composite.getName().getLocalPart() + ".composite";
+        artifact.setURI(uri);
+        // Set the location to avoid NPE
+        if (location == null) {
+            location = uri;
+        }
+        artifact.setLocation(location);
+        artifact.setModel(composite);
+        artifact.setUnresolved(false);
+        // Add it to the contribution
+        contribution.getArtifacts().add(artifact);
+
+        // Replace the deployable composites with the deployment composites
+        // Clear the deployable composites if it's the first deployment composite
+        if (!attached) {
+            contribution.getDeployables().clear();
+            attached = true;
+        }
+        contribution.getDeployables().add(composite);
+        // REVIEW: Is it needed?
+        contribution.getModelResolver().addModel(composite);
+        return attached;
     }
 
     private void buildDependencies(Contribution contribution, List<Contribution> contributions, Monitor monitor) {
@@ -603,11 +540,13 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         try {
 
-            // Activate the composite
-            compositeActivator.activate(composite);
+            for (Composite composite : compositeActivator.getDomainComposite().getIncludes()) {
+                // Activate the composite
+                compositeActivator.activate(composite);
 
-            // Start the composite
-            compositeActivator.start(composite);
+                // Start the composite
+                compositeActivator.start(composite);
+            }
 
             SCAClientImpl.addDomain(getDomainName(), this);
 
@@ -625,12 +564,17 @@ public class NodeImpl implements Node, Client, SCAClient {
         try {
 
             SCAClientImpl.removeDomain(getDomainName());
+            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
+            for (Composite composite : composites) {
 
-            // Stop the composite
-            compositeActivator.stop(composite);
+                // Stop the composite
+                compositeActivator.stop(composite);
 
-            // Deactivate the composite
-            compositeActivator.deactivate(composite);
+                // Deactivate the composite
+                compositeActivator.deactivate(composite);
+
+            }
+            composites.clear();
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
@@ -690,9 +634,11 @@ public class NodeImpl implements Node, Client, SCAClient {
         // Lookup the component
         Component component = null;
 
-        for (Component compositeComponent : composite.getComponents()) {
-            if (compositeComponent.getName().equals(componentName)) {
-                component = compositeComponent;
+        for (Composite composite : compositeActivator.getDomainComposite().getIncludes()) {
+            for (Component compositeComponent : composite.getComponents()) {
+                if (compositeComponent.getName().equals(componentName)) {
+                    component = compositeComponent;
+                }
             }
         }
 
@@ -747,46 +693,6 @@ public class NodeImpl implements Node, Client, SCAClient {
                 }
             }
         }
-    }
-
-    /*
-     * Sets a default composite by using any deployable one.
-     */
-    private Composite getDefaultComposite(List<Contribution> contributions, String defaultCompositeURI, String content) throws Exception {
-        Composite composite = assemblyFactory.createComposite();
-        composite.setUnresolved(true);
-
-        if (content != null && content.length() > 0) {
-
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(content.getBytes("UTF-8")));
-            reader.nextTag();
-
-            // Read the composite model
-            composite = (Composite)compositeProcessor.read(reader);
-            if (composite != null && defaultCompositeURI != null) {
-                composite.setURI(defaultCompositeURI);
-            }
-            analyzeProblems();
-            useDeploymentComposite = true;
-            return composite;
-
-        } else if (defaultCompositeURI != null && defaultCompositeURI.length() > 0) {
-            composite.setURI(defaultCompositeURI);
-            return composite;
-
-        } else {
-            // just use the first deployable composte
-            for (Contribution contribution : contributions) {
-                for (Composite c : contribution.getDeployables()) {
-                    // Ensure that we pick a composite that has actually been found in its contribution!!
-                    if( c.getURI() != null ) {
-                        composite.setURI(c.getURI());
-                        return composite;
-                    }
-                }
-            }
-        }
-        throw new ServiceRuntimeException("no deployable composite found");
     }
 
     public ExtensionPointRegistry getExtensionPoints() {
