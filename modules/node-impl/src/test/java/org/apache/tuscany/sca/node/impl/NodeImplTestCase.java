@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * \"License\"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.impl;
@@ -51,28 +51,37 @@ public class NodeImplTestCase {
         Node node = factory.createNode(compositeURI, composite, contribution);
         testNode2(node);
     }
-    
-//    @Test
-//    public void testNodeWithRelativeCompositeURI() {
-//        NodeFactory factory = new NodeFactoryImpl();
-//        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
-//        String compositeURI = "HelloWorld.composite";
-//        Node node = factory.createNode(compositeURI, contribution);
-//        testNode(node);
-//    }
-//
-//    @Test
-//    public void testDefaultNode() {
-//        testNode(new NodeFactoryImpl().createNode());
-//    }
-//    
-//    private void testNode(Node node) {
-//        node.start();
-//        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
-//        Assert.assertEquals("Hello, Node", hw.hello("Node"));
-//        node.stop();
-//    }
-        
+
+    @Test
+    public void testNodeWithRelativeCompositeURI() {
+        NodeFactory factory = new NodeFactoryImpl();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
+        String compositeURI = "HelloWorld.composite";
+        Node node = factory.createNode(compositeURI, contribution);
+        testNode(node);
+    }
+
+    @Test
+    public void testNodeWithAbsoluteCompositeURI() {
+        NodeFactory factory = new NodeFactoryImpl();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
+        String compositeURI = new File("target/test-classes/HelloWorld.composite").toURI().toString();
+        Node node = factory.createNode(compositeURI, contribution);
+        testNode(node);
+    }
+
+    @Test
+    public void testDefaultNode() {
+        testNode(new NodeFactoryImpl().createNode());
+    }
+
+    private void testNode(Node node) {
+        node.start();
+        HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld");
+        Assert.assertEquals("Hello, Node", hw.hello("Node"));
+        node.stop();
+    }
+
     private void testNode2(Node node) {
         node.start();
         HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld2");
