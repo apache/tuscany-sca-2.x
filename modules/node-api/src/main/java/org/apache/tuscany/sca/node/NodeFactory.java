@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
@@ -279,7 +280,11 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
                 throw new ServiceRuntimeException("No SCA contribution is provided or discovered");
             }
             // Try to find contributions on the classpath by the composite URI
-            contributions = getContributions(getContributionLocations(null, deploymentCompositeURI));
+            List<String> locations = getContributionLocations(null, deploymentCompositeURI);
+            if (locations.isEmpty()) {
+                throw new ServiceRuntimeException("No SCA contributions are found on the classpath");
+            }
+            contributions = getContributions(locations);
         }
         NodeConfiguration configuration = createConfiguration(contributions);
         if (deploymentCompositeURI != null && configuration.getContributions().size() > 0) {
@@ -287,6 +292,29 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         }
         return createNode(configuration);
     }
+
+    /**
+     * The following methods are used by the node launcher
+     */
+    public final Node createNode(String deploymentCompositeURI, String[] uris, String locations[]) {
+        return createNode(deploymentCompositeURI, getContributions(Arrays.asList(uris), Arrays.asList(locations)));
+    }
+
+    public final Node createNode(String deploymentCompositeURI, String locations[]) {
+        return createNode(deploymentCompositeURI, getContributions(Arrays.asList(locations)));
+    }
+
+    public final Node createNode(Reader deploymentCompositeContent, String[] uris, String locations[]) {
+        return createNode(deploymentCompositeContent, getContributions(Arrays.asList(uris), Arrays.asList(locations)));
+    }
+
+    public final Node createNode(String compositeURI, ClassLoader classLoader) {
+        List<String> locations = ContributionLocationHelper.getContributionLocations(classLoader, compositeURI);
+        return createNode(compositeURI, locations.toArray(new String[locations.size()]));
+    }
+    /**
+     * ------------------- end of methods -----------------
+     */
 
     /**
      * Create a new SCA node using the list of SCA contributions
@@ -371,14 +399,14 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         List<String> locations = new ArrayList<String>();
         locations.addAll(getContributionLocations(null, SCA_CONTRIBUTION_META));
         locations.addAll(getContributionLocations(null, SCA_CONTRIBUTION_GENERATED_META));
+        if (locations.isEmpty()) {
+            throw new ServiceRuntimeException("No SCA contributions are found on the classpath");
+        }
         Contribution[] contributions = getContributions(locations);
         return createNode(contributions);
     }
 
     private Contribution[] getContributions(List<String> locations) {
-        if (locations.isEmpty()) {
-            throw new ServiceRuntimeException("No SCA contributions are found on the classpath");
-        }
         Contribution[] contributions = new Contribution[locations.size()];
         int index = 0;
         for (String location : locations) {
@@ -387,10 +415,21 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return contributions;
     }
 
+    private Contribution[] getContributions(List<String> uris, List<String> locations) {
+        if (uris.size() != locations.size()) {
+            throw new IllegalArgumentException("The number of URIs does not match the number of locations");
+        }
+        Contribution[] contributions = new Contribution[locations.size()];
+        for (int i = 0, n = locations.size(); i < n; i++) {
+            contributions[i] = new Contribution(uris.get(i), locations.get(i));
+        }
+        return contributions;
+    }
+
     /**
      * Create a new SCA node based on the configuration
-     * @param configuration
-     * @return
+     * @param configuration The configuration of a node
+     * @return The SCA node
      */
     public abstract Node createNode(NodeConfiguration configuration);
 

@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.equinox.launcher;
@@ -36,7 +36,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
@@ -74,6 +76,8 @@ import org.osgi.framework.Constants;
  * @version $Rev$ $Date$
  */
 final class NodeLauncherUtil {
+    private static final String NODE_API_BUNDLE = "org.apache.tuscany.sca.node.api";
+
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
 
     static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
@@ -86,8 +90,6 @@ final class NodeLauncherUtil {
     private static final String NODE_IMPLEMENTATION_DAEMON_BOOTSTRAP =
         "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap";
 
-    private static final String NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP =
-        "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap";
 
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_PATH = "TUSCANY_PATH";
@@ -113,57 +115,20 @@ final class NodeLauncherUtil {
             // Get the node runtime bundle.
             Bundle bundle = null;
             for (Bundle b : bundleContext.getBundles()) {
-                if ("org.apache.tuscany.sca.implementation.node.runtime".equals(b.getSymbolicName())) {
+                if (NODE_API_BUNDLE.equals(b.getSymbolicName())) {
                     bundle = b;
                     break;
                 }
             }
             if (bundle == null) {
-                throw new IllegalStateException(
-                                                "Bundle org.apache.tuscany.sca.implementation.node.runtime is not installed");
+                throw new IllegalStateException("Bundle " + NODE_API_BUNDLE + " is not installed");
             }
 
             // Use Java reflection to create the node as only the runtime class
             // loader knows the runtime classes required by the node
-            Class<?> bootstrapClass = bundle.loadClass(NODE_IMPLEMENTATION_LAUNCHER_BOOTSTRAP);
+            Class<?> bootstrapClass = bundle.loadClass(NODE_FACTORY);
 
-            Object bootstrap;
-            if (configurationURI != null) {
-
-                // Construct the node with a configuration URI
-                bootstrap = bootstrapClass.getConstructor(String.class).newInstance(configurationURI);
-
-            } else if (compositeContent != null) {
-
-                // Construct the node with a composite URI, the composite content and
-                // the URIs and locations of a list of contributions
-                Constructor<?> constructor =
-                    bootstrapClass.getConstructor(String.class, String.class, String[].class, String[].class);
-                String[] uris = new String[contributions.length];
-                String[] locations = new String[contributions.length];
-                for (int i = 0; i < contributions.length; i++) {
-                    uris[i] = contributions[i].getURI();
-                    locations[i] = contributions[i].getLocation();
-                }
-                bootstrap = constructor.newInstance(compositeURI, compositeContent, uris, locations);
-
-            } else {
-
-                // Construct the node with a composite URI and the URIs and
-                // locations of a list of contributions
-                Constructor<?> constructor =
-                    bootstrapClass.getConstructor(String.class, String[].class, String[].class);
-                String[] uris = new String[contributions.length];
-                String[] locations = new String[contributions.length];
-                for (int i = 0; i < contributions.length; i++) {
-                    uris[i] = contributions[i].getURI();
-                    locations[i] = contributions[i].getLocation();
-                }
-                bootstrap = constructor.newInstance(compositeURI, uris, locations);
-            }
-
-            // Get the node instance
-            Object node = bootstrapClass.getMethod("getNode").invoke(bootstrap);
+            Object node = createNode(bootstrapClass, configurationURI, compositeURI, compositeContent, contributions);
 
             // If the SCANodeFactory interface is available in the current classloader, create
             // an SCANode proxy around the node we've just create
@@ -182,9 +147,52 @@ final class NodeLauncherUtil {
         }
     }
 
+    private static Object createNode(Class<?> bootstrapClass,
+                                     String configurationURI,
+                                     String compositeURI,
+                                     String compositeContent,
+                                     Contribution[] contributions) throws NoSuchMethodException,
+        IllegalAccessException, InvocationTargetException, MalformedURLException {
+        Method newInstance = bootstrapClass.getMethod("newInstance");
+        Object nodeFactory = newInstance.invoke(null);
+
+        Object node;
+        if (configurationURI != null) {
+
+            // NodeFactory.createNode(URL)
+            Method create = bootstrapClass.getMethod("createNode", URL.class);
+            node = create.invoke(nodeFactory, new URL(configurationURI));
+
+        } else if (compositeContent != null) {
+
+            // NodeFactory.createNode(Reader, Stringp[], String[])
+            Method create = bootstrapClass.getMethod("createNode", Reader.class, String[].class, String[].class);
+            String[] uris = new String[contributions.length];
+            String[] locations = new String[contributions.length];
+            for (int i = 0; i < contributions.length; i++) {
+                uris[i] = contributions[i].getURI();
+                locations[i] = contributions[i].getLocation();
+            }
+            node = create.invoke(nodeFactory, compositeContent, uris, locations);
+
+        } else {
+
+            // NodeFactory.createNode(String, Stringp[], String[])
+            Method create = bootstrapClass.getMethod("createNode", String.class, String[].class, String[].class);
+            String[] uris = new String[contributions.length];
+            String[] locations = new String[contributions.length];
+            for (int i = 0; i < contributions.length; i++) {
+                uris[i] = contributions[i].getURI();
+                locations[i] = contributions[i].getLocation();
+            }
+            node = create.invoke(nodeFactory, compositeURI, uris, locations);
+        }
+        return node;
+    }
+
     /**
      * Creates a new node daemon.
-     * 
+     *
      * @throws LauncherException
      */
     static Object nodeDaemon() throws LauncherException {
@@ -211,7 +219,7 @@ final class NodeLauncherUtil {
 
     /**
      * Creates a new domain manager.
-     * 
+     *
      * @throws LauncherException
      */
     static Object domainManager(String rootDirectory) throws LauncherException {
@@ -239,20 +247,20 @@ final class NodeLauncherUtil {
 
     /**
      * starting with -, then some digits, then . or - or _, then some digits again
-     * 
+     *
      */
     // Mike Edwards 13/04/2009 - this original pattern allows for any number of repeated
     // groups of digits, so that 1.2.3.4 is legal, for example.  The problem with this is
     // that OSGi only deals with a maximum of 3 groups of digits...
     // private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+)*");
     //
-    // This updated version restricts the allowed patterns to a maximum of 3 groups of 
+    // This updated version restricts the allowed patterns to a maximum of 3 groups of
     // digits so that "1", "1.2" and "1.2.3" are allowed but not "1.2.3.4" etc
     private static Pattern pattern = Pattern.compile("-(\\d)+((\\.|-|_)(\\d)+){0,2}");
 
     /**
      * Returns the version number to use for the given JAR file.
-     *   
+     *
      * @param jarFile
      * @return
      */
@@ -275,7 +283,7 @@ final class NodeLauncherUtil {
             version = matcher.group();
             // Remove the leading "-" character
             version = version.substring(1);
-            // The Pattern above allows the version string to contain "-" and "_" as digit separators.  
+            // The Pattern above allows the version string to contain "-" and "_" as digit separators.
             // OSGi only allows for "." as a separator thus any "-" and "_" characters in the version string must be replaced by "."
             version = version.replace('-', '.');
             version = version.replace('_', '.');
@@ -306,7 +314,7 @@ final class NodeLauncherUtil {
 
     /**
      * Add the packages found in the given JAR to a set.
-     * 
+     *
      * @param jarFile
      * @param packages
      * @throws IOException
@@ -356,7 +364,7 @@ final class NodeLauncherUtil {
 
     /**
      * Recursively traverse a root directory
-     * 
+     *
      * @param fileList
      * @param file
      * @param root
@@ -380,35 +388,35 @@ final class NodeLauncherUtil {
             }
         }
     }
-    
+
     /**
      * Finds the OSGi manifest file for a JAR file, where the manifest file is held in a META-INF directory
-     * alongside the JAR 
+     * alongside the JAR
      * @param jarURL - The URL of the JAR file
      * @return - a Manifest object corresponding to the manifest file, or NULL if there is no OSGi manifest
      */
-    static private Manifest findOSGiManifest( URL jarURL ) {
-		try{
-			File jarFile = new File( jarURL.toURI() );
-			File theManifestFile = new File(jarFile.getParent(), "META-INF/MANIFEST.MF");
-			if( theManifestFile.exists() ) {
-				// Create manifest object by reading the manifest file
-				Manifest manifest = new Manifest( new FileInputStream(theManifestFile) );
-				// Check that this manifest file has the necessary OSGi metadata
-				String bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
-				if( bundleName != null ) {
-					return manifest;
-				} // end if
-			} // end if
-		} catch ( Exception e ) {
-			// Could not read the manifest - continue
-		}
-		return null;
+    static private Manifest findOSGiManifest(URL jarURL) {
+        try {
+            File jarFile = new File(jarURL.toURI());
+            File theManifestFile = new File(jarFile.getParent(), "META-INF/MANIFEST.MF");
+            if (theManifestFile.exists()) {
+                // Create manifest object by reading the manifest file
+                Manifest manifest = new Manifest(new FileInputStream(theManifestFile));
+                // Check that this manifest file has the necessary OSGi metadata
+                String bundleName = manifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+                if (bundleName != null) {
+                    return manifest;
+                } // end if
+            } // end if
+        } catch (Exception e) {
+            // Could not read the manifest - continue
+        }
+        return null;
     } // end findOSGiManifest
 
     /**
      * Generate a manifest from a list of third-party JAR files.
-     * 
+     *
      * @param jarFiles
      * @param bundleSymbolicName The Bundle-SymbolicName
      * @param bundleVersion The Bundle-Version
@@ -419,23 +427,23 @@ final class NodeLauncherUtil {
                                                             String bundleSymbolicName,
                                                             String bundleVersion) throws IllegalStateException {
         try {
-        	// Added by Mike Edwards, 12/04/2009 - to handle the third party JAR files in the distribution that
-        	// have separate OSGi manifest files provided alongside them
-        	// In some cases a single JAR file is already accompanied by a MANIFEST.MF file, sitting in
-        	// a META-INF directory alongside the JAR
-        	//if( jarFiles.size() == 1 ){
-        	//	URL theJar = jarFiles.iterator().next();
-        	//	Manifest theManifest = findOSGiManifest( theJar );
-        	//	if( theManifest != null ) return theManifest;
-        	//} // end if
-        	// End of addition
-        	
+            // Added by Mike Edwards, 12/04/2009 - to handle the third party JAR files in the distribution that
+            // have separate OSGi manifest files provided alongside them
+            // In some cases a single JAR file is already accompanied by a MANIFEST.MF file, sitting in
+            // a META-INF directory alongside the JAR
+            //if( jarFiles.size() == 1 ){
+            //	URL theJar = jarFiles.iterator().next();
+            //	Manifest theManifest = findOSGiManifest( theJar );
+            //	if( theManifest != null ) return theManifest;
+            //} // end if
+            // End of addition
+
             // List exported packages and bundle classpath entries
             StringBuffer classpath = new StringBuffer();
             StringBuffer exports = new StringBuffer();
             StringBuffer imports = new StringBuffer();
             Set<String> packages = new HashSet<String>();
-            
+
             for (URL jarFile : jarFiles) {
                 addPackages(jarFile, packages, bundleVersion);
                 classpath.append("\"external:");
@@ -495,16 +503,15 @@ final class NodeLauncherUtil {
 
     /**
      * Generates a library bundle from a list of third-party JARs.
-     * 
+     *
      * @param jarFiles
      * @param bundleSymbolicName The Bundle-SymbolicName
      * @param bundleVersion The Bundle-Version
      * @return
      * @throws IOException
      */
-    static InputStream thirdPartyLibraryBundle(Collection<URL> jarFiles,
-                                               String bundleSymbolicName,
-                                               String bundleVersion) throws IOException {
+    static InputStream thirdPartyLibraryBundle(Collection<URL> jarFiles, String bundleSymbolicName, String bundleVersion)
+        throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Manifest mf = thirdPartyLibraryBundleManifest(jarFiles, bundleSymbolicName, bundleVersion);
         JarOutputStream jos = new JarOutputStream(bos, mf);
@@ -514,7 +521,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns the location of this bundle.
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -554,7 +561,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns the location of this bundle.
-     * 
+     *
      * @param bundle
      * @return
      * @throws IOException
@@ -583,7 +590,7 @@ final class NodeLauncherUtil {
 
     /**
      * Install the given bundle.
-     * 
+     *
      * @param bundleContext
      * @param location
      * @throws BundleException
@@ -616,7 +623,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns a string representation of the given bundle.
-     * 
+     *
      * @param b
      * @param verbose
      * @return
@@ -653,7 +660,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns the name of a bundle, or null if the given file is not a bundle.
-     *  
+     *
      * @param file
      * @return
      * @throws IOException
@@ -698,7 +705,7 @@ final class NodeLauncherUtil {
 
     /**
      * Collect JAR files in the given directory.
-     * 
+     *
      * @param directory
      * @param urls
      * @param filter
@@ -729,7 +736,7 @@ final class NodeLauncherUtil {
 
     /**
      * Collect development .../ target/classes directories in the given directory.
-     * 
+     *
      * @param directory
      * @param urls
      * @param filter
@@ -766,7 +773,7 @@ final class NodeLauncherUtil {
 
     /**
      * Collect JAR files under the given distribution directory.
-     * 
+     *
      * @param directory
      * @param jarDirectoryURLs
      * @param jarURLs
@@ -875,7 +882,7 @@ final class NodeLauncherUtil {
                                                                    new StandAloneDevelopmentClassesFileNameFilter());
                                 // Added Mike Edwards, 09/04/2009
                                 // Get hold of the Libraries that are used by the Tuscany modules
-                                collectDevelopmentLibraryEntries( modulesDirectory, jarDirectoryURLs, jarURLs );
+                                collectDevelopmentLibraryEntries(modulesDirectory, jarDirectoryURLs, jarURLs);
                             } // end if
                         }
                     }
@@ -920,7 +927,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns the JAR files on the classpath used by the given classloader.
-     * 
+     *
      * @param classLoader
      * @return
      */
@@ -945,7 +952,7 @@ final class NodeLauncherUtil {
 
     /**
      * Collect JARs on the classpath of a URLClassLoader.
-     * 
+     *
      * @param urls
      * @param cl
      */
@@ -968,7 +975,7 @@ final class NodeLauncherUtil {
                     }
                 }
                 count = urls.size() - count;
-                
+
                 if (count != 0) {
                     logger.info("Runtime classpath: " + count
                         + " JAR"
@@ -1010,7 +1017,7 @@ final class NodeLauncherUtil {
             }
         }
         return urls;
-    }    
+    }
 
     /**
      * A file name filter used to filter JAR files.
@@ -1093,7 +1100,7 @@ final class NodeLauncherUtil {
                 return false;
             }
 
-            // Exclude the Tomcat and Jetty hosts 
+            // Exclude the Tomcat and Jetty hosts
             if (name.startsWith("tuscany-host-tomcat") || name.startsWith("tuscany-host-jetty")) {
                 //FIXME This is temporary
                 return false;
@@ -1113,22 +1120,30 @@ final class NodeLauncherUtil {
             name = name.toLowerCase();
 
             // Include subdirectories
-            if (new File(dir, name).isDirectory()) { return true; }
+            if (new File(dir, name).isDirectory()) {
+                return true;
+            }
 
             // Filter out the Tuscany jars - since the development versions of these are used
             // from the \target\classes directories...
-            if (name.startsWith("tuscany")) { return false; }
+            if (name.startsWith("tuscany")) {
+                return false;
+            }
 
             // Include JAR and MAR files
-            if (name.endsWith(".jar")) { return true; }
-            if (name.endsWith(".mar")) { return true; }
+            if (name.endsWith(".jar")) {
+                return true;
+            }
+            if (name.endsWith(".mar")) {
+                return true;
+            }
             return false;
         } // end accept
     } // end DistributionLibsFileNameFilter
 
     /**
      * Returns the File object representing  the given URL.
-     * 
+     *
      * @param url
      * @return
      */
@@ -1151,7 +1166,7 @@ final class NodeLauncherUtil {
 
     /**
      * Returns the location of the classpath entry, JAR, WAR etc. containing the given class.
-     *  
+     *
      * @param clazz
      * @return
      */
@@ -1162,7 +1177,7 @@ final class NodeLauncherUtil {
 
     /**
      * Collect JAR files under the given distribution directory.
-     * 
+     *
      * @param directory
      * @param jarDirectoryURLs
      * @param jarURLs
@@ -1183,14 +1198,14 @@ final class NodeLauncherUtil {
 
         }
     } // end collectDevelopmentClasspathEntries
-    
+
     /**
      * Collect the dependent Library JAR files for the development use of Tuscany
      * It is assumed that these live in the \java\sca\distribution\all\target\modules
-     * directory, where the development modules live in \java\sca\modules, but that 
+     * directory, where the development modules live in \java\sca\modules, but that
      * same directory also contains prebuilt versions of the Tuscany JARs, which must be
      * filtered out so as not to clash with the development versions of the code
-     * 
+     *
      * @param directory - the \java\sca\modules directory
      * @param jarDirectoryURLs
      * @param jarURLs
@@ -1200,8 +1215,8 @@ final class NodeLauncherUtil {
                                                          Set<URL> jarDirectoryURLs,
                                                          Set<URL> jarURLs) throws MalformedURLException {
         // Get the \java\sca directory
-    	File rootDirectory = modulesDirectory.getParentFile();
-    	// Get the \java\sca\distribution\all\target\modules
+        File rootDirectory = modulesDirectory.getParentFile();
+        // Get the \java\sca\distribution\all\target\modules
         String sep = File.separator;
         File libsDirectory = new File(rootDirectory, "distribution" + sep + "all" + sep + "target" + sep + "modules");
         URL libsURL = libsDirectory.toURI().toURL();

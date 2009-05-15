@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.node.webapp;
@@ -53,7 +53,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * ServletHost implementation for use in a Webapp Node environment.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class NodeWebAppServletHost implements ServletHost, Filter {
@@ -63,7 +63,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     private Map<String, Servlet> servlets = new HashMap<String, Servlet>();
     private Node node;
-    
+
     private String contextPath = "/";
     private int defaultPort = 8080;
 
@@ -75,7 +75,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Returns the Servlet host for the current Web app.
-     * 
+     *
      * @return
      */
     public static NodeWebAppServletHost servletHost() {
@@ -84,12 +84,12 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Initialize the Servlet host.
-     * 
+     *
      * @param filterConfig
      * @throws ServletException
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
-        
+
         // Create a Servlet config wrapping the given filter config
         ServletConfig servletConfig = servletConfig(filterConfig);
 
@@ -102,27 +102,31 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         // Derive the node name from the Webapp context path
         String nodeName = contextPath;
         if (nodeName.startsWith("/")) {
-            nodeName = nodeName.substring(1); 
+            nodeName = nodeName.substring(1);
         }
         if (nodeName.endsWith("/")) {
-            nodeName = nodeName.substring(0, nodeName.length() - 1); 
+            nodeName = nodeName.substring(0, nodeName.length() - 1);
         }
-        
+
         // Determine the node configuration URI
         String nodeConfiguration = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
-        
+
         // Create the SCA node
         NodeFactory nodeFactory = NodeFactory.newInstance();
-        node = nodeFactory.createNode(nodeConfiguration);
-        
+        try {
+            node = nodeFactory.createNode(new URL(nodeConfiguration));
+        } catch (MalformedURLException e) {
+            throw new ServletException(e);
+        }
+
         // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);
         servletHosts.getServletHosts().clear();
         servletHosts.addServletHost(servletHost);
 
-        // Save the node in the Servlet context 
+        // Save the node in the Servlet context
         servletContext.setAttribute(Client.class.getName(), node);
-        
+
         // Start the node
         node.start();
 
@@ -259,7 +263,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Destroy the Servlet host.
-     * 
+     *
      * @throws ServletException
      */
     public void destroy() {
@@ -347,7 +351,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Returns the Servlet host extension point used by the given node.
-     * 
+     *
      * @return
      */
     private static ServletHostExtensionPoint servletHosts(Node node) {
@@ -365,7 +369,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Returns a Servlet config wrapping a filter config.
-     * 
+     *
      * @param filterConfig
      * @return
      */

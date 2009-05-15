@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 /**
  * Configuration for an SCA contribution used by the SCA node
  */
-class ContributionConfigurationImpl implements ContributionConfiguration {
+public class ContributionConfigurationImpl implements ContributionConfiguration {
     private List<DeploymentComposite> deploymentComposites = new ArrayList<DeploymentComposite>();
     private String uri;
     private String location;
