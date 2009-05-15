@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -35,7 +34,9 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
  * @version $Rev: $ $Date: $
  */
 public class NodeUtil {
-    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
+
+    private NodeUtil() {
+    }
 
     static Contribution contribution(ContributionFactory contributionFactory, org.apache.tuscany.sca.node.Contribution c) {
         Contribution contribution = contributionFactory.createContribution();
