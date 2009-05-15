@@ -19,11 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import static org.apache.tuscany.sca.node.impl.NodeUtil.openStream;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -31,12 +27,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.xml.NodeConfigurationProcessor;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -47,61 +40,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class NodeFactoryImpl extends NodeFactory {
     public NodeFactoryImpl() {
-    }
-
-    @Override
-    public Node createNode(String configurationURI) {
-        try {
-            URL url = new URL(configurationURI);
-            InputStream is = openStream(url);
-            NodeConfiguration configuration = loadConfiguration(is);
-            is.close();
-            return new NodeImpl(configuration);
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    @Override
-    public Node createNode(String compositeURI, Contribution... contributions) {
-        NodeConfigurationFactory factory = this;
-        NodeConfiguration configuration = factory.createNodeConfiguration();
-        for (Contribution c : contributions) {
-            configuration.addContribution(c.getURI(), c.getLocation());
-        }
-        if (compositeURI != null && configuration.getContributions().size() > 0) {
-            configuration.getContributions().get(0).addDeploymentComposite(NodeUtil.createURI(compositeURI));
-        }
-        return new NodeImpl(configuration);
-    }
-
-    @Override
-    public Node createNode(String compositeURI, String compositeContent, Contribution... contributions) {
-        NodeConfigurationFactory factory = this;
-        NodeConfiguration configuration = factory.createNodeConfiguration();
-        for (Contribution c : contributions) {
-            configuration.addContribution(c.getURI(), c.getLocation());
-        }
-        if (compositeContent != null && configuration.getContributions().size() > 0) {
-            configuration.getContributions().get(0).addDeploymentComposite(compositeContent);
-        }
-        return new NodeImpl(configuration);
-    }
-
-    @Override
-    public Node createNode() {
-        String location =
-            ContributionLocationHelper
-                .getContributionLocation(org.apache.tuscany.sca.contribution.Contribution.SCA_CONTRIBUTION_META);
-        if (location == null) {
-            location =
-                ContributionLocationHelper
-                    .getContributionLocation(org.apache.tuscany.sca.contribution.Contribution.SCA_CONTRIBUTION_GENERATED_META);
-        }
-        if (location == null) {
-            throw new ServiceRuntimeException("No SCA contributions are found on the classpath");
-        }
-        return createNode(null, new Contribution("http://contributions/default", location));
     }
 
     @Override

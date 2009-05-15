@@ -6,21 +6,25 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.osgi.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
-import java.util.logging.Logger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -31,7 +35,8 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
  * @version $Rev: $ $Date: $
  */
 public class NodeUtil {
-    private static final Logger logger = Logger.getLogger(NodeFactoryImpl.class.getName());
+    private NodeUtil() {
+    }
 
     static Contribution contribution(ContributionFactory contributionFactory, org.apache.tuscany.sca.node.Contribution c) {
         Contribution contribution = contributionFactory.createContribution();
@@ -42,15 +47,37 @@ public class NodeUtil {
     }
 
     /**
+     * Open a URL connection without cache
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    static InputStream openStream(URL url) throws IOException {
+        InputStream is = null;
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        is = connection.getInputStream();
+        return is;
+    }
+
+    /**
      * Escape the space in URL string
      * @param uri
      * @return
      */
     static URI createURI(String uri) {
-        if (uri.indexOf(' ') != -1) {
-            uri = uri.replace(" ", "%20");
+        int index = uri.indexOf(':');
+        String scheme = null;
+        String ssp = uri;
+        if (index != -1) {
+            scheme = uri.substring(0, index);
+            ssp = uri.substring(index + 1);
         }
-        return URI.create(uri);
+        try {
+            return new URI(scheme, ssp, null);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
 }

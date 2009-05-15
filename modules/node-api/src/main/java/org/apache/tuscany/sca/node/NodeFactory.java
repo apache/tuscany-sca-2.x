@@ -19,11 +19,22 @@
 
 package org.apache.tuscany.sca.node;
 
+import static org.apache.tuscany.sca.node.ContributionLocationHelper.getContributionLocations;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -35,6 +46,15 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
+    /**
+     * Default location of contribution metadata in an SCA contribution.
+     */
+    private static final String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
+
+    /**
+     * Default location of a generated contribution metadata in an SCA contribution.
+     */
+    private static final String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
 
     protected static NodeFactory nodeFactory;
 
@@ -174,33 +194,109 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     }
 
     /**
-     * Creates a new SCA node using defaults for the contribution location and runnable composite
-     *
-     * @return a new SCA node.
+     * Open a URL connection without cache
+     * @param url
+     * @return
+     * @throws IOException
      */
-    public abstract Node createNode();
+    private static InputStream openStream(URL url) throws IOException {
+        InputStream is = null;
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        is = connection.getInputStream();
+        return is;
+    }
+
+    /**
+     * Escape the space in URL string
+     * @param uri
+     * @return
+     */
+    private static URI createURI(String uri) {
+        int index = uri.indexOf(':');
+        String scheme = null;
+        String ssp = uri;
+        if (index != -1) {
+            scheme = uri.substring(0, index);
+            ssp = uri.substring(index + 1);
+        }
+        try {
+            return new URI(scheme, ssp, null);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Creates a new SCA node from the configuration URL
      *
-     * @param configurationURL the URL of the node configuration which is the ATOM feed
+     * @param configurationURL the URL of the node configuration which is the XML document
      * that contains the URI of the composite and a collection of URLs for the contributions
      *
      * @return a new SCA node.
      */
-    public abstract Node createNode(String configurationURL);
+    public Node createNode(URL configurationURL) {
+        try {
+            InputStream is = openStream(configurationURL);
+            return createNode(is);
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    /**
+     * Creates a new SCA node from the XML configuration of the node
+     * @param is The input stream that the XML configuration can be read. The stream will be closed
+     * after this call.
+     * @return a new SCA node
+     */
+    public Node createNode(InputStream is) {
+        try {
+            NodeConfiguration configuration = loadConfiguration(is);
+            is.close();
+            return createNode(configuration);
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
 
     /**
      * Creates a new SCA node.
      *
-     * @param compositeURI the URI of the composite to use
+     * @param deploymentCompositeURI the URI of the deployment composite. If the URI is relative, it should
+     * be resolved against the first contribution. Otherwise, the absolute URI is used to load the XML
+     * description of the composite. The deployment composite will be attached to the first contribution.
+     *
      * @param contributions the URI of the contributions that provides the composites and related
      * artifacts. If the list is empty, then we will use the thread context classloader to discover
      * the contribution on the classpath
      *
      * @return a new SCA node.
      */
-    public abstract Node createNode(String compositeURI, Contribution... contributions);
+    public Node createNode(String deploymentCompositeURI, Contribution... contributions) {
+        if (contributions == null || contributions.length == 0) {
+            if (deploymentCompositeURI == null || deploymentCompositeURI.indexOf(':') != -1) {
+                throw new ServiceRuntimeException("No SCA contribution is provided or discovered");
+            }
+            // Try to find contributions on the classpath by the composite URI
+            contributions = getContributions(getContributionLocations(null, deploymentCompositeURI));
+        }
+        NodeConfiguration configuration = createConfiguration(contributions);
+        if (deploymentCompositeURI != null && configuration.getContributions().size() > 0) {
+            configuration.getContributions().get(0).addDeploymentComposite(createURI(deploymentCompositeURI));
+        }
+        return createNode(configuration);
+    }
+
+    /**
+     * Create a new SCA node using the list of SCA contributions
+     * @param contributions
+     * @return
+     */
+    public Node createNode(Contribution... contributions) {
+        NodeConfiguration configuration = createConfiguration(contributions);
+        return createNode(configuration);
+    }
 
     /**
      * Creates a new SCA node.
@@ -209,8 +305,87 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @param compositeContent the XML content of the composite to use
      * @param contributions the URI of the contributions that provides the composites and related artifacts
      * @return a new SCA node.
+     *
+     * @deprecated Please use createNode(InputStream compositeContent, Contribution... contributions) or
+     * createNode(Reader compositeContent, Contribution... contributions)
      */
-    public abstract Node createNode(String compositeURI, String compositeContent, Contribution... contributions);
+    @Deprecated
+    public Node createNode(String compositeURI, String compositeContent, Contribution... contributions) {
+        NodeConfiguration configuration = createConfiguration(contributions);
+        if (compositeContent != null && configuration.getContributions().size() > 0) {
+            configuration.getContributions().get(0).addDeploymentComposite(compositeContent);
+        }
+        return createNode(configuration);
+    }
+
+    /**
+     * Creates a new SCA node.
+     *
+     * @param compositeContent the XML content of the deployment composite
+     * @param contributions the URI of the contributions that provides the composites and related artifacts
+     * @return a new SCA node.
+     */
+    public Node createNode(InputStream compositeContent, Contribution... contributions) {
+        NodeConfiguration configuration = createConfiguration(contributions);
+        if (compositeContent != null && configuration.getContributions().size() > 0) {
+            configuration.getContributions().get(0).addDeploymentComposite(compositeContent);
+        }
+        return createNode(configuration);
+    }
+
+    /**
+     * Creates a new SCA node.
+     *
+     * @param compositeContent the XML content of the deployment composite
+     * @param contributions the URI of the contributions that provides the composites and related artifacts
+     * @return a new SCA node.
+     */
+    public Node createNode(Reader compositeContent, Contribution... contributions) {
+        NodeConfiguration configuration = createConfiguration(contributions);
+        if (compositeContent != null && configuration.getContributions().size() > 0) {
+            configuration.getContributions().get(0).addDeploymentComposite(compositeContent);
+        }
+        return createNode(configuration);
+    }
+
+    private NodeConfiguration createConfiguration(Contribution... contributions) {
+        NodeConfigurationFactory factory = this;
+        NodeConfiguration configuration = factory.createNodeConfiguration();
+        if (contributions != null) {
+            for (Contribution c : contributions) {
+                configuration.addContribution(c.getURI(), c.getLocation());
+            }
+        }
+        return configuration;
+    }
+
+    /**
+     * Creates a new SCA node using defaults for the contribution location and deployable composites.
+     * By default, it uses the Thread context classloader to find META-INF/sca-contribution.xml or
+     * META-INF/sca-contribution-generated.xml on the classpath. The locations that contain such resources
+     * are taken as the SCA contributions.
+     *
+     * @return a new SCA node.
+     */
+    public Node createNode() {
+        List<String> locations = new ArrayList<String>();
+        locations.addAll(getContributionLocations(null, SCA_CONTRIBUTION_META));
+        locations.addAll(getContributionLocations(null, SCA_CONTRIBUTION_GENERATED_META));
+        Contribution[] contributions = getContributions(locations);
+        return createNode(contributions);
+    }
+
+    private Contribution[] getContributions(List<String> locations) {
+        if (locations.isEmpty()) {
+            throw new ServiceRuntimeException("No SCA contributions are found on the classpath");
+        }
+        Contribution[] contributions = new Contribution[locations.size()];
+        int index = 0;
+        for (String location : locations) {
+            contributions[index++] = new Contribution(location, location);
+        }
+        return contributions;
+    }
 
     /**
      * Create a new SCA node based on the configuration
@@ -225,4 +400,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @return The node configuration
      */
     public abstract NodeConfiguration loadConfiguration(InputStream xml);
+
+
 }

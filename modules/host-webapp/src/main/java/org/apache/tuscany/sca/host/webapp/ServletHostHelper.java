@@ -6,24 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.host.webapp;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,7 +42,6 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 public class ServletHostHelper {
     private static final Logger logger = Logger.getLogger(ServletHostHelper.class.getName());
@@ -55,7 +51,7 @@ public class ServletHostHelper {
     public static void init(ServletConfig servletConfig) {
         init(servletConfig.getServletContext());
     }
-    
+
     public static ServletHost init(final ServletContext servletContext) {
         Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node == null) {
@@ -81,7 +77,7 @@ public class ServletHostHelper {
         }
         return getServletHost(node);
     }
-    
+
     private static WebAppServletHost getServletHost(Node node) {
         NodeImpl nodeImpl = (NodeImpl) node;
         ExtensionPointRegistry eps = nodeImpl.getExtensionPoints();
@@ -98,36 +94,17 @@ public class ServletHostHelper {
     }
 
     private static Node createNode(final ServletContext servletContext) throws ServletException {
-        String contextPath = initContextPath(servletContext);
+        // String contextPath = initContextPath(servletContext);
         String contributionRoot = getContributionRoot(servletContext);
         NodeFactory factory = NodeFactory.newInstance();
-        String webComposite = getWebComposite(servletContext);
-        Node node = factory.createNode(contextPath, webComposite, new Contribution(contributionRoot, contributionRoot));
+        InputStream webComposite = getWebComposite(servletContext);
+        Node node = factory.createNode(webComposite, new Contribution(contributionRoot, contributionRoot));
         node.start();
         return node;
     }
-    
-    private static String getWebComposite(ServletContext servletContext) {
-        InputStream stream = servletContext.getResourceAsStream("/WEB-INF/web.composite");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-        StringBuilder sb = new StringBuilder();
-        String s = null;
-        try {
-            while ((s = reader.readLine()) != null) {
-                sb.append(s + "\n");
-            }
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        }
- 
-        return sb.toString();
+    private static InputStream getWebComposite(ServletContext servletContext) {
+        return servletContext.getResourceAsStream("/WEB-INF/web.composite");
     }
 
     private static String getContributionRoot(ServletContext servletContext) {
@@ -144,7 +121,7 @@ public class ServletHostHelper {
             // ignore exception and use default location
 
             try {
-                
+
                 String root = servletContext.getInitParameter("contributionRoot");
                 if (root == null || root.length() < 1) {
                     root = "/";

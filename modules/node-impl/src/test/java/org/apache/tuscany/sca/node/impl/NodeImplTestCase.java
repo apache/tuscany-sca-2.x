@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.node.impl;
 import hello.HelloWorld;
 
 import java.io.File;
+import java.io.StringReader;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -47,8 +48,7 @@ public class NodeImplTestCase {
     public void testNodeWithCompositeContent() {
         NodeFactory factory = new NodeFactoryImpl();
         Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
-        String compositeURI = "HelloWorld.composite";
-        Node node = factory.createNode(compositeURI, composite, contribution);
+        Node node = factory.createNode(new StringReader(composite), contribution);
         testNode2(node);
     }
 
