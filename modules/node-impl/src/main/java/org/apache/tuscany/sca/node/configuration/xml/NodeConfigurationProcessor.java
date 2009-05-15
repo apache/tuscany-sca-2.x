@@ -57,6 +57,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
     private static final QName NODE = new QName(SCA11_TUSCANY_NS, "node");
     private static final QName CONTRIBUTION = new QName(SCA11_TUSCANY_NS, "contribution");
     private static final QName BINDING = new QName(SCA11_TUSCANY_NS, "binding");
+    private static final QName BASE_URI = new QName(SCA11_TUSCANY_NS, "baseURI");
     private static final QName DEPLOYMENT_COMPOSITE = new QName(SCA11_TUSCANY_NS, "deploymentComposite");
 
     private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
@@ -100,6 +101,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         NodeConfiguration node = null;
         ContributionConfiguration contribution = null;
         DeploymentComposite composite = null;
+        BindingConfiguration binding = null;
 
         // Skip to end element
         while (true) {
@@ -117,7 +119,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         contribution.setLocation(reader.getAttributeValue(null, "location"));
                         node.getContributions().add(contribution);
                     } else if (BINDING.equals(name)) {
-                        BindingConfiguration binding = nodeConfigurationFactory.createBindingConfiguration();
+                        binding = nodeConfigurationFactory.createBindingConfiguration();
                         binding.setBindingType(getQName(reader, "name"));
                         String baseURIs = reader.getAttributeValue(null, "baseURIs");
                         if (baseURIs != null) {
@@ -133,6 +135,15 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         if (contribution != null) {
                             contribution.getDeploymentComposites().add(composite);
                         }
+                    } else if(BASE_URI.equals(name)) {
+                        // We also support <baseURI> element
+                        String baseURI = reader.getElementText();
+                        if (baseURI != null && binding != null) {
+                            baseURI = baseURI.trim();
+                            binding.addBaseURI(baseURI);
+                        }
+                        // getElementText() moves the event to END_ELEMENT
+                        continue;
                     } else if (COMPOSITE.equals(name)) {
                         /*
                         Object model = processor.read(reader);
@@ -155,6 +166,10 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         return node;
                     } else if (CONTRIBUTION.equals(name)) {
                         contribution = null;
+                    } else if (DEPLOYMENT_COMPOSITE.equals(name)) {
+                        composite = null;
+                    } else if (BINDING.equals(name)) {
+                        binding = null;
                     }
             }
             if (reader.hasNext()) {

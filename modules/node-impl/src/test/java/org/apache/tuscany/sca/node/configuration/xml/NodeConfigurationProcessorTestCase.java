@@ -70,7 +70,7 @@ public class NodeConfigurationProcessorTestCase {
         XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
         processor.write(config, writer);
         writer.flush();
-        // System.out.println(sw.toString());
+        System.out.println(sw.toString());
     }
 
     /**
