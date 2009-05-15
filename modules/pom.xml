@@ -67,7 +67,6 @@
         <module>implementation-bpel-ode</module>
         <module>implementation-java</module>
         <module>implementation-java-runtime</module>
-        <module>implementation-java-xml</module>
         <module>implementation-node</module>
         <module>implementation-node-runtime</module>
         <module>implementation-spring</module>
