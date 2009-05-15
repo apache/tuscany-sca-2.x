@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 /**
  * Configuration for a deployment composite
  */
-class DeploymentCompositeImpl implements DeploymentComposite {
+public class DeploymentCompositeImpl implements DeploymentComposite {
     private String location;
     private String content;
     private String contributionURI;

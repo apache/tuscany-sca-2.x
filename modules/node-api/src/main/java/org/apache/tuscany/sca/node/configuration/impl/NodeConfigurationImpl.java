@@ -33,9 +33,9 @@ import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 
 /**
- *
+ * Default implementation of NodeConfiguration
  */
-class NodeConfigurationImpl implements NodeConfiguration {
+public class NodeConfigurationImpl implements NodeConfiguration {
     private String uri;
     private String domainURI;
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();

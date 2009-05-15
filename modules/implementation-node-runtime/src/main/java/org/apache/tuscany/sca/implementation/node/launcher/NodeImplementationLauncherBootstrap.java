@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.node.launcher;
 
+import java.net.URL;
+
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -101,7 +103,7 @@ public class NodeImplementationLauncherBootstrap {
      */
     public NodeImplementationLauncherBootstrap(String configurationURI) throws Exception {
         NodeFactory nodeFactory = NodeFactory.newInstance();
-        node = new NodeFacade(nodeFactory.createNode(configurationURI));
+        node = new NodeFacade(nodeFactory.createNode(new URL(configurationURI)));
     }
 
     /**

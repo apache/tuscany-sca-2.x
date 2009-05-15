@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 
 /**
- *
+ * Default implementation of BindingConfiguration
  */
-class BindingConfigurationImpl implements BindingConfiguration {
+public class BindingConfigurationImpl implements BindingConfiguration {
     private QName type;
     private List<String> baseURIs = new ArrayList<String>();
 
