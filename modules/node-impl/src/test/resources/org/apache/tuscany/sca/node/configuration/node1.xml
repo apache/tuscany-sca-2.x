@@ -27,6 +27,9 @@
     <!-- Each base URI is for a protocol supported by the binding -->
     <binding name="sca:binding.ws" baseURIs="http://localhost:8080/ws https://localhost:8081/ws"/>
     <binding name="tuscany:binding.rmi" baseURIs="rmi://localhost:8080/rmi"/>
+    <binding name="tuscany:binding.jsonrpc">
+        <baseURI>http://localhost:8080/jsonrpc</baseURI>
+    </binding>
 
     <!-- Configure a list of contributions -->
     <contribution uri="http://c1" location="file:///a.jar"/>
