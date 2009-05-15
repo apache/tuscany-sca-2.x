@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<sca:definitions xmlns="http://test"
+ 			targetNamespace="http://test"
+ 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+
+<!-- simple intent -->
+ <sca:intent name="tuscanyIntent_1" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_2" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_3" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_4" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+<sca:intent name="tuscanyIntent_5" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_6" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_7" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_8" 
+ 			 constrains="sca:binding sca:implementation.java">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <!-- qualified intents -->
+ <sca:intent name="tuscanyIntent_1.qualified" />
+ <sca:intent name="tuscanyIntent_2.qualified" />
+ <sca:intent name="tuscanyIntent_6.qualified1" />
+ <sca:intent name="tuscanyIntent_6.qualified2" />
+ 
+ <sca:policySet name="tuscanyPolicySet_4"
+ 	provides="tuscanyIntent_6"
+ 	appliesTo="/sca:composite/sca:component"
+ 	xmlns="http://test"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 	<sca:intentMap provides="tuscanyIntent_6" default="qualified2">
+        <sca:qualifier name="qualified2">
+            <wsp:Policy>
+                <!-- policy expression and policy subject for "qualified2" alternative" -->
+            </wsp:Policy>
+        </sca:qualifier>
+    </sca:intentMap>
+ </sca:policySet>
+</sca:definitions>
