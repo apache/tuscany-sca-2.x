@@ -18,21 +18,20 @@
  */
 package org.apache.tuscany.sca.test;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
-//FIXME Fix this test case
-public class CallBackCTypeTestCase extends TestCase {
+public class CallBackCTypeTestCase {
 
     private Node node;
     private CallBackCTypeClient aCallBackClient;
 
+    @Test
     public void testCallBackBasic() {
         aCallBackClient.run();
     }
