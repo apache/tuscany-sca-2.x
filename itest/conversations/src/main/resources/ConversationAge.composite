@@ -18,14 +18,14 @@
  * under the License.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-	name="ConversationalIdTest">
- 	      
+	name="ConversationAgeTest">
+
     <component name="ConversationAgeComponent">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationAgeComponentImpl"/>
-	</component>          
-     
+	</component>
+
     <component name="ConversationIdleComponent">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationMaxIdleComponentImpl"/>
-	</component>          
+	</component>
 
 </composite>
