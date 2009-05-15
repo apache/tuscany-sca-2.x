@@ -160,7 +160,8 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                     }
     
                 } else {
-                    warning(monitor, "PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
+                	// MJE 15/05/2005 - Priority raised from "warning" to "error" to fix TUSCANY-3034
+                    error(monitor, "PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
                 }
             }
         }
