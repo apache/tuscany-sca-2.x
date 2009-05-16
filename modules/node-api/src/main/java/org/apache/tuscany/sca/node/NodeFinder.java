@@ -17,30 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.client.impl;
+package org.apache.tuscany.sca.node;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFinder;
-import org.oasisopen.sca.NoSuchDomainException;
-import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.client.SCAClient;
+public class NodeFinder {
 
-public class SCAClientImpl implements SCAClient {
+    private static Map<URI, Node> nodes = new HashMap<URI, Node>();
 
-    public <T> T getService(Class<T> serviceInterface, String serviceName, URI domainURI) throws NoSuchServiceException, NoSuchDomainException {
-        Node node = NodeFinder.getNode(domainURI);
-        if (node == null) {
-            throw new NoSuchDomainException(domainURI.toString());
-        }
+    public static void addNode(URI domainName, Node node) {
+        nodes.put(domainName, node);
+    }
 
-        T service = node.getService(serviceInterface, serviceName);
-        if (service == null) {
-            throw new NoSuchServiceException(serviceName);
-        }
+    public static Node removeNode(URI domainName) {
+        return nodes.remove(domainName);
+    }
 
-        return service;
+    public static Node getNode(URI domainURI) {
+        return nodes.get(domainURI);
     }
 
 }

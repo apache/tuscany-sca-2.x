@@ -52,7 +52,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
-import org.apache.tuscany.sca.client.impl.SCAClientImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -92,6 +91,7 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFinder;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -140,6 +140,8 @@ public class NodeImpl implements Node, Client, SCAClient {
     private WorkScheduler workScheduler;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
+
+    private URI domainURI;
     NodeImpl(NodeConfiguration configuration) {
         logger.log(Level.INFO, "Creating node: " + configuration.getURI());
 
@@ -284,6 +286,9 @@ public class NodeImpl implements Node, Client, SCAClient {
     }
 
     private void configureNode(NodeConfiguration configuration) throws Exception {
+        
+        domainURI = URI.create(configuration.getDomainURI());
+
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions
@@ -548,7 +553,7 @@ public class NodeImpl implements Node, Client, SCAClient {
                 compositeActivator.start(composite);
             }
 
-            SCAClientImpl.addDomain(getDomainName(), this);
+            NodeFinder.addNode(domainURI, this);
 
             return this;
 
@@ -563,7 +568,7 @@ public class NodeImpl implements Node, Client, SCAClient {
 
         try {
 
-            SCAClientImpl.removeDomain(getDomainName());
+            NodeFinder.removeNode(domainURI);
             List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
             for (Composite composite : composites) {
 
@@ -580,16 +585,6 @@ public class NodeImpl implements Node, Client, SCAClient {
             throw new IllegalStateException(e);
         }
 
-    }
-
-    private URI getDomainName() {
-        URI domainName;
-        if (configurationName != null) {
-            domainName = URI.create(configurationName);
-        } else {
-            domainName = URI.create("default");
-        }
-        return domainName;
     }
 
     public void destroy() {

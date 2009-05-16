@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
  */
 public class NodeConfigurationImpl implements NodeConfiguration {
     private String uri;
-    private String domainURI;
+    private String domainURI = "default";
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
 
