@@ -445,7 +445,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
 
-        // Create a component reference for each reference
+        // Create a Component reference for each reference for which there is no declared Component reference
         if (component.getImplementation() != null) {
             for (Reference reference : component.getImplementation().getReferences()) {
                 if (!componentReferences.containsKey(reference.getName())) {
@@ -571,7 +571,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                     if (interfaceContract != null && !componentService.getInterfaceContract().equals(interfaceContract)) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning(monitor, "ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
+                        	// MJE, 16/05/2009 - Upgraded from "warning" to "error" since this is a fatal problem - TUSCANY-3036
+                            error(monitor, "ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
                         }
                     }
                 } else {
