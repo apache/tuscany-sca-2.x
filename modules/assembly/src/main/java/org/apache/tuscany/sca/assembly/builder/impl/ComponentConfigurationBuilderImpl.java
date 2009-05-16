@@ -165,7 +165,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                 ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
             }
 
-            // Index properties, services and references
+            // Index implementation properties, services and references
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
