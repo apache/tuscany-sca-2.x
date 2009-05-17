@@ -20,10 +20,13 @@ package implementation.policies;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
 /**
  * Tests out the big bank service
  *
  */
+@Ignore("TUSCANY-3027")
 public class ImplementationPoliciesTestCase extends TestCase {
 
     public void testServer() throws Exception {
