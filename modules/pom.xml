@@ -76,7 +76,6 @@
         <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
-        <module>interface-java-xml</module>
         <module>interface-wsdl</module>
         <module>launcher</module>
         <module>monitor</module>

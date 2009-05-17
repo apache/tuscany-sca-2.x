@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -79,6 +80,7 @@ public class SCABindingTestCase {
     }
     
     @Test 
+    @Ignore
     public void testBuildModel() {
     	try{
 	        InputStream is = getClass().getResourceAsStream("/Calculator.composite");      
