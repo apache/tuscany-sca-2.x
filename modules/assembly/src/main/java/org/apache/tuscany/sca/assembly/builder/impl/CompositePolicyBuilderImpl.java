@@ -270,7 +270,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             for (ComponentService componentService : component.getServices()) {
                 isMutualExclusive(componentService, componentService.getService());
 
-                if (componentService.getInterfaceContract() != null) {
+                if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
                     isMutualExclusive(componentService.getInterfaceContract().getInterface(), componentService
                         .getService().getInterfaceContract().getInterface());
                     isMutualExclusive(componentService.getInterfaceContract().getCallbackInterface(), componentService
