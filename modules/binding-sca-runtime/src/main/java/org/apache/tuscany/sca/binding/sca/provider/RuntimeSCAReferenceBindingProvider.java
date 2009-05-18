@@ -25,8 +25,9 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.impl.DistributedSCABindingImpl;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -61,6 +62,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = null;
     private ReferenceBindingProvider distributedProvider = null;
+    private SCABindingFactory scaBindingFactory;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeComponent component,
@@ -69,6 +71,8 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         this.component = component;
         this.reference = reference;
         this.binding = binding;
+        this.scaBindingFactory =
+            extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
 
         // look to see if a distributed SCA binding implementation has
         // been included on the classpath. This will be needed by the
@@ -149,7 +153,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 }
 
                 // create the remote provider
-                DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
+                DistributedSCABinding distributedBinding = scaBindingFactory.createDistributedSCABinding();
                 distributedBinding.setSCABinding(binding);
 
                 distributedProvider =

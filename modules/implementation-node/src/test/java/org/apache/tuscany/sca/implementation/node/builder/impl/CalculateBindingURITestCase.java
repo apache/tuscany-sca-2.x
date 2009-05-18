@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.node.builder.impl;
@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -82,7 +83,7 @@ public class CalculateBindingURITestCase {
     /**
      * Create a composite containing a node component pointing to the
      * given application composite.
-     * 
+     *
      * @param composite
      * @return
      */
@@ -107,16 +108,16 @@ public class CalculateBindingURITestCase {
     /**
      * Test that URI are generated in accordance with the Assembly Specification section 1.7.2.1 as
      * follows. For the 3 parts that make up the URI;
-     * 
+     *
      *   BaseURI / Component URI / Service Binding URI
-     *   
+     *
      * Test the following combinations for:
-     * 
+     *
      * NB. The short hand here, e.g. <service name="s1"> <binding.sca> <service name="s2"> means
-     * two services appear where the first has the sca binding specified. 
-     * 
+     * two services appear where the first has the sca binding specified.
+     *
      * component service bindings
-     * 
+     *
      * http://myhost:8080/root  /  <component name="c1">  / <service name="s1"> <binding.sca>
      * --> http://myhost:8080/root/c1
      * http://myhost:8080/root  /  <component name="c1">  / <service name="s1"> <binding.sca> <service name="s2">
@@ -128,10 +129,10 @@ public class CalculateBindingURITestCase {
      * http://myhost:8080/root  /  <component name="c1">  / <service name="s1"> <binding.sca uri="http://myhost:8080/b"> <service name="s2">
      * --> http://myhost:8080/b
      * http://myhost:8080/root  /  <component name="c1">  / <service name="s1"> <binding.sca uri="../../b"> <service name="s2">
-     * --> http://myhost:8080/b  
-     * 
+     * --> http://myhost:8080/b
+     *
      * top level composite service bindings
-     * 
+     *
      * http://myhost:8080/root  /  null  / <service name="s1"> <binding.sca> <service name="s2">
      * --> http://myhost:8080/root
      * http://myhost:8080/root  /  null  / <service name="s1"> <binding.sca> <service name="s2">
@@ -142,9 +143,9 @@ public class CalculateBindingURITestCase {
      * --> http://myhost:8080/root/b
      * http://myhost:8080/root  /  null  / <service name="s1"> <binding.sca uri="http://myhost:8080/b"> <service name="s2">
      * --> http://myhost:8080/b
-     * 
+     *
      * nested composite service bindings
-     * 
+     *
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca>
      * --> http://myhost:8080/root/c1/c2
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca> <service name="s2">
@@ -155,9 +156,9 @@ public class CalculateBindingURITestCase {
      * --> http://myhost:8080/root/c1/c2/b
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca uri="http://myhost:8080/b"> <service name="s2">
      * --> http://myhost:8080/b
-     * 
+     *
      * binding name duplication errors
-     * 
+     *
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca> <binding.xyz>
      * --> Error
      * http://myhost:8080/root  /  <component name="c1"> implemented by composite with <component name="c2"> / <service name="s1"> <binding.sca name="b1"> <binding.xyz name="b1">
@@ -523,7 +524,7 @@ public class CalculateBindingURITestCase {
     // component service binding name error tests
 
     //FIXME Need to find a better way to test these error cases as
-    // the composite builder now (intentionally) logs warnings instead of 
+    // the composite builder now (intentionally) logs warnings instead of
     // throwing exceptions
     public void FIXMEtestComponentServiceBindingNameError1() {
         Composite composite = createComponentServiceBinding();
@@ -540,7 +541,7 @@ public class CalculateBindingURITestCase {
     }
 
     //FIXME Need to find a better way to test these error cases as
-    // the composite builder now (intentionally) logs warnings instead of 
+    // the composite builder now (intentionally) logs warnings instead of
     // throwing exceptions
     public void FIXMEtestComponentServiceBindingNameError2() {
         Composite composite = createComponentServiceBinding();
@@ -562,6 +563,10 @@ public class CalculateBindingURITestCase {
     public class TestBindingFactory implements SCABindingFactory {
         public SCABinding createSCABinding() {
             return new TestBindingImpl();
+        }
+
+        public DistributedSCABinding createDistributedSCABinding() {
+            return null;
         }
     }
 
