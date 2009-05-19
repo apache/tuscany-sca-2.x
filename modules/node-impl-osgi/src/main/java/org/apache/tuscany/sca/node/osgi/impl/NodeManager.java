@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -38,11 +39,12 @@ import org.osgi.framework.SynchronousBundleListener;
 public class NodeManager implements SynchronousBundleListener, ServiceListener {
     private static final Logger logger = Logger.getLogger(NodeManager.class.getName());
     private BundleContext bundleContext;
-    private NodeFactoryImpl factory;
+    private OSGiNodeFactoryImpl factory;
+
     public NodeManager(BundleContext bundleContext) {
         super();
         this.bundleContext = bundleContext;
-        this.factory = new NodeFactoryImpl(this.bundleContext);
+        this.factory = new OSGiNodeFactoryImpl(this.bundleContext);
     }
 
     public void start() {
@@ -95,7 +97,8 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
             return;
         }
         try {
-            Node node = factory.createNode(bundle);
+            NodeConfiguration configuration = factory.getConfiguration(bundle, null);
+            Node node = factory.createNode(configuration);
             node.start();
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

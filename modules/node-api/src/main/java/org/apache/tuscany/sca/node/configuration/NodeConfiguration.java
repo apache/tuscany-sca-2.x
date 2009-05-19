@@ -31,6 +31,8 @@ import javax.xml.namespace.QName;
  * The configuration for a Node which represents the deployment of an SCA composite application
  */
 public interface NodeConfiguration {
+    String DEFAULT_DOMAIN_URI = "http://tuscany.apache.org/sca/1.1/domains/default";
+    String DEFAULT_NODE_URI = "http://tuscany.apache.org/sca/1.1/nodes/default";
     /**
      * Get the URI of the SCA domain that manages the composite application
      * @return The URI of the SCA domain
@@ -80,4 +82,6 @@ public interface NodeConfiguration {
     NodeConfiguration addBinding(BindingConfiguration binding);
     NodeConfiguration addBinding(QName bindingType, String...baseURIs);
     NodeConfiguration addBinding(QName bindingType, URI...baseURIs);
+
+    List<Object> getExtensions();
 }

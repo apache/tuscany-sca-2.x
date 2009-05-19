@@ -426,6 +426,9 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return contributions;
     }
 
+    public void destroy() {
+    }
+
     /**
      * Create a new SCA node based on the configuration
      * @param configuration The configuration of a node

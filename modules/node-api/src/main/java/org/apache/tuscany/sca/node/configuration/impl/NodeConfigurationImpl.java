@@ -36,10 +36,11 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
  * Default implementation of NodeConfiguration
  */
 public class NodeConfigurationImpl implements NodeConfiguration {
-    private String uri;
-    private String domainURI = "default";
+    private String uri = DEFAULT_NODE_URI;
+    private String domainURI = DEFAULT_DOMAIN_URI;
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
+    private List<Object> extensions =new ArrayList<Object>();
 
     public String getURI() {
         return uri;
@@ -144,6 +145,10 @@ public class NodeConfigurationImpl implements NodeConfiguration {
         } else {
             return uri;
         }
+    }
+
+    public List<Object> getExtensions() {
+        return extensions;
     }
 
 }
