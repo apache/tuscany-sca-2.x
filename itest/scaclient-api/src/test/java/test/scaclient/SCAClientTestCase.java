@@ -1,6 +1,9 @@
-import java.net.URI;
+package test.scaclient;
 
 import itest.HelloworldService;
+
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
@@ -9,7 +12,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * Test SCADomain.newInstance and invocation of a service.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SCAClientTestCase extends TestCase {
@@ -23,7 +26,10 @@ public class SCAClientTestCase extends TestCase {
     }
 
     public void testInvoke() throws Exception {
-        HelloworldService service = SCAClientFactory.newInstance().getService(HelloworldService.class, "HelloworldComponent", URI.create("default"));
+        HelloworldService service =
+            SCAClientFactory.newInstance().getService(HelloworldService.class,
+                                                      "HelloworldComponent",
+                                                      URI.create(Node.DEFAULT_DOMAIN_URI));
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 

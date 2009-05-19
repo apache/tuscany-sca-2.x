@@ -67,6 +67,9 @@ public class NodeUtil {
      * @return
      */
     static URI createURI(String uri) {
+        if (uri == null) {
+            return null;
+        }
         int index = uri.indexOf(':');
         String scheme = null;
         String ssp = uri;

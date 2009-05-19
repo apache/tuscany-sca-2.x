@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.node;
 
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+
+
 
 
 /**
@@ -28,7 +31,8 @@ package org.apache.tuscany.sca.node;
  * @version $Rev$ $Date$
  */
 public interface Node extends Client {
-
+    String DEFAULT_DOMAIN_URI = NodeConfiguration.DEFAULT_DOMAIN_URI;
+    String DEFAULT_NODE_URI = NodeConfiguration.DEFAULT_NODE_URI;
     /**
      * Start the composite loaded in the node.
      * @return Return the node itself so that we can call NodeFactory.newInstance().createNode(...).start()
@@ -44,5 +48,7 @@ public interface Node extends Client {
      * Destroy the node.
      */
     void destroy();
+
+    // NodeConfiguration getConfiguration();
 
 }
