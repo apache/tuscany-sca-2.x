@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -197,6 +198,10 @@ public class NodeImpl implements Node, Client {
 
     public NodeConfiguration getConfiguration() {
         return configuration;
+    }
+
+    public ExtensionPointRegistry getExtensionPoints() {
+        return manager.getExtensionPoints();
     }
 
 }
