@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.extensibility;
@@ -30,13 +30,13 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -129,7 +129,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
     /**
      * Parse a service declaration in the form class;attr=value,attr=value and
      * return a map of attributes
-     * 
+     *
      * @param declaration
      * @return a map of attributes
      */
@@ -161,8 +161,8 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         return attributes;
     }
 
-    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException {
-        Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
+    public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
+        Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
         if (declarations.isEmpty()) {
             return null;
         } else {
@@ -170,8 +170,8 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         }
     }
 
-    public Set<ServiceDeclaration> getServiceDeclarations(String serviceName) {
-        Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
+    public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName) {
+        Collection<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
@@ -192,9 +192,9 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                             URLConnection connection = url.openConnection();
                             // TUSCANY-2539
                             // Don't cache connections by default to stop Tuscany locking contribution jar files
-                            // done here as this is one of the first places we open a stream and the only way to 
+                            // done here as this is one of the first places we open a stream and the only way to
                             // set the default is to set it on an instance of URLConnection
-                            connection.setDefaultUseCaches(false);                            
+                            connection.setDefaultUseCaches(false);
                             connection.setUseCaches(false);
                             return url.openStream();
                         }

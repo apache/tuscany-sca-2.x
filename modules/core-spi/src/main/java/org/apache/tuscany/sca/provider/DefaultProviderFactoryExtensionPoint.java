@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.provider;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -128,7 +128,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
     private List<ProviderFactory> loadProviderFactories(Class<?> factoryClass) {
 
         // Get the provider factory service declarations
-        Set<ServiceDeclaration> factoryDeclarations;
+        Collection<ServiceDeclaration> factoryDeclarations;
         ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
         try {
             factoryDeclarations = serviceDiscovery.getServiceDeclarations(factoryClass.getName());

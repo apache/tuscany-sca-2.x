@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.interfacedef.java;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -68,7 +68,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         }
         
         // Get the databinding service declarations
-        Set<ServiceDeclaration> visitorDeclarations; 
+        Collection<ServiceDeclaration> visitorDeclarations; 
         try {
             visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class.getName());
         } catch (IOException e) {

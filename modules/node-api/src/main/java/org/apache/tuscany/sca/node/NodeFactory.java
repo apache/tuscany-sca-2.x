@@ -160,8 +160,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             return nodeFactory;
         }
 
-        NodeFactory scaNodeFactory = null;
-
         try {
             // final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
@@ -169,14 +167,13 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
                 Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                 Object instance = discoveryClass.getMethod("getInstance").invoke(null);
                 Object factoryDeclaration =
-                    discoveryClass.getMethod("getFirstServiceDeclaration", String.class).invoke(instance,
-                                                                                                NodeFactory.class
-                                                                                                    .getName());
+                    discoveryClass.getMethod("getServiceDeclaration", String.class).invoke(instance,
+                                                                                           NodeFactory.class.getName());
                 if (factoryDeclaration != null) {
                     Class<?> factoryImplClass =
                         (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
-                    scaNodeFactory = (NodeFactory)factoryImplClass.newInstance();
-                    return scaNodeFactory;
+                    nodeFactory = (NodeFactory)factoryImplClass.newInstance();
+                    return nodeFactory;
                 }
             } catch (ClassNotFoundException e) {
                 // Ignore
@@ -186,8 +183,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
 
             Class<?> cls = Class.forName(className);
-            scaNodeFactory = (NodeFactory)cls.newInstance();
-            return scaNodeFactory;
+            nodeFactory = (NodeFactory)cls.newInstance();
+            return nodeFactory;
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

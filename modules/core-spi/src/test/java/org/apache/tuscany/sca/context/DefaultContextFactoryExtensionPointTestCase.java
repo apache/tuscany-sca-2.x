@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.context;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-
 import org.junit.Assert;
 import org.junit.Test;
 

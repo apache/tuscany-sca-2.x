@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
@@ -227,7 +226,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
             return;
 
         // Get the processor service declarations
-        Set<ServiceDeclaration> processorDeclarations;
+        Collection<ServiceDeclaration> processorDeclarations;
         try {
             processorDeclarations =
                 ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class.getName());

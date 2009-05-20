@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,7 +72,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
             return;
 
         // Get the definitions declarations
-        Set<ServiceDeclaration> definitionsDeclarations;
+        Collection<ServiceDeclaration> definitionsDeclarations;
         try {
             definitionsDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(DEFINITIONS_FILE);
         } catch (IOException e) {

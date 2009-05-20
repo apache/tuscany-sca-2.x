@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core;
@@ -41,9 +41,9 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  */
 public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
-    
+
     /**
-     * Constructs a new registry. 
+     * Constructs a new registry.
      */
     public DefaultExtensionPointRegistry() {
     }
@@ -56,17 +56,25 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
      *
      * @throws IllegalArgumentException if extensionPoint is null
      */
-    public void addExtensionPoint(Object extensionPoint) {
+    public synchronized void addExtensionPoint(Object extensionPoint) {
+        addExtensionPoint(extensionPoint, null);
+    }
+
+    public synchronized void addExtensionPoint(Object extensionPoint, ServiceDeclaration declaration) {
         if (extensionPoint == null) {
             throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
         }
 
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
-            extensionPoints.put(i, extensionPoint);
+            registerExtensionPoint(i, extensionPoint, declaration);
         }
     }
-    
+
+    protected void registerExtensionPoint(Class<?> i, Object extensionPoint, ServiceDeclaration declaration) {
+        extensionPoints.put(i, extensionPoint);
+    }
+
     private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>[] paramTypes) {
         for (Constructor<?> c : constructors) {
             Class<?>[] types = c.getParameterTypes();
@@ -94,20 +102,20 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
      *
      * @throws IllegalArgumentException if extensionPointType is null
      */
-    public <T> T getExtensionPoint(Class<T> extensionPointType) {
+    public synchronized <T> T getExtensionPoint(Class<T> extensionPointType) {
         if (extensionPointType == null) {
             throw new IllegalArgumentException("Cannot lookup ExtensionPoint of type null");
         }
 
-        Object extensionPoint = extensionPoints.get(extensionPointType);
+        Object extensionPoint = findExtensionPoint(extensionPointType);
         if (extensionPoint == null) {
-            
-            // Dynamically load an extension point class declared under META-INF/services           
+
+            // Dynamically load an extension point class declared under META-INF/services
             try {
-                ServiceDeclaration extensionPointDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(extensionPointType.getName());
+                ServiceDeclaration extensionPointDeclaration = ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType.getName());
                 if (extensionPointDeclaration != null) {
                     Class<?> extensionPointClass = extensionPointDeclaration.loadClass();
-                    
+
                     // Construct the extension point
                     Constructor<?>[] constructors = extensionPointClass.getConstructors();
                     Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
@@ -122,9 +130,9 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
                                                                "No valid constructor is found for " + extensionPointClass);
                         }
                     }
-                   
+
                     // Cache the loaded extension point
-                    addExtensionPoint(extensionPoint);
+                    addExtensionPoint(extensionPoint, extensionPointDeclaration);
                 }
             } catch (InvocationTargetException e) {
                 throw new IllegalArgumentException(e);
@@ -141,6 +149,10 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         return extensionPointType.cast(extensionPoint);
     }
 
+    protected <T> Object findExtensionPoint(Class<T> extensionPointType) {
+        return extensionPoints.get(extensionPointType);
+    }
+
     /**
      * Remove an extension point based on the interface that it implements
      *
@@ -148,15 +160,19 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
      *
      * @throws IllegalArgumentException if extensionPoint is null
      */
-    public void removeExtensionPoint(Object extensionPoint) {
+    public synchronized void removeExtensionPoint(Object extensionPoint) {
         if (extensionPoint == null) {
             throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
         }
 
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
-            extensionPoints.remove(i);
+            unregisterExtensionPoint(i);
         }
+    }
+
+    protected void unregisterExtensionPoint(Class<?> i) {
+        extensionPoints.remove(i);
     }
 
     /**

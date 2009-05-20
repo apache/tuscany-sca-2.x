@@ -25,6 +25,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.equinox.OSGiExtensionPointRegistry;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
@@ -102,6 +103,11 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
     protected Object getNodeKey(NodeConfiguration configuration) {
         // Use the bundle as the key
         return configuration.getExtensions().get(0);
+    }
+
+    @Override
+    protected ExtensionPointRegistry createExtensionPointRegistry() {
+        return new OSGiExtensionPointRegistry(bundleContext);
     }
 
 }

@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.contribution.resolver;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -95,7 +95,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         loadedResolvers = new HashMap<String, ServiceDeclaration>();
 
         // Get the model resolver service declarations
-        Set<ServiceDeclaration> modelResolverDeclarations; 
+        Collection<ServiceDeclaration> modelResolverDeclarations; 
         try {
             modelResolverDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModelResolver.class.getName());
         } catch (IOException e) {

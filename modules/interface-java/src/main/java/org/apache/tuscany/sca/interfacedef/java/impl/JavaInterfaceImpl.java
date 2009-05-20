@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 

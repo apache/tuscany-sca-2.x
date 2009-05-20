@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -156,7 +156,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
             return;
 
         // Get the processor service declarations
-        Set<ServiceDeclaration> processorDeclarations;
+        Collection<ServiceDeclaration> processorDeclarations;
         try {
             processorDeclarations =
                 ServiceDiscovery.getInstance().getServiceDeclarations(StAXAttributeProcessor.class.getName());

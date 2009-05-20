@@ -149,7 +149,7 @@ public class NodeFactoryImpl extends NodeFactory {
      * @throws Exception
      */
     private <T> T getFactory(Class<T> factory) throws Exception {
-        ServiceDeclaration sd = ServiceDiscovery.getInstance().getFirstServiceDeclaration(factory.getName());
+        ServiceDeclaration sd = ServiceDiscovery.getInstance().getServiceDeclaration(factory.getName());
         if (sd != null) {
             return factory.cast(sd.loadClass().newInstance());
         } else {
@@ -188,9 +188,9 @@ public class NodeFactoryImpl extends NodeFactory {
                 node.destroy();
             }
             nodes.clear();
-            // Stop the runtime modules
-            for (ModuleActivator moduleActivator : moduleActivators) {
-                moduleActivator.stop(extensionPoints);
+            // Stop the runtime modules in the reverse order
+            for (int i = moduleActivators.size() - 1; i >= 0; i--) {
+                moduleActivators.get(i).stop(extensionPoints);
             }
 
             // Stop and destroy the work manager
@@ -356,7 +356,7 @@ public class NodeFactoryImpl extends NodeFactory {
         long start = currentTimeMillis();
 
         // Create extension point registry
-        extensionPoints = new DefaultExtensionPointRegistry();
+        extensionPoints = createExtensionPointRegistry();
 
         // Enable schema validation only of the logger level is FINE or higher
         ValidationSchemaExtensionPoint schemas =
@@ -469,6 +469,10 @@ public class NodeFactoryImpl extends NodeFactory {
             long end = currentTimeMillis();
             logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
         }
+    }
+
+    protected ExtensionPointRegistry createExtensionPointRegistry() {
+        return new DefaultExtensionPointRegistry();
     }
 
     Composite configureNode(NodeConfiguration configuration) throws Exception {

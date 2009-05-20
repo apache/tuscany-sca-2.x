@@ -21,11 +21,10 @@ package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
@@ -36,8 +35,6 @@ import java.util.logging.Logger;
  * @version $Rev$ $Date$
  */
 public final class ServiceDiscovery implements ServiceDiscoverer {
-    private static final Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
-
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
     private ServiceDiscoverer discoverer;
@@ -60,7 +57,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
             return discoverer;
         }
         try {
-            //FIXME Remove that upside-down dependency
+            // FIXME: This is a hack to trigger the activation of the extensibility-equinox bundle in OSGi
             Class.forName("org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer");
             if (discoverer != null) {
                 return discoverer;
@@ -78,26 +75,46 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         discoverer = sd;
     }
 
-    public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
-        Set<ServiceDeclaration> services = getServiceDiscoverer().getServiceDeclarations(name);
-        return services;
+    public Collection<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
+        return getServiceDeclarations(name, false);
     }
 
-    public ServiceDeclaration getFirstServiceDeclaration(final String name) throws IOException {
-        //        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(name);
-        //        return service;
-        Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
+    public Collection<ServiceDeclaration> getServiceDeclarations(String name, boolean byRanking) throws IOException {
+        Collection<ServiceDeclaration> declarations = getServiceDiscoverer().getServiceDeclarations(name);
+        if (!byRanking) {
+            return declarations;
+        }
         if (!declarations.isEmpty()) {
             List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
-            Collections.sort(declarationList, ServiceComparator.INSTANCE);
-            return declarationList.get(declarationList.size() - 1);
+            Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
+            return declarationList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Get the service declaration. If there are more than one services, the one with highest ranking will
+     * be returned.
+     */
+    public ServiceDeclaration getServiceDeclaration(final String name) throws IOException {
+        //        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(name);
+        //        return service;
+        Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
+        if (!declarations.isEmpty()) {
+            List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
+            Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
+            return declarationList.get(0);
         } else {
             return null;
         }
     }
 
+    /**
+     * Compare service declarations by ranking
+     */
     private static class ServiceComparator implements Comparator<ServiceDeclaration> {
-        private final static ServiceComparator INSTANCE = new ServiceComparator();
+        private final static Comparator<ServiceDeclaration> DESCENDING_ORDER = new ServiceComparator();
 
         public int compare(ServiceDeclaration o1, ServiceDeclaration o2) {
             int rank1 = 0;
@@ -110,7 +127,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
             if (r2 != null) {
                 rank2 = Integer.parseInt(r2);
             }
-            return rank1 - rank2;
+            return rank2 - rank1; // descending
         }
     }
 

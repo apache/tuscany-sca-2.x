@@ -109,7 +109,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
             // Dynamically load a factory class declared under META-INF/services 
             try {
                 ServiceDeclaration factoryDeclaration =
-                    ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
+                    ServiceDiscovery.getInstance().getServiceDeclaration(factoryInterface.getName());
                 if (factoryDeclaration != null) {
                     Class<?> factoryClass = factoryDeclaration.loadClass();
                     try {

@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
@@ -134,7 +134,7 @@ public class EquinoxServiceDiscovererTestCase {
 
     @Test
     public void testDiscovery() throws IOException {
-        Set<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("test.TestService");
+        Collection<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("test.TestService");
         Assert.assertEquals(1, descriptors.size());
         descriptors = discoverer.getServiceDeclarations("notthere");
         Assert.assertEquals(0, descriptors.size());
@@ -142,9 +142,9 @@ public class EquinoxServiceDiscovererTestCase {
 
     @Test
     public void testDiscoveryFirst() throws IOException {
-        ServiceDeclaration descriptor = discoverer.getFirstServiceDeclaration("test.TestService");
+        ServiceDeclaration descriptor = discoverer.getServiceDeclaration("test.TestService");
         Assert.assertNotNull(descriptor);
-        descriptor = discoverer.getFirstServiceDeclaration("notthere");
+        descriptor = discoverer.getServiceDeclaration("notthere");
         Assert.assertNull(descriptor);
     }
 
