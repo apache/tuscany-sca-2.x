@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.databinding;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,7 +103,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return;
 
         // Get the databinding service declarations
-        Set<ServiceDeclaration> dataBindingDeclarations;
+        Collection<ServiceDeclaration> dataBindingDeclarations;
         try {
             dataBindingDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(DataBinding.class.getName());
         } catch (IOException e) {

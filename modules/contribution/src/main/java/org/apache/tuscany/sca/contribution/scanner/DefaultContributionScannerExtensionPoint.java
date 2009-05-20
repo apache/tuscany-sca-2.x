@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.contribution.scanner;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -62,7 +62,7 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
             return;
 
         // Get the scanner service declarations
-        Set<ServiceDeclaration> scannerDeclarations; 
+        Collection<ServiceDeclaration> scannerDeclarations; 
         try {
             scannerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionScanner.class.getName());
         } catch (IOException e) {

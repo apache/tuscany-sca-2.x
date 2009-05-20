@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.provider;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -63,7 +63,7 @@ public class DefaultDefinitionsProviderExtensionPoint implements
             return;
         }
         // Get the provider service declarations
-        Set<ServiceDeclaration> defnProviderDecls;
+        Collection<ServiceDeclaration> defnProviderDecls;
         DefinitionsProvider aProvider = null;
         Class<?> providerClass = null;
         Constructor<?> constructor = null;

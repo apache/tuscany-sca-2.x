@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
-import static org.junit.Assert.assertEquals;
 
 /**
  *

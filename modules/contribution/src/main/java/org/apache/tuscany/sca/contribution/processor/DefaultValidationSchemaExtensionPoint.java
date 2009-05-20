@@ -23,9 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -57,7 +57,7 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
             return;
 
         // Get the schema declarations
-        Set<ServiceDeclaration> schemaDeclarations;
+        Collection<ServiceDeclaration> schemaDeclarations;
         try {
             schemaDeclarations =
                 ServiceDiscovery.getInstance()

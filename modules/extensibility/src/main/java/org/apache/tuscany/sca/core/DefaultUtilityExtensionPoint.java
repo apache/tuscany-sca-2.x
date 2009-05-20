@@ -153,7 +153,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             
             // Dynamically load a utility class declared under META-INF/services/"utilityType"           
             try {
-                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getFirstServiceDeclaration(utilityType.getName());
+                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getServiceDeclaration(utilityType.getName());
                 if (utilityDeclaration != null) {
                     Class<?> utilityClass = utilityDeclaration.loadClass();
                     

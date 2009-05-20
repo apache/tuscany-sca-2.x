@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * A SPI that allows different implementations of discovering service declarations
@@ -34,7 +34,7 @@ public interface ServiceDiscoverer {
      * @return set of service declarations
      * @throws IOException
      */
-    public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException;
+    public Collection<ServiceDeclaration> getServiceDeclarations(String name) throws IOException;
     
     /**
      * Get first service declaration class for the given interface
@@ -44,6 +44,6 @@ public interface ServiceDiscoverer {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException;
+    public ServiceDeclaration getServiceDeclaration(String name) throws IOException;
     
 }

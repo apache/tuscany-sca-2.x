@@ -6,23 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -35,9 +35,9 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExtensionPoint {
     private List<ModuleActivator> activators = new ArrayList<ModuleActivator>();
     private boolean loadedActivators;
-    
+
     /**
-     * Constructs a new extension point. 
+     * Constructs a new extension point.
      */
     public DefaultModuleActivatorExtensionPoint() {
     }
@@ -45,12 +45,12 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
     public void addModuleActivator(ModuleActivator activator) {
         activators.add(activator);
     }
-    
+
     public List<ModuleActivator> getModuleActivators() {
         loadModuleActivators();
         return activators;
     }
-    
+
     public void removeModuleActivator(Object activator) {
         activators.remove(activator);
     }
@@ -63,13 +63,14 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
             return;
 
         // Get the activator service declarations
-        Set<ServiceDeclaration> activatorDeclarations; 
+        Collection<ServiceDeclaration> activatorDeclarations;
         try {
-            activatorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName());
+            // Load the module activators by ranking
+            activatorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName(), true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        
+
         // Load and instantiate module activators
         for (ServiceDeclaration activatorDeclaration: activatorDeclarations) {
             ModuleActivator activator;
@@ -85,7 +86,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
             }
             addModuleActivator(activator);
         }
-        
+
         loadedActivators = true;
     }
 

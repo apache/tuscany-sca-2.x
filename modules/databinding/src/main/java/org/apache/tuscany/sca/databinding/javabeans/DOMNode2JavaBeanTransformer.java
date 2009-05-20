@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.javabeans;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;

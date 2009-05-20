@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -117,6 +118,10 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return sb.toString();
         }
 
+        public Bundle getBundle() {
+            return bundle;
+        }
+
     }
 
     /**
@@ -186,8 +191,8 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return attributes;
     }
 
-    public ServiceDeclaration getFirstServiceDeclaration(String name) throws IOException {
-        Set<ServiceDeclaration> declarations = getServiceDeclarations(name);
+    public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
+        Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
         if (declarations.isEmpty()) {
             return null;
         } else {
@@ -195,9 +200,9 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
     }
 
-    public Set<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
+    public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
         boolean debug = logger.isLoggable(Level.FINE);
-        Set<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
+        Collection<ServiceDeclaration> descriptors = new HashSet<ServiceDeclaration>();
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);

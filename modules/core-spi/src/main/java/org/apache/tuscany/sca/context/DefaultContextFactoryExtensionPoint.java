@@ -94,7 +94,7 @@ public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtens
 
             // Dynamically load a factory class declared under META-INF/services
             try {
-                ServiceDeclaration factoryDeclaration = ServiceDiscovery.getInstance().getFirstServiceDeclaration(factoryInterface.getName());
+                ServiceDeclaration factoryDeclaration = ServiceDiscovery.getInstance().getServiceDeclaration(factoryInterface.getName());
                 if (factoryDeclaration != null) {
                     Class<?> factoryClass = factoryDeclaration.loadClass();
             

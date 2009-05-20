@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.workspace.builder;
 
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -70,7 +70,7 @@ public class DefaultContributionBuilderExtensionPoint implements ContributionBui
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         
         // Get the provider factory service declarations
-        Set<ServiceDeclaration> builderDeclarations;
+        Collection<ServiceDeclaration> builderDeclarations;
         ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
         try {
             builderDeclarations = serviceDiscovery.getServiceDeclarations(ContributionBuilder.class.getName());

@@ -39,6 +39,7 @@ import static org.apache.tuscany.sca.invocation.Phase.SERVICE_POLICY;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -173,7 +174,7 @@ public class PhaseManager {
         }
         init();
 
-        Set<ServiceDeclaration> services;
+        Collection<ServiceDeclaration> services;
         try {
             services = ServiceDiscovery.getInstance().getServiceDeclarations(pattern);
         } catch (IOException e) {
