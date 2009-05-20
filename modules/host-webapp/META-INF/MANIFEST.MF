@@ -17,6 +17,7 @@ Import-Package: javax.naming,
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.host.webapp;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.oasisopen.sca;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp

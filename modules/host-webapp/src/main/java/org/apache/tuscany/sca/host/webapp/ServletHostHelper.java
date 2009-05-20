@@ -20,17 +20,13 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -38,39 +34,112 @@ import javax.servlet.ServletException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 public class ServletHostHelper {
-    private static final Logger logger = Logger.getLogger(ServletHostHelper.class.getName());
-
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
+    private static NodeFactory factory;
 
-    public static void init(ServletConfig servletConfig) {
-        init(servletConfig.getServletContext());
+    private static InputStream openStream(ServletContext servletContext, String location) throws IOException {
+        URI uri = URI.create(location);
+        if (uri.isAbsolute()) {
+            return uri.toURL().openStream();
+        } else {
+            String path = location;
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            return servletContext.getResourceAsStream(path);
+        }
+    }
+
+    private static URL getResource(ServletContext servletContext, String location) throws IOException {
+        URI uri = URI.create(location);
+        if (uri.isAbsolute()) {
+            return uri.toURL();
+        } else {
+            String path = location;
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            URL url = servletContext.getResource(path);
+            if (url.getProtocol().equals("jndi")) {
+                //this is Tomcat case, we should use getRealPath
+                File warRootFile = new File(servletContext.getRealPath(path));
+                return warRootFile.toURI().toURL();
+            } else {
+                //this is Jetty case
+                return url;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException {
+        NodeConfiguration configuration = null;
+        String nodeConfigURI = servletContext.getInitParameter("node.configuration");
+        if (nodeConfigURI != null) {
+            configuration = factory.loadConfiguration(openStream(servletContext, nodeConfigURI));
+        } else {
+            configuration = factory.createNodeConfiguration();
+            Enumeration<String> names = servletContext.getInitParameterNames();
+            while (names.hasMoreElements()) {
+                String name = names.nextElement();
+                if (name.startsWith("contribution.")) {
+                    String contrib = servletContext.getInitParameter(name);
+                    if (contrib != null) {
+                        configuration.addContribution(getResource(servletContext, contrib));
+                    }
+                }
+            }
+            if (configuration.getContributions().isEmpty()) {
+                // TODO: Which path should be the default root
+                configuration.addContribution(getResource(servletContext, "/WEB-INF/classes"));
+            }
+            URL composite = getResource(servletContext, "/WEB-INF/web.composite");
+            if (composite != null) {
+                configuration.getContributions().get(0).addDeploymentComposite(composite);
+            }
+            String nodeURI = servletContext.getInitParameter("node.uri");
+            if (nodeURI == null) {
+                nodeURI = servletContext.getContextPath();
+            }
+            configuration.setURI(nodeURI);
+            String domainURI = servletContext.getInitParameter("domain.uri");
+            if (domainURI != null) {
+                configuration.setDomainURI(domainURI);
+            }
+        }
+        return configuration;
     }
 
     public static ServletHost init(final ServletContext servletContext) {
         Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node == null) {
             try {
+                factory = NodeFactory.newInstance();
                 node = createNode(servletContext);
                 servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
                 getServletHost(node).init(new ServletConfig() {
                     public String getInitParameter(String name) {
                         return servletContext.getInitParameter(name);
                     }
+
                     public Enumeration<?> getInitParameterNames() {
                         return servletContext.getInitParameterNames();
                     }
+
                     public ServletContext getServletContext() {
                         return servletContext;
                     }
+
                     public String getServletName() {
                         return servletContext.getServletContextName();
-                    }});
+                    }
+                });
             } catch (ServletException e) {
                 throw new RuntimeException(e);
             }
@@ -79,7 +148,7 @@ public class ServletHostHelper {
     }
 
     private static WebAppServletHost getServletHost(Node node) {
-        NodeImpl nodeImpl = (NodeImpl) node;
+        NodeImpl nodeImpl = (NodeImpl)node;
         ExtensionPointRegistry eps = nodeImpl.getExtensionPoints();
         ServletHostExtensionPoint servletHosts = eps.getExtensionPoint(ServletHostExtensionPoint.class);
         List<ServletHost> hosts = servletHosts.getServletHosts();
@@ -90,87 +159,22 @@ public class ServletHostHelper {
         if (!(servletHost instanceof WebAppServletHost)) {
             throw new IllegalStateException("unexpected ServletHost type: " + servletHost);
         }
-        return (WebAppServletHost) servletHost;
+        return (WebAppServletHost)servletHost;
     }
 
     private static Node createNode(final ServletContext servletContext) throws ServletException {
-        // String contextPath = initContextPath(servletContext);
-        String contributionRoot = getContributionRoot(servletContext);
-        NodeFactory factory = NodeFactory.newInstance();
-        InputStream webComposite = getWebComposite(servletContext);
-        Node node = factory.createNode(webComposite, new Contribution(contributionRoot, contributionRoot));
-        node.start();
+        NodeConfiguration configuration;
+        try {
+            configuration = getNodeConfiguration(servletContext);
+        } catch (IOException e) {
+            throw new ServletException(e);
+        }
+        Node node = factory.createNode(configuration).start();
         return node;
     }
 
-    private static InputStream getWebComposite(ServletContext servletContext) {
-        return servletContext.getResourceAsStream("/WEB-INF/web.composite");
-    }
-
-    private static String getContributionRoot(ServletContext servletContext) {
-        String contributionRoot = null;
-        try {
-
-            InitialContext ic = new InitialContext();
-            URL repoURL = (URL)ic.lookup("java:comp/env/url/contributions");
-
-            contributionRoot = repoURL.toString();
-
-        } catch (NamingException e) {
-
-            // ignore exception and use default location
-
-            try {
-
-                String root = servletContext.getInitParameter("contributionRoot");
-                if (root == null || root.length() < 1) {
-                    root = "/";
-                }
-                URL rootURL = servletContext.getResource(root);
-                if (rootURL.getProtocol().equals("jndi")) {
-                    //this is Tomcat case, we should use getRealPath
-                    File warRootFile = new File(servletContext.getRealPath(root));
-                    contributionRoot = warRootFile.toURI().toString();
-                } else {
-                    //this is Jetty case
-                    contributionRoot = rootURL.toString();
-                }
-
-            } catch (MalformedURLException mf) {
-                //ignore, pass null
-            }
-        }
-
-        logger.info("contributionRoot: " + contributionRoot);
-        return contributionRoot;
-    }
-
-    /**
-     * Initializes the contextPath
-     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
-     * containers use an init parameter.
-     */
-    @SuppressWarnings("unchecked")
-    private static String initContextPath(ServletContext context) {
-        String contextPath;
-        if (Collections.list(context.getInitParameterNames()).contains("contextPath")) {
-            contextPath = context.getInitParameter("contextPath");
-        } else {
-            try {
-                // Try to get the method anyway since some ServletContext impl has this method even before 2.5
-                Method m = context.getClass().getMethod("getContextPath", new Class[] {});
-                contextPath = (String)m.invoke(context, new Object[] {});
-            } catch (Exception e) {
-                logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
-                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
-            }
-        }
-        logger.info("ContextPath: " + contextPath);
-        return contextPath;
-    }
-
     public static void stop(ServletContext servletContext) {
-        Node node = (Node) servletContext.getAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE);
+        Node node = (Node)servletContext.getAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE);
         if (node != null) {
             node.stop();
             servletContext.setAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE, null);
