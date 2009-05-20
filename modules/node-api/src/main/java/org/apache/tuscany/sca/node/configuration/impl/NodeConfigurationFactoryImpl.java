@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 /**
  * The factory to create java models related to the node configuration
  */
-public abstract class NodeConfigurationFactoryImpl implements NodeConfigurationFactory {
+public class NodeConfigurationFactoryImpl implements NodeConfigurationFactory {
     /**
      * Create a new instance of NodeConfiguration
      * @return

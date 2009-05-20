@@ -24,5 +24,23 @@ import org.apache.tuscany.sca.node.configuration.impl.NodeConfigurationFactoryIm
 /**
  * Default NodeConfigurationFactory
  */
-public class DefaultNodeConfigurationFactory extends NodeConfigurationFactoryImpl implements NodeConfigurationFactory {
+public class DefaultNodeConfigurationFactory implements NodeConfigurationFactory {
+    private NodeConfigurationFactory factory = new NodeConfigurationFactoryImpl();
+
+    public BindingConfiguration createBindingConfiguration() {
+        return factory.createBindingConfiguration();
+    }
+
+    public ContributionConfiguration createContributionConfiguration() {
+        return factory.createContributionConfiguration();
+    }
+
+    public DeploymentComposite createDeploymentComposite() {
+        return factory.createDeploymentComposite();
+    }
+
+    public NodeConfiguration createNodeConfiguration() {
+        return factory.createNodeConfiguration();
+    }
+
 }

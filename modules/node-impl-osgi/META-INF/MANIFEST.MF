@@ -41,3 +41,4 @@ Import-Package: javax.xml.namespace,
 Bundle-SymbolicName: org.apache.tuscany.sca.node.osgi.impl
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Bundle-ActivationPolicy: lazy
