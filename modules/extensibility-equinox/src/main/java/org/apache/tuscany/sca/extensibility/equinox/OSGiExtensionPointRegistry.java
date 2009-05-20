@@ -20,12 +20,15 @@
 package org.apache.tuscany.sca.extensibility.equinox;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -67,9 +70,22 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
         if (declaration instanceof EquinoxServiceDiscoverer.ServiceDeclarationImpl) {
             EquinoxServiceDiscoverer.ServiceDeclarationImpl declarationImpl =
                 (EquinoxServiceDiscoverer.ServiceDeclarationImpl)declaration;
-            context = declarationImpl.getBundle().getBundleContext();
+            Bundle bundle = declarationImpl.getBundle();
+            /**
+             * If this bundle is not in the STARTING, ACTIVE, or STOPPING states or this bundle
+             * is a fragment bundle, then this bundle has no valid BundleContext. This method will
+             * return null if this bundle has no valid BundleContext
+             */
+            if ((bundle.getState() & (Bundle.ACTIVE | Bundle.STARTING)) == 0) {
+                try {
+                    bundle.start();
+                } catch (BundleException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            context = bundle.getBundleContext();
         }
-        Dictionary<Object, Object> props = new java.util.Hashtable<Object, Object>();
+        Dictionary<Object, Object> props = new Hashtable<Object, Object>();
         ServiceRegistration registration = context.registerService(i.getName(), extensionPoint, props);
         services.put(i, registration);
     }
