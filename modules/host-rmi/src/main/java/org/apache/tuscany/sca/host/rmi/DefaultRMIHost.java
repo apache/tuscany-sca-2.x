@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.host.rmi;
@@ -28,14 +28,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * Default implementation of a RMI host.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultRMIHost implements RMIHost {
-
+    private final static Logger logger = Logger.getLogger(DefaultRMIHost.class.getName());
     // Map of RMI registries started and running
     private Map<String, Registry> rmiRegistries;
 
@@ -48,7 +49,7 @@ public class DefaultRMIHost implements RMIHost {
 
     public void registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
         RMIURI rmiURI = new RMIURI(uri);
-        
+
         Registry registry;
         try {
             registry = rmiRegistries.get(Integer.toString(rmiURI.port));
@@ -60,10 +61,11 @@ public class DefaultRMIHost implements RMIHost {
                     registry = LocateRegistry.createRegistry(rmiURI.port);
                 } catch (NotBoundException e) {
                     // Ignore
-                } 
+                }
                 rmiRegistries.put(Integer.toString(rmiURI.port), registry);
             }
             registry.bind(rmiURI.serviceName, serviceObject);
+            logger.info("RMI service registered: " + rmiURI);
         } catch (AlreadyBoundException e) {
             throw new RMIHostException(e);
         } catch (RemoteException e) {
@@ -84,6 +86,7 @@ public class DefaultRMIHost implements RMIHost {
                 rmiRegistries.put(Integer.toString(rmiURI.port), registry);
             }
             registry.unbind(rmiURI.serviceName);
+            logger.info("RMI service unregistered: " + rmiURI);
         } catch (RemoteException e) {
             RMIHostRuntimeException rmiExec = new RMIHostRuntimeException(e.getMessage());
             rmiExec.setStackTrace(e.getStackTrace());
@@ -95,7 +98,7 @@ public class DefaultRMIHost implements RMIHost {
 
     public Remote findService(String uri) throws RMIHostException, RMIHostRuntimeException {
         RMIURI rmiURI = new RMIURI(uri);
-        
+
         Remote remoteService = null;
         try {
             // Requires permission java.net.SocketPermission "host:port", "connect,accept,resolve"
@@ -117,16 +120,18 @@ public class DefaultRMIHost implements RMIHost {
 
     /**
      * A representation of an RMI URI.
-     * 
+     *
      * rmi://[host][:port][/[object]]
      * rmi:[/][object]
      */
     private static class RMIURI {
+        private String uriStr;
         private String host;
         private int port;
         private String serviceName;
-        
+
         private RMIURI(String uriStr) {
+            this.uriStr = uriStr;
             URI uri = URI.create(uriStr);
             host = uri.getHost();
             if (host == null) {
@@ -142,6 +147,10 @@ public class DefaultRMIHost implements RMIHost {
             }
             serviceName = path;
         }
+
+        public String toString() {
+            return uriStr;
+        }
     }
-    
+
 }
