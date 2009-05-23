@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
-Private-Package: org.apache.tuscany.sca.binding.sca;version="2.0.0",org.
- apache.tuscany.sca.endpoint.impl;version="2.0.0"
+Private-Package: apache.tuscany.sca.endpoint.impl;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Default Endpoint Implementation
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
