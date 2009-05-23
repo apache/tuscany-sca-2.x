@@ -40,6 +40,7 @@
     <module>implementation-java-calculator</module>
     <module>webapp-helloworld</module>
     <module>webapp-helloworld-jsp</module>
+    <module>webapp-helloworld-stripes</module>
   </modules>
 
 </project>
