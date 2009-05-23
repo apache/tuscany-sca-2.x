@@ -66,7 +66,7 @@ public class ServletHostHelper {
                 path = "/" + path;
             }
             URL url = servletContext.getResource(path);
-            if (url.getProtocol().equals("jndi")) {
+            if (url != null && url.getProtocol().equals("jndi")) {
                 //this is Tomcat case, we should use getRealPath
                 File warRootFile = new File(servletContext.getRealPath(path));
                 return warRootFile.toURI().toURL();
@@ -97,7 +97,7 @@ public class ServletHostHelper {
             }
             if (configuration.getContributions().isEmpty()) {
                 // TODO: Which path should be the default root
-                configuration.addContribution(getResource(servletContext, "/WEB-INF/classes"));
+                configuration.addContribution(getResource(servletContext, "/"));
             }
             URL composite = getResource(servletContext, "/WEB-INF/web.composite");
             if (composite != null) {
@@ -105,7 +105,7 @@ public class ServletHostHelper {
             }
             String nodeURI = servletContext.getInitParameter("node.uri");
             if (nodeURI == null) {
-                nodeURI = servletContext.getContextPath();
+                nodeURI = new File(servletContext.getRealPath("/")).getName();
             }
             configuration.setURI(nodeURI);
             String domainURI = servletContext.getInitParameter("domain.uri");
