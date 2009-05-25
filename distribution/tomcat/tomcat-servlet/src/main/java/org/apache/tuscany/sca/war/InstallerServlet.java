@@ -62,9 +62,8 @@ public class InstallerServlet extends HttpServlet {
         } 
 
         req.setAttribute("installer", installer);
-        RequestDispatcher rd = servletConfig.getServletContext().getRequestDispatcher("/index.jsp");
+        RequestDispatcher rd = servletConfig.getServletContext().getRequestDispatcher("/installer.jsp");
         rd.forward(req,res);
-
     }
 
 }
