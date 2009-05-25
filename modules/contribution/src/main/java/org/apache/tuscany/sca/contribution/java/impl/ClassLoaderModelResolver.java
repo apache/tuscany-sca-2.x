@@ -48,7 +48,18 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
     
     private static ClassLoader parentClassLoader() {
-        ClassLoader parentClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
+        ClassLoader parentClassLoader = null;
+
+        // FIXME: Need a better way to not use the ThreadContextClassLoader when running in Equinox
+        if (Thread.currentThread().getContextClassLoader() != null) {
+            if (!"org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoverer".equals(ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getName())) {
+                parentClassLoader = Thread.currentThread().getContextClassLoader();
+            }
+        }
+        if (parentClassLoader == null) {
+            parentClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
+        }
+
         return parentClassLoader;
     }
 
