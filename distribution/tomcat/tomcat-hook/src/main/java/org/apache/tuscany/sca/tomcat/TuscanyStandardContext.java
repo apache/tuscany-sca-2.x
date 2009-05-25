@@ -39,33 +39,32 @@ public class TuscanyStandardContext extends StandardContext {
             return loader;
         }
         
-        initTuscany();
+        if (isSCAAlication()) {
+            initTuscany();
+        }
         
         return super.getLoader();
     }
 
     private void initTuscany() {
-        String scaVersion = getSCAVersion();
-        if ("1.1".equals(scaVersion)) {
-            setParentClassLoader(getTuscanyClassloader(scaVersion));
-            addApplicationListener("org.apache.tuscany.sca.host.webapp.TuscanyContextListener");
-            FilterDef filterDef = new FilterDef();
-            filterDef.setFilterName("TuscanyFilter");
-            filterDef.setFilterClass("org.apache.tuscany.sca.host.webapp.TuscanyServletFilter");
-            addFilterDef(filterDef);
-        }
+        setParentClassLoader(getTuscanyClassloader());
+        addApplicationListener("org.apache.tuscany.sca.host.webapp.TuscanyContextListener");
+        FilterDef filterDef = new FilterDef();
+        filterDef.setFilterName("TuscanyFilter");
+        filterDef.setFilterClass("org.apache.tuscany.sca.host.webapp.TuscanyServletFilter");
+        addFilterDef(filterDef);
     }
 
-    private String getSCAVersion() {
+    private boolean isSCAAlication() {
         Object o = null;
         try {
             o = getResources().lookup("WEB-INF/web.composite");
         } catch (NamingException e) {
         }
-        return o != null ? "1.1" : null;
+        return o != null;
     }
 
-    private ClassLoader getTuscanyClassloader(String version) {
+    private ClassLoader getTuscanyClassloader() {
         if (tuscanyClassLoader == null) {
             File tuscanyWar = new File(System.getProperty("org.apache.tuscany.sca.tomcat.war"));
             File[] runtimeJars = new File(tuscanyWar, "tuscany-lib").listFiles();
