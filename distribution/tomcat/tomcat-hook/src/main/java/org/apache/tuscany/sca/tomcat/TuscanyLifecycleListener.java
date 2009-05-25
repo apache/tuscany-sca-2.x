@@ -126,7 +126,7 @@ public class TuscanyLifecycleListener implements LifecycleListener {
         // iterate over the contexts
         for (File contextDir : hostDir.listFiles()) {
             // does this war have a web-inf lib dir
-            File hookLib = new File(contextDir, "server-lib");
+            File hookLib = new File(contextDir, "tomcat-lib");
             if (!hookLib.isDirectory()) {
                 continue;
             }
