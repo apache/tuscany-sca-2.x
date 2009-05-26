@@ -126,7 +126,13 @@ public class Installer {
         }
         File serverLib = new File(catalinaBase, "/lib");
         if (!(serverLib.exists())) {
-            throw new IllegalStateException(" Tomcat lib/ not found: " + serverLib.getAbsolutePath());
+            // try Tomcat 5 server/lib
+            if (new File(catalinaBase, "/server").exists()) {
+                serverLib = new File(new File(catalinaBase, "/server"), "/lib");
+            } 
+        }
+        if (!(serverLib.exists())) {
+            throw new IllegalStateException("Tomcat lib not found: " + serverLib.getAbsolutePath());
         }
         File serverXml = new File(catalinaBase, "/conf/server.xml");
         if (!(serverXml.exists())) {
