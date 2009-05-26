@@ -25,6 +25,8 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
 
+	<sca:service name="HelloWorld" type="helloworld.HelloWorld" target="testBean"/>
+	
     <bean id="delegateBean" 
          class="org.apache.tuscany.sca.itest.spring.TestHelloWorldBean" lazy-init="true">
     </bean>

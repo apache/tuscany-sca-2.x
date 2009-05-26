@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.itest.spring;
 
-import org.junit.Ignore;
-
 /**
  * A basic test case of:
  * 1) A composite containing a component with a Spring implementation
@@ -28,7 +26,6 @@ import org.junit.Ignore;
  * Spring implementation to satisfy a reference
  *
  */
-@Ignore("TUSCANY-3027")
 public class SpringDelegationHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
 }
