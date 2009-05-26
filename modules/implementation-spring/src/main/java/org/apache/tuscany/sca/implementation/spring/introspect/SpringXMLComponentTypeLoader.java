@@ -146,7 +146,7 @@ public class SpringXMLComponentTypeLoader {
             implementation.setURI(resource.toString());            
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-            reader = xmlFactory.createXMLStreamReader(new FileInputStream(new File(resource.toURI())));
+            reader = xmlFactory.createXMLStreamReader(resource.openStream());
 
             // System.out.println("Spring TypeLoader - starting to read context file");            
             readContextDefinition(reader, beans, services, references, scaproperties);
@@ -154,8 +154,6 @@ public class SpringXMLComponentTypeLoader {
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
         }
 
@@ -180,13 +178,11 @@ public class SpringXMLComponentTypeLoader {
             // FIXME - need a better way to handle the XMLInputFactory than allocating a new one every time
             XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
             XMLStreamReader reader = 
-            	xmlFactory.createXMLStreamReader(new FileInputStream(new File(resource.toURI())));
+            	xmlFactory.createXMLStreamReader(resource.openStream());
             return reader;
         } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
         }
     }    
