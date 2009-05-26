@@ -17,19 +17,17 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:sca="http://www.springframework.org/schema/sca"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
-       
-    <bean id="beanRefFactory" class="org.springframework.context.support.ClassPathXmlApplicationContext">
-	   <constructor-arg>
-		  <list>
-			 <value>META-INF/sca/context-multiple/StockQuoteService-context.xml</value>
-			 <value>META-INF/sca/context-multiple/SpringHelloWorld-context.xml</value>
-		  </list>
-	   </constructor-arg>
-    </bean>
-</beans>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           name="SpringExplicitService">
+
+    <component name="ClientComponent">
+        <implementation.java class="helloworld.HelloWorldProxy"/>
+        <reference name="delegate" target="HelloWorldComponent"/>
+    </component>
+
+    <component name="HelloWorldComponent">
+        <implementation.spring location="META-INF/sca/sca-services/SpringExplicitService-context.xml"/>
+    </component>
+
+</composite>
