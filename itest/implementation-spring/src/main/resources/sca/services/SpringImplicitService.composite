@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            name="SpringImplicitService">
 
     <component name="ClientComponent">
         <implementation.java class="helloworld.HelloWorldProxy"/>
-        <reference name="delegate" target="HelloWorldComponent"/>
+        <reference name="delegate" target="ImplicitServiceComponent"/>
     </component>
 
-    <component name="HelloWorldComponent">
+    <component name="ImplicitServiceComponent">
         <implementation.spring location="META-INF/sca/sca-services/SpringImplicitService-context.xml"/>
     </component>
 

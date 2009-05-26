@@ -17,16 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
            name="SpringExplicitService">
 
     <component name="ClientComponent">
         <implementation.java class="helloworld.HelloWorldProxy"/>
-        <reference name="delegate" target="HelloWorldComponent"/>
+        <reference name="delegate" target="ExplicitServiceComponent"/>
     </component>
 
-    <component name="HelloWorldComponent">
+    <component name="ExplicitServiceComponent">
         <implementation.spring location="META-INF/sca/sca-services/SpringExplicitService-context.xml"/>
     </component>
 

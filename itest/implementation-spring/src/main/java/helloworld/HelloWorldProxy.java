@@ -19,7 +19,7 @@
 
 package helloworld;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * A simple proxy Java class which implements the HelloWorld interface but which uses

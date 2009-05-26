@@ -25,12 +25,8 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
 
-    <bean id="testBean1" class="mock.TestSCAPropertyBean" lazy-init="true">
+    <bean id="testBean" class="mock.TestSCAPropertyBean" lazy-init="true">
     	<property name="hello" ref="TestProperty"/>
-    </bean>
-    
-    <bean id="testBean2" class="mock.TestSCAPropertyBean" lazy-init="true">
-    	<property name="hello"><ref bean="TestProperty"/></property>
     </bean>
     
     <sca:property id="foo" name="TestProperty" type="java.lang.String"/>
