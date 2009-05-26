@@ -17,19 +17,23 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:sca="http://www.springframework.org/schema/sca"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/sca http://www.osoa.org/xmlns/sca/1.0/spring-sca.xsd">
-       
-    <bean id="beanRefFactory" class="org.springframework.context.support.ClassPathXmlApplicationContext">
-	   <constructor-arg>
-		  <list>
-			 <value>META-INF/sca/context-multiple/StockQuoteService-context.xml</value>
-			 <value>META-INF/sca/context-multiple/SpringHelloWorld-context.xml</value>
-		  </list>
-	   </constructor-arg>
-    </bean>
-</beans>
+<!-- Composite for the SpringSCAPropertyTestCase         
+ * This composite has the HelloWorldComponent implemented with a Spring implementation where
+ * the Spring application context uses an explicit SCA property.  The value of the property
+ * is set in this composite and is used to compute the response to a service invocation from
+ * the ClientComponent.
+ -->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           name="SpringFolderLocation">
+    
+    <component name="ClientComponent">
+        <implementation.java class="helloworld.HelloWorldProxy"/>
+        <reference name="delegate" target="HelloWorldComponent"/>
+    </component>
+
+    <component name="HelloWorldComponent">
+        <implementation.spring location="META-INF/sca/location-folder"/>
+        <property name="TestProperty">Hello</property>
+    </component>
+
+</composite>

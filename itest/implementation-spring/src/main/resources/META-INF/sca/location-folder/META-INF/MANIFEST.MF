@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Spring-Context: META-INF/spring/SpringSCAProperty-context.xml
+
