@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.tomcat;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.logging.Logger;
 
 import javax.naming.NamingException;
 
@@ -31,6 +32,7 @@ import org.apache.catalina.deploy.FilterDef;
 
 public class TuscanyStandardContext extends StandardContext {
     private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
     private ClassLoader tuscanyClassLoader;
     
@@ -53,6 +55,7 @@ public class TuscanyStandardContext extends StandardContext {
         filterDef.setFilterName("TuscanyFilter");
         filterDef.setFilterClass("org.apache.tuscany.sca.host.webapp.TuscanyServletFilter");
         addFilterDef(filterDef);
+        log.info("Tuscany enabled for: " + this.getName());
     }
 
     private boolean isSCAAlication() {
