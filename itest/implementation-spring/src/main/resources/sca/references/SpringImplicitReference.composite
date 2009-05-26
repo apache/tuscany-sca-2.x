@@ -24,15 +24,15 @@
  * The reference is satisified by a wire to a ReferenceComponent which is implemented
  * by a plain Java POJO.
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            name="SpringImplicitReference">
 
     <component name="ClientComponent">
         <implementation.spring location="META-INF/sca/sca-references/SpringImplicitReference-context.xml"/>
-        <reference name="testReference" target="ReferenceComponent"/>
+        <reference name="testReference" target="ImplicitReferenceComponent"/>
     </component>
 
-    <component name="ReferenceComponent">
+    <component name="ImplicitReferenceComponent">
         <implementation.java class="helloworld.HelloWorldImpl"/>
     </component>
 

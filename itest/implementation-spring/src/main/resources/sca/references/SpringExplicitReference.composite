@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            name="SpringExplicitReference">
 
     <component name="ClientComponent">
         <implementation.spring location="META-INF/sca/sca-references/SpringExplicitReference-context.xml"/>
-        <reference name="testReference" target="ReferenceComponent"/>
+        <reference name="testReference" target="ExplicitReferenceComponent"/>
     </component>
 
-    <component name="ReferenceComponent">
+    <component name="ExplicitReferenceComponent">
         <implementation.java class="helloworld.HelloWorldImpl"/>
     </component>
 
