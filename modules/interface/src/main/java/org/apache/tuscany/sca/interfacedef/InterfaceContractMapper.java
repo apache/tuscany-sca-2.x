@@ -47,6 +47,12 @@ public interface InterfaceContractMapper {
      * </ol>
      * <p/>
      * <p>
+     * This relationship implies that the source contract is a subset of the target
+     * contract - ie all the operations of the source must be present in the target, but
+     * the target can in principle contain additional operations not present in the 
+     * source
+     * </p>
+     * <p>
      * Please note this test is not symmetric: the success of isCompatible(A, B)
      * does NOT imply isCompatible(B, A)
      * 
@@ -56,6 +62,15 @@ public interface InterfaceContractMapper {
      *         contract
      */
     boolean isCompatible(InterfaceContract source, InterfaceContract target);
+    
+    /**
+     * Check that two interface contracts are equal. The contracts are equal if the two contracts have the 
+     * same set of operations, with each operation having the same signature. 
+     * @param source - the source contract
+     * @param target - the target contract
+     * @return
+     */
+    boolean isEqual(InterfaceContract source, InterfaceContract target);
 
     /**
      * @param source
@@ -84,7 +99,7 @@ public interface InterfaceContractMapper {
      * @param target The target data type
      * @return
      */
-    boolean isCompatible(DataType source, DataType target, boolean remotable);
+    boolean isCompatible(DataType<?> source, DataType<?> target, boolean remotable);
 
     /**
      * Check if source operation is compatible with the target operation
