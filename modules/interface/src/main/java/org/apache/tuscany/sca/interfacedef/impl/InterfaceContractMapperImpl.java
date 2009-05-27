@@ -50,6 +50,72 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
 
     }
+    
+
+    /**
+     * Check that two interface contracts are equal. The contracts are equal if the two contracts have the 
+     * same set of operations, with each operation having the same signature, both for forward and callback
+     * interfaces
+     * @param source
+     * @param target
+     * @return
+     */
+    public boolean isEqual(InterfaceContract source, InterfaceContract target) {
+    	// Are the forward interfaces equal?
+    	if( isEqual( source.getInterface(), target.getInterface()) ) {
+    		// Is there a Callback interface?
+    		if( source.getCallbackInterface() == null && target.getCallbackInterface() == null ) {
+    			return true;
+    		} else {
+    			if( isEqual( source.getCallbackInterface(), target.getCallbackInterface()) ) {
+    				return true;
+    			} // end if
+    		} // end if
+    	} // end if
+    	return false;
+    } // end method isEqual
+    
+    /**
+     * Check that two interfaces are equal. The interfaces are equal if the two interfaces have the 
+     * same set of operations, with each operation having the same signature. 
+     * @param source
+     * @param target
+     * @return
+     */
+    public boolean isEqual(Interface source, Interface target) {
+        if (source == target) {
+            // Shortcut for performance
+            return true;
+        } // end if
+        if (source == null || target == null) {
+       		return false;
+        } // end if
+
+        if (source.isDynamic() || target.isDynamic()) {
+            return true;
+        }
+
+        if (source.isRemotable() != target.isRemotable()) {
+            return false;
+        }
+        if (source.isConversational() != target.isConversational()) {
+            return false;
+        }
+        if( source.getOperations().size() != target.getOperations().size() ) {
+        	return false;
+        }
+
+        for (Operation operation : source.getOperations()) {
+            Operation targetOperation = getOperation(target.getOperations(), operation.getName());
+            if (targetOperation == null) {
+                return false;
+            }
+            if (!isCompatible(operation, targetOperation, source.isRemotable())) {
+                return false;
+            }
+        }
+        return true;
+    } // end method isEqual
 
     public boolean isCompatible(Operation source, Operation target, boolean remotable) {
         if (source == target) {
@@ -76,8 +142,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
         // Check output type
-        DataType sourceOutputType = source.getOutputType();
-        DataType targetOutputType = target.getOutputType();
+        DataType<?> sourceOutputType = source.getOutputType();
+        DataType<?> targetOutputType = target.getOutputType();
 
         boolean checkSourceWrapper = true;
         List<DataType> sourceInputType = source.getInputType().getLogical();
