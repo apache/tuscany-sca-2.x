@@ -129,13 +129,23 @@ public class NodeFactoryImpl extends NodeFactory {
     private WorkScheduler workScheduler;
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
 
+    /**
+     * Automatically destroy the factory when last node is stopped. Subclasses
+     * can set this flag.
+     */
+    protected boolean autoDestroy = true;
+
     @Override
     public Node createNode(NodeConfiguration configuration) {
         return new NodeImpl(this, configuration);
     }
 
     protected Node removeNode(NodeConfiguration configuration) {
-        return nodes.remove(getNodeKey(configuration));
+        Node node = nodes.remove(getNodeKey(configuration));
+        if (autoDestroy && nodes.isEmpty()) {
+            destroy();
+        }
+        return node;
     }
 
     protected void addNode(NodeConfiguration configuration, Node node) {
@@ -195,6 +205,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
             // Stop and destroy the work manager
             workScheduler.destroy();
+            extensionPoints.destroy();
             inited = false;
         }
     }
