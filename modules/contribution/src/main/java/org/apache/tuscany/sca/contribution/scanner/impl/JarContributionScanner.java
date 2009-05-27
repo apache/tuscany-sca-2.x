@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.scanner.impl;
@@ -30,12 +30,14 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 
 /**
  * JAR Contribution processor.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JarContributionScanner implements ContributionScanner {
@@ -44,16 +46,16 @@ public class JarContributionScanner implements ContributionScanner {
     }
 
     public String getContributionType() {
-        return "application/x-compressed";
+        return PackageType.JAR;
     }
 
-    public URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException {
+    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
         try {
             URL url;
-            if (contributionURL.toString().startsWith("jar:")) {
-                url = new URL(contributionURL, artifact.toString());
+            if (contribution.toString().startsWith("jar:")) {
+                url = new URL(new URL(contribution.getLocation()), artifact.toString());
             } else {
-                url = new URL("jar:" + contributionURL.toExternalForm() + "!/" + artifact);
+                url = new URL("jar:" + contribution.getLocation() + "!/" + artifact);
             }
             return url;
         } catch (MalformedURLException e) {
@@ -61,11 +63,12 @@ public class JarContributionScanner implements ContributionScanner {
         }
     }
 
-    public List<String> getArtifacts(URL contributionURL) throws ContributionReadException {
+    public List<String> scan(Contribution contribution) throws ContributionReadException {
 
         // Assume the URL references a JAR file
         try {
-            URLConnection connection = contributionURL.openConnection();
+            URL url = new URL(contribution.getLocation());
+            URLConnection connection = url.openConnection();
             connection.setUseCaches(false);
             JarInputStream jar = new JarInputStream(connection.getInputStream());
             try {
@@ -77,9 +80,9 @@ public class JarContributionScanner implements ContributionScanner {
                         break;
                     }
 
-                    String name = entry.getName(); 
+                    String name = entry.getName();
                     if (name.length() != 0 && !name.startsWith(".")) {
-                        
+
                         // Trim trailing /
                         if (name.endsWith("/")) {
                             name = name.substring(0, name.length() - 1);
@@ -88,7 +91,7 @@ public class JarContributionScanner implements ContributionScanner {
                         // Add the entry name
                         if (!names.contains(name)) {
                             names.add(name);
-                            
+
                             // Add parent folder names to the list too
                             for (;;) {
                                 int s = name.lastIndexOf('/');
@@ -106,16 +109,20 @@ public class JarContributionScanner implements ContributionScanner {
                         }
                     }
                 }
-                
+
                 // Return list of URIs
                 List<String> artifacts = new ArrayList<String>(names);
+                contribution.getTypes().add(getContributionType());
                 return artifacts;
-                
+
             } finally {
                 jar.close();
             }
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
+    }
+
+    public void postProcess(Contribution contribution) {
     }
 }

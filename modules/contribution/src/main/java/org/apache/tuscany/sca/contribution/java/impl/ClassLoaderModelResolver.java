@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.java.impl;
@@ -46,8 +46,11 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 public class ClassLoaderModelResolver extends URLClassLoader implements ModelResolver {
     private Contribution contribution;
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
-    
-    private static ClassLoader parentClassLoader() {
+
+    private static ClassLoader parentClassLoader(Contribution contribution) {
+        if (contribution.getClassLoader() != null) {
+            return contribution.getClassLoader();
+        }
         ClassLoader parentClassLoader = null;
 
         // FIXME: Need a better way to not use the ThreadContextClassLoader when running in Equinox
@@ -64,6 +67,10 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     }
 
     private static URL[] getContributionURLs(final Contribution contribution) throws IOException {
+        if (contribution.getClassLoader() != null) {
+            // Do not include the contribution url
+            return new URL[0];
+        }
         List<URL> urls = new ArrayList<URL>();
         urls.add(new URL(contribution.getLocation()));
         urls.addAll(ContributionHelper.getNestedJarUrls(contribution));
@@ -71,9 +78,9 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
     }
 
     public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
-        super(getContributionURLs(contribution), parentClassLoader());
+        super(getContributionURLs(contribution), parentClassLoader(contribution));
         this.contribution = contribution;
-        
+
         // Index Java import resolvers by package name
         Map<String, List<ModelResolver>> resolverMap = new HashMap<String, List<ModelResolver>>();
         for (Import import_: this.contribution.getImports()) {
@@ -87,7 +94,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
                 resolvers.add(javaImport.getModelResolver());
             }
         }
-        
+
         // Create a delegating model resolver for each imported package
         for (Map.Entry<String, List<ModelResolver>> entry: resolverMap.entrySet()) {
             importResolvers.put(entry.getKey(), new DefaultDelegatingModelResolver(entry.getValue()));
@@ -106,38 +113,38 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         if (!(unresolved instanceof ClassReference)) {
             return unresolved;
         }
-        
+
         try {
-            
+
             // Load the class and return a class reference for it
             String className = ((ClassReference)unresolved).getClassName();
             Class<?> clazz = Class.forName(className, true, this);
             return modelClass.cast(new ClassReference(clazz));
-            
+
         } catch (ClassNotFoundException e) {
             return unresolved;
         } catch (NoClassDefFoundError e) {
             return unresolved;
         }
     }
-    
+
     @Override
     public URL findResource(String name) {
-        
+
         //TODO delegate to the Java import resolvers
-        
+
         URL url = super.findResource(name);
         return url;
     }
 
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
-        
+
         //TODO delegate to the Java import resolvers
         //Enumeration<URL> importedResources;
-        
+
         Enumeration<URL> resources = super.findResources(name);
-        List<URL> allResources = new ArrayList<URL>(); 
+        List<URL> allResources = new ArrayList<URL>();
         //for (; importedResources.hasMoreElements(); ) {
         //    allResources.add(importedResources.nextElement());
         //}
@@ -146,10 +153,10 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         }
         return Collections.enumeration(allResources);
     }
-    
+
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        
+
         // Extract the package name
         int d = name.lastIndexOf('.');
         String packageName;
@@ -158,7 +165,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         } else {
             packageName = null;
         }
-        
+
         // First try to load the class using the Java import resolvers
         ModelResolver importResolver = importResolvers.get(packageName);
         if (importResolver != null) {
@@ -172,5 +179,5 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         Class<?> clazz = super.findClass(name);
         return clazz;
     }
-    
+
 }

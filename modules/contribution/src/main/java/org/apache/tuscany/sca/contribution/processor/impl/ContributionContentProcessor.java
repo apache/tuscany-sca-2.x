@@ -129,9 +129,9 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         // Scan the contribution and list the artifacts contained in it
         List<Artifact> artifacts = contribution.getArtifacts();
         boolean contributionMetadata = false;
-        List<String> artifactURIs = scanner.getArtifacts(contributionURL);
+        List<String> artifactURIs = scanner.scan(contribution);
         for (String artifactURI: artifactURIs) {
-            URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
+            URL artifactURL = scanner.getArtifactURL(contribution, artifactURI);
 
             // Add the deployed artifact model to the contribution
             Artifact artifact = this.contributionFactory.createArtifact();
@@ -177,7 +177,6 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             DefaultExport defaultExport = contributionFactory.createDefaultExport();
             contribution.getExports().add(defaultExport);
         }
-
         return contribution;
     }
 
@@ -199,10 +198,10 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         resolveExports(contribution, contributionResolver);
         // Resolve Imports
         resolveImports(contribution, contributionResolver);
-        
+
         preResolved = true;
     } // end method preResolve
-    
+
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
 
     	if( !preResolved ) preResolve( contribution, resolver);
@@ -230,7 +229,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             }
         } // end for
     } // end method resolve
-    
+
     /**
      * Resolves the Exports of the contribution
      * @param contribution
@@ -247,7 +246,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         } // end for
 
     } // end method resolveExports
-    
+
     /**
      * Resolves the Imports of the contribution
      * @param contribution
@@ -256,7 +255,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
     private void resolveImports(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
         for (Import import_: contribution.getImports()) {
             extensionProcessor.resolve(import_, resolver);
-        } // end for 
+        } // end for
     } // end method resolveImports
 
 } // end class ContributionContentProcessor

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.contribution;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Extensible;
@@ -88,11 +89,11 @@ public interface Contribution extends Artifact, Extensible {
 
     /**
      * Returns the list of contributions that this contribution depends on.
-     * 
+     *
      * @return
      */
     List<Contribution> getDependencies();
-    
+
     /**
      * Returns the ClassLoader used to load classes and resources from
      * this contribution
@@ -114,5 +115,11 @@ public interface Contribution extends Artifact, Extensible {
      * @param classLoader the contribution class loader
      */
     void setClassLoader(ClassLoader classLoader);
+
+    /**
+     * Get a list of mime types that apply to this contribution archive
+     * @return
+     */
+    Set<String> getTypes();
 
 }

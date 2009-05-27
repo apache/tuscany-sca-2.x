@@ -6,21 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.node.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Extension;
@@ -32,7 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * A Contribution impl wrapping multiple other contributions
- * Currently the sole reason for this is so  
+ * Currently the sole reason for this is so
  */
 public class Contributions implements Contribution {
 
@@ -42,13 +44,13 @@ public class Contributions implements Contribution {
     private Object model;
     private byte[] contents;
     private boolean unresolved;
-    private ModelResolver modelResolver; 
+    private ModelResolver modelResolver;
     private List<Contribution> dependencies = new ArrayList<Contribution>();
-    
+
     public Contributions(List<Contribution> contributions) {
         this.contributions = contributions;
     }
-    
+
     public String getLocation() {
         return location;
     }
@@ -72,11 +74,11 @@ public class Contributions implements Contribution {
     public byte[] getContents() {
         return contents;
     }
-    
+
     public void setContents(byte[] contents) {
         this.contents = contents;
     }
-    
+
     public void setURI(String uri) {
         this.uri = uri;
     }
@@ -92,11 +94,11 @@ public class Contributions implements Contribution {
     public List<Contribution> getContributions() {
         return contributions;
     }
-    
+
     public List<Artifact> getArtifacts() {
         return (List<Artifact>)(Object)contributions;
     }
-    
+
     public List<Contribution> getDependencies() {
         return dependencies;
     }
@@ -105,11 +107,11 @@ public class Contributions implements Contribution {
         //FIXME Remove later
         return null;
     }
-    
+
     public void setClassLoader(ClassLoader classLoader) {
         //FIXME Remove later
     }
-    
+
     public List<Composite> getDeployables() {
         List<Composite> deployables = new ArrayList<Composite>();
         for (Contribution contribution: contributions) {
@@ -117,7 +119,7 @@ public class Contributions implements Contribution {
         }
         return deployables;
     }
-    
+
     public List<Export> getExports() {
         List<Export> exports = new ArrayList<Export>();
         for (Contribution contribution: contributions) {
@@ -125,7 +127,7 @@ public class Contributions implements Contribution {
         }
         return exports;
     }
-    
+
     public List<Import> getImports() {
         List<Import> imports = new ArrayList<Import>();
         for (Contribution contribution: contributions) {
@@ -133,11 +135,11 @@ public class Contributions implements Contribution {
         }
         return imports;
     }
-    
+
     public ModelResolver getModelResolver() {
         return modelResolver;
     }
-    
+
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
     }
@@ -150,5 +152,9 @@ public class Contributions implements Contribution {
     public List<Object> getExtensions() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Set<String> getTypes() {
+        return Collections.emptySet();
     }
 }

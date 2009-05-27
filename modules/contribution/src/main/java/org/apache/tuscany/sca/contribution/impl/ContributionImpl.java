@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.contribution.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.impl.ExtensibleImpl;
@@ -47,6 +49,7 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
     private List<Artifact> artifacts = new ArrayList<Artifact>();
     private List<Contribution> dependencies = new ArrayList<Contribution>();
     private ModelResolver modelResolver;
+    private Set<String> types = new HashSet<String>();
 
     // FIXME remove this dependency on Java ClassLoaders
     private ClassLoader classLoader;
@@ -155,6 +158,10 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
     public String toString() {
     	return "Contribution : " + uri + " \n" +
     	       "from: " + location;
+    }
+
+    public Set<String> getTypes() {
+        return types;
     }
 
 }
