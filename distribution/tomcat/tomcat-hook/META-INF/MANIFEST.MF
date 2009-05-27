@@ -1,8 +1,7 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.host.webapp;version="2.0.0";
- uses:="javax.servlet,org.apache.tuscany.sca.host.http,org.apache.tuscany.sca.core"
+Export-Package: org.apache.tuscany.sca.tomcat;version="2.0.0"
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA Webapp Host
+Bundle-Name: Apache Tuscany SCA Tomcat Hook
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -20,6 +19,6 @@ Import-Package: javax.naming,
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.oasisopen.sca;version="2.0.0"
-Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
+Bundle-SymbolicName: org.apache.tuscany.sca.tomcat
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
