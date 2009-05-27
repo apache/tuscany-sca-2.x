@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -157,37 +158,32 @@ abstract class ReferenceConfigurationUtil {
     }
 
     /**
-     * Override the bindings for a promoted reference from an outer component
-     * reference
+     * Override the bindings for a promoted reference from an outer component reference
      * 
-     * @param reference
-     * @param promotedReference
+     * @param reference - the outer level reference
+     * @param promotedReference - the inner level promoted reference
      */
     static void reconcileReferenceBindings(Reference reference,
                                            ComponentReference promotedReference,
                                            AssemblyFactory assemblyFactory,
                                            Monitor monitor) {
               
-        if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE ||
-            promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
-            
-            // override the promoted endpoint references (and bindings) 
-            // with configuration from the top level 
-            
-            if (reference.getEndpointReferences().size() > 0){
-                promotedReference.getEndpointReferences().clear();
-                promotedReference.getEndpointReferences().addAll(reference.getEndpointReferences());
-            }
-            
-            if (promotedReference.getEndpointReferences().size() > 1) {
-                warning(monitor, "ComponentReferenceMoreWire", promotedReference, promotedReference.getName());                
-            }
-        } else {
-            // merge the promoted endpoint reference with the those from the top level
-            if (reference.getEndpointReferences().size() > 0){
-                promotedReference.getEndpointReferences().addAll(reference.getEndpointReferences());
-            }
-        }
+        if (reference.getEndpointReferences().size() > 0){
+            if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE ||
+                    promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
+            	// Override any existing wires for 0..1 and 1..1 multiplicity
+            	promotedReference.getEndpointReferences().clear();
+            	// For 0..1 and 1..1, there should not be more than 1 endpoint reference
+                if (reference.getEndpointReferences().size() > 1) {
+                    warning(monitor, "ComponentReferenceMoreWire", promotedReference, promotedReference.getName());                
+                } // end if
+            } // end if
+            // Clone the EndpointReferences from the outer level and add to the promoted reference
+            for( EndpointReference2 epRef : reference.getEndpointReferences()){
+            	EndpointReference2 epRefClone = copyHigherReference( epRef, promotedReference );
+            	promotedReference.getEndpointReferences().add(epRefClone);
+            } // end for
+        } // end if
         
         Set<Binding> callbackBindings = new HashSet<Binding>();
         if (promotedReference.getCallback() != null) {
@@ -200,8 +196,28 @@ abstract class ReferenceConfigurationUtil {
         for (Binding binding : callbackBindings) {
             if ((!(binding instanceof OptimizableBinding)) || binding.getURI() != null) {
                 promotedReference.getCallback().getBindings().add(binding);
-            }
-        }
-    }
+            } // end if
+        } // end for
+    } // end method reconcileReferenceBindings
+    
+    /**
+     * Copy a higher level EndpointReference down to a lower level reference which it promotes 
+     * @param epRef - the endpoint reference
+     * @param promotedReference - the promoted reference
+     * @return - a copy of the EndpointReference with data merged from the promoted reference
+     */
+    private static EndpointReference2 copyHigherReference( EndpointReference2 epRef, ComponentReference promotedReference ) {
+    	EndpointReference2 epRefClone = null;
+    	try {
+    		epRefClone = (EndpointReference2) epRef.clone();
+    	} catch (Exception e) {
+    		// Ignore (we know that EndpointReference2 can be cloned)
+    	} // end try
+    	// Copy across details of the inner reference
+    	ComponentReference ref = epRefClone.getReference();
+    	//FIXME
+    	epRefClone.setReference(promotedReference);
+    	return epRefClone;
+    } // end copyHigherReference
 
-}
+} // end class

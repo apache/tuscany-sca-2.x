@@ -100,7 +100,8 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                         }
                     }
                     if (!promoted && !componentReference.isCallback()) {
-                        warning(monitor, "ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
+                        warning(monitor, "ReferenceWithoutTargets", composite, composite.getName().toString(), 
+                        		componentReference.getName());
                     }
                 } else {
                     warning(monitor, "TooManyReferenceTargets", composite, componentReference.getName());
