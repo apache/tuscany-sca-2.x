@@ -8,3 +8,4 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Tomcat Servlet
 Bundle-SymbolicName: org.apache.tuscany.sca.tomcat.servlet
+Import-Package: org.apache.tuscany.sca.tomcat;version="2.0.0"
