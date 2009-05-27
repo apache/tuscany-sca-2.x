@@ -105,5 +105,12 @@ public interface ComponentReference extends Reference {
      * @param nonOverridable
      */
     void setNonOverridable(boolean nonOverridable);
+    
+    /**
+     * Sets whether this Component Reference is promoted
+     * @param isPromoted - true if the component reference is promoted
+     */
+    void setPromoted( boolean isPromoted );
+    boolean isPromoted();
         
 }

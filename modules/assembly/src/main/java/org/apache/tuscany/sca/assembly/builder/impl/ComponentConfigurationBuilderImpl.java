@@ -317,31 +317,34 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
     }
 
     /**
-     * For all the services with callbacks, create a corresponding callback
-     * reference.
+     * For all the services with callbacks, create a corresponding callback reference.
      * 
      * @param component
+     * @param componentReferences
      */
     private void configureCallbackReferences(Component component,
                                              Map<String, ComponentReference> componentReferences) {
         for (ComponentService service : component.getServices()) {
-            if (service.getInterfaceContract() != null && // can be null in
-                                                            // unit tests
-            service.getInterfaceContract().getCallbackInterface() != null) {
-                ComponentReference reference =
-                    componentReferences.get(service.getName());
+            if (service.getInterfaceContract() != null && // can be null in unit tests
+                service.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentReference reference = componentReferences.get(service.getName());
                 if (reference == null) {
                     reference = createCallbackReference(component, service);
-                }
-                if (service.getCallback() != null) {
-                    if (reference.getBindings().isEmpty()) {
+                } // end if
+                // Set the bindings of the callback reference
+                if ( reference.getBindings().isEmpty() ) {
+                	// If there are specific callback bindings set, use them
+	                if (service.getCallback() != null) {
                         reference.getBindings().addAll(service.getCallback().getBindings());
-                    }
-                }
+                    } else {
+                    	// otherwise use the bindings on the forward service
+                    	reference.getBindings().addAll(service.getBindings());
+                    } // end if
+                } // end if
                 service.setCallbackReference(reference);
-            }
-        }
-    }
+            } // end if
+        } // end for
+    } // end method configureCallbackReferences
 
     /**
      * Create a callback reference for a component service
@@ -373,7 +376,9 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         		implCompReference.getPromotedComponents().add(((CompositeService) implService).getPromotedComponent());
         		// Set the promoted service
         		ComponentReference promotedReference = assemblyFactory.createComponentReference();
-        		promotedReference.setName(((CompositeService)implService).getPromotedService().getName());
+        		String promotedRefName = ((CompositeService) implService).getPromotedComponent().getName() + "/" +
+        			((CompositeService)implService).getPromotedService().getName();
+        		promotedReference.setName(promotedRefName);
         		promotedReference.setUnresolved(true);
         		implCompReference.getPromotedReferences().add(promotedReference);
         		implReference = implCompReference;

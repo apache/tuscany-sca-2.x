@@ -35,11 +35,12 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * @version $Rev$ $Date$
  */
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference, Cloneable {
-    private Reference reference;
-    private Boolean autowire;
-    private boolean nonOverridable;
-    private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
-    private ComponentService callbackService;
+    private Reference 					reference;
+    private Boolean 					autowire;
+    private boolean 					nonOverridable;
+    private List<CompositeReference> 	promotedAs = new ArrayList<CompositeReference>();
+    private ComponentService 			callbackService;
+    private boolean 					isPromoted = false;
 
     /**
      * Constructs a new component reference.
@@ -108,4 +109,12 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public void setNonOverridable(boolean nonOverridable) {
         this.nonOverridable = nonOverridable;
     } 
-}
+    
+    public void setPromoted( boolean isPromoted ) {
+    	this.isPromoted = isPromoted;
+    } // end method setPromoted
+    
+    public boolean isPromoted() {
+    	return isPromoted;
+    }
+} // end class ComponentReferenceImpl

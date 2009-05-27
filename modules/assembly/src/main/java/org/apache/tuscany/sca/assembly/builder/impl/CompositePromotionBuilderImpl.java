@@ -116,8 +116,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
             }
         }
     
-        // Connect composite services to the component services that they
-        // promote
+        // Connect composite services to the component services that they promote
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
@@ -194,8 +193,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
             }
         }
     
-        // Connect composite references to the component references
-        // that they promote
+        // Connect composite references to the component references that they promote
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
             List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
@@ -210,20 +208,20 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                         promotedComponent = components.get(promotedComponent.getName());
                         compositeReference.getPromotedComponents().set(i, promotedComponent);
                         
+                        componentReference.setPromoted( true );
+                        
                         // Point to the resolved component reference
                         promotedReferences.set(i, componentReference);
     
-                        // Use the interface contract from the component
-                        // reference if none
+                        // Use the interface contract from the component reference if none
                         // is specified on the composite reference
-                        
                         InterfaceContract compositeReferenceInterfaceContract = compositeReference.getInterfaceContract();
                         InterfaceContract componentReferenceInterfaceContract = componentReference.getInterfaceContract();
                         if (compositeReferenceInterfaceContract == null) {
                             compositeReference.setInterfaceContract(componentReferenceInterfaceContract);
                         } else if (componentReferenceInterfaceContract != null) {
-                            // Check the compositeInterfaceContract and componentInterfaceContract
-                            boolean isCompatible = interfaceContractMapper.isCompatible(compositeReferenceInterfaceContract, componentReferenceInterfaceContract);
+                            // Check that the componentInterfaceContract is a subset of the compositeInterfaceContract
+                            boolean isCompatible = interfaceContractMapper.isCompatible( componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
                             if (!isCompatible) {
                                 warning(monitor, "ReferenceInterfaceNotSubSet", compositeReference, componentReferenceName);
                             }
