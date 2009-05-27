@@ -79,28 +79,29 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         DataType sourceOutputType = source.getOutputType();
         DataType targetOutputType = target.getOutputType();
 
-        // Note the target output type is now the source for checking
-        // compatibility
-        if (!isCompatible(targetOutputType, sourceOutputType, remotable)) {
-            return false;
-        }
-
         boolean checkSourceWrapper = true;
         List<DataType> sourceInputType = source.getInputType().getLogical();
         if (source.isWrapperStyle() && source.getWrapper() != null) {
             sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
+            sourceOutputType = source.getWrapper().getUnwrappedOutputType();
             checkSourceWrapper = false;
         }
         boolean checkTargetWrapper = true;
         List<DataType> targetInputType = target.getInputType().getLogical();
         if (target.isWrapperStyle() && target.getWrapper() != null) {
             targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
+            targetOutputType = target.getWrapper().getUnwrappedOutputType();
             checkTargetWrapper = false;
         }
 
         if (checkSourceWrapper != checkTargetWrapper) {
             return true;
         }
+
+        if (!isCompatible(targetOutputType, sourceOutputType, remotable)) {
+            return false;
+        }
+
         if (sourceInputType.size() != targetInputType.size()) {
             return false;
         }
