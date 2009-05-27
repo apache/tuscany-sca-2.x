@@ -111,7 +111,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         // Do we have to unregister the services?
         try {
             int state = osgiBundle.getState();
-            if ((state & Bundle.STARTING) == 0) {
+            if ((state & Bundle.STOPPING) == 0 && (state & Bundle.ACTIVE) != 0) {
                 osgiBundle.stop();
             }
         } catch (BundleException e) {
