@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionException;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -50,10 +52,10 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         return PackageType.BUNDLE;
     }
 
-    public URL getArtifactURL(URL sourceURL, String artifact) throws ContributionReadException {
+    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
         Bundle bundle = null;
         try {
-            bundle = OSGiBundleActivator.findBundle(sourceURL);
+            bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
             if (bundle != null) {
                 URL url = bundle.getResource(artifact);
                 return url;
@@ -113,15 +115,11 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         }
     }
 
-    public List<String> getArtifacts(URL packageSourceURL) throws ContributionReadException {
-
-        if (packageSourceURL == null) {
-            throw new IllegalArgumentException("Invalid null package source URL.");
-        }
-        Bundle bundle = OSGiBundleActivator.findBundle(packageSourceURL);
+    public List<String> scan(Contribution contribution) throws ContributionReadException {
+        Bundle bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
 
         if (bundle == null) {
-            throw new IllegalArgumentException("Could not find OSGi bundle " + packageSourceURL);
+            throw new IllegalArgumentException("Could not find OSGi bundle " + contribution.getLocation());
         }
 
         List<String> artifacts = new ArrayList<String>();
@@ -145,7 +143,39 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
+        contribution.getExtensions().add(bundle);
+        contribution.getTypes().add(getContributionType());
+        contribution.setClassLoader(new BundleClassLoader(bundle));
         return artifacts;
     }
+
+    private static class BundleClassLoader extends ClassLoader {
+        private Bundle bundle;
+        public BundleClassLoader(Bundle bundle) {
+            super(null);
+            this.bundle = bundle;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return bundle.loadClass(name);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return bundle.getResource(name);
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            Enumeration<URL> urls = bundle.getResources(name);
+            if (urls == null) {
+                List<URL> list = Collections.emptyList();
+                return Collections.enumeration(list);
+            } else {
+                return urls;
+            }
+        }
+    }
+
 }

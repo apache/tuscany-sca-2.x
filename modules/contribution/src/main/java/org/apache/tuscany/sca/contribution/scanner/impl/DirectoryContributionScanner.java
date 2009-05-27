@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.scanner.impl;
@@ -22,17 +22,20 @@ package org.apache.tuscany.sca.contribution.scanner.impl;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 
 /**
  * Folder contribution processor.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DirectoryContributionScanner implements ContributionScanner {
@@ -41,11 +44,11 @@ public class DirectoryContributionScanner implements ContributionScanner {
     }
 
     public String getContributionType() {
-        return "application/vnd.tuscany.folder";
+        return PackageType.FOLDER;
     }
 
-    public URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException {
-        File directory = directory(contributionURL);
+    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
+        File directory = directory(contribution);
         File file = new File(directory, artifact);
         try {
             return file.toURI().toURL();
@@ -54,20 +57,21 @@ public class DirectoryContributionScanner implements ContributionScanner {
         }
     }
 
-    public List<String> getArtifacts(URL contributionURL) throws ContributionReadException {
-        File directory = directory(contributionURL);
+    public List<String> scan(Contribution contribution) throws ContributionReadException {
+        File directory = directory(contribution);
         List<String> artifacts = new ArrayList<String>();
         try {
             traverse(artifacts, directory, directory);
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
+        contribution.getTypes().add(getContributionType());
         return artifacts;
     }
 
     /**
      * Recursively traverse a root directory
-     * 
+     *
      * @param fileList
      * @param file
      * @param root
@@ -82,7 +86,7 @@ public class DirectoryContributionScanner implements ContributionScanner {
                 uri = uri.substring(0, uri.length() - 1);
             }
             fileList.add(uri);
-            
+
             File[] files = file.listFiles();
             for (File f: files) {
                 if (!f.getName().startsWith(".")) {
@@ -92,16 +96,17 @@ public class DirectoryContributionScanner implements ContributionScanner {
         }
     }
 
-    private static File directory(URL url) throws ContributionReadException {
+    private static File directory(Contribution contribution) throws ContributionReadException {
         File file;
         try {
-            file = new File(url.toURI());
+            file = new File(new URI(contribution.getLocation()));
         } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
         }
         if (!file.exists() || !file.isDirectory()) {
-            throw new ContributionReadException(url.toString());
+            throw new ContributionReadException(contribution.getLocation());
         }
         return file;
     }
+
 }

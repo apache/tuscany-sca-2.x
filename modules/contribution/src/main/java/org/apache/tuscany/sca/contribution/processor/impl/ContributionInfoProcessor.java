@@ -123,7 +123,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         for (String path: new String[]{
                                        Contribution.SCA_CONTRIBUTION_GENERATED_META,
                                        Contribution.SCA_CONTRIBUTION_META}) {
-            URL url = scanner.getArtifactURL(contributionURL, path);
+            URL url = scanner.getArtifactURL(contribution, path);
             try {
                 // Check if the file actually exists before trying to read it
                 URLConnection connection = url.openConnection();
@@ -151,7 +151,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         if (!contributionMetadata) {
             List<String> artifactURIs;
             try {
-                artifactURIs = scanner.getArtifacts(contributionURL);
+                artifactURIs = scanner.scan(contribution);
             } catch (ContributionReadException e) {
                 artifactURIs = null;
             }
@@ -168,7 +168,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                         }
                     }
                     if (read) {
-                        URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
+                        URL artifactURL = scanner.getArtifactURL(contribution, artifactURI);
 
                         // Read each artifact
                         Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);

@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.workspace.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.impl.ExtensibleImpl;
@@ -46,11 +48,12 @@ class WorkspaceImpl extends ExtensibleImpl implements Workspace {
     private boolean unresolved;
     private ModelResolver modelResolver;
     private List<Contribution> dependencies = new ArrayList<Contribution>();
-
+    private Set<String> types = new HashSet<String>();
     /**
      * Constructs a new workspace.
      */
     WorkspaceImpl() {
+        types.add("application/vnd.tuscany.workspace");
     }
 
     public String getLocation() {
@@ -144,5 +147,9 @@ class WorkspaceImpl extends ExtensibleImpl implements Workspace {
 
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
+    }
+
+    public Set<String> getTypes() {
+        return types;
     }
 }
