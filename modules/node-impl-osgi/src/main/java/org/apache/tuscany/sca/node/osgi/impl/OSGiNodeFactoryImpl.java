@@ -47,6 +47,7 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
      */
     public OSGiNodeFactoryImpl(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+        autoDestroy = false;
         setNodeFactory(this);
     }
 

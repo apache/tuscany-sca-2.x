@@ -114,9 +114,6 @@ public class NodeImpl implements Node, Client {
             manager.removeNode(configuration);
             this.compositeActivator = null;
             this.proxyFactory = null;
-            if (manager.getNodes().isEmpty()) {
-                manager.destroy();
-            }
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);

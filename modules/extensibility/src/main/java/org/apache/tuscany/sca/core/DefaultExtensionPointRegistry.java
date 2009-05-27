@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +65,9 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         if (extensionPoint == null) {
             throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
         }
-
+        if (extensionPoint instanceof ModuleActivator) {
+            ((ModuleActivator)extensionPoint).start(this);
+        }
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
             registerExtensionPoint(i, extensionPoint, declaration);
@@ -112,13 +115,15 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
             // Dynamically load an extension point class declared under META-INF/services
             try {
-                ServiceDeclaration extensionPointDeclaration = ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType.getName());
+                ServiceDeclaration extensionPointDeclaration =
+                    ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType.getName());
                 if (extensionPointDeclaration != null) {
                     Class<?> extensionPointClass = extensionPointDeclaration.loadClass();
 
                     // Construct the extension point
                     Constructor<?>[] constructors = extensionPointClass.getConstructors();
-                    Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
+                    Constructor<?> constructor =
+                        getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
                     if (constructor != null) {
                         extensionPoint = constructor.newInstance(this);
                     } else {
@@ -165,6 +170,10 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
         }
 
+        if (extensionPoint instanceof ModuleActivator) {
+            ((ModuleActivator)extensionPoint).stop(this);
+        }
+
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
             unregisterExtensionPoint(i);
@@ -197,6 +206,21 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         if (superClass != null && !superClass.equals(Object.class)) {
             getAllInterfaces(superClass, implemented);
         }
+    }
+
+    public void destroy() {
+        // Get a unique map as an extension point may exist in the map by different keys
+        Map<ModuleActivator, ModuleActivator> map = new IdentityHashMap<ModuleActivator, ModuleActivator>();
+        for (Object extp : extensionPoints.values()) {
+            if (extp instanceof ModuleActivator) {
+                ModuleActivator activator = (ModuleActivator)extp;
+                map.put(activator, activator);
+            }
+        }
+        for (ModuleActivator activator : map.values()) {
+            activator.stop(this);
+        }
+        extensionPoints.clear();
     }
 
 }

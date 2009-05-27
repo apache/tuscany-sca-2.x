@@ -21,10 +21,12 @@ package org.apache.tuscany.sca.extensibility.equinox;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -97,6 +99,27 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
             registration.unregister();
         }
         services.remove(i);
+    }
+
+    @Override
+    public void destroy() {
+        // Get a unique map as an extension point may exist in the map by different keys
+        Map<ModuleActivator, ModuleActivator> map = new IdentityHashMap<ModuleActivator, ModuleActivator>();
+        for (ServiceRegistration reg : services.values()) {
+            ServiceReference ref = reg.getReference();
+            if (ref != null) {
+                Object service = bundleContext.getService(ref);
+                if (service instanceof ModuleActivator) {
+                    ModuleActivator activator = (ModuleActivator)service;
+                    map.put(activator, activator);
+                }
+                reg.unregister();
+            }
+        }
+        for (ModuleActivator activator : map.values()) {
+            activator.stop(this);
+        }
+        services.clear();
     }
 
 }
