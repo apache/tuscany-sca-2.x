@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 
 /**
  * An ArtifactProcessor for WSDL documents.
- * 
+ *
  * @version $Rev: 709339 $ $Date: 2008-10-31 04:01:44 +0000 (Fri, 31 Oct 2008) $
  */
 public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinition> {
@@ -57,7 +57,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     public static final QName WSDL11_IMPORT = new QName("http://schemas.xmlsoap.org/wsdl/", "import");
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
-    private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private XMLInputFactory inputFactory;
 
     private WSDLFactory factory;
     private XSDFactory xsdFactory;
@@ -66,12 +66,13 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     public WSDLDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(WSDLFactory.class);
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a exception.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -80,7 +81,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     	 if (monitor != null) {
     		 Problem problem = monitor.createProblem(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
-    	 }        
+    	 }
      }
 
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
@@ -98,7 +99,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
 
     public void resolve(WSDLDefinition model, ModelResolver resolver) throws ContributionResolveException {
         if (model == null) return;
-    	
+
         Definition definition = model.getDefinition();
         if (definition != null) {
             for (Object imports : definition.getImports().values()) {
@@ -179,7 +180,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
 
     /**
      * Read the namespace for the WSDL definition and inline schemas
-     * 
+     *
      * @param doc
      * @return
      * @throws IOException
