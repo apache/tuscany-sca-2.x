@@ -30,18 +30,33 @@ import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 
+/**
+ * A Tuscany StandardContext to initilize SCA applications.
+ * There is a StandardContext instance for each webapp and its
+ * called to handle all start/stop/etc requests. This intercepts 
+ * the start and inserts any required Tuscany configuration.
+ */
 public class TuscanyStandardContext extends StandardContext {
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
+    // TODO: this gives an instance per connector, work out how to have only one per server
     private ClassLoader tuscanyClassLoader;
     
+    /**
+     * Overrides the getLoader method in the Tomcat StandardContext as its a convenient
+     * point to insert the Tuscany initilization. This gets called the first time during 
+     * StandardContext.start after the webapp resources have been created so this can 
+     * use getResources() to look for the SCA web.composite or sca-contribution.xml files,
+     * but its still early enough in start to insert the required Tuscany config. 
+     */
+    @Override
     public Loader getLoader() {
         if (loader != null) {
             return loader;
         }
         
-        if (isSCAAlication()) {
+        if (isSCAApplication()) {
             initTuscany();
         }
         
@@ -49,20 +64,36 @@ public class TuscanyStandardContext extends StandardContext {
     }
 
     private void initTuscany() {
+
         setParentClassLoader(getTuscanyClassloader());
+
         addApplicationListener("org.apache.tuscany.sca.host.webapp.TuscanyContextListener");
+
         FilterDef filterDef = new FilterDef();
         filterDef.setFilterName("TuscanyFilter");
         filterDef.setFilterClass("org.apache.tuscany.sca.host.webapp.TuscanyServletFilter");
         addFilterDef(filterDef);
+
+        if (isUseNaming() && getNamingContextListener() != null) {
+            setAnnotationProcessor(new TuscanyAnnotationsProcessor(this, getNamingContextListener().getEnvContext()));
+        } else {
+            setAnnotationProcessor(new TuscanyAnnotationsProcessor(this, null));
+        }
+
         log.info("Tuscany enabled for: " + this.getName());
     }
 
-    private boolean isSCAAlication() {
+    private boolean isSCAApplication() {
         Object o = null;
         try {
             o = getResources().lookup("WEB-INF/web.composite");
         } catch (NamingException e) {
+        }
+        if (o == null) {
+            try {
+                o = getResources().lookup("META-INF/sca-contribution.xml");
+            } catch (NamingException e) {
+            }
         }
         return o != null;
     }
