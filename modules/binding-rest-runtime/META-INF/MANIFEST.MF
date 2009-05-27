@@ -11,7 +11,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA REST Binding Model
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0";resolution:=optional,
- org.apache.tuscany.sca.binding.jsonp.runtime;version="2.0.0".
+ org.apache.tuscany.sca.binding.jsonp.runtime;version="2.0.0",
  org.apache.tuscany.sca.binding.jsonp;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rest.runtime
 Bundle-DocURL: http://www.apache.org/
