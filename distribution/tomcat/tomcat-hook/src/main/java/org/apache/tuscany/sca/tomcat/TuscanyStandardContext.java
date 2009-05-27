@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.tomcat;
@@ -24,6 +24,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Logger;
 
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 import org.apache.catalina.Loader;
@@ -33,45 +35,68 @@ import org.apache.catalina.deploy.FilterDef;
 /**
  * A Tuscany StandardContext to initilize SCA applications.
  * There is a StandardContext instance for each webapp and its
- * called to handle all start/stop/etc requests. This intercepts 
+ * called to handle all start/stop/etc requests. This intercepts
  * the start and inserts any required Tuscany configuration.
  */
 public class TuscanyStandardContext extends StandardContext {
+    protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
+    protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
+    protected static final String TUSCANY_CONTEXT_LISTENER = "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
     // TODO: this gives an instance per connector, work out how to have only one per server
     private ClassLoader tuscanyClassLoader;
-    
+
     /**
      * Overrides the getLoader method in the Tomcat StandardContext as its a convenient
-     * point to insert the Tuscany initilization. This gets called the first time during 
-     * StandardContext.start after the webapp resources have been created so this can 
+     * point to insert the Tuscany initilization. This gets called the first time during
+     * StandardContext.start after the webapp resources have been created so this can
      * use getResources() to look for the SCA web.composite or sca-contribution.xml files,
-     * but its still early enough in start to insert the required Tuscany config. 
+     * but its still early enough in start to insert the required Tuscany config.
      */
     @Override
     public Loader getLoader() {
         if (loader != null) {
             return loader;
         }
-        
-        if (isSCAApplication()) {
-            initTuscany();
+
+        if(isSCAApplication()) {
+            setParentClassLoader(getTuscanyClassloader());
         }
-        
+
         return super.getLoader();
     }
 
-    private void initTuscany() {
+    @Override
+    public boolean listenerStart() {
+        if (tuscanyClassLoader != null) {
+            enableTuscany();
+        }
+        return super.listenerStart();
+    }
 
-        setParentClassLoader(getTuscanyClassloader());
+    private void enableTuscany() {
 
-        addApplicationListener("org.apache.tuscany.sca.host.webapp.TuscanyContextListener");
+        for(String listener: findApplicationListeners()) {
+            if(TUSCANY_CONTEXT_LISTENER.equals(listener)) {
+                // The web application already has the context listener configured
+                return;
+            }
+        }
+
+        for(FilterDef filterDef: findFilterDefs()) {
+            if(TUSCANY_SERVLET_FILTER.equals(filterDef.getFilterClass())) {
+                // The web application already has the filter configured
+                return;
+            }
+        }
+
+        addApplicationListener(TUSCANY_CONTEXT_LISTENER);
 
         FilterDef filterDef = new FilterDef();
-        filterDef.setFilterName("TuscanyFilter");
-        filterDef.setFilterClass("org.apache.tuscany.sca.host.webapp.TuscanyServletFilter");
+        filterDef.setFilterName(TUSCANY_FILTER_NAME);
+        filterDef.setFilterClass(TUSCANY_SERVLET_FILTER);
         addFilterDef(filterDef);
 
         if (isUseNaming() && getNamingContextListener() != null) {
@@ -80,7 +105,7 @@ public class TuscanyStandardContext extends StandardContext {
             setAnnotationProcessor(new TuscanyAnnotationsProcessor(this, null));
         }
 
-        log.info("Tuscany enabled for: " + this.getName());
+        log.info("Tuscany SCA is enabled for: " + this.getName());
     }
 
     private boolean isSCAApplication() {
@@ -95,7 +120,24 @@ public class TuscanyStandardContext extends StandardContext {
             } catch (NamingException e) {
             }
         }
-        return o != null;
+        if(o==null) {
+            return false;
+        }
+
+        // Try to see if the Tuscany jars are packaged in the webapp
+        NamingEnumeration<NameClassPair> enumeration;
+        try {
+            enumeration = getResources().list("WEB-INF/lib");
+            while (enumeration.hasMoreElements()) {
+                String jar = enumeration.nextElement().getName();
+                if (jar.startsWith("tuscany-")) {
+                    // Do not alter is
+                    return false;
+                }
+            }
+        } catch (NamingException e) {
+        }
+        return true;
     }
 
     private ClassLoader getTuscanyClassloader() {
@@ -107,7 +149,8 @@ public class TuscanyStandardContext extends StandardContext {
                 for (int i=0; i< jarURLs.length; i++) {
                     jarURLs[i] = runtimeJars[i].toURI().toURL();
                 }
-                return new URLClassLoader(jarURLs, getParentClassLoader());
+                tuscanyClassLoader =  new URLClassLoader(jarURLs, getParentClassLoader());
+                return tuscanyClassLoader;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
