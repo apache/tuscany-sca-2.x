@@ -21,7 +21,6 @@ package sample;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +34,7 @@ public class HelloworldServlet extends HttpServlet {
 
     @Reference
     protected HelloworldService service;
-    
+
     public HelloworldServlet() {
         System.out.println("HelloworldServlet");
     }
@@ -45,7 +44,7 @@ public class HelloworldServlet extends HttpServlet {
 
     	String name = request.getParameter("name");
     	String greeting = service.sayHello(name);
-    	
+
         Writer out = response.getWriter();
         out.write("<html><head><title>Apache Tuscany Helloworld Servlet Sample</title></head><body>");
         out.write("<h2>Apache Tuscany Helloworld Servlet Sample</h2>");
