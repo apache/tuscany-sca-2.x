@@ -33,6 +33,8 @@
                 <include>calculator-rmi-reference/**/*</include>
                 <include>calculator-rmi-service/**/*</include>
                 <include>implementation-java-calculator/**/*</include>
+                <include>dosgi-calculator/**/*</include>
+                <include>dosgi-calculator-operations/**/*</include>
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
