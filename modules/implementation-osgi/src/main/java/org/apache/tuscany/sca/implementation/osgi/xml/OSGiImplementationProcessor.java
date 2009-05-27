@@ -165,6 +165,10 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         impl.setUnresolved(false);
 
         BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
+        if (bundleContext == null) {
+            // FIXME: What if the OSGi is not started
+            return;
+        }
         Bundle bundle = null;
         for (Bundle b : bundleContext.getBundles()) {
             String sn = b.getSymbolicName();
