@@ -75,6 +75,13 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     protected WebServiceBindingImpl() {
     }
     
+    /**
+     * Provide a meaningful representation of this Binding
+     */
+    public String toString() {
+    	return "Web Service Binding: " + name;
+    } // end method toString
+    
     public String getName() {
         return name;
     }
