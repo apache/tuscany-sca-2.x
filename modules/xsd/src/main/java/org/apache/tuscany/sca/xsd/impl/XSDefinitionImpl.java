@@ -176,7 +176,7 @@ public class XSDefinitionImpl implements XSDefinition {
             if (object != null) {
                 return type.cast(object);
             }
-            for (Iterator i = schema.getIncludes().getIterator(); i.hasNext();) {
+            for (Iterator<?> i = schema.getIncludes().getIterator(); i.hasNext();) {
                 XmlSchemaObject obj = (XmlSchemaObject)i.next();
                 XmlSchema ext = null;
                 if (obj instanceof XmlSchemaInclude) {
