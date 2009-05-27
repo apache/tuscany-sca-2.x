@@ -44,6 +44,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.maven.plugins</groupId> 
                 <artifactId>maven-bundle-plugin</artifactId> 
+                <version>1.0.3-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>distribution-modules</id>
@@ -55,6 +56,14 @@
                              <targetDirectory>target/modules</targetDirectory>
                              <useDistributionName>false</useDistributionName>
                              <generateManifestJar>true</generateManifestJar>
+                             <artifactManifests>
+                                 <artifactManifest>
+                                     <groupId>org.apache.woden</groupId>
+                                     <artifactId>woden-impl-dom</artifactId>
+                                     <version>1.0M8</version>
+                                     <manifestFile>${basedir}/manifests/woden-impl-dom-1.0M8.MF</manifestFile>
+                                 </artifactManifest>
+                             </artifactManifests>
                         </configuration>
                     </execution>
                 </executions>
