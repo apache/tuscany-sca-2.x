@@ -210,7 +210,7 @@ public class NodeFactoryImpl extends NodeFactory {
         }
     }
 
-    private static String getSystemProperty(final String name) {
+    protected static String getSystemProperty(final String name) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty(name);
@@ -360,6 +360,15 @@ public class NodeFactoryImpl extends NodeFactory {
         return extensionPoints;
     }
 
+    protected boolean isSchemaValidationEnabled() {
+        String enabled = getSystemProperty(ValidationSchemaExtensionPoint.class.getName() + ".enabled");
+        if (enabled == null) {
+            enabled = "true";
+        }
+        boolean debug = logger.isLoggable(Level.FINE);
+        return "true".equals(enabled) || debug;
+    }
+
     public synchronized void init() {
         if (inited) {
             return;
@@ -370,15 +379,12 @@ public class NodeFactoryImpl extends NodeFactory {
         extensionPoints = createExtensionPointRegistry();
 
         // Enable schema validation only of the logger level is FINE or higher
-        ValidationSchemaExtensionPoint schemas =
-            extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        if (schemas != null) {
-            String enabled = getSystemProperty(ValidationSchemaExtensionPoint.class.getName() + ".enabled");
-            if (enabled == null) {
-                enabled = "true";
+        if (isSchemaValidationEnabled()) {
+            ValidationSchemaExtensionPoint schemas =
+                extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+            if (schemas != null) {
+                schemas.setEnabled(true);
             }
-            boolean debug = logger.isLoggable(Level.FINE);
-            schemas.setEnabled("true".equals(enabled) || debug);
         }
 
         // Use the runtime-enabled assembly factory

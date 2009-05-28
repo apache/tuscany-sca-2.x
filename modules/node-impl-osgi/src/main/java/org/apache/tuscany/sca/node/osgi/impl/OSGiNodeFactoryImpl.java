@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.logging.Level;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.equinox.OSGiExtensionPointRegistry;
@@ -109,6 +110,11 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
     @Override
     protected ExtensionPointRegistry createExtensionPointRegistry() {
         return new OSGiExtensionPointRegistry(bundleContext);
+    }
+
+    @Override
+    protected boolean isSchemaValidationEnabled() {
+        return logger.isLoggable(Level.FINE);
     }
 
 }
